@@ -147,7 +147,7 @@ export default function App() {
         <Typography variant="h2" component="div" align="center">
           Get Privacy
         </Typography>
-        <Typography variant="h6" component="div" align="center">
+        <Typography component="div" align="center">
           Wrapping Coins as Secret Tokens immediately supercharges them with
           private balances and private transfers.
         </Typography>
