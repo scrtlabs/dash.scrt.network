@@ -41,13 +41,10 @@ export default function App() {
   const [myAddress, setMyAddress] = useState<string | null>(null);
   const [balances, setBalances] = useState<Map<string, string>>(new Map());
   const [loadingBalances, setLoadingBalances] = useState<boolean>(false);
-  const inputRefs = new Map<
-    string,
-    React.MutableRefObject<string | undefined>
-  >();
+  const inputRefs = new Map<string, any>();
 
   for (const { name } of tokens) {
-    inputRefs.set(name, useRef<string>(""));
+    inputRefs.set(name, useRef());
   }
 
   const updateBalances = async () => {
@@ -185,14 +182,14 @@ export default function App() {
                 <span
                   style={{ cursor: "pointer" }}
                   onClick={() => {
-                    const ref = inputRefs.get(
-                      t.name
-                    ) as React.MutableRefObject<string>;
+                    const ref = inputRefs.get(t.name);
 
-                    ref.current = new BigNumber(balances.get(t.denom) as string)
+                    ref.current.value = new BigNumber(
+                      balances.get(t.denom) as string
+                    )
                       .dividedBy(`1e${t.decimals}`)
                       .toFixed();
-                    console.log(ref.current);
+                    console.log(ref.current.value);
                   }}
                 >
                   Balance:{" "}
@@ -218,16 +215,14 @@ export default function App() {
                   <span
                     style={{ cursor: "pointer" }}
                     onClick={() => {
-                      const ref = inputRefs.get(
-                        t.name
-                      ) as React.MutableRefObject<string>;
+                      const ref = inputRefs.get(t.name);
 
-                      ref.current = new BigNumber(
+                      ref.current.value = new BigNumber(
                         balances.get(t.address) as string
                       )
                         .dividedBy(`1e${t.decimals}`)
                         .toFixed();
-                      console.log(ref.current);
+                      console.log(ref.current.value);
                     }}
                   >
                     Balance:{" "}
@@ -308,13 +303,16 @@ export default function App() {
                         return;
                       }
 
-                      const ref = inputRefs.get(
-                        t.name
-                      ) as React.MutableRefObject<string>;
+                      const ref = inputRefs.get(t.name);
 
-                      const amount = new BigNumber(ref.current)
+                      const amount = new BigNumber(ref.current.value)
                         .multipliedBy(`1e${t.decimals}`)
                         .toFixed(0);
+
+                      if (amount === "NaN") {
+                        console.error("NaN amount", ref.current.value);
+                        return;
+                      }
 
                       secretjs.execute(
                         t.address,
@@ -336,7 +334,7 @@ export default function App() {
                     }}
                     variant="standard"
                     disabled={isDisabled}
-                    inputRef={inputRefs.get(t.name) as MutableRefObject<string>}
+                    inputRef={inputRefs.get(t.name)}
                   />
                   <Button
                     size="small"
@@ -348,13 +346,16 @@ export default function App() {
                         return;
                       }
 
-                      const ref = inputRefs.get(
-                        t.name
-                      ) as React.MutableRefObject<string>;
+                      const ref = inputRefs.get(t.name);
 
-                      const amount = new BigNumber(ref.current)
+                      const amount = new BigNumber(ref.current.value)
                         .multipliedBy(`1e${t.decimals}`)
                         .toFixed(0);
+
+                      if (amount === "NaN") {
+                        console.error("NaN amount", ref.current.value);
+                        return;
+                      }
 
                       secretjs.execute(
                         t.address,
