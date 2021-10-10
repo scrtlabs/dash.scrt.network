@@ -43,7 +43,11 @@ export function KeplrPanel({
       >
         <Button
           variant="contained"
-          style={{ background: "white", textTransform: "none" }}
+          style={{
+            background: "white",
+            textTransform: "none",
+            color: "black",
+          }}
         >
           {content}{" "}
           <FileCopyOutlined
@@ -102,22 +106,13 @@ async function setupKeplr(
   setSecretjs(secretjs);
 }
 
-export async function setKeplrViewingKeys(
-  tokensToSet: Array<{ token: string; viewingKey: string }>
-) {
+export async function setKeplrViewingKeys(token: string) {
   if (!window.keplr) {
     console.error("Keplr not present");
     return;
   }
 
-  for (const { token, viewingKey } of tokensToSet) {
-    await window.keplr.suggestToken(
-      import.meta.env.VITE_CHAIN_ID,
-      token,
-      viewingKey
-    );
-    console.log(`Viewing key ${viewingKey} saved for token ${token} in Keplr`);
-  }
+  await window.keplr.suggestToken(import.meta.env.VITE_CHAIN_ID, token);
 }
 
 export async function getKeplrViewingKey(

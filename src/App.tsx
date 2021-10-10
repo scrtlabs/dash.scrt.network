@@ -9,7 +9,7 @@ import { Window as KeplrWindow } from "@keplr-wallet/types";
 import {
   getKeplrViewingKey,
   KeplrPanel,
-  setKeplrViewingKeys,
+  setKeplrViewingKeys as setKeplrViewingKey,
 } from "./KeplrStuff";
 declare global {
   interface Window extends KeplrWindow {}
@@ -23,6 +23,7 @@ import Button from "@mui/material/Button";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
 import TextField from "@mui/material/TextField";
+import Typography from "@mui/material/Typography";
 
 ReactDOM.render(
   <React.StrictMode>
@@ -139,16 +140,22 @@ export default function App() {
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
+          justifyContent: "center",
         }}
       >
-        <div style={{ fontSize: "xxx-large" }}>Get Privacy</div>
-        <div style={{ fontSize: "large" }}>
+        <Typography variant="h2" component="div" align="center">
+          Get Privacy
+        </Typography>
+        <Typography variant="h6" component="div" align="center">
           Wrapping Coins as Secret Tokens immediately supercharges them with
           private balances and private transfers.
-        </div>
+        </Typography>
         <br />
         {tokens.map((t) => {
-          let isDisabled = !!!t.address;
+          let isDisabled = true;
+          if (t.address) {
+            isDisabled = false;
+          }
 
           let balance;
           let secretBalance;
@@ -194,7 +201,7 @@ export default function App() {
                   <span
                     style={{ cursor: "pointer" }}
                     onClick={() => {
-                      console.log(viewingKeyErroString);
+                      setKeplrViewingKey(t.address);
                     }}
                   >
                     Balance:{` ${viewingKeyErroString}`}
@@ -254,13 +261,12 @@ export default function App() {
                   display: "flex",
                   justifyContent: "space-between",
                   alignItems: "center",
-                  width: 700,
                 }}
               >
                 <div
                   style={{
                     display: "flex",
-                    width: 200,
+                    width: 125,
                   }}
                 >
                   <div
@@ -354,7 +360,7 @@ export default function App() {
                 <div
                   style={{
                     display: "flex",
-                    width: 200,
+                    width: 125,
                     justifyContent: "flex-end",
                   }}
                 >
