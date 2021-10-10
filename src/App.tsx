@@ -26,9 +26,36 @@ import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 
+const footerHeight = "1.8rem";
+
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <div style={{ minHeight: `calc(100vh - ${footerHeight})` }}>
+      <App />
+    </div>
+    <footer
+      style={{
+        height: footerHeight,
+        width: "100%",
+        backgroundColor: "#e7e7e7",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        position: "relative",
+        left: 0,
+        bottom: 0,
+        gap: "0.3em",
+      }}
+    >
+      <Avatar
+        src="/scrt.svg"
+        sx={{
+          width: "1em",
+          height: "1em",
+        }}
+      />
+      <span>Powered by Secret Network</span>
+    </footer>
   </React.StrictMode>,
   document.getElementById("root")
 );
