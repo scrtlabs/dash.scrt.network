@@ -266,127 +266,125 @@ export default function App() {
               <div
                 style={{
                   display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
+                  width: isMobile ? undefined : 125,
                 }}
               >
                 <div
                   style={{
                     display: "flex",
-                    width: isMobile ? undefined : 125,
+                    flexDirection: "column",
+                    alignItems: "flex-start",
                   }}
                 >
-                  <div
-                    style={{
-                      display: "flex",
-                      flexDirection: "column",
-                      alignItems: "flex-start",
-                    }}
-                  >
-                    <span>{t.name}</span>
-                    <span style={{ fontSize: "0.75rem" }}>{balance}</span>
-                  </div>
+                  <span>{t.name}</span>
+                  <span style={{ fontSize: "0.75rem" }}>{balance}</span>
                 </div>
+              </div>
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "0.3rem",
+                }}
+              >
+                <Button
+                  size="small"
+                  variant="text"
+                  startIcon={<KeyboardArrowLeftIcon />}
+                  disabled={isDisabled}
+                  style={{ minWidth: 0 }}
+                  onClick={() => {
+                    if (!secretjs || !myAddress) {
+                      return;
+                    }
+
+                    const ref = inputRefs.get(t.name);
+
+                    const amount = new BigNumber(ref.current.value)
+                      .multipliedBy(`1e${t.decimals}`)
+                      .toFixed(0);
+
+                    if (amount === "NaN") {
+                      console.error("NaN amount", ref.current.value);
+                      return;
+                    }
+
+                    secretjs.execute(
+                      t.address,
+                      { redeem: { amount } },
+                      "",
+                      [],
+                      getFeeForExecute(250_000),
+                      t.code_hash
+                    );
+                  }}
+                >
+                  {isMobile ? "" : "Unwrap"}
+                </Button>
+                <TextField
+                  // TODO add input validation
+                  placeholder="Amount"
+                  inputProps={{
+                    style: {
+                      textAlign: "center",
+                      textOverflow: "ellipsis",
+                    },
+                  }}
+                  variant="standard"
+                  disabled={isDisabled}
+                  inputRef={inputRefs.get(t.name)}
+                />
+                <Button
+                  size="small"
+                  variant="text"
+                  endIcon={<KeyboardArrowRightIcon />}
+                  style={{ minWidth: 0 }}
+                  disabled={isDisabled}
+                  onClick={() => {
+                    if (!secretjs || !myAddress) {
+                      return;
+                    }
+
+                    const ref = inputRefs.get(t.name);
+
+                    const amount = new BigNumber(ref.current.value)
+                      .multipliedBy(`1e${t.decimals}`)
+                      .toFixed(0);
+
+                    if (amount === "NaN") {
+                      console.error("NaN amount", ref.current.value);
+                      return;
+                    }
+
+                    secretjs.execute(
+                      t.address,
+                      { deposit: {} },
+                      "",
+                      [{ denom: t.denom, amount }],
+                      getFeeForExecute(250_000),
+                      t.code_hash
+                    );
+                  }}
+                >
+                  {isMobile ? "" : "Wrap"}
+                </Button>
+              </div>
+              <div
+                style={{
+                  display: "flex",
+                  width: isMobile ? undefined : 125,
+                  justifyContent: "flex-end",
+                }}
+              >
                 <div
                   style={{
                     display: "flex",
-                    gap: "0.3rem",
+                    flexDirection: "column",
+                    alignItems: "flex-end",
                   }}
                 >
-                  <Button
-                    size="small"
-                    variant="text"
-                    startIcon={<KeyboardArrowLeftIcon />}
-                    disabled={isDisabled}
-                    onClick={() => {
-                      if (!secretjs || !myAddress) {
-                        return;
-                      }
-
-                      const ref = inputRefs.get(t.name);
-
-                      const amount = new BigNumber(ref.current.value)
-                        .multipliedBy(`1e${t.decimals}`)
-                        .toFixed(0);
-
-                      if (amount === "NaN") {
-                        console.error("NaN amount", ref.current.value);
-                        return;
-                      }
-
-                      secretjs.execute(
-                        t.address,
-                        { redeem: { amount } },
-                        "",
-                        [],
-                        getFeeForExecute(250_000),
-                        t.code_hash
-                      );
-                    }}
-                  >
-                    {isMobile ? "" : "Unwrap"}
-                  </Button>
-                  <TextField
-                    // TODO add input validation
-                    placeholder="Amount"
-                    inputProps={{
-                      style: { textAlign: "center", textOverflow: "ellipsis" },
-                    }}
-                    variant="standard"
-                    disabled={isDisabled}
-                    inputRef={inputRefs.get(t.name)}
-                  />
-                  <Button
-                    size="small"
-                    variant="text"
-                    endIcon={<KeyboardArrowRightIcon />}
-                    disabled={isDisabled}
-                    onClick={() => {
-                      if (!secretjs || !myAddress) {
-                        return;
-                      }
-
-                      const ref = inputRefs.get(t.name);
-
-                      const amount = new BigNumber(ref.current.value)
-                        .multipliedBy(`1e${t.decimals}`)
-                        .toFixed(0);
-
-                      if (amount === "NaN") {
-                        console.error("NaN amount", ref.current.value);
-                        return;
-                      }
-
-                      secretjs.execute(
-                        t.address,
-                        { deposit: {} },
-                        "",
-                        [{ denom: t.denom, amount }],
-                        getFeeForExecute(250_000),
-                        t.code_hash
-                      );
-                    }}
-                  >
-                    {isMobile ? "" : "Wrap"}
-                  </Button>
-                </div>
-                <div
-                  style={{
-                    display: "flex",
-                    width: isMobile ? undefined : 125,
-                    justifyContent: "flex-end",
-                  }}
-                >
-                  <div
-                    style={{
-                      display: "flex",
-                      flexDirection: "column",
-                      alignItems: "flex-end",
-                    }}
-                  >
-                    <span>s{t.name}</span>
-                    <span style={{ fontSize: "0.75rem" }}>{secretBalance}</span>
-                  </div>
+                  <span>s{t.name}</span>
+                  <span style={{ fontSize: "0.75rem" }}>{secretBalance}</span>
                 </div>
               </div>
               <Avatar
