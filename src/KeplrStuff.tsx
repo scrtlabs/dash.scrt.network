@@ -61,7 +61,7 @@ export function KeplrPanel({
     return (
       <Button
         variant="contained"
-        style={{ background: "white" }}
+        style={{ background: "white", color: "black" }}
         onClick={() => setupKeplr(setSecretjs, setMyAddress)}
       >
         {content}

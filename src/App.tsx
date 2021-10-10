@@ -2,6 +2,7 @@ import React, { useState, useEffect, MutableRefObject, useRef } from "react";
 import ReactDOM from "react-dom";
 import "./index.css";
 import { BigNumber } from "bignumber.js";
+import { isMobile } from "react-device-detect";
 
 import { SigningCosmWasmClient } from "secretjs";
 import { StdFee } from "secretjs/types/types";
@@ -160,8 +161,13 @@ export default function App() {
           let balance;
           let secretBalance;
           if (!t.address) {
-            balance = <>coming soon</>;
-            secretBalance = <>coming soon</>;
+            if (isMobile) {
+              balance = <>soon</>;
+              secretBalance = <>soon</>;
+            } else {
+              balance = <>coming soon</>;
+              secretBalance = <>coming soon</>;
+            }
           } else {
             if (loadingBalances) {
               balance = (
@@ -232,8 +238,13 @@ export default function App() {
                 );
               }
             } else {
-              balance = <>Balance: connect wallet</>;
-              secretBalance = <>Balance: connect wallet</>;
+              if (isMobile) {
+                balance = <></>;
+                secretBalance = <></>;
+              } else {
+                balance = <>Balance: connect wallet</>;
+                secretBalance = <>Balance: connect wallet</>;
+              }
             }
           }
 
@@ -246,6 +257,7 @@ export default function App() {
                 gap: "0.3rem",
                 padding: "1rem",
                 borderRadius: 20,
+                width: isMobile ? "100%" : undefined,
               }}
             >
               <Avatar
@@ -266,7 +278,7 @@ export default function App() {
                 <div
                   style={{
                     display: "flex",
-                    width: 125,
+                    width: isMobile ? undefined : 125,
                   }}
                 >
                   <div
@@ -314,7 +326,7 @@ export default function App() {
                       );
                     }}
                   >
-                    Unwrap
+                    {isMobile ? "" : "Unwrap"}
                   </Button>
                   <TextField
                     // TODO add input validation
@@ -354,13 +366,13 @@ export default function App() {
                       );
                     }}
                   >
-                    Wrap
+                    {isMobile ? "" : "Wrap"}
                   </Button>
                 </div>
                 <div
                   style={{
                     display: "flex",
-                    width: 125,
+                    width: isMobile ? undefined : 125,
                     justifyContent: "flex-end",
                   }}
                 >
