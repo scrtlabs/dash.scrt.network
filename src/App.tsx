@@ -30,9 +30,9 @@ const footerHeight = "1.8rem";
 
 ReactDOM.render(
   <React.StrictMode>
-    {/* <div style={{ minHeight: `calc(100vh - ${footerHeight})` }}> */}
-    <App />
-    {/* </div>
+    <div style={{ minHeight: `calc(100vh - ${footerHeight})` }}>
+      <App />
+    </div>
     <footer
       style={{
         height: footerHeight,
@@ -55,7 +55,7 @@ ReactDOM.render(
         }}
       />
       <span>Powered by Secret Network</span>
-    </footer> */}
+    </footer>
   </React.StrictMode>,
   document.getElementById("root")
 );
