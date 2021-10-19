@@ -329,7 +329,7 @@ export default function App() {
 
                     const amount = new BigNumber(ref.current.value)
                       .multipliedBy(`1e${t.decimals}`)
-                      .toFixed(0);
+                      .toFixed(0, BigNumber.ROUND_DOWN);
 
                     if (amount === "NaN") {
                       console.error("NaN amount", ref.current.value);
@@ -376,7 +376,7 @@ export default function App() {
 
                     const amount = new BigNumber(ref.current.value)
                       .multipliedBy(`1e${t.decimals}`)
-                      .toFixed(0);
+                      .toFixed(0, BigNumber.ROUND_DOWN);
 
                     if (amount === "NaN") {
                       console.error("NaN amount", ref.current.value);
