@@ -33,7 +33,9 @@ ReactDOM.render(
     <div style={{ minHeight: `calc(100vh - ${footerHeight})` }}>
       <App />
     </div>
-    <footer
+    <a
+      href="https://SCRT.network"
+      target="_blank"
       style={{
         height: footerHeight,
         width: "100%",
@@ -45,6 +47,7 @@ ReactDOM.render(
         left: 0,
         bottom: 0,
         gap: "0.3em",
+        textDecoration: "none",
       }}
     >
       <Avatar
@@ -54,8 +57,14 @@ ReactDOM.render(
           height: "1em",
         }}
       />
-      <span>Powered by Secret Network</span>
-    </footer>
+      <span
+        style={{
+          color: "black",
+        }}
+      >
+        Powered by Secret Network
+      </span>
+    </a>
   </React.StrictMode>,
   document.getElementById("root")
 );
