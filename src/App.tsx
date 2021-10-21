@@ -273,8 +273,8 @@ export default function App() {
                 balance = <></>;
                 secretBalance = <></>;
               } else {
-                balance = <>Balance: connect wallet</>;
-                secretBalance = <>Balance: connect wallet</>;
+                balance = <>connect wallet</>;
+                secretBalance = <>connect wallet</>;
               }
             }
           }
