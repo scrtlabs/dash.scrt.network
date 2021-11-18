@@ -3,6 +3,9 @@ import Button from "@mui/material/Button";
 import React, { useState, useEffect } from "react";
 import CopyToClipboard from "react-copy-to-clipboard";
 import { BroadcastMode, SigningCosmWasmClient } from "secretjs";
+import { Bech32Address } from "@keplr-wallet/cosmos";
+
+import tokens from "./config.json";
 
 export function KeplrPanel({
   secretjs,
@@ -14,8 +17,8 @@ export function KeplrPanel({
   setSecretjs: React.Dispatch<
     React.SetStateAction<SigningCosmWasmClient | null>
   >;
-  myAddress: string | null;
-  setMyAddress: React.Dispatch<React.SetStateAction<string | null>>;
+  myAddress: Map<string, string>;
+  setMyAddress: React.Dispatch<React.SetStateAction<Map<string, string>>>;
 }) {
   const [isCopied, setIsCopied] = useState<boolean>(false);
 
@@ -27,7 +30,7 @@ export function KeplrPanel({
     <div style={{ display: "flex", alignItems: "center", borderRadius: 10 }}>
       <img src="/keplr.svg" style={{ width: "1.8rem", borderRadius: 10 }} />
       <span style={{ margin: "0 0.3rem" }}>
-        {secretjs ? myAddress : "Connect wallet"}
+        {secretjs ? myAddress.get("secret") : "Connect wallet"}
       </span>
     </div>
   );
@@ -35,7 +38,7 @@ export function KeplrPanel({
   if (secretjs) {
     return (
       <CopyToClipboard
-        text={myAddress as string}
+        text={myAddress.get("secret") as string}
         onCopy={() => {
           setIsCopied(true);
           setTimeout(() => setIsCopied(false), 3000);
@@ -74,7 +77,7 @@ async function setupKeplr(
   setSecretjs: React.Dispatch<
     React.SetStateAction<SigningCosmWasmClient | null>
   >,
-  setMyAddress: React.Dispatch<React.SetStateAction<string | null>>
+  setMyAddress: React.Dispatch<React.SetStateAction<Map<string, string>>>
 ) {
   const sleep = (ms: number) =>
     new Promise((resolve) => setTimeout(resolve, ms));
@@ -83,26 +86,93 @@ async function setupKeplr(
     await sleep(50);
   }
 
-  await window.keplr.enable(import.meta.env.VITE_CHAIN_ID);
+  await window.keplr.enable(import.meta.env.VITE_SECRET_CHAIN_ID);
 
   const keplrOfflineSigner = window.getOfflineSigner(
-    import.meta.env.VITE_CHAIN_ID
+    import.meta.env.VITE_SECRET_CHAIN_ID
   );
   const accounts = await keplrOfflineSigner.getAccounts();
 
-  const myAddress = accounts[0].address;
+  const secretAddress = accounts[0].address;
 
   const secretjs = new SigningCosmWasmClient(
-    import.meta.env.VITE_LCD_URL,
-    myAddress,
+    import.meta.env.VITE_SECRET_LCD_URL,
+    secretAddress,
     //@ts-ignore
     keplrOfflineSigner,
-    window.getEnigmaUtils(import.meta.env.VITE_CHAIN_ID),
+    window.getEnigmaUtils(import.meta.env.VITE_SECRET_CHAIN_ID),
     null,
     BroadcastMode.Sync
   );
 
-  setMyAddress(myAddress as string);
+  const myAddress = new Map<string, string>();
+
+  myAddress.set("secret", secretAddress);
+
+  window.keplr.experimentalSuggestChain({
+    rpc: "https://rpc-columbus.keplr.app",
+    rest: "https://lcd-columbus.keplr.app",
+    chainId: "columbus-5",
+    chainName: "Terra",
+    stakeCurrency: {
+      coinDenom: "LUNA",
+      coinMinimalDenom: "uluna",
+      coinDecimals: 6,
+      coinGeckoId: "terra-luna",
+      coinImageUrl: window.location.origin + "/public/assets/tokens/luna.png",
+    },
+    bip44: {
+      coinType: 330,
+    },
+    bech32Config: Bech32Address.defaultBech32Config("terra"),
+    currencies: [
+      {
+        coinDenom: "LUNA",
+        coinMinimalDenom: "uluna",
+        coinDecimals: 6,
+        coinGeckoId: "terra-luna",
+        coinImageUrl: window.location.origin + "/public/assets/tokens/luna.png",
+      },
+      {
+        coinDenom: "UST",
+        coinMinimalDenom: "uusd",
+        coinDecimals: 6,
+        coinGeckoId: "terrausd",
+        coinImageUrl: window.location.origin + "/public/assets/tokens/ust.png",
+      },
+    ],
+    feeCurrencies: [
+      {
+        coinDenom: "LUNA",
+        coinMinimalDenom: "uluna",
+        coinDecimals: 6,
+        coinGeckoId: "terra-luna",
+        coinImageUrl: window.location.origin + "/public/assets/tokens/luna.png",
+      },
+      {
+        coinDenom: "UST",
+        coinMinimalDenom: "uusd",
+        coinDecimals: 6,
+        coinGeckoId: "terrausd",
+        coinImageUrl: window.location.origin + "/public/assets/tokens/ust.png",
+      },
+    ],
+    gasPriceStep: {
+      low: 0.015,
+      average: 0.015,
+      high: 0.015,
+    },
+    features: ["stargate", "ibc-transfer", "no-legacy-stdTx"],
+    // explorerUrlToTx: "https://finder.terra.money/columbus-5/tx/{txHash}",
+  });
+
+  for (const { prefix, chain_id } of tokens) {
+    const chainAccounts = await window.getOfflineSigner(chain_id).getAccounts();
+
+    myAddress.set(prefix, chainAccounts[0].address);
+  }
+
+  setMyAddress(myAddress);
   setSecretjs(secretjs);
 }
 
@@ -112,7 +182,7 @@ export async function setKeplrViewingKeys(token: string) {
     return;
   }
 
-  await window.keplr.suggestToken(import.meta.env.VITE_CHAIN_ID, token);
+  await window.keplr.suggestToken(import.meta.env.VITE_SECRET_CHAIN_ID, token);
 }
 
 export async function getKeplrViewingKey(
@@ -125,7 +195,7 @@ export async function getKeplrViewingKey(
 
   try {
     return await window.keplr.getSecret20ViewingKey(
-      import.meta.env.VITE_CHAIN_ID,
+      import.meta.env.VITE_SECRET_CHAIN_ID,
       token
     );
   } catch (e) {

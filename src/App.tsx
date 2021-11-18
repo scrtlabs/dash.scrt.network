@@ -1,4 +1,4 @@
-import React, { useState, useEffect, MutableRefObject, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import ReactDOM from "react-dom";
 import "./index.css";
 import { BigNumber } from "bignumber.js";
@@ -16,7 +16,7 @@ declare global {
   interface Window extends KeplrWindow {}
 }
 
-import tokens from "./tokens.json";
+import tokens from "./config.json";
 
 import CircularProgress from "@mui/material/CircularProgress";
 import Avatar from "@mui/material/Avatar";
@@ -25,6 +25,7 @@ import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
+import Tooltip from "@mui/material/Tooltip";
 
 const footerHeight = "1.8rem";
 
@@ -74,7 +75,7 @@ const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 export default function App() {
   const [secretjs, setSecretjs] = useState<SigningCosmWasmClient | null>(null);
-  const [myAddress, setMyAddress] = useState<string | null>(null);
+  const [myAddress, setMyAddress] = useState<Map<string, string>>(new Map());
   const [balances, setBalances] = useState<Map<string, string>>(new Map());
   const [loadingBalances, setLoadingBalances] = useState<boolean>(false);
   const inputRefs = new Map<string, any>();
@@ -84,20 +85,11 @@ export default function App() {
   }
 
   const updateBalances = async () => {
-    if (!secretjs || !myAddress) {
-      return;
-    }
-
-    const account = await secretjs.getAccount(myAddress);
-    if (!account) {
+    if (!secretjs) {
       return;
     }
 
     const balances = new Map<string, string>();
-
-    for (const b of account.balance) {
-      balances.set(b.denom, b.amount);
-    }
 
     for (const { address, code_hash } of tokens) {
       if (!address) {
@@ -114,7 +106,7 @@ export default function App() {
         const result = await secretjs.queryContractSmart(
           address,
           {
-            balance: { address: myAddress, key },
+            balance: { address: myAddress.get("secret"), key },
           },
           undefined,
           code_hash
@@ -130,6 +122,31 @@ export default function App() {
       }
     }
 
+    for (const { source_denom, prefix, lcd } of tokens) {
+      if (!myAddress.has(prefix)) {
+        continue;
+      }
+
+      const url = `${lcd}/bank/balances/${myAddress.get(prefix)}`;
+      try {
+        const response = await fetch(url);
+        const result: {
+          height: string;
+          result: Array<{ denom: string; amount: string }>;
+        } = await response.json();
+
+        const balance =
+          result.result.find((c) => c.denom === source_denom)?.amount || "0";
+
+        balances.set(source_denom, balance);
+
+        // balances.set(source_denom, result.balance.amount);
+      } catch (e) {
+        console.error(`Error while trying to query ${url}:`, e);
+        continue;
+      }
+    }
+    console.log(balances);
     setBalances(balances);
   };
 
@@ -186,42 +203,68 @@ export default function App() {
         </Typography>
         <br />
         {tokens.map((t) => {
-          let isDisabled = true;
-          if (t.address) {
-            isDisabled = false;
-          }
+          // let isDisabled = true;
+          // if (t.address) {
+          //   isDisabled = false;
+          // }
 
-          let balance;
-          let secretBalance;
-          if (!t.address) {
-            if (isMobile) {
-              balance = <>soon</>;
-              secretBalance = <>soon</>;
+          let balanceOnSource;
+          let balanceOnSN;
+          let BalanceToken;
+
+          if (loadingBalances) {
+            balanceOnSN = (
+              <span>
+                Balance: <CircularProgress size="0.8em" />
+              </span>
+            );
+            BalanceToken = (
+              <span>
+                Balance: <CircularProgress size="0.8em" />
+              </span>
+            );
+          } else if (balances.get(t.denom)) {
+            balanceOnSN = (
+              <span
+                style={{ cursor: "pointer" }}
+                onClick={() => {
+                  const ref = inputRefs.get(t.name);
+
+                  ref.current.value = new BigNumber(
+                    balances.get(t.denom) as string
+                  )
+                    .dividedBy(`1e${t.decimals}`)
+                    .toFixed();
+                  console.log(ref.current.value);
+                }}
+              >
+                Balance:{" "}
+                {new BigNumber(balances.get(t.denom) as string)
+                  .dividedBy(`1e${t.decimals}`)
+                  .toFormat()}
+              </span>
+            );
+
+            if (balances.get(t.address) == viewingKeyErroString) {
+              BalanceToken = (
+                <span
+                  style={{ cursor: "pointer" }}
+                  onClick={() => {
+                    setKeplrViewingKey(t.address);
+                  }}
+                >
+                  Balance:{` ${viewingKeyErroString}`}
+                </span>
+              );
             } else {
-              balance = <>coming soon</>;
-              secretBalance = <>coming soon</>;
-            }
-          } else {
-            if (loadingBalances) {
-              balance = (
-                <span>
-                  Balance: <CircularProgress size="0.8em" />
-                </span>
-              );
-              secretBalance = (
-                <span>
-                  Balance: <CircularProgress size="0.8em" />
-                </span>
-              );
-            } else if (balances.get(t.denom)) {
-              balance = (
+              BalanceToken = (
                 <span
                   style={{ cursor: "pointer" }}
                   onClick={() => {
                     const ref = inputRefs.get(t.name);
 
                     ref.current.value = new BigNumber(
-                      balances.get(t.denom) as string
+                      balances.get(t.address) as string
                     )
                       .dividedBy(`1e${t.decimals}`)
                       .toFixed();
@@ -229,54 +272,15 @@ export default function App() {
                   }}
                 >
                   Balance:{" "}
-                  {new BigNumber(balances.get(t.denom) as string)
+                  {new BigNumber(balances.get(t.address) as string)
                     .dividedBy(`1e${t.decimals}`)
                     .toFormat()}
                 </span>
               );
-
-              if (balances.get(t.address) == viewingKeyErroString) {
-                secretBalance = (
-                  <span
-                    style={{ cursor: "pointer" }}
-                    onClick={() => {
-                      setKeplrViewingKey(t.address);
-                    }}
-                  >
-                    Balance:{` ${viewingKeyErroString}`}
-                  </span>
-                );
-              } else {
-                secretBalance = (
-                  <span
-                    style={{ cursor: "pointer" }}
-                    onClick={() => {
-                      const ref = inputRefs.get(t.name);
-
-                      ref.current.value = new BigNumber(
-                        balances.get(t.address) as string
-                      )
-                        .dividedBy(`1e${t.decimals}`)
-                        .toFixed();
-                      console.log(ref.current.value);
-                    }}
-                  >
-                    Balance:{" "}
-                    {new BigNumber(balances.get(t.address) as string)
-                      .dividedBy(`1e${t.decimals}`)
-                      .toFormat()}
-                  </span>
-                );
-              }
-            } else {
-              if (isMobile) {
-                balance = <></>;
-                secretBalance = <></>;
-              } else {
-                balance = <>connect wallet</>;
-                secretBalance = <>connect wallet</>;
-              }
             }
+          } else {
+            balanceOnSN = <>connect wallet</>;
+            BalanceToken = <>connect wallet</>;
           }
 
           return (
@@ -285,7 +289,7 @@ export default function App() {
               style={{
                 display: "flex",
                 alignItems: "center",
-                gap: "0.3rem",
+                gap: "0.8rem",
                 padding: "1rem",
                 borderRadius: 20,
                 width: isMobile ? "100%" : undefined,
@@ -294,8 +298,8 @@ export default function App() {
               <Avatar
                 src={t.image}
                 sx={{
-                  width: 28,
-                  height: 28,
+                  width: 40,
+                  height: 40,
                   boxShadow: "rgba(0, 0, 0, 0.15) 0px 6px 10px",
                 }}
               />
@@ -312,8 +316,22 @@ export default function App() {
                     alignItems: "flex-start",
                   }}
                 >
-                  <span>{t.name}</span>
-                  <span style={{ fontSize: "0.75rem" }}>{balance}</span>
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "baseline",
+                      gap: "0.5em",
+                    }}
+                  >
+                    <span>{t.name}</span>
+                    <Tooltip title="IBC Deposit" placement="top">
+                      <Button style={{ minWidth: 0 }}>
+                        <img src="/deposit.png" style={{ height: "0.8em" }} />
+                      </Button>
+                    </Tooltip>
+                  </div>
+                  <span style={{ fontSize: "0.75rem" }}>{balanceOnSN}</span>
                 </div>
               </div>
               <div
@@ -327,7 +345,6 @@ export default function App() {
                   size="small"
                   variant="text"
                   startIcon={<KeyboardArrowLeftIcon />}
-                  disabled={isDisabled}
                   style={{ minWidth: 0 }}
                   onClick={() => {
                     if (!secretjs || !myAddress) {
@@ -367,7 +384,6 @@ export default function App() {
                     },
                   }}
                   variant="standard"
-                  disabled={isDisabled}
                   inputRef={inputRefs.get(t.name)}
                 />
                 <Button
@@ -375,7 +391,6 @@ export default function App() {
                   variant="text"
                   endIcon={<KeyboardArrowRightIcon />}
                   style={{ minWidth: 0 }}
-                  disabled={isDisabled}
                   onClick={() => {
                     if (!secretjs || !myAddress) {
                       return;
@@ -420,14 +435,14 @@ export default function App() {
                   }}
                 >
                   <span>s{t.name}</span>
-                  <span style={{ fontSize: "0.75rem" }}>{secretBalance}</span>
+                  <span style={{ fontSize: "0.75rem" }}>{BalanceToken}</span>
                 </div>
               </div>
               <Avatar
                 src={t.image}
                 sx={{
-                  width: 28,
-                  height: 28,
+                  width: 40,
+                  height: 40,
                   boxShadow: "rgba(0, 0, 0, 0.15) 0px 6px 10px",
                 }}
               />
