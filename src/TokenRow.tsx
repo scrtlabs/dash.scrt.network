@@ -13,6 +13,7 @@ import {
   FormControl,
   InputLabel,
 } from "@mui/material";
+import LoadingButton from "@mui/lab/LoadingButton";
 import BigNumber from "bignumber.js";
 import React, { useRef, useState, useEffect } from "react";
 import { isMobile } from "react-device-detect";
@@ -126,32 +127,36 @@ export default function TokenRow({
   let balanceIbcCoin;
   let balanceToken;
 
-  if (loadingCoinBalances) {
-    balanceIbcCoin = (
-      <span>
-        Balance: <CircularProgress size="0.8em" />
-      </span>
-    );
-  } else if (balances.get(token.denom)) {
-    balanceIbcCoin = (
-      <span
-        style={{ cursor: "pointer" }}
-        onClick={() => {
-          wrapInputRef.current.value = new BigNumber(
-            balances.get(token.denom) as string
-          )
+  if (token.address) {
+    if (loadingCoinBalances) {
+      balanceIbcCoin = (
+        <span>
+          Balance: <CircularProgress size="0.8em" />
+        </span>
+      );
+    } else if (balances.get(token.denom)) {
+      balanceIbcCoin = (
+        <span
+          style={{ cursor: "pointer" }}
+          onClick={() => {
+            wrapInputRef.current.value = new BigNumber(
+              balances.get(token.denom) as string
+            )
+              .dividedBy(`1e${token.decimals}`)
+              .toFixed();
+          }}
+        >
+          Balance:{" "}
+          {new BigNumber(balances.get(token.denom) as string)
             .dividedBy(`1e${token.decimals}`)
-            .toFixed();
-        }}
-      >
-        Balance:{" "}
-        {new BigNumber(balances.get(token.denom) as string)
-          .dividedBy(`1e${token.decimals}`)
-          .toFormat()}
-      </span>
-    );
+            .toFormat()}
+        </span>
+      );
+    } else {
+      balanceIbcCoin = <>connect wallet</>;
+    }
   } else {
-    balanceIbcCoin = <>connect wallet</>;
+    balanceIbcCoin = <>coming soon</>;
   }
 
   if (token.address) {
@@ -210,8 +215,8 @@ export default function TokenRow({
       <Avatar
         src={token.image}
         sx={{
-          width: 40,
-          height: 40,
+          width: 38,
+          height: 38,
           boxShadow: "rgba(0, 0, 0, 0.15) 0px 6px 10px",
         }}
       />
@@ -237,10 +242,9 @@ export default function TokenRow({
             }}
           >
             <span>{token.name}</span>
-            {token.chain_name !== "Secret Network" ? (
+            {token.chain_name !== "Secret Network" && token.address ? (
               <>
-                {" "}
-                <Tooltip title={`IBC Deposit`} placement="top">
+                <Tooltip title="IBC Deposit" placement="top">
                   <Button
                     style={{ minWidth: 0 }}
                     onClick={async () => {
@@ -513,13 +517,14 @@ export default function TokenRow({
                       marginBottom: "1em",
                     }}
                   >
-                    <Button
+                    <LoadingButton
                       variant="contained"
                       sx={{
                         padding: "0.5em 5em",
                         fontWeight: "bold",
                         fontSize: "1.2em",
                       }}
+                      loading={loadingDeposit}
                       onClick={async () => {
                         if (!sourceCosmJs) {
                           console.error("No cosmjs");
@@ -554,10 +559,11 @@ export default function TokenRow({
                           );
                         depositInputRef.current.value = "";
                         setLoadingDeposit(false);
+                        setIsDepositDialogOpen(false);
                       }}
                     >
-                      {loadingDeposit ? <CircularProgress /> : "Deposit"}
-                    </Button>
+                      Deposit
+                    </LoadingButton>
                   </div>
                 </Dialog>
               </>
@@ -584,18 +590,18 @@ export default function TokenRow({
               <KeyboardArrowLeftIcon />
             )
           }
-          style={{ minWidth: 0 }}
           onClick={async () => {
             if (!secretjs || !secretAddress || loadingWrap || loadingUnwrap) {
               return;
             }
 
-            const amount = new BigNumber(wrapInputRef?.current?.value)
+            const baseAmount = wrapInputRef?.current?.value;
+            const amount = new BigNumber(baseAmount)
               .multipliedBy(`1e${token.decimals}`)
               .toFixed(0, BigNumber.ROUND_DOWN);
 
             if (amount === "NaN") {
-              console.error("NaN amount", wrapInputRef?.current?.value);
+              console.error("NaN amount", baseAmount);
               return;
             }
 
@@ -676,18 +682,18 @@ export default function TokenRow({
               <KeyboardArrowRightIcon />
             )
           }
-          style={{ minWidth: 0 }}
           onClick={async () => {
             if (!secretjs || !secretAddress || loadingWrap || loadingUnwrap) {
               return;
             }
 
-            const amount = new BigNumber(wrapInputRef?.current?.value)
+            const baseAmount = wrapInputRef?.current?.value;
+            const amount = new BigNumber(baseAmount)
               .multipliedBy(`1e${token.decimals}`)
               .toFixed(0, BigNumber.ROUND_DOWN);
 
             if (amount === "NaN") {
-              console.error("NaN amount", wrapInputRef?.current?.value);
+              console.error("NaN amount", baseAmount);
               return;
             }
 
@@ -713,7 +719,6 @@ export default function TokenRow({
                     console.error(`Tx failed: ${tx.raw_log}`);
                   } else {
                     wrapInputRef.current.value = "";
-
                     console.log(`Wrapped successfully`);
                   }
 
@@ -764,7 +769,12 @@ export default function TokenRow({
             <span>{balanceToken}</span>
             {token.address ? (
               <Button
-                style={{ color: "black", minWidth: 0, padding: 0 }}
+                style={{
+                  color: "black",
+                  minWidth: 0,
+                  padding: 0,
+                  display: loadingTokenBalance ? "none" : undefined,
+                }}
                 onClick={async () => {
                   try {
                     setLoadingTokenBalance(true);
@@ -783,8 +793,8 @@ export default function TokenRow({
       <Avatar
         src={token.image}
         sx={{
-          width: 40,
-          height: 40,
+          width: 38,
+          height: 38,
           boxShadow: "rgba(0, 0, 0, 0.15) 0px 6px 10px",
         }}
       />
