@@ -554,7 +554,7 @@ export default function TokenRow({
                             "transfer",
                             token.channel_id,
                             undefined,
-                            Math.floor(Date.now() / 1000) + 30, // 30 seconds timeout
+                            Math.floor(Date.now() / 1000) + 4 * 3600, // 4 hours timeout
                             getFeeForExecute(token.transfer_gas)
                           );
                         depositInputRef.current.value = "";
