@@ -16,18 +16,18 @@
     },
     {
         "name": "ATOM",
-        "address": "",
-        "code_hash": "",
+        "address": "secret14mzwd0ps5q277l20ly2q3aetqe3ev4m4260gf4",
+        "code_hash": "ad91060456344fc8d8e93c0600a3957b8158605c044b3bef7048510b3157b807",
         "image": "atom.jpg",
         "decimals": 6,
-        "denom": "ibc/uatom",
+        "denom": "ibc/27394FB092D2ECCD56123C74F36E4C1F926001CEADA9CA97EA622B25F41E5EB2",
         "source_denom": "uatom",
         "chain_id": "cosmoshub-4",
         "bech32_prefix": "cosmos",
         "lcd": "https://lcd-cosmoshub.keplr.app",
         "rpc": "https://rpc-cosmoshub.keplr.app",
         "chain_name": "Cosmos Hub",
-        "channel_id": ""
+        "channel_id": "channel-235"
     },
     {
         "name": "Luna",
@@ -42,7 +42,7 @@
         "lcd": "https://lcd-columbus.keplr.app",
         "rpc": "https://rpc-columbus.keplr.app",
         "chain_name": "Terra",
-        "channel_id": ""
+        "channel_id": "channel-16"
     },
     {
         "name": "UST",
@@ -57,7 +57,7 @@
         "lcd": "https://lcd-columbus.keplr.app",
         "rpc": "https://rpc-columbus.keplr.app",
         "chain_name": "Terra",
-        "channel_id": ""
+        "channel_id": "channel-16"
     },
     {
         "name": "OSMO",
@@ -72,7 +72,7 @@
         "lcd": "https://lcd-osmosis.keplr.app",
         "rpc": "https://rpc-osmosis.keplr.app",
         "chain_name": "Osmosis",
-        "channel_id": ""
+        "channel_id": "channel-88"
     },
     {
         "name": "DVPN",
