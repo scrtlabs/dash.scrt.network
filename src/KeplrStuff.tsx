@@ -100,7 +100,7 @@ async function setupKeplr(
     //@ts-ignore
     keplrOfflineSigner,
     window.getEnigmaUtils(import.meta.env.VITE_SECRET_CHAIN_ID),
-    null,
+    undefined,
     BroadcastMode.Sync
   );
 

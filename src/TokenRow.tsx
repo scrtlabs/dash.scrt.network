@@ -50,6 +50,7 @@ export default function TokenRow({
     lcd: string;
     rpc: string;
     chain_name: string;
+    channel_id: string;
   };
   balances: Map<string, string>;
 }) {
@@ -63,6 +64,7 @@ export default function TokenRow({
     useState<SigningStargateClient | null>(null);
   const [isWrapLoading, setIsWrapLoading] = useState<boolean>(false);
   const [isUnwrapLoading, setIsUnwrapLoading] = useState<boolean>(false);
+  const [isDepositLoading, setIsDepositLoading] = useState<boolean>(false);
 
   let balanceIbcCoin;
   let balanceToken;
@@ -129,7 +131,7 @@ export default function TokenRow({
         );
       }
     } else {
-      balanceToken = <>comming soon</>;
+      balanceToken = <>coming soon</>;
     }
   } else {
     balanceIbcCoin = <>connect wallet</>;
@@ -467,21 +469,33 @@ export default function TokenRow({
                           console.error(
                             `${depositInputRef?.current?.value} not bigger than 0`
                           );
+                          return;
                         }
 
-                        await sourceCosmJs.sendIbcTokens(
-                          "terra1phtgeq59knnm98py345k8qu8kvmsvqta4yu652",
-                          "osmo1e6mqxtwgaps7vz3qfa3fcekhh7a02hvfcjve29",
-                          { amount: "1", denom: "uluna" },
-                          "transfer",
-                          "channel-1",
-                          undefined,
-                          30,
-                          getFeeForExecute(500_000)
-                        );
+                        setIsDepositLoading(true);
+
+                        const amount = new BigNumber(
+                          depositInputRef?.current?.value
+                        )
+                          .multipliedBy(`1e${token.decimals}`)
+                          .toFixed(0, BigNumber.ROUND_DOWN);
+
+                        const { transactionHash } =
+                          await sourceCosmJs.sendIbcTokens(
+                            sourceAddress,
+                            secretAddress,
+                            { amount, denom: token.source_denom },
+                            "transfer",
+                            token.channel_id,
+                            undefined,
+                            Math.floor(Date.now() / 1000) + 30, // 30 sec timeout
+                            getFeeForExecute(500_000)
+                          );
+                        depositInputRef.current.value = "";
+                        setIsDepositLoading(false);
                       }}
                     >
-                      Deposit
+                      {isDepositLoading ? <CircularProgress /> : "Deposit"}
                     </Button>
                   </div>
                 </Dialog>
@@ -546,6 +560,7 @@ export default function TokenRow({
                   if (!tx.raw_log.startsWith("[")) {
                     console.error(`Tx failed: ${tx.raw_log}`);
                   } else {
+                    wrapInputRef.current.value = "";
                     console.log(`Unwrapped successfully`);
                   }
 
@@ -622,6 +637,8 @@ export default function TokenRow({
                   if (!tx.raw_log.startsWith("[")) {
                     console.error(`Tx failed: ${tx.raw_log}`);
                   } else {
+                    wrapInputRef.current.value = "";
+
                     console.log(`Wrapped successfully`);
                   }
 
