@@ -122,7 +122,7 @@ export default function App() {
       return;
     }
 
-    const interval = setInterval(updateCoinBalances, 10000);
+    const interval = setInterval(updateCoinBalances, 6_000);
 
     (async () => {
       setLoadingCoinBalances(true);

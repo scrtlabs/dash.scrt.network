@@ -33,11 +33,11 @@
     },
     {
         "name": "Luna",
-        "address": "",
-        "code_hash": "",
+        "address": "secret1ra7avvjh9fhr7dtr3djutugwj59ptctsrakyyw",
+        "code_hash": "ad91060456344fc8d8e93c0600a3957b8158605c044b3bef7048510b3157b807",
         "image": "luna.png",
         "decimals": 6,
-        "denom": "ibc/uluna",
+        "denom": "ibc/D70B0FBF97AEB04491E9ABF4467A7F66CD6250F4382CE5192D856114B83738D2",
         "source_denom": "uluna",
         "chain_id": "columbus-5",
         "bech32_prefix": "terra",
@@ -45,7 +45,7 @@
         "rpc": "https://rpc-columbus.keplr.app",
         "chain_name": "Terra",
         "channel_id": "channel-16",
-        "transfer_gas": 0
+        "transfer_gas": 500000
     },
     {
         "name": "UST",
