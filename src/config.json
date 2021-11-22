@@ -12,7 +12,8 @@
         "lcd": "https://bridge-api-manager.azure-api.net",
         "rpc": "",
         "chain_name": "Secret Network",
-        "channel_id": ""
+        "channel_id": "",
+        "transfer_gas": 0
     },
     {
         "name": "ATOM",
@@ -27,7 +28,8 @@
         "lcd": "https://lcd-cosmoshub.keplr.app",
         "rpc": "https://rpc-cosmoshub.keplr.app",
         "chain_name": "Cosmos Hub",
-        "channel_id": "channel-235"
+        "channel_id": "channel-235",
+        "transfer_gas": 100000
     },
     {
         "name": "Luna",
@@ -42,7 +44,8 @@
         "lcd": "https://lcd-columbus.keplr.app",
         "rpc": "https://rpc-columbus.keplr.app",
         "chain_name": "Terra",
-        "channel_id": "channel-16"
+        "channel_id": "channel-16",
+        "transfer_gas": 0
     },
     {
         "name": "UST",
@@ -57,7 +60,8 @@
         "lcd": "https://lcd-columbus.keplr.app",
         "rpc": "https://rpc-columbus.keplr.app",
         "chain_name": "Terra",
-        "channel_id": "channel-16"
+        "channel_id": "channel-16",
+        "transfer_gas": 0
     },
     {
         "name": "OSMO",
@@ -72,7 +76,8 @@
         "lcd": "https://lcd-osmosis.keplr.app",
         "rpc": "https://rpc-osmosis.keplr.app",
         "chain_name": "Osmosis",
-        "channel_id": "channel-88"
+        "channel_id": "channel-88",
+        "transfer_gas": 0
     },
     {
         "name": "DVPN",
@@ -87,6 +92,7 @@
         "lcd": "https://lcd-sentinel.keplr.app",
         "rpc": "https://rpc-sentinel.keplr.app",
         "chain_name": "Sentinel",
-        "channel_id": ""
+        "channel_id": "",
+        "transfer_gas": 0
     }
 ]

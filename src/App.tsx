@@ -84,53 +84,15 @@ ReactDOM.render(
   document.getElementById("root")
 );
 
-export const viewingKeyErroString = "🧐";
-export const sleep = (ms: number) =>
-  new Promise((resolve) => setTimeout(resolve, ms));
-
 export default function App() {
   const [secretjs, setSecretjs] = useState<SigningCosmWasmClient | null>(null);
   const [secretAddress, setSecretAddress] = useState<string>("");
   const [balances, setBalances] = useState<Map<string, string>>(new Map());
-  const [loadingBalances, setLoadingBalances] = useState<boolean>(false);
+  const [loadingCoinBalances, setLoadingCoinBalances] =
+    useState<boolean>(false);
 
-  const updateBalances = async () => {
-    if (!secretjs) {
-      return;
-    }
-
-    const balances = new Map<string, string>();
-
-    for (const { address, code_hash } of tokens) {
-      if (!address) {
-        continue;
-      }
-
-      const key = await getKeplrViewingKey(address);
-      if (!key) {
-        balances.set(address, viewingKeyErroString);
-        continue;
-      }
-
-      try {
-        const result = await secretjs.queryContractSmart(
-          address,
-          {
-            balance: { address: secretAddress, key },
-          },
-          undefined,
-          code_hash
-        );
-        if (result.viewing_key_error) {
-          balances.set(address, viewingKeyErroString);
-          continue;
-        }
-        balances.set(address, result.balance.amount);
-      } catch (e) {
-        balances.set(address, viewingKeyErroString);
-        continue;
-      }
-    }
+  const updateCoinBalances = async () => {
+    const newBalances = new Map<string, string>(balances);
 
     const url = `${
       tokens.find((t) => t.chain_name === "Secret Network")?.lcd
@@ -146,14 +108,13 @@ export default function App() {
         const balance =
           result.result.find((c) => c.denom === denom)?.amount || "0";
 
-        balances.set(denom, balance);
+        newBalances.set(denom, balance);
       }
     } catch (e) {
       console.error(`Error while trying to query ${url}:`, e);
-      // continue;
     }
-    // }
-    setBalances(balances);
+
+    setBalances(newBalances);
   };
 
   useEffect(() => {
@@ -161,12 +122,12 @@ export default function App() {
       return;
     }
 
-    const interval = setInterval(updateBalances, 10000);
+    const interval = setInterval(updateCoinBalances, 10000);
 
     (async () => {
-      setLoadingBalances(true);
-      await updateBalances();
-      setLoadingBalances(false);
+      setLoadingCoinBalances(true);
+      await updateCoinBalances();
+      setLoadingCoinBalances(false);
     })();
 
     return () => {
@@ -212,7 +173,7 @@ export default function App() {
           <ErrorBoundary key={t.denom}>
             <TokenRow
               token={t}
-              loadingBalances={loadingBalances}
+              loadingCoinBalances={loadingCoinBalances}
               secretAddress={secretAddress}
               secretjs={secretjs}
               balances={balances}
