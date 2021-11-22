@@ -7,9 +7,13 @@
         "decimals": 6,
         "denom": "uscrt",
         "source_denom": "uscrt",
-        "prefix": "secret",
         "chain_id": "secret-4",
-        "lcd": "https://bridge-api-manager.azure-api.net"
+        "bech32_prefix": "secret",
+        "lcd": "https://bridge-api-manager.azure-api.net",
+        "rpc": "",
+        "chain_name": "Secret Network",
+        "port_id": "",
+        "channel_id": ""
     },
     {
         "name": "ATOM",
@@ -17,11 +21,15 @@
         "code_hash": "",
         "image": "atom.jpg",
         "decimals": 6,
-        "denom": "",
+        "denom": "ibc/uatom",
         "source_denom": "uatom",
-        "prefix": "cosmos",
         "chain_id": "cosmoshub-4",
-        "lcd": "https://lcd-cosmoshub.keplr.app"
+        "bech32_prefix": "cosmos",
+        "lcd": "https://lcd-cosmoshub.keplr.app",
+        "rpc": "https://rpc-cosmoshub.keplr.app",
+        "chain_name": "Cosmos Hub",
+        "port_id": "",
+        "channel_id": ""
     },
     {
         "name": "Luna",
@@ -29,11 +37,15 @@
         "code_hash": "",
         "image": "luna.png",
         "decimals": 6,
-        "denom": "",
+        "denom": "ibc/uluna",
         "source_denom": "uluna",
-        "prefix": "terra",
         "chain_id": "columbus-5",
-        "lcd": "https://lcd-columbus.keplr.app"
+        "bech32_prefix": "terra",
+        "lcd": "https://lcd-columbus.keplr.app",
+        "rpc": "https://rpc-columbus.keplr.app",
+        "chain_name": "Terra",
+        "port_id": "",
+        "channel_id": ""
     },
     {
         "name": "UST",
@@ -41,11 +53,15 @@
         "code_hash": "",
         "image": "ust.png",
         "decimals": 6,
-        "denom": "",
+        "denom": "ibc/uusd",
         "source_denom": "uusd",
-        "prefix": "terra",
         "chain_id": "columbus-5",
-        "lcd": "https://lcd-columbus.keplr.app"
+        "bech32_prefix": "terra",
+        "lcd": "https://lcd-columbus.keplr.app",
+        "rpc": "https://rpc-columbus.keplr.app",
+        "chain_name": "Terra",
+        "port_id": "",
+        "channel_id": ""
     },
     {
         "name": "OSMO",
@@ -53,10 +69,30 @@
         "code_hash": "",
         "image": "osmo.jpeg",
         "decimals": 6,
-        "denom": "",
+        "denom": "ibc/uosmo",
         "source_denom": "uosmo",
-        "prefix": "osmo",
         "chain_id": "osmosis-1",
-        "lcd": "https://lcd-osmosis.keplr.app"
+        "bech32_prefix": "osmo",
+        "lcd": "https://lcd-osmosis.keplr.app",
+        "rpc": "https://rpc-osmosis.keplr.app",
+        "chain_name": "Osmosis",
+        "port_id": "",
+        "channel_id": ""
+    },
+    {
+        "name": "DVPN",
+        "address": "",
+        "code_hash": "",
+        "image": "dvpn.jpeg",
+        "decimals": 6,
+        "denom": "ibc/dvpn",
+        "source_denom": "udvpn",
+        "chain_id": "sentinelhub-2",
+        "bech32_prefix": "sent",
+        "lcd": "https://lcd-sentinel.keplr.app",
+        "rpc": "https://rpc-sentinel.keplr.app",
+        "chain_name": "Sentinel",
+        "port_id": "",
+        "channel_id": ""
     }
 ]
