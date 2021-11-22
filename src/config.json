@@ -49,11 +49,11 @@
     },
     {
         "name": "UST",
-        "address": "",
-        "code_hash": "",
+        "address": "secret129h4vu66y3gry6wzwa24rw0vtqjyn8tujuwtn9",
+        "code_hash": "ad91060456344fc8d8e93c0600a3957b8158605c044b3bef7048510b3157b807",
         "image": "ust.png",
         "decimals": 6,
-        "denom": "ibc/uusd",
+        "denom": "ibc/4294C3DB67564CF4A0B2BFACC8415A59B38243F6FF9E288FBA34F9B4823BA16E",
         "source_denom": "uusd",
         "chain_id": "columbus-5",
         "bech32_prefix": "terra",
@@ -77,7 +77,7 @@
         "rpc": "https://rpc-osmosis.keplr.app",
         "chain_name": "Osmosis",
         "channel_id": "channel-88",
-        "transfer_gas": 0
+        "transfer_gas": 15000000
     },
     {
         "name": "DVPN",
