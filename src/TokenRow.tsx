@@ -88,7 +88,6 @@ export default function TokenRow({
     const key = await getKeplrViewingKey(token.address);
     if (!key) {
       setTokenBalance(viewingKeyErroString);
-      console.log(3, token.name);
       return;
     }
 
@@ -101,12 +100,11 @@ export default function TokenRow({
         undefined,
         token.code_hash
       );
+
       if (result.viewing_key_error) {
         setTokenBalance(viewingKeyErroString);
-        console.log(4, token.name);
         return;
       }
-      console.log(5, token.name);
       setTokenBalance(result.balance.amount);
     } catch (e) {
       setTokenBalance(viewingKeyErroString);
@@ -160,7 +158,9 @@ export default function TokenRow({
   }
 
   if (token.address) {
-    if (loadingTokenBalance) {
+    if (!secretjs) {
+      balanceToken = <>connect wallet</>;
+    } else if (loadingTokenBalance) {
       balanceToken = (
         <span>
           Balance: <CircularProgress size="0.8em" />
@@ -193,8 +193,6 @@ export default function TokenRow({
             .toFormat()}
         </span>
       );
-    } else {
-      balanceToken = <>connect wallet</>;
     }
   } else {
     balanceToken = <>coming soon</>;
@@ -377,7 +375,6 @@ export default function TokenRow({
                   open={isDepositDialogOpen}
                   onClose={() => {
                     setIsDepositDialogOpen(false);
-                    console.log(1);
                     setSourceBalance("");
                   }}
                 >
