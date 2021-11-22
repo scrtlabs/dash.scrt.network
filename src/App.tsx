@@ -90,7 +90,7 @@ export const sleep = (ms: number) =>
 
 export default function App() {
   const [secretjs, setSecretjs] = useState<SigningCosmWasmClient | null>(null);
-  const [mySecretAddress, setMySecretAddress] = useState<string>("");
+  const [secretAddress, setSecretAddress] = useState<string>("");
   const [balances, setBalances] = useState<Map<string, string>>(new Map());
   const [loadingBalances, setLoadingBalances] = useState<boolean>(false);
 
@@ -116,7 +116,7 @@ export default function App() {
         const result = await secretjs.queryContractSmart(
           address,
           {
-            balance: { address: mySecretAddress, key },
+            balance: { address: secretAddress, key },
           },
           undefined,
           code_hash
@@ -134,7 +134,7 @@ export default function App() {
 
     const url = `${
       tokens.find((t) => t.chain_name === "Secret Network")?.lcd
-    }/bank/balances/${mySecretAddress}`;
+    }/bank/balances/${secretAddress}`;
     try {
       const response = await fetch(url);
       const result: {
@@ -157,7 +157,7 @@ export default function App() {
   };
 
   useEffect(() => {
-    if (!secretjs || !mySecretAddress) {
+    if (!secretjs || !secretAddress) {
       return;
     }
 
@@ -172,7 +172,7 @@ export default function App() {
     return () => {
       clearInterval(interval);
     };
-  }, [mySecretAddress, secretjs]);
+  }, [secretAddress, secretjs]);
 
   return (
     <div style={{ padding: "0.5rem" }}>
@@ -187,8 +187,8 @@ export default function App() {
         <KeplrPanel
           secretjs={secretjs}
           setSecretjs={setSecretjs}
-          mySecretAddress={mySecretAddress}
-          setMySecretAddress={setMySecretAddress}
+          secretAddress={secretAddress}
+          setSecretAddress={setSecretAddress}
         />
       </div>
 
@@ -213,7 +213,7 @@ export default function App() {
             <TokenRow
               token={t}
               loadingBalances={loadingBalances}
-              mySecretAddress={mySecretAddress}
+              secretAddress={secretAddress}
               secretjs={secretjs}
               balances={balances}
             />

@@ -9,27 +9,27 @@ import { BroadcastMode, SigningCosmWasmClient } from "secretjs";
 export function KeplrPanel({
   secretjs,
   setSecretjs,
-  mySecretAddress,
-  setMySecretAddress,
+  secretAddress,
+  setSecretAddress,
 }: {
   secretjs: SigningCosmWasmClient | null;
   setSecretjs: React.Dispatch<
     React.SetStateAction<SigningCosmWasmClient | null>
   >;
-  mySecretAddress: string;
-  setMySecretAddress: React.Dispatch<React.SetStateAction<string>>;
+  secretAddress: string;
+  setSecretAddress: React.Dispatch<React.SetStateAction<string>>;
 }) {
   const [isCopied, setIsCopied] = useState<boolean>(false);
 
   useEffect(() => {
-    setupKeplr(setSecretjs, setMySecretAddress);
+    setupKeplr(setSecretjs, setSecretAddress);
   }, []);
 
   const content = (
     <div style={{ display: "flex", alignItems: "center", borderRadius: 10 }}>
       <img src="/keplr.svg" style={{ width: "1.8rem", borderRadius: 10 }} />
       <span style={{ margin: "0 0.3rem" }}>
-        {secretjs ? mySecretAddress : "Connect wallet"}
+        {secretjs ? secretAddress : "Connect wallet"}
       </span>
     </div>
   );
@@ -37,7 +37,7 @@ export function KeplrPanel({
   if (secretjs) {
     return (
       <CopyToClipboard
-        text={mySecretAddress}
+        text={secretAddress}
         onCopy={() => {
           setIsCopied(true);
           setTimeout(() => setIsCopied(false), 3000);
@@ -64,7 +64,7 @@ export function KeplrPanel({
       <Button
         variant="contained"
         style={{ background: "white", color: "black" }}
-        onClick={() => setupKeplr(setSecretjs, setMySecretAddress)}
+        onClick={() => setupKeplr(setSecretjs, setSecretAddress)}
       >
         {content}
       </Button>
@@ -76,7 +76,7 @@ async function setupKeplr(
   setSecretjs: React.Dispatch<
     React.SetStateAction<SigningCosmWasmClient | null>
   >,
-  setMySecretAddress: React.Dispatch<React.SetStateAction<string>>
+  setSecretAddress: React.Dispatch<React.SetStateAction<string>>
 ) {
   const sleep = (ms: number) =>
     new Promise((resolve) => setTimeout(resolve, ms));
@@ -104,7 +104,7 @@ async function setupKeplr(
     BroadcastMode.Sync
   );
 
-  setMySecretAddress(secretAddress);
+  setSecretAddress(secretAddress);
   setSecretjs(secretjs);
 }
 
