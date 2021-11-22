@@ -269,9 +269,9 @@ export default function TokenRow({
                             coinMinimalDenom: "uluna",
                             coinDecimals: 6,
                             coinGeckoId: "terra-luna",
-                            coinImageUrl:
-                              window.location.origin +
-                              "/public/assets/tokens/luna.png",
+                            // coinImageUrl:
+                            //   window.location.origin +
+                            //   "/public/assets/tokens/luna.png",
                           },
                           bip44: {
                             coinType: 330,
@@ -284,18 +284,18 @@ export default function TokenRow({
                               coinMinimalDenom: "uluna",
                               coinDecimals: 6,
                               coinGeckoId: "terra-luna",
-                              coinImageUrl:
-                                window.location.origin +
-                                "/public/assets/tokens/luna.png",
+                              // coinImageUrl:
+                              //   window.location.origin +
+                              //   "/public/assets/tokens/luna.png",
                             },
                             {
                               coinDenom: "UST",
                               coinMinimalDenom: "uusd",
                               coinDecimals: 6,
                               coinGeckoId: "terrausd",
-                              coinImageUrl:
-                                window.location.origin +
-                                "/public/assets/tokens/ust.png",
+                              // coinImageUrl:
+                              //   window.location.origin +
+                              //   "/public/assets/tokens/ust.png",
                             },
                           ],
                           feeCurrencies: [
@@ -304,18 +304,18 @@ export default function TokenRow({
                               coinMinimalDenom: "uluna",
                               coinDecimals: 6,
                               coinGeckoId: "terra-luna",
-                              coinImageUrl:
-                                window.location.origin +
-                                "/public/assets/tokens/luna.png",
+                              // coinImageUrl:
+                              //   window.location.origin +
+                              //   "/public/assets/tokens/luna.png",
                             },
                             {
                               coinDenom: "UST",
                               coinMinimalDenom: "uusd",
                               coinDecimals: 6,
                               coinGeckoId: "terrausd",
-                              coinImageUrl:
-                                window.location.origin +
-                                "/public/assets/tokens/ust.png",
+                              // coinImageUrl:
+                              //   window.location.origin +
+                              //   "/public/assets/tokens/ust.png",
                             },
                           ],
                           gasPriceStep: {
