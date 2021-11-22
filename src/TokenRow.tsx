@@ -1,31 +1,31 @@
-import CircularProgress from "@mui/material/CircularProgress";
+import {
+  CircularProgress,
+  Avatar,
+  Button,
+  Typography,
+  Tooltip,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  IconButton,
+  InputAdornment,
+  Input,
+  FormControl,
+  InputLabel,
+} from "@mui/material";
 import BigNumber from "bignumber.js";
 import React, { useRef, useState } from "react";
 import { isMobile } from "react-device-detect";
-import Avatar from "@mui/material/Avatar";
-import Button from "@mui/material/Button";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
-import TextField from "@mui/material/TextField";
-import Typography from "@mui/material/Typography";
-import Tooltip from "@mui/material/Tooltip";
+import CloseIcon from "@mui/icons-material/Close";
+import CopyToClipboard from "react-copy-to-clipboard";
 import { getFeeForExecute, sleep, viewingKeyErroString } from "./App";
 import { SigningCosmWasmClient } from "secretjs";
 import { setKeplrViewingKey } from "./KeplrStuff";
-import Dialog from "@mui/material/Dialog";
-import DialogTitle from "@mui/material/DialogTitle";
-import DialogContent from "@mui/material/DialogContent";
-import IconButton from "@mui/material/IconButton";
-import CloseIcon from "@mui/icons-material/Close";
 import { Bech32Address } from "@keplr-wallet/cosmos";
 import { FileCopyOutlined } from "@mui/icons-material";
-import CopyToClipboard from "react-copy-to-clipboard";
-import InputAdornment from "@mui/material/InputAdornment";
-import Input from "@mui/material/Input";
-import FormControl from "@mui/material/FormControl";
-import InputLabel from "@mui/material/InputLabel";
 import { SigningStargateClient } from "@cosmjs/stargate";
-import { Tendermint34Client } from "@cosmjs/tendermint-rpc";
 
 export default function TokenRow({
   secretjs,
@@ -61,6 +61,8 @@ export default function TokenRow({
   const [mySourceBalance, setMySourceBalance] = useState<string>("");
   const [mySourceCosmJs, setMySourceCosmJs] =
     useState<SigningStargateClient | null>(null);
+  const [isWrapLoading, setIsWrapLoading] = useState<boolean>(false);
+  const [isUnwrapLoading, setIsUnwrapLoading] = useState<boolean>(false);
 
   let balanceIbcCoin;
   let balanceToken;
@@ -479,11 +481,18 @@ export default function TokenRow({
         }}
       >
         <Button
+          disabled={token.address === ""}
           size="small"
           variant="text"
-          startIcon={<KeyboardArrowLeftIcon />}
+          startIcon={
+            isUnwrapLoading ? (
+              <CircularProgress size="0.8em" />
+            ) : (
+              <KeyboardArrowLeftIcon />
+            )
+          }
           style={{ minWidth: 0 }}
-          onClick={() => {
+          onClick={async () => {
             if (!secretjs || !mySecretAddress) {
               return;
             }
@@ -497,19 +506,47 @@ export default function TokenRow({
               return;
             }
 
-            secretjs.execute(
-              token.address,
-              { redeem: { amount } },
-              "",
-              [],
-              getFeeForExecute(250_000),
-              token.code_hash
-            );
+            setIsUnwrapLoading(true);
+
+            try {
+              const { transactionHash } = await secretjs.execute(
+                token.address,
+                { redeem: { amount } },
+                "",
+                [],
+                getFeeForExecute(30_000),
+                token.code_hash
+              );
+
+              while (true) {
+                try {
+                  const tx = await secretjs.restClient.txById(
+                    transactionHash,
+                    true
+                  );
+
+                  if (!tx.raw_log.startsWith("[")) {
+                    console.error(`Tx failed: ${tx.raw_log}`);
+                  } else {
+                    console.log(`Unwrapped successfully`);
+                  }
+
+                  break;
+                } catch (error) {
+                  console.log("Still waiting for tx to commit on-chain...");
+                }
+
+                await sleep(5000);
+              }
+            } finally {
+              setIsUnwrapLoading(false);
+            }
           }}
         >
           {isMobile ? "" : "Unwrap"}
         </Button>
         <Input
+          disabled={token.address === ""}
           // TODO add input validation
           placeholder="Amount"
           inputProps={{
@@ -521,11 +558,18 @@ export default function TokenRow({
           inputRef={wrapInputRef}
         />
         <Button
+          disabled={token.address === ""}
           size="small"
           variant="text"
-          endIcon={<KeyboardArrowRightIcon />}
+          endIcon={
+            isWrapLoading ? (
+              <CircularProgress size="0.8em" />
+            ) : (
+              <KeyboardArrowRightIcon />
+            )
+          }
           style={{ minWidth: 0 }}
-          onClick={() => {
+          onClick={async () => {
             if (!secretjs || !mySecretAddress) {
               return;
             }
@@ -539,14 +583,40 @@ export default function TokenRow({
               return;
             }
 
-            secretjs.execute(
-              token.address,
-              { deposit: {} },
-              "",
-              [{ denom: token.denom, amount }],
-              getFeeForExecute(250_000),
-              token.code_hash
-            );
+            setIsWrapLoading(true);
+            try {
+              const { transactionHash } = await secretjs.execute(
+                token.address,
+                { deposit: {} },
+                "",
+                [{ denom: token.denom, amount }],
+                getFeeForExecute(30_000),
+                token.code_hash
+              );
+
+              while (true) {
+                try {
+                  const tx = await secretjs.restClient.txById(
+                    transactionHash,
+                    true
+                  );
+
+                  if (!tx.raw_log.startsWith("[")) {
+                    console.error(`Tx failed: ${tx.raw_log}`);
+                  } else {
+                    console.log(`Wrapped successfully`);
+                  }
+
+                  break;
+                } catch (error) {
+                  console.log("Still waiting for tx to commit on-chain...");
+                }
+
+                await sleep(5000);
+              }
+            } finally {
+              setIsWrapLoading(false);
+            }
           }}
         >
           {isMobile ? "" : "Wrap"}
