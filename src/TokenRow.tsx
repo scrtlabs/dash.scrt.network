@@ -586,7 +586,7 @@ export default function TokenRow({
           }
           style={{ minWidth: 0 }}
           onClick={async () => {
-            if (!secretjs || !secretAddress) {
+            if (!secretjs || !secretAddress || loadingWrap || loadingUnwrap) {
               return;
             }
 
@@ -604,7 +604,15 @@ export default function TokenRow({
             try {
               const { transactionHash } = await secretjs.execute(
                 token.address,
-                { redeem: { amount } },
+                {
+                  redeem: {
+                    amount,
+                    denom:
+                      token.chain_name === "Secret Network"
+                        ? undefined
+                        : token.denom,
+                  },
+                },
                 "",
                 [],
                 getFeeForExecute(30_000),
@@ -634,6 +642,12 @@ export default function TokenRow({
               }
             } finally {
               setLoadingUnwrap(false);
+              try {
+                setLoadingTokenBalance(true);
+                await updateTokenBalance();
+              } finally {
+                setLoadingTokenBalance(false);
+              }
             }
           }}
         >
@@ -664,7 +678,7 @@ export default function TokenRow({
           }
           style={{ minWidth: 0 }}
           onClick={async () => {
-            if (!secretjs || !secretAddress) {
+            if (!secretjs || !secretAddress || loadingWrap || loadingUnwrap) {
               return;
             }
 
