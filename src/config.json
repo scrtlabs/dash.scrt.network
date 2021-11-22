@@ -45,7 +45,7 @@
         "rpc": "https://rpc-columbus.keplr.app",
         "chain_name": "Terra",
         "channel_id": "channel-16",
-        "transfer_gas": 500000
+        "transfer_gas": 100000
     },
     {
         "name": "UST",
@@ -61,7 +61,7 @@
         "rpc": "https://rpc-columbus.keplr.app",
         "chain_name": "Terra",
         "channel_id": "channel-16",
-        "transfer_gas": 0
+        "transfer_gas": 100000
     },
     {
         "name": "OSMO",
