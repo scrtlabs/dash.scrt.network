@@ -12,7 +12,6 @@
         "lcd": "https://bridge-api-manager.azure-api.net",
         "rpc": "",
         "chain_name": "Secret Network",
-        "port_id": "",
         "channel_id": ""
     },
     {
@@ -28,7 +27,6 @@
         "lcd": "https://lcd-cosmoshub.keplr.app",
         "rpc": "https://rpc-cosmoshub.keplr.app",
         "chain_name": "Cosmos Hub",
-        "port_id": "",
         "channel_id": ""
     },
     {
@@ -44,7 +42,6 @@
         "lcd": "https://lcd-columbus.keplr.app",
         "rpc": "https://rpc-columbus.keplr.app",
         "chain_name": "Terra",
-        "port_id": "",
         "channel_id": ""
     },
     {
@@ -60,7 +57,6 @@
         "lcd": "https://lcd-columbus.keplr.app",
         "rpc": "https://rpc-columbus.keplr.app",
         "chain_name": "Terra",
-        "port_id": "",
         "channel_id": ""
     },
     {
@@ -76,7 +72,6 @@
         "lcd": "https://lcd-osmosis.keplr.app",
         "rpc": "https://rpc-osmosis.keplr.app",
         "chain_name": "Osmosis",
-        "port_id": "",
         "channel_id": ""
     },
     {
@@ -92,7 +87,6 @@
         "lcd": "https://lcd-sentinel.keplr.app",
         "rpc": "https://rpc-sentinel.keplr.app",
         "chain_name": "Sentinel",
-        "port_id": "",
         "channel_id": ""
     }
 ]

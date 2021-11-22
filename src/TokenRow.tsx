@@ -29,13 +29,13 @@ import { SigningStargateClient } from "@cosmjs/stargate";
 
 export default function TokenRow({
   secretjs,
-  mySecretAddress,
+  secretAddress,
   token,
   balances,
   loadingBalances,
 }: {
   secretjs: SigningCosmWasmClient | null;
-  mySecretAddress: string;
+  secretAddress: string;
   loadingBalances: boolean;
   token: {
     name: string;
@@ -57,9 +57,9 @@ export default function TokenRow({
   const depositInputRef = useRef<any>();
   const [isDepositDialogOpen, setIsDepositDialogOpen] =
     useState<boolean>(false);
-  const [mySourceAddress, setMySourceAddress] = useState<string>("");
-  const [mySourceBalance, setMySourceBalance] = useState<string>("");
-  const [mySourceCosmJs, setMySourceCosmJs] =
+  const [sourceAddress, setSourceAddress] = useState<string>("");
+  const [sourceBalance, setSourceBalance] = useState<string>("");
+  const [sourceCosmJs, setSourceCosmJs] =
     useState<SigningStargateClient | null>(null);
   const [isWrapLoading, setIsWrapLoading] = useState<boolean>(false);
   const [isUnwrapLoading, setIsUnwrapLoading] = useState<boolean>(false);
@@ -277,15 +277,15 @@ export default function TokenRow({
 
                       const accounts = await offlineSigner.getAccounts();
                       const { address } = accounts[0];
+                      setSourceAddress(address);
 
-                      const cosmJS =
+                      const cosmJs =
                         await SigningStargateClient.connectWithSigner(
                           token.rpc,
                           offlineSigner,
                           { prefix: token.bech32_prefix }
                         );
-
-                      setMySourceAddress(address);
+                      setSourceCosmJs(cosmJs);
 
                       const url = `${token.lcd}/bank/balances/${address}`;
                       try {
@@ -300,10 +300,10 @@ export default function TokenRow({
                             (c) => c.denom === token.source_denom
                           )?.amount || "0";
 
-                        setMySourceBalance(balance);
+                        setSourceBalance(balance);
                       } catch (e) {
                         console.error(`Error while trying to query ${url}:`, e);
-                        setMySourceBalance("Error");
+                        setSourceBalance("Error");
                       }
                     }}
                   >
@@ -339,8 +339,8 @@ export default function TokenRow({
                       }}
                     >
                       <Typography sx={{ fontWeight: "bold" }}>From:</Typography>
-                      {mySourceAddress !== "" ? (
-                        <CopiableAddress address={mySourceAddress} />
+                      {sourceAddress !== "" ? (
+                        <CopiableAddress address={sourceAddress} />
                       ) : (
                         <CircularProgress size="1em" />
                       )}
@@ -354,8 +354,8 @@ export default function TokenRow({
                       }}
                     >
                       <Typography sx={{ fontWeight: "bold" }}>To:</Typography>
-                      {mySecretAddress !== "" ? (
-                        <CopiableAddress address={mySecretAddress} />
+                      {secretAddress !== "" ? (
+                        <CopiableAddress address={secretAddress} />
                       ) : (
                         <CircularProgress size="1em" />
                       )}
@@ -376,11 +376,11 @@ export default function TokenRow({
                       </Typography>
                       <Typography sx={{ fontSize: "0.8em", opacity: 0.8 }}>
                         {(() => {
-                          if (mySourceBalance === "") {
+                          if (sourceBalance === "") {
                             return <CircularProgress size="0.6em" />;
                           }
 
-                          const prettyBalance = new BigNumber(mySourceBalance)
+                          const prettyBalance = new BigNumber(sourceBalance)
                             .dividedBy(`1e${token.decimals}`)
                             .toFormat();
 
@@ -396,7 +396,6 @@ export default function TokenRow({
                       <InputLabel htmlFor="Amount to Deposit">
                         Amount to Deposit
                       </InputLabel>
-
                       <Input
                         autoFocus
                         id="Amount to Deposit"
@@ -420,12 +419,12 @@ export default function TokenRow({
                             <Button
                               style={{ padding: "0.1em 0.5em", minWidth: 0 }}
                               onClick={() => {
-                                if (mySourceBalance === "") {
+                                if (sourceBalance === "") {
                                   return;
                                 }
 
                                 const prettyBalance = new BigNumber(
-                                  mySourceBalance
+                                  sourceBalance
                                 )
                                   .dividedBy(`1e${token.decimals}`)
                                   .toFormat();
@@ -444,7 +443,6 @@ export default function TokenRow({
                       />
                     </FormControl>
                   </DialogContent>
-                  {/* <DialogActions> */}
                   <div
                     style={{
                       display: "flex",
@@ -455,17 +453,37 @@ export default function TokenRow({
                     <Button
                       variant="contained"
                       sx={{
-                        padding: "0.8em 5em",
-                        borderRadius: "20px",
+                        padding: "0.5em 5em",
                         fontWeight: "bold",
+                        fontSize: "1.2em",
                       }}
-                      disabled={Number(depositInputRef?.current?.value) <= 0}
-                      /* onClick={TODO} */
+                      onClick={async () => {
+                        if (!sourceCosmJs) {
+                          console.error("No cosmjs");
+                          return;
+                        }
+
+                        if (!(Number(depositInputRef?.current?.value) > 0)) {
+                          console.error(
+                            `${depositInputRef?.current?.value} not bigger than 0`
+                          );
+                        }
+
+                        await sourceCosmJs.sendIbcTokens(
+                          "terra1phtgeq59knnm98py345k8qu8kvmsvqta4yu652",
+                          "osmo1e6mqxtwgaps7vz3qfa3fcekhh7a02hvfcjve29",
+                          { amount: "1", denom: "uluna" },
+                          "transfer",
+                          "channel-1",
+                          undefined,
+                          30,
+                          getFeeForExecute(500_000)
+                        );
+                      }}
                     >
                       Deposit
                     </Button>
                   </div>
-                  {/* </DialogActions> */}
                 </Dialog>
               </>
             ) : null}
@@ -493,7 +511,7 @@ export default function TokenRow({
           }
           style={{ minWidth: 0 }}
           onClick={async () => {
-            if (!secretjs || !mySecretAddress) {
+            if (!secretjs || !secretAddress) {
               return;
             }
 
@@ -570,7 +588,7 @@ export default function TokenRow({
           }
           style={{ minWidth: 0 }}
           onClick={async () => {
-            if (!secretjs || !mySecretAddress) {
+            if (!secretjs || !secretAddress) {
               return;
             }
 
