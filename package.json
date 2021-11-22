@@ -18,7 +18,7 @@
     "react-copy-to-clipboard": "5.0.4",
     "react-device-detect": "2.1.2",
     "react-dom": "17.0.2",
-    "secretjs": "0.17.4-beta.1"
+    "secretjs": "0.17.3"
   },
   "devDependencies": {
     "@keplr-wallet/types": "0.9.6",
