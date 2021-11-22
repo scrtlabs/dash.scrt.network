@@ -1,32 +1,18 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import ReactDOM from "react-dom";
 import "./index.css";
-import { BigNumber } from "bignumber.js";
-import { isMobile } from "react-device-detect";
 
 import { SigningCosmWasmClient } from "secretjs";
 import { StdFee } from "secretjs/types/types";
 import { Window as KeplrWindow } from "@keplr-wallet/types";
-import {
-  getKeplrViewingKey,
-  KeplrPanel,
-  setKeplrViewingKey,
-} from "./KeplrStuff";
+import { getKeplrViewingKey, KeplrPanel } from "./KeplrStuff";
 declare global {
   interface Window extends KeplrWindow {}
 }
 
 import tokens from "./config.json";
-
-import CircularProgress from "@mui/material/CircularProgress";
-import Avatar from "@mui/material/Avatar";
-import Button from "@mui/material/Button";
-import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
-import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
-import TextField from "@mui/material/TextField";
-import Typography from "@mui/material/Typography";
-import Tooltip from "@mui/material/Tooltip";
 import TokenRow from "./TokenRow";
+import { Typography, Avatar } from "@mui/material";
 
 class ErrorBoundary extends React.Component<{}, { hasError: boolean }> {
   constructor(props: any) {
