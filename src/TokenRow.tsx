@@ -14,29 +14,34 @@ import {
   InputLabel,
 } from "@mui/material";
 import BigNumber from "bignumber.js";
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { isMobile } from "react-device-detect";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
+import RefreshIcon from "@mui/icons-material/Refresh";
 import CloseIcon from "@mui/icons-material/Close";
 import CopyToClipboard from "react-copy-to-clipboard";
-import { getFeeForExecute, sleep, viewingKeyErroString } from "./App";
+import { getFeeForExecute } from "./App";
 import { SigningCosmWasmClient } from "secretjs";
-import { setKeplrViewingKey } from "./KeplrStuff";
+import { getKeplrViewingKey, setKeplrViewingKey } from "./KeplrStuff";
 import { Bech32Address } from "@keplr-wallet/cosmos";
 import { FileCopyOutlined } from "@mui/icons-material";
 import { SigningStargateClient } from "@cosmjs/stargate";
+
+const viewingKeyErroString = "🧐";
+
+const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 export default function TokenRow({
   secretjs,
   secretAddress,
   token,
   balances,
-  loadingBalances,
+  loadingCoinBalances,
 }: {
   secretjs: SigningCosmWasmClient | null;
   secretAddress: string;
-  loadingBalances: boolean;
+  loadingCoinBalances: boolean;
   token: {
     name: string;
     address: string;
@@ -51,6 +56,7 @@ export default function TokenRow({
     rpc: string;
     chain_name: string;
     channel_id: string;
+    transfer_gas: number;
   };
   balances: Map<string, string>;
 }) {
@@ -62,20 +68,66 @@ export default function TokenRow({
   const [sourceBalance, setSourceBalance] = useState<string>("");
   const [sourceCosmJs, setSourceCosmJs] =
     useState<SigningStargateClient | null>(null);
-  const [isWrapLoading, setIsWrapLoading] = useState<boolean>(false);
-  const [isUnwrapLoading, setIsUnwrapLoading] = useState<boolean>(false);
-  const [isDepositLoading, setIsDepositLoading] = useState<boolean>(false);
+  const [loadingWrap, setLoadingWrap] = useState<boolean>(false);
+  const [loadingUnwrap, setLoadingUnwrap] = useState<boolean>(false);
+  const [loadingDeposit, setLoadingDeposit] = useState<boolean>(false);
+  const [tokenBalance, setTokenBalance] = useState<string>("");
+  const [loadingTokenBalance, setLoadingTokenBalance] =
+    useState<boolean>(false);
+
+  const updateTokenBalance = async () => {
+    if (!token.address) {
+      return;
+    }
+
+    while (!secretjs) {
+      await sleep(50);
+    }
+
+    const key = await getKeplrViewingKey(token.address);
+    if (!key) {
+      setTokenBalance(viewingKeyErroString);
+      console.log(3, token.name);
+      return;
+    }
+
+    try {
+      const result = await secretjs.queryContractSmart(
+        token.address,
+        {
+          balance: { address: secretAddress, key },
+        },
+        undefined,
+        token.code_hash
+      );
+      if (result.viewing_key_error) {
+        setTokenBalance(viewingKeyErroString);
+        console.log(4, token.name);
+        return;
+      }
+      console.log(5, token.name);
+      setTokenBalance(result.balance.amount);
+    } catch (e) {
+      setTokenBalance(viewingKeyErroString);
+    }
+  };
+
+  useEffect(() => {
+    (async () => {
+      try {
+        setLoadingTokenBalance(true);
+        await updateTokenBalance();
+      } finally {
+        setLoadingTokenBalance(false);
+      }
+    })();
+  }, []);
 
   let balanceIbcCoin;
   let balanceToken;
 
-  if (loadingBalances) {
+  if (loadingCoinBalances) {
     balanceIbcCoin = (
-      <span>
-        Balance: <CircularProgress size="0.8em" />
-      </span>
-    );
-    balanceToken = (
       <span>
         Balance: <CircularProgress size="0.8em" />
       </span>
@@ -98,44 +150,49 @@ export default function TokenRow({
           .toFormat()}
       </span>
     );
-
-    if (token.address) {
-      if (balances.get(token.address) == viewingKeyErroString) {
-        balanceToken = (
-          <span
-            style={{ cursor: "pointer" }}
-            onClick={() => {
-              setKeplrViewingKey(token.address);
-            }}
-          >
-            Balance:{` ${viewingKeyErroString}`}
-          </span>
-        );
-      } else {
-        balanceToken = (
-          <span
-            style={{ cursor: "pointer" }}
-            onClick={() => {
-              wrapInputRef.current.value = new BigNumber(
-                balances.get(token.address) as string
-              )
-                .dividedBy(`1e${token.decimals}`)
-                .toFixed();
-            }}
-          >
-            Balance:{" "}
-            {new BigNumber(balances.get(token.address) as string)
-              .dividedBy(`1e${token.decimals}`)
-              .toFormat()}
-          </span>
-        );
-      }
-    } else {
-      balanceToken = <>coming soon</>;
-    }
   } else {
     balanceIbcCoin = <>connect wallet</>;
-    balanceToken = <>connect wallet</>;
+  }
+
+  if (token.address) {
+    if (loadingTokenBalance) {
+      balanceToken = (
+        <span>
+          Balance: <CircularProgress size="0.8em" />
+        </span>
+      );
+    } else if (tokenBalance == viewingKeyErroString) {
+      balanceToken = (
+        <span
+          style={{ cursor: "pointer" }}
+          onClick={() => {
+            setKeplrViewingKey(token.address);
+          }}
+        >
+          Balance:{` ${viewingKeyErroString}`}
+        </span>
+      );
+    } else if (Number(tokenBalance) > -1) {
+      balanceToken = (
+        <span
+          style={{ cursor: "pointer" }}
+          onClick={() => {
+            wrapInputRef.current.value = new BigNumber(tokenBalance)
+              .dividedBy(`1e${token.decimals}`)
+              .toFixed();
+          }}
+        >
+          Balance:{" "}
+          {new BigNumber(tokenBalance)
+            .dividedBy(`1e${token.decimals}`)
+            .toFormat()}
+        </span>
+      );
+    } else {
+      balanceToken = <>connect wallet</>;
+    }
+  } else {
+    balanceToken = <>coming soon</>;
   }
 
   return (
@@ -314,7 +371,11 @@ export default function TokenRow({
                 </Tooltip>
                 <Dialog
                   open={isDepositDialogOpen}
-                  onClose={() => setIsDepositDialogOpen(false)}
+                  onClose={() => {
+                    setIsDepositDialogOpen(false);
+                    console.log(1);
+                    setSourceBalance("");
+                  }}
                 >
                   <DialogTitle>
                     <div
@@ -472,7 +533,7 @@ export default function TokenRow({
                           return;
                         }
 
-                        setIsDepositLoading(true);
+                        setLoadingDeposit(true);
 
                         const amount = new BigNumber(
                           depositInputRef?.current?.value
@@ -488,14 +549,14 @@ export default function TokenRow({
                             "transfer",
                             token.channel_id,
                             undefined,
-                            Math.floor(Date.now() / 1000) + 30, // 30 sec timeout
-                            getFeeForExecute(500_000)
+                            Math.floor(Date.now() / 1000) + 30, // 30 seconds timeout
+                            getFeeForExecute(token.transfer_gas)
                           );
                         depositInputRef.current.value = "";
-                        setIsDepositLoading(false);
+                        setLoadingDeposit(false);
                       }}
                     >
-                      {isDepositLoading ? <CircularProgress /> : "Deposit"}
+                      {loadingDeposit ? <CircularProgress /> : "Deposit"}
                     </Button>
                   </div>
                 </Dialog>
@@ -517,7 +578,7 @@ export default function TokenRow({
           size="small"
           variant="text"
           startIcon={
-            isUnwrapLoading ? (
+            loadingUnwrap ? (
               <CircularProgress size="0.8em" />
             ) : (
               <KeyboardArrowLeftIcon />
@@ -538,7 +599,7 @@ export default function TokenRow({
               return;
             }
 
-            setIsUnwrapLoading(true);
+            setLoadingUnwrap(true);
 
             try {
               const { transactionHash } = await secretjs.execute(
@@ -572,7 +633,7 @@ export default function TokenRow({
                 await sleep(5000);
               }
             } finally {
-              setIsUnwrapLoading(false);
+              setLoadingUnwrap(false);
             }
           }}
         >
@@ -595,7 +656,7 @@ export default function TokenRow({
           size="small"
           variant="text"
           endIcon={
-            isWrapLoading ? (
+            loadingWrap ? (
               <CircularProgress size="0.8em" />
             ) : (
               <KeyboardArrowRightIcon />
@@ -616,7 +677,7 @@ export default function TokenRow({
               return;
             }
 
-            setIsWrapLoading(true);
+            setLoadingWrap(true);
             try {
               const { transactionHash } = await secretjs.execute(
                 token.address,
@@ -650,7 +711,13 @@ export default function TokenRow({
                 await sleep(5000);
               }
             } finally {
-              setIsWrapLoading(false);
+              setLoadingWrap(false);
+              try {
+                setLoadingTokenBalance(true);
+                await updateTokenBalance();
+              } finally {
+                setLoadingTokenBalance(false);
+              }
             }
           }}
         >
@@ -672,7 +739,31 @@ export default function TokenRow({
           }}
         >
           <span>s{token.name}</span>
-          <span style={{ fontSize: "0.75rem" }}>{balanceToken}</span>
+          <div
+            style={{
+              fontSize: "0.75rem",
+              display: "flex",
+              alignItems: "flex-start",
+              gap: "0.2em",
+            }}
+          >
+            <span>{balanceToken}</span>
+            {token.address ? (
+              <Button
+                style={{ color: "black", minWidth: 0, padding: 0 }}
+                onClick={async () => {
+                  try {
+                    setLoadingTokenBalance(true);
+                    await updateTokenBalance();
+                  } finally {
+                    setLoadingTokenBalance(false);
+                  }
+                }}
+              >
+                <RefreshIcon sx={{ height: "0.7em" }} />
+              </Button>
+            ) : null}
+          </div>
         </div>
       </div>
       <Avatar
