@@ -8,12 +8,12 @@
     "preview": "yarn build && vite preview"
   },
   "dependencies": {
+    "@cosmjs/stargate": "0.26.5",
     "@emotion/react": "11.6.0",
     "@emotion/styled": "11.6.0",
     "@keplr-wallet/cosmos": "0.9.6",
     "@mui/icons-material": "5.1.1",
     "@mui/material": "5.1.1",
-    "bech32": "2.0.0",
     "bignumber.js": "9.0.1",
     "react": "17.0.2",
     "react-copy-to-clipboard": "5.0.4",

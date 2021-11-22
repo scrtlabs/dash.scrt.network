@@ -10,7 +10,7 @@ import { Window as KeplrWindow } from "@keplr-wallet/types";
 import {
   getKeplrViewingKey,
   KeplrPanel,
-  setKeplrViewingKeys as setKeplrViewingKey,
+  setKeplrViewingKey,
 } from "./KeplrStuff";
 declare global {
   interface Window extends KeplrWindow {}
@@ -26,6 +26,34 @@ import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import Tooltip from "@mui/material/Tooltip";
+import TokenRow from "./TokenRow";
+
+class ErrorBoundary extends React.Component<{}, { hasError: boolean }> {
+  constructor(props: any) {
+    super(props);
+    this.state = { hasError: false };
+  }
+
+  static getDerivedStateFromError(error: any) {
+    console.error(error);
+    // Update state so the next render will show the fallback UI.
+    return { hasError: true };
+  }
+
+  componentDidCatch(error: any, errorInfo: any) {
+    // You can also log the error to an error reporting service
+    console.error(error, errorInfo);
+  }
+
+  render() {
+    if (this.state.hasError) {
+      // You can render any custom fallback UI
+      return <h1>Something went wrong.</h1>;
+    }
+
+    return this.props.children;
+  }
+}
 
 const footerHeight = "1.8rem";
 
@@ -70,19 +98,15 @@ ReactDOM.render(
   document.getElementById("root")
 );
 
-const viewingKeyErroString = "🧐";
-const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+export const viewingKeyErroString = "🧐";
+export const sleep = (ms: number) =>
+  new Promise((resolve) => setTimeout(resolve, ms));
 
 export default function App() {
   const [secretjs, setSecretjs] = useState<SigningCosmWasmClient | null>(null);
-  const [myAddress, setMyAddress] = useState<Map<string, string>>(new Map());
+  const [mySecretAddress, setMySecretAddress] = useState<string>("");
   const [balances, setBalances] = useState<Map<string, string>>(new Map());
   const [loadingBalances, setLoadingBalances] = useState<boolean>(false);
-  const inputRefs = new Map<string, any>();
-
-  for (const { name } of tokens) {
-    inputRefs.set(name, useRef());
-  }
 
   const updateBalances = async () => {
     if (!secretjs) {
@@ -106,7 +130,7 @@ export default function App() {
         const result = await secretjs.queryContractSmart(
           address,
           {
-            balance: { address: myAddress.get("secret"), key },
+            balance: { address: mySecretAddress, key },
           },
           undefined,
           code_hash
@@ -122,36 +146,32 @@ export default function App() {
       }
     }
 
-    for (const { source_denom, prefix, lcd } of tokens) {
-      if (!myAddress.has(prefix)) {
-        continue;
-      }
+    const url = `${
+      tokens.find((t) => t.chain_name === "Secret Network")?.lcd
+    }/bank/balances/${mySecretAddress}`;
+    try {
+      const response = await fetch(url);
+      const result: {
+        height: string;
+        result: Array<{ denom: string; amount: string }>;
+      } = await response.json();
 
-      const url = `${lcd}/bank/balances/${myAddress.get(prefix)}`;
-      try {
-        const response = await fetch(url);
-        const result: {
-          height: string;
-          result: Array<{ denom: string; amount: string }>;
-        } = await response.json();
-
+      for (const { denom } of tokens) {
         const balance =
-          result.result.find((c) => c.denom === source_denom)?.amount || "0";
+          result.result.find((c) => c.denom === denom)?.amount || "0";
 
-        balances.set(source_denom, balance);
-
-        // balances.set(source_denom, result.balance.amount);
-      } catch (e) {
-        console.error(`Error while trying to query ${url}:`, e);
-        continue;
+        balances.set(denom, balance);
       }
+    } catch (e) {
+      console.error(`Error while trying to query ${url}:`, e);
+      // continue;
     }
-    console.log(balances);
+    // }
     setBalances(balances);
   };
 
   useEffect(() => {
-    if (!secretjs || !myAddress) {
+    if (!secretjs || !mySecretAddress) {
       return;
     }
 
@@ -166,7 +186,7 @@ export default function App() {
     return () => {
       clearInterval(interval);
     };
-  }, [myAddress, secretjs]);
+  }, [mySecretAddress, secretjs]);
 
   return (
     <div style={{ padding: "0.5rem" }}>
@@ -181,8 +201,8 @@ export default function App() {
         <KeplrPanel
           secretjs={secretjs}
           setSecretjs={setSecretjs}
-          myAddress={myAddress}
-          setMyAddress={setMyAddress}
+          mySecretAddress={mySecretAddress}
+          setMySecretAddress={setMySecretAddress}
         />
       </div>
 
@@ -202,253 +222,17 @@ export default function App() {
           private balances and private transfers.
         </Typography>
         <br />
-        {tokens.map((t) => {
-          // let isDisabled = true;
-          // if (t.address) {
-          //   isDisabled = false;
-          // }
-
-          let balanceOnSource;
-          let balanceOnSN;
-          let BalanceToken;
-
-          if (loadingBalances) {
-            balanceOnSN = (
-              <span>
-                Balance: <CircularProgress size="0.8em" />
-              </span>
-            );
-            BalanceToken = (
-              <span>
-                Balance: <CircularProgress size="0.8em" />
-              </span>
-            );
-          } else if (balances.get(t.denom)) {
-            balanceOnSN = (
-              <span
-                style={{ cursor: "pointer" }}
-                onClick={() => {
-                  const ref = inputRefs.get(t.name);
-
-                  ref.current.value = new BigNumber(
-                    balances.get(t.denom) as string
-                  )
-                    .dividedBy(`1e${t.decimals}`)
-                    .toFixed();
-                  console.log(ref.current.value);
-                }}
-              >
-                Balance:{" "}
-                {new BigNumber(balances.get(t.denom) as string)
-                  .dividedBy(`1e${t.decimals}`)
-                  .toFormat()}
-              </span>
-            );
-
-            if (balances.get(t.address) == viewingKeyErroString) {
-              BalanceToken = (
-                <span
-                  style={{ cursor: "pointer" }}
-                  onClick={() => {
-                    setKeplrViewingKey(t.address);
-                  }}
-                >
-                  Balance:{` ${viewingKeyErroString}`}
-                </span>
-              );
-            } else {
-              BalanceToken = (
-                <span
-                  style={{ cursor: "pointer" }}
-                  onClick={() => {
-                    const ref = inputRefs.get(t.name);
-
-                    ref.current.value = new BigNumber(
-                      balances.get(t.address) as string
-                    )
-                      .dividedBy(`1e${t.decimals}`)
-                      .toFixed();
-                    console.log(ref.current.value);
-                  }}
-                >
-                  Balance:{" "}
-                  {new BigNumber(balances.get(t.address) as string)
-                    .dividedBy(`1e${t.decimals}`)
-                    .toFormat()}
-                </span>
-              );
-            }
-          } else {
-            balanceOnSN = <>connect wallet</>;
-            BalanceToken = <>connect wallet</>;
-          }
-
-          return (
-            <div
-              key={t.name}
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "0.8rem",
-                padding: "1rem",
-                borderRadius: 20,
-                width: isMobile ? "100%" : undefined,
-              }}
-            >
-              <Avatar
-                src={t.image}
-                sx={{
-                  width: 40,
-                  height: 40,
-                  boxShadow: "rgba(0, 0, 0, 0.15) 0px 6px 10px",
-                }}
-              />
-              <div
-                style={{
-                  display: "flex",
-                  width: isMobile ? undefined : 125,
-                }}
-              >
-                <div
-                  style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "flex-start",
-                  }}
-                >
-                  <div
-                    style={{
-                      display: "flex",
-                      justifyContent: "space-between",
-                      alignItems: "baseline",
-                      gap: "0.5em",
-                    }}
-                  >
-                    <span>{t.name}</span>
-                    <Tooltip title="IBC Deposit" placement="top">
-                      <Button style={{ minWidth: 0 }}>
-                        <img src="/deposit.png" style={{ height: "0.8em" }} />
-                      </Button>
-                    </Tooltip>
-                  </div>
-                  <span style={{ fontSize: "0.75rem" }}>{balanceOnSN}</span>
-                </div>
-              </div>
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "0.3rem",
-                }}
-              >
-                <Button
-                  size="small"
-                  variant="text"
-                  startIcon={<KeyboardArrowLeftIcon />}
-                  style={{ minWidth: 0 }}
-                  onClick={() => {
-                    if (!secretjs || !myAddress) {
-                      return;
-                    }
-
-                    const ref = inputRefs.get(t.name);
-
-                    const amount = new BigNumber(ref.current.value)
-                      .multipliedBy(`1e${t.decimals}`)
-                      .toFixed(0, BigNumber.ROUND_DOWN);
-
-                    if (amount === "NaN") {
-                      console.error("NaN amount", ref.current.value);
-                      return;
-                    }
-
-                    secretjs.execute(
-                      t.address,
-                      { redeem: { amount } },
-                      "",
-                      [],
-                      getFeeForExecute(250_000),
-                      t.code_hash
-                    );
-                  }}
-                >
-                  {isMobile ? "" : "Unwrap"}
-                </Button>
-                <TextField
-                  // TODO add input validation
-                  placeholder="Amount"
-                  inputProps={{
-                    style: {
-                      textAlign: "center",
-                      textOverflow: "ellipsis",
-                    },
-                  }}
-                  variant="standard"
-                  inputRef={inputRefs.get(t.name)}
-                />
-                <Button
-                  size="small"
-                  variant="text"
-                  endIcon={<KeyboardArrowRightIcon />}
-                  style={{ minWidth: 0 }}
-                  onClick={() => {
-                    if (!secretjs || !myAddress) {
-                      return;
-                    }
-
-                    const ref = inputRefs.get(t.name);
-
-                    const amount = new BigNumber(ref.current.value)
-                      .multipliedBy(`1e${t.decimals}`)
-                      .toFixed(0, BigNumber.ROUND_DOWN);
-
-                    if (amount === "NaN") {
-                      console.error("NaN amount", ref.current.value);
-                      return;
-                    }
-
-                    secretjs.execute(
-                      t.address,
-                      { deposit: {} },
-                      "",
-                      [{ denom: t.denom, amount }],
-                      getFeeForExecute(250_000),
-                      t.code_hash
-                    );
-                  }}
-                >
-                  {isMobile ? "" : "Wrap"}
-                </Button>
-              </div>
-              <div
-                style={{
-                  display: "flex",
-                  width: isMobile ? undefined : 125,
-                  justifyContent: "flex-end",
-                }}
-              >
-                <div
-                  style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "flex-end",
-                  }}
-                >
-                  <span>s{t.name}</span>
-                  <span style={{ fontSize: "0.75rem" }}>{BalanceToken}</span>
-                </div>
-              </div>
-              <Avatar
-                src={t.image}
-                sx={{
-                  width: 40,
-                  height: 40,
-                  boxShadow: "rgba(0, 0, 0, 0.15) 0px 6px 10px",
-                }}
-              />
-            </div>
-          );
-        })}
+        {tokens.map((t) => (
+          <ErrorBoundary key={t.denom}>
+            <TokenRow
+              token={t}
+              loadingBalances={loadingBalances}
+              mySecretAddress={mySecretAddress}
+              secretjs={secretjs}
+              balances={balances}
+            />
+          </ErrorBoundary>
+        ))}
       </div>
     </div>
   );
