@@ -184,13 +184,3 @@ export default function App() {
     </div>
   );
 }
-
-const gasPriceUscrt = 0.25;
-export function getFeeForExecute(gas: number): StdFee {
-  return {
-    amount: [
-      { amount: String(Math.floor(gas * gasPriceUscrt) + 1), denom: "uscrt" },
-    ],
-    gas: String(gas),
-  };
-}
