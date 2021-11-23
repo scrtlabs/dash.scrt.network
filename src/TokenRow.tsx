@@ -81,8 +81,8 @@ export default function TokenRow({
       return;
     }
 
-    while (!secretjs) {
-      await sleep(50);
+    if (!secretjs) {
+      return;
     }
 
     const key = await getKeplrViewingKey(token.address);
@@ -120,7 +120,7 @@ export default function TokenRow({
         setLoadingTokenBalance(false);
       }
     })();
-  }, []);
+  }, [secretjs]);
 
   let balanceIbcCoin;
   let balanceToken;
