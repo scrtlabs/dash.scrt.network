@@ -22,16 +22,25 @@ import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import CloseIcon from "@mui/icons-material/Close";
 import CopyToClipboard from "react-copy-to-clipboard";
-import { getFeeForExecute } from "./App";
 import { SigningCosmWasmClient } from "secretjs";
 import { getKeplrViewingKey, setKeplrViewingKey } from "./KeplrStuff";
 import { Bech32Address } from "@keplr-wallet/cosmos";
 import { FileCopyOutlined } from "@mui/icons-material";
-import { SigningStargateClient } from "@cosmjs/stargate";
+import { SigningStargateClient, StdFee } from "@cosmjs/stargate";
 
 const viewingKeyErroString = "🧐";
 
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+
+const gasPriceUscrt = 0.25;
+function getFeeFromGas(gas: number): StdFee {
+  return {
+    amount: [
+      { amount: String(Math.floor(gas * gasPriceUscrt) + 1), denom: "uscrt" },
+    ],
+    gas: String(gas),
+  };
+}
 
 export default function TokenRow({
   secretjs,
@@ -552,7 +561,7 @@ export default function TokenRow({
                             token.channel_id,
                             undefined,
                             Math.floor(Date.now() / 1000) + 4 * 3600, // 4 hours timeout
-                            getFeeForExecute(token.transfer_gas)
+                            getFeeFromGas(token.transfer_gas)
                           );
                         depositInputRef.current.value = "";
                         setLoadingDeposit(false);
@@ -618,7 +627,7 @@ export default function TokenRow({
                 },
                 "",
                 [],
-                getFeeForExecute(30_000),
+                getFeeFromGas(30_000),
                 token.code_hash
               );
 
@@ -701,7 +710,7 @@ export default function TokenRow({
                 { deposit: {} },
                 "",
                 [{ denom: token.denom, amount }],
-                getFeeForExecute(30_000),
+                getFeeFromGas(30_000),
                 token.code_hash
               );
 
