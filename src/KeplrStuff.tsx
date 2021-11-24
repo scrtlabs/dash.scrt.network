@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import CopyToClipboard from "react-copy-to-clipboard";
 import { BroadcastMode, SigningCosmWasmClient } from "secretjs";
 
-import tokens from "./config.ts";
+import { tokens, SECRET_CHAIN_ID, SECRET_LCD } from "./config";
 
 export function KeplrPanel({
   secretjs,
@@ -85,19 +85,19 @@ async function setupKeplr(
     await sleep(50);
   }
 
-  await window.keplr.enable(tokens[0].chain_id);
+  await window.keplr.enable(SECRET_CHAIN_ID);
 
-  const keplrOfflineSigner = window.getOfflineSigner(tokens[0].chain_id);
+  const keplrOfflineSigner = window.getOfflineSigner(SECRET_CHAIN_ID);
   const accounts = await keplrOfflineSigner.getAccounts();
 
   const secretAddress = accounts[0].address;
 
   const secretjs = new SigningCosmWasmClient(
-    tokens[0].lcd,
+    SECRET_LCD,
     secretAddress,
     //@ts-ignore
     keplrOfflineSigner,
-    window.getEnigmaUtils(tokens[0].chain_id),
+    window.getEnigmaUtils(SECRET_CHAIN_ID),
     undefined,
     BroadcastMode.Sync
   );
@@ -112,7 +112,7 @@ export async function setKeplrViewingKey(token: string) {
     return;
   }
 
-  await window.keplr.suggestToken(tokens[0].chain_id, token);
+  await window.keplr.suggestToken(SECRET_CHAIN_ID, token);
 }
 
 export async function getKeplrViewingKey(
@@ -124,7 +124,7 @@ export async function getKeplrViewingKey(
   }
 
   try {
-    return await window.keplr.getSecret20ViewingKey(tokens[0].chain_id, token);
+    return await window.keplr.getSecret20ViewingKey(SECRET_CHAIN_ID, token);
   } catch (e) {
     return null;
   }

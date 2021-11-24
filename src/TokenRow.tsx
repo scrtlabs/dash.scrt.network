@@ -27,6 +27,7 @@ import { getKeplrViewingKey, setKeplrViewingKey } from "./KeplrStuff";
 import { Bech32Address } from "@keplr-wallet/cosmos";
 import { FileCopyOutlined } from "@mui/icons-material";
 import { SigningStargateClient, StdFee } from "@cosmjs/stargate";
+import { Token } from "./config";
 
 const viewingKeyErroString = "🧐";
 
@@ -52,22 +53,7 @@ export default function TokenRow({
   secretjs: SigningCosmWasmClient | null;
   secretAddress: string;
   loadingCoinBalances: boolean;
-  token: {
-    name: string;
-    address: string;
-    code_hash: string;
-    image: string;
-    decimals: number;
-    denom: string;
-    source_denom: string;
-    chain_id: string;
-    bech32_prefix: string;
-    lcd: string;
-    rpc: string;
-    chain_name: string;
-    channel_id: string;
-    transfer_gas: number;
-  };
+  token: Token;
   balances: Map<string, string>;
 }) {
   const wrapInputRef = useRef<any>();
@@ -131,6 +117,7 @@ export default function TokenRow({
     })();
   }, [secretjs]);
 
+  const denomOnSecret = token.withdraw_to[0]?.denom;
   let balanceIbcCoin;
   let balanceToken;
 
@@ -141,20 +128,20 @@ export default function TokenRow({
           Balance: <CircularProgress size="0.8em" />
         </span>
       );
-    } else if (balances.get(token.denom)) {
+    } else if (balances.get(denomOnSecret)) {
       balanceIbcCoin = (
         <span
           style={{ cursor: "pointer" }}
           onClick={() => {
             wrapInputRef.current.value = new BigNumber(
-              balances.get(token.denom) as string
+              balances.get(denomOnSecret) as string
             )
               .dividedBy(`1e${token.decimals}`)
               .toFixed();
           }}
         >
           Balance:{" "}
-          {new BigNumber(balances.get(token.denom) as string)
+          {new BigNumber(balances.get(denomOnSecret) as string)
             .dividedBy(`1e${token.decimals}`)
             .toFormat()}
         </span>
@@ -249,7 +236,7 @@ export default function TokenRow({
             }}
           >
             <span>{token.name}</span>
-            {token.chain_name !== "Secret Network" && token.address ? (
+            {token.address ? (
               <>
                 <Tooltip title="IBC Deposit" placement="top">
                   <Button
@@ -265,7 +252,7 @@ export default function TokenRow({
                         await sleep(100);
                       }
 
-                      if (token.chain_name === "Terra") {
+                      if (["Luna", "UST"].includes(token.name)) {
                         window.keplr.experimentalSuggestChain({
                           rpc: "https://rpc-columbus.keplr.app",
                           rest: "https://lcd-columbus.keplr.app",
@@ -339,10 +326,10 @@ export default function TokenRow({
                         });
                       }
 
-                      await window.keplr.enable(token.chain_id);
+                      await window.keplr.enable(token.deposit_from[0].chain_id);
 
                       const offlineSigner = window.getOfflineSigner(
-                        token.chain_id
+                        token.deposit_from[0].chain_id
                       );
 
                       const accounts = await offlineSigner.getAccounts();
@@ -351,13 +338,13 @@ export default function TokenRow({
 
                       const cosmJs =
                         await SigningStargateClient.connectWithSigner(
-                          token.rpc,
+                          token.deposit_from[0].rpc,
                           offlineSigner,
-                          { prefix: token.bech32_prefix }
+                          { prefix: token.deposit_from[0].bech32_prefix }
                         );
                       setSourceCosmJs(cosmJs);
 
-                      const url = `${token.lcd}/bank/balances/${address}`;
+                      const url = `${token.deposit_from[0].lcd}/bank/balances/${address}`;
                       try {
                         const response = await fetch(url);
                         const result: {
@@ -367,7 +354,7 @@ export default function TokenRow({
 
                         const balance =
                           result.result.find(
-                            (c) => c.denom === token.source_denom
+                            (c) => c.denom === token.deposit_from[0].denom
                           )?.amount || "0";
 
                         setSourceBalance(balance);
@@ -556,12 +543,12 @@ export default function TokenRow({
                           await sourceCosmJs.sendIbcTokens(
                             sourceAddress,
                             secretAddress,
-                            { amount, denom: token.source_denom },
+                            { amount, denom: token.deposit_from[0].denom },
                             "transfer",
-                            token.channel_id,
+                            token.deposit_from[0].channel_id,
                             undefined,
                             Math.floor(Date.now() / 1000) + 4 * 3600, // 4 hours timeout
-                            getFeeFromGas(token.transfer_gas)
+                            getFeeFromGas(token.deposit_from[0].gas)
                           );
                         depositInputRef.current.value = "";
                         setLoadingDeposit(false);
@@ -620,9 +607,9 @@ export default function TokenRow({
                   redeem: {
                     amount,
                     denom:
-                      token.chain_name === "Secret Network"
+                      token.name === "SCRT"
                         ? undefined
-                        : token.denom,
+                        : token.withdraw_to[0].denom,
                   },
                 },
                 "",
@@ -709,7 +696,7 @@ export default function TokenRow({
                 token.address,
                 { deposit: {} },
                 "",
-                [{ denom: token.denom, amount }],
+                [{ denom: token.withdraw_to[0].denom, amount }],
                 getFeeFromGas(40_000),
                 token.code_hash
               );

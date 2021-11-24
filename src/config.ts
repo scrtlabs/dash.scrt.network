@@ -1,35 +1,62 @@
-export type Token = {
-  name: string;
-  address: string;
-  code_hash: string;
-  image: string;
-  decimals: number;
-  deposit_from: DepositFrom[];
+export const SECRET_LCD = "https://bridge-api-manager.azure-api.net";
+export const SECRET_CHAIN_ID = "secret-4";
 
-  withdraw_to: WithdrawTo[];
+export type Token = {
+  /** display name of the token */
+  name: string;
+  /** secret contract address of the token */
+  address: string;
+  /** secret contract code hash of the token */
+  code_hash: string;
+  /** logo of the token */
+  image: string;
+  /** decimals of the token */
+  decimals: number;
+  /** how to deposit this token into Secret Network */
+  deposit_from: Deposit[];
+  /** how to withdraw this token out of Secret Network */
+  withdraw_to: Withdraw[];
 };
 
-export type DepositFrom = {
+export type Deposit = {
+  /** channel_id on the other chain */
   channel_id: string;
+  /** denom on the other chain */
   denom: string;
+  /** gas limit for ibc transfer on the other chain */
   gas: number;
+  /** bech32 prefix of the other chain */
   bech32_prefix: string;
+  /** display name for the other chain */
   chain_name: string;
+  /** logo of the other chain */
   chain_image: string;
+  /** chain-id of the other chain */
   chain_id: string;
+  /** lcd url of the other chain */
   lcd: string;
+  /** rpc url of the other chain */
   rpc: string;
 };
 
-export type WithdrawTo = {
+export type Withdraw = {
+  /** channel_id on Secret Network */
   channel_id: string;
+  /** denom on Secret Network */
   denom: string;
+  /** gas limit for ibc transfer on Secret Network */
   gas: number;
+  /** bech32 prefix of the other chain */
   bech32_prefix: string;
+  /** display name for the other chain */
   chain_name: string;
+  /** logo of the other chain */
   chain_image: string;
+  /** chain-id of the other chain */
   chain_id: string;
+  /** lcd url of the other chain */
   lcd: string;
+  /** rpc url of the other chain */
   rpc: string;
 };
 
@@ -39,15 +66,8 @@ export const tokens: Token[] = [
     address: "secret1k0jntykt7e4g3y88ltc60czgjuqdy4c9e8fzek",
     code_hash:
       "af74387e276be8874f07bec3a87023ee49b0e7ebe08178c49d0a49c3c98ed60e",
-    image: "scrt.svg",
+    image: "/scrt.svg",
     decimals: 6,
-    denom: "uscrt",
-    source_denom: "uscrt",
-    chain_id: "secret-4",
-    bech32_prefix: "secret",
-    lcd: "https://lcd-secret.keplr.app",
-    rpc: "https://rpc-secret.keplr.app",
-    chain_name: "Secret Network",
     deposit_from: [
       {
         channel_id: "channel-235",
@@ -55,10 +75,89 @@ export const tokens: Token[] = [
         gas: 110000,
         bech32_prefix: "cosmos",
         chain_name: "Cosmos Hub",
-        chain_image: "atom.jpg",
+        chain_image: "/atom.jpg",
         chain_id: "cosmoshub-4",
         lcd: "https://lcd-cosmoshub.keplr.app",
         rpc: "https://rpc-cosmoshub.keplr.app",
+      },
+      {
+        channel_id: "channel-16",
+        denom: "TODO",
+        gas: 110000,
+        chain_id: "columbus-5",
+        bech32_prefix: "terra",
+        lcd: "https://lcd-columbus.keplr.app",
+        rpc: "https://rpc-columbus.keplr.app",
+        chain_name: "Terra",
+        chain_image: "/terra.jpg",
+      },
+      {
+        channel_id: "channel-16",
+        denom: "TODO",
+        gas: 110000,
+        chain_id: "columbus-5",
+        bech32_prefix: "terra",
+        lcd: "https://lcd-columbus.keplr.app",
+        rpc: "https://rpc-columbus.keplr.app",
+        chain_name: "Terra",
+        chain_image: "/terra.jpg",
+      },
+      {
+        channel_id: "channel-88",
+        denom: "TODO",
+        gas: 15000000,
+        chain_id: "osmosis-1",
+        bech32_prefix: "osmo",
+        lcd: "https://lcd-osmosis.keplr.app",
+        rpc: "https://rpc-osmosis.keplr.app",
+        chain_name: "Osmosis",
+        chain_image: "/osmo.jpeg",
+      },
+    ],
+    withdraw_to: [
+      {
+        channel_id: "channel-0",
+        denom: "uscrt",
+        gas: 25000,
+        bech32_prefix: "cosmos",
+        chain_name: "Cosmos Hub",
+        chain_image: "/atom.jpg",
+        chain_id: "cosmoshub-4",
+        lcd: "https://lcd-cosmoshub.keplr.app",
+        rpc: "https://rpc-cosmoshub.keplr.app",
+      },
+      {
+        channel_id: "channel-2",
+        denom: "uscrt",
+        gas: 25000,
+        chain_id: "columbus-5",
+        bech32_prefix: "terra",
+        lcd: "https://lcd-columbus.keplr.app",
+        rpc: "https://rpc-columbus.keplr.app",
+        chain_name: "Terra",
+        chain_image: "/terra.jpg",
+      },
+      {
+        channel_id: "channel-2",
+        denom: "uscrt",
+        gas: 25000,
+        chain_id: "columbus-5",
+        bech32_prefix: "terra",
+        lcd: "https://lcd-columbus.keplr.app",
+        rpc: "https://rpc-columbus.keplr.app",
+        chain_name: "Terra",
+        chain_image: "/terra.jpg",
+      },
+      {
+        channel_id: "channel-1",
+        denom: "uscrt",
+        gas: 25000,
+        chain_id: "osmosis-1",
+        bech32_prefix: "osmo",
+        lcd: "https://lcd-osmosis.keplr.app",
+        rpc: "https://rpc-osmosis.keplr.app",
+        chain_name: "Osmosis",
+        chain_image: "/osmo.jpeg",
       },
     ],
   },
@@ -67,7 +166,7 @@ export const tokens: Token[] = [
     address: "secret14mzwd0ps5q277l20ly2q3aetqe3ev4m4260gf4",
     code_hash:
       "ad91060456344fc8d8e93c0600a3957b8158605c044b3bef7048510b3157b807",
-    image: "atom.jpg",
+    image: "/atom.jpg",
     decimals: 6,
     deposit_from: [
       {
@@ -76,7 +175,7 @@ export const tokens: Token[] = [
         gas: 110000,
         bech32_prefix: "cosmos",
         chain_name: "Cosmos Hub",
-        chain_image: "atom.jpg",
+        chain_image: "/atom.jpg",
         chain_id: "cosmoshub-4",
         lcd: "https://lcd-cosmoshub.keplr.app",
         rpc: "https://rpc-cosmoshub.keplr.app",
@@ -90,7 +189,7 @@ export const tokens: Token[] = [
         gas: 25000,
         bech32_prefix: "cosmos",
         chain_name: "Cosmos Hub",
-        chain_image: "atom.jpg",
+        chain_image: "/atom.jpg",
         chain_id: "cosmoshub-4",
         lcd: "https://lcd-cosmoshub.keplr.app",
         rpc: "https://rpc-cosmoshub.keplr.app",
@@ -102,7 +201,7 @@ export const tokens: Token[] = [
     address: "secret1ra7avvjh9fhr7dtr3djutugwj59ptctsrakyyw",
     code_hash:
       "ad91060456344fc8d8e93c0600a3957b8158605c044b3bef7048510b3157b807",
-    image: "luna.png",
+    image: "/luna.png",
     decimals: 6,
     deposit_from: [
       {
@@ -114,7 +213,7 @@ export const tokens: Token[] = [
         lcd: "https://lcd-columbus.keplr.app",
         rpc: "https://rpc-columbus.keplr.app",
         chain_name: "Terra",
-        chain_image: "luna.png",
+        chain_image: "/terra.jpg",
       },
     ],
     withdraw_to: [
@@ -128,7 +227,7 @@ export const tokens: Token[] = [
         lcd: "https://lcd-columbus.keplr.app",
         rpc: "https://rpc-columbus.keplr.app",
         chain_name: "Terra",
-        chain_image: "luna.png",
+        chain_image: "/terra.jpg",
       },
     ],
   },
@@ -137,7 +236,7 @@ export const tokens: Token[] = [
     address: "secret129h4vu66y3gry6wzwa24rw0vtqjyn8tujuwtn9",
     code_hash:
       "ad91060456344fc8d8e93c0600a3957b8158605c044b3bef7048510b3157b807",
-    image: "ust.png",
+    image: "/ust.png",
     decimals: 6,
     deposit_from: [
       {
@@ -149,7 +248,7 @@ export const tokens: Token[] = [
         lcd: "https://lcd-columbus.keplr.app",
         rpc: "https://rpc-columbus.keplr.app",
         chain_name: "Terra",
-        chain_image: "ust.png",
+        chain_image: "/terra.jpg",
       },
     ],
     withdraw_to: [
@@ -163,7 +262,7 @@ export const tokens: Token[] = [
         lcd: "https://lcd-columbus.keplr.app",
         rpc: "https://rpc-columbus.keplr.app",
         chain_name: "Terra",
-        chain_image: "ust.png",
+        chain_image: "/terra.jpg",
       },
     ],
   },
@@ -172,7 +271,7 @@ export const tokens: Token[] = [
     address: "secret1zwwealwm0pcl9cul4nt6f38dsy6vzplw8lp3qg",
     code_hash:
       "ad91060456344fc8d8e93c0600a3957b8158605c044b3bef7048510b3157b807",
-    image: "osmo.jpeg",
+    image: "/osmo.jpeg",
     decimals: 6,
     deposit_from: [
       {
@@ -184,7 +283,7 @@ export const tokens: Token[] = [
         lcd: "https://lcd-osmosis.keplr.app",
         rpc: "https://rpc-osmosis.keplr.app",
         chain_name: "Osmosis",
-        chain_image: "osmo.jpeg",
+        chain_image: "/osmo.jpeg",
       },
     ],
     withdraw_to: [
@@ -198,24 +297,19 @@ export const tokens: Token[] = [
         lcd: "https://lcd-osmosis.keplr.app",
         rpc: "https://rpc-osmosis.keplr.app",
         chain_name: "Osmosis",
-        chain_image: "osmo.jpeg",
+        chain_image: "/osmo.jpeg",
       },
     ],
   },
-  //   {
-  //     name: "DVPN",
-  //     address: "",
-  //     code_hash: "",
-  //     image: "dvpn.jpeg",
-  //     decimals: 6,
-  //     denom: "ibc/dvpn",
-  //     source_denom: "udvpn",
-  //     chain_id: "sentinelhub-2",
-  //     bech32_prefix: "sent",
-  //     lcd: "https://lcd-sentinel.keplr.app",
-  //     rpc: "https://rpc-sentinel.keplr.app",
-  //     chain_name: "Sentinel",
-  //     channel_id: "",
-  //     transfer_gas: 0,
-  //   },
+  {
+    name: "DVPN",
+    address: "",
+    code_hash: "",
+    image: "/dvpn.jpeg",
+    decimals: 6,
+    deposit_from: [],
+    withdraw_to: [],
+  },
 ];
+
+export default tokens;
