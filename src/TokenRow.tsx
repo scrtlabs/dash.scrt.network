@@ -627,7 +627,7 @@ export default function TokenRow({
                 },
                 "",
                 [],
-                getFeeFromGas(30_000),
+                getFeeFromGas(40_000),
                 token.code_hash
               );
 
@@ -710,7 +710,7 @@ export default function TokenRow({
                 { deposit: {} },
                 "",
                 [{ denom: token.denom, amount }],
-                getFeeFromGas(30_000),
+                getFeeFromGas(40_000),
                 token.code_hash
               );
 
