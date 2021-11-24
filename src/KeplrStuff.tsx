@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import CopyToClipboard from "react-copy-to-clipboard";
 import { BroadcastMode, SigningCosmWasmClient } from "secretjs";
 
-import tokens from "./config.json";
+import tokens from "./config.ts";
 
 export function KeplrPanel({
   secretjs,
