@@ -10,7 +10,7 @@ declare global {
   interface Window extends KeplrWindow {}
 }
 
-import tokens from "./config.ts";
+import tokens from "./config";
 import TokenRow from "./TokenRow";
 import { Typography, Avatar } from "@mui/material";
 
@@ -94,9 +94,7 @@ export default function App() {
   const updateCoinBalances = async () => {
     const newBalances = new Map<string, string>(balances);
 
-    const url = `${
-      tokens.find((t) => t.chain_name === "Secret Network")?.lcd
-    }/bank/balances/${secretAddress}`;
+    const url = `${process.env.VITE_SECRET_LCD_URL}/bank/balances/${secretAddress}`;
     try {
       const response = await fetch(url);
       const result: {
@@ -104,7 +102,11 @@ export default function App() {
         result: Array<{ denom: string; amount: string }>;
       } = await response.json();
 
-      for (const { denom } of tokens) {
+      const denoms = Array.from(
+        new Set(tokens.map((t) => t.withdraw_to.map((w) => w.denom)).flat())
+      );
+
+      for (const denom of denoms) {
         const balance =
           result.result.find((c) => c.denom === denom)?.amount || "0";
 
@@ -170,7 +172,7 @@ export default function App() {
         </Typography>
         <br />
         {tokens.map((t) => (
-          <ErrorBoundary key={t.denom}>
+          <ErrorBoundary key={t.name}>
             <TokenRow
               token={t}
               loadingCoinBalances={loadingCoinBalances}
