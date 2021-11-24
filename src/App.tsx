@@ -10,7 +10,7 @@ declare global {
   interface Window extends KeplrWindow {}
 }
 
-import tokens from "./config.json";
+import tokens from "./config.ts";
 import TokenRow from "./TokenRow";
 import { Typography, Avatar } from "@mui/material";
 
