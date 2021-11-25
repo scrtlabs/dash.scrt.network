@@ -532,18 +532,25 @@ export default function TokenRow({
                           return;
                         }
 
-                        if (!(Number(depositInputRef?.current?.value) > 0)) {
+                        if (!depositInputRef?.current?.value) {
+                          console.error("Empty deposit");
+                          return;
+                        }
+
+                        const depositNormalizedAmount = (
+                          depositInputRef.current.value as string
+                        ).replace(/,/g, "");
+
+                        if (!(Number(depositNormalizedAmount) > 0)) {
                           console.error(
-                            `${depositInputRef?.current?.value} not bigger than 0`
+                            `${depositNormalizedAmount} not bigger than 0`
                           );
                           return;
                         }
 
                         setLoadingDeposit(true);
 
-                        const amount = new BigNumber(
-                          depositInputRef?.current?.value
-                        )
+                        const amount = new BigNumber(depositNormalizedAmount)
                           .multipliedBy(`1e${token.decimals}`)
                           .toFixed(0, BigNumber.ROUND_DOWN);
 
