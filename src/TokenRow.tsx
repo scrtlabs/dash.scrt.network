@@ -166,8 +166,15 @@ export default function TokenRow({
       balanceToken = (
         <span
           style={{ cursor: "pointer" }}
-          onClick={() => {
-            setKeplrViewingKey(token.address);
+          onClick={async () => {
+            await setKeplrViewingKey(token.address);
+            try {
+              setLoadingTokenBalance(true);
+              await sleep(1000); // sometimes query nodes lag
+              await updateTokenBalance();
+            } finally {
+              setLoadingTokenBalance(false);
+            }
           }}
         >
           Balance:{` ${viewingKeyErroString}`}
@@ -217,7 +224,7 @@ export default function TokenRow({
       <div
         style={{
           display: "flex",
-          width: isMobile ? undefined : 125,
+          width: isMobile ? undefined : 150,
         }}
       >
         <div
@@ -647,7 +654,7 @@ export default function TokenRow({
               setLoadingUnwrap(false);
               try {
                 setLoadingTokenBalance(true);
-                await sleep(50); // sometimes query nodes lag
+                await sleep(1000); // sometimes query nodes lag
                 await updateTokenBalance();
               } finally {
                 setLoadingTokenBalance(false);
@@ -731,7 +738,7 @@ export default function TokenRow({
               setLoadingWrap(false);
               try {
                 setLoadingTokenBalance(true);
-                await sleep(50); // sometimes query nodes lag
+                await sleep(1000); // sometimes query nodes lag
                 await updateTokenBalance();
               } finally {
                 setLoadingTokenBalance(false);
@@ -745,7 +752,7 @@ export default function TokenRow({
       <div
         style={{
           display: "flex",
-          width: isMobile ? undefined : 125,
+          width: isMobile ? undefined : 150,
           justifyContent: "flex-end",
         }}
       >
