@@ -19,14 +19,14 @@ export type Token = {
 };
 
 export type Deposit = {
-  /** display name for the other chain */
+  /** display name of the other chain */
   chain_name: string;
   /** denom on the other chain */
   denom: string;
 };
 
 export type Withdraw = {
-  /** display name for the other chain */
+  /** display name of the other chain */
   chain_name: string;
   /** denom on Secret Network */
   denom: string;
@@ -165,17 +165,17 @@ export const tokens: Token[] = [
 ];
 
 export type Chain = {
-  /** display name for the chain */
+  /** display name of the chain */
   chain_name: string;
   /** channel_id on the chain */
   deposit_channel_id: string;
-  /** gas limit for ibc transfer from the chain */
+  /** gas limit for ibc transfer from the chain to Secret Network */
   deposit_gas: number;
   /** channel_id on Secret Network */
   withdarw_channel_id: string;
-  /** gas limit for ibc transfer from Secret Network */
+  /** gas limit for ibc transfer from Secret Network to the chain */
   withdarw_gas: number;
-  /** bech32 prefix of the chain */
+  /** bech32 prefix of addresses on the chain */
   bech32_prefix: string;
   /** logo of the chain */
   chain_image: string;
