@@ -19,45 +19,17 @@ export type Token = {
 };
 
 export type Deposit = {
-  /** channel_id on the other chain */
-  channel_id: string;
-  /** denom on the other chain */
-  denom: string;
-  /** gas limit for ibc transfer on the other chain */
-  gas: number;
-  /** bech32 prefix of the other chain */
-  bech32_prefix: string;
   /** display name for the other chain */
   chain_name: string;
-  /** logo of the other chain */
-  chain_image: string;
-  /** chain-id of the other chain */
-  chain_id: string;
-  /** lcd url of the other chain */
-  lcd: string;
-  /** rpc url of the other chain */
-  rpc: string;
+  /** denom on the other chain */
+  denom: string;
 };
 
 export type Withdraw = {
-  /** channel_id on Secret Network */
-  channel_id: string;
-  /** denom on Secret Network */
-  denom: string;
-  /** gas limit for ibc transfer on Secret Network */
-  gas: number;
-  /** bech32 prefix of the other chain */
-  bech32_prefix: string;
   /** display name for the other chain */
   chain_name: string;
-  /** logo of the other chain */
-  chain_image: string;
-  /** chain-id of the other chain */
-  chain_id: string;
-  /** lcd url of the other chain */
-  lcd: string;
-  /** rpc url of the other chain */
-  rpc: string;
+  /** denom on Secret Network */
+  denom: string;
 };
 
 export const tokens: Token[] = [
@@ -70,94 +42,30 @@ export const tokens: Token[] = [
     decimals: 6,
     deposit_from: [
       {
-        channel_id: "channel-235",
-        denom: "TODO",
-        gas: 110000,
-        bech32_prefix: "cosmos",
         chain_name: "Cosmos Hub",
-        chain_image: "/atom.jpg",
-        chain_id: "cosmoshub-4",
-        lcd: "https://lcd-cosmoshub.keplr.app",
-        rpc: "https://rpc-cosmoshub.keplr.app",
+        denom: "TODO", // SCRT denom on Cosmos
       },
       {
-        channel_id: "channel-16",
-        denom: "TODO",
-        gas: 110000,
-        chain_id: "columbus-5",
-        bech32_prefix: "terra",
-        lcd: "https://lcd-columbus.keplr.app",
-        rpc: "https://rpc-columbus.keplr.app",
         chain_name: "Terra",
-        chain_image: "/terra.jpg",
+        denom: "TODO", // SCRT denom on Terra
       },
       {
-        channel_id: "channel-16",
-        denom: "TODO",
-        gas: 110000,
-        chain_id: "columbus-5",
-        bech32_prefix: "terra",
-        lcd: "https://lcd-columbus.keplr.app",
-        rpc: "https://rpc-columbus.keplr.app",
-        chain_name: "Terra",
-        chain_image: "/terra.jpg",
-      },
-      {
-        channel_id: "channel-88",
-        denom: "TODO",
-        gas: 15000000,
-        chain_id: "osmosis-1",
-        bech32_prefix: "osmo",
-        lcd: "https://lcd-osmosis.keplr.app",
-        rpc: "https://rpc-osmosis.keplr.app",
         chain_name: "Osmosis",
-        chain_image: "/osmo.jpeg",
+        denom: "TODO", // SCRT denom on Osmosis
       },
     ],
     withdraw_to: [
       {
-        channel_id: "channel-0",
-        denom: "uscrt",
-        gas: 25000,
-        bech32_prefix: "cosmos",
         chain_name: "Cosmos Hub",
-        chain_image: "/atom.jpg",
-        chain_id: "cosmoshub-4",
-        lcd: "https://lcd-cosmoshub.keplr.app",
-        rpc: "https://rpc-cosmoshub.keplr.app",
+        denom: "uscrt",
       },
       {
-        channel_id: "channel-2",
-        denom: "uscrt",
-        gas: 25000,
-        chain_id: "columbus-5",
-        bech32_prefix: "terra",
-        lcd: "https://lcd-columbus.keplr.app",
-        rpc: "https://rpc-columbus.keplr.app",
         chain_name: "Terra",
-        chain_image: "/terra.jpg",
+        denom: "uscrt",
       },
       {
-        channel_id: "channel-2",
-        denom: "uscrt",
-        gas: 25000,
-        chain_id: "columbus-5",
-        bech32_prefix: "terra",
-        lcd: "https://lcd-columbus.keplr.app",
-        rpc: "https://rpc-columbus.keplr.app",
-        chain_name: "Terra",
-        chain_image: "/terra.jpg",
-      },
-      {
-        channel_id: "channel-1",
-        denom: "uscrt",
-        gas: 25000,
-        chain_id: "osmosis-1",
-        bech32_prefix: "osmo",
-        lcd: "https://lcd-osmosis.keplr.app",
-        rpc: "https://rpc-osmosis.keplr.app",
         chain_name: "Osmosis",
-        chain_image: "/osmo.jpeg",
+        denom: "uscrt",
       },
     ],
   },
@@ -170,29 +78,15 @@ export const tokens: Token[] = [
     decimals: 6,
     deposit_from: [
       {
-        channel_id: "channel-235",
-        denom: "uatom",
-        gas: 110000,
-        bech32_prefix: "cosmos",
         chain_name: "Cosmos Hub",
-        chain_image: "/atom.jpg",
-        chain_id: "cosmoshub-4",
-        lcd: "https://lcd-cosmoshub.keplr.app",
-        rpc: "https://rpc-cosmoshub.keplr.app",
+        denom: "uatom",
       },
     ],
     withdraw_to: [
       {
-        channel_id: "channel-0",
+        chain_name: "Cosmos Hub",
         denom:
           "ibc/27394FB092D2ECCD56123C74F36E4C1F926001CEADA9CA97EA622B25F41E5EB2",
-        gas: 25000,
-        bech32_prefix: "cosmos",
-        chain_name: "Cosmos Hub",
-        chain_image: "/atom.jpg",
-        chain_id: "cosmoshub-4",
-        lcd: "https://lcd-cosmoshub.keplr.app",
-        rpc: "https://rpc-cosmoshub.keplr.app",
       },
     ],
   },
@@ -205,29 +99,15 @@ export const tokens: Token[] = [
     decimals: 6,
     deposit_from: [
       {
-        channel_id: "channel-16",
-        denom: "uluna",
-        gas: 110000,
-        chain_id: "columbus-5",
-        bech32_prefix: "terra",
-        lcd: "https://lcd-columbus.keplr.app",
-        rpc: "https://rpc-columbus.keplr.app",
         chain_name: "Terra",
-        chain_image: "/terra.jpg",
+        denom: "uluna",
       },
     ],
     withdraw_to: [
       {
-        channel_id: "channel-2",
+        chain_name: "Terra",
         denom:
           "ibc/D70B0FBF97AEB04491E9ABF4467A7F66CD6250F4382CE5192D856114B83738D2",
-        gas: 25000,
-        chain_id: "columbus-5",
-        bech32_prefix: "terra",
-        lcd: "https://lcd-columbus.keplr.app",
-        rpc: "https://rpc-columbus.keplr.app",
-        chain_name: "Terra",
-        chain_image: "/terra.jpg",
       },
     ],
   },
@@ -240,29 +120,15 @@ export const tokens: Token[] = [
     decimals: 6,
     deposit_from: [
       {
-        channel_id: "channel-16",
-        denom: "uusd",
-        gas: 110000,
-        chain_id: "columbus-5",
-        bech32_prefix: "terra",
-        lcd: "https://lcd-columbus.keplr.app",
-        rpc: "https://rpc-columbus.keplr.app",
         chain_name: "Terra",
-        chain_image: "/terra.jpg",
+        denom: "uusd",
       },
     ],
     withdraw_to: [
       {
-        channel_id: "channel-2",
+        chain_name: "Terra",
         denom:
           "ibc/4294C3DB67564CF4A0B2BFACC8415A59B38243F6FF9E288FBA34F9B4823BA16E",
-        gas: 25000,
-        chain_id: "columbus-5",
-        bech32_prefix: "terra",
-        lcd: "https://lcd-columbus.keplr.app",
-        rpc: "https://rpc-columbus.keplr.app",
-        chain_name: "Terra",
-        chain_image: "/terra.jpg",
       },
     ],
   },
@@ -275,29 +141,15 @@ export const tokens: Token[] = [
     decimals: 6,
     deposit_from: [
       {
-        channel_id: "channel-88",
-        denom: "uosmo",
-        gas: 15000000,
-        chain_id: "osmosis-1",
-        bech32_prefix: "osmo",
-        lcd: "https://lcd-osmosis.keplr.app",
-        rpc: "https://rpc-osmosis.keplr.app",
         chain_name: "Osmosis",
-        chain_image: "/osmo.jpeg",
+        denom: "uosmo",
       },
     ],
     withdraw_to: [
       {
-        channel_id: "channel-1",
+        chain_name: "Osmosis",
         denom:
           "ibc/0471F1C4E7AFD3F07702BEF6DC365268D64570F7C1FDC98EA6098DD6DE59817B",
-        gas: 25000,
-        chain_id: "osmosis-1",
-        bech32_prefix: "osmo",
-        lcd: "https://lcd-osmosis.keplr.app",
-        rpc: "https://rpc-osmosis.keplr.app",
-        chain_name: "Osmosis",
-        chain_image: "/osmo.jpeg",
       },
     ],
   },
@@ -312,4 +164,76 @@ export const tokens: Token[] = [
   },
 ];
 
-export default tokens;
+export type Chain = {
+  /** display name for the chain */
+  chain_name: string;
+  /** channel_id on the chain */
+  deposit_channel_id: string;
+  /** gas limit for ibc transfer from the chain */
+  deposit_gas: number;
+  /** channel_id on Secret Network */
+  withdarw_channel_id: string;
+  /** gas limit for ibc transfer from Secret Network */
+  withdarw_gas: number;
+  /** bech32 prefix of the chain */
+  bech32_prefix: string;
+  /** logo of the chain */
+  chain_image: string;
+  /** chain-id of the chain */
+  chain_id: string;
+  /** lcd url of the chain */
+  lcd: string;
+  /** rpc url of the chain */
+  rpc: string;
+};
+
+export const chains: { [chain_name: string]: Chain } = {
+  "Secret Network": {
+    chain_name: "Secret Network",
+    deposit_channel_id: "",
+    deposit_gas: 0,
+    withdarw_channel_id: "",
+    withdarw_gas: 0,
+    chain_id: "secret-4",
+    bech32_prefix: "secret",
+    lcd: "https://lcd-secret.keplr.app",
+    rpc: "https://rpc-secret.keplr.app",
+    chain_image: "/scrt.svg",
+  },
+  "Cosmos Hub": {
+    chain_name: "Cosmos Hub",
+    deposit_channel_id: "channel-235",
+    deposit_gas: 110_000,
+    withdarw_channel_id: "channel-0",
+    withdarw_gas: 30_000,
+    chain_id: "cosmoshub-4",
+    bech32_prefix: "cosmos",
+    lcd: "https://lcd-cosmoshub.keplr.app",
+    rpc: "https://rpc-cosmoshub.keplr.app",
+    chain_image: "/atom.jpg",
+  },
+  Terra: {
+    chain_name: "Terra",
+    deposit_channel_id: "channel-16",
+    deposit_gas: 110_000,
+    withdarw_channel_id: "channel-2",
+    withdarw_gas: 30_000,
+    chain_id: "columbus-5",
+    bech32_prefix: "terra",
+    lcd: "https://lcd-columbus.keplr.app",
+    rpc: "https://rpc-columbus.keplr.app",
+    chain_image: "/terra.jpg",
+  },
+  Osmosis: {
+    chain_name: "Osmosis",
+    deposit_channel_id: "channel-88",
+    deposit_gas: 1_500_000,
+    withdarw_channel_id: "channel-1",
+    withdarw_gas: 30_000,
+    chain_id: "osmosis-1",
+    bech32_prefix: "osmo",
+    lcd: "https://lcd-osmosis.keplr.app",
+    rpc: "https://rpc-osmosis.keplr.app",
+    chain_image: "/osmo.jpeg",
+  },
+};
