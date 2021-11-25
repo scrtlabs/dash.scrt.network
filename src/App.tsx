@@ -3,15 +3,18 @@ import ReactDOM from "react-dom";
 import "./index.css";
 
 import { SigningCosmWasmClient } from "secretjs";
+import { tokens } from "./config";
+import TokenRow from "./TokenRow";
+import { Typography, Avatar } from "@mui/material";
 import { Window as KeplrWindow } from "@keplr-wallet/types";
 import { KeplrPanel } from "./KeplrStuff";
 declare global {
   interface Window extends KeplrWindow {}
 }
-
-import { tokens } from "./config";
-import TokenRow from "./TokenRow";
-import { Typography, Avatar } from "@mui/material";
+window.addEventListener("keplr_keystorechange", () => {
+  console.log("Key store in Keplr is changed. Refreshing page.");
+  location.reload();
+});
 
 class ErrorBoundary extends React.Component<{}, { hasError: boolean }> {
   constructor(props: any) {
