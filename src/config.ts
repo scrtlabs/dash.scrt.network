@@ -155,12 +155,24 @@ export const tokens: Token[] = [
   },
   {
     name: "DVPN",
-    address: "",
-    code_hash: "",
+    address: "secret1k8cge73c3nh32d4u0dsd5dgtmk63shtlrfscj5",
+    code_hash:
+      "ad91060456344fc8d8e93c0600a3957b8158605c044b3bef7048510b3157b807",
     image: "/dvpn.jpeg",
     decimals: 6,
-    deposit_from: [],
-    withdraw_to: [],
+    deposit_from: [
+      {
+        chain_name: "Sentinel",
+        denom: "udvpn",
+      },
+    ],
+    withdraw_to: [
+      {
+        chain_name: "Sentinel",
+        denom:
+          "ibc/E83107E876FF194B54E9AC3099E49DBB7728156F250ABD3E997D2B7E89E0810B",
+      },
+    ],
   },
 ];
 
@@ -235,5 +247,17 @@ export const chains: { [chain_name: string]: Chain } = {
     lcd: "https://lcd-osmosis.keplr.app",
     rpc: "https://rpc-osmosis.keplr.app",
     chain_image: "/osmo.jpeg",
+  },
+  Sentinel: {
+    chain_name: "Sentinel",
+    deposit_channel_id: "channel-50",
+    deposit_gas: 110_000,
+    withdarw_channel_id: "channel-3",
+    withdarw_gas: 30_000,
+    chain_id: "sentinelhub-2",
+    bech32_prefix: "sent",
+    lcd: "https://lcd-sentinel.keplr.app",
+    rpc: "https://rpc-sentinel.keplr.app",
+    chain_image: "/dvpn.jpeg",
   },
 };
