@@ -556,21 +556,23 @@ export default function TokenRow({
 
                         const { deposit_channel_id, deposit_gas } =
                           chains[token.deposit_from[0].chain_name];
-
-                        const { transactionHash } =
-                          await sourceCosmJs.sendIbcTokens(
-                            sourceAddress,
-                            secretAddress,
-                            { amount, denom: token.deposit_from[0].denom },
-                            "transfer",
-                            deposit_channel_id,
-                            undefined,
-                            Math.floor(Date.now() / 1000) + 4 * 3600, // 4 hours timeout
-                            getFeeFromGas(deposit_gas)
-                          );
-                        depositInputRef.current.value = "";
-                        setLoadingDeposit(false);
-                        setIsDepositDialogOpen(false);
+                        try {
+                          const { transactionHash } =
+                            await sourceCosmJs.sendIbcTokens(
+                              sourceAddress,
+                              secretAddress,
+                              { amount, denom: token.deposit_from[0].denom },
+                              "transfer",
+                              deposit_channel_id,
+                              undefined,
+                              Math.floor(Date.now() / 1000) + 4 * 3600, // 4 hours timeout
+                              getFeeFromGas(deposit_gas)
+                            );
+                          depositInputRef.current.value = "";
+                          setIsDepositDialogOpen(false);
+                        } finally {
+                          setLoadingDeposit(false);
+                        }
                       }}
                     >
                       Deposit
