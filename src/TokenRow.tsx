@@ -27,7 +27,7 @@ import { getKeplrViewingKey, setKeplrViewingKey } from "./KeplrStuff";
 import { Bech32Address } from "@keplr-wallet/cosmos";
 import { FileCopyOutlined } from "@mui/icons-material";
 import { SigningStargateClient, StdFee } from "@cosmjs/stargate";
-import { Token } from "./config";
+import { Token, chains } from "./config";
 
 const viewingKeyErroString = "🧐";
 
@@ -236,7 +236,7 @@ export default function TokenRow({
             }}
           >
             <span>{token.name}</span>
-            {token.address ? (
+            {token.name !== "SCRT" && token.address ? (
               <>
                 <Tooltip title="IBC Deposit" placement="top">
                   <Button
@@ -326,11 +326,12 @@ export default function TokenRow({
                         });
                       }
 
-                      await window.keplr.enable(token.deposit_from[0].chain_id);
+                      const { chain_id, rpc, lcd, bech32_prefix } =
+                        chains[token.deposit_from[0].chain_name];
 
-                      const offlineSigner = window.getOfflineSigner(
-                        token.deposit_from[0].chain_id
-                      );
+                      await window.keplr.enable(chain_id);
+
+                      const offlineSigner = window.getOfflineSigner(chain_id);
 
                       const accounts = await offlineSigner.getAccounts();
                       const { address } = accounts[0];
@@ -338,13 +339,13 @@ export default function TokenRow({
 
                       const cosmJs =
                         await SigningStargateClient.connectWithSigner(
-                          token.deposit_from[0].rpc,
+                          rpc,
                           offlineSigner,
-                          { prefix: token.deposit_from[0].bech32_prefix }
+                          { prefix: bech32_prefix }
                         );
                       setSourceCosmJs(cosmJs);
 
-                      const url = `${token.deposit_from[0].lcd}/bank/balances/${address}`;
+                      const url = `${lcd}/bank/balances/${address}`;
                       try {
                         const response = await fetch(url);
                         const result: {
@@ -539,16 +540,19 @@ export default function TokenRow({
                           .multipliedBy(`1e${token.decimals}`)
                           .toFixed(0, BigNumber.ROUND_DOWN);
 
+                        const { deposit_channel_id, deposit_gas } =
+                          chains[token.deposit_from[0].chain_name];
+
                         const { transactionHash } =
                           await sourceCosmJs.sendIbcTokens(
                             sourceAddress,
                             secretAddress,
                             { amount, denom: token.deposit_from[0].denom },
                             "transfer",
-                            token.deposit_from[0].channel_id,
+                            deposit_channel_id,
                             undefined,
                             Math.floor(Date.now() / 1000) + 4 * 3600, // 4 hours timeout
-                            getFeeFromGas(token.deposit_from[0].gas)
+                            getFeeFromGas(deposit_gas)
                           );
                         depositInputRef.current.value = "";
                         setLoadingDeposit(false);
@@ -643,6 +647,7 @@ export default function TokenRow({
               setLoadingUnwrap(false);
               try {
                 setLoadingTokenBalance(true);
+                await sleep(50); // sometimes query nodes lag
                 await updateTokenBalance();
               } finally {
                 setLoadingTokenBalance(false);
@@ -726,6 +731,7 @@ export default function TokenRow({
               setLoadingWrap(false);
               try {
                 setLoadingTokenBalance(true);
+                await sleep(50); // sometimes query nodes lag
                 await updateTokenBalance();
               } finally {
                 setLoadingTokenBalance(false);

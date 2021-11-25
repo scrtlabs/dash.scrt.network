@@ -3,14 +3,13 @@ import ReactDOM from "react-dom";
 import "./index.css";
 
 import { SigningCosmWasmClient } from "secretjs";
-import { StdFee } from "secretjs/types/types";
 import { Window as KeplrWindow } from "@keplr-wallet/types";
-import { getKeplrViewingKey, KeplrPanel } from "./KeplrStuff";
+import { KeplrPanel } from "./KeplrStuff";
 declare global {
   interface Window extends KeplrWindow {}
 }
 
-import tokens from "./config";
+import { tokens } from "./config";
 import TokenRow from "./TokenRow";
 import { Typography, Avatar } from "@mui/material";
 
