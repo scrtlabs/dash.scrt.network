@@ -1,6 +1,3 @@
-export const SECRET_LCD = "https://bridge-api-manager.azure-api.net";
-export const SECRET_CHAIN_ID = "secret-4";
-
 export type Token = {
   /** display name of the token */
   name: string;
@@ -208,7 +205,7 @@ export const chains: { [chain_name: string]: Chain } = {
     withdarw_gas: 0,
     chain_id: "secret-4",
     bech32_prefix: "secret",
-    lcd: "https://lcd-secret.keplr.app",
+    lcd: "https://bridge-api-manager.azure-api.net",
     rpc: "https://rpc-secret.keplr.app",
     chain_image: "/scrt.svg",
   },

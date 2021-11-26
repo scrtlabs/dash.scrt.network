@@ -3,7 +3,7 @@ import ReactDOM from "react-dom";
 import "./index.css";
 
 import { SigningCosmWasmClient } from "secretjs";
-import { tokens } from "./config";
+import { tokens, chains } from "./config";
 import TokenRow from "./TokenRow";
 import { Typography, Avatar } from "@mui/material";
 import { Window as KeplrWindow } from "@keplr-wallet/types";
@@ -96,7 +96,7 @@ export default function App() {
   const updateCoinBalances = async () => {
     const newBalances = new Map<string, string>(balances);
 
-    const url = `${process.env.VITE_SECRET_LCD_URL}/bank/balances/${secretAddress}`;
+    const url = `${chains["Secret Network"].lcd}/bank/balances/${secretAddress}`;
     try {
       const response = await fetch(url);
       const result: {

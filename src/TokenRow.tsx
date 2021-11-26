@@ -372,7 +372,7 @@ export default function TokenRow({
                       }
                     }}
                   >
-                    <img src="/deposit.png" style={{ height: "0.8em" }} />
+                    <img src="/deposit.svg" style={{ height: "0.8em" }} />
                   </Button>
                 </Tooltip>
                 <Dialog
