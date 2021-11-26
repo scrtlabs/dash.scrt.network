@@ -4,7 +4,10 @@ import React, { useState, useEffect } from "react";
 import CopyToClipboard from "react-copy-to-clipboard";
 import { BroadcastMode, SigningCosmWasmClient } from "secretjs";
 
-import { tokens, SECRET_CHAIN_ID, SECRET_LCD } from "./config";
+import { chains } from "./config";
+
+const SECRET_CHAIN_ID = chains["Secret Network"].chain_id;
+const SECRET_LCD = chains["Secret Network"].lcd;
 
 export function KeplrPanel({
   secretjs,
