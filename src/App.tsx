@@ -144,11 +144,14 @@ export default function App() {
       <div
         style={{
           display: "flex",
-          justifyContent: "flex-end",
+          justifyContent: "space-between",
           alignItems: "center",
           minHeight: "3rem",
         }}
       >
+        <div style={{ textAlign: "center", transform: "scale(0.9)" }}>
+          Withdarwals UI is in the works.
+        </div>
         <KeplrPanel
           secretjs={secretjs}
           setSecretjs={setSecretjs}
