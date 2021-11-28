@@ -64,11 +64,12 @@ export default function TokenRow({
   const depositInputRef = useRef<any>();
   const withdrawInputRef = useRef<any>();
   const [selectedTab, setSelectedTab] = useState<string>("deposit");
-  const [isDepositDialogOpen, setIsDepositDialogOpen] =
-    useState<boolean>(false);
+  const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
   const [sourceAddress, setSourceAddress] = useState<string>("");
   const [sourceBalance, setSourceBalance] = useState<string>("");
-  const [sourceCosmJs, setSourceCosmJs] =
+  const [depositCosmJs, setDepositCosmJs] =
+    useState<SigningStargateClient | null>(null);
+  const [withdrawCosmJs, setWithdrawCosmJs] =
     useState<SigningStargateClient | null>(null);
   const [loadingWrap, setLoadingWrap] = useState<boolean>(false);
   const [loadingUnwrap, setLoadingUnwrap] = useState<boolean>(false);
@@ -124,7 +125,7 @@ export default function TokenRow({
     })();
   }, [secretjs]);
 
-  const denomOnSecret = token.withdraw_to[0]?.denom;
+  const denomOnSecret = token.withdraw_to[0]?.source_denom;
   let balanceIbcCoin;
   let balanceToken;
 
@@ -258,7 +259,7 @@ export default function TokenRow({
                   <Button
                     style={{ minWidth: 0 }}
                     onClick={async () => {
-                      setIsDepositDialogOpen(true);
+                      setIsDialogOpen(true);
 
                       while (
                         !window.keplr ||
@@ -343,25 +344,26 @@ export default function TokenRow({
                       }
 
                       const { chain_id, rpc, lcd, bech32_prefix } =
-                        chains[token.deposit_from[0].chain_name];
+                        chains[token.deposit_from[0].soure_chain_name];
 
                       await window.keplr.enable(chain_id);
 
-                      const offlineSigner = window.getOfflineSigner(chain_id);
+                      const depositOfflineSigner =
+                        window.getOfflineSigner(chain_id);
 
-                      const accounts = await offlineSigner.getAccounts();
-                      const { address } = accounts[0];
-                      setSourceAddress(address);
+                      const depositFromAccounts =
+                        await depositOfflineSigner.getAccounts();
+                      setSourceAddress(depositFromAccounts[0].address);
 
-                      const cosmJs =
+                      const cosmJsForDeposit =
                         await SigningStargateClient.connectWithSigner(
                           rpc,
-                          offlineSigner,
+                          depositOfflineSigner,
                           { prefix: bech32_prefix }
                         );
-                      setSourceCosmJs(cosmJs);
+                      setDepositCosmJs(cosmJsForDeposit);
 
-                      const url = `${lcd}/bank/balances/${address}`;
+                      const url = `${lcd}/bank/balances/${depositFromAccounts[0].address}`;
                       try {
                         const response = await fetch(url);
                         const result: {
@@ -371,7 +373,8 @@ export default function TokenRow({
 
                         const balance =
                           result.result.find(
-                            (c) => c.denom === token.deposit_from[0].denom
+                            (c) =>
+                              c.denom === token.deposit_from[0].source_denom
                           )?.amount || "0";
 
                         setSourceBalance(balance);
@@ -379,16 +382,31 @@ export default function TokenRow({
                         console.error(`Error while trying to query ${url}:`, e);
                         setSourceBalance("Error");
                       }
+
+                      await window.keplr.enable(
+                        chains["Secret Network"].chain_id
+                      );
+                      const withdrawOfflineSigner = window.getOfflineSigner(
+                        chains["Secret Network"].chain_id
+                      );
+
+                      const cosmJsForWithdraw =
+                        await SigningStargateClient.connectWithSigner(
+                          chains["Secret Network"].rpc,
+                          withdrawOfflineSigner,
+                          { prefix: chains["Secret Network"].bech32_prefix }
+                        );
+                      setWithdrawCosmJs(cosmJsForWithdraw);
                     }}
                   >
                     <img src="/deposit.svg" style={{ height: "0.8em" }} />
                   </Button>
                 </Tooltip>
                 <Dialog
-                  open={isDepositDialogOpen}
+                  open={isDialogOpen}
                   fullWidth={true}
                   onClose={() => {
-                    setIsDepositDialogOpen(false);
+                    setIsDialogOpen(false);
                     setSourceBalance("");
                   }}
                 >
@@ -408,6 +426,22 @@ export default function TokenRow({
                     </Box>
                     <TabPanel value={"deposit"}>
                       <DialogContent>
+                        <div
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            gap: "1em",
+                          }}
+                        >
+                          <Typography>
+                            Deposit <strong>{token.name}</strong> from{" "}
+                            <strong>
+                              {token.withdraw_to[0].destination_chain_name}
+                            </strong>{" "}
+                            to <strong>Secret Network</strong>
+                          </Typography>
+                        </div>
+                        <br />
                         <div
                           style={{
                             display: "flex",
@@ -547,7 +581,7 @@ export default function TokenRow({
                           }}
                           loading={loadingDeposit}
                           onClick={async () => {
-                            if (!sourceCosmJs) {
+                            if (!depositCosmJs) {
                               console.error("No cosmjs");
                               return;
                             }
@@ -577,24 +611,24 @@ export default function TokenRow({
                               .toFixed(0, BigNumber.ROUND_DOWN);
 
                             const { deposit_channel_id, deposit_gas } =
-                              chains[token.deposit_from[0].chain_name];
+                              chains[token.deposit_from[0].soure_chain_name];
                             try {
                               const { transactionHash } =
-                                await sourceCosmJs.sendIbcTokens(
+                                await depositCosmJs.sendIbcTokens(
                                   sourceAddress,
                                   secretAddress,
                                   {
                                     amount,
-                                    denom: token.deposit_from[0].denom,
+                                    denom: token.deposit_from[0].source_denom,
                                   },
                                   "transfer",
                                   deposit_channel_id,
                                   undefined,
-                                  Math.floor(Date.now() / 1000) + 4 * 3600, // 4 hours timeout
+                                  Math.floor(Date.now() / 1000) + 15 * 60, // 15 minute timeout
                                   getFeeFromGas(deposit_gas)
                                 );
                               depositInputRef.current.value = "";
-                              setIsDepositDialogOpen(false);
+                              setIsDialogOpen(false);
                             } finally {
                               setLoadingDeposit(false);
                             }
@@ -606,6 +640,22 @@ export default function TokenRow({
                     </TabPanel>
                     <TabPanel value={"withdraw"}>
                       <DialogContent>
+                        <div
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            gap: "1em",
+                          }}
+                        >
+                          <Typography>
+                            Withdraw <strong>{token.name}</strong> from{" "}
+                            <strong>Secret Network</strong> to{" "}
+                            <strong>
+                              {token.withdraw_to[0].destination_chain_name}
+                            </strong>
+                          </Typography>
+                        </div>
+                        <br />
                         <div
                           style={{
                             display: "flex",
@@ -659,7 +709,7 @@ export default function TokenRow({
                             {(() => {
                               const prettyBalance = new BigNumber(
                                 balances.get(
-                                  token.withdraw_to[0].denom
+                                  token.withdraw_to[0].source_denom
                                 ) as string
                               )
                                 .dividedBy(`1e${token.decimals}`)
@@ -705,14 +755,16 @@ export default function TokenRow({
                                   }}
                                   onClick={() => {
                                     if (
-                                      !balances.get(token.withdraw_to[0].denom)
+                                      !balances.get(
+                                        token.withdraw_to[0].source_denom
+                                      )
                                     ) {
                                       return;
                                     }
 
                                     const prettyBalance = new BigNumber(
                                       balances.get(
-                                        token.withdraw_to[0].denom
+                                        token.withdraw_to[0].source_denom
                                       ) as string
                                     )
                                       .dividedBy(`1e${token.decimals}`)
@@ -748,58 +800,60 @@ export default function TokenRow({
                             fontWeight: "bold",
                             fontSize: "1.2em",
                           }}
-                          loading={loadingDeposit}
+                          loading={loadingWithdraw}
                           onClick={async () => {
-                            if (!sourceCosmJs) {
+                            if (!withdrawCosmJs) {
                               console.error("No cosmjs");
                               return;
                             }
 
-                            if (!depositInputRef?.current?.value) {
-                              console.error("Empty deposit");
+                            if (!withdrawInputRef?.current?.value) {
+                              console.error("Empty withdraw");
                               return;
                             }
 
-                            const depositNormalizedAmount = (
-                              depositInputRef.current.value as string
+                            const withdrawNormalizedAmount = (
+                              withdrawInputRef.current.value as string
                             ).replace(/,/g, "");
 
-                            if (!(Number(depositNormalizedAmount) > 0)) {
+                            if (!(Number(withdrawNormalizedAmount) > 0)) {
                               console.error(
-                                `${depositNormalizedAmount} not bigger than 0`
+                                `${withdrawNormalizedAmount} not bigger than 0`
                               );
                               return;
                             }
 
-                            setLoadingDeposit(true);
+                            setLoadingWithdraw(true);
 
                             const amount = new BigNumber(
-                              depositNormalizedAmount
+                              withdrawNormalizedAmount
                             )
                               .multipliedBy(`1e${token.decimals}`)
                               .toFixed(0, BigNumber.ROUND_DOWN);
 
-                            const { deposit_channel_id, deposit_gas } =
-                              chains[token.deposit_from[0].chain_name];
+                            const { withdraw_channel_id, withdraw_gas } =
+                              chains[
+                                token.withdraw_to[0].destination_chain_name
+                              ];
                             try {
                               const { transactionHash } =
-                                await sourceCosmJs.sendIbcTokens(
+                                await withdrawCosmJs.sendIbcTokens(
                                   sourceAddress,
                                   secretAddress,
                                   {
                                     amount,
-                                    denom: token.deposit_from[0].denom,
+                                    denom: token.deposit_from[0].source_denom,
                                   },
                                   "transfer",
-                                  deposit_channel_id,
+                                  withdraw_channel_id,
                                   undefined,
-                                  Math.floor(Date.now() / 1000) + 4 * 3600, // 4 hours timeout
-                                  getFeeFromGas(deposit_gas)
+                                  Math.floor(Date.now() / 1000) + 15 * 60, // 15 minute timeout
+                                  getFeeFromGas(withdraw_gas)
                                 );
-                              depositInputRef.current.value = "";
-                              setIsDepositDialogOpen(false);
+                              withdrawInputRef.current.value = "";
+                              setIsDialogOpen(false);
                             } finally {
-                              setLoadingDeposit(false);
+                              setLoadingWithdraw(false);
                             }
                           }}
                         >
@@ -859,7 +913,7 @@ export default function TokenRow({
                     denom:
                       token.name === "SCRT"
                         ? undefined
-                        : token.withdraw_to[0].denom,
+                        : token.withdraw_to[0].source_denom,
                   },
                 },
                 "",
@@ -947,7 +1001,7 @@ export default function TokenRow({
                 token.address,
                 { deposit: {} },
                 "",
-                [{ denom: token.withdraw_to[0].denom, amount }],
+                [{ denom: token.withdraw_to[0].source_denom, amount }],
                 getFeeFromGas(40_000),
                 token.code_hash
               );

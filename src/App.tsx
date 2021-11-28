@@ -105,7 +105,7 @@ export default function App() {
       } = await response.json();
 
       const denoms = Array.from(
-        new Set(tokens.map((t) => t.withdraw_to.map((w) => w.denom)).flat())
+        new Set(tokens.map((t) => t.withdraw_to.map((w) => w.source_denom)).flat())
       );
 
       for (const denom of denoms) {
