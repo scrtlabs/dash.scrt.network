@@ -254,7 +254,7 @@ export default function TokenRow({
             <span>{token.name}</span>
             {token.name !== "SCRT" && token.address ? (
               <>
-                <Tooltip title="IBC Deposit" placement="top">
+                <Tooltip title={`IBC Deposit & Withdraw`} placement="top">
                   <Button
                     style={{ minWidth: 0 }}
                     onClick={async () => {
@@ -386,26 +386,12 @@ export default function TokenRow({
                 </Tooltip>
                 <Dialog
                   open={isDepositDialogOpen}
+                  fullWidth={true}
                   onClose={() => {
                     setIsDepositDialogOpen(false);
                     setSourceBalance("");
                   }}
                 >
-                  {/* <DialogTitle>
-                    <div
-                      style={{
-                        display: "flex",
-                        justifyContent: "space-between",
-                        alignItems: "center",
-                      }}
-                    >
-                      <Typography variant="h5">IBC Actions</Typography>
-
-                      <IconButton onClick={() => setIsDepositDialogOpen(false)}>
-                        <CloseIcon />
-                      </IconButton>
-                    </div>
-                  </DialogTitle> */}
                   <TabContext value={selectedTab}>
                     <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
                       <Tabs
@@ -554,7 +540,8 @@ export default function TokenRow({
                         <LoadingButton
                           variant="contained"
                           sx={{
-                            padding: "0.5em 5em",
+                            padding: "0.5em 0",
+                            width: "10em",
                             fontWeight: "bold",
                             fontSize: "1.2em",
                           }}
@@ -756,7 +743,8 @@ export default function TokenRow({
                         <LoadingButton
                           variant="contained"
                           sx={{
-                            padding: "0.5em 5em",
+                            padding: "0.5em 0",
+                            width: "10em",
                             fontWeight: "bold",
                             fontSize: "1.2em",
                           }}
