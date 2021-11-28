@@ -17,16 +17,16 @@ export type Token = {
 
 export type Deposit = {
   /** display name of the other chain */
-  chain_name: string;
+  soure_chain_name: string;
   /** denom on the other chain */
-  denom: string;
+  source_denom: string;
 };
 
 export type Withdraw = {
   /** display name of the other chain */
-  chain_name: string;
+  destination_chain_name: string;
   /** denom on Secret Network */
-  denom: string;
+  source_denom: string;
 };
 
 export const tokens: Token[] = [
@@ -39,30 +39,30 @@ export const tokens: Token[] = [
     decimals: 6,
     deposit_from: [
       {
-        chain_name: "Cosmos Hub",
-        denom: "TODO", // SCRT denom on Cosmos
+        soure_chain_name: "Cosmos Hub",
+        source_denom: "TODO", // SCRT denom on Cosmos
       },
       {
-        chain_name: "Terra",
-        denom: "TODO", // SCRT denom on Terra
+        soure_chain_name: "Terra",
+        source_denom: "TODO", // SCRT denom on Terra
       },
       {
-        chain_name: "Osmosis",
-        denom: "TODO", // SCRT denom on Osmosis
+        soure_chain_name: "Osmosis",
+        source_denom: "TODO", // SCRT denom on Osmosis
       },
     ],
     withdraw_to: [
       {
-        chain_name: "Cosmos Hub",
-        denom: "uscrt",
+        destination_chain_name: "Cosmos Hub",
+        source_denom: "uscrt",
       },
       {
-        chain_name: "Terra",
-        denom: "uscrt",
+        destination_chain_name: "Terra",
+        source_denom: "uscrt",
       },
       {
-        chain_name: "Osmosis",
-        denom: "uscrt",
+        destination_chain_name: "Osmosis",
+        source_denom: "uscrt",
       },
     ],
   },
@@ -75,14 +75,14 @@ export const tokens: Token[] = [
     decimals: 6,
     deposit_from: [
       {
-        chain_name: "Cosmos Hub",
-        denom: "uatom",
+        soure_chain_name: "Cosmos Hub",
+        source_denom: "uatom",
       },
     ],
     withdraw_to: [
       {
-        chain_name: "Cosmos Hub",
-        denom:
+        destination_chain_name: "Cosmos Hub",
+        source_denom:
           "ibc/27394FB092D2ECCD56123C74F36E4C1F926001CEADA9CA97EA622B25F41E5EB2",
       },
     ],
@@ -96,14 +96,14 @@ export const tokens: Token[] = [
     decimals: 6,
     deposit_from: [
       {
-        chain_name: "Terra",
-        denom: "uluna",
+        soure_chain_name: "Terra",
+        source_denom: "uluna",
       },
     ],
     withdraw_to: [
       {
-        chain_name: "Terra",
-        denom:
+        destination_chain_name: "Terra",
+        source_denom:
           "ibc/D70B0FBF97AEB04491E9ABF4467A7F66CD6250F4382CE5192D856114B83738D2",
       },
     ],
@@ -117,14 +117,14 @@ export const tokens: Token[] = [
     decimals: 6,
     deposit_from: [
       {
-        chain_name: "Terra",
-        denom: "uusd",
+        soure_chain_name: "Terra",
+        source_denom: "uusd",
       },
     ],
     withdraw_to: [
       {
-        chain_name: "Terra",
-        denom:
+        destination_chain_name: "Terra",
+        source_denom:
           "ibc/4294C3DB67564CF4A0B2BFACC8415A59B38243F6FF9E288FBA34F9B4823BA16E",
       },
     ],
@@ -138,14 +138,14 @@ export const tokens: Token[] = [
     decimals: 6,
     deposit_from: [
       {
-        chain_name: "Osmosis",
-        denom: "uosmo",
+        soure_chain_name: "Osmosis",
+        source_denom: "uosmo",
       },
     ],
     withdraw_to: [
       {
-        chain_name: "Osmosis",
-        denom:
+        destination_chain_name: "Osmosis",
+        source_denom:
           "ibc/0471F1C4E7AFD3F07702BEF6DC365268D64570F7C1FDC98EA6098DD6DE59817B",
       },
     ],
@@ -159,14 +159,14 @@ export const tokens: Token[] = [
     decimals: 6,
     deposit_from: [
       {
-        chain_name: "Sentinel",
-        denom: "udvpn",
+        soure_chain_name: "Sentinel",
+        source_denom: "udvpn",
       },
     ],
     withdraw_to: [
       {
-        chain_name: "Sentinel",
-        denom:
+        destination_chain_name: "Sentinel",
+        source_denom:
           "ibc/E83107E876FF194B54E9AC3099E49DBB7728156F250ABD3E997D2B7E89E0810B",
       },
     ],
@@ -181,9 +181,9 @@ export type Chain = {
   /** gas limit for ibc transfer from the chain to Secret Network */
   deposit_gas: number;
   /** channel_id on Secret Network */
-  withdarw_channel_id: string;
+  withdraw_channel_id: string;
   /** gas limit for ibc transfer from Secret Network to the chain */
-  withdarw_gas: number;
+  withdraw_gas: number;
   /** bech32 prefix of addresses on the chain */
   bech32_prefix: string;
   /** logo of the chain */
@@ -201,8 +201,8 @@ export const chains: { [chain_name: string]: Chain } = {
     chain_name: "Secret Network",
     deposit_channel_id: "",
     deposit_gas: 0,
-    withdarw_channel_id: "",
-    withdarw_gas: 0,
+    withdraw_channel_id: "",
+    withdraw_gas: 0,
     chain_id: "secret-4",
     bech32_prefix: "secret",
     lcd: "https://bridge-api-manager.azure-api.net",
@@ -213,8 +213,8 @@ export const chains: { [chain_name: string]: Chain } = {
     chain_name: "Cosmos Hub",
     deposit_channel_id: "channel-235",
     deposit_gas: 110_000,
-    withdarw_channel_id: "channel-0",
-    withdarw_gas: 30_000,
+    withdraw_channel_id: "channel-0",
+    withdraw_gas: 30_000,
     chain_id: "cosmoshub-4",
     bech32_prefix: "cosmos",
     lcd: "https://lcd-cosmoshub.keplr.app",
@@ -225,8 +225,8 @@ export const chains: { [chain_name: string]: Chain } = {
     chain_name: "Terra",
     deposit_channel_id: "channel-16",
     deposit_gas: 110_000,
-    withdarw_channel_id: "channel-2",
-    withdarw_gas: 30_000,
+    withdraw_channel_id: "channel-2",
+    withdraw_gas: 30_000,
     chain_id: "columbus-5",
     bech32_prefix: "terra",
     lcd: "https://lcd-columbus.keplr.app",
@@ -237,8 +237,8 @@ export const chains: { [chain_name: string]: Chain } = {
     chain_name: "Osmosis",
     deposit_channel_id: "channel-88",
     deposit_gas: 1_500_000,
-    withdarw_channel_id: "channel-1",
-    withdarw_gas: 30_000,
+    withdraw_channel_id: "channel-1",
+    withdraw_gas: 30_000,
     chain_id: "osmosis-1",
     bech32_prefix: "osmo",
     lcd: "https://lcd-osmosis.keplr.app",
@@ -249,8 +249,8 @@ export const chains: { [chain_name: string]: Chain } = {
     chain_name: "Sentinel",
     deposit_channel_id: "channel-50",
     deposit_gas: 110_000,
-    withdarw_channel_id: "channel-3",
-    withdarw_gas: 30_000,
+    withdraw_channel_id: "channel-3",
+    withdraw_gas: 30_000,
     chain_id: "sentinelhub-2",
     bech32_prefix: "sent",
     lcd: "https://lcd-sentinel.keplr.app",
