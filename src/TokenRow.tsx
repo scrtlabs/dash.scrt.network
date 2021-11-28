@@ -164,21 +164,23 @@ export default function TokenRow({
       );
     } else if (tokenBalance == viewingKeyErroString) {
       balanceToken = (
-        <span
-          style={{ cursor: "pointer" }}
-          onClick={async () => {
-            await setKeplrViewingKey(token.address);
-            try {
-              setLoadingTokenBalance(true);
-              await sleep(1000); // sometimes query nodes lag
-              await updateTokenBalance();
-            } finally {
-              setLoadingTokenBalance(false);
-            }
-          }}
-        >
-          Balance:{` ${viewingKeyErroString}`}
-        </span>
+        <Tooltip title="Set Viewing Key" placement="top">
+          <span
+            style={{ cursor: "pointer" }}
+            onClick={async () => {
+              await setKeplrViewingKey(token.address);
+              try {
+                setLoadingTokenBalance(true);
+                await sleep(1000); // sometimes query nodes lag
+                await updateTokenBalance();
+              } finally {
+                setLoadingTokenBalance(false);
+              }
+            }}
+          >
+            Balance:{` ${viewingKeyErroString}`}
+          </span>
+        </Tooltip>
       );
     } else if (Number(tokenBalance) > -1) {
       balanceToken = (
@@ -783,24 +785,26 @@ export default function TokenRow({
           >
             <span>{balanceToken}</span>
             {token.address ? (
-              <Button
-                style={{
-                  color: "black",
-                  minWidth: 0,
-                  padding: 0,
-                  display: loadingTokenBalance ? "none" : undefined,
-                }}
-                onClick={async () => {
-                  try {
-                    setLoadingTokenBalance(true);
-                    await updateTokenBalance();
-                  } finally {
-                    setLoadingTokenBalance(false);
-                  }
-                }}
-              >
-                <RefreshIcon sx={{ height: "0.7em" }} />
-              </Button>
+              <Tooltip title="Refresh Balance" placement="top">
+                <Button
+                  style={{
+                    color: "black",
+                    minWidth: 0,
+                    padding: 0,
+                    display: loadingTokenBalance ? "none" : undefined,
+                  }}
+                  onClick={async () => {
+                    try {
+                      setLoadingTokenBalance(true);
+                      await updateTokenBalance();
+                    } finally {
+                      setLoadingTokenBalance(false);
+                    }
+                  }}
+                >
+                  <RefreshIcon sx={{ height: "0.7em" }} />
+                </Button>
+              </Tooltip>
             ) : null}
           </div>
         </div>
