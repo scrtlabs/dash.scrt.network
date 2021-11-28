@@ -150,7 +150,7 @@ export default function App() {
         }}
       >
         <div style={{ textAlign: "center", transform: "scale(0.9)" }}>
-          Withdarwals UI is in the works.
+          Withdrawals UI is in the works.
         </div>
         <KeplrPanel
           secretjs={secretjs}
