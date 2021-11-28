@@ -12,6 +12,9 @@ import {
   Input,
   FormControl,
   InputLabel,
+  Box,
+  Tabs,
+  Tab,
 } from "@mui/material";
 import LoadingButton from "@mui/lab/LoadingButton";
 import BigNumber from "bignumber.js";
@@ -28,6 +31,7 @@ import { Bech32Address } from "@keplr-wallet/cosmos";
 import { FileCopyOutlined } from "@mui/icons-material";
 import { SigningStargateClient, StdFee } from "@cosmjs/stargate";
 import { Token, chains } from "./config";
+import { TabContext, TabPanel } from "@mui/lab";
 
 const viewingKeyErroString = "🧐";
 
@@ -58,6 +62,8 @@ export default function TokenRow({
 }) {
   const wrapInputRef = useRef<any>();
   const depositInputRef = useRef<any>();
+  const withdrawInputRef = useRef<any>();
+  const [selectedTab, setSelectedTab] = useState<string>("deposit");
   const [isDepositDialogOpen, setIsDepositDialogOpen] =
     useState<boolean>(false);
   const [sourceAddress, setSourceAddress] = useState<string>("");
@@ -67,6 +73,7 @@ export default function TokenRow({
   const [loadingWrap, setLoadingWrap] = useState<boolean>(false);
   const [loadingUnwrap, setLoadingUnwrap] = useState<boolean>(false);
   const [loadingDeposit, setLoadingDeposit] = useState<boolean>(false);
+  const [loadingWithdraw, setLoadingWithdraw] = useState<boolean>(false);
   const [tokenBalance, setTokenBalance] = useState<string>("");
   const [loadingTokenBalance, setLoadingTokenBalance] =
     useState<boolean>(false);
@@ -384,7 +391,7 @@ export default function TokenRow({
                     setSourceBalance("");
                   }}
                 >
-                  <DialogTitle>
+                  {/* <DialogTitle>
                     <div
                       style={{
                         display: "flex",
@@ -392,194 +399,427 @@ export default function TokenRow({
                         alignItems: "center",
                       }}
                     >
-                      <Typography variant="h5">Deposit IBC Asset</Typography>
+                      <Typography variant="h5">IBC Actions</Typography>
 
                       <IconButton onClick={() => setIsDepositDialogOpen(false)}>
                         <CloseIcon />
                       </IconButton>
                     </div>
-                  </DialogTitle>
-                  <DialogContent>
-                    <div
-                      style={{
-                        display: "flex",
-                        justifyContent: "space-between",
-                        alignItems: "center",
-                        gap: "1em",
-                      }}
-                    >
-                      <Typography sx={{ fontWeight: "bold" }}>From:</Typography>
-                      {sourceAddress !== "" ? (
-                        <CopiableAddress address={sourceAddress} />
-                      ) : (
-                        <CircularProgress size="1em" />
-                      )}
-                    </div>
-                    <div
-                      style={{
-                        display: "flex",
-                        justifyContent: "space-between",
-                        alignItems: "center",
-                        gap: "1em",
-                      }}
-                    >
-                      <Typography sx={{ fontWeight: "bold" }}>To:</Typography>
-                      {secretAddress !== "" ? (
-                        <CopiableAddress address={secretAddress} />
-                      ) : (
-                        <CircularProgress size="1em" />
-                      )}
-                    </div>
-                    <br />
-                    <div
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        gap: "0.3em",
-                        marginBottom: "0.8em",
-                      }}
-                    >
-                      <Typography
-                        sx={{ fontSize: "0.8em", fontWeight: "bold" }}
+                  </DialogTitle> */}
+                  <TabContext value={selectedTab}>
+                    <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+                      <Tabs
+                        value={selectedTab}
+                        variant="fullWidth"
+                        onChange={(
+                          _event: React.SyntheticEvent,
+                          newSelectedTab: string
+                        ) => setSelectedTab(newSelectedTab)}
                       >
-                        Available Balance:
-                      </Typography>
-                      <Typography sx={{ fontSize: "0.8em", opacity: 0.8 }}>
-                        {(() => {
-                          if (sourceBalance === "") {
-                            return <CircularProgress size="0.6em" />;
-                          }
+                        <Tab label="IBC Deposit" value={"deposit"} />
+                        <Tab label="IBC Withdraw" value={"withdraw"} />
+                      </Tabs>
+                    </Box>
+                    <TabPanel value={"deposit"}>
+                      <DialogContent>
+                        <div
+                          style={{
+                            display: "flex",
+                            justifyContent: "space-between",
+                            alignItems: "center",
+                            gap: "1em",
+                          }}
+                        >
+                          <Typography sx={{ fontWeight: "bold" }}>
+                            From:
+                          </Typography>
+                          {sourceAddress !== "" ? (
+                            <CopiableAddress address={sourceAddress} />
+                          ) : (
+                            <CircularProgress size="1em" />
+                          )}
+                        </div>
+                        <div
+                          style={{
+                            display: "flex",
+                            justifyContent: "space-between",
+                            alignItems: "center",
+                            gap: "1em",
+                          }}
+                        >
+                          <Typography sx={{ fontWeight: "bold" }}>
+                            To:
+                          </Typography>
+                          {secretAddress !== "" ? (
+                            <CopiableAddress address={secretAddress} />
+                          ) : (
+                            <CircularProgress size="1em" />
+                          )}
+                        </div>
+                        <br />
+                        <div
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            gap: "0.3em",
+                            marginBottom: "0.8em",
+                          }}
+                        >
+                          <Typography
+                            sx={{ fontSize: "0.8em", fontWeight: "bold" }}
+                          >
+                            Available Balance:
+                          </Typography>
+                          <Typography sx={{ fontSize: "0.8em", opacity: 0.8 }}>
+                            {(() => {
+                              if (sourceBalance === "") {
+                                return <CircularProgress size="0.6em" />;
+                              }
 
-                          const prettyBalance = new BigNumber(sourceBalance)
-                            .dividedBy(`1e${token.decimals}`)
-                            .toFormat();
+                              const prettyBalance = new BigNumber(sourceBalance)
+                                .dividedBy(`1e${token.decimals}`)
+                                .toFormat();
 
-                          if (prettyBalance === "NaN") {
-                            return "Error";
-                          }
+                              if (prettyBalance === "NaN") {
+                                return "Error";
+                              }
 
-                          return `${prettyBalance} ${token.name}`;
-                        })()}
-                      </Typography>
-                    </div>
-                    <FormControl sx={{ width: "100%" }} variant="standard">
-                      <InputLabel htmlFor="Amount to Deposit">
-                        Amount to Deposit
-                      </InputLabel>
-                      <Input
-                        autoFocus
-                        id="Amount to Deposit"
-                        fullWidth
-                        type="text"
-                        inputRef={depositInputRef}
-                        startAdornment={
-                          <InputAdornment position="start">
-                            <Avatar
-                              src={token.image}
-                              sx={{
-                                width: "1em",
-                                height: "1em",
-                                boxShadow: "rgba(0, 0, 0, 0.15) 0px 6px 10px",
-                              }}
-                            />
-                          </InputAdornment>
-                        }
-                        endAdornment={
-                          <InputAdornment position="end">
-                            <Button
-                              style={{ padding: "0.1em 0.5em", minWidth: 0 }}
-                              onClick={() => {
-                                if (sourceBalance === "") {
-                                  return;
-                                }
+                              return `${prettyBalance} ${token.name}`;
+                            })()}
+                          </Typography>
+                        </div>
+                        <FormControl sx={{ width: "100%" }} variant="standard">
+                          <InputLabel htmlFor="Amount to Deposit">
+                            Amount to Deposit
+                          </InputLabel>
+                          <Input
+                            autoFocus
+                            id="Amount to Deposit"
+                            fullWidth
+                            type="text"
+                            inputRef={depositInputRef}
+                            startAdornment={
+                              <InputAdornment position="start">
+                                <Avatar
+                                  src={token.image}
+                                  sx={{
+                                    width: "1em",
+                                    height: "1em",
+                                    boxShadow:
+                                      "rgba(0, 0, 0, 0.15) 0px 6px 10px",
+                                  }}
+                                />
+                              </InputAdornment>
+                            }
+                            endAdornment={
+                              <InputAdornment position="end">
+                                <Button
+                                  style={{
+                                    padding: "0.1em 0.5em",
+                                    minWidth: 0,
+                                  }}
+                                  onClick={() => {
+                                    if (sourceBalance === "") {
+                                      return;
+                                    }
 
-                                const prettyBalance = new BigNumber(
-                                  sourceBalance
-                                )
-                                  .dividedBy(`1e${token.decimals}`)
-                                  .toFormat();
+                                    const prettyBalance = new BigNumber(
+                                      sourceBalance
+                                    )
+                                      .dividedBy(`1e${token.decimals}`)
+                                      .toFormat();
 
-                                if (prettyBalance === "NaN") {
-                                  return;
-                                }
+                                    if (prettyBalance === "NaN") {
+                                      return;
+                                    }
 
-                                depositInputRef.current.value = prettyBalance;
-                              }}
-                            >
-                              MAX
-                            </Button>
-                          </InputAdornment>
-                        }
-                      />
-                    </FormControl>
-                  </DialogContent>
-                  <div
-                    style={{
-                      display: "flex",
-                      justifyContent: "center",
-                      marginBottom: "1em",
-                    }}
-                  >
-                    <LoadingButton
-                      variant="contained"
-                      sx={{
-                        padding: "0.5em 5em",
-                        fontWeight: "bold",
-                        fontSize: "1.2em",
-                      }}
-                      loading={loadingDeposit}
-                      onClick={async () => {
-                        if (!sourceCosmJs) {
-                          console.error("No cosmjs");
-                          return;
-                        }
+                                    depositInputRef.current.value =
+                                      prettyBalance;
+                                  }}
+                                >
+                                  MAX
+                                </Button>
+                              </InputAdornment>
+                            }
+                          />
+                        </FormControl>
+                      </DialogContent>
+                      <div
+                        style={{
+                          display: "flex",
+                          justifyContent: "center",
+                          marginBottom: "1em",
+                        }}
+                      >
+                        <LoadingButton
+                          variant="contained"
+                          sx={{
+                            padding: "0.5em 5em",
+                            fontWeight: "bold",
+                            fontSize: "1.2em",
+                          }}
+                          loading={loadingDeposit}
+                          onClick={async () => {
+                            if (!sourceCosmJs) {
+                              console.error("No cosmjs");
+                              return;
+                            }
 
-                        if (!depositInputRef?.current?.value) {
-                          console.error("Empty deposit");
-                          return;
-                        }
+                            if (!depositInputRef?.current?.value) {
+                              console.error("Empty deposit");
+                              return;
+                            }
 
-                        const depositNormalizedAmount = (
-                          depositInputRef.current.value as string
-                        ).replace(/,/g, "");
+                            const depositNormalizedAmount = (
+                              depositInputRef.current.value as string
+                            ).replace(/,/g, "");
 
-                        if (!(Number(depositNormalizedAmount) > 0)) {
-                          console.error(
-                            `${depositNormalizedAmount} not bigger than 0`
-                          );
-                          return;
-                        }
+                            if (!(Number(depositNormalizedAmount) > 0)) {
+                              console.error(
+                                `${depositNormalizedAmount} not bigger than 0`
+                              );
+                              return;
+                            }
 
-                        setLoadingDeposit(true);
+                            setLoadingDeposit(true);
 
-                        const amount = new BigNumber(depositNormalizedAmount)
-                          .multipliedBy(`1e${token.decimals}`)
-                          .toFixed(0, BigNumber.ROUND_DOWN);
+                            const amount = new BigNumber(
+                              depositNormalizedAmount
+                            )
+                              .multipliedBy(`1e${token.decimals}`)
+                              .toFixed(0, BigNumber.ROUND_DOWN);
 
-                        const { deposit_channel_id, deposit_gas } =
-                          chains[token.deposit_from[0].chain_name];
-                        try {
-                          const { transactionHash } =
-                            await sourceCosmJs.sendIbcTokens(
-                              sourceAddress,
-                              secretAddress,
-                              { amount, denom: token.deposit_from[0].denom },
-                              "transfer",
-                              deposit_channel_id,
-                              undefined,
-                              Math.floor(Date.now() / 1000) + 4 * 3600, // 4 hours timeout
-                              getFeeFromGas(deposit_gas)
-                            );
-                          depositInputRef.current.value = "";
-                          setIsDepositDialogOpen(false);
-                        } finally {
-                          setLoadingDeposit(false);
-                        }
-                      }}
-                    >
-                      Deposit
-                    </LoadingButton>
-                  </div>
+                            const { deposit_channel_id, deposit_gas } =
+                              chains[token.deposit_from[0].chain_name];
+                            try {
+                              const { transactionHash } =
+                                await sourceCosmJs.sendIbcTokens(
+                                  sourceAddress,
+                                  secretAddress,
+                                  {
+                                    amount,
+                                    denom: token.deposit_from[0].denom,
+                                  },
+                                  "transfer",
+                                  deposit_channel_id,
+                                  undefined,
+                                  Math.floor(Date.now() / 1000) + 4 * 3600, // 4 hours timeout
+                                  getFeeFromGas(deposit_gas)
+                                );
+                              depositInputRef.current.value = "";
+                              setIsDepositDialogOpen(false);
+                            } finally {
+                              setLoadingDeposit(false);
+                            }
+                          }}
+                        >
+                          Deposit
+                        </LoadingButton>
+                      </div>
+                    </TabPanel>
+                    <TabPanel value={"withdraw"}>
+                      <DialogContent>
+                        <div
+                          style={{
+                            display: "flex",
+                            justifyContent: "space-between",
+                            alignItems: "center",
+                            gap: "1em",
+                          }}
+                        >
+                          <Typography sx={{ fontWeight: "bold" }}>
+                            From:
+                          </Typography>
+                          {secretAddress !== "" ? (
+                            <CopiableAddress address={secretAddress} />
+                          ) : (
+                            <CircularProgress size="1em" />
+                          )}
+                        </div>
+                        <div
+                          style={{
+                            display: "flex",
+                            justifyContent: "space-between",
+                            alignItems: "center",
+                            gap: "1em",
+                          }}
+                        >
+                          <Typography sx={{ fontWeight: "bold" }}>
+                            To:
+                          </Typography>
+                          {sourceAddress !== "" ? (
+                            <CopiableAddress address={sourceAddress} />
+                          ) : (
+                            <CircularProgress size="1em" />
+                          )}
+                        </div>
+
+                        <br />
+                        <div
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            gap: "0.3em",
+                            marginBottom: "0.8em",
+                          }}
+                        >
+                          <Typography
+                            sx={{ fontSize: "0.8em", fontWeight: "bold" }}
+                          >
+                            Available Balance:
+                          </Typography>
+                          <Typography sx={{ fontSize: "0.8em", opacity: 0.8 }}>
+                            {(() => {
+                              const prettyBalance = new BigNumber(
+                                balances.get(
+                                  token.withdraw_to[0].denom
+                                ) as string
+                              )
+                                .dividedBy(`1e${token.decimals}`)
+                                .toFormat();
+
+                              if (prettyBalance === "NaN") {
+                                return "Error";
+                              }
+
+                              return `${prettyBalance} ${token.name}`;
+                            })()}
+                          </Typography>
+                        </div>
+                        <FormControl sx={{ width: "100%" }} variant="standard">
+                          <InputLabel htmlFor="Amount to Withdraw">
+                            Amount to Withdraw
+                          </InputLabel>
+                          <Input
+                            autoFocus
+                            id="Amount to Withdraw"
+                            fullWidth
+                            type="text"
+                            inputRef={withdrawInputRef}
+                            startAdornment={
+                              <InputAdornment position="start">
+                                <Avatar
+                                  src={token.image}
+                                  sx={{
+                                    width: "1em",
+                                    height: "1em",
+                                    boxShadow:
+                                      "rgba(0, 0, 0, 0.15) 0px 6px 10px",
+                                  }}
+                                />
+                              </InputAdornment>
+                            }
+                            endAdornment={
+                              <InputAdornment position="end">
+                                <Button
+                                  style={{
+                                    padding: "0.1em 0.5em",
+                                    minWidth: 0,
+                                  }}
+                                  onClick={() => {
+                                    if (
+                                      !balances.get(token.withdraw_to[0].denom)
+                                    ) {
+                                      return;
+                                    }
+
+                                    const prettyBalance = new BigNumber(
+                                      balances.get(
+                                        token.withdraw_to[0].denom
+                                      ) as string
+                                    )
+                                      .dividedBy(`1e${token.decimals}`)
+                                      .toFormat();
+
+                                    if (prettyBalance === "NaN") {
+                                      return;
+                                    }
+
+                                    withdrawInputRef.current.value =
+                                      prettyBalance;
+                                  }}
+                                >
+                                  MAX
+                                </Button>
+                              </InputAdornment>
+                            }
+                          />
+                        </FormControl>
+                      </DialogContent>
+                      <div
+                        style={{
+                          display: "flex",
+                          justifyContent: "center",
+                          marginBottom: "1em",
+                        }}
+                      >
+                        <LoadingButton
+                          variant="contained"
+                          sx={{
+                            padding: "0.5em 5em",
+                            fontWeight: "bold",
+                            fontSize: "1.2em",
+                          }}
+                          loading={loadingDeposit}
+                          onClick={async () => {
+                            if (!sourceCosmJs) {
+                              console.error("No cosmjs");
+                              return;
+                            }
+
+                            if (!depositInputRef?.current?.value) {
+                              console.error("Empty deposit");
+                              return;
+                            }
+
+                            const depositNormalizedAmount = (
+                              depositInputRef.current.value as string
+                            ).replace(/,/g, "");
+
+                            if (!(Number(depositNormalizedAmount) > 0)) {
+                              console.error(
+                                `${depositNormalizedAmount} not bigger than 0`
+                              );
+                              return;
+                            }
+
+                            setLoadingDeposit(true);
+
+                            const amount = new BigNumber(
+                              depositNormalizedAmount
+                            )
+                              .multipliedBy(`1e${token.decimals}`)
+                              .toFixed(0, BigNumber.ROUND_DOWN);
+
+                            const { deposit_channel_id, deposit_gas } =
+                              chains[token.deposit_from[0].chain_name];
+                            try {
+                              const { transactionHash } =
+                                await sourceCosmJs.sendIbcTokens(
+                                  sourceAddress,
+                                  secretAddress,
+                                  {
+                                    amount,
+                                    denom: token.deposit_from[0].denom,
+                                  },
+                                  "transfer",
+                                  deposit_channel_id,
+                                  undefined,
+                                  Math.floor(Date.now() / 1000) + 4 * 3600, // 4 hours timeout
+                                  getFeeFromGas(deposit_gas)
+                                );
+                              depositInputRef.current.value = "";
+                              setIsDepositDialogOpen(false);
+                            } finally {
+                              setLoadingDeposit(false);
+                            }
+                          }}
+                        >
+                          Withdraw
+                        </LoadingButton>
+                      </div>
+                    </TabPanel>
+                  </TabContext>
                 </Dialog>
               </>
             ) : null}
