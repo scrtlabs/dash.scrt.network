@@ -490,7 +490,16 @@ export default function TokenRow({
                           >
                             Available Balance:
                           </Typography>
-                          <Typography sx={{ fontSize: "0.8em", opacity: 0.8 }}>
+                          <Typography
+                            sx={{
+                              fontSize: "0.8em",
+                              opacity: 0.8,
+                              cursor: "pointer",
+                            }}
+                            onClick={() => {
+                              document.getElementById("max-deposit")?.click();
+                            }}
+                          >
                             {(() => {
                               if (sourceChainBalance === "") {
                                 return <CircularProgress size="0.6em" />;
@@ -536,6 +545,7 @@ export default function TokenRow({
                             endAdornment={
                               <InputAdornment position="end">
                                 <Button
+                                  id="max-deposit"
                                   style={{
                                     padding: "0.1em 0.5em",
                                     minWidth: 0,
@@ -707,7 +717,16 @@ export default function TokenRow({
                           >
                             Available Balance:
                           </Typography>
-                          <Typography sx={{ fontSize: "0.8em", opacity: 0.8 }}>
+                          <Typography
+                            sx={{
+                              fontSize: "0.8em",
+                              opacity: 0.8,
+                              cursor: "pointer",
+                            }}
+                            onClick={() => {
+                              document.getElementById("max-withdraw")?.click();
+                            }}
+                          >
                             {(() => {
                               const prettyBalance = new BigNumber(
                                 balances.get(
@@ -751,6 +770,7 @@ export default function TokenRow({
                             endAdornment={
                               <InputAdornment position="end">
                                 <Button
+                                  id="max-withdraw"
                                   style={{
                                     padding: "0.1em 0.5em",
                                     minWidth: 0,
