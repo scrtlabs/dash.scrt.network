@@ -65,8 +65,8 @@ export default function TokenRow({
   const withdrawInputRef = useRef<any>();
   const [selectedTab, setSelectedTab] = useState<string>("deposit");
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
-  const [sourceAddress, setSourceAddress] = useState<string>("");
-  const [sourceBalance, setSourceBalance] = useState<string>("");
+  const [sourceChainAddress, setSourceAddress] = useState<string>("");
+  const [sourceChainBalance, setSourceBalance] = useState<string>("");
   const [depositCosmJs, setDepositCosmJs] =
     useState<SigningStargateClient | null>(null);
   const [withdrawCosmJs, setWithdrawCosmJs] =
@@ -453,8 +453,8 @@ export default function TokenRow({
                           <Typography sx={{ fontWeight: "bold" }}>
                             From:
                           </Typography>
-                          {sourceAddress !== "" ? (
-                            <CopiableAddress address={sourceAddress} />
+                          {sourceChainAddress !== "" ? (
+                            <CopiableAddress address={sourceChainAddress} />
                           ) : (
                             <CircularProgress size="1em" />
                           )}
@@ -492,11 +492,13 @@ export default function TokenRow({
                           </Typography>
                           <Typography sx={{ fontSize: "0.8em", opacity: 0.8 }}>
                             {(() => {
-                              if (sourceBalance === "") {
+                              if (sourceChainBalance === "") {
                                 return <CircularProgress size="0.6em" />;
                               }
 
-                              const prettyBalance = new BigNumber(sourceBalance)
+                              const prettyBalance = new BigNumber(
+                                sourceChainBalance
+                              )
                                 .dividedBy(`1e${token.decimals}`)
                                 .toFormat();
 
@@ -539,12 +541,12 @@ export default function TokenRow({
                                     minWidth: 0,
                                   }}
                                   onClick={() => {
-                                    if (sourceBalance === "") {
+                                    if (sourceChainBalance === "") {
                                       return;
                                     }
 
                                     const prettyBalance = new BigNumber(
-                                      sourceBalance
+                                      sourceChainBalance
                                     )
                                       .dividedBy(`1e${token.decimals}`)
                                       .toFormat();
@@ -615,7 +617,7 @@ export default function TokenRow({
                             try {
                               const { transactionHash } =
                                 await depositCosmJs.sendIbcTokens(
-                                  sourceAddress,
+                                  sourceChainAddress,
                                   secretAddress,
                                   {
                                     amount,
@@ -684,8 +686,8 @@ export default function TokenRow({
                           <Typography sx={{ fontWeight: "bold" }}>
                             To:
                           </Typography>
-                          {sourceAddress !== "" ? (
-                            <CopiableAddress address={sourceAddress} />
+                          {sourceChainAddress !== "" ? (
+                            <CopiableAddress address={sourceChainAddress} />
                           ) : (
                             <CircularProgress size="1em" />
                           )}
@@ -838,11 +840,11 @@ export default function TokenRow({
                             try {
                               const { transactionHash } =
                                 await withdrawCosmJs.sendIbcTokens(
-                                  sourceAddress,
                                   secretAddress,
+                                  sourceChainAddress,
                                   {
                                     amount,
-                                    denom: token.deposit_from[0].source_denom,
+                                    denom: token.withdraw_to[0].source_denom,
                                   },
                                   "transfer",
                                   withdraw_channel_id,
