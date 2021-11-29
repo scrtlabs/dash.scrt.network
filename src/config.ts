@@ -206,7 +206,7 @@ export const chains: { [chain_name: string]: Chain } = {
     chain_id: "secret-4",
     bech32_prefix: "secret",
     lcd: "https://bridge-api-manager.azure-api.net",
-    rpc: "https://secret-4--rpc--full.datahub.figment.io/apikey/28d25e5f800308db1e1d212b6c6560be",
+    rpc: "https://rpc-secret.scrtlabs.com/secret-4/rpc/",
     chain_image: "/scrt.svg",
   },
   "Cosmos Hub": {
