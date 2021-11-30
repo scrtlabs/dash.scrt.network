@@ -36,6 +36,9 @@ export default function Withdraw({
   const inputRef = useRef<any>();
   const maxButtonRef = useRef<any>();
 
+  const sourceChain = chains["Secret Network"];
+  const targetChain = chains[token.withdrawals[0].target_chain_name];
+
   const availableBalance = balances.get(token.withdrawals[0].from_denom) || "";
 
   useEffect(() => {
@@ -92,7 +95,10 @@ export default function Withdraw({
           }}
         >
           <Typography sx={{ fontWeight: "bold" }}>From:</Typography>
-          <CopyableAddress address={secretAddress} />
+          <CopyableAddress
+            address={secretAddress}
+            explorerPrefix={sourceChain.explorer_account}
+          />
         </div>
         <div
           style={{
@@ -103,7 +109,10 @@ export default function Withdraw({
           }}
         >
           <Typography sx={{ fontWeight: "bold" }}>To:</Typography>
-          <CopyableAddress address={targetAddress} />
+          <CopyableAddress
+            address={targetAddress}
+            explorerPrefix={targetChain.explorer_account}
+          />
         </div>
         <br />
         <div
@@ -115,7 +124,7 @@ export default function Withdraw({
           }}
         >
           <Typography sx={{ fontSize: "0.8em", fontWeight: "bold" }}>
-            Available Balance:
+            Available to Withdraw:
           </Typography>
           <Typography
             sx={{

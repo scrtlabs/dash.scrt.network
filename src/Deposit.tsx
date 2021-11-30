@@ -37,9 +37,12 @@ export default function Deposit({
   const inputRef = useRef<any>();
   const maxButtonRef = useRef<any>();
 
+  const sourceChain = chains[token.deposits[0].source_chain_name];
+  const targetChain = chains["Secret Network"];
+
   const fetchSourceBalance = async (sourceAddress: string) => {
     const url = `${
-      chains[token.deposit[0].soure_chain_name].lcd
+      chains[token.deposits[0].source_chain_name].lcd
     }/bank/balances/${sourceAddress}`;
     try {
       const response = await fetch(url);
@@ -49,7 +52,7 @@ export default function Deposit({
       } = await response.json();
 
       const balance =
-        result.result.find((c) => c.denom === token.deposit[0].from_denom)
+        result.result.find((c) => c.denom === token.deposits[0].from_denom)
           ?.amount || "0";
 
       setAvailableBalance(balance);
@@ -81,7 +84,7 @@ export default function Deposit({
       }
       // Initialize cosmjs on the target chain, because it has sendIbcTokens()
       const { chain_id, rpc, bech32_prefix } =
-        chains[token.deposit[0].soure_chain_name];
+        chains[token.deposits[0].source_chain_name];
       await window.keplr.enable(chain_id);
       const sourceOfflineSigner = window.getOfflineSignerOnlyAmino(chain_id);
       const depositFromAccounts = await sourceOfflineSigner.getAccounts();
@@ -121,7 +124,10 @@ export default function Deposit({
           }}
         >
           <Typography sx={{ fontWeight: "bold" }}>From:</Typography>
-          <CopyableAddress address={sourceAddress} />
+          <CopyableAddress
+            address={sourceAddress}
+            explorerPrefix={sourceChain.explorer_account}
+          />
         </div>
         <div
           style={{
@@ -132,7 +138,10 @@ export default function Deposit({
           }}
         >
           <Typography sx={{ fontWeight: "bold" }}>To:</Typography>
-          <CopyableAddress address={secretAddress} />
+          <CopyableAddress
+            address={secretAddress}
+            explorerPrefix={targetChain.explorer_account}
+          />
         </div>
         <br />
         <div
@@ -144,7 +153,7 @@ export default function Deposit({
           }}
         >
           <Typography sx={{ fontSize: "0.8em", fontWeight: "bold" }}>
-            Available Balance:
+            Available to Deposit:
           </Typography>
           <Typography
             sx={{
@@ -268,14 +277,14 @@ export default function Deposit({
               .toFixed(0, BigNumber.ROUND_DOWN);
 
             const { deposit_channel_id, deposit_gas } =
-              chains[token.deposit[0].soure_chain_name];
+              chains[token.deposits[0].source_chain_name];
             try {
               const { transactionHash } = await sourceCosmJs.sendIbcTokens(
                 sourceAddress,
                 secretAddress,
                 {
                   amount,
-                  denom: token.deposit[0].from_denom,
+                  denom: token.deposits[0].from_denom,
                 },
                 "transfer",
                 deposit_channel_id,
