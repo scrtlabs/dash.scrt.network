@@ -14,14 +14,12 @@ import React, { useRef, useState, useEffect } from "react";
 import { isMobile } from "react-device-detect";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
+import CompareArrowsIcon from "@mui/icons-material/CompareArrows";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import { SigningCosmWasmClient } from "secretjs";
 import { getKeplrViewingKey, setKeplrViewingKey } from "./KeplrStuff";
 import { Token } from "./config";
-import { TabContext, TabPanel } from "@mui/lab";
 import { viewingKeyErroString, sleep, getFeeFromGas } from "./commons";
-import Deposit from "./Deposit";
-import Withdraw from "./Withdraw";
 import DepositWithdrawDialog from "./DepositWithdrawDialog";
 
 export default function TokenRow({
@@ -216,7 +214,7 @@ export default function TokenRow({
             style={{
               display: "flex",
               justifyContent: "space-between",
-              alignItems: "baseline",
+              alignItems: "center",
               minWidth: "5em",
             }}
           >
@@ -225,10 +223,16 @@ export default function TokenRow({
               <>
                 <Tooltip title={`IBC Deposit & Withdraw`} placement="top">
                   <Button
-                    style={{ minWidth: 0 }}
+                    style={{
+                      minWidth: 0,
+                      padding: 0,
+                      marginBottom: "0.2em",
+                      color: "black",
+                      opacity: 0.8,
+                    }}
                     onClick={async () => setIsDepositWithdrawDialogOpen(true)}
                   >
-                    <img src="/deposit.svg" style={{ height: "0.8em" }} />
+                    <CompareArrowsIcon sx={{ height: "0.8em" }} />
                   </Button>
                 </Tooltip>
                 <DepositWithdrawDialog
