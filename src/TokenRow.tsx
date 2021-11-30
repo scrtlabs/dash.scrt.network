@@ -22,6 +22,7 @@ import { TabContext, TabPanel } from "@mui/lab";
 import { viewingKeyErroString, sleep, getFeeFromGas } from "./commons";
 import Deposit from "./Deposit";
 import Withdraw from "./Withdraw";
+import DepositWithdrawDialog from "./DepositWithdrawDialog";
 
 export default function TokenRow({
   secretjs,
@@ -37,12 +38,13 @@ export default function TokenRow({
   balances: Map<string, string>;
 }) {
   const wrapInputRef = useRef<any>();
-  const [selectedTab, setSelectedTab] = useState<string>("deposit");
-  const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
+
   const [loadingWrap, setLoadingWrap] = useState<boolean>(false);
   const [loadingUnwrap, setLoadingUnwrap] = useState<boolean>(false);
   const [tokenBalance, setTokenBalance] = useState<string>("");
   const [loadingTokenBalance, setLoadingTokenBalance] =
+    useState<boolean>(false);
+  const [isDepositWithdrawDialogOpen, setIsDepositWithdrawDialogOpen] =
     useState<boolean>(false);
 
   const updateTokenBalance = async () => {
@@ -224,55 +226,18 @@ export default function TokenRow({
                 <Tooltip title={`IBC Deposit & Withdraw`} placement="top">
                   <Button
                     style={{ minWidth: 0 }}
-                    onClick={async () => setIsDialogOpen(true)}
+                    onClick={async () => setIsDepositWithdrawDialogOpen(true)}
                   >
                     <img src="/deposit.svg" style={{ height: "0.8em" }} />
                   </Button>
                 </Tooltip>
-                <Dialog
-                  open={isDialogOpen}
-                  fullWidth={true}
-                  onClose={() => setIsDialogOpen(false)}
-                >
-                  <TabContext value={selectedTab}>
-                    <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
-                      <Tabs
-                        value={selectedTab}
-                        variant="fullWidth"
-                        onChange={(
-                          _event: React.SyntheticEvent,
-                          newSelectedTab: string
-                        ) => setSelectedTab(newSelectedTab)}
-                      >
-                        <Tab label="IBC Deposit" value={"deposit"} />
-                        <Tab label="IBC Withdraw" value={"withdraw"} />
-                      </Tabs>
-                    </Box>
-                    <TabPanel value={"deposit"}>
-                      <Deposit
-                        token={token}
-                        secretAddress={secretAddress}
-                        onSuccess={(txhash) => {
-                          setIsDialogOpen(false);
-                          console.log("success", txhash);
-                        }}
-                        onFailure={(error) => console.error(error)}
-                      />
-                    </TabPanel>
-                    <TabPanel value={"withdraw"}>
-                      <Withdraw
-                        token={token}
-                        secretAddress={secretAddress}
-                        balances={balances}
-                        onSuccess={(txhash) => {
-                          setIsDialogOpen(false);
-                          console.log("success", txhash);
-                        }}
-                        onFailure={(error) => console.error(error)}
-                      />
-                    </TabPanel>
-                  </TabContext>
-                </Dialog>
+                <DepositWithdrawDialog
+                  token={token}
+                  balances={balances}
+                  secretAddress={secretAddress}
+                  isOpen={isDepositWithdrawDialogOpen}
+                  setIsOpen={setIsDepositWithdrawDialogOpen}
+                />
               </>
             ) : null}
           </div>

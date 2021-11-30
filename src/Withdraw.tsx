@@ -201,7 +201,7 @@ export default function Withdraw({
         style={{
           display: "flex",
           justifyContent: "center",
-          marginBottom: "1em",
+          marginBottom: "0.4em",
         }}
       >
         <LoadingButton
