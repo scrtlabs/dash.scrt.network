@@ -10,14 +10,14 @@ export type Token = {
   /** decimals of the token */
   decimals: number;
   /** how to deposit this token into Secret Network */
-  deposit: Deposit[];
+  deposits: Deposit[];
   /** how to withdraw this token out of Secret Network */
   withdrawals: Withdraw[];
 };
 
 export type Deposit = {
   /** display name of the source chain */
-  soure_chain_name: string;
+  source_chain_name: string;
   /** denom on the other chain */
   from_denom: string;
 };
@@ -37,17 +37,17 @@ export const tokens: Token[] = [
       "af74387e276be8874f07bec3a87023ee49b0e7ebe08178c49d0a49c3c98ed60e",
     image: "/scrt.svg",
     decimals: 6,
-    deposit: [
+    deposits: [
       {
-        soure_chain_name: "Cosmos Hub",
+        source_chain_name: "Cosmos Hub",
         from_denom: "TODO", // SCRT denom on Cosmos
       },
       {
-        soure_chain_name: "Terra",
+        source_chain_name: "Terra",
         from_denom: "TODO", // SCRT denom on Terra
       },
       {
-        soure_chain_name: "Osmosis",
+        source_chain_name: "Osmosis",
         from_denom: "TODO", // SCRT denom on Osmosis
       },
     ],
@@ -73,9 +73,9 @@ export const tokens: Token[] = [
       "ad91060456344fc8d8e93c0600a3957b8158605c044b3bef7048510b3157b807",
     image: "/atom.jpg",
     decimals: 6,
-    deposit: [
+    deposits: [
       {
-        soure_chain_name: "Cosmos Hub",
+        source_chain_name: "Cosmos Hub",
         from_denom: "uatom",
       },
     ],
@@ -94,9 +94,9 @@ export const tokens: Token[] = [
       "ad91060456344fc8d8e93c0600a3957b8158605c044b3bef7048510b3157b807",
     image: "/luna.png",
     decimals: 6,
-    deposit: [
+    deposits: [
       {
-        soure_chain_name: "Terra",
+        source_chain_name: "Terra",
         from_denom: "uluna",
       },
     ],
@@ -115,9 +115,9 @@ export const tokens: Token[] = [
       "ad91060456344fc8d8e93c0600a3957b8158605c044b3bef7048510b3157b807",
     image: "/ust.png",
     decimals: 6,
-    deposit: [
+    deposits: [
       {
-        soure_chain_name: "Terra",
+        source_chain_name: "Terra",
         from_denom: "uusd",
       },
     ],
@@ -136,9 +136,9 @@ export const tokens: Token[] = [
       "ad91060456344fc8d8e93c0600a3957b8158605c044b3bef7048510b3157b807",
     image: "/osmo.jpeg",
     decimals: 6,
-    deposit: [
+    deposits: [
       {
-        soure_chain_name: "Osmosis",
+        source_chain_name: "Osmosis",
         from_denom: "uosmo",
       },
     ],
@@ -157,9 +157,9 @@ export const tokens: Token[] = [
       "ad91060456344fc8d8e93c0600a3957b8158605c044b3bef7048510b3157b807",
     image: "/dvpn.jpeg",
     decimals: 6,
-    deposit: [
+    deposits: [
       {
-        soure_chain_name: "Sentinel",
+        source_chain_name: "Sentinel",
         from_denom: "udvpn",
       },
     ],
@@ -194,6 +194,10 @@ export type Chain = {
   lcd: string;
   /** rpc url of the chain */
   rpc: string;
+  /** explorer link for accounts */
+  explorer_account: string;
+  /** explorer link for txs */
+  explorer_tx?: string;
 };
 
 export const chains: { [chain_name: string]: Chain } = {
@@ -208,6 +212,8 @@ export const chains: { [chain_name: string]: Chain } = {
     lcd: "https://bridge-api-manager.azure-api.net",
     rpc: "https://rpc-secret.scrtlabs.com/secret-4/rpc/",
     chain_image: "/scrt.svg",
+    explorer_account:
+      "https://secretnodes.com/secret/chains/secret-4/accounts/",
   },
   "Cosmos Hub": {
     chain_name: "Cosmos Hub",
@@ -220,6 +226,7 @@ export const chains: { [chain_name: string]: Chain } = {
     lcd: "https://lcd-cosmoshub.keplr.app",
     rpc: "https://rpc-cosmoshub.keplr.app",
     chain_image: "/atom.jpg",
+    explorer_account: "https://www.mintscan.io/cosmos/account/",
   },
   Terra: {
     chain_name: "Terra",
@@ -232,6 +239,7 @@ export const chains: { [chain_name: string]: Chain } = {
     lcd: "https://lcd-columbus.keplr.app",
     rpc: "https://rpc-columbus.keplr.app",
     chain_image: "/terra.jpg",
+    explorer_account: "https://finder.terra.money/mainnet/address/",
   },
   Osmosis: {
     chain_name: "Osmosis",
@@ -244,6 +252,7 @@ export const chains: { [chain_name: string]: Chain } = {
     lcd: "https://lcd-osmosis.keplr.app",
     rpc: "https://rpc-osmosis.keplr.app",
     chain_image: "/osmo.jpeg",
+    explorer_account: "https://www.mintscan.io/osmosis/account/",
   },
   Sentinel: {
     chain_name: "Sentinel",
@@ -256,5 +265,6 @@ export const chains: { [chain_name: string]: Chain } = {
     lcd: "https://lcd-sentinel.keplr.app",
     rpc: "https://rpc-sentinel.keplr.app",
     chain_image: "/dvpn.jpeg",
+    explorer_account: "https://www.mintscan.io/sentinel/account/",
   },
 };

@@ -1,21 +1,37 @@
-import { CircularProgress, Button, Typography } from "@mui/material";
+import { CircularProgress, Button, Typography, Tooltip } from "@mui/material";
 import React, { useState } from "react";
 import CopyToClipboard from "react-copy-to-clipboard";
 import { FileCopyOutlined } from "@mui/icons-material";
 
-export default function CopyableAddress({ address }: { address: string }) {
+export default function CopyableAddress({
+  address,
+  explorerPrefix,
+}: {
+  address: string;
+  explorerPrefix: string;
+}) {
   const [isCopied, setIsCopied] = useState<boolean>(false);
 
   return (
     <div
       style={{
         display: "flex",
+        justifyContent: "flex-end",
         alignItems: "center",
         gap: "0.1em",
       }}
     >
       <Typography sx={{ opacity: 0.8 }}>
-        {address ?? <CircularProgress size="0.8em" />}
+        <a
+          href={`${explorerPrefix}/${address}`.replace(/\/\//g, "/")}
+          target="_blank"
+          style={{
+            textDecoration: "none",
+            color: "inherit",
+          }}
+        >
+          {address}
+        </a>
       </Typography>
       <CopyToClipboard
         text={address}
