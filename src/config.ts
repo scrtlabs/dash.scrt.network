@@ -44,11 +44,17 @@ export const tokens: Token[] = [
       },
       {
         source_chain_name: "Terra",
-        from_denom: "TODO", // SCRT denom on Terra
+        from_denom:
+          "ibc/EB2CED20AB0466F18BE49285E56B31306D4C60438A022EA995BA65D5E3CF7E09", // SCRT denom on Cosmos
       },
       {
         source_chain_name: "Osmosis",
-        from_denom: "TODO", // SCRT denom on Osmosis
+        from_denom:
+          "ibc/0954E1C28EB7AF5B72D24F3BC2B47BBB2FDF91BDDFD57B74B99E133AED40972A", // SCRT denom on Osmosis
+      },
+      {
+        source_chain_name: "Sentinel",
+        from_denom: "TODO", // SCRT denom on Sentinel
       },
     ],
     withdrawals: [
@@ -62,6 +68,10 @@ export const tokens: Token[] = [
       },
       {
         target_chain_name: "Osmosis",
+        from_denom: "uscrt",
+      },
+      {
+        target_chain_name: "Sentinel",
         from_denom: "uscrt",
       },
     ],
