@@ -228,7 +228,7 @@ export default function Deposit({
         style={{
           display: "flex",
           justifyContent: "center",
-          marginBottom: "1em",
+          marginBottom: "0.4em",
         }}
       >
         <LoadingButton
