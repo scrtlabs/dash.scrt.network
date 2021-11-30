@@ -264,7 +264,7 @@ export default function TokenRow({
                       while (
                         !window.keplr ||
                         !window.getEnigmaUtils ||
-                        !window.getOfflineSigner
+                        !window.getOfflineSignerAuto
                       ) {
                         await sleep(100);
                       }
@@ -349,7 +349,7 @@ export default function TokenRow({
                       await window.keplr.enable(chain_id);
 
                       const depositOfflineSigner =
-                        window.getOfflineSigner(chain_id);
+                        await window.getOfflineSignerAuto(chain_id);
 
                       const depositFromAccounts =
                         await depositOfflineSigner.getAccounts();
@@ -386,9 +386,10 @@ export default function TokenRow({
                       await window.keplr.enable(
                         chains["Secret Network"].chain_id
                       );
-                      const withdrawOfflineSigner = window.getOfflineSigner(
-                        chains["Secret Network"].chain_id
-                      );
+                      const withdrawOfflineSigner =
+                        await window.getOfflineSignerAuto(
+                          chains["Secret Network"].chain_id
+                        );
 
                       const cosmJsForWithdraw =
                         await SigningStargateClient.connectWithSigner(
