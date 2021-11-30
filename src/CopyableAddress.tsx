@@ -1,0 +1,36 @@
+import { CircularProgress, Button, Typography } from "@mui/material";
+import React, { useState } from "react";
+import CopyToClipboard from "react-copy-to-clipboard";
+import { FileCopyOutlined } from "@mui/icons-material";
+
+export default function CopyableAddress({ address }: { address: string }) {
+  const [isCopied, setIsCopied] = useState<boolean>(false);
+
+  return (
+    <div
+      style={{
+        display: "flex",
+        alignItems: "center",
+        gap: "0.1em",
+      }}
+    >
+      <Typography sx={{ opacity: 0.8 }}>
+        {address ?? <CircularProgress size="0.8em" />}
+      </Typography>
+      <CopyToClipboard
+        text={address}
+        onCopy={() => {
+          setIsCopied(true);
+          setTimeout(() => setIsCopied(false), 3000);
+        }}
+      >
+        <Button style={{ color: "black", minWidth: 0 }}>
+          <FileCopyOutlined
+            fontSize="small"
+            style={isCopied ? { fill: "green" } : undefined}
+          />
+        </Button>
+      </CopyToClipboard>
+    </div>
+  );
+}
