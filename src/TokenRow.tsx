@@ -264,12 +264,12 @@ export default function TokenRow({
                       while (
                         !window.keplr ||
                         !window.getEnigmaUtils ||
-                        !window.getOfflineSignerAuto
+                        !window.getOfflineSignerOnlyAmino
                       ) {
                         await sleep(100);
                       }
 
-                      if (["Luna", "UST"].includes(token.name)) {
+                      if (["LUNA", "UST"].includes(token.name.toUpperCase())) {
                         window.keplr.experimentalSuggestChain({
                           rpc: "https://rpc-columbus.keplr.app",
                           rest: "https://lcd-columbus.keplr.app",
@@ -280,9 +280,6 @@ export default function TokenRow({
                             coinMinimalDenom: "uluna",
                             coinDecimals: 6,
                             coinGeckoId: "terra-luna",
-                            // coinImageUrl:
-                            //   window.location.origin +
-                            //   "/public/assets/tokens/luna.png",
                           },
                           bip44: {
                             coinType: 330,
@@ -295,18 +292,12 @@ export default function TokenRow({
                               coinMinimalDenom: "uluna",
                               coinDecimals: 6,
                               coinGeckoId: "terra-luna",
-                              // coinImageUrl:
-                              //   window.location.origin +
-                              //   "/public/assets/tokens/luna.png",
                             },
                             {
                               coinDenom: "UST",
                               coinMinimalDenom: "uusd",
                               coinDecimals: 6,
                               coinGeckoId: "terrausd",
-                              // coinImageUrl:
-                              //   window.location.origin +
-                              //   "/public/assets/tokens/ust.png",
                             },
                           ],
                           feeCurrencies: [
@@ -315,18 +306,12 @@ export default function TokenRow({
                               coinMinimalDenom: "uluna",
                               coinDecimals: 6,
                               coinGeckoId: "terra-luna",
-                              // coinImageUrl:
-                              //   window.location.origin +
-                              //   "/public/assets/tokens/luna.png",
                             },
                             {
                               coinDenom: "UST",
                               coinMinimalDenom: "uusd",
                               coinDecimals: 6,
                               coinGeckoId: "terrausd",
-                              // coinImageUrl:
-                              //   window.location.origin +
-                              //   "/public/assets/tokens/ust.png",
                             },
                           ],
                           gasPriceStep: {
@@ -339,7 +324,6 @@ export default function TokenRow({
                             "ibc-transfer",
                             "no-legacy-stdTx",
                           ],
-                          // explorerUrlToTx: "https://finder.terra.money/columbus-5/tx/{txHash}",
                         });
                       }
 
@@ -349,7 +333,7 @@ export default function TokenRow({
                       await window.keplr.enable(chain_id);
 
                       const depositOfflineSigner =
-                        await window.getOfflineSignerAuto(chain_id);
+                        window.getOfflineSignerOnlyAmino(chain_id);
 
                       const depositFromAccounts =
                         await depositOfflineSigner.getAccounts();
@@ -387,7 +371,7 @@ export default function TokenRow({
                         chains["Secret Network"].chain_id
                       );
                       const withdrawOfflineSigner =
-                        await window.getOfflineSignerAuto(
+                        window.getOfflineSignerOnlyAmino(
                           chains["Secret Network"].chain_id
                         );
 
