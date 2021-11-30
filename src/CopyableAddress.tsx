@@ -23,7 +23,7 @@ export default function CopyableAddress({
     >
       <Typography sx={{ opacity: 0.8 }}>
         <a
-          href={`${explorerPrefix}/${address}`.replace(/\/\//g, "/")}
+          href={`${explorerPrefix}${address}`}
           target="_blank"
           style={{
             textDecoration: "none",
