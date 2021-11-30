@@ -10,23 +10,23 @@ export type Token = {
   /** decimals of the token */
   decimals: number;
   /** how to deposit this token into Secret Network */
-  deposit_from: Deposit[];
+  deposit: Deposit[];
   /** how to withdraw this token out of Secret Network */
-  withdraw_to: Withdraw[];
+  withdrawals: Withdraw[];
 };
 
 export type Deposit = {
-  /** display name of the other chain */
+  /** display name of the source chain */
   soure_chain_name: string;
   /** denom on the other chain */
-  source_denom: string;
+  from_denom: string;
 };
 
 export type Withdraw = {
-  /** display name of the other chain */
-  destination_chain_name: string;
+  /** display name of the target chain */
+  target_chain_name: string;
   /** denom on Secret Network */
-  source_denom: string;
+  from_denom: string;
 };
 
 export const tokens: Token[] = [
@@ -37,32 +37,32 @@ export const tokens: Token[] = [
       "af74387e276be8874f07bec3a87023ee49b0e7ebe08178c49d0a49c3c98ed60e",
     image: "/scrt.svg",
     decimals: 6,
-    deposit_from: [
+    deposit: [
       {
         soure_chain_name: "Cosmos Hub",
-        source_denom: "TODO", // SCRT denom on Cosmos
+        from_denom: "TODO", // SCRT denom on Cosmos
       },
       {
         soure_chain_name: "Terra",
-        source_denom: "TODO", // SCRT denom on Terra
+        from_denom: "TODO", // SCRT denom on Terra
       },
       {
         soure_chain_name: "Osmosis",
-        source_denom: "TODO", // SCRT denom on Osmosis
+        from_denom: "TODO", // SCRT denom on Osmosis
       },
     ],
-    withdraw_to: [
+    withdrawals: [
       {
-        destination_chain_name: "Cosmos Hub",
-        source_denom: "uscrt",
+        target_chain_name: "Cosmos Hub",
+        from_denom: "uscrt",
       },
       {
-        destination_chain_name: "Terra",
-        source_denom: "uscrt",
+        target_chain_name: "Terra",
+        from_denom: "uscrt",
       },
       {
-        destination_chain_name: "Osmosis",
-        source_denom: "uscrt",
+        target_chain_name: "Osmosis",
+        from_denom: "uscrt",
       },
     ],
   },
@@ -73,16 +73,16 @@ export const tokens: Token[] = [
       "ad91060456344fc8d8e93c0600a3957b8158605c044b3bef7048510b3157b807",
     image: "/atom.jpg",
     decimals: 6,
-    deposit_from: [
+    deposit: [
       {
         soure_chain_name: "Cosmos Hub",
-        source_denom: "uatom",
+        from_denom: "uatom",
       },
     ],
-    withdraw_to: [
+    withdrawals: [
       {
-        destination_chain_name: "Cosmos Hub",
-        source_denom:
+        target_chain_name: "Cosmos Hub",
+        from_denom:
           "ibc/27394FB092D2ECCD56123C74F36E4C1F926001CEADA9CA97EA622B25F41E5EB2",
       },
     ],
@@ -94,16 +94,16 @@ export const tokens: Token[] = [
       "ad91060456344fc8d8e93c0600a3957b8158605c044b3bef7048510b3157b807",
     image: "/luna.png",
     decimals: 6,
-    deposit_from: [
+    deposit: [
       {
         soure_chain_name: "Terra",
-        source_denom: "uluna",
+        from_denom: "uluna",
       },
     ],
-    withdraw_to: [
+    withdrawals: [
       {
-        destination_chain_name: "Terra",
-        source_denom:
+        target_chain_name: "Terra",
+        from_denom:
           "ibc/D70B0FBF97AEB04491E9ABF4467A7F66CD6250F4382CE5192D856114B83738D2",
       },
     ],
@@ -115,16 +115,16 @@ export const tokens: Token[] = [
       "ad91060456344fc8d8e93c0600a3957b8158605c044b3bef7048510b3157b807",
     image: "/ust.png",
     decimals: 6,
-    deposit_from: [
+    deposit: [
       {
         soure_chain_name: "Terra",
-        source_denom: "uusd",
+        from_denom: "uusd",
       },
     ],
-    withdraw_to: [
+    withdrawals: [
       {
-        destination_chain_name: "Terra",
-        source_denom:
+        target_chain_name: "Terra",
+        from_denom:
           "ibc/4294C3DB67564CF4A0B2BFACC8415A59B38243F6FF9E288FBA34F9B4823BA16E",
       },
     ],
@@ -136,16 +136,16 @@ export const tokens: Token[] = [
       "ad91060456344fc8d8e93c0600a3957b8158605c044b3bef7048510b3157b807",
     image: "/osmo.jpeg",
     decimals: 6,
-    deposit_from: [
+    deposit: [
       {
         soure_chain_name: "Osmosis",
-        source_denom: "uosmo",
+        from_denom: "uosmo",
       },
     ],
-    withdraw_to: [
+    withdrawals: [
       {
-        destination_chain_name: "Osmosis",
-        source_denom:
+        target_chain_name: "Osmosis",
+        from_denom:
           "ibc/0471F1C4E7AFD3F07702BEF6DC365268D64570F7C1FDC98EA6098DD6DE59817B",
       },
     ],
@@ -157,16 +157,16 @@ export const tokens: Token[] = [
       "ad91060456344fc8d8e93c0600a3957b8158605c044b3bef7048510b3157b807",
     image: "/dvpn.jpeg",
     decimals: 6,
-    deposit_from: [
+    deposit: [
       {
         soure_chain_name: "Sentinel",
-        source_denom: "udvpn",
+        from_denom: "udvpn",
       },
     ],
-    withdraw_to: [
+    withdrawals: [
       {
-        destination_chain_name: "Sentinel",
-        source_denom:
+        target_chain_name: "Sentinel",
+        from_denom:
           "ibc/E83107E876FF194B54E9AC3099E49DBB7728156F250ABD3E997D2B7E89E0810B",
       },
     ],

@@ -2,50 +2,26 @@ import {
   CircularProgress,
   Avatar,
   Button,
-  Typography,
   Tooltip,
   Dialog,
-  DialogTitle,
-  DialogContent,
-  IconButton,
-  InputAdornment,
   Input,
-  FormControl,
-  InputLabel,
   Box,
   Tabs,
   Tab,
 } from "@mui/material";
-import LoadingButton from "@mui/lab/LoadingButton";
 import BigNumber from "bignumber.js";
 import React, { useRef, useState, useEffect } from "react";
 import { isMobile } from "react-device-detect";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
 import RefreshIcon from "@mui/icons-material/Refresh";
-import CloseIcon from "@mui/icons-material/Close";
-import CopyToClipboard from "react-copy-to-clipboard";
 import { SigningCosmWasmClient } from "secretjs";
 import { getKeplrViewingKey, setKeplrViewingKey } from "./KeplrStuff";
-import { Bech32Address } from "@keplr-wallet/cosmos";
-import { FileCopyOutlined } from "@mui/icons-material";
-import { SigningStargateClient, StdFee } from "@cosmjs/stargate";
-import { Token, chains } from "./config";
+import { Token } from "./config";
 import { TabContext, TabPanel } from "@mui/lab";
-
-const viewingKeyErroString = "🧐";
-
-const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
-
-const gasPriceUscrt = 0.25;
-function getFeeFromGas(gas: number): StdFee {
-  return {
-    amount: [
-      { amount: String(Math.floor(gas * gasPriceUscrt) + 1), denom: "uscrt" },
-    ],
-    gas: String(gas),
-  };
-}
+import { viewingKeyErroString, sleep, getFeeFromGas } from "./commons";
+import Deposit from "./Deposit";
+import Withdraw from "./Withdraw";
 
 export default function TokenRow({
   secretjs,
@@ -61,20 +37,10 @@ export default function TokenRow({
   balances: Map<string, string>;
 }) {
   const wrapInputRef = useRef<any>();
-  const depositInputRef = useRef<any>();
-  const withdrawInputRef = useRef<any>();
   const [selectedTab, setSelectedTab] = useState<string>("deposit");
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
-  const [sourceChainAddress, setSourceAddress] = useState<string>("");
-  const [sourceChainBalance, setSourceBalance] = useState<string>("");
-  const [depositCosmJs, setDepositCosmJs] =
-    useState<SigningStargateClient | null>(null);
-  const [withdrawCosmJs, setWithdrawCosmJs] =
-    useState<SigningStargateClient | null>(null);
   const [loadingWrap, setLoadingWrap] = useState<boolean>(false);
   const [loadingUnwrap, setLoadingUnwrap] = useState<boolean>(false);
-  const [loadingDeposit, setLoadingDeposit] = useState<boolean>(false);
-  const [loadingWithdraw, setLoadingWithdraw] = useState<boolean>(false);
   const [tokenBalance, setTokenBalance] = useState<string>("");
   const [loadingTokenBalance, setLoadingTokenBalance] =
     useState<boolean>(false);
@@ -125,7 +91,7 @@ export default function TokenRow({
     })();
   }, [secretjs]);
 
-  const denomOnSecret = token.withdraw_to[0]?.source_denom;
+  const denomOnSecret = token.withdrawals[0]?.from_denom;
   let balanceIbcCoin;
   let balanceToken;
 
@@ -258,131 +224,7 @@ export default function TokenRow({
                 <Tooltip title={`IBC Deposit & Withdraw`} placement="top">
                   <Button
                     style={{ minWidth: 0 }}
-                    onClick={async () => {
-                      setIsDialogOpen(true);
-
-                      while (
-                        !window.keplr ||
-                        !window.getEnigmaUtils ||
-                        !window.getOfflineSignerOnlyAmino
-                      ) {
-                        await sleep(100);
-                      }
-
-                      if (["LUNA", "UST"].includes(token.name.toUpperCase())) {
-                        window.keplr.experimentalSuggestChain({
-                          rpc: "https://rpc-columbus.keplr.app",
-                          rest: "https://lcd-columbus.keplr.app",
-                          chainId: "columbus-5",
-                          chainName: "Terra",
-                          stakeCurrency: {
-                            coinDenom: "LUNA",
-                            coinMinimalDenom: "uluna",
-                            coinDecimals: 6,
-                            coinGeckoId: "terra-luna",
-                          },
-                          bip44: {
-                            coinType: 330,
-                          },
-                          bech32Config:
-                            Bech32Address.defaultBech32Config("terra"),
-                          currencies: [
-                            {
-                              coinDenom: "LUNA",
-                              coinMinimalDenom: "uluna",
-                              coinDecimals: 6,
-                              coinGeckoId: "terra-luna",
-                            },
-                            {
-                              coinDenom: "UST",
-                              coinMinimalDenom: "uusd",
-                              coinDecimals: 6,
-                              coinGeckoId: "terrausd",
-                            },
-                          ],
-                          feeCurrencies: [
-                            {
-                              coinDenom: "LUNA",
-                              coinMinimalDenom: "uluna",
-                              coinDecimals: 6,
-                              coinGeckoId: "terra-luna",
-                            },
-                            {
-                              coinDenom: "UST",
-                              coinMinimalDenom: "uusd",
-                              coinDecimals: 6,
-                              coinGeckoId: "terrausd",
-                            },
-                          ],
-                          gasPriceStep: {
-                            low: 0.015,
-                            average: 0.015,
-                            high: 0.015,
-                          },
-                          features: [
-                            "stargate",
-                            "ibc-transfer",
-                            "no-legacy-stdTx",
-                          ],
-                        });
-                      }
-
-                      const { chain_id, rpc, lcd, bech32_prefix } =
-                        chains[token.deposit_from[0].soure_chain_name];
-
-                      await window.keplr.enable(chain_id);
-
-                      const depositOfflineSigner =
-                        window.getOfflineSignerOnlyAmino(chain_id);
-
-                      const depositFromAccounts =
-                        await depositOfflineSigner.getAccounts();
-                      setSourceAddress(depositFromAccounts[0].address);
-
-                      const cosmJsForDeposit =
-                        await SigningStargateClient.connectWithSigner(
-                          rpc,
-                          depositOfflineSigner,
-                          { prefix: bech32_prefix }
-                        );
-                      setDepositCosmJs(cosmJsForDeposit);
-
-                      const url = `${lcd}/bank/balances/${depositFromAccounts[0].address}`;
-                      try {
-                        const response = await fetch(url);
-                        const result: {
-                          height: string;
-                          result: Array<{ denom: string; amount: string }>;
-                        } = await response.json();
-
-                        const balance =
-                          result.result.find(
-                            (c) =>
-                              c.denom === token.deposit_from[0].source_denom
-                          )?.amount || "0";
-
-                        setSourceBalance(balance);
-                      } catch (e) {
-                        console.error(`Error while trying to query ${url}:`, e);
-                        setSourceBalance("Error");
-                      }
-
-                      await window.keplr.enable(
-                        chains["Secret Network"].chain_id
-                      );
-                      const withdrawOfflineSigner =
-                        window.getOfflineSignerOnlyAmino(
-                          chains["Secret Network"].chain_id
-                        );
-
-                      const cosmJsForWithdraw =
-                        await SigningStargateClient.connectWithSigner(
-                          chains["Secret Network"].rpc,
-                          withdrawOfflineSigner,
-                          { prefix: chains["Secret Network"].bech32_prefix }
-                        );
-                      setWithdrawCosmJs(cosmJsForWithdraw);
-                    }}
+                    onClick={async () => setIsDialogOpen(true)}
                   >
                     <img src="/deposit.svg" style={{ height: "0.8em" }} />
                   </Button>
@@ -390,10 +232,7 @@ export default function TokenRow({
                 <Dialog
                   open={isDialogOpen}
                   fullWidth={true}
-                  onClose={() => {
-                    setIsDialogOpen(false);
-                    setSourceBalance("");
-                  }}
+                  onClose={() => setIsDialogOpen(false)}
                 >
                   <TabContext value={selectedTab}>
                     <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
@@ -410,463 +249,27 @@ export default function TokenRow({
                       </Tabs>
                     </Box>
                     <TabPanel value={"deposit"}>
-                      <DialogContent>
-                        <div
-                          style={{
-                            display: "flex",
-                            alignItems: "center",
-                            gap: "1em",
-                          }}
-                        >
-                          <Typography>
-                            Deposit <strong>{token.name}</strong> from{" "}
-                            <strong>
-                              {token.withdraw_to[0].destination_chain_name}
-                            </strong>{" "}
-                            to <strong>Secret Network</strong>
-                          </Typography>
-                        </div>
-                        <br />
-                        <div
-                          style={{
-                            display: "flex",
-                            justifyContent: "space-between",
-                            alignItems: "center",
-                            gap: "1em",
-                          }}
-                        >
-                          <Typography sx={{ fontWeight: "bold" }}>
-                            From:
-                          </Typography>
-                          {sourceChainAddress !== "" ? (
-                            <CopiableAddress address={sourceChainAddress} />
-                          ) : (
-                            <CircularProgress size="1em" />
-                          )}
-                        </div>
-                        <div
-                          style={{
-                            display: "flex",
-                            justifyContent: "space-between",
-                            alignItems: "center",
-                            gap: "1em",
-                          }}
-                        >
-                          <Typography sx={{ fontWeight: "bold" }}>
-                            To:
-                          </Typography>
-                          {secretAddress !== "" ? (
-                            <CopiableAddress address={secretAddress} />
-                          ) : (
-                            <CircularProgress size="1em" />
-                          )}
-                        </div>
-                        <br />
-                        <div
-                          style={{
-                            display: "flex",
-                            alignItems: "center",
-                            gap: "0.3em",
-                            marginBottom: "0.8em",
-                          }}
-                        >
-                          <Typography
-                            sx={{ fontSize: "0.8em", fontWeight: "bold" }}
-                          >
-                            Available Balance:
-                          </Typography>
-                          <Typography
-                            sx={{
-                              fontSize: "0.8em",
-                              opacity: 0.8,
-                              cursor: "pointer",
-                            }}
-                            onClick={() => {
-                              document.getElementById("max-deposit")?.click();
-                            }}
-                          >
-                            {(() => {
-                              if (sourceChainBalance === "") {
-                                return <CircularProgress size="0.6em" />;
-                              }
-
-                              const prettyBalance = new BigNumber(
-                                sourceChainBalance
-                              )
-                                .dividedBy(`1e${token.decimals}`)
-                                .toFormat();
-
-                              if (prettyBalance === "NaN") {
-                                return "Error";
-                              }
-
-                              return `${prettyBalance} ${token.name}`;
-                            })()}
-                          </Typography>
-                        </div>
-                        <FormControl sx={{ width: "100%" }} variant="standard">
-                          <InputLabel htmlFor="Amount to Deposit">
-                            Amount to Deposit
-                          </InputLabel>
-                          <Input
-                            autoFocus
-                            id="Amount to Deposit"
-                            fullWidth
-                            type="text"
-                            inputRef={depositInputRef}
-                            startAdornment={
-                              <InputAdornment position="start">
-                                <Avatar
-                                  src={token.image}
-                                  sx={{
-                                    width: "1em",
-                                    height: "1em",
-                                    boxShadow:
-                                      "rgba(0, 0, 0, 0.15) 0px 6px 10px",
-                                  }}
-                                />
-                              </InputAdornment>
-                            }
-                            endAdornment={
-                              <InputAdornment position="end">
-                                <Button
-                                  id="max-deposit"
-                                  style={{
-                                    padding: "0.1em 0.5em",
-                                    minWidth: 0,
-                                  }}
-                                  onClick={() => {
-                                    if (sourceChainBalance === "") {
-                                      return;
-                                    }
-
-                                    const prettyBalance = new BigNumber(
-                                      sourceChainBalance
-                                    )
-                                      .dividedBy(`1e${token.decimals}`)
-                                      .toFormat();
-
-                                    if (prettyBalance === "NaN") {
-                                      return;
-                                    }
-
-                                    depositInputRef.current.value =
-                                      prettyBalance;
-                                  }}
-                                >
-                                  MAX
-                                </Button>
-                              </InputAdornment>
-                            }
-                          />
-                        </FormControl>
-                      </DialogContent>
-                      <div
-                        style={{
-                          display: "flex",
-                          justifyContent: "center",
-                          marginBottom: "1em",
+                      <Deposit
+                        token={token}
+                        secretAddress={secretAddress}
+                        onSuccess={(txhash) => {
+                          setIsDialogOpen(false);
+                          console.log("success", txhash);
                         }}
-                      >
-                        <LoadingButton
-                          variant="contained"
-                          sx={{
-                            padding: "0.5em 0",
-                            width: "10em",
-                            fontWeight: "bold",
-                            fontSize: "1.2em",
-                          }}
-                          loading={loadingDeposit}
-                          onClick={async () => {
-                            if (!depositCosmJs) {
-                              console.error("No cosmjs");
-                              return;
-                            }
-
-                            if (!depositInputRef?.current?.value) {
-                              console.error("Empty deposit");
-                              return;
-                            }
-
-                            const depositNormalizedAmount = (
-                              depositInputRef.current.value as string
-                            ).replace(/,/g, "");
-
-                            if (!(Number(depositNormalizedAmount) > 0)) {
-                              console.error(
-                                `${depositNormalizedAmount} not bigger than 0`
-                              );
-                              return;
-                            }
-
-                            setLoadingDeposit(true);
-
-                            const amount = new BigNumber(
-                              depositNormalizedAmount
-                            )
-                              .multipliedBy(`1e${token.decimals}`)
-                              .toFixed(0, BigNumber.ROUND_DOWN);
-
-                            const { deposit_channel_id, deposit_gas } =
-                              chains[token.deposit_from[0].soure_chain_name];
-                            try {
-                              const { transactionHash } =
-                                await depositCosmJs.sendIbcTokens(
-                                  sourceChainAddress,
-                                  secretAddress,
-                                  {
-                                    amount,
-                                    denom: token.deposit_from[0].source_denom,
-                                  },
-                                  "transfer",
-                                  deposit_channel_id,
-                                  undefined,
-                                  Math.floor(Date.now() / 1000) + 15 * 60, // 15 minute timeout
-                                  getFeeFromGas(deposit_gas)
-                                );
-                              depositInputRef.current.value = "";
-                              setIsDialogOpen(false);
-                            } finally {
-                              setLoadingDeposit(false);
-                            }
-                          }}
-                        >
-                          Deposit
-                        </LoadingButton>
-                      </div>
+                        onFailure={(error) => console.error(error)}
+                      />
                     </TabPanel>
                     <TabPanel value={"withdraw"}>
-                      <DialogContent>
-                        <div
-                          style={{
-                            display: "flex",
-                            alignItems: "center",
-                            gap: "1em",
-                          }}
-                        >
-                          <Typography>
-                            Withdraw <strong>{token.name}</strong> from{" "}
-                            <strong>Secret Network</strong> to{" "}
-                            <strong>
-                              {token.withdraw_to[0].destination_chain_name}
-                            </strong>
-                          </Typography>
-                        </div>
-                        <br />
-                        <div
-                          style={{
-                            display: "flex",
-                            justifyContent: "space-between",
-                            alignItems: "center",
-                            gap: "1em",
-                          }}
-                        >
-                          <Typography sx={{ fontWeight: "bold" }}>
-                            From:
-                          </Typography>
-                          {secretAddress !== "" ? (
-                            <CopiableAddress address={secretAddress} />
-                          ) : (
-                            <CircularProgress size="1em" />
-                          )}
-                        </div>
-                        <div
-                          style={{
-                            display: "flex",
-                            justifyContent: "space-between",
-                            alignItems: "center",
-                            gap: "1em",
-                          }}
-                        >
-                          <Typography sx={{ fontWeight: "bold" }}>
-                            To:
-                          </Typography>
-                          {sourceChainAddress !== "" ? (
-                            <CopiableAddress address={sourceChainAddress} />
-                          ) : (
-                            <CircularProgress size="1em" />
-                          )}
-                        </div>
-
-                        <br />
-                        <div
-                          style={{
-                            display: "flex",
-                            alignItems: "center",
-                            gap: "0.3em",
-                            marginBottom: "0.8em",
-                          }}
-                        >
-                          <Typography
-                            sx={{ fontSize: "0.8em", fontWeight: "bold" }}
-                          >
-                            Available Balance:
-                          </Typography>
-                          <Typography
-                            sx={{
-                              fontSize: "0.8em",
-                              opacity: 0.8,
-                              cursor: "pointer",
-                            }}
-                            onClick={() => {
-                              document.getElementById("max-withdraw")?.click();
-                            }}
-                          >
-                            {(() => {
-                              const prettyBalance = new BigNumber(
-                                balances.get(
-                                  token.withdraw_to[0].source_denom
-                                ) as string
-                              )
-                                .dividedBy(`1e${token.decimals}`)
-                                .toFormat();
-
-                              if (prettyBalance === "NaN") {
-                                return "Error";
-                              }
-
-                              return `${prettyBalance} ${token.name}`;
-                            })()}
-                          </Typography>
-                        </div>
-                        <FormControl sx={{ width: "100%" }} variant="standard">
-                          <InputLabel htmlFor="Amount to Withdraw">
-                            Amount to Withdraw
-                          </InputLabel>
-                          <Input
-                            autoFocus
-                            id="Amount to Withdraw"
-                            fullWidth
-                            type="text"
-                            inputRef={withdrawInputRef}
-                            startAdornment={
-                              <InputAdornment position="start">
-                                <Avatar
-                                  src={token.image}
-                                  sx={{
-                                    width: "1em",
-                                    height: "1em",
-                                    boxShadow:
-                                      "rgba(0, 0, 0, 0.15) 0px 6px 10px",
-                                  }}
-                                />
-                              </InputAdornment>
-                            }
-                            endAdornment={
-                              <InputAdornment position="end">
-                                <Button
-                                  id="max-withdraw"
-                                  style={{
-                                    padding: "0.1em 0.5em",
-                                    minWidth: 0,
-                                  }}
-                                  onClick={() => {
-                                    if (
-                                      !balances.get(
-                                        token.withdraw_to[0].source_denom
-                                      )
-                                    ) {
-                                      return;
-                                    }
-
-                                    const prettyBalance = new BigNumber(
-                                      balances.get(
-                                        token.withdraw_to[0].source_denom
-                                      ) as string
-                                    )
-                                      .dividedBy(`1e${token.decimals}`)
-                                      .toFormat();
-
-                                    if (prettyBalance === "NaN") {
-                                      return;
-                                    }
-
-                                    withdrawInputRef.current.value =
-                                      prettyBalance;
-                                  }}
-                                >
-                                  MAX
-                                </Button>
-                              </InputAdornment>
-                            }
-                          />
-                        </FormControl>
-                      </DialogContent>
-                      <div
-                        style={{
-                          display: "flex",
-                          justifyContent: "center",
-                          marginBottom: "1em",
+                      <Withdraw
+                        token={token}
+                        secretAddress={secretAddress}
+                        balances={balances}
+                        onSuccess={(txhash) => {
+                          setIsDialogOpen(false);
+                          console.log("success", txhash);
                         }}
-                      >
-                        <LoadingButton
-                          variant="contained"
-                          sx={{
-                            padding: "0.5em 0",
-                            width: "10em",
-                            fontWeight: "bold",
-                            fontSize: "1.2em",
-                          }}
-                          loading={loadingWithdraw}
-                          onClick={async () => {
-                            if (!withdrawCosmJs) {
-                              console.error("No cosmjs");
-                              return;
-                            }
-
-                            if (!withdrawInputRef?.current?.value) {
-                              console.error("Empty withdraw");
-                              return;
-                            }
-
-                            const withdrawNormalizedAmount = (
-                              withdrawInputRef.current.value as string
-                            ).replace(/,/g, "");
-
-                            if (!(Number(withdrawNormalizedAmount) > 0)) {
-                              console.error(
-                                `${withdrawNormalizedAmount} not bigger than 0`
-                              );
-                              return;
-                            }
-
-                            setLoadingWithdraw(true);
-
-                            const amount = new BigNumber(
-                              withdrawNormalizedAmount
-                            )
-                              .multipliedBy(`1e${token.decimals}`)
-                              .toFixed(0, BigNumber.ROUND_DOWN);
-
-                            const { withdraw_channel_id, withdraw_gas } =
-                              chains[
-                                token.withdraw_to[0].destination_chain_name
-                              ];
-                            try {
-                              const { transactionHash } =
-                                await withdrawCosmJs.sendIbcTokens(
-                                  secretAddress,
-                                  sourceChainAddress,
-                                  {
-                                    amount,
-                                    denom: token.withdraw_to[0].source_denom,
-                                  },
-                                  "transfer",
-                                  withdraw_channel_id,
-                                  undefined,
-                                  Math.floor(Date.now() / 1000) + 15 * 60, // 15 minute timeout
-                                  getFeeFromGas(withdraw_gas)
-                                );
-                              withdrawInputRef.current.value = "";
-                              setIsDialogOpen(false);
-                            } finally {
-                              setLoadingWithdraw(false);
-                            }
-                          }}
-                        >
-                          Withdraw
-                        </LoadingButton>
-                      </div>
+                        onFailure={(error) => console.error(error)}
+                      />
                     </TabPanel>
                   </TabContext>
                 </Dialog>
@@ -920,7 +323,7 @@ export default function TokenRow({
                     denom:
                       token.name === "SCRT"
                         ? undefined
-                        : token.withdraw_to[0].source_denom,
+                        : token.withdrawals[0].from_denom,
                   },
                 },
                 "",
@@ -1008,7 +411,7 @@ export default function TokenRow({
                 token.address,
                 { deposit: {} },
                 "",
-                [{ denom: token.withdraw_to[0].source_denom, amount }],
+                [{ denom: token.withdrawals[0].from_denom, amount }],
                 getFeeFromGas(40_000),
                 token.code_hash
               );
@@ -1106,38 +509,6 @@ export default function TokenRow({
           boxShadow: "rgba(0, 0, 0, 0.15) 0px 6px 10px",
         }}
       />
-    </div>
-  );
-}
-
-function CopiableAddress({ address }: { address: string }) {
-  const [isCopied, setIsCopied] = useState<boolean>(false);
-
-  return (
-    <div
-      style={{
-        display: "flex",
-        alignItems: "center",
-        gap: "0.1em",
-      }}
-    >
-      <Typography sx={{ opacity: 0.8 }}>
-        {address ?? <CircularProgress size="0.8em" />}
-      </Typography>
-      <CopyToClipboard
-        text={address}
-        onCopy={() => {
-          setIsCopied(true);
-          setTimeout(() => setIsCopied(false), 3000);
-        }}
-      >
-        <Button style={{ color: "black", minWidth: 0 }}>
-          <FileCopyOutlined
-            fontSize="small"
-            style={isCopied ? { fill: "green" } : undefined}
-          />
-        </Button>
-      </CopyToClipboard>
     </div>
   );
 }
