@@ -7,16 +7,16 @@ import {
   Input,
   FormControl,
   InputLabel,
+  Select,
+  MenuItem,
 } from "@mui/material";
 import LoadingButton from "@mui/lab/LoadingButton";
 import BigNumber from "bignumber.js";
 import React, { useRef, useState, useEffect } from "react";
-import { Bech32Address } from "@keplr-wallet/cosmos";
 import { SigningStargateClient } from "@cosmjs/stargate";
 import { Token, chains } from "./config";
 import CopyableAddress from "./CopyableAddress";
-import { getFeeFromGas, sleep } from "./commons";
-import { Keplr } from "@keplr-wallet/types";
+import { getFeeFromGas, sleep, suggestTerraToKeplr } from "./commons";
 
 export default function Deposit({
   token,
@@ -34,15 +34,18 @@ export default function Deposit({
   const [loadingTx, setLoading] = useState<boolean>(false);
   const [sourceCosmJs, setSourceCosmJs] =
     useState<SigningStargateClient | null>(null);
+  const [selectedChainIndex, setSelectedChainIndex] = useState<number>(0);
+  const [fetchBalanceInterval, setFetchBalanceInterval] = useState<any>(null);
   const inputRef = useRef<any>();
   const maxButtonRef = useRef<any>();
 
-  const sourceChain = chains[token.deposits[0].source_chain_name];
+  const sourceChain =
+    chains[token.deposits[selectedChainIndex].source_chain_name];
   const targetChain = chains["Secret Network"];
 
   const fetchSourceBalance = async (sourceAddress: string) => {
     const url = `${
-      chains[token.deposits[0].source_chain_name].lcd
+      chains[token.deposits[selectedChainIndex].source_chain_name].lcd
     }/bank/balances/${sourceAddress}`;
     try {
       const response = await fetch(url);
@@ -52,8 +55,9 @@ export default function Deposit({
       } = await response.json();
 
       const balance =
-        result.result.find((c) => c.denom === token.deposits[0].from_denom)
-          ?.amount || "0";
+        result.result.find(
+          (c) => c.denom === token.deposits[selectedChainIndex].from_denom
+        )?.amount || "0";
 
       setAvailableBalance(balance);
     } catch (e) {
@@ -63,12 +67,19 @@ export default function Deposit({
   };
 
   useEffect(() => {
+    setAvailableBalance("");
+
     if (!sourceAddress) {
       return;
     }
 
+    if (fetchBalanceInterval) {
+      clearInterval(fetchBalanceInterval);
+    }
+
     fetchSourceBalance(sourceAddress);
     const interval = setInterval(() => fetchSourceBalance(sourceAddress), 5000);
+    setFetchBalanceInterval(interval);
 
     return () => clearInterval(interval);
   }, [sourceAddress]);
@@ -80,11 +91,11 @@ export default function Deposit({
       }
 
       if (["LUNA", "UST"].includes(token.name.toUpperCase())) {
-        suggestTerraToKeplr(window.keplr);
+        await suggestTerraToKeplr(window.keplr);
       }
       // Initialize cosmjs on the target chain, because it has sendIbcTokens()
       const { chain_id, rpc, bech32_prefix } =
-        chains[token.deposits[0].source_chain_name];
+        chains[token.deposits[selectedChainIndex].source_chain_name];
       await window.keplr.enable(chain_id);
       const sourceOfflineSigner = window.getOfflineSignerOnlyAmino(chain_id);
       const depositFromAccounts = await sourceOfflineSigner.getAccounts();
@@ -96,7 +107,7 @@ export default function Deposit({
       );
       setSourceCosmJs(cosmjs);
     })();
-  }, []);
+  }, [selectedChainIndex]);
 
   return (
     <>
@@ -105,13 +116,51 @@ export default function Deposit({
           style={{
             display: "flex",
             alignItems: "center",
-            gap: "1em",
+            gap: token.deposits.length === 1 ? "0.3em" : "0.5em",
           }}
         >
           <Typography>
-            Deposit <strong>{token.name}</strong> from{" "}
-            <strong>{token.withdrawals[0].target_chain_name}</strong> to{" "}
-            <strong>Secret Network</strong>
+            Deposit <strong>{token.name}</strong> from
+          </Typography>
+          {token.deposits.length === 1 ? (
+            <Typography>
+              <strong>
+                {token.deposits[selectedChainIndex].source_chain_name}
+              </strong>
+            </Typography>
+          ) : (
+            <FormControl>
+              <Select
+                value={selectedChainIndex}
+                onChange={(e) => setSelectedChainIndex(Number(e.target.value))}
+              >
+                {token.deposits.map((chain, index) => (
+                  <MenuItem value={index} key={index}>
+                    <div
+                      style={{
+                        display: "flex",
+                        gap: "0.5em",
+                        alignItems: "center",
+                      }}
+                    >
+                      <Avatar
+                        src={chains[chain.source_chain_name].chain_image}
+                        sx={{
+                          marginLeft: "0.3em",
+                          width: "1em",
+                          height: "1em",
+                          boxShadow: "rgba(0, 0, 0, 0.15) 0px 6px 10px",
+                        }}
+                      />
+                      <strong>{chain.source_chain_name}</strong>
+                    </div>
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          )}
+          <Typography>
+            to <strong>Secret Network</strong>
           </Typography>
         </div>
         <br />
@@ -277,14 +326,14 @@ export default function Deposit({
               .toFixed(0, BigNumber.ROUND_DOWN);
 
             const { deposit_channel_id, deposit_gas } =
-              chains[token.deposits[0].source_chain_name];
+              chains[token.deposits[selectedChainIndex].source_chain_name];
             try {
               const { transactionHash } = await sourceCosmJs.sendIbcTokens(
                 sourceAddress,
                 secretAddress,
                 {
                   amount,
-                  denom: token.deposits[0].from_denom,
+                  denom: token.deposits[selectedChainIndex].from_denom,
                 },
                 "transfer",
                 deposit_channel_id,
@@ -306,57 +355,4 @@ export default function Deposit({
       </div>
     </>
   );
-}
-
-function suggestTerraToKeplr(keplr: Keplr) {
-  keplr.experimentalSuggestChain({
-    rpc: "https://rpc-columbus.keplr.app",
-    rest: "https://lcd-columbus.keplr.app",
-    chainId: "columbus-5",
-    chainName: "Terra",
-    stakeCurrency: {
-      coinDenom: "LUNA",
-      coinMinimalDenom: "uluna",
-      coinDecimals: 6,
-      coinGeckoId: "terra-luna",
-    },
-    bip44: {
-      coinType: 330,
-    },
-    bech32Config: Bech32Address.defaultBech32Config("terra"),
-    currencies: [
-      {
-        coinDenom: "LUNA",
-        coinMinimalDenom: "uluna",
-        coinDecimals: 6,
-        coinGeckoId: "terra-luna",
-      },
-      {
-        coinDenom: "UST",
-        coinMinimalDenom: "uusd",
-        coinDecimals: 6,
-        coinGeckoId: "terrausd",
-      },
-    ],
-    feeCurrencies: [
-      {
-        coinDenom: "LUNA",
-        coinMinimalDenom: "uluna",
-        coinDecimals: 6,
-        coinGeckoId: "terra-luna",
-      },
-      {
-        coinDenom: "UST",
-        coinMinimalDenom: "uusd",
-        coinDecimals: 6,
-        coinGeckoId: "terrausd",
-      },
-    ],
-    gasPriceStep: {
-      low: 0.015,
-      average: 0.015,
-      high: 0.015,
-    },
-    features: ["stargate", "ibc-transfer", "no-legacy-stdTx"],
-  });
 }
