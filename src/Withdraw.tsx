@@ -7,6 +7,8 @@ import {
   Input,
   FormControl,
   InputLabel,
+  Select,
+  MenuItem,
 } from "@mui/material";
 import LoadingButton from "@mui/lab/LoadingButton";
 import BigNumber from "bignumber.js";
@@ -14,7 +16,7 @@ import React, { useRef, useState, useEffect } from "react";
 import { SigningStargateClient } from "@cosmjs/stargate";
 import { Token, chains } from "./config";
 import CopyableAddress from "./CopyableAddress";
-import { getFeeFromGas, sleep } from "./commons";
+import { getFeeFromGas, sleep, suggestTerraToKeplr } from "./commons";
 
 export default function Withdraw({
   token,
@@ -33,13 +35,16 @@ export default function Withdraw({
   const [loadingTx, setLoading] = useState<boolean>(false);
   const [secretCosmJs, setSecretCosmJs] =
     useState<SigningStargateClient | null>(null);
+  const [selectedChainIndex, setSelectedChainIndex] = useState<number>(0);
   const inputRef = useRef<any>();
   const maxButtonRef = useRef<any>();
 
   const sourceChain = chains["Secret Network"];
-  const targetChain = chains[token.withdrawals[0].target_chain_name];
+  const targetChain =
+    chains[token.withdrawals[selectedChainIndex].target_chain_name];
 
-  const availableBalance = balances.get(token.withdrawals[0].from_denom) || "";
+  const availableBalance =
+    balances.get(token.withdrawals[selectedChainIndex].from_denom) || "";
 
   useEffect(() => {
     (async () => {
@@ -49,7 +54,10 @@ export default function Withdraw({
 
       // Find address on target chain
       const { chain_id: targetChainId } =
-        chains[token.withdrawals[0].target_chain_name];
+        chains[token.withdrawals[selectedChainIndex].target_chain_name];
+      if (token.withdrawals[selectedChainIndex].target_chain_name === "Terra") {
+        await suggestTerraToKeplr(window.keplr);
+      }
       await window.keplr.enable(targetChainId);
       const targetOfflineSigner =
         window.getOfflineSignerOnlyAmino(targetChainId);
@@ -67,7 +75,7 @@ export default function Withdraw({
       );
       setSecretCosmJs(cosmjs);
     })();
-  }, []);
+  }, [selectedChainIndex]);
 
   return (
     <>
@@ -76,14 +84,50 @@ export default function Withdraw({
           style={{
             display: "flex",
             alignItems: "center",
-            gap: "1em",
+            gap: "0.5em",
           }}
         >
           <Typography>
             Withdraw <strong>{token.name}</strong> from{" "}
-            <strong>Secret Network</strong> to{" "}
-            <strong>{token.withdrawals[0].target_chain_name}</strong>
+            <strong>Secret Network</strong> to
+            {token.withdrawals.length === 1 ? (
+              <strong>
+                {" "}
+                {token.withdrawals[selectedChainIndex].target_chain_name}
+              </strong>
+            ) : null}
           </Typography>
+          {token.withdrawals.length === 1 ? null : (
+            <FormControl>
+              <Select
+                value={selectedChainIndex}
+                onChange={(e) => setSelectedChainIndex(Number(e.target.value))}
+              >
+                {token.withdrawals.map((chain, index) => (
+                  <MenuItem value={index} key={index}>
+                    <div
+                      style={{
+                        display: "flex",
+                        gap: "0.5em",
+                        alignItems: "center",
+                      }}
+                    >
+                      <Avatar
+                        src={chains[chain.target_chain_name].chain_image}
+                        sx={{
+                          marginLeft: "0.3em",
+                          width: "1em",
+                          height: "1em",
+                          boxShadow: "rgba(0, 0, 0, 0.15) 0px 6px 10px",
+                        }}
+                      />
+                      <strong>{chain.target_chain_name}</strong>
+                    </div>
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          )}
         </div>
         <br />
         <div
@@ -250,14 +294,14 @@ export default function Withdraw({
               .toFixed(0, BigNumber.ROUND_DOWN);
 
             const { withdraw_channel_id, withdraw_gas } =
-              chains[token.withdrawals[0].target_chain_name];
+              chains[token.withdrawals[selectedChainIndex].target_chain_name];
             try {
               const { transactionHash } = await secretCosmJs.sendIbcTokens(
                 secretAddress,
                 targetAddress,
                 {
                   amount,
-                  denom: token.withdrawals[0].from_denom,
+                  denom: token.withdrawals[selectedChainIndex].from_denom,
                 },
                 "transfer",
                 withdraw_channel_id,

@@ -219,7 +219,7 @@ export default function TokenRow({
             }}
           >
             <span>{token.name}</span>
-            {token.name !== "SCRT" && token.address ? (
+            {token.address ? (
               <>
                 <Tooltip title={`IBC Deposit & Withdraw`} placement="top">
                   <Button
