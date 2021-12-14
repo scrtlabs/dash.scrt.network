@@ -40,12 +40,13 @@ export const tokens: Token[] = [
     deposits: [
       {
         source_chain_name: "Cosmos Hub",
-        from_denom: "TODO", // SCRT denom on Cosmos
+        from_denom:
+          "ibc/1542F8DC70E7999691E991E1EDEB1B47E65E3A217B1649D347098EE48ACB580F", // SCRT denom on Cosmos
       },
       {
         source_chain_name: "Terra",
         from_denom:
-          "ibc/EB2CED20AB0466F18BE49285E56B31306D4C60438A022EA995BA65D5E3CF7E09", // SCRT denom on Cosmos
+          "ibc/EB2CED20AB0466F18BE49285E56B31306D4C60438A022EA995BA65D5E3CF7E09", // SCRT denom on Terra
       },
       {
         source_chain_name: "Osmosis",
