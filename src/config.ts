@@ -55,7 +55,8 @@ export const tokens: Token[] = [
       },
       {
         source_chain_name: "Sentinel",
-        from_denom: "TODO", // SCRT denom on Sentinel
+        from_denom:
+          "ibc/31FEE1A2A9F9C01113F90BD0BBCCE8FD6BBB8585FAF109A2101827DD1D5B95B8", // SCRT denom on Sentinel
       },
     ],
     withdrawals: [
