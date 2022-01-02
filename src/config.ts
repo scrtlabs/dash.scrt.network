@@ -58,6 +58,16 @@ export const tokens: Token[] = [
         from_denom:
           "ibc/31FEE1A2A9F9C01113F90BD0BBCCE8FD6BBB8585FAF109A2101827DD1D5B95B8", // SCRT denom on Sentinel
       },
+      {
+        source_chain_name: "Juno",
+        from_denom:
+          "ibc/CD78EE5B20682E5A61B4D96C9F4DC39361269B88A6B3462C26A18652F7A90A9A", // SCRT denom on Juno
+      },
+      {
+        source_chain_name: "Chihuahua",
+        from_denom:
+          "ibc/5A63D05D43F19EA782E7342F8CFB2161E3E1991DA4AE4B7F096ABCFDD6C38B8E", // SCRT denom on Chihuahua
+      },
     ],
     withdrawals: [
       {
@@ -74,6 +84,14 @@ export const tokens: Token[] = [
       },
       {
         target_chain_name: "Sentinel",
+        from_denom: "uscrt",
+      },
+      {
+        target_chain_name: "Juno",
+        from_denom: "uscrt",
+      },
+      {
+        target_chain_name: "Chihuahua",
         from_denom: "uscrt",
       },
     ],
@@ -183,6 +201,48 @@ export const tokens: Token[] = [
       },
     ],
   },
+  {
+    name: "JUNO",
+    address: "secret1smmc5k24lcn4j2j8f3w0yaeafga6wmzl0qct03",
+    code_hash:
+      "ad91060456344fc8d8e93c0600a3957b8158605c044b3bef7048510b3157b807",
+    image: "/juno.svg",
+    decimals: 6,
+    deposits: [
+      {
+        source_chain_name: "Juno",
+        from_denom: "ujuno",
+      },
+    ],
+    withdrawals: [
+      {
+        target_chain_name: "Juno",
+        from_denom:
+          "ibc/A8EA3773CBE6AD46F4759CC057CA60570B692C55E41C161D1466F78948273994", // JUNO denom on Secret
+      },
+    ],
+  },
+  {
+    name: "HUAHUA",
+    address: "secret1ntvxnf5hzhzv8g87wn76ch6yswdujqlgmjh32w",
+    code_hash:
+      "182d7230c396fa8f548220ff88c34cb0291a00046df9ff2686e407c3b55692e9",
+    image: "/huahua.png",
+    decimals: 6,
+    deposits: [
+      {
+        source_chain_name: "Chihuahua",
+        from_denom: "uhuahua",
+      },
+    ],
+    withdrawals: [
+      {
+        target_chain_name: "Chihuahua",
+        from_denom:
+          "ibc/CC12CFFD769D5E0059D98E760DD34FAB477261785B99240C97F6AABC4F566CB5", // HUAHUA denom on Secret
+      },
+    ],
+  },
 ];
 
 export type Chain = {
@@ -278,5 +338,31 @@ export const chains: { [chain_name: string]: Chain } = {
     rpc: "https://rpc-sentinel.keplr.app",
     chain_image: "/dvpn.jpeg",
     explorer_account: "https://www.mintscan.io/sentinel/account/",
+  },
+  Juno: {
+    chain_name: "Juno",
+    deposit_channel_id: "channel-18",
+    deposit_gas: 110_000,
+    withdraw_channel_id: "channel-6",
+    withdraw_gas: 30_000,
+    chain_id: "juno-1",
+    bech32_prefix: "juno",
+    lcd: "https://lcd-juno.itastakers.com",
+    rpc: "https://rpc-juno.itastakers.com",
+    chain_image: "/juno.svg",
+    explorer_account: "https://www.mintscan.io/juno/account/",
+  },
+  Chihuahua: {
+    chain_name: "Chihuahua",
+    deposit_channel_id: "channel-9",
+    deposit_gas: 110_000,
+    withdraw_channel_id: "channel-5",
+    withdraw_gas: 30_000,
+    chain_id: "chihuahua-1",
+    bech32_prefix: "chihuahua",
+    lcd: "https://api.chihuahua.wtf/",
+    rpc: "https://rpc.chihuahua.wtf/",
+    chain_image: "/huahua.png",
+    explorer_account: "https://ping.pub/chihuahua/account/",
   },
 };
