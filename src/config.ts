@@ -63,6 +63,11 @@ export const tokens: Token[] = [
         from_denom:
           "ibc/CD78EE5B20682E5A61B4D96C9F4DC39361269B88A6B3462C26A18652F7A90A9A", // SCRT denom on Juno
       },
+      {
+        source_chain_name: "Chihuahua",
+        from_denom:
+          "ibc/5A63D05D43F19EA782E7342F8CFB2161E3E1991DA4AE4B7F096ABCFDD6C38B8E", // SCRT denom on Chihuahua
+      },
     ],
     withdrawals: [
       {
@@ -83,6 +88,10 @@ export const tokens: Token[] = [
       },
       {
         target_chain_name: "Juno",
+        from_denom: "uscrt",
+      },
+      {
+        target_chain_name: "Chihuahua",
         from_denom: "uscrt",
       },
     ],
@@ -209,7 +218,28 @@ export const tokens: Token[] = [
       {
         target_chain_name: "Juno",
         from_denom:
-          "ibc/A8EA3773CBE6AD46F4759CC057CA60570B692C55E41C161D1466F78948273994",
+          "ibc/A8EA3773CBE6AD46F4759CC057CA60570B692C55E41C161D1466F78948273994", // JUNO denom on Secret
+      },
+    ],
+  },
+  {
+    name: "Chihuahua",
+    address: "",
+    code_hash:
+      "",
+    image: "/huahua.png",
+    decimals: 6,
+    deposits: [
+      {
+        source_chain_name: "Chihuahua",
+        from_denom: "uhuahua",
+      },
+    ],
+    withdrawals: [
+      {
+        target_chain_name: "Chihuahua",
+        from_denom:
+          "ibc/CC12CFFD769D5E0059D98E760DD34FAB477261785B99240C97F6AABC4F566CB5", // HUAHUA denom on Secret
       },
     ],
   },
@@ -320,6 +350,19 @@ export const chains: { [chain_name: string]: Chain } = {
     lcd: "https://lcd-juno.itastakers.com",
     rpc: "https://rpc-juno.itastakers.com",
     chain_image: "/juno.svg",
-    explorer_account: "hhttps://www.mintscan.io/juno/account/",
+    explorer_account: "https://www.mintscan.io/juno/account/",
+  },
+  Chihuahua: {
+    chain_name: "Chihuahua",
+    deposit_channel_id: "channel-9",
+    deposit_gas: 110_000,
+    withdraw_channel_id: "channel-5",
+    withdraw_gas: 50_000,
+    chain_id: "chihuahua-1",
+    bech32_prefix: "chihuahua",
+    lcd: "https://api.chihuahua.wtf/",
+    rpc: "https://rpc.chihuahua.wtf/",
+    chain_image: "/huahua.png",
+    explorer_account: "https://ping.pub/chihuahua/account/",
   },
 };
