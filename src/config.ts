@@ -202,10 +202,10 @@ export const tokens: Token[] = [
     ],
   },
   {
-    name: "Juno",
-    address: "",
+    name: "JUNO",
+    address: "secret1smmc5k24lcn4j2j8f3w0yaeafga6wmzl0qct03",
     code_hash:
-      "",
+      "ad91060456344fc8d8e93c0600a3957b8158605c044b3bef7048510b3157b807",
     image: "/juno.svg",
     decimals: 6,
     deposits: [
@@ -223,10 +223,10 @@ export const tokens: Token[] = [
     ],
   },
   {
-    name: "Chihuahua",
-    address: "",
+    name: "HUAHUA",
+    address: "secret1ntvxnf5hzhzv8g87wn76ch6yswdujqlgmjh32w",
     code_hash:
-      "",
+      "182d7230c396fa8f548220ff88c34cb0291a00046df9ff2686e407c3b55692e9",
     image: "/huahua.png",
     decimals: 6,
     deposits: [
@@ -344,7 +344,7 @@ export const chains: { [chain_name: string]: Chain } = {
     deposit_channel_id: "channel-18",
     deposit_gas: 110_000,
     withdraw_channel_id: "channel-6",
-    withdraw_gas: 50_000,
+    withdraw_gas: 30_000,
     chain_id: "juno-1",
     bech32_prefix: "juno",
     lcd: "https://lcd-juno.itastakers.com",
@@ -357,7 +357,7 @@ export const chains: { [chain_name: string]: Chain } = {
     deposit_channel_id: "channel-9",
     deposit_gas: 110_000,
     withdraw_channel_id: "channel-5",
-    withdraw_gas: 50_000,
+    withdraw_gas: 30_000,
     chain_id: "chihuahua-1",
     bech32_prefix: "chihuahua",
     lcd: "https://api.chihuahua.wtf/",
