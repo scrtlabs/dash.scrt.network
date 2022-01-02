@@ -215,7 +215,7 @@ export default function TokenRow({
               display: "flex",
               justifyContent: "space-between",
               alignItems: "center",
-              minWidth: "5em",
+              minWidth: "5.6em",
             }}
           >
             <span>{token.name}</span>
