@@ -58,6 +58,11 @@ export const tokens: Token[] = [
         from_denom:
           "ibc/31FEE1A2A9F9C01113F90BD0BBCCE8FD6BBB8585FAF109A2101827DD1D5B95B8", // SCRT denom on Sentinel
       },
+      {
+        source_chain_name: "Juno",
+        from_denom:
+          "ibc/CD78EE5B20682E5A61B4D96C9F4DC39361269B88A6B3462C26A18652F7A90A9A", // SCRT denom on Juno
+      },
     ],
     withdrawals: [
       {
@@ -74,6 +79,10 @@ export const tokens: Token[] = [
       },
       {
         target_chain_name: "Sentinel",
+        from_denom: "uscrt",
+      },
+      {
+        target_chain_name: "Juno",
         from_denom: "uscrt",
       },
     ],
@@ -183,6 +192,27 @@ export const tokens: Token[] = [
       },
     ],
   },
+  {
+    name: "Juno",
+    address: "",
+    code_hash:
+      "",
+    image: "/juno.svg",
+    decimals: 6,
+    deposits: [
+      {
+        source_chain_name: "Juno",
+        from_denom: "ujuno",
+      },
+    ],
+    withdrawals: [
+      {
+        target_chain_name: "Juno",
+        from_denom:
+          "ibc/A8EA3773CBE6AD46F4759CC057CA60570B692C55E41C161D1466F78948273994",
+      },
+    ],
+  },
 ];
 
 export type Chain = {
@@ -278,5 +308,18 @@ export const chains: { [chain_name: string]: Chain } = {
     rpc: "https://rpc-sentinel.keplr.app",
     chain_image: "/dvpn.jpeg",
     explorer_account: "https://www.mintscan.io/sentinel/account/",
+  },
+  Juno: {
+    chain_name: "Juno",
+    deposit_channel_id: "channel-18",
+    deposit_gas: 110_000,
+    withdraw_channel_id: "channel-6",
+    withdraw_gas: 50_000,
+    chain_id: "juno-1",
+    bech32_prefix: "juno",
+    lcd: "https://lcd-juno.itastakers.com",
+    rpc: "https://rpc-juno.itastakers.com",
+    chain_image: "/juno.svg",
+    explorer_account: "hhttps://www.mintscan.io/juno/account/",
   },
 };
