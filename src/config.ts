@@ -227,7 +227,7 @@ export const tokens: Token[] = [
     address: "secret1ntvxnf5hzhzv8g87wn76ch6yswdujqlgmjh32w",
     code_hash:
       "182d7230c396fa8f548220ff88c34cb0291a00046df9ff2686e407c3b55692e9",
-    image: "/huahua.png",
+    image: "/huahua.jpg",
     decimals: 6,
     deposits: [
       {
@@ -362,7 +362,7 @@ export const chains: { [chain_name: string]: Chain } = {
     bech32_prefix: "chihuahua",
     lcd: "https://api.chihuahua.wtf/",
     rpc: "https://rpc.chihuahua.wtf/",
-    chain_image: "/huahua.png",
+    chain_image: "/huahua.jpg",
     explorer_account: "https://ping.pub/chihuahua/account/",
   },
 };
