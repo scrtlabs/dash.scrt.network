@@ -203,9 +203,8 @@ export const tokens: Token[] = [
   },
   {
     name: "JUNO",
-    address: "secret1smmc5k24lcn4j2j8f3w0yaeafga6wmzl0qct03",
-    code_hash:
-      "ad91060456344fc8d8e93c0600a3957b8158605c044b3bef7048510b3157b807",
+    address: "", // "secret1smmc5k24lcn4j2j8f3w0yaeafga6wmzl0qct03",
+    code_hash: "", // "ad91060456344fc8d8e93c0600a3957b8158605c044b3bef7048510b3157b807",
     image: "/juno.svg",
     decimals: 6,
     deposits: [
@@ -224,9 +223,8 @@ export const tokens: Token[] = [
   },
   {
     name: "HUAHUA",
-    address: "secret1ntvxnf5hzhzv8g87wn76ch6yswdujqlgmjh32w",
-    code_hash:
-      "182d7230c396fa8f548220ff88c34cb0291a00046df9ff2686e407c3b55692e9",
+    address: "", // "secret1ntvxnf5hzhzv8g87wn76ch6yswdujqlgmjh32w",
+    code_hash: "", // "182d7230c396fa8f548220ff88c34cb0291a00046df9ff2686e407c3b55692e9",
     image: "/huahua.jpg",
     decimals: 6,
     deposits: [
