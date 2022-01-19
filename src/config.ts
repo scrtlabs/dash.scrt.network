@@ -231,6 +231,27 @@ export const tokens: Token[] = [
     ],
   },
   {
+    name: "AKT",
+    address: "",
+    code_hash: "",
+    image: "/akt.svg",
+    decimals: 6,
+    coingecko_id: "akash-network",
+    deposits: [
+      {
+        source_chain_name: "Akash",
+        from_denom: "uakt",
+      },
+    ],
+    withdrawals: [
+      {
+        target_chain_name: "Akash",
+        from_denom:
+          "ibc/", // AKT denom on Secret
+      },
+    ],
+  },
+  {
     name: "HUAHUA",
     address: "", // "secret1ntvxnf5hzhzv8g87wn76ch6yswdujqlgmjh32w",
     code_hash: "", // "182d7230c396fa8f548220ff88c34cb0291a00046df9ff2686e407c3b55692e9",
