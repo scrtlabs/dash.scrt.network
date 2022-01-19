@@ -16,7 +16,8 @@ import React, { useRef, useState, useEffect } from "react";
 import { SigningStargateClient } from "@cosmjs/stargate";
 import { Token, chains } from "./config";
 import CopyableAddress from "./CopyableAddress";
-import { getFeeFromGas, sleep, suggestTerraToKeplr } from "./commons";
+import { gasToFee, sleep, suggestTerraToKeplr } from "./commons";
+import { If, Then, Else } from "react-if";
 
 export default function Deposit({
   token,
@@ -122,43 +123,48 @@ export default function Deposit({
           <Typography>
             Deposit <strong>{token.name}</strong> from
           </Typography>
-          {token.deposits.length === 1 ? (
-            <Typography>
-              <strong>
-                {token.deposits[selectedChainIndex].source_chain_name}
-              </strong>
-            </Typography>
-          ) : (
-            <FormControl>
-              <Select
-                value={selectedChainIndex}
-                onChange={(e) => setSelectedChainIndex(Number(e.target.value))}
-              >
-                {token.deposits.map((chain, index) => (
-                  <MenuItem value={index} key={index}>
-                    <div
-                      style={{
-                        display: "flex",
-                        gap: "0.5em",
-                        alignItems: "center",
-                      }}
-                    >
-                      <Avatar
-                        src={chains[chain.source_chain_name].chain_image}
-                        sx={{
-                          marginLeft: "0.3em",
-                          width: "1em",
-                          height: "1em",
-                          boxShadow: "rgba(0, 0, 0, 0.15) 0px 6px 10px",
+          <If condition={token.deposits.length === 1}>
+            <Then>
+              <Typography>
+                <strong>
+                  {token.deposits[selectedChainIndex].source_chain_name}
+                </strong>
+              </Typography>
+            </Then>
+            <Else>
+              <FormControl>
+                <Select
+                  value={selectedChainIndex}
+                  onChange={(e) =>
+                    setSelectedChainIndex(Number(e.target.value))
+                  }
+                >
+                  {token.deposits.map((chain, index) => (
+                    <MenuItem value={index} key={index}>
+                      <div
+                        style={{
+                          display: "flex",
+                          gap: "0.5em",
+                          alignItems: "center",
                         }}
-                      />
-                      <strong>{chain.source_chain_name}</strong>
-                    </div>
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-          )}
+                      >
+                        <Avatar
+                          src={chains[chain.source_chain_name].chain_image}
+                          sx={{
+                            marginLeft: "0.3em",
+                            width: "1em",
+                            height: "1em",
+                            boxShadow: "rgba(0, 0, 0, 0.15) 0px 6px 10px",
+                          }}
+                        />
+                        <strong>{chain.source_chain_name}</strong>
+                      </div>
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </Else>
+          </If>
           <Typography>
             to <strong>Secret Network</strong>
           </Typography>
@@ -339,7 +345,7 @@ export default function Deposit({
                 deposit_channel_id,
                 undefined,
                 Math.floor(Date.now() / 1000) + 15 * 60, // 15 minute timeout
-                getFeeFromGas(deposit_gas)
+                gasToFee(deposit_gas)
               );
               inputRef.current.value = "";
               onSuccess(transactionHash);

@@ -16,7 +16,8 @@ import React, { useRef, useState, useEffect } from "react";
 import { SigningStargateClient } from "@cosmjs/stargate";
 import { Token, chains } from "./config";
 import CopyableAddress from "./CopyableAddress";
-import { getFeeFromGas, sleep, suggestTerraToKeplr } from "./commons";
+import { gasToFee, sleep, suggestTerraToKeplr } from "./commons";
+import { If, Then, Else, When } from "react-if";
 
 export default function Withdraw({
   token,
@@ -90,44 +91,48 @@ export default function Withdraw({
           <Typography>
             Withdraw <strong>{token.name}</strong> from{" "}
             <strong>Secret Network</strong> to
-            {token.withdrawals.length === 1 ? (
+          </Typography>
+          <If condition={token.withdrawals.length === 1}>
+            <Then>
               <strong>
                 {" "}
                 {token.withdrawals[selectedChainIndex].target_chain_name}
               </strong>
-            ) : null}
-          </Typography>
-          {token.withdrawals.length === 1 ? null : (
-            <FormControl>
-              <Select
-                value={selectedChainIndex}
-                onChange={(e) => setSelectedChainIndex(Number(e.target.value))}
-              >
-                {token.withdrawals.map((chain, index) => (
-                  <MenuItem value={index} key={index}>
-                    <div
-                      style={{
-                        display: "flex",
-                        gap: "0.5em",
-                        alignItems: "center",
-                      }}
-                    >
-                      <Avatar
-                        src={chains[chain.target_chain_name].chain_image}
-                        sx={{
-                          marginLeft: "0.3em",
-                          width: "1em",
-                          height: "1em",
-                          boxShadow: "rgba(0, 0, 0, 0.15) 0px 6px 10px",
+            </Then>
+            <Else>
+              <FormControl>
+                <Select
+                  value={selectedChainIndex}
+                  onChange={(e) =>
+                    setSelectedChainIndex(Number(e.target.value))
+                  }
+                >
+                  {token.withdrawals.map((chain, index) => (
+                    <MenuItem value={index} key={index}>
+                      <div
+                        style={{
+                          display: "flex",
+                          gap: "0.5em",
+                          alignItems: "center",
                         }}
-                      />
-                      <strong>{chain.target_chain_name}</strong>
-                    </div>
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-          )}
+                      >
+                        <Avatar
+                          src={chains[chain.target_chain_name].chain_image}
+                          sx={{
+                            marginLeft: "0.3em",
+                            width: "1em",
+                            height: "1em",
+                            boxShadow: "rgba(0, 0, 0, 0.15) 0px 6px 10px",
+                          }}
+                        />
+                        <strong>{chain.target_chain_name}</strong>
+                      </div>
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </Else>
+          </If>
         </div>
         <br />
         <div
@@ -307,7 +312,7 @@ export default function Withdraw({
                 withdraw_channel_id,
                 undefined,
                 Math.floor(Date.now() / 1000) + 15 * 60, // 15 minute timeout
-                getFeeFromGas(withdraw_gas)
+                gasToFee(withdraw_gas)
               );
               inputRef.current.value = "";
               onSuccess(transactionHash);

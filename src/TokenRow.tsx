@@ -19,8 +19,10 @@ import RefreshIcon from "@mui/icons-material/Refresh";
 import { SigningCosmWasmClient } from "secretjs";
 import { getKeplrViewingKey, setKeplrViewingKey } from "./KeplrStuff";
 import { Token } from "./config";
-import { viewingKeyErroString, sleep, getFeeFromGas } from "./commons";
+import { viewingKeyErroString, sleep, gasToFee } from "./commons";
 import DepositWithdrawDialog from "./DepositWithdrawDialog";
+import { Else, If, Then, When } from "react-if";
+import { Breakpoint } from "react-socks";
 
 export default function TokenRow({
   secretjs,
@@ -219,7 +221,7 @@ export default function TokenRow({
             }}
           >
             <span>{token.name}</span>
-            {token.address ? (
+            <When condition={token.address}>
               <>
                 <Tooltip title={`IBC Deposit & Withdraw`} placement="top">
                   <Button
@@ -243,7 +245,7 @@ export default function TokenRow({
                   setIsOpen={setIsDepositWithdrawDialogOpen}
                 />
               </>
-            ) : null}
+            </When>
           </div>
           <span style={{ fontSize: "0.75rem" }}>{balanceIbcCoin}</span>
         </div>
@@ -260,11 +262,14 @@ export default function TokenRow({
           size="small"
           variant="text"
           startIcon={
-            loadingUnwrap ? (
-              <CircularProgress size="0.8em" />
-            ) : (
-              <KeyboardArrowLeftIcon />
-            )
+            <If condition={loadingUnwrap}>
+              <Then>
+                <CircularProgress size="0.8em" />
+              </Then>
+              <Else>
+                <KeyboardArrowLeftIcon />
+              </Else>
+            </If>
           }
           onClick={async () => {
             if (!secretjs || !secretAddress || loadingWrap || loadingUnwrap) {
@@ -297,7 +302,7 @@ export default function TokenRow({
                 },
                 "",
                 [],
-                getFeeFromGas(40_000),
+                gasToFee(40_000),
                 token.code_hash
               );
 
@@ -334,7 +339,9 @@ export default function TokenRow({
             }
           }}
         >
-          {isMobile ? "" : "Unwrap"}
+          <Breakpoint medium up>
+            Unwrap
+          </Breakpoint>
         </Button>
         <Input
           disabled={token.address === ""}
@@ -381,7 +388,7 @@ export default function TokenRow({
                 { deposit: {} },
                 "",
                 [{ denom: token.withdrawals[0].from_denom, amount }],
-                getFeeFromGas(40_000),
+                gasToFee(40_000),
                 token.code_hash
               );
 
@@ -418,7 +425,9 @@ export default function TokenRow({
             }
           }}
         >
-          {isMobile ? "" : "Wrap"}
+          <Breakpoint medium up>
+            Wrap
+          </Breakpoint>
         </Button>
       </div>
       <div
@@ -445,7 +454,7 @@ export default function TokenRow({
             }}
           >
             <span>{balanceToken}</span>
-            {token.address ? (
+            <When condition={token.address}>
               <Tooltip title="Refresh Balance" placement="top">
                 <Button
                   style={{
@@ -466,7 +475,7 @@ export default function TokenRow({
                   <RefreshIcon sx={{ height: "0.7em" }} />
                 </Button>
               </Tooltip>
-            ) : null}
+            </When>
           </div>
         </div>
       </div>
