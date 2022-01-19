@@ -43,7 +43,7 @@ export default function CopyableAddress({
         <Button style={{ color: "black", minWidth: 0 }}>
           <FileCopyOutlined
             fontSize="small"
-            style={isCopied ? { fill: "green" } : undefined}
+            style={{ fill: isCopied ? "green" : undefined }}
           />
         </Button>
       </CopyToClipboard>

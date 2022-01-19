@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from "react";
 import ReactDOM from "react-dom";
 import "./index.css";
-
 import { SigningCosmWasmClient } from "secretjs";
 import { tokens, chains } from "./config";
 import TokenRow from "./TokenRow";
 import { Typography, Avatar } from "@mui/material";
 import { Window as KeplrWindow } from "@keplr-wallet/types";
 import { KeplrPanel } from "./KeplrStuff";
+import { BreakpointProvider } from "react-socks";
 declare global {
   interface Window extends KeplrWindow {}
 }
@@ -46,43 +46,45 @@ class ErrorBoundary extends React.Component<{}, { hasError: boolean }> {
 const footerHeight = "1.8rem";
 
 ReactDOM.render(
-  <React.StrictMode>
-    <div style={{ minHeight: `calc(100vh - ${footerHeight})` }}>
-      <App />
-    </div>
-    <a
-      href="https://SCRT.network"
-      target="_blank"
-      style={{
-        height: footerHeight,
-        width: "100%",
-        backgroundColor: "#e7e7e7",
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        position: "relative",
-        left: 0,
-        bottom: 0,
-        gap: "0.3em",
-        textDecoration: "none",
-      }}
-    >
-      <Avatar
-        src="/scrt.svg"
-        sx={{
-          width: "1em",
-          height: "1em",
-        }}
-      />
-      <span
+  <BreakpointProvider>
+    <React.StrictMode>
+      <div style={{ minHeight: `calc(100vh - ${footerHeight})` }}>
+        <App />
+      </div>
+      <a
+        href="https://SCRT.network"
+        target="_blank"
         style={{
-          color: "black",
+          height: footerHeight,
+          width: "100%",
+          backgroundColor: "#e7e7e7",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          position: "relative",
+          left: 0,
+          bottom: 0,
+          gap: "0.3em",
+          textDecoration: "none",
         }}
       >
-        Powered by Secret Network
-      </span>
-    </a>
-  </React.StrictMode>,
+        <Avatar
+          src="/scrt.svg"
+          sx={{
+            width: "1em",
+            height: "1em",
+          }}
+        />
+        <span
+          style={{
+            color: "black",
+          }}
+        >
+          Powered by Secret Network
+        </span>
+      </a>
+    </React.StrictMode>
+  </BreakpointProvider>,
   document.getElementById("root")
 );
 
@@ -105,7 +107,9 @@ export default function App() {
       } = await response.json();
 
       const denoms = Array.from(
-        new Set(tokens.map((t) => t.withdrawals.map((w) => w.from_denom)).flat())
+        new Set(
+          tokens.map((t) => t.withdrawals.map((w) => w.from_denom)).flat()
+        )
       );
 
       for (const denom of denoms) {
