@@ -3,11 +3,7 @@ import {
   Avatar,
   Button,
   Tooltip,
-  Dialog,
   Input,
-  Box,
-  Tabs,
-  Tab,
 } from "@mui/material";
 import BigNumber from "bignumber.js";
 import React, { useRef, useState, useEffect } from "react";
@@ -30,12 +26,14 @@ export default function TokenRow({
   token,
   balances,
   loadingCoinBalances,
+  price,
 }: {
   secretjs: SigningCosmWasmClient | null;
   secretAddress: string;
   loadingCoinBalances: boolean;
   token: Token;
   balances: Map<string, string>;
+  price: number;
 }) {
   const wrapInputRef = useRef<any>();
 
@@ -106,21 +104,30 @@ export default function TokenRow({
       );
     } else if (balances.get(denomOnSecret)) {
       balanceIbcCoin = (
-        <span
-          style={{ cursor: "pointer" }}
-          onClick={() => {
-            wrapInputRef.current.value = new BigNumber(
-              balances.get(denomOnSecret) as string
-            )
+        <div>
+          <div
+            style={{ cursor: "pointer" }}
+            onClick={() => {
+              wrapInputRef.current.value = new BigNumber(
+                balances.get(denomOnSecret)!
+              )
+                .dividedBy(`1e${token.decimals}`)
+                .toFixed();
+            }}
+          >
+            {`Balance: ${new BigNumber(balances.get(denomOnSecret)!)
               .dividedBy(`1e${token.decimals}`)
-              .toFixed();
-          }}
-        >
-          Balance:{" "}
-          {new BigNumber(balances.get(denomOnSecret) as string)
-            .dividedBy(`1e${token.decimals}`)
-            .toFormat()}
-        </span>
+              .toFormat()}`}
+          </div>
+          <div style={{ display: "flex", opacity: 0.7 }}>
+            {usdString.format(
+              new BigNumber(balances.get(denomOnSecret)!)
+                .dividedBy(`1e${token.decimals}`)
+                .multipliedBy(price)
+                .toNumber()
+            )}
+          </div>
+        </div>
       );
     } else {
       balanceIbcCoin = <>connect wallet</>;
@@ -154,25 +161,36 @@ export default function TokenRow({
               }
             }}
           >
-            Balance:{` ${viewingKeyErroString}`}
+            {`Balance: ${viewingKeyErroString}`}
           </span>
         </Tooltip>
       );
     } else if (Number(tokenBalance) > -1) {
       balanceToken = (
-        <span
-          style={{ cursor: "pointer" }}
-          onClick={() => {
-            wrapInputRef.current.value = new BigNumber(tokenBalance)
+        <div>
+          <div
+            style={{ cursor: "pointer" }}
+            onClick={() => {
+              wrapInputRef.current.value = new BigNumber(tokenBalance)
+                .dividedBy(`1e${token.decimals}`)
+                .toFixed();
+            }}
+          >
+            {`Balance: ${new BigNumber(tokenBalance)
               .dividedBy(`1e${token.decimals}`)
-              .toFixed();
-          }}
-        >
-          Balance:{" "}
-          {new BigNumber(tokenBalance)
-            .dividedBy(`1e${token.decimals}`)
-            .toFormat()}
-        </span>
+              .toFormat()}`}
+          </div>
+          <div
+            style={{ display: "flex", placeContent: "flex-end", opacity: 0.7 }}
+          >
+            {usdString.format(
+              new BigNumber(tokenBalance)
+                .dividedBy(`1e${token.decimals}`)
+                .multipliedBy(price)
+                .toNumber()
+            )}
+          </div>
+        </div>
       );
     }
   } else {
@@ -186,7 +204,7 @@ export default function TokenRow({
         display: "flex",
         alignItems: "center",
         gap: "0.8rem",
-        padding: "1rem",
+        padding: "0.4rem",
         borderRadius: 20,
         width: isMobile ? "100%" : undefined,
       }}
@@ -490,3 +508,10 @@ export default function TokenRow({
     </div>
   );
 }
+
+const usdString = new Intl.NumberFormat("en-US", {
+  style: "currency",
+  currency: "USD",
+  minimumFractionDigits: 0,
+  maximumFractionDigits: 2,
+});
