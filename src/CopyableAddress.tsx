@@ -16,8 +16,8 @@ export default function CopyableAddress({
     <div
       style={{
         display: "flex",
-        justifyContent: "flex-end",
-        alignItems: "center",
+        placeContent: "flex-end",
+        placeItems: "center",
         gap: "0.1em",
       }}
     >

@@ -116,7 +116,7 @@ export default function Deposit({
         <div
           style={{
             display: "flex",
-            alignItems: "center",
+            placeItems: "center",
             gap: token.deposits.length === 1 ? "0.3em" : "0.5em",
           }}
         >
@@ -145,7 +145,7 @@ export default function Deposit({
                         style={{
                           display: "flex",
                           gap: "0.5em",
-                          alignItems: "center",
+                          placeItems: "center",
                         }}
                       >
                         <Avatar
@@ -173,8 +173,8 @@ export default function Deposit({
         <div
           style={{
             display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
+            placeContent: "space-between",
+            placeItems: "center",
             gap: "1em",
           }}
         >
@@ -187,8 +187,8 @@ export default function Deposit({
         <div
           style={{
             display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
+            placeContent: "space-between",
+            placeItems: "center",
             gap: "1em",
           }}
         >
@@ -202,7 +202,7 @@ export default function Deposit({
         <div
           style={{
             display: "flex",
-            alignItems: "center",
+            placeItems: "center",
             gap: "0.3em",
             marginBottom: "0.8em",
           }}
@@ -291,7 +291,7 @@ export default function Deposit({
       <div
         style={{
           display: "flex",
-          justifyContent: "center",
+          placeContent: "center",
           marginBottom: "0.4em",
         }}
       >
