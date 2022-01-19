@@ -130,15 +130,30 @@ export default function TokenRow({
         </div>
       );
     } else {
-      balanceIbcCoin = <>connect wallet</>;
+      balanceIbcCoin = (
+        <div>
+          <div>connect wallet</div>
+          <div style={{ opacity: 0 }}>(please)</div>
+        </div>
+      );
     }
   } else {
-    balanceIbcCoin = <>coming soon</>;
+    balanceIbcCoin = (
+      <div>
+        <div>coming soon</div>
+        <div>(🤫)</div>
+      </div>
+    );
   }
 
   if (token.address) {
     if (!secretjs) {
-      balanceToken = <>connect wallet</>;
+      balanceToken = (
+        <div>
+          <div>connect wallet</div>
+          <div style={{ opacity: 0 }}>(please)</div>
+        </div>
+      );
     } else if (loadingTokenBalance) {
       balanceToken = (
         <span>
@@ -194,7 +209,12 @@ export default function TokenRow({
       );
     }
   } else {
-    balanceToken = <>coming soon</>;
+    balanceToken = (
+      <div>
+        <div>coming soon</div>
+        <div style={{ display: "flex", placeContent: "flex-end" }}>(🤫)</div>
+      </div>
+    );
   }
 
   return (
