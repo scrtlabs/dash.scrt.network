@@ -9,6 +9,8 @@ export type Token = {
   image: string;
   /** decimals of the token */
   decimals: number;
+  /** coingeck id to get usd price */
+  coingecko_id: string;
   /** how to deposit this token into Secret Network */
   deposits: Deposit[];
   /** how to withdraw this token out of Secret Network */
@@ -37,6 +39,7 @@ export const tokens: Token[] = [
       "af74387e276be8874f07bec3a87023ee49b0e7ebe08178c49d0a49c3c98ed60e",
     image: "/scrt.svg",
     decimals: 6,
+    coingecko_id: "secret",
     deposits: [
       {
         source_chain_name: "Cosmos Hub",
@@ -103,6 +106,7 @@ export const tokens: Token[] = [
       "ad91060456344fc8d8e93c0600a3957b8158605c044b3bef7048510b3157b807",
     image: "/atom.jpg",
     decimals: 6,
+    coingecko_id: "cosmos",
     deposits: [
       {
         source_chain_name: "Cosmos Hub",
@@ -124,6 +128,7 @@ export const tokens: Token[] = [
       "ad91060456344fc8d8e93c0600a3957b8158605c044b3bef7048510b3157b807",
     image: "/luna.png",
     decimals: 6,
+    coingecko_id: "terra-luna",
     deposits: [
       {
         source_chain_name: "Terra",
@@ -145,6 +150,7 @@ export const tokens: Token[] = [
       "ad91060456344fc8d8e93c0600a3957b8158605c044b3bef7048510b3157b807",
     image: "/ust.png",
     decimals: 6,
+    coingecko_id: "terra-usd",
     deposits: [
       {
         source_chain_name: "Terra",
@@ -166,6 +172,7 @@ export const tokens: Token[] = [
       "ad91060456344fc8d8e93c0600a3957b8158605c044b3bef7048510b3157b807",
     image: "/osmo.jpeg",
     decimals: 6,
+    coingecko_id: "osmosis",
     deposits: [
       {
         source_chain_name: "Osmosis",
@@ -187,6 +194,7 @@ export const tokens: Token[] = [
       "ad91060456344fc8d8e93c0600a3957b8158605c044b3bef7048510b3157b807",
     image: "/dvpn.jpeg",
     decimals: 6,
+    coingecko_id: "sentinel",
     deposits: [
       {
         source_chain_name: "Sentinel",
@@ -207,6 +215,7 @@ export const tokens: Token[] = [
     code_hash: "", // "ad91060456344fc8d8e93c0600a3957b8158605c044b3bef7048510b3157b807",
     image: "/juno.svg",
     decimals: 6,
+    coingecko_id: "juno-network",
     deposits: [
       {
         source_chain_name: "Juno",
@@ -227,6 +236,7 @@ export const tokens: Token[] = [
     code_hash: "", // "182d7230c396fa8f548220ff88c34cb0291a00046df9ff2686e407c3b55692e9",
     image: "/huahua.jpg",
     decimals: 6,
+    coingecko_id: "chihuahua-chain",
     deposits: [
       {
         source_chain_name: "Chihuahua",

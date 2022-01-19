@@ -92,6 +92,7 @@ export default function App() {
   const [secretjs, setSecretjs] = useState<SigningCosmWasmClient | null>(null);
   const [secretAddress, setSecretAddress] = useState<string>("");
   const [balances, setBalances] = useState<Map<string, string>>(new Map());
+  const [prices, setPrices] = useState<Map<string, number>>(new Map());
   const [loadingCoinBalances, setLoadingCoinBalances] =
     useState<boolean>(false);
 
@@ -143,6 +144,27 @@ export default function App() {
     };
   }, [secretAddress, secretjs]);
 
+  useEffect(() => {
+    fetch(
+      `https://api.coingecko.com/api/v3/simple/price?ids=${tokens
+        .map((t) => t.coingecko_id)
+        .join(",")}&vs_currencies=USD`
+    )
+      .then((resp) => resp.json())
+      .then((result: { [coingecko_id: string]: { usd: number } }) => {
+        const prices = new Map<string, number>();
+        for (const token of tokens) {
+          if (result[token.coingecko_id]) {
+            prices.set(token.name, result[token.coingecko_id].usd);
+          }
+          if (token.name === "UST") {
+            prices.set(token.name, 1);
+          }
+        }
+        setPrices(prices);
+      });
+  }, []);
+
   return (
     <div style={{ padding: "0.5rem" }}>
       <div
@@ -185,6 +207,7 @@ export default function App() {
               secretAddress={secretAddress}
               secretjs={secretjs}
               balances={balances}
+              price={prices.get(t.name) || 0}
             />
           </ErrorBoundary>
         ))}
