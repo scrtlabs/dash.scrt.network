@@ -29,7 +29,7 @@ export function KeplrPanel({
   }, []);
 
   const content = (
-    <div style={{ display: "flex", alignItems: "center", borderRadius: 10 }}>
+    <div style={{ display: "flex", placeItems: "center", borderRadius: 10 }}>
       <img src="/keplr.svg" style={{ width: "1.8rem", borderRadius: 10 }} />
       <span style={{ margin: "0 0.3rem" }}>
         {secretjs ? secretAddress : "Connect wallet"}
@@ -65,6 +65,7 @@ export function KeplrPanel({
   } else {
     return (
       <Button
+        id="keplr-button"
         variant="contained"
         style={{ background: "white", color: "black" }}
         onClick={() => setupKeplr(setSecretjs, setSecretAddress)}

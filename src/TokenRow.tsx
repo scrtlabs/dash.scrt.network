@@ -98,9 +98,12 @@ export default function TokenRow({
   if (token.address) {
     if (loadingCoinBalances) {
       balanceIbcCoin = (
-        <span>
-          Balance: <CircularProgress size="0.8em" />
-        </span>
+        <div>
+          <div>
+            Balance: <CircularProgress size="0.8em" />
+          </div>
+          <div style={{ opacity: 0 }}>placeholder</div>
+        </div>
       );
     } else if (balances.get(denomOnSecret)) {
       balanceIbcCoin = (
@@ -132,7 +135,14 @@ export default function TokenRow({
     } else {
       balanceIbcCoin = (
         <div>
-          <div>connect wallet</div>
+          <div
+            style={{ cursor: "pointer" }}
+            onClick={() => {
+              document.getElementById("keplr-button")?.click();
+            }}
+          >
+            connect wallet
+          </div>
           <div style={{ opacity: 0 }}>(please)</div>
         </div>
       );
@@ -150,35 +160,48 @@ export default function TokenRow({
     if (!secretjs) {
       balanceToken = (
         <div>
-          <div>connect wallet</div>
+          <div
+            style={{ cursor: "pointer" }}
+            onClick={() => {
+              document.getElementById("keplr-button")?.click();
+            }}
+          >
+            connect wallet
+          </div>
           <div style={{ opacity: 0 }}>(please)</div>
         </div>
       );
     } else if (loadingTokenBalance) {
       balanceToken = (
-        <span>
-          Balance: <CircularProgress size="0.8em" />
-        </span>
+        <div>
+          <div>
+            Balance: <CircularProgress size="0.8em" />
+          </div>
+          <div style={{ opacity: 0 }}>placeholder</div>
+        </div>
       );
     } else if (tokenBalance == viewingKeyErroString) {
       balanceToken = (
-        <Tooltip title="Set Viewing Key" placement="top">
-          <span
-            style={{ cursor: "pointer" }}
-            onClick={async () => {
-              await setKeplrViewingKey(token.address);
-              try {
-                setLoadingTokenBalance(true);
-                await sleep(1000); // sometimes query nodes lag
-                await updateTokenBalance();
-              } finally {
-                setLoadingTokenBalance(false);
-              }
-            }}
-          >
-            {`Balance: ${viewingKeyErroString}`}
-          </span>
-        </Tooltip>
+        <div>
+          <Tooltip title="Set Viewing Key" placement="top">
+            <div
+              style={{ cursor: "pointer" }}
+              onClick={async () => {
+                await setKeplrViewingKey(token.address);
+                try {
+                  setLoadingTokenBalance(true);
+                  await sleep(1000); // sometimes query nodes lag
+                  await updateTokenBalance();
+                } finally {
+                  setLoadingTokenBalance(false);
+                }
+              }}
+            >
+              {`Balance: ${viewingKeyErroString}`}
+            </div>
+          </Tooltip>
+          <div style={{ opacity: 0 }}>placeholder</div>
+        </div>
       );
     } else if (Number(tokenBalance) > -1) {
       balanceToken = (
@@ -222,7 +245,7 @@ export default function TokenRow({
       key={token.name}
       style={{
         display: "flex",
-        alignItems: "center",
+        placeItems: "center",
         gap: "0.8rem",
         padding: "0.4rem",
         borderRadius: 20,
@@ -247,14 +270,14 @@ export default function TokenRow({
           style={{
             display: "flex",
             flexDirection: "column",
-            alignItems: "flex-start",
+            placeItems: "flex-start",
           }}
         >
           <div
             style={{
               display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
+              placeContent: "space-between",
+              placeItems: "center",
               minWidth: "5.6em",
             }}
           >
@@ -291,7 +314,7 @@ export default function TokenRow({
       <div
         style={{
           display: "flex",
-          alignItems: "center",
+          placeItems: "center",
           gap: "0.3rem",
         }}
       >
@@ -472,14 +495,14 @@ export default function TokenRow({
         style={{
           display: "flex",
           width: isMobile ? undefined : 150,
-          justifyContent: "flex-end",
+          placeContent: "flex-end",
         }}
       >
         <div
           style={{
             display: "flex",
             flexDirection: "column",
-            alignItems: "flex-end",
+            placeItems: "flex-end",
           }}
         >
           <span>s{token.name}</span>
@@ -487,7 +510,7 @@ export default function TokenRow({
             style={{
               fontSize: "0.75rem",
               display: "flex",
-              alignItems: "flex-start",
+              placeItems: "flex-start",
               gap: "0.2em",
             }}
           >

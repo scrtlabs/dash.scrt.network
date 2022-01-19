@@ -59,8 +59,8 @@ ReactDOM.render(
           width: "100%",
           backgroundColor: "#e7e7e7",
           display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
+          placeContent: "center",
+          placeItems: "center",
           position: "relative",
           left: 0,
           bottom: 0,
@@ -170,8 +170,8 @@ export default function App() {
       <div
         style={{
           display: "flex",
-          justifyContent: "flex-end",
-          alignItems: "center",
+          placeContent: "flex-end",
+          placeItems: "center",
           minHeight: "3rem",
         }}
       >
@@ -187,8 +187,8 @@ export default function App() {
         style={{
           display: "flex",
           flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "center",
+          placeItems: "center",
+          placeContent: "center",
         }}
       >
         <Typography variant="h2" component="div" align="center">
