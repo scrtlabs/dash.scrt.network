@@ -24,9 +24,9 @@ export function KeplrPanel({
 }) {
   const [isCopied, setIsCopied] = useState<boolean>(false);
 
-  useEffect(() => {
-    setupKeplr(setSecretjs, setSecretAddress);
-  }, []);
+  // useEffect(() => {
+  //   setupKeplr(setSecretjs, setSecretAddress);
+  // }, []);
 
   const content = (
     <div style={{ display: "flex", placeItems: "center", borderRadius: 10 }}>
