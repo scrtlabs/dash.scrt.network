@@ -56,7 +56,6 @@ ReactDOM.render(
         target="_blank"
         style={{
           height: footerHeight,
-          width: "100%",
           backgroundColor: "#e7e7e7",
           display: "flex",
           placeContent: "center",
@@ -68,20 +67,8 @@ ReactDOM.render(
           textDecoration: "none",
         }}
       >
-        <Avatar
-          src="/scrt.svg"
-          sx={{
-            width: "1em",
-            height: "1em",
-          }}
-        />
-        <span
-          style={{
-            color: "black",
-          }}
-        >
-          Powered by Secret Network
-        </span>
+        <Avatar src="/scrt.svg" sx={{ width: "1em", height: "1em" }} />
+        <span style={{ color: "black" }}>Powered by Secret Network</span>
       </a>
     </React.StrictMode>
   </BreakpointProvider>,
@@ -182,7 +169,6 @@ export default function App() {
           setSecretAddress={setSecretAddress}
         />
       </div>
-
       <div
         style={{
           display: "flex",
@@ -194,24 +180,29 @@ export default function App() {
         <Typography variant="h2" component="div" align="center">
           Get Privacy
         </Typography>
-        <Typography component="div" align="center">
+        <Typography
+          component="div"
+          align="center"
+          sx={{
+            marginBottom: "0.5rem",
+          }}
+        >
           Wrapping Coins as Secret Tokens immediately supercharges them with
           private balances and private transfers.
         </Typography>
-        <br />
-        {tokens.map((t) => (
-          <ErrorBoundary key={t.name}>
-            <TokenRow
-              token={t}
-              loadingCoinBalances={loadingCoinBalances}
-              secretAddress={secretAddress}
-              secretjs={secretjs}
-              balances={balances}
-              price={prices.get(t.name) || 0}
-            />
-          </ErrorBoundary>
-        ))}
       </div>
+      {tokens.map((t) => (
+        <ErrorBoundary key={t.name}>
+          <TokenRow
+            token={t}
+            loadingCoinBalances={loadingCoinBalances}
+            secretAddress={secretAddress}
+            secretjs={secretjs}
+            balances={balances}
+            price={prices.get(t.name) || 0}
+          />
+        </ErrorBoundary>
+      ))}
     </div>
   );
 }
