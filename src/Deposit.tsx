@@ -79,7 +79,10 @@ export default function Deposit({
     }
 
     fetchSourceBalance(sourceAddress);
-    const interval = setInterval(() => fetchSourceBalance(sourceAddress), 5000);
+    const interval = setInterval(
+      () => fetchSourceBalance(sourceAddress),
+      10_000
+    );
     setFetchBalanceInterval(interval);
 
     return () => clearInterval(interval);
