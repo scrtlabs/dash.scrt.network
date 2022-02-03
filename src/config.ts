@@ -246,8 +246,7 @@ export const tokens: Token[] = [
     withdrawals: [
       {
         target_chain_name: "Akash",
-        from_denom:
-          "ibc/", // AKT denom on Secret
+        from_denom: "ibc/", // AKT denom on Secret
       },
     ],
   },
@@ -311,7 +310,7 @@ export const chains: { [chain_name: string]: Chain } = {
     chain_id: "secret-4",
     bech32_prefix: "secret",
     lcd: "https://bridge-api-manager.azure-api.net",
-    rpc: "https://rpc-secret.scrtlabs.com/secret-4/rpc/",
+    rpc: "https://lcd-secret.scrtlabs.com/rpc/",
     chain_image: "/scrt.svg",
     explorer_account:
       "https://secretnodes.com/secret/chains/secret-4/accounts/",
