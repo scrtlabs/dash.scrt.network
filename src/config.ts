@@ -350,7 +350,7 @@ export const chains: { [chain_name: string]: Chain } = {
     chain_id: "osmosis-1",
     bech32_prefix: "osmo",
     lcd: "https://lcd-osmosis.blockapsis.com/",
-    rpc: "https://rpc-osmosis.blockapsis.com/",
+    rpc: "https://osmosis.validator.network/",
     chain_image: "/osmo.jpeg",
     explorer_account: "https://www.mintscan.io/osmosis/account/",
   },
