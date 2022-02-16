@@ -1,13 +1,13 @@
-import React, { useState, useEffect } from "react";
-import ReactDOM from "react-dom";
-import "./index.css";
-import { SigningCosmWasmClient } from "secretjs";
-import { tokens, chains } from "./config";
-import TokenRow from "./TokenRow";
-import { Typography, Avatar } from "@mui/material";
 import { Window as KeplrWindow } from "@keplr-wallet/types";
-import { KeplrPanel } from "./KeplrStuff";
+import { Avatar, Typography } from "@mui/material";
+import React, { useEffect, useState } from "react";
+import ReactDOM from "react-dom";
 import { BreakpointProvider } from "react-socks";
+import { SecretNetworkClient } from "secretjs";
+import { chains, tokens } from "./config";
+import "./index.css";
+import { KeplrPanel } from "./KeplrStuff";
+import TokenRow from "./TokenRow";
 declare global {
   interface Window extends KeplrWindow {}
 }
@@ -76,7 +76,7 @@ ReactDOM.render(
 );
 
 export default function App() {
-  const [secretjs, setSecretjs] = useState<SigningCosmWasmClient | null>(null);
+  const [secretjs, setSecretjs] = useState<SecretNetworkClient | null>(null);
   const [secretAddress, setSecretAddress] = useState<string>("");
   const [balances, setBalances] = useState<Map<string, string>>(new Map());
   const [prices, setPrices] = useState<Map<string, number>>(new Map());

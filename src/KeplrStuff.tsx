@@ -1,13 +1,12 @@
 import { FileCopyOutlined } from "@mui/icons-material";
 import Button from "@mui/material/Button";
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import CopyToClipboard from "react-copy-to-clipboard";
-import { BroadcastMode, SigningCosmWasmClient } from "secretjs";
-
+import { SecretNetworkClient } from "secretjs";
 import { chains } from "./config";
 
 const SECRET_CHAIN_ID = chains["Secret Network"].chain_id;
-const SECRET_LCD = chains["Secret Network"].lcd;
+const SECRET_RPC = chains["Secret Network"].rpc;
 
 export function KeplrPanel({
   secretjs,
@@ -15,10 +14,8 @@ export function KeplrPanel({
   secretAddress,
   setSecretAddress,
 }: {
-  secretjs: SigningCosmWasmClient | null;
-  setSecretjs: React.Dispatch<
-    React.SetStateAction<SigningCosmWasmClient | null>
-  >;
+  secretjs: SecretNetworkClient | null;
+  setSecretjs: React.Dispatch<React.SetStateAction<SecretNetworkClient | null>>;
   secretAddress: string;
   setSecretAddress: React.Dispatch<React.SetStateAction<string>>;
 }) {
@@ -77,9 +74,7 @@ export function KeplrPanel({
 }
 
 async function setupKeplr(
-  setSecretjs: React.Dispatch<
-    React.SetStateAction<SigningCosmWasmClient | null>
-  >,
+  setSecretjs: React.Dispatch<React.SetStateAction<SecretNetworkClient | null>>,
   setSecretAddress: React.Dispatch<React.SetStateAction<string>>
 ) {
   const sleep = (ms: number) =>
@@ -100,15 +95,12 @@ async function setupKeplr(
 
   const secretAddress = accounts[0].address;
 
-  const secretjs = new SigningCosmWasmClient(
-    SECRET_LCD,
-    secretAddress,
-    //@ts-ignore
-    keplrOfflineSigner,
-    window.getEnigmaUtils(SECRET_CHAIN_ID),
-    undefined,
-    BroadcastMode.Sync
-  );
+  const secretjs = await SecretNetworkClient.create(SECRET_RPC, {
+    chainId: SECRET_CHAIN_ID,
+    wallet: keplrOfflineSigner,
+    walletAddress: secretAddress,
+    encryptionUtils: window.getEnigmaUtils(SECRET_CHAIN_ID),
+  });
 
   setSecretAddress(secretAddress);
   setSecretjs(secretjs);
