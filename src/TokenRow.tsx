@@ -60,7 +60,7 @@ export default function TokenRow({
     }
 
     try {
-      const result: any = await secretjs.query.compute.queryContract({
+      const result = await secretjs.query.compute.queryContract({
         address: token.address,
         codeHash: token.code_hash,
         query: {
