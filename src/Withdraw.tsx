@@ -1,32 +1,34 @@
+import LoadingButton from "@mui/lab/LoadingButton";
 import {
-  CircularProgress,
   Avatar,
   Button,
-  Typography,
-  InputAdornment,
-  Input,
+  CircularProgress,
   FormControl,
+  Input,
+  InputAdornment,
   InputLabel,
-  Select,
   MenuItem,
+  Select,
+  Typography,
 } from "@mui/material";
-import LoadingButton from "@mui/lab/LoadingButton";
 import BigNumber from "bignumber.js";
-import React, { useRef, useState, useEffect } from "react";
-import { SigningStargateClient } from "@cosmjs/stargate";
-import { Token, chains } from "./config";
+import React, { useEffect, useRef, useState } from "react";
+import { Else, If, Then } from "react-if";
+import { MsgTransfer, SecretNetworkClient } from "secretjs";
+import { sleep, suggestTerraToKeplr } from "./commons";
+import { chains, Token } from "./config";
 import CopyableAddress from "./CopyableAddress";
-import { gasToFee, sleep, suggestTerraToKeplr } from "./commons";
-import { If, Then, Else, When } from "react-if";
 
 export default function Withdraw({
   token,
+  secretjs,
   secretAddress,
   balances,
   onSuccess,
   onFailure,
 }: {
   token: Token;
+  secretjs: SecretNetworkClient | null;
   secretAddress: string;
   balances: Map<string, string>;
   onSuccess: (txhash: string) => any;
@@ -34,8 +36,6 @@ export default function Withdraw({
 }) {
   const [targetAddress, setTargetAddress] = useState<string>("");
   const [loadingTx, setLoading] = useState<boolean>(false);
-  const [secretCosmJs, setSecretCosmJs] =
-    useState<SigningStargateClient | null>(null);
   const [selectedChainIndex, setSelectedChainIndex] = useState<number>(0);
   const inputRef = useRef<any>();
   const maxButtonRef = useRef<any>();
@@ -64,17 +64,6 @@ export default function Withdraw({
         window.getOfflineSignerOnlyAmino(targetChainId);
       const targetFromAccounts = await targetOfflineSigner.getAccounts();
       setTargetAddress(targetFromAccounts[0].address);
-
-      // Initialize cosmjs on Secret Network, because it has sendIbcTokens()
-      const { chain_id, rpc, bech32_prefix } = chains["Secret Network"];
-      await window.keplr.enable(chain_id);
-      const secretOfflineSigner = window.getOfflineSignerOnlyAmino(chain_id);
-      const cosmjs = await SigningStargateClient.connectWithSigner(
-        rpc,
-        secretOfflineSigner,
-        { prefix: bech32_prefix }
-      );
-      setSecretCosmJs(cosmjs);
     })();
   }, [selectedChainIndex]);
 
@@ -272,8 +261,8 @@ export default function Withdraw({
           }}
           loading={loadingTx}
           onClick={async () => {
-            if (!secretCosmJs) {
-              console.error("No cosmjs");
+            if (!secretjs) {
+              console.error("No secretjs");
               return;
             }
 
@@ -301,21 +290,35 @@ export default function Withdraw({
             const { withdraw_channel_id, withdraw_gas } =
               chains[token.withdrawals[selectedChainIndex].target_chain_name];
             try {
-              const { transactionHash } = await secretCosmJs.sendIbcTokens(
-                secretAddress,
-                targetAddress,
+              const tx = await secretjs.tx.broadcast(
+                [
+                  new MsgTransfer({
+                    sender: secretAddress,
+                    receiver: targetAddress,
+                    sourceChannel: withdraw_channel_id,
+                    sourcePort: "transfer",
+                    token: {
+                      amount,
+                      denom: token.withdrawals[selectedChainIndex].from_denom,
+                    },
+                    timeoutTimestampSec: String(
+                      Math.floor(Date.now() / 1000) + 15 * 60
+                    ), // 15 minute timeout
+                  }),
+                ],
                 {
-                  amount,
-                  denom: token.withdrawals[selectedChainIndex].from_denom,
-                },
-                "transfer",
-                withdraw_channel_id,
-                undefined,
-                Math.floor(Date.now() / 1000) + 15 * 60, // 15 minute timeout
-                gasToFee(withdraw_gas)
+                  gasLimit: withdraw_gas,
+                  gasPriceInFeeDenom: 0.25,
+                  feeDenom: "uscrt",
+                }
               );
-              inputRef.current.value = "";
-              onSuccess(transactionHash);
+
+              if (tx.code === 0) {
+                inputRef.current.value = "";
+                onSuccess(tx.transactionHash);
+              } else {
+                onFailure(tx.rawLog);
+              }
             } catch (e) {
               onFailure(e);
             } finally {

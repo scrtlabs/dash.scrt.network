@@ -1,18 +1,21 @@
-import { Dialog, Box, Tabs, Tab } from "@mui/material";
-import React, { useState } from "react";
-import { Token } from "./config";
 import { TabContext, TabPanel } from "@mui/lab";
+import { Box, Dialog, Tab, Tabs } from "@mui/material";
+import React, { useState } from "react";
+import { SecretNetworkClient } from "secretjs";
+import { Token } from "./config";
 import Deposit from "./Deposit";
 import Withdraw from "./Withdraw";
 
 export default function DepositWithdrawDialog({
   token,
+  secretjs,
   secretAddress,
   balances,
   isOpen,
   setIsOpen,
 }: {
   token: Token;
+  secretjs: SecretNetworkClient | null;
   secretAddress: string;
   balances: Map<string, string>;
   isOpen: boolean;
@@ -53,6 +56,7 @@ export default function DepositWithdrawDialog({
         <TabPanel value={"withdraw"}>
           <Withdraw
             token={token}
+            secretjs={secretjs}
             secretAddress={secretAddress}
             balances={balances}
             onSuccess={(txhash) => {

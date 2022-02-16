@@ -1,23 +1,23 @@
+import CompareArrowsIcon from "@mui/icons-material/CompareArrows";
+import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
+import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
+import RefreshIcon from "@mui/icons-material/Refresh";
 import {
-  CircularProgress,
   Avatar,
   Button,
-  Tooltip,
+  CircularProgress,
   Input,
+  Tooltip,
 } from "@mui/material";
 import BigNumber from "bignumber.js";
-import React, { useRef, useState, useEffect } from "react";
-import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
-import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
-import CompareArrowsIcon from "@mui/icons-material/CompareArrows";
-import RefreshIcon from "@mui/icons-material/Refresh";
-import { SigningCosmWasmClient } from "secretjs";
-import { getKeplrViewingKey, setKeplrViewingKey } from "./KeplrStuff";
-import { Token } from "./config";
-import { viewingKeyErroString, sleep, gasToFee } from "./commons";
-import DepositWithdrawDialog from "./DepositWithdrawDialog";
+import React, { useEffect, useRef, useState } from "react";
 import { Else, If, Then, When } from "react-if";
 import { Breakpoint } from "react-socks";
+import { MsgExecuteContract, SecretNetworkClient } from "secretjs";
+import { sleep, viewingKeyErroString } from "./commons";
+import { Token } from "./config";
+import DepositWithdrawDialog from "./DepositWithdrawDialog";
+import { getKeplrViewingKey, setKeplrViewingKey } from "./KeplrStuff";
 
 export default function TokenRow({
   secretjs,
@@ -27,7 +27,7 @@ export default function TokenRow({
   loadingCoinBalances,
   price,
 }: {
-  secretjs: SigningCosmWasmClient | null;
+  secretjs: SecretNetworkClient | null;
   secretAddress: string;
   loadingCoinBalances: boolean;
   token: Token;
@@ -60,14 +60,13 @@ export default function TokenRow({
     }
 
     try {
-      const result = await secretjs.queryContractSmart(
-        token.address,
-        {
+      const result: any = await secretjs.query.compute.queryContract({
+        address: token.address,
+        codeHash: token.code_hash,
+        query: {
           balance: { address: secretAddress, key },
         },
-        undefined,
-        token.code_hash
-      );
+      });
 
       if (result.viewing_key_error) {
         setTokenBalance(viewingKeyErroString);
@@ -344,6 +343,7 @@ export default function TokenRow({
                       token={token}
                       balances={balances}
                       secretAddress={secretAddress}
+                      secretjs={secretjs}
                       isOpen={isDepositWithdrawDialogOpen}
                       setIsOpen={setIsDepositWithdrawDialogOpen}
                     />
@@ -393,39 +393,36 @@ export default function TokenRow({
                 }
                 setLoadingUnwrap(true);
                 try {
-                  const { transactionHash } = await secretjs.execute(
-                    token.address,
+                  const tx = await secretjs.tx.broadcast(
+                    [
+                      new MsgExecuteContract({
+                        sender: secretAddress,
+                        contract: token.address,
+                        codeHash: token.code_hash,
+                        sentFunds: [],
+                        msg: {
+                          redeem: {
+                            amount,
+                            denom:
+                              token.name === "SCRT"
+                                ? undefined
+                                : token.withdrawals[0].from_denom,
+                          },
+                        },
+                      }),
+                    ],
                     {
-                      redeem: {
-                        amount,
-                        denom:
-                          token.name === "SCRT"
-                            ? undefined
-                            : token.withdrawals[0].from_denom,
-                      },
-                    },
-                    "",
-                    [],
-                    gasToFee(40_000),
-                    token.code_hash
-                  );
-                  while (true) {
-                    try {
-                      const tx = await secretjs.restClient.txById(
-                        transactionHash,
-                        true
-                      );
-                      if (!tx.raw_log.startsWith("[")) {
-                        console.error(`Tx failed: ${tx.raw_log}`);
-                      } else {
-                        wrapInputRef.current.value = "";
-                        console.log(`Unwrapped successfully`);
-                      }
-                      break;
-                    } catch (error) {
-                      console.log("Still waiting for tx to commit on-chain...");
+                      gasLimit: 40_000,
+                      gasPriceInFeeDenom: 0.25,
+                      feeDenom: "uscrt",
                     }
-                    await sleep(5000);
+                  );
+
+                  if (tx.code === 0) {
+                    wrapInputRef.current.value = "";
+                    console.log(`Unwrapped successfully`);
+                  } else {
+                    console.error(`Tx failed: ${tx.rawLog}`);
                   }
                 } finally {
                   setLoadingUnwrap(false);
@@ -485,31 +482,30 @@ export default function TokenRow({
                 }
                 setLoadingWrap(true);
                 try {
-                  const { transactionHash } = await secretjs.execute(
-                    token.address,
-                    { deposit: {} },
-                    "",
-                    [{ denom: token.withdrawals[0].from_denom, amount }],
-                    gasToFee(40_000),
-                    token.code_hash
-                  );
-                  while (true) {
-                    try {
-                      const tx = await secretjs.restClient.txById(
-                        transactionHash,
-                        true
-                      );
-                      if (!tx.raw_log.startsWith("[")) {
-                        console.error(`Tx failed: ${tx.raw_log}`);
-                      } else {
-                        wrapInputRef.current.value = "";
-                        console.log(`Wrapped successfully`);
-                      }
-                      break;
-                    } catch (error) {
-                      console.log("Still waiting for tx to commit on-chain...");
+                  const tx = await secretjs.tx.broadcast(
+                    [
+                      new MsgExecuteContract({
+                        sender: secretAddress,
+                        contract: token.address,
+                        codeHash: token.code_hash,
+                        sentFunds: [
+                          { denom: token.withdrawals[0].from_denom, amount },
+                        ],
+                        msg: { deposit: {} },
+                      }),
+                    ],
+                    {
+                      gasLimit: 40_000,
+                      gasPriceInFeeDenom: 0.25,
+                      feeDenom: "uscrt",
                     }
-                    await sleep(5000);
+                  );
+
+                  if (tx.code === 0) {
+                    wrapInputRef.current.value = "";
+                    console.log(`Wrapped successfully`);
+                  } else {
+                    console.error(`Tx failed: ${tx.rawLog}`);
                   }
                 } finally {
                   setLoadingWrap(false);
