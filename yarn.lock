@@ -2043,10 +2043,10 @@ scheduler@^0.20.2:
     loose-envify "^1.1.0"
     object-assign "^4.1.1"
 
-secretjs@1.2.0-beta.45:
-  version "1.2.0-beta.45"
-  resolved "https://registry.yarnpkg.com/secretjs/-/secretjs-1.2.0-beta.45.tgz#a9230dca68800606c4e900046d194ffa753f6778"
-  integrity sha512-KbNWvN1WDvkLcVy7Czvv7tdYmSfljw2DS7C4Dnn8H6loe33zz537Nql9rsFoaTYxUU9HdV3quM/jy9LJDxr9XA==
+secretjs@1.2.0-beta.50:
+  version "1.2.0-beta.50"
+  resolved "https://registry.yarnpkg.com/secretjs/-/secretjs-1.2.0-beta.50.tgz#ab74d1613ad1ec79ccbbd786b140e3439db09bdf"
+  integrity sha512-NcNqXLXfls7npd9HnjhlstMz7S/xeYGzRPCjbCC7xo2jdH587LMh9zpO4n3gnsf4jsARGKkWguIcS1JqGfba6g==
   dependencies:
     "@cosmjs/encoding" "0.27.1"
     "@cosmjs/math" "0.27.1"
