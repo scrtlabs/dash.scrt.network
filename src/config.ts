@@ -69,7 +69,7 @@ export const tokens: Token[] = [
       {
         source_chain_name: "Chihuahua",
         from_denom:
-          "ibc/5A63D05D43F19EA782E7342F8CFB2161E3E1991DA4AE4B7F096ABCFDD6C38B8E", // SCRT denom on Chihuahua
+          "ibc/EB2CED20AB0466F18BE49285E56B31306D4C60438A022EA995BA65D5E3CF7E09", // SCRT denom on Chihuahua
       },
     ],
     withdrawals: [
@@ -310,7 +310,7 @@ export const chains: { [chain_name: string]: Chain } = {
     chain_id: "secret-4",
     bech32_prefix: "secret",
     lcd: "https://bridge-api-manager.azure-api.net",
-    rpc: "https://lcd-secret.scrtlabs.com/rpc/",
+    rpc: "https://grpc-web.azure-api.net",
     chain_image: "/scrt.svg",
     explorer_account:
       "https://secretnodes.com/secret/chains/secret-4/accounts/",

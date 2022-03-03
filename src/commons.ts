@@ -1,8 +1,8 @@
 import { StdFee } from "@cosmjs/stargate";
-import { Keplr } from "@keplr-wallet/types";
 import { Bech32Address } from "@keplr-wallet/cosmos";
+import { Keplr } from "@keplr-wallet/types";
 
-export const viewingKeyErroString = "🧐";
+export const viewingKeyErrorString = "🧐";
 
 export const sleep = (ms: number) =>
   new Promise((resolve) => setTimeout(resolve, ms));

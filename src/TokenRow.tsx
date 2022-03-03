@@ -14,7 +14,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { Else, If, Then, When } from "react-if";
 import { Breakpoint } from "react-socks";
 import { MsgExecuteContract, SecretNetworkClient } from "secretjs";
-import { sleep, viewingKeyErroString } from "./commons";
+import { sleep, viewingKeyErrorString } from "./commons";
 import { Token } from "./config";
 import DepositWithdrawDialog from "./DepositWithdrawDialog";
 import { getKeplrViewingKey, setKeplrViewingKey } from "./KeplrStuff";
@@ -55,7 +55,7 @@ export default function TokenRow({
 
     const key = await getKeplrViewingKey(token.address);
     if (!key) {
-      setTokenBalance(viewingKeyErroString);
+      setTokenBalance(viewingKeyErrorString);
       return;
     }
 
@@ -69,12 +69,14 @@ export default function TokenRow({
       });
 
       if (result.viewing_key_error) {
-        setTokenBalance(viewingKeyErroString);
+        setTokenBalance(viewingKeyErrorString);
         return;
       }
       setTokenBalance(result.balance.amount);
     } catch (e) {
-      setTokenBalance(viewingKeyErroString);
+      console.error(`Error getting balance for s${token.name}`, e);
+
+      setTokenBalance(viewingKeyErrorString);
     }
   };
 
@@ -178,7 +180,7 @@ export default function TokenRow({
           <div style={{ opacity: 0 }}>placeholder</div>
         </div>
       );
-    } else if (tokenBalance == viewingKeyErroString) {
+    } else if (tokenBalance == viewingKeyErrorString) {
       balanceToken = (
         <div>
           <Tooltip title="Set Viewing Key" placement="top">
@@ -195,7 +197,7 @@ export default function TokenRow({
                 }
               }}
             >
-              {`Balance: ${viewingKeyErroString}`}
+              {`Balance: ${viewingKeyErrorString}`}
             </div>
           </Tooltip>
           <div style={{ opacity: 0 }}>placeholder</div>
