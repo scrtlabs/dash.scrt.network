@@ -1,23 +1,23 @@
+import { SigningStargateClient } from "@cosmjs/stargate";
+import LoadingButton from "@mui/lab/LoadingButton";
 import {
-  CircularProgress,
   Avatar,
   Button,
-  Typography,
-  InputAdornment,
-  Input,
+  CircularProgress,
   FormControl,
+  Input,
+  InputAdornment,
   InputLabel,
-  Select,
   MenuItem,
+  Select,
+  Typography,
 } from "@mui/material";
-import LoadingButton from "@mui/lab/LoadingButton";
 import BigNumber from "bignumber.js";
-import React, { useRef, useState, useEffect } from "react";
-import { SigningStargateClient } from "@cosmjs/stargate";
-import { Token, chains } from "./config";
-import CopyableAddress from "./CopyableAddress";
+import React, { useEffect, useRef, useState } from "react";
+import { Else, If, Then } from "react-if";
 import { gasToFee, sleep, suggestTerraToKeplr } from "./commons";
-import { If, Then, Else } from "react-if";
+import { chains, Token } from "./config";
+import CopyableAddress from "./CopyableAddress";
 
 export default function Deposit({
   token,
