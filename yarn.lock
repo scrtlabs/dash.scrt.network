@@ -592,6 +592,11 @@
   resolved "https://registry.yarnpkg.com/@emotion/weak-memoize/-/weak-memoize-0.2.5.tgz#8eed982e2ee6f7f4e44c253e12962980791efd46"
   integrity sha512-6U71C2Wp7r5XtFtQzYrW5iKFT67OixrSxjI4MptCHzdSVlgabczzqLe0ZSgnub/5Kp4hSbpDB1tMytZY9pwxxA==
 
+"@improbable-eng/grpc-web-node-http-transport@0.15.0":
+  version "0.15.0"
+  resolved "https://registry.yarnpkg.com/@improbable-eng/grpc-web-node-http-transport/-/grpc-web-node-http-transport-0.15.0.tgz#5a064472ef43489cbd075a91fb831c2abeb09d68"
+  integrity sha512-HLgJfVolGGpjc9DWPhmMmXJx8YGzkek7jcCFO1YYkSOoO81MWRZentPOd/JiKiZuU08wtc4BG+WNuGzsQB5jZA==
+
 "@improbable-eng/grpc-web@0.15.0":
   version "0.15.0"
   resolved "https://registry.yarnpkg.com/@improbable-eng/grpc-web/-/grpc-web-0.15.0.tgz#3e47e9fdd90381a74abd4b7d26e67422a2a04bef"
@@ -1994,14 +1999,15 @@ scheduler@^0.20.2:
     loose-envify "^1.1.0"
     object-assign "^4.1.1"
 
-secretjs@1.2.0-alpha.6:
-  version "1.2.0-alpha.6"
-  resolved "https://registry.yarnpkg.com/secretjs/-/secretjs-1.2.0-alpha.6.tgz#d274687927362a0de15616b867d15f2e1cec3098"
-  integrity sha512-raAh5ZKT4QmMsM2BYqgWHmqoLXk++lVkwnCPy01c8icf0e56KVZqc2EDz2QaKXqPJHFkP9Y+hOepN7xAwCMRmw==
+secretjs@1.2.0-beta.54:
+  version "1.2.0-beta.54"
+  resolved "https://registry.yarnpkg.com/secretjs/-/secretjs-1.2.0-beta.54.tgz#9a3dfc6f9bb34436046ae0ecdae0a314ddc9835f"
+  integrity sha512-d7lq1rxehkj5VasvGwisHccQvIi0LwKjQtiB9QFB6ZaT2wpJMxTjblfcvis1vkXmNjI6+KGNFCR6iICFi6p6tw==
   dependencies:
     "@cosmjs/encoding" "0.27.1"
     "@cosmjs/math" "0.27.1"
     "@improbable-eng/grpc-web" "0.15.0"
+    "@improbable-eng/grpc-web-node-http-transport" "0.15.0"
     "@noble/hashes" "1.0.0"
     "@noble/secp256k1" "1.5.2"
     bech32 "2.0.0"
