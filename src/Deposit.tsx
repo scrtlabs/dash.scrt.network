@@ -107,7 +107,7 @@ export default function Deposit({
       const cosmjs = await SigningStargateClient.connectWithSigner(
         rpc,
         sourceOfflineSigner,
-        { prefix: bech32_prefix }
+        { prefix: bech32_prefix, broadcastPollIntervalMs: 10_000 }
       );
       setSourceCosmJs(cosmjs);
     })();
