@@ -324,7 +324,7 @@ export const chains: { [chain_name: string]: Chain } = {
     chain_id: "cosmoshub-4",
     bech32_prefix: "cosmos",
     lcd: "https://lcd-cosmoshub.keplr.app",
-    rpc: "https://cosmoshub-4.technofractal.com", // https://cosmoshub.validator.network
+    rpc: "https://cosmoshub.validator.network/",
     chain_image: "/atom.jpg",
     explorer_account: "https://www.mintscan.io/cosmos/account/",
   },
