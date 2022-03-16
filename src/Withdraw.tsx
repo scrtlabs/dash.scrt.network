@@ -83,10 +83,11 @@ export default function Withdraw({
           </Typography>
           <If condition={token.withdrawals.length === 1}>
             <Then>
-              <strong>
-                {" "}
-                {token.withdrawals[selectedChainIndex].target_chain_name}
-              </strong>
+              <Typography sx={{ marginLeft: "-0.2em" }}>
+                <strong>
+                  {token.withdrawals[selectedChainIndex].target_chain_name}
+                </strong>
+              </Typography>
             </Then>
             <Else>
               <FormControl>
