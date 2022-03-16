@@ -323,7 +323,7 @@ export default function TokenRow({
                 }}
               >
                 <span>{token.name}</span>
-                <When condition={token.address}>
+                <When condition={token.address && secretAddress}>
                   <>
                     <Tooltip title={`IBC Deposit & Withdraw`} placement="top">
                       <Button
