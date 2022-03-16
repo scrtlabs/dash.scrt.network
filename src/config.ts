@@ -210,9 +210,32 @@ export const tokens: Token[] = [
     ],
   },
   {
+    name: "HUAHUA",
+    address: "secret1ntvxnf5hzhzv8g87wn76ch6yswdujqlgmjh32w",
+    code_hash:
+      "182d7230c396fa8f548220ff88c34cb0291a00046df9ff2686e407c3b55692e9",
+    image: "/huahua.jpg",
+    decimals: 6,
+    coingecko_id: "chihuahua-chain",
+    deposits: [
+      {
+        source_chain_name: "Chihuahua",
+        from_denom: "uhuahua",
+      },
+    ],
+    withdrawals: [
+      {
+        target_chain_name: "Chihuahua",
+        from_denom:
+          "ibc/630E7B10690ADEC9E9CEEE904CE78C522BBCDDC6A081B23FA26A55F6EF40E41E", // HUAHUA denom on Secret
+      },
+    ],
+  },
+  {
     name: "JUNO",
-    address: "", // "secret1smmc5k24lcn4j2j8f3w0yaeafga6wmzl0qct03",
-    code_hash: "", // "ad91060456344fc8d8e93c0600a3957b8158605c044b3bef7048510b3157b807",
+    address: "", //"secret1smmc5k24lcn4j2j8f3w0yaeafga6wmzl0qct03",
+    code_hash:
+      "ad91060456344fc8d8e93c0600a3957b8158605c044b3bef7048510b3157b807",
     image: "/juno.svg",
     decimals: 6,
     coingecko_id: "juno-network",
@@ -226,7 +249,7 @@ export const tokens: Token[] = [
       {
         target_chain_name: "Juno",
         from_denom:
-          "ibc/A8EA3773CBE6AD46F4759CC057CA60570B692C55E41C161D1466F78948273994", // JUNO denom on Secret
+          "ibc/DF8D00B4B31B55AFCA9BAF192BC36C67AA06D9987DCB96490661BCAB63C27006", // JUNO denom on Secret
       },
     ],
   },
@@ -247,27 +270,6 @@ export const tokens: Token[] = [
       {
         target_chain_name: "Akash",
         from_denom: "ibc/", // AKT denom on Secret
-      },
-    ],
-  },
-  {
-    name: "HUAHUA",
-    address: "", // "secret1ntvxnf5hzhzv8g87wn76ch6yswdujqlgmjh32w",
-    code_hash: "", // "182d7230c396fa8f548220ff88c34cb0291a00046df9ff2686e407c3b55692e9",
-    image: "/huahua.jpg",
-    decimals: 6,
-    coingecko_id: "chihuahua-chain",
-    deposits: [
-      {
-        source_chain_name: "Chihuahua",
-        from_denom: "uhuahua",
-      },
-    ],
-    withdrawals: [
-      {
-        target_chain_name: "Chihuahua",
-        from_denom:
-          "ibc/CC12CFFD769D5E0059D98E760DD34FAB477261785B99240C97F6AABC4F566CB5", // HUAHUA denom on Secret
       },
     ],
   },
@@ -369,9 +371,9 @@ export const chains: { [chain_name: string]: Chain } = {
   },
   Juno: {
     chain_name: "Juno",
-    deposit_channel_id: "channel-18",
+    deposit_channel_id: "channel-48",
     deposit_gas: 110_000,
-    withdraw_channel_id: "channel-6",
+    withdraw_channel_id: "channel-8",
     withdraw_gas: 30_000,
     chain_id: "juno-1",
     bech32_prefix: "juno",
@@ -382,9 +384,9 @@ export const chains: { [chain_name: string]: Chain } = {
   },
   Chihuahua: {
     chain_name: "Chihuahua",
-    deposit_channel_id: "channel-9",
+    deposit_channel_id: "channel-16",
     deposit_gas: 110_000,
-    withdraw_channel_id: "channel-5",
+    withdraw_channel_id: "channel-11",
     withdraw_gas: 30_000,
     chain_id: "chihuahua-1",
     bech32_prefix: "chihuahua",
