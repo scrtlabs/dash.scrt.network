@@ -311,8 +311,8 @@ export const chains: { [chain_name: string]: Chain } = {
     withdraw_gas: 0,
     chain_id: "secret-4",
     bech32_prefix: "secret",
-    lcd: "https://bridge-api-manager.azure-api.net",
-    rpc: "https://grpc-web.azure-api.net", // gRPC-web
+    lcd: "https://api.roninventures.io/",
+    rpc: "https://web-rpc.roninventures.io/", // gRPC-web
     chain_image: "/scrt.svg",
     explorer_account:
       "https://secretnodes.com/secret/chains/secret-4/accounts/",
