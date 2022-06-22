@@ -64,7 +64,7 @@ export const tokens: Token[] = [
       {
         source_chain_name: "Juno",
         from_denom:
-          "ibc/CD78EE5B20682E5A61B4D96C9F4DC39361269B88A6B3462C26A18652F7A90A9A", // SCRT denom on Juno
+          "ibc/B55B08EF3667B0C6F029C2CC9CAA6B00788CF639EBB84B34818C85CBABA33ABD", // SCRT denom on Juno
       },
       {
         source_chain_name: "Chihuahua",
