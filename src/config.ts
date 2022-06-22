@@ -121,50 +121,7 @@ export const tokens: Token[] = [
       },
     ],
   },
-  {
-    name: "Luna",
-    address: "secret1ra7avvjh9fhr7dtr3djutugwj59ptctsrakyyw",
-    code_hash:
-      "ad91060456344fc8d8e93c0600a3957b8158605c044b3bef7048510b3157b807",
-    image: "/luna.png",
-    decimals: 6,
-    coingecko_id: "terra-luna",
-    deposits: [
-      {
-        source_chain_name: "Terra",
-        from_denom: "uluna",
-      },
-    ],
-    withdrawals: [
-      {
-        target_chain_name: "Terra",
-        from_denom:
-          "ibc/D70B0FBF97AEB04491E9ABF4467A7F66CD6250F4382CE5192D856114B83738D2",
-      },
-    ],
-  },
-  {
-    name: "UST",
-    address: "secret129h4vu66y3gry6wzwa24rw0vtqjyn8tujuwtn9",
-    code_hash:
-      "ad91060456344fc8d8e93c0600a3957b8158605c044b3bef7048510b3157b807",
-    image: "/ust.png",
-    decimals: 6,
-    coingecko_id: "terra-usd",
-    deposits: [
-      {
-        source_chain_name: "Terra",
-        from_denom: "uusd",
-      },
-    ],
-    withdrawals: [
-      {
-        target_chain_name: "Terra",
-        from_denom:
-          "ibc/4294C3DB67564CF4A0B2BFACC8415A59B38243F6FF9E288FBA34F9B4823BA16E",
-      },
-    ],
-  },
+
   {
     name: "OSMO",
     address: "secret1zwwealwm0pcl9cul4nt6f38dsy6vzplw8lp3qg",
@@ -232,6 +189,50 @@ export const tokens: Token[] = [
     ],
   },
   {
+    name: "LUNC",
+    address: "secret1ra7avvjh9fhr7dtr3djutugwj59ptctsrakyyw",
+    code_hash:
+      "ad91060456344fc8d8e93c0600a3957b8158605c044b3bef7048510b3157b807",
+    image: "/luna.png",
+    decimals: 6,
+    coingecko_id: "terra-luna",
+    deposits: [
+      {
+        source_chain_name: "Terra",
+        from_denom: "uluna",
+      },
+    ],
+    withdrawals: [
+      {
+        target_chain_name: "Terra",
+        from_denom:
+          "ibc/D70B0FBF97AEB04491E9ABF4467A7F66CD6250F4382CE5192D856114B83738D2",
+      },
+    ],
+  },
+  {
+    name: "UST",
+    address: "secret129h4vu66y3gry6wzwa24rw0vtqjyn8tujuwtn9",
+    code_hash:
+      "ad91060456344fc8d8e93c0600a3957b8158605c044b3bef7048510b3157b807",
+    image: "/ust.png",
+    decimals: 6,
+    coingecko_id: "terra-usd",
+    deposits: [
+      {
+        source_chain_name: "Terra",
+        from_denom: "uusd",
+      },
+    ],
+    withdrawals: [
+      {
+        target_chain_name: "Terra",
+        from_denom:
+          "ibc/4294C3DB67564CF4A0B2BFACC8415A59B38243F6FF9E288FBA34F9B4823BA16E",
+      },
+    ],
+  },
+  {
     name: "JUNO",
     address: "", //"secret1smmc5k24lcn4j2j8f3w0yaeafga6wmzl0qct03",
     code_hash:
@@ -270,6 +271,26 @@ export const tokens: Token[] = [
       {
         target_chain_name: "Akash",
         from_denom: "ibc/", // AKT denom on Secret
+      },
+    ],
+  },
+  {
+    name: "EVMOS",
+    address: "",
+    code_hash: "",
+    image: "/evmos.jpg",
+    decimals: 6,
+    coingecko_id: "evmos",
+    deposits: [
+      {
+        source_chain_name: "Evmos",
+        from_denom: "uevmos",
+      },
+    ],
+    withdrawals: [
+      {
+        target_chain_name: "Evmos",
+        from_denom: "ibc/", // EVMOS denom on Secret
       },
     ],
   },
