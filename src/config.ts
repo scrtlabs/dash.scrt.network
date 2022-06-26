@@ -335,8 +335,7 @@ export const chains: { [chain_name: string]: Chain } = {
     lcd: "https://api.roninventures.io/",
     rpc: "https://web-rpc.roninventures.io/", // gRPC-web
     chain_image: "/scrt.svg",
-    explorer_account:
-      "https://secretnodes.com/secret/chains/secret-4/accounts/",
+    explorer_account: "https://www.mintscan.io/secret/account/",
   },
   "Cosmos Hub": {
     chain_name: "Cosmos Hub",
@@ -352,7 +351,7 @@ export const chains: { [chain_name: string]: Chain } = {
     explorer_account: "https://www.mintscan.io/cosmos/account/",
   },
   Terra: {
-    chain_name: "Terra",
+    chain_name: "Terra Classic",
     deposit_channel_id: "channel-16",
     deposit_gas: 110_000,
     withdraw_channel_id: "channel-2",
@@ -362,7 +361,7 @@ export const chains: { [chain_name: string]: Chain } = {
     lcd: "https://lcd-columbus.keplr.app",
     rpc: "https://rpc-columbus.keplr.app",
     chain_image: "/terra.jpg",
-    explorer_account: "https://finder.terra.money/mainnet/address/",
+    explorer_account: "https://finder.terra.money/classic/address/",
   },
   Osmosis: {
     chain_name: "Osmosis",
