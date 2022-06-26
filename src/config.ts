@@ -47,7 +47,7 @@ export const tokens: Token[] = [
           "ibc/1542F8DC70E7999691E991E1EDEB1B47E65E3A217B1649D347098EE48ACB580F", // SCRT denom on Cosmos
       },
       {
-        source_chain_name: "Terra",
+        source_chain_name: "Terra Classic",
         from_denom:
           "ibc/EB2CED20AB0466F18BE49285E56B31306D4C60438A022EA995BA65D5E3CF7E09", // SCRT denom on Terra
       },
@@ -78,7 +78,7 @@ export const tokens: Token[] = [
         from_denom: "uscrt",
       },
       {
-        target_chain_name: "Terra",
+        target_chain_name: "Terra Classic",
         from_denom: "uscrt",
       },
       {
@@ -198,13 +198,13 @@ export const tokens: Token[] = [
     coingecko_id: "terra-luna",
     deposits: [
       {
-        source_chain_name: "Terra",
+        source_chain_name: "Terra Classic",
         from_denom: "uluna",
       },
     ],
     withdrawals: [
       {
-        target_chain_name: "Terra",
+        target_chain_name: "Terra Classic",
         from_denom:
           "ibc/D70B0FBF97AEB04491E9ABF4467A7F66CD6250F4382CE5192D856114B83738D2",
       },
@@ -220,13 +220,13 @@ export const tokens: Token[] = [
     coingecko_id: "terra-usd",
     deposits: [
       {
-        source_chain_name: "Terra",
+        source_chain_name: "Terra Classic",
         from_denom: "uusd",
       },
     ],
     withdrawals: [
       {
-        target_chain_name: "Terra",
+        target_chain_name: "Terra Classic",
         from_denom:
           "ibc/4294C3DB67564CF4A0B2BFACC8415A59B38243F6FF9E288FBA34F9B4823BA16E",
       },
