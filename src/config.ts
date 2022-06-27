@@ -217,7 +217,7 @@ export const tokens: Token[] = [
       "ad91060456344fc8d8e93c0600a3957b8158605c044b3bef7048510b3157b807",
     image: "/ust.png",
     decimals: 6,
-    coingecko_id: "terra-usd",
+    coingecko_id: "terrausd",
     deposits: [
       {
         source_chain_name: "Terra Classic",
@@ -279,12 +279,12 @@ export const tokens: Token[] = [
     address: "",
     code_hash: "",
     image: "/evmos.jpg",
-    decimals: 6,
+    decimals: 18,
     coingecko_id: "evmos",
     deposits: [
       {
         source_chain_name: "Evmos",
-        from_denom: "uevmos",
+        from_denom: "aevmos",
       },
     ],
     withdrawals: [
@@ -332,8 +332,8 @@ export const chains: { [chain_name: string]: Chain } = {
     withdraw_gas: 0,
     chain_id: "secret-4",
     bech32_prefix: "secret",
-    lcd: "https://api.roninventures.io/",
-    rpc: "https://web-rpc.roninventures.io/", // gRPC-web
+    lcd: "https://api.roninventures.io",
+    rpc: "https://web-rpc.roninventures.io", // gRPC-web
     chain_image: "/scrt.svg",
     explorer_account: "https://www.mintscan.io/secret/account/",
   },
@@ -346,7 +346,7 @@ export const chains: { [chain_name: string]: Chain } = {
     chain_id: "cosmoshub-4",
     bech32_prefix: "cosmos",
     lcd: "https://lcd-cosmoshub.keplr.app",
-    rpc: "https://cosmoshub.validator.network/",
+    rpc: "https://cosmoshub.validator.network",
     chain_image: "/atom.jpg",
     explorer_account: "https://www.mintscan.io/cosmos/account/",
   },
@@ -410,8 +410,8 @@ export const chains: { [chain_name: string]: Chain } = {
     withdraw_gas: 30_000,
     chain_id: "chihuahua-1",
     bech32_prefix: "chihuahua",
-    lcd: "https://api.chihuahua.wtf/",
-    rpc: "https://rpc.chihuahua.wtf/",
+    lcd: "https://api.chihuahua.wtf",
+    rpc: "https://rpc.chihuahua.wtf",
     chain_image: "/huahua.jpg",
     explorer_account: "https://ping.pub/chihuahua/account/",
   },

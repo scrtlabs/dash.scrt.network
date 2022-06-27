@@ -144,9 +144,6 @@ export default function App() {
           if (result[token.coingecko_id]) {
             prices.set(token.name, result[token.coingecko_id].usd);
           }
-          if (token.name === "UST") {
-            prices.set(token.name, 1);
-          }
         }
         setPrices(prices);
       });
