@@ -303,8 +303,8 @@ export default function Withdraw({
                       denom: token.withdrawals[selectedChainIndex].from_denom,
                     },
                     timeoutTimestampSec: String(
-                      Math.floor(Date.now() / 1000) + 15 * 60
-                    ), // 15 minute timeout
+                      Math.floor(Date.now() / 1000) + 10 * 60
+                    ), // 10 minute timeout
                   }),
                 ],
                 {
