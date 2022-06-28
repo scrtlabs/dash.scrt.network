@@ -347,7 +347,7 @@ export default function Deposit({
                 "transfer",
                 deposit_channel_id,
                 undefined,
-                Math.floor(Date.now() / 1000) + 15 * 60, // 15 minute timeout
+                Math.floor(Date.now() / 1000) + 10 * 60, // 10 minute timeout
                 gasToFee(deposit_gas)
               );
               inputRef.current.value = "";
