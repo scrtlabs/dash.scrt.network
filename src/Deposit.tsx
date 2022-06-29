@@ -15,7 +15,12 @@ import {
 import BigNumber from "bignumber.js";
 import React, { useEffect, useRef, useState } from "react";
 import { Else, If, Then } from "react-if";
-import { gasToFee, sleep, suggestTerraToKeplr } from "./commons";
+import {
+  gasToFee,
+  sleep,
+  suggestTerraClassicToKeplr,
+  suggestTerraToKeplr,
+} from "./commons";
 import { chains, Token } from "./config";
 import CopyableAddress from "./CopyableAddress";
 
@@ -94,7 +99,9 @@ export default function Deposit({
         await sleep(100);
       }
 
-      if (["LUNA", "UST"].includes(token.name.toUpperCase())) {
+      if (["LUNC", "UST"].includes(token.name.toUpperCase())) {
+        await suggestTerraClassicToKeplr(window.keplr);
+      } else if ("LUNA" === token.name.toUpperCase()) {
         await suggestTerraToKeplr(window.keplr);
       }
       // Initialize cosmjs on the target chain, because it has sendIbcTokens()

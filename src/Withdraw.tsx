@@ -15,7 +15,11 @@ import BigNumber from "bignumber.js";
 import React, { useEffect, useRef, useState } from "react";
 import { Else, If, Then } from "react-if";
 import { MsgTransfer, SecretNetworkClient } from "secretjs";
-import { sleep, suggestTerraToKeplr } from "./commons";
+import {
+  sleep,
+  suggestTerraClassicToKeplr,
+  suggestTerraToKeplr,
+} from "./commons";
 import { chains, Token } from "./config";
 import CopyableAddress from "./CopyableAddress";
 
@@ -56,7 +60,14 @@ export default function Withdraw({
       // Find address on target chain
       const { chain_id: targetChainId } =
         chains[token.withdrawals[selectedChainIndex].target_chain_name];
-      if (token.withdrawals[selectedChainIndex].target_chain_name === "Terra") {
+      if (
+        token.withdrawals[selectedChainIndex].target_chain_name ===
+        "Terra Classic"
+      ) {
+        await suggestTerraClassicToKeplr(window.keplr);
+      } else if (
+        token.withdrawals[selectedChainIndex].target_chain_name === "Terra"
+      ) {
         await suggestTerraToKeplr(window.keplr);
       }
       await window.keplr.enable(targetChainId);

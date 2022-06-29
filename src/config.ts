@@ -46,11 +46,7 @@ export const tokens: Token[] = [
         from_denom:
           "ibc/1542F8DC70E7999691E991E1EDEB1B47E65E3A217B1649D347098EE48ACB580F", // SCRT denom on Cosmos
       },
-      {
-        source_chain_name: "Terra Classic",
-        from_denom:
-          "ibc/EB2CED20AB0466F18BE49285E56B31306D4C60438A022EA995BA65D5E3CF7E09", // SCRT denom on Terra
-      },
+
       {
         source_chain_name: "Osmosis",
         from_denom:
@@ -67,6 +63,31 @@ export const tokens: Token[] = [
           "ibc/B55B08EF3667B0C6F029C2CC9CAA6B00788CF639EBB84B34818C85CBABA33ABD", // SCRT denom on Juno
       },
       {
+        source_chain_name: "Terra",
+        from_denom:
+          "ibc/10BD6ED30BA132AB96F146D71A23B46B2FC19E7D79F52707DC91F2F3A45040AD", // SCRT denom on Terra
+      },
+      // {
+      //   source_chain_name: "Evmos",
+      //   from_denom:
+      //     "ibc/DC74BE775F57FF32C3C6E14ACD86339DB50632246F6482C81CF5FCE64C0AC5C7", // SCRT denom on Evmos
+      // },
+      {
+        source_chain_name: "Stargaze",
+        from_denom:
+          "ibc/B55B08EF3667B0C6F029C2CC9CAA6B00788CF639EBB84B34818C85CBABA33ABD", // SCRT denom on Stargaze
+      },
+      {
+        source_chain_name: "Gravity Bridge",
+        from_denom:
+          "ibc/7907EA1A11FD4FC2A815FCAA54948C42F08E3F3C874EE48861386286FEB80160", // SCRT denom on Gravity Bridge
+      },
+      {
+        source_chain_name: "Terra Classic",
+        from_denom:
+          "ibc/EB2CED20AB0466F18BE49285E56B31306D4C60438A022EA995BA65D5E3CF7E09", // SCRT denom on Terra Classic
+      },
+      {
         source_chain_name: "Chihuahua",
         from_denom:
           "ibc/EB2CED20AB0466F18BE49285E56B31306D4C60438A022EA995BA65D5E3CF7E09", // SCRT denom on Chihuahua
@@ -75,10 +96,6 @@ export const tokens: Token[] = [
     withdrawals: [
       {
         target_chain_name: "Cosmos Hub",
-        from_denom: "uscrt",
-      },
-      {
-        target_chain_name: "Terra Classic",
         from_denom: "uscrt",
       },
       {
@@ -91,6 +108,26 @@ export const tokens: Token[] = [
       },
       {
         target_chain_name: "Juno",
+        from_denom: "uscrt",
+      },
+      {
+        target_chain_name: "Terra",
+        from_denom: "uscrt",
+      },
+      // {
+      //   target_chain_name: "Evmos",
+      //   from_denom: "uscrt",
+      // },
+      {
+        target_chain_name: "Stargaze",
+        from_denom: "uscrt",
+      },
+      {
+        target_chain_name: "Gravity Bridge",
+        from_denom: "uscrt",
+      },
+      {
+        target_chain_name: "Terra Classic",
         from_denom: "uscrt",
       },
       {
@@ -166,25 +203,114 @@ export const tokens: Token[] = [
       },
     ],
   },
+
   {
-    name: "HUAHUA",
-    address: "secret1ntvxnf5hzhzv8g87wn76ch6yswdujqlgmjh32w",
+    name: "JUNO",
+    address: "secret1smmc5k24lcn4j2j8f3w0yaeafga6wmzl0qct03",
     code_hash:
-      "182d7230c396fa8f548220ff88c34cb0291a00046df9ff2686e407c3b55692e9",
-    image: "/huahua.jpg",
+      "ad91060456344fc8d8e93c0600a3957b8158605c044b3bef7048510b3157b807",
+    image: "/juno.svg",
     decimals: 6,
-    coingecko_id: "chihuahua-chain",
+    coingecko_id: "juno-network",
     deposits: [
       {
-        source_chain_name: "Chihuahua",
-        from_denom: "uhuahua",
+        source_chain_name: "Juno",
+        from_denom: "ujuno",
       },
     ],
     withdrawals: [
       {
-        target_chain_name: "Chihuahua",
+        target_chain_name: "Juno",
         from_denom:
-          "ibc/630E7B10690ADEC9E9CEEE904CE78C522BBCDDC6A081B23FA26A55F6EF40E41E", // HUAHUA denom on Secret
+          "ibc/DF8D00B4B31B55AFCA9BAF192BC36C67AA06D9987DCB96490661BCAB63C27006", // JUNO denom on Secret
+      },
+    ],
+  },
+  // {
+  //   name: "EVMOS",
+  //   address: "secret1grg9unv2ue8cf98t50ea45prce7gcrj2n232kq",
+  //   code_hash:
+  //     "5a085bd8ed89de92b35134ddd12505a602c7759ea25fb5c089ba03c8535b3042",
+  //   image: "/evmos.jpg",
+  //   decimals: 18,
+  //   coingecko_id: "evmos",
+  //   deposits: [
+  //     {
+  //       source_chain_name: "Evmos",
+  //       from_denom: "aevmos",
+  //     },
+  //   ],
+  //   withdrawals: [
+  //     {
+  //       target_chain_name: "Evmos",
+  //       from_denom:
+  //         "ibc/23A8E16C655512DD4AA83769BA695FB8CCA4D1CA220652B894FAB44E53462C59", // EVMOS denom on Secret
+  //     },
+  //   ],
+  // },
+  {
+    name: "LUNA",
+    address: "secret1w8d0ntrhrys4yzcfxnwprts7gfg5gfw86ccdpf",
+    code_hash:
+      "5a085bd8ed89de92b35134ddd12505a602c7759ea25fb5c089ba03c8535b3042",
+    image: "/luna2.svg",
+    decimals: 6,
+    coingecko_id: "terra-luna-2",
+    deposits: [
+      {
+        source_chain_name: "Terra",
+        from_denom: "uluna",
+      },
+    ],
+    withdrawals: [
+      {
+        target_chain_name: "Terra",
+        from_denom:
+          "ibc/28DECFA7FB7E3AB58DC3B3AEA9B11C6C6B6E46356DCC26505205DAD3379984F5", // LUNA denom on Secret
+      },
+    ],
+  },
+  {
+    name: "STARS",
+    address: "secret1x0dqckf2khtxyrjwhlkrx9lwwmz44k24vcv2vv",
+    code_hash:
+      "5a085bd8ed89de92b35134ddd12505a602c7759ea25fb5c089ba03c8535b3042",
+    image: "/stars.webp",
+    decimals: 6,
+    coingecko_id: "stargaze",
+    deposits: [
+      {
+        source_chain_name: "Stargaze",
+        from_denom: "ustars",
+      },
+    ],
+    withdrawals: [
+      {
+        target_chain_name: "Stargaze",
+        from_denom:
+          "ibc/7EAE5BEF3A26B64AFBD89828AFDDB1DC7024A0276D22745201632C40E6E634D0", // STARS denom on Secret
+      },
+    ],
+  },
+  {
+    name: "GRAVITON",
+    address: "secret1x0dqckf2khtxyrjwhlkrx9lwwmz44k24vcv2vv",
+    code_hash:
+      "5a085bd8ed89de92b35134ddd12505a602c7759ea25fb5c089ba03c8535b3042",
+    image: "/grav.svg",
+    decimals: 6,
+    coingecko_id: "graviton",
+    deposits: [
+      {
+        source_chain_name: "Gravity Bridge",
+        from_denom: "ugraviton",
+      },
+    ],
+    withdrawals: [
+      {
+        target_chain_name: "Gravity Bridge",
+        from_denom:
+          "ibc/DEEF987757F80419CC651C8323ACD21D6C3D664E51B5E5A29B2663F5AD132A67", // GRAVITON denom on Secret
       },
     ],
   },
@@ -233,24 +359,24 @@ export const tokens: Token[] = [
     ],
   },
   {
-    name: "JUNO",
-    address: "", //"secret1smmc5k24lcn4j2j8f3w0yaeafga6wmzl0qct03",
+    name: "HUAHUA",
+    address: "secret1ntvxnf5hzhzv8g87wn76ch6yswdujqlgmjh32w",
     code_hash:
-      "ad91060456344fc8d8e93c0600a3957b8158605c044b3bef7048510b3157b807",
-    image: "/juno.svg",
+      "182d7230c396fa8f548220ff88c34cb0291a00046df9ff2686e407c3b55692e9",
+    image: "/huahua.jpg",
     decimals: 6,
-    coingecko_id: "juno-network",
+    coingecko_id: "chihuahua-chain",
     deposits: [
       {
-        source_chain_name: "Juno",
-        from_denom: "ujuno",
+        source_chain_name: "Chihuahua",
+        from_denom: "uhuahua",
       },
     ],
     withdrawals: [
       {
-        target_chain_name: "Juno",
+        target_chain_name: "Chihuahua",
         from_denom:
-          "ibc/DF8D00B4B31B55AFCA9BAF192BC36C67AA06D9987DCB96490661BCAB63C27006", // JUNO denom on Secret
+          "ibc/630E7B10690ADEC9E9CEEE904CE78C522BBCDDC6A081B23FA26A55F6EF40E41E", // HUAHUA denom on Secret
       },
     ],
   },
@@ -271,26 +397,6 @@ export const tokens: Token[] = [
       {
         target_chain_name: "Akash",
         from_denom: "ibc/", // AKT denom on Secret
-      },
-    ],
-  },
-  {
-    name: "EVMOS",
-    address: "",
-    code_hash: "",
-    image: "/evmos.jpg",
-    decimals: 18,
-    coingecko_id: "evmos",
-    deposits: [
-      {
-        source_chain_name: "Evmos",
-        from_denom: "aevmos",
-      },
-    ],
-    withdrawals: [
-      {
-        target_chain_name: "Evmos",
-        from_denom: "ibc/", // EVMOS denom on Secret
       },
     ],
   },
@@ -350,7 +456,7 @@ export const chains: { [chain_name: string]: Chain } = {
     chain_image: "/atom.jpg",
     explorer_account: "https://www.mintscan.io/cosmos/account/",
   },
-  Terra: {
+  "Terra Classic": {
     chain_name: "Terra Classic",
     deposit_channel_id: "channel-16",
     deposit_gas: 110_000,
@@ -362,6 +468,19 @@ export const chains: { [chain_name: string]: Chain } = {
     rpc: "https://rpc-columbus.keplr.app",
     chain_image: "/terra.jpg",
     explorer_account: "https://finder.terra.money/classic/address/",
+  },
+  Terra: {
+    chain_name: "Terra",
+    deposit_channel_id: "channel-3",
+    deposit_gas: 110_000,
+    withdraw_channel_id: "channel-16",
+    withdraw_gas: 30_000,
+    chain_id: "phoenix-1",
+    bech32_prefix: "terra",
+    lcd: "https://terra-api.polkachu.com",
+    rpc: "https://terra-rpc.polkachu.com",
+    chain_image: "/luna2.svg",
+    explorer_account: "https://finder.terra.money/mainnet/address/",
   },
   Osmosis: {
     chain_name: "Osmosis",
@@ -414,5 +533,44 @@ export const chains: { [chain_name: string]: Chain } = {
     rpc: "https://rpc.chihuahua.wtf",
     chain_image: "/huahua.jpg",
     explorer_account: "https://ping.pub/chihuahua/account/",
+  },
+  // Evmos: {
+  //   chain_name: "Evmos",
+  //   deposit_channel_id: "channel-15",
+  //   deposit_gas: 110_000,
+  //   withdraw_channel_id: "channel-18",
+  //   withdraw_gas: 30_000,
+  //   chain_id: "evmos_9001-2",
+  //   bech32_prefix: "evmos",
+  //   lcd: "https://lcd.evmos.ezstaking.io",
+  //   rpc: "https://rpc.evmos.ezstaking.io",
+  //   chain_image: "/evmos.jpg",
+  //   explorer_account: "https://www.mintscan.io/evmos/account/",
+  // },
+  Stargaze: {
+    chain_name: "Stargaze",
+    deposit_channel_id: "channel-48",
+    deposit_gas: 110_000,
+    withdraw_channel_id: "channel-19",
+    withdraw_gas: 30_000,
+    chain_id: "stargaze-1",
+    bech32_prefix: "stars",
+    lcd: "https://rest.stargaze-apis.com",
+    rpc: "https://rpc.stargaze-apis.com",
+    chain_image: "/stars.webp",
+    explorer_account: "https://www.mintscan.io/stargaze/account/",
+  },
+  "Gravity Bridge": {
+    chain_name: "Gravity Bridge",
+    deposit_channel_id: "channel-79",
+    deposit_gas: 110_000,
+    withdraw_channel_id: "channel-17",
+    withdraw_gas: 30_000,
+    chain_id: "gravity-bridge-3",
+    bech32_prefix: "gravity",
+    lcd: "https://lcd.gravity-bridge.ezstaking.io",
+    rpc: "https://rpc.gravity-bridge.ezstaking.io",
+    chain_image: "/grav.svg",
+    explorer_account: "https://www.mintscan.io/gravity-bridge/account/",
   },
 };
