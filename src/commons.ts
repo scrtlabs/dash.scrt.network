@@ -17,12 +17,12 @@ export function gasToFee(gas: number): StdFee {
   };
 }
 
-export async function suggestTerraToKeplr(keplr: Keplr) {
+export async function suggestTerraClassicToKeplr(keplr: Keplr) {
   await keplr.experimentalSuggestChain({
     rpc: "https://rpc-columbus.keplr.app",
     rest: "https://lcd-columbus.keplr.app",
     chainId: "columbus-5",
-    chainName: "Terra",
+    chainName: "Terra Classic",
     stakeCurrency: {
       coinDenom: "LUNA",
       coinMinimalDenom: "uluna",
@@ -66,6 +66,47 @@ export async function suggestTerraToKeplr(keplr: Keplr) {
       average: 0.015,
       high: 0.015,
     },
-    features: ["stargate", "ibc-transfer", "no-legacy-stdTx"],
+    features: ["ibc-transfer"],
+  });
+}
+
+export async function suggestTerraToKeplr(keplr: Keplr) {
+  await keplr.experimentalSuggestChain({
+    rpc: "https://terra-rpc.polkachu.com",
+    rest: "https://terra-api.polkachu.com",
+    chainId: "phoenix-1",
+    chainName: "Terra",
+    stakeCurrency: {
+      coinDenom: "LUNA",
+      coinMinimalDenom: "uluna",
+      coinDecimals: 6,
+      coinGeckoId: "terra-luna-2",
+    },
+    bip44: {
+      coinType: 330,
+    },
+    bech32Config: Bech32Address.defaultBech32Config("terra"),
+    currencies: [
+      {
+        coinDenom: "LUNA",
+        coinMinimalDenom: "uluna",
+        coinDecimals: 6,
+        coinGeckoId: "terra-luna",
+      },
+    ],
+    feeCurrencies: [
+      {
+        coinDenom: "LUNA",
+        coinMinimalDenom: "uluna",
+        coinDecimals: 6,
+        coinGeckoId: "terra-luna",
+      },
+    ],
+    gasPriceStep: {
+      low: 0.15,
+      average: 0.15,
+      high: 0.15,
+    },
+    features: ["ibc-transfer"],
   });
 }
