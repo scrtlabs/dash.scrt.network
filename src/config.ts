@@ -226,28 +226,7 @@ export const tokens: Token[] = [
       },
     ],
   },
-  // {
-  //   name: "EVMOS",
-  //   address: "secret1grg9unv2ue8cf98t50ea45prce7gcrj2n232kq",
-  //   code_hash:
-  //     "5a085bd8ed89de92b35134ddd12505a602c7759ea25fb5c089ba03c8535b3042",
-  //   image: "/evmos.jpg",
-  //   decimals: 18,
-  //   coingecko_id: "evmos",
-  //   deposits: [
-  //     {
-  //       source_chain_name: "Evmos",
-  //       from_denom: "aevmos",
-  //     },
-  //   ],
-  //   withdrawals: [
-  //     {
-  //       target_chain_name: "Evmos",
-  //       from_denom:
-  //         "ibc/23A8E16C655512DD4AA83769BA695FB8CCA4D1CA220652B894FAB44E53462C59", // EVMOS denom on Secret
-  //     },
-  //   ],
-  // },
+
   {
     name: "LUNA",
     address: "secret1w8d0ntrhrys4yzcfxnwprts7gfg5gfw86ccdpf",
@@ -377,6 +356,28 @@ export const tokens: Token[] = [
         target_chain_name: "Chihuahua",
         from_denom:
           "ibc/630E7B10690ADEC9E9CEEE904CE78C522BBCDDC6A081B23FA26A55F6EF40E41E", // HUAHUA denom on Secret
+      },
+    ],
+  },
+  {
+    name: "EVMOS",
+    address: "", // "secret1grg9unv2ue8cf98t50ea45prce7gcrj2n232kq",
+    code_hash:
+      "5a085bd8ed89de92b35134ddd12505a602c7759ea25fb5c089ba03c8535b3042",
+    image: "/evmos.jpg",
+    decimals: 18,
+    coingecko_id: "evmos",
+    deposits: [
+      {
+        source_chain_name: "Evmos",
+        from_denom: "aevmos",
+      },
+    ],
+    withdrawals: [
+      {
+        target_chain_name: "Evmos",
+        from_denom:
+          "ibc/23A8E16C655512DD4AA83769BA695FB8CCA4D1CA220652B894FAB44E53462C59", // EVMOS denom on Secret
       },
     ],
   },
@@ -534,19 +535,19 @@ export const chains: { [chain_name: string]: Chain } = {
     chain_image: "/huahua.jpg",
     explorer_account: "https://ping.pub/chihuahua/account/",
   },
-  // Evmos: {
-  //   chain_name: "Evmos",
-  //   deposit_channel_id: "channel-15",
-  //   deposit_gas: 110_000,
-  //   withdraw_channel_id: "channel-18",
-  //   withdraw_gas: 30_000,
-  //   chain_id: "evmos_9001-2",
-  //   bech32_prefix: "evmos",
-  //   lcd: "https://lcd.evmos.ezstaking.io",
-  //   rpc: "https://rpc.evmos.ezstaking.io",
-  //   chain_image: "/evmos.jpg",
-  //   explorer_account: "https://www.mintscan.io/evmos/account/",
-  // },
+  Evmos: {
+    chain_name: "Evmos",
+    deposit_channel_id: "channel-15",
+    deposit_gas: 110_000,
+    withdraw_channel_id: "channel-18",
+    withdraw_gas: 30_000,
+    chain_id: "evmos_9001-2",
+    bech32_prefix: "evmos",
+    lcd: "https://lcd.evmos.ezstaking.io",
+    rpc: "https://rpc.evmos.ezstaking.io",
+    chain_image: "/evmos.jpg",
+    explorer_account: "https://www.mintscan.io/evmos/account/",
+  },
   Stargaze: {
     chain_name: "Stargaze",
     deposit_channel_id: "channel-48",
