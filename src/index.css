@@ -1,0 +1,18 @@
+body {
+  margin: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-family: "Hind";
+  overflow-y: scroll;
+}
+
+/* for debugging */
+/* * {
+  border-style: solid;
+  border-width: 0.1mm;
+  border-color: red;
+} */
+
+a {
+  color: #1a0dab;
+}
