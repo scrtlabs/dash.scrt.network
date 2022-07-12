@@ -272,7 +272,7 @@ export const tokens: Token[] = [
     ],
   },
   {
-    name: "GRAVITON",
+    name: "GRAV",
     address: "secret1dtghxvrx35nznt8es3fwxrv4qh56tvxv22z79d",
     code_hash:
       "5a085bd8ed89de92b35134ddd12505a602c7759ea25fb5c089ba03c8535b3042",
@@ -289,7 +289,7 @@ export const tokens: Token[] = [
       {
         target_chain_name: "Gravity Bridge",
         from_denom:
-          "ibc/DEEF987757F80419CC651C8323ACD21D6C3D664E51B5E5A29B2663F5AD132A67", // GRAVITON denom on Secret
+          "ibc/DEEF987757F80419CC651C8323ACD21D6C3D664E51B5E5A29B2663F5AD132A67", // GRAV denom on Secret
       },
     ],
   },
