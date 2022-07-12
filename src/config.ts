@@ -273,7 +273,7 @@ export const tokens: Token[] = [
   },
   {
     name: "GRAVITON",
-    address: "secret1x0dqckf2khtxyrjwhlkrx9lwwmz44k24vcv2vv",
+    address: "secret1dtghxvrx35nznt8es3fwxrv4qh56tvxv22z79d",
     code_hash:
       "5a085bd8ed89de92b35134ddd12505a602c7759ea25fb5c089ba03c8535b3042",
     image: "/grav.svg",
