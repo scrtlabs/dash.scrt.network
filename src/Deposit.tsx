@@ -1,4 +1,5 @@
 import { SigningStargateClient } from "@cosmjs/stargate";
+import { createTxIBCMsgTransfer } from "@tharsis/transactions";
 import LoadingButton from "@mui/lab/LoadingButton";
 import {
   Avatar,
@@ -23,6 +24,7 @@ import {
 } from "./commons";
 import { chains, Token } from "./config";
 import CopyableAddress from "./CopyableAddress";
+import { AccountCircle } from "@mui/icons-material";
 
 export default function Deposit({
   token,
@@ -344,6 +346,61 @@ export default function Deposit({
             const { deposit_channel_id, deposit_gas } =
               chains[token.deposits[selectedChainIndex].source_chain_name];
             try {
+              if (
+                token.deposits[selectedChainIndex].source_chain_name === "Evmos"
+              ) {
+                const {
+                  account: { base_account },
+                }: {
+                  account: {
+                    "@type": "/ethermint.types.v1.EthAccount";
+                    base_account: {
+                      address: string;
+                      pub_key: string;
+                      account_number: string;
+                      sequence: string;
+                    };
+                    code_hash: string;
+                  };
+                } = await (
+                  await fetch(
+                    `${chains["Evmos"].lcd}/cosmos/auth/v1beta1/accounts/${sourceAddress}`
+                  )
+                ).json();
+
+                const EvmosIbcMsgTransfer = createTxIBCMsgTransfer(
+                  { cosmosChainId: chains["Evmos"].chain_id, chainId: 9001 },
+                  {
+                    accountAddress: base_account.address,
+                    accountNumber: Number(base_account.account_number),
+                    sequence: Number(base_account.sequence),
+                    pubkey: base_account.pub_key,
+                  },
+                  {
+                    amount: "1", // Keplr overrides this
+                    denom: "blabla", // Keplr overrides this
+                    gas: String(deposit_gas),
+                  },
+                  "",
+                  {
+                    sourcePort: "transfer",
+                    sourceChannel: deposit_channel_id,
+                    amount,
+                    denom: token.deposits[selectedChainIndex].from_denom,
+                    receiver: secretAddress,
+                    revisionHeight: 0,
+                    revisionNumber: 0,
+                    timeoutTimestamp: String(
+                      Math.floor(Date.now() / 1000) + 10 * 60
+                    ), // 10 minute timeout
+                  }
+                );
+
+               sourceCosmJs.sign()
+               
+                EvmosIbcMsgTransfer.legacyAmino()
+              }
+
               const { transactionHash } = await sourceCosmJs.sendIbcTokens(
                 sourceAddress,
                 secretAddress,
