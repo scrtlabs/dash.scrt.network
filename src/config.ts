@@ -73,6 +73,11 @@ export const tokens: Token[] = [
       //     "ibc/DC74BE775F57FF32C3C6E14ACD86339DB50632246F6482C81CF5FCE64C0AC5C7", // SCRT denom on Evmos
       // },
       {
+        source_chain_name: "Akash",
+        from_denom:
+          "ibc/13BD0905CFB705ABF84B60209C44071878C9F07A0A2CAC5EDBE315AD3CFD1DF2", // SCRT denom on Akash
+      },
+      {
         source_chain_name: "Stargaze",
         from_denom:
           "ibc/B55B08EF3667B0C6F029C2CC9CAA6B00788CF639EBB84B34818C85CBABA33ABD", // SCRT denom on Stargaze
@@ -82,6 +87,7 @@ export const tokens: Token[] = [
         from_denom:
           "ibc/7907EA1A11FD4FC2A815FCAA54948C42F08E3F3C874EE48861386286FEB80160", // SCRT denom on Gravity Bridge
       },
+
       {
         source_chain_name: "Terra Classic",
         from_denom:
@@ -118,6 +124,10 @@ export const tokens: Token[] = [
       //   target_chain_name: "Evmos",
       //   from_denom: "uscrt",
       // },
+      {
+        target_chain_name: "Akash",
+        from_denom: "uscrt",
+      },
       {
         target_chain_name: "Stargaze",
         from_denom: "uscrt",
@@ -250,6 +260,28 @@ export const tokens: Token[] = [
     ],
   },
   {
+    name: "AKT",
+    address: "secret168j5f78magfce5r2j4etaytyuy7ftjkh4cndqw",
+    code_hash:
+      "5a085bd8ed89de92b35134ddd12505a602c7759ea25fb5c089ba03c8535b3042",
+    image: "/akt.svg",
+    decimals: 6,
+    coingecko_id: "akash-network",
+    deposits: [
+      {
+        source_chain_name: "Akash",
+        from_denom: "uakt",
+      },
+    ],
+    withdrawals: [
+      {
+        target_chain_name: "Akash",
+        from_denom:
+          "ibc/448B29AB9766D29CC09944EDF6A08573B45A37C55746A45FA3CF53F1B58DF98D", // AKT denom on Secret
+      },
+    ],
+  },
+  {
     name: "STARS",
     address: "secret1x0dqckf2khtxyrjwhlkrx9lwwmz44k24vcv2vv",
     code_hash:
@@ -378,26 +410,6 @@ export const tokens: Token[] = [
         target_chain_name: "Evmos",
         from_denom:
           "ibc/23A8E16C655512DD4AA83769BA695FB8CCA4D1CA220652B894FAB44E53462C59", // EVMOS denom on Secret
-      },
-    ],
-  },
-  {
-    name: "AKT",
-    address: "",
-    code_hash: "",
-    image: "/akt.svg",
-    decimals: 6,
-    coingecko_id: "akash-network",
-    deposits: [
-      {
-        source_chain_name: "Akash",
-        from_denom: "uakt",
-      },
-    ],
-    withdrawals: [
-      {
-        target_chain_name: "Akash",
-        from_denom: "ibc/", // AKT denom on Secret
       },
     ],
   },
@@ -573,5 +585,18 @@ export const chains: { [chain_name: string]: Chain } = {
     rpc: "https://rpc.gravity-bridge.ezstaking.io",
     chain_image: "/grav.svg",
     explorer_account: "https://www.mintscan.io/gravity-bridge/account/",
+  },
+  Akash: {
+    chain_name: "Akash",
+    deposit_channel_id: "channel-43",
+    deposit_gas: 110_000,
+    withdraw_channel_id: "channel-21",
+    withdraw_gas: 30_000,
+    chain_id: "akashnet-2",
+    bech32_prefix: "akash",
+    lcd: "https://akash.c29r3.xyz:443/api",
+    rpc: "https://rpc.akash.forbole.com",
+    chain_image: "/akt.svg",
+    explorer_account: "https://www.mintscan.io/akash/account/",
   },
 };

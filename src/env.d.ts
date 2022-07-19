@@ -1,6 +1,4 @@
 interface ImportMetaEnv extends Readonly<Record<string, string>> {
-  readonly VITE_SECRET_CHAIN_ID: string;
-  readonly VITE_SECRET_LCD_URL: string;
   readonly VITE_TERRA_CHAIN_ID: string;
   readonly VITE_TERRA_LCD_URL: string;
   readonly VITE_COSMOS_CHAIN_ID: string;
