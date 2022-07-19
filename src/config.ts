@@ -393,7 +393,7 @@ export const tokens: Token[] = [
   },
   {
     name: "EVMOS",
-    address: "", // "secret1grg9unv2ue8cf98t50ea45prce7gcrj2n232kq",
+    address: "secret1grg9unv2ue8cf98t50ea45prce7gcrj2n232kq",
     code_hash:
       "5a085bd8ed89de92b35134ddd12505a602c7759ea25fb5c089ba03c8535b3042",
     image: "/evmos.jpg",
