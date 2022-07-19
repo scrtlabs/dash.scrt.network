@@ -61,17 +61,19 @@ export default function TokenRow({
 
     try {
       const result = await secretjs.query.compute.queryContract({
-        address: token.address,
+        contractAddress: token.address,
         codeHash: token.code_hash,
         query: {
           balance: { address: secretAddress, key },
         },
       });
 
+      //@ts-ignore
       if (result.viewing_key_error) {
         setTokenBalance(viewingKeyErrorString);
         return;
       }
+      //@ts-ignore
       setTokenBalance(result.balance.amount);
     } catch (e) {
       console.error(`Error getting balance for s${token.name}`, e);
@@ -399,7 +401,7 @@ export default function TokenRow({
                     [
                       new MsgExecuteContract({
                         sender: secretAddress,
-                        contract: token.address,
+                        contractAddress: token.address,
                         codeHash: token.code_hash,
                         sentFunds: [],
                         msg: {
@@ -488,7 +490,7 @@ export default function TokenRow({
                     [
                       new MsgExecuteContract({
                         sender: secretAddress,
-                        contract: token.address,
+                        contractAddress: token.address,
                         codeHash: token.code_hash,
                         sentFunds: [
                           { denom: token.withdrawals[0].from_denom, amount },
