@@ -188,18 +188,20 @@ export default function App() {
           private balances and private transfers.
         </Typography>
       </div>
-      {tokens.map((t) => (
-        <ErrorBoundary key={t.name}>
-          <TokenRow
-            token={t}
-            loadingCoinBalances={loadingCoinBalances}
-            secretAddress={secretAddress}
-            secretjs={secretjs}
-            balances={balances}
-            price={prices.get(t.name) || 0}
-          />
-        </ErrorBoundary>
-      ))}
+      {tokens
+        .sort((a, b) => (a.name === "SCRT" ? -1 : a.name.localeCompare(b.name)))
+        .map((t) => (
+          <ErrorBoundary key={t.name}>
+            <TokenRow
+              token={t}
+              loadingCoinBalances={loadingCoinBalances}
+              secretAddress={secretAddress}
+              secretjs={secretjs}
+              balances={balances}
+              price={prices.get(t.name) || 0}
+            />
+          </ErrorBoundary>
+        ))}
     </div>
   );
 }
