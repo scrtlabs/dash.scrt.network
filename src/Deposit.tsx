@@ -1,5 +1,7 @@
 import { SigningStargateClient } from "@cosmjs/stargate";
-import { createTxIBCMsgTransfer } from "@tharsis/transactions";
+
+import { TxRaw } from "cosmjs-types/cosmos/tx/v1beta1/tx";
+
 import LoadingButton from "@mui/lab/LoadingButton";
 import {
   Avatar,
@@ -345,10 +347,29 @@ export default function Deposit({
 
             const { deposit_channel_id, deposit_gas } =
               chains[token.deposits[selectedChainIndex].source_chain_name];
+
             try {
+              let transactionHash: string;
+
               if (
-                token.deposits[selectedChainIndex].source_chain_name === "Evmos"
+                token.deposits[selectedChainIndex].source_chain_name !== "Evmos"
               ) {
+                const txResponse = await sourceCosmJs.sendIbcTokens(
+                  sourceAddress,
+                  secretAddress,
+                  {
+                    amount,
+                    denom: token.deposits[selectedChainIndex].from_denom,
+                  },
+                  "transfer",
+                  deposit_channel_id,
+                  undefined,
+                  Math.floor(Date.now() / 1000) + 10 * 60, // 10 minute timeout
+                  gasToFee(deposit_gas)
+                );
+                transactionHash = txResponse.transactionHash;
+              } else {
+                // cosnjs doesn't know how to deal with the Evmos account format
                 const {
                   account: { base_account },
                 }: {
@@ -368,52 +389,85 @@ export default function Deposit({
                   )
                 ).json();
 
-                const EvmosIbcMsgTransfer = createTxIBCMsgTransfer(
-                  { cosmosChainId: chains["Evmos"].chain_id, chainId: 9001 },
+                console.log([
+                  sourceAddress,
+                  [
+                    {
+                      typeUrl: "/ibc.applications.transfer.v1.MsgTransfer",
+                      value: {
+                        sourcePort: "transfer",
+                        sourceChannel: deposit_channel_id,
+                        token: {
+                          amount,
+                          denom: token.deposits[selectedChainIndex].from_denom,
+                        },
+                        sender: sourceAddress,
+                        receiver: secretAddress,
+                        timeoutHeight: {
+                          revisionNumber: "0",
+                          revisionHeight: "0",
+                        },
+                        timeoutTimestamp: String(
+                          Math.floor(Date.now() / 1000) + 10 * 60
+                          /* 10 minute timeout */
+                        ),
+                      },
+                    },
+                  ],
                   {
-                    accountAddress: base_account.address,
-                    accountNumber: Number(base_account.account_number),
-                    sequence: Number(base_account.sequence),
-                    pubkey: base_account.pub_key,
-                  },
-                  {
-                    amount: "1", // Keplr overrides this
-                    denom: "blabla", // Keplr overrides this
+                    amount: [], // filled in by Keplr
                     gas: String(deposit_gas),
                   },
                   "",
                   {
-                    sourcePort: "transfer",
-                    sourceChannel: deposit_channel_id,
-                    amount,
-                    denom: token.deposits[selectedChainIndex].from_denom,
-                    receiver: secretAddress,
-                    revisionHeight: 0,
-                    revisionNumber: 0,
-                    timeoutTimestamp: String(
-                      Math.floor(Date.now() / 1000) + 10 * 60
-                    ), // 10 minute timeout
+                    chainId: chains["Evmos"].chain_id,
+                    accountNumber: Number(base_account.account_number),
+                    sequence: Number(base_account.sequence),
+                  },
+                ]);
+
+                const txRaw = await sourceCosmJs.sign(
+                  sourceAddress,
+                  [
+                    {
+                      typeUrl: "/ibc.applications.transfer.v1.MsgTransfer",
+                      value: {
+                        sourcePort: "transfer",
+                        sourceChannel: deposit_channel_id,
+                        token: {
+                          amount,
+                          denom: token.deposits[selectedChainIndex].from_denom,
+                        },
+                        sender: sourceAddress,
+                        receiver: secretAddress,
+                        timeoutHeight: {
+                          revisionNumber: "0",
+                          revisionHeight: "0",
+                        },
+                        timeoutTimestamp: String(
+                          Math.floor(Date.now() / 1000) + 10 * 60
+                          /* 10 minute timeout */
+                        ),
+                      },
+                    },
+                  ],
+                  {
+                    amount: [], // filled in by Keplr
+                    gas: String(deposit_gas),
+                  },
+                  "",
+                  {
+                    chainId: chains["Evmos"].chain_id,
+                    accountNumber: Number(base_account.account_number),
+                    sequence: Number(base_account.sequence),
                   }
                 );
 
-               sourceCosmJs.sign()
-               
-                EvmosIbcMsgTransfer.legacyAmino()
+                const txBytes = TxRaw.encode(txRaw).finish();
+                const txResponse = await sourceCosmJs.broadcastTx(txBytes);
+                transactionHash = txResponse.transactionHash;
               }
 
-              const { transactionHash } = await sourceCosmJs.sendIbcTokens(
-                sourceAddress,
-                secretAddress,
-                {
-                  amount,
-                  denom: token.deposits[selectedChainIndex].from_denom,
-                },
-                "transfer",
-                deposit_channel_id,
-                undefined,
-                Math.floor(Date.now() / 1000) + 10 * 60, // 10 minute timeout
-                gasToFee(deposit_gas)
-              );
               inputRef.current.value = "";
               onSuccess(transactionHash);
             } catch (e) {
