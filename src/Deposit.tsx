@@ -10,8 +10,9 @@ import {
   InputLabel,
   MenuItem,
   Select,
-  Typography,
+  Typography
 } from "@mui/material";
+import { sha256 } from "@noble/hashes/sha256";
 import { createTxIBCMsgTransfer } from "@tharsis/transactions";
 import BigNumber from "bignumber.js";
 import Long from "long";
@@ -21,12 +22,12 @@ import {
   gasToFee,
   sleep,
   suggestTerraClassicToKeplr,
-  suggestTerraToKeplr,
+  suggestTerraToKeplr
 } from "./commons";
 import { chains, Token } from "./config";
 import CopyableAddress from "./CopyableAddress";
 
-import { fromBase64, toBase64 } from "secretjs";
+import { fromBase64, toBase64, toHex } from "secretjs";
 import { TxRaw } from "secretjs/dist/protobuf_stuff/cosmos/tx/v1beta1/tx";
 
 export default function Deposit({
@@ -469,8 +470,13 @@ export default function Deposit({
                 });
                 const txBytes = TxRaw.encode(txRaw).finish();
 
-                const txResponse = await sourceCosmJs.broadcastTx(txBytes);
-                transactionHash = txResponse.transactionHash;
+                // cosmjs can broadcast to Evmos but cannot handle the response
+
+                // const txResponse = await sourceCosmJs.broadcastTx(txBytes);
+                // transactionHash = txResponse.transactionHash;
+
+                sourceCosmJs.broadcastTx(txBytes);
+                transactionHash = toHex(sha256(txBytes));
               }
 
               inputRef.current.value = "";
