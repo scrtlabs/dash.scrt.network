@@ -149,34 +149,28 @@ export default function Deposit({
                     setSelectedChainIndex(Number(e.target.value))
                   }
                 >
-                  {token.deposits
-                    .sort((a, b) =>
-                      chains[a.source_chain_name].chain_name.localeCompare(
-                        chains[b.source_chain_name].chain_name
-                      )
-                    )
-                    .map((chain, index) => (
-                      <MenuItem value={index} key={index}>
-                        <div
-                          style={{
-                            display: "flex",
-                            gap: "0.5em",
-                            placeItems: "center",
+                  {token.deposits.map((chain, index) => (
+                    <MenuItem value={index} key={index}>
+                      <div
+                        style={{
+                          display: "flex",
+                          gap: "0.5em",
+                          placeItems: "center",
+                        }}
+                      >
+                        <Avatar
+                          src={chains[chain.source_chain_name].chain_image}
+                          sx={{
+                            marginLeft: "0.3em",
+                            width: "1em",
+                            height: "1em",
+                            boxShadow: "rgba(0, 0, 0, 0.15) 0px 6px 10px",
                           }}
-                        >
-                          <Avatar
-                            src={chains[chain.source_chain_name].chain_image}
-                            sx={{
-                              marginLeft: "0.3em",
-                              width: "1em",
-                              height: "1em",
-                              boxShadow: "rgba(0, 0, 0, 0.15) 0px 6px 10px",
-                            }}
-                          />
-                          <strong>{chain.source_chain_name}</strong>
-                        </div>
-                      </MenuItem>
-                    ))}
+                        />
+                        <strong>{chain.source_chain_name}</strong>
+                      </div>
+                    </MenuItem>
+                  ))}
                 </Select>
               </FormControl>
             </Else>

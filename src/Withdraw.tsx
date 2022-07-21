@@ -108,34 +108,28 @@ export default function Withdraw({
                     setSelectedChainIndex(Number(e.target.value))
                   }
                 >
-                  {token.withdrawals
-                    .sort((a, b) =>
-                      chains[a.target_chain_name].chain_name.localeCompare(
-                        chains[b.target_chain_name].chain_name
-                      )
-                    )
-                    .map((chain, index) => (
-                      <MenuItem value={index} key={index}>
-                        <div
-                          style={{
-                            display: "flex",
-                            gap: "0.5em",
-                            placeItems: "center",
+                  {token.withdrawals.map((chain, index) => (
+                    <MenuItem value={index} key={index}>
+                      <div
+                        style={{
+                          display: "flex",
+                          gap: "0.5em",
+                          placeItems: "center",
+                        }}
+                      >
+                        <Avatar
+                          src={chains[chain.target_chain_name].chain_image}
+                          sx={{
+                            marginLeft: "0.3em",
+                            width: "1em",
+                            height: "1em",
+                            boxShadow: "rgba(0, 0, 0, 0.15) 0px 6px 10px",
                           }}
-                        >
-                          <Avatar
-                            src={chains[chain.target_chain_name].chain_image}
-                            sx={{
-                              marginLeft: "0.3em",
-                              width: "1em",
-                              height: "1em",
-                              boxShadow: "rgba(0, 0, 0, 0.15) 0px 6px 10px",
-                            }}
-                          />
-                          <strong>{chain.target_chain_name}</strong>
-                        </div>
-                      </MenuItem>
-                    ))}
+                        />
+                        <strong>{chain.target_chain_name}</strong>
+                      </div>
+                    </MenuItem>
+                  ))}
                 </Select>
               </FormControl>
             </Else>
