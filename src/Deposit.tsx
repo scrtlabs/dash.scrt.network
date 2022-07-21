@@ -10,7 +10,7 @@ import {
   InputLabel,
   MenuItem,
   Select,
-  Typography
+  Typography,
 } from "@mui/material";
 import { sha256 } from "@noble/hashes/sha256";
 import { createTxIBCMsgTransfer } from "@tharsis/transactions";
@@ -22,7 +22,7 @@ import {
   gasToFee,
   sleep,
   suggestTerraClassicToKeplr,
-  suggestTerraToKeplr
+  suggestTerraToKeplr,
 } from "./commons";
 import { chains, Token } from "./config";
 import CopyableAddress from "./CopyableAddress";
@@ -371,20 +371,20 @@ export default function Deposit({
                 );
                 transactionHash = txResponse.transactionHash;
               } else {
-                // Get Evmos account data
-                // cosmjs doesn't know how to deal with the Evmos account format
+                // Get Evmos account_number & sequence
                 const {
-                  account: { base_account },
+                  account: {
+                    base_account: {
+                      account_number: evmosAccountNumber,
+                      sequence: evmosAccountSequence,
+                    },
+                  },
                 }: {
                   account: {
-                    "@type": "/ethermint.types.v1.EthAccount";
                     base_account: {
-                      address: string;
-                      pub_key: string;
                       account_number: string;
                       sequence: string;
                     };
-                    code_hash: string;
                   };
                 } = await (
                   await fetch(
@@ -392,6 +392,8 @@ export default function Deposit({
                   )
                 ).json();
 
+                // Get Evmos account pubkey
+                // Can't get it from the chain because an account without txs won't have its pubkey listed on-chain
                 const evmosProtoSigner = window.getOfflineSigner!(
                   chains["Evmos"].chain_id
                 );
@@ -400,7 +402,7 @@ export default function Deposit({
                 // Get block height on Secret (for the IBC timeout)
                 const {
                   block: {
-                    header: { height },
+                    header: { height: targetChainHeight },
                   },
                 }: {
                   block: {
@@ -414,7 +416,7 @@ export default function Deposit({
                   )
                 ).json();
 
-                // Create IBC MsgTransder tx on Evmos
+                // Create IBC MsgTransfer tx on Evmos
                 const tx = createTxIBCMsgTransfer(
                   {
                     chainId: 9001,
@@ -422,8 +424,8 @@ export default function Deposit({
                   },
                   {
                     accountAddress: sourceAddress,
-                    sequence: Number(base_account.sequence),
-                    accountNumber: Number(base_account.account_number),
+                    accountNumber: Number(evmosAccountNumber),
+                    sequence: Number(evmosAccountSequence),
                     pubkey: toBase64(pubkey),
                   },
                   {
@@ -441,7 +443,7 @@ export default function Deposit({
                     revisionNumber: Number(
                       targetChain.chain_id.split("-")[1] // see https://github.com/mccallofthewild/sif-ui-clone/blob/875978d4cd55de45970e1fba66a96238883bcdae/app/src/business/services/IBCService/utils.ts#L9-L24
                     ),
-                    revisionHeight: Number(height) + 100, // 100 blocks is about 10 minutes
+                    revisionHeight: Number(targetChainHeight) + 100, // 100 blocks on Secret is about 10 minutes
                     timeoutTimestamp: "0",
                   }
                 );
@@ -454,9 +456,7 @@ export default function Deposit({
                     bodyBytes: tx.signDirect.body.serializeBinary(),
                     authInfoBytes: tx.signDirect.authInfo.serializeBinary(),
                     chainId: chains["Evmos"].chain_id,
-                    accountNumber: new Long(
-                      Number(base_account.account_number)
-                    ),
+                    accountNumber: new Long(Number(evmosAccountNumber)),
                   },
                   // @ts-expect-error the types are not updated on Keplr side
                   { isEthereum: true }
