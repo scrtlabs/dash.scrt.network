@@ -26,7 +26,6 @@ import {
 } from "./commons";
 import { chains, Token } from "./config";
 import CopyableAddress from "./CopyableAddress";
-import { AccountCircle } from "@mui/icons-material";
 
 export default function Deposit({
   token,
@@ -349,7 +348,7 @@ export default function Deposit({
               chains[token.deposits[selectedChainIndex].source_chain_name];
 
             try {
-              let transactionHash: string;
+              let transactionHash: string = "";
 
               if (
                 token.deposits[selectedChainIndex].source_chain_name !== "Evmos"
@@ -389,83 +388,89 @@ export default function Deposit({
                   )
                 ).json();
 
-                console.log([
+                const sig = await window!.keplr!.signAmino(
+                  chains["Evmos"].chain_id,
                   sourceAddress,
-                  [
-                    {
-                      typeUrl: "/ibc.applications.transfer.v1.MsgTransfer",
-                      value: {
-                        sourcePort: "transfer",
-                        sourceChannel: deposit_channel_id,
-                        token: {
-                          amount,
-                          denom: token.deposits[selectedChainIndex].from_denom,
-                        },
-                        sender: sourceAddress,
-                        receiver: secretAddress,
-                        timeoutHeight: {
-                          revisionNumber: "0",
-                          revisionHeight: "0",
-                        },
-                        timeoutTimestamp: String(
-                          Math.floor(Date.now() / 1000) + 10 * 60
-                          /* 10 minute timeout */
-                        ),
-                      },
+                  {
+                    chain_id: chains["Evmos"].chain_id,
+                    account_number: base_account.account_number,
+                    sequence: base_account.sequence,
+                    fee: {
+                      amount: [], // filled in by Keplr
+                      gas: String(deposit_gas),
                     },
-                  ],
-                  {
-                    amount: [], // filled in by Keplr
-                    gas: String(deposit_gas),
-                  },
-                  "",
-                  {
-                    chainId: chains["Evmos"].chain_id,
-                    accountNumber: Number(base_account.account_number),
-                    sequence: Number(base_account.sequence),
-                  },
-                ]);
-
-                const txRaw = await sourceCosmJs.sign(
-                  sourceAddress,
-                  [
-                    {
-                      typeUrl: "/ibc.applications.transfer.v1.MsgTransfer",
-                      value: {
-                        sourcePort: "transfer",
-                        sourceChannel: deposit_channel_id,
-                        token: {
-                          amount,
-                          denom: token.deposits[selectedChainIndex].from_denom,
+                    msgs: [
+                      {
+                        type: "cosmos-sdk/MsgTransfer",
+                        value: {
+                          source_port: "transfer",
+                          source_channel: deposit_channel_id,
+                          token: {
+                            amount,
+                            denom:
+                              token.deposits[selectedChainIndex].from_denom,
+                          },
+                          sender: sourceAddress,
+                          receiver: secretAddress,
+                          timeout_height: {
+                            revisionNumber: "0",
+                            revisionHeight: "0",
+                          },
+                          timeout_timestamp: String(
+                            Math.floor(Date.now() / 1000) + 10 * 60
+                            /* 10 minute timeout */
+                          ),
                         },
-                        sender: sourceAddress,
-                        receiver: secretAddress,
-                        timeoutHeight: {
-                          revisionNumber: "0",
-                          revisionHeight: "0",
-                        },
-                        timeoutTimestamp: String(
-                          Math.floor(Date.now() / 1000) + 10 * 60
-                          /* 10 minute timeout */
-                        ),
                       },
-                    },
-                  ],
-                  {
-                    amount: [], // filled in by Keplr
-                    gas: String(deposit_gas),
+                    ],
+                    memo: "",
                   },
-                  "",
-                  {
-                    chainId: chains["Evmos"].chain_id,
-                    accountNumber: Number(base_account.account_number),
-                    sequence: Number(base_account.sequence),
-                  }
+                  // @ts-ignore
+                  { isEthereum: true }
                 );
 
-                const txBytes = TxRaw.encode(txRaw).finish();
-                const txResponse = await sourceCosmJs.broadcastTx(txBytes);
-                transactionHash = txResponse.transactionHash;
+                console.log(sig);
+
+                // const txRaw = await sourceCosmJs.sign(
+                //   sourceAddress,
+                //   [
+                //     {
+                //       typeUrl: "/ibc.applications.transfer.v1.MsgTransfer",
+                //       value: {
+                //         sourcePort: "transfer",
+                //         sourceChannel: deposit_channel_id,
+                //         token: {
+                //           amount,
+                //           denom: token.deposits[selectedChainIndex].from_denom,
+                //         },
+                //         sender: sourceAddress,
+                //         receiver: secretAddress,
+                //         timeoutHeight: {
+                //           revisionNumber: "0",
+                //           revisionHeight: "0",
+                //         },
+                //         timeoutTimestamp: String(
+                //           Math.floor(Date.now() / 1000) + 10 * 60
+                //           /* 10 minute timeout */
+                //         ),
+                //       },
+                //     },
+                //   ],
+                //   {
+                //     amount: [], // filled in by Keplr
+                //     gas: String(deposit_gas),
+                //   },
+                //   "",
+                //   {
+                //     chainId: chains["Evmos"].chain_id,
+                //     accountNumber: Number(base_account.account_number),
+                //     sequence: Number(base_account.sequence),
+                //   }
+                // );
+
+                // const txBytes = TxRaw.encode(txRaw).finish();
+                // const txResponse = await sourceCosmJs.broadcastTx(txBytes);
+                // transactionHash = txResponse.transactionHash;
               }
 
               inputRef.current.value = "";
