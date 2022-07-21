@@ -8,6 +8,8 @@ import { chains, tokens } from "./config";
 import "./index.css";
 import { KeplrPanel } from "./KeplrStuff";
 import TokenRow from "./TokenRow";
+import { Buffer } from "buffer";
+globalThis.Buffer = Buffer;
 declare global {
   interface Window extends KeplrWindow {}
 }
