@@ -370,7 +370,8 @@ export default function Deposit({
                 );
                 transactionHash = txResponse.transactionHash;
               } else {
-                // cosnjs doesn't know how to deal with the Evmos account format
+                // Get Evmos account data
+                // cosmjs doesn't know how to deal with the Evmos account format
                 const {
                   account: { base_account },
                 }: {
@@ -393,9 +394,26 @@ export default function Deposit({
                 const evmosProtoSigner = window.getOfflineSigner!(
                   chains["Evmos"].chain_id
                 );
-                const [{ address, algo, pubkey }] =
-                  await evmosProtoSigner.getAccounts();
+                const [{ pubkey }] = await evmosProtoSigner.getAccounts();
 
+                // Get block height on Secret (for the IBC timeout)
+                const {
+                  block: {
+                    header: { height },
+                  },
+                }: {
+                  block: {
+                    header: {
+                      height: string;
+                    };
+                  };
+                } = await (
+                  await fetch(
+                    `${targetChain.lcd}/cosmos/base/tendermint/v1beta1/blocks/latest`
+                  )
+                ).json();
+
+                // Create IBC MsgTransder tx on Evmos
                 const tx = createTxIBCMsgTransfer(
                   {
                     chainId: 9001,
@@ -419,15 +437,15 @@ export default function Deposit({
                     amount,
                     denom: token.deposits[selectedChainIndex].from_denom,
                     receiver: secretAddress,
-                    revisionNumber: 0,
-                    revisionHeight: 0,
-                    timeoutTimestamp: String(
-                      Math.floor(Date.now() / 1000) + 10 * 60
-                      /* 10 minute timeout */
+                    revisionNumber: Number(
+                      targetChain.chain_id.split("-")[1] // see https://github.com/mccallofthewild/sif-ui-clone/blob/875978d4cd55de45970e1fba66a96238883bcdae/app/src/business/services/IBCService/utils.ts#L9-L24
                     ),
+                    revisionHeight: Number(height) + 100, // 100 blocks is about 10 minutes
+                    timeoutTimestamp: "0",
                   }
                 );
 
+                // Sign the Evmos tx
                 const sig = await window?.keplr?.signDirect(
                   chains["Evmos"].chain_id,
                   sourceAddress,
@@ -443,6 +461,7 @@ export default function Deposit({
                   { isEthereum: true }
                 );
 
+                // Broadcast the tx to Evmos
                 const txRaw = TxRaw.fromPartial({
                   bodyBytes: sig!.signed.bodyBytes,
                   authInfoBytes: sig!.signed.authInfoBytes,
