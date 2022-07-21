@@ -493,7 +493,7 @@ export const chains: { [chain_name: string]: Chain } = {
   Evmos: {
     chain_name: "Evmos",
     deposit_channel_id: "channel-15",
-    deposit_gas: 110_000,
+    deposit_gas: 350_000,
     withdraw_channel_id: "channel-18",
     withdraw_gas: 30_000,
     chain_id: "evmos_9001-2",
