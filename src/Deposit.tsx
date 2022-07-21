@@ -1,7 +1,4 @@
 import { SigningStargateClient } from "@cosmjs/stargate";
-
-import { TxRaw } from "cosmjs-types/cosmos/tx/v1beta1/tx";
-
 import LoadingButton from "@mui/lab/LoadingButton";
 import {
   Avatar,
@@ -15,7 +12,9 @@ import {
   Select,
   Typography,
 } from "@mui/material";
+import { createTxIBCMsgTransfer } from "@tharsis/transactions";
 import BigNumber from "bignumber.js";
+import Long from "long";
 import React, { useEffect, useRef, useState } from "react";
 import { Else, If, Then } from "react-if";
 import {
@@ -388,89 +387,71 @@ export default function Deposit({
                   )
                 ).json();
 
-                const sig = await window!.keplr!.signAmino(
+                console.log(base_account);
+
+                const evmosProtoSigner = window.getOfflineSigner!(
+                  chains["Evmos"].chain_id
+                );
+                console.log("signer", evmosProtoSigner);
+                const [{ address, algo, pubkey }] =
+                  await evmosProtoSigner.getAccounts();
+
+                console.log(address, algo, pubkey);
+                console.log(
+                  "pubkey base64",
+                  btoa(String.fromCharCode(...pubkey))
+                );
+
+                const tx = createTxIBCMsgTransfer(
+                  {
+                    chainId: 9001,
+                    cosmosChainId: chains["Evmos"].chain_id,
+                  },
+                  {
+                    accountAddress: sourceAddress,
+                    sequence: Number(base_account.sequence),
+                    accountNumber: Number(base_account.account_number),
+                    pubkey: btoa(String.fromCharCode(...pubkey)),
+                  },
+                  {
+                    gas: String(deposit_gas),
+                    amount: "0", // filled in by Keplr
+                    denom: "aevmos", // filled in by Keplr
+                  },
+                  "",
+                  {
+                    sourcePort: "transfer",
+                    sourceChannel: deposit_channel_id,
+                    amount,
+                    denom: token.deposits[selectedChainIndex].from_denom,
+                    receiver: secretAddress,
+                    revisionNumber: 0,
+                    revisionHeight: 0,
+                    timeoutTimestamp: String(
+                      Math.floor(Date.now() / 1000) + 10 * 60
+                      /* 10 minute timeout */
+                    ),
+                  }
+                );
+
+                console.log(tx);
+
+                const sig = await window?.keplr?.signDirect(
                   chains["Evmos"].chain_id,
                   sourceAddress,
                   {
-                    chain_id: chains["Evmos"].chain_id,
-                    account_number: base_account.account_number,
-                    sequence: base_account.sequence,
-                    fee: {
-                      amount: [], // filled in by Keplr
-                      gas: String(deposit_gas),
-                    },
-                    msgs: [
-                      {
-                        type: "cosmos-sdk/MsgTransfer",
-                        value: {
-                          source_port: "transfer",
-                          source_channel: deposit_channel_id,
-                          token: {
-                            amount,
-                            denom:
-                              token.deposits[selectedChainIndex].from_denom,
-                          },
-                          sender: sourceAddress,
-                          receiver: secretAddress,
-                          timeout_height: {
-                            revisionNumber: "0",
-                            revisionHeight: "0",
-                          },
-                          timeout_timestamp: String(
-                            Math.floor(Date.now() / 1000) + 10 * 60
-                            /* 10 minute timeout */
-                          ),
-                        },
-                      },
-                    ],
-                    memo: "",
+                    bodyBytes: tx.signDirect.body.serializeBinary(),
+                    authInfoBytes: tx.signDirect.authInfo.serializeBinary(),
+                    chainId: chains["Evmos"].chain_id,
+                    accountNumber: new Long(
+                      Number(base_account.account_number)
+                    ),
                   },
-                  // @ts-ignore
+                  // @ts-expect-error the types are not updated on Keplr side
                   { isEthereum: true }
                 );
 
                 console.log(sig);
-
-                // const txRaw = await sourceCosmJs.sign(
-                //   sourceAddress,
-                //   [
-                //     {
-                //       typeUrl: "/ibc.applications.transfer.v1.MsgTransfer",
-                //       value: {
-                //         sourcePort: "transfer",
-                //         sourceChannel: deposit_channel_id,
-                //         token: {
-                //           amount,
-                //           denom: token.deposits[selectedChainIndex].from_denom,
-                //         },
-                //         sender: sourceAddress,
-                //         receiver: secretAddress,
-                //         timeoutHeight: {
-                //           revisionNumber: "0",
-                //           revisionHeight: "0",
-                //         },
-                //         timeoutTimestamp: String(
-                //           Math.floor(Date.now() / 1000) + 10 * 60
-                //           /* 10 minute timeout */
-                //         ),
-                //       },
-                //     },
-                //   ],
-                //   {
-                //     amount: [], // filled in by Keplr
-                //     gas: String(deposit_gas),
-                //   },
-                //   "",
-                //   {
-                //     chainId: chains["Evmos"].chain_id,
-                //     accountNumber: Number(base_account.account_number),
-                //     sequence: Number(base_account.sequence),
-                //   }
-                // );
-
-                // const txBytes = TxRaw.encode(txRaw).finish();
-                // const txResponse = await sourceCosmJs.broadcastTx(txBytes);
-                // transactionHash = txResponse.transactionHash;
               }
 
               inputRef.current.value = "";
