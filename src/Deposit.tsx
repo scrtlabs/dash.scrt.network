@@ -10,19 +10,25 @@ import {
   InputLabel,
   MenuItem,
   Select,
-  Typography,
+  Typography
 } from "@mui/material";
+import { sha256 } from "@noble/hashes/sha256";
+import { createTxIBCMsgTransfer } from "@tharsis/transactions";
 import BigNumber from "bignumber.js";
+import Long from "long";
 import React, { useEffect, useRef, useState } from "react";
 import { Else, If, Then } from "react-if";
 import {
   gasToFee,
   sleep,
   suggestTerraClassicToKeplr,
-  suggestTerraToKeplr,
+  suggestTerraToKeplr
 } from "./commons";
 import { chains, Token } from "./config";
 import CopyableAddress from "./CopyableAddress";
+
+import { fromBase64, toBase64, toHex } from "secretjs";
+import { TxRaw } from "secretjs/dist/protobuf_stuff/cosmos/tx/v1beta1/tx";
 
 export default function Deposit({
   token,
@@ -343,20 +349,136 @@ export default function Deposit({
 
             const { deposit_channel_id, deposit_gas } =
               chains[token.deposits[selectedChainIndex].source_chain_name];
+
             try {
-              const { transactionHash } = await sourceCosmJs.sendIbcTokens(
-                sourceAddress,
-                secretAddress,
-                {
-                  amount,
-                  denom: token.deposits[selectedChainIndex].from_denom,
-                },
-                "transfer",
-                deposit_channel_id,
-                undefined,
-                Math.floor(Date.now() / 1000) + 10 * 60, // 10 minute timeout
-                gasToFee(deposit_gas)
-              );
+              let transactionHash: string = "";
+
+              if (
+                token.deposits[selectedChainIndex].source_chain_name !== "Evmos"
+              ) {
+                const txResponse = await sourceCosmJs.sendIbcTokens(
+                  sourceAddress,
+                  secretAddress,
+                  {
+                    amount,
+                    denom: token.deposits[selectedChainIndex].from_denom,
+                  },
+                  "transfer",
+                  deposit_channel_id,
+                  undefined,
+                  Math.floor(Date.now() / 1000) + 10 * 60, // 10 minute timeout
+                  gasToFee(deposit_gas)
+                );
+                transactionHash = txResponse.transactionHash;
+              } else {
+                // Get Evmos account data
+                // cosmjs doesn't know how to deal with the Evmos account format
+                const {
+                  account: { base_account },
+                }: {
+                  account: {
+                    "@type": "/ethermint.types.v1.EthAccount";
+                    base_account: {
+                      address: string;
+                      pub_key: string;
+                      account_number: string;
+                      sequence: string;
+                    };
+                    code_hash: string;
+                  };
+                } = await (
+                  await fetch(
+                    `${chains["Evmos"].lcd}/cosmos/auth/v1beta1/accounts/${sourceAddress}`
+                  )
+                ).json();
+
+                const evmosProtoSigner = window.getOfflineSigner!(
+                  chains["Evmos"].chain_id
+                );
+                const [{ pubkey }] = await evmosProtoSigner.getAccounts();
+
+                // Get block height on Secret (for the IBC timeout)
+                const {
+                  block: {
+                    header: { height },
+                  },
+                }: {
+                  block: {
+                    header: {
+                      height: string;
+                    };
+                  };
+                } = await (
+                  await fetch(
+                    `${targetChain.lcd}/cosmos/base/tendermint/v1beta1/blocks/latest`
+                  )
+                ).json();
+
+                // Create IBC MsgTransder tx on Evmos
+                const tx = createTxIBCMsgTransfer(
+                  {
+                    chainId: 9001,
+                    cosmosChainId: chains["Evmos"].chain_id,
+                  },
+                  {
+                    accountAddress: sourceAddress,
+                    sequence: Number(base_account.sequence),
+                    accountNumber: Number(base_account.account_number),
+                    pubkey: toBase64(pubkey),
+                  },
+                  {
+                    gas: String(deposit_gas),
+                    amount: "0", // filled in by Keplr
+                    denom: "aevmos", // filled in by Keplr
+                  },
+                  "",
+                  {
+                    sourcePort: "transfer",
+                    sourceChannel: deposit_channel_id,
+                    amount,
+                    denom: token.deposits[selectedChainIndex].from_denom,
+                    receiver: secretAddress,
+                    revisionNumber: Number(
+                      targetChain.chain_id.split("-")[1] // see https://github.com/mccallofthewild/sif-ui-clone/blob/875978d4cd55de45970e1fba66a96238883bcdae/app/src/business/services/IBCService/utils.ts#L9-L24
+                    ),
+                    revisionHeight: Number(height) + 100, // 100 blocks is about 10 minutes
+                    timeoutTimestamp: "0",
+                  }
+                );
+
+                // Sign the Evmos tx
+                const sig = await window?.keplr?.signDirect(
+                  chains["Evmos"].chain_id,
+                  sourceAddress,
+                  {
+                    bodyBytes: tx.signDirect.body.serializeBinary(),
+                    authInfoBytes: tx.signDirect.authInfo.serializeBinary(),
+                    chainId: chains["Evmos"].chain_id,
+                    accountNumber: new Long(
+                      Number(base_account.account_number)
+                    ),
+                  },
+                  // @ts-expect-error the types are not updated on Keplr side
+                  { isEthereum: true }
+                );
+
+                // Broadcast the tx to Evmos
+                const txRaw = TxRaw.fromPartial({
+                  bodyBytes: sig!.signed.bodyBytes,
+                  authInfoBytes: sig!.signed.authInfoBytes,
+                  signatures: [fromBase64(sig!.signature.signature)],
+                });
+                const txBytes = TxRaw.encode(txRaw).finish();
+
+                // cosmjs can broadcast to Evmos but cannot handle the response
+
+                // const txResponse = await sourceCosmJs.broadcastTx(txBytes);
+                // transactionHash = txResponse.transactionHash;
+
+                sourceCosmJs.broadcastTx(txBytes);
+                transactionHash = toHex(sha256(txBytes));
+              }
+
               inputRef.current.value = "";
               onSuccess(transactionHash);
             } catch (e) {

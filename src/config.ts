@@ -56,11 +56,11 @@ export const tokens: Token[] = [
         from_denom:
           "ibc/1542F8DC70E7999691E991E1EDEB1B47E65E3A217B1649D347098EE48ACB580F", // SCRT denom on Cosmos
       },
-      // {
-      //   source_chain_name: "Evmos",
-      //   from_denom:
-      //     "ibc/DC74BE775F57FF32C3C6E14ACD86339DB50632246F6482C81CF5FCE64C0AC5C7", // SCRT denom on Evmos
-      // },
+      {
+        source_chain_name: "Evmos",
+        from_denom:
+          "ibc/DC74BE775F57FF32C3C6E14ACD86339DB50632246F6482C81CF5FCE64C0AC5C7", // SCRT denom on Evmos
+      },
       {
         source_chain_name: "Gravity Bridge",
         from_denom:
@@ -110,10 +110,10 @@ export const tokens: Token[] = [
         target_chain_name: "Cosmos Hub",
         from_denom: "uscrt",
       },
-      // {
-      //   target_chain_name: "Evmos",
-      //   from_denom: "uscrt",
-      // },
+      {
+        target_chain_name: "Evmos",
+        from_denom: "uscrt",
+      },
       {
         target_chain_name: "Gravity Bridge",
         from_denom: "uscrt",
@@ -212,7 +212,7 @@ export const tokens: Token[] = [
   },
   {
     name: "EVMOS",
-    address: "", // "secret1grg9unv2ue8cf98t50ea45prce7gcrj2n232kq",
+    address: "secret1grg9unv2ue8cf98t50ea45prce7gcrj2n232kq",
     code_hash:
       "5a085bd8ed89de92b35134ddd12505a602c7759ea25fb5c089ba03c8535b3042",
     image: "/evmos.jpg",
@@ -386,7 +386,6 @@ export const tokens: Token[] = [
       },
     ],
   },
-
   {
     name: "UST",
     address: "secret129h4vu66y3gry6wzwa24rw0vtqjyn8tujuwtn9",
@@ -447,8 +446,8 @@ export const chains: { [chain_name: string]: Chain } = {
     withdraw_gas: 0,
     chain_id: "secret-4",
     bech32_prefix: "secret",
-    lcd: "https://api.roninventures.io",
-    rpc: "https://web-rpc.roninventures.io", // gRPC-web
+    lcd: "https://secret-4.api.trivium.network:1317",
+    rpc: "https://secret-4.api.trivium.network:9091", // gRPC-web
     chain_image: "/scrt.svg",
     explorer_account: "https://www.mintscan.io/secret/account/",
   },
@@ -494,7 +493,7 @@ export const chains: { [chain_name: string]: Chain } = {
   Evmos: {
     chain_name: "Evmos",
     deposit_channel_id: "channel-15",
-    deposit_gas: 110_000,
+    deposit_gas: 350_000,
     withdraw_channel_id: "channel-18",
     withdraw_gas: 30_000,
     chain_id: "evmos_9001-2",
