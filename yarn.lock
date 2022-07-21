@@ -792,6 +792,11 @@
   resolved "https://registry.npmjs.org/@noble/hashes/-/hashes-1.0.0.tgz"
   integrity sha512-DZVbtY62kc3kkBtMHqwCOfXrT/hnoORy5BJ4+HU1IR59X0KWAOqsfzQPcUl/lQLlG7qXbe/fZ3r/emxtAl+sqg==
 
+"@noble/hashes@1.1.2":
+  version "1.1.2"
+  resolved "https://registry.yarnpkg.com/@noble/hashes/-/hashes-1.1.2.tgz#e9e035b9b166ca0af657a7848eb2718f0f22f183"
+  integrity sha512-KYRCASVTv6aeUi1tsF8/vpyR7zpfs3FUzy2Jqm+MU+LmUKhQ0y2FpfwqkCcxSg2ua4GALJd8k2R76WxwZGbQpA==
+
 "@noble/secp256k1@1.5.2":
   version "1.5.2"
   resolved "https://registry.npmjs.org/@noble/secp256k1/-/secp256k1-1.5.2.tgz"
@@ -1261,14 +1266,6 @@ cosmiconfig@^6.0.0:
     parse-json "^5.0.0"
     path-type "^4.0.0"
     yaml "^1.7.2"
-
-cosmjs-types@0.5.0:
-  version "0.5.0"
-  resolved "https://registry.yarnpkg.com/cosmjs-types/-/cosmjs-types-0.5.0.tgz#2497a2c5ddf62a8e8dea03e0725b8cd763d4ab4f"
-  integrity sha512-Qy2yxDp5HasBUnBV5OL9EOuTJw94LAbCWfiRb5QcW1sqh93KSSY5PpNMB3rTsxwuPcf/k3CNRY02DeQMjrsJuA==
-  dependencies:
-    long "^4.0.0"
-    protobufjs "~6.11.2"
 
 cosmjs-types@^0.2.0:
   version "0.2.1"
