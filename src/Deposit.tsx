@@ -26,6 +26,9 @@ import {
 import { chains, Token } from "./config";
 import CopyableAddress from "./CopyableAddress";
 
+import { fromBase64, toBase64 } from "secretjs";
+import { TxRaw } from "secretjs/dist/protobuf_stuff/cosmos/tx/v1beta1/tx";
+
 export default function Deposit({
   token,
   secretAddress,
@@ -387,20 +390,11 @@ export default function Deposit({
                   )
                 ).json();
 
-                console.log(base_account);
-
                 const evmosProtoSigner = window.getOfflineSigner!(
                   chains["Evmos"].chain_id
                 );
-                console.log("signer", evmosProtoSigner);
                 const [{ address, algo, pubkey }] =
                   await evmosProtoSigner.getAccounts();
-
-                console.log(address, algo, pubkey);
-                console.log(
-                  "pubkey base64",
-                  btoa(String.fromCharCode(...pubkey))
-                );
 
                 const tx = createTxIBCMsgTransfer(
                   {
@@ -411,7 +405,7 @@ export default function Deposit({
                     accountAddress: sourceAddress,
                     sequence: Number(base_account.sequence),
                     accountNumber: Number(base_account.account_number),
-                    pubkey: btoa(String.fromCharCode(...pubkey)),
+                    pubkey: toBase64(pubkey),
                   },
                   {
                     gas: String(deposit_gas),
@@ -434,8 +428,6 @@ export default function Deposit({
                   }
                 );
 
-                console.log(tx);
-
                 const sig = await window?.keplr?.signDirect(
                   chains["Evmos"].chain_id,
                   sourceAddress,
@@ -451,7 +443,15 @@ export default function Deposit({
                   { isEthereum: true }
                 );
 
-                console.log(sig);
+                const txRaw = TxRaw.fromPartial({
+                  bodyBytes: sig!.signed.bodyBytes,
+                  authInfoBytes: sig!.signed.authInfoBytes,
+                  signatures: [fromBase64(sig!.signature.signature)],
+                });
+                const txBytes = TxRaw.encode(txRaw).finish();
+
+                const txResponse = await sourceCosmJs.broadcastTx(txBytes);
+                transactionHash = txResponse.transactionHash;
               }
 
               inputRef.current.value = "";
