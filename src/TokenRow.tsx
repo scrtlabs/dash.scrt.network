@@ -60,7 +60,12 @@ export default function TokenRow({
     }
 
     try {
-      const result = await secretjs.query.compute.queryContract({
+      const result: {
+        viewing_key_error: any;
+        balance: {
+          amount: string;
+        };
+      } = await secretjs.query.compute.queryContract({
         contractAddress: token.address,
         codeHash: token.code_hash,
         query: {
@@ -68,12 +73,10 @@ export default function TokenRow({
         },
       });
 
-      //@ts-ignore
       if (result.viewing_key_error) {
         setTokenBalance(viewingKeyErrorString);
         return;
       }
-      //@ts-ignore
       setTokenBalance(result.balance.amount);
     } catch (e) {
       console.error(`Error getting balance for s${token.name}`, e);
