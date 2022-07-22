@@ -366,7 +366,7 @@ export default function Deposit({
                   "transfer",
                   deposit_channel_id,
                   undefined,
-                  Math.floor(Date.now() / 1000) + 10 * 60, // 10 minute timeout
+                  Math.floor(Date.now() / 1000) + 10 * 60, // 10 minute timeout (sec)
                   gasToFee(deposit_gas)
                 );
                 transactionHash = txResponse.transactionHash;
@@ -399,23 +399,6 @@ export default function Deposit({
                 );
                 const [{ pubkey }] = await evmosProtoSigner.getAccounts();
 
-                // Get block height on Secret (for the IBC timeout)
-                const {
-                  block: {
-                    header: { height: targetChainHeight },
-                  },
-                }: {
-                  block: {
-                    header: {
-                      height: string;
-                    };
-                  };
-                } = await (
-                  await fetch(
-                    `${targetChain.lcd}/cosmos/base/tendermint/v1beta1/blocks/latest`
-                  )
-                ).json();
-
                 // Create IBC MsgTransfer tx on Evmos
                 const tx = createTxIBCMsgTransfer(
                   {
@@ -440,11 +423,11 @@ export default function Deposit({
                     amount,
                     denom: token.deposits[selectedChainIndex].from_denom,
                     receiver: secretAddress,
-                    revisionNumber: Number(
-                      targetChain.chain_id.split("-")[1] // see https://github.com/mccallofthewild/sif-ui-clone/blob/875978d4cd55de45970e1fba66a96238883bcdae/app/src/business/services/IBCService/utils.ts#L9-L24
-                    ),
-                    revisionHeight: Number(targetChainHeight) + 100, // 100 blocks on Secret is about 10 minutes
-                    timeoutTimestamp: "0",
+                    revisionNumber: 0,
+                    revisionHeight: 0,
+                    timeoutTimestamp: `${
+                      Math.floor(Date.now() / 1000) + 10 * 60
+                    }000000000`, // 10 minute timeout (ns)
                   }
                 );
 
@@ -462,7 +445,7 @@ export default function Deposit({
                   { isEthereum: true }
                 );
 
-                // Broadcast the tx to Evmos
+                // Encode the Evmos tx to a TxRaw protobuf binary
                 const txRaw = TxRaw.fromPartial({
                   bodyBytes: sig!.signed.bodyBytes,
                   authInfoBytes: sig!.signed.authInfoBytes,
@@ -475,6 +458,7 @@ export default function Deposit({
                 // const txResponse = await sourceCosmJs.broadcastTx(txBytes);
                 // transactionHash = txResponse.transactionHash;
 
+                // Broadcast the tx to Evmos
                 sourceCosmJs.broadcastTx(txBytes);
                 transactionHash = toHex(sha256(txBytes));
               }
