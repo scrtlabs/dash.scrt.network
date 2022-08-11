@@ -21,6 +21,7 @@ import { Else, If, Then } from "react-if";
 import {
   gasToFee,
   sleep,
+  suggestInjectiveToKeplr,
   suggestTerraClassicToKeplr,
   suggestTerraToKeplr,
 } from "./commons";
@@ -109,6 +110,8 @@ export default function Deposit({
         await suggestTerraClassicToKeplr(window.keplr);
       } else if ("LUNA" === token.name.toUpperCase()) {
         await suggestTerraToKeplr(window.keplr);
+      } else if ("INJ" === token.name.toUpperCase()) {
+        await suggestInjectiveToKeplr(window.keplr);
       }
       // Initialize cosmjs on the target chain, because it has sendIbcTokens()
       const { chain_id, rpc, bech32_prefix } =
