@@ -91,7 +91,7 @@ export async function suggestTerraToKeplr(keplr: Keplr) {
         coinDenom: "LUNA",
         coinMinimalDenom: "uluna",
         coinDecimals: 6,
-        coinGeckoId: "terra-luna",
+        coinGeckoId: "terra-luna-2",
       },
     ],
     feeCurrencies: [
@@ -99,7 +99,7 @@ export async function suggestTerraToKeplr(keplr: Keplr) {
         coinDenom: "LUNA",
         coinMinimalDenom: "uluna",
         coinDecimals: 6,
-        coinGeckoId: "terra-luna",
+        coinGeckoId: "terra-luna-2",
       },
     ],
     gasPriceStep: {
@@ -108,5 +108,46 @@ export async function suggestTerraToKeplr(keplr: Keplr) {
       high: 0.15,
     },
     features: ["ibc-transfer"],
+  });
+}
+
+export async function suggestInjectiveToKeplr(keplr: Keplr) {
+  await keplr.experimentalSuggestChain({
+    rpc: "https://tm.injective.network",
+    rest: "https://public.lcd.injective.network",
+    chainId: "injective-1",
+    chainName: "Injective",
+    stakeCurrency: {
+      coinDenom: "INJ",
+      coinMinimalDenom: "inj",
+      coinDecimals: 18,
+      coinGeckoId: "injective-protocol",
+    },
+    bip44: {
+      coinType: 60,
+    },
+    bech32Config: Bech32Address.defaultBech32Config("inj"),
+    currencies: [
+      {
+        coinDenom: "INJ",
+        coinMinimalDenom: "inj",
+        coinDecimals: 18,
+        coinGeckoId: "injective-protocol",
+      },
+    ],
+    feeCurrencies: [
+      {
+        coinDenom: "INJ",
+        coinMinimalDenom: "inj",
+        coinDecimals: 18,
+        coinGeckoId: "injective-protocol",
+      },
+    ],
+    gasPriceStep: {
+      low: 0.0005,
+      average: 0.0007,
+      high: 0.0009,
+    },
+    features: ["stargate", "ibc-transfer", "no-legacy-stdTx", "ibc-go"],
   });
 }
