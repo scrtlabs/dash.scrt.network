@@ -148,6 +148,6 @@ export async function suggestInjectiveToKeplr(keplr: Keplr) {
       average: 0.0007,
       high: 0.0009,
     },
-    features: ["stargate", "ibc-transfer", "no-legacy-stdTx", "ibc-go"],
+    features: ["ibc-transfer", "ibc-go"],
   });
 }
