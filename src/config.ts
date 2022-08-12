@@ -67,6 +67,11 @@ export const tokens: Token[] = [
           "ibc/7907EA1A11FD4FC2A815FCAA54948C42F08E3F3C874EE48861386286FEB80160", // SCRT denom on Gravity Bridge
       },
       {
+        source_chain_name: "Injective",
+        from_denom:
+          "ibc/0954E1C28EB7AF5B72D24F3BC2B47BBB2FDF91BDDFD57B74B99E133AED40972A", // SCRT denom on Injective
+      },
+      {
         source_chain_name: "Juno",
         from_denom:
           "ibc/B55B08EF3667B0C6F029C2CC9CAA6B00788CF639EBB84B34818C85CBABA33ABD", // SCRT denom on Juno
@@ -116,6 +121,10 @@ export const tokens: Token[] = [
       },
       {
         target_chain_name: "Gravity Bridge",
+        from_denom: "uscrt",
+      },
+      {
+        target_chain_name: "Injective",
         from_denom: "uscrt",
       },
       {
@@ -273,6 +282,28 @@ export const tokens: Token[] = [
         target_chain_name: "Chihuahua",
         from_denom:
           "ibc/630E7B10690ADEC9E9CEEE904CE78C522BBCDDC6A081B23FA26A55F6EF40E41E", // HUAHUA denom on Secret
+      },
+    ],
+  },
+  {
+    name: "INJ",
+    address: "secret16cwf53um7hgdvepfp3jwdzvwkt5qe2f9vfkuwv",
+    code_hash:
+      "5a085bd8ed89de92b35134ddd12505a602c7759ea25fb5c089ba03c8535b3042",
+    image: "/inj.svg",
+    decimals: 18,
+    coingecko_id: "injective-protocol",
+    deposits: [
+      {
+        source_chain_name: "Injective",
+        from_denom: "inj",
+      },
+    ],
+    withdrawals: [
+      {
+        target_chain_name: "Injective",
+        from_denom:
+          "ibc/5A76568E079A31FA12165E4559BA9F1E9D4C97F9C2060B538C84DCD503815E30", // INJ denom on Secret
       },
     ],
   },
@@ -498,8 +529,8 @@ export const chains: { [chain_name: string]: Chain } = {
     withdraw_gas: 30_000,
     chain_id: "evmos_9001-2",
     bech32_prefix: "evmos",
-    lcd: "https://lcd.evmos.ezstaking.io",
-    rpc: "https://rpc.evmos.ezstaking.io",
+    lcd: "https://rest.bd.evmos.org:1317",
+    rpc: "https://tendermint.bd.evmos.org:26657",
     chain_image: "/evmos.jpg",
     explorer_account: "https://www.mintscan.io/evmos/account/",
   },
@@ -515,6 +546,19 @@ export const chains: { [chain_name: string]: Chain } = {
     rpc: "https://rpc.gravity-bridge.ezstaking.io",
     chain_image: "/grav.svg",
     explorer_account: "https://www.mintscan.io/gravity-bridge/account/",
+  },
+  Injective: {
+    chain_name: "Injective",
+    deposit_channel_id: "channel-88",
+    deposit_gas: 350_000,
+    withdraw_channel_id: "channel-23",
+    withdraw_gas: 30_000,
+    chain_id: "injective-1",
+    bech32_prefix: "inj",
+    lcd: "https://public.lcd.injective.network",
+    rpc: "https://tm.injective.network",
+    chain_image: "/inj.svg",
+    explorer_account: "https://www.mintscan.io/injective/account/",
   },
   Juno: {
     chain_name: "Juno",

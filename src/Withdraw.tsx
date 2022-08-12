@@ -17,6 +17,7 @@ import { Else, If, Then } from "react-if";
 import { MsgTransfer, SecretNetworkClient } from "secretjs";
 import {
   sleep,
+  suggestInjectiveToKeplr,
   suggestTerraClassicToKeplr,
   suggestTerraToKeplr,
 } from "./commons";
@@ -69,6 +70,10 @@ export default function Withdraw({
         token.withdrawals[selectedChainIndex].target_chain_name === "Terra"
       ) {
         await suggestTerraToKeplr(window.keplr);
+      } else if (
+        token.withdrawals[selectedChainIndex].target_chain_name === "Injective"
+      ) {
+        await suggestInjectiveToKeplr(window.keplr);
       }
       await window.keplr.enable(targetChainId);
       const targetOfflineSigner =

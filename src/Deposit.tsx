@@ -14,6 +14,7 @@ import {
 } from "@mui/material";
 import { sha256 } from "@noble/hashes/sha256";
 import { createTxIBCMsgTransfer } from "@tharsis/transactions";
+import { cosmos } from "@tharsis/proto/dist/proto/cosmos/tx/v1beta1/tx";
 import BigNumber from "bignumber.js";
 import Long from "long";
 import React, { useEffect, useRef, useState } from "react";
@@ -21,6 +22,7 @@ import { Else, If, Then } from "react-if";
 import {
   gasToFee,
   sleep,
+  suggestInjectiveToKeplr,
   suggestTerraClassicToKeplr,
   suggestTerraToKeplr,
 } from "./commons";
@@ -109,6 +111,8 @@ export default function Deposit({
         await suggestTerraClassicToKeplr(window.keplr);
       } else if ("LUNA" === token.name.toUpperCase()) {
         await suggestTerraToKeplr(window.keplr);
+      } else if ("INJ" === token.name.toUpperCase()) {
+        await suggestInjectiveToKeplr(window.keplr);
       }
       // Initialize cosmjs on the target chain, because it has sendIbcTokens()
       const { chain_id, rpc, bech32_prefix } =
@@ -354,7 +358,9 @@ export default function Deposit({
               let transactionHash: string = "";
 
               if (
-                token.deposits[selectedChainIndex].source_chain_name !== "Evmos"
+                !["Evmos", "Injective"].includes(
+                  token.deposits[selectedChainIndex].source_chain_name
+                )
               ) {
                 const txResponse = await sourceCosmJs.sendIbcTokens(
                   sourceAddress,
@@ -371,12 +377,17 @@ export default function Deposit({
                 );
                 transactionHash = txResponse.transactionHash;
               } else {
-                // Get Evmos account_number & sequence
+                // Handle IBC transfers from Ethermint chains like Evmos & Injective
+
+                const sourceChain =
+                  chains[token.deposits[selectedChainIndex].source_chain_name];
+
+                // Get Evmos/Injective account_number & sequence
                 const {
                   account: {
                     base_account: {
-                      account_number: evmosAccountNumber,
-                      sequence: evmosAccountSequence,
+                      account_number: accountNumber,
+                      sequence: accountSequence,
                     },
                   },
                 }: {
@@ -388,27 +399,27 @@ export default function Deposit({
                   };
                 } = await (
                   await fetch(
-                    `${chains["Evmos"].lcd}/cosmos/auth/v1beta1/accounts/${sourceAddress}`
+                    `${sourceChain.lcd}/cosmos/auth/v1beta1/accounts/${sourceAddress}`
                   )
                 ).json();
 
-                // Get Evmos account pubkey
+                // Get account pubkey
                 // Can't get it from the chain because an account without txs won't have its pubkey listed on-chain
                 const evmosProtoSigner = window.getOfflineSigner!(
-                  chains["Evmos"].chain_id
+                  sourceChain.chain_id
                 );
                 const [{ pubkey }] = await evmosProtoSigner.getAccounts();
 
-                // Create IBC MsgTransfer tx on Evmos
+                // Create IBC MsgTransfer tx
                 const tx = createTxIBCMsgTransfer(
                   {
-                    chainId: 9001,
-                    cosmosChainId: chains["Evmos"].chain_id,
+                    chainId: 9001, // Evmos EIP155, this is ignored in Injective
+                    cosmosChainId: sourceChain.chain_id,
                   },
                   {
                     accountAddress: sourceAddress,
-                    accountNumber: Number(evmosAccountNumber),
-                    sequence: Number(evmosAccountSequence),
+                    accountNumber: Number(accountNumber),
+                    sequence: Number(accountSequence),
                     pubkey: toBase64(pubkey),
                   },
                   {
@@ -431,17 +442,27 @@ export default function Deposit({
                   }
                 );
 
-                // Sign the Evmos tx
+                if (sourceChain.chain_name === "Injective") {
+                  const signer_info =
+                    tx.signDirect.authInfo.signer_infos[0].toObject();
+                  signer_info.public_key!.type_url =
+                    "/injective.crypto.v1beta1.ethsecp256k1.PubKey";
+
+                  tx.signDirect.authInfo.signer_infos[0] =
+                    cosmos.tx.v1beta1.SignerInfo.fromObject(signer_info);
+                }
+
+                // Sign the tx
                 const sig = await window?.keplr?.signDirect(
-                  chains["Evmos"].chain_id,
+                  sourceChain.chain_id,
                   sourceAddress,
                   {
                     bodyBytes: tx.signDirect.body.serializeBinary(),
                     authInfoBytes: tx.signDirect.authInfo.serializeBinary(),
-                    chainId: chains["Evmos"].chain_id,
-                    accountNumber: new Long(Number(evmosAccountNumber)),
+                    chainId: sourceChain.chain_id,
+                    accountNumber: new Long(Number(accountNumber)),
                   },
-                  // @ts-expect-error the types are not updated on Keplr side
+                  // @ts-expect-error the types are not updated on the Keplr types package
                   { isEthereum: true }
                 );
 
@@ -453,10 +474,7 @@ export default function Deposit({
                 });
                 const txBytes = TxRaw.encode(txRaw).finish();
 
-                // cosmjs can broadcast to Evmos but cannot handle the response
-
-                // const txResponse = await sourceCosmJs.broadcastTx(txBytes);
-                // transactionHash = txResponse.transactionHash;
+                // cosmjs can broadcast to Ethermint but cannot handle the response
 
                 // Broadcast the tx to Evmos
                 sourceCosmJs.broadcastTx(txBytes);
