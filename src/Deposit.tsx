@@ -362,6 +362,7 @@ export default function Deposit({
                   token.deposits[selectedChainIndex].source_chain_name
                 )
               ) {
+                // Regular cosmos chain (not ethermint signing)
                 const txResponse = await sourceCosmJs.sendIbcTokens(
                   sourceAddress,
                   secretAddress,
