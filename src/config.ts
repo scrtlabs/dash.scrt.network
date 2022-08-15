@@ -87,6 +87,11 @@ export const tokens: Token[] = [
           "ibc/31FEE1A2A9F9C01113F90BD0BBCCE8FD6BBB8585FAF109A2101827DD1D5B95B8", // SCRT denom on Sentinel
       },
       {
+        source_chain_name: "Sifchain",
+        from_denom:
+          "ibc/345D30E8ED06B47FC538ED131D99D16126F07CD6F8B35DE96AAF4C1E445AF466", // SCRT denom on Sifchain
+      },
+      {
         source_chain_name: "Stargaze",
         from_denom:
           "ibc/B55B08EF3667B0C6F029C2CC9CAA6B00788CF639EBB84B34818C85CBABA33ABD", // SCRT denom on Stargaze
@@ -137,6 +142,10 @@ export const tokens: Token[] = [
       },
       {
         target_chain_name: "Sentinel",
+        from_denom: "uscrt",
+      },
+      {
+        target_chain_name: "Sifchain",
         from_denom: "uscrt",
       },
       {
@@ -396,6 +405,28 @@ export const tokens: Token[] = [
     ],
   },
   {
+    name: "ROWAN",
+    address: "secret159p22zvq2wzsdtqhm2plp4wg33srxp2hf0qudc",
+    code_hash:
+      "5a085bd8ed89de92b35134ddd12505a602c7759ea25fb5c089ba03c8535b3042",
+    image: "/rowan.svg",
+    decimals: 18,
+    coingecko_id: "sifchain",
+    deposits: [
+      {
+        source_chain_name: "Sifchain",
+        from_denom: "rowan",
+      },
+    ],
+    withdrawals: [
+      {
+        target_chain_name: "Sifchain",
+        from_denom:
+          "ibc/901E9F1199A9EB947C83F2903B0B062888758D5853C6B762CD15B9FFD55FF1BC", // ROWAN denom on Secret
+      },
+    ],
+  },
+  {
     name: "STARS",
     address: "secret1x0dqckf2khtxyrjwhlkrx9lwwmz44k24vcv2vv",
     code_hash:
@@ -598,6 +629,19 @@ export const chains: { [chain_name: string]: Chain } = {
     rpc: "https://rpc-sentinel-ia.notional.ventures",
     chain_image: "/dvpn.jpeg",
     explorer_account: "https://www.mintscan.io/sentinel/account/",
+  },
+  Sifchain: {
+    chain_name: "Sifchain",
+    deposit_channel_id: "channel-65",
+    deposit_gas: 150_000,
+    withdraw_channel_id: "channel-15",
+    withdraw_gas: 30_000,
+    chain_id: "sifchain-1",
+    bech32_prefix: "sif",
+    lcd: "https://api.sifchain.finance",
+    rpc: "https://rpc.sifchain.finance",
+    chain_image: "/rowan.svg",
+    explorer_account: "https://www.mintscan.io/sifchain/account/",
   },
   Stargaze: {
     chain_name: "Stargaze",
