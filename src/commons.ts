@@ -148,6 +148,47 @@ export async function suggestInjectiveToKeplr(keplr: Keplr) {
       average: 0.0007,
       high: 0.0009,
     },
-    features: ["ibc-transfer", "ibc-go"],
+    features: ["ibc-transfer"],
+  });
+}
+
+export async function suggestCrescentToKeplr(keplr: Keplr) {
+  await keplr.experimentalSuggestChain({
+    rpc: "https://mainnet.crescent.network:26657",
+    rest: "https://mainnet.crescent.network:1317",
+    chainId: "crescent-1",
+    chainName: "Crescent",
+    stakeCurrency: {
+      coinDenom: "CRE",
+      coinMinimalDenom: "ucre",
+      coinDecimals: 6,
+      coinGeckoId: "crescent-network",
+    },
+    bip44: {
+      coinType: 118,
+    },
+    bech32Config: Bech32Address.defaultBech32Config("cre"),
+    currencies: [
+      {
+        coinDenom: "CRE",
+        coinMinimalDenom: "ucre",
+        coinDecimals: 6,
+        coinGeckoId: "crescent-network",
+      },
+    ],
+    feeCurrencies: [
+      {
+        coinDenom: "CRE",
+        coinMinimalDenom: "ucre",
+        coinDecimals: 6,
+        coinGeckoId: "crescent-network",
+      },
+    ],
+    gasPriceStep: {
+      low: 0.01,
+      average: 0.01,
+      high: 0.02,
+    },
+    features: ["ibc-transfer"],
   });
 }

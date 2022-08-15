@@ -57,6 +57,11 @@ export const tokens: Token[] = [
           "ibc/1542F8DC70E7999691E991E1EDEB1B47E65E3A217B1649D347098EE48ACB580F", // SCRT denom on Cosmos
       },
       {
+        source_chain_name: "Crescent",
+        from_denom:
+          "ibc/A358D7F19237777AF6D8AD0E0F53268F8B18AE8A53ED318095C14D6D7F3B2DB5", // SCRT denom on Crescent
+      },
+      {
         source_chain_name: "Evmos",
         from_denom:
           "ibc/DC74BE775F57FF32C3C6E14ACD86339DB50632246F6482C81CF5FCE64C0AC5C7", // SCRT denom on Evmos
@@ -118,6 +123,10 @@ export const tokens: Token[] = [
       },
       {
         target_chain_name: "Cosmos Hub",
+        from_denom: "uscrt",
+      },
+      {
+        target_chain_name: "Crescent",
         from_denom: "uscrt",
       },
       {
@@ -203,6 +212,28 @@ export const tokens: Token[] = [
         target_chain_name: "Cosmos Hub",
         from_denom:
           "ibc/27394FB092D2ECCD56123C74F36E4C1F926001CEADA9CA97EA622B25F41E5EB2",
+      },
+    ],
+  },
+  {
+    name: "CRE",
+    address: "secret1fgntdkvu6v3s8z4e5zcv69jywhr09et3akv4a4",
+    code_hash:
+      "5a085bd8ed89de92b35134ddd12505a602c7759ea25fb5c089ba03c8535b3042",
+    image: "/cre.svg",
+    decimals: 6,
+    coingecko_id: "crescent-network",
+    deposits: [
+      {
+        source_chain_name: "Crescent",
+        from_denom: "ucre",
+      },
+    ],
+    withdrawals: [
+      {
+        target_chain_name: "Crescent",
+        from_denom:
+          "ibc/34BFFD88FD2A4ED8C4D227A7A3CE966A4D514F5F07823FFABC4CC3DBC9D8CCDE",
       },
     ],
   },
@@ -551,6 +582,19 @@ export const chains: { [chain_name: string]: Chain } = {
     rpc: "https://rpc.cosmoshub.strange.love",
     chain_image: "/atom.jpg",
     explorer_account: "https://www.mintscan.io/cosmos/account/",
+  },
+  Crescent: {
+    chain_name: "Crescent",
+    deposit_channel_id: "channel-10",
+    deposit_gas: 110_000,
+    withdraw_channel_id: "channel-24",
+    withdraw_gas: 30_000,
+    chain_id: "crescent-1",
+    bech32_prefix: "cre",
+    lcd: "https://mainnet.crescent.network:1317",
+    rpc: "https://mainnet.crescent.network:26657",
+    chain_image: "/cre.svg",
+    explorer_account: "https://www.mintscan.io/crescent/account/",
   },
   Evmos: {
     chain_name: "Evmos",
