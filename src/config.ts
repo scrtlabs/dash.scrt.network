@@ -82,6 +82,11 @@ export const tokens: Token[] = [
           "ibc/B55B08EF3667B0C6F029C2CC9CAA6B00788CF639EBB84B34818C85CBABA33ABD", // SCRT denom on Juno
       },
       {
+        source_chain_name: "Kujira",
+        from_denom:
+          "ibc/A358D7F19237777AF6D8AD0E0F53268F8B18AE8A53ED318095C14D6D7F3B2DB5", // SCRT denom on Kujira
+      },
+      {
         source_chain_name: "Osmosis",
         from_denom:
           "ibc/0954E1C28EB7AF5B72D24F3BC2B47BBB2FDF91BDDFD57B74B99E133AED40972A", // SCRT denom on Osmosis
@@ -143,6 +148,10 @@ export const tokens: Token[] = [
       },
       {
         target_chain_name: "Juno",
+        from_denom: "uscrt",
+      },
+      {
+        target_chain_name: "Kujira",
         from_denom: "uscrt",
       },
       {
@@ -366,6 +375,28 @@ export const tokens: Token[] = [
         target_chain_name: "Juno",
         from_denom:
           "ibc/DF8D00B4B31B55AFCA9BAF192BC36C67AA06D9987DCB96490661BCAB63C27006", // JUNO denom on Secret
+      },
+    ],
+  },
+  {
+    name: "KUJI",
+    address: "secret1gaew7k9tv4hlx2f4wq4ta4utggj4ywpkjysqe8",
+    code_hash:
+      "5a085bd8ed89de92b35134ddd12505a602c7759ea25fb5c089ba03c8535b3042",
+    image: "/kuji-token.webp",
+    decimals: 6,
+    coingecko_id: "kujira",
+    deposits: [
+      {
+        source_chain_name: "Kujira",
+        from_denom: "ukuji",
+      },
+    ],
+    withdrawals: [
+      {
+        target_chain_name: "Kujira",
+        from_denom:
+          "ibc/FFA324A40F82EF430CF78D498CE04FF634D2091FCDC04EFEC8841B86011F307A", // KUJI denom on Secret
       },
     ],
   },
@@ -647,6 +678,19 @@ export const chains: { [chain_name: string]: Chain } = {
     rpc: "https://rpc-juno.itastakers.com",
     chain_image: "/juno.svg",
     explorer_account: "https://www.mintscan.io/juno/account/",
+  },
+  Kujira: {
+    chain_name: "Kujira",
+    deposit_channel_id: "channel-10",
+    deposit_gas: 110_000,
+    withdraw_channel_id: "channel-22",
+    withdraw_gas: 30_000,
+    chain_id: "kaiyo-1",
+    bech32_prefix: "kujira",
+    lcd: "https://lcd.kaiyo.kujira.setten.io",
+    rpc: "https://rpc.kaiyo.kujira.setten.io",
+    chain_image: "/kuji.png",
+    explorer_account: "https://kujira.explorers.guru/account/",
   },
   Osmosis: {
     chain_name: "Osmosis",

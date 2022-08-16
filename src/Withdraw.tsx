@@ -19,6 +19,7 @@ import {
   sleep,
   suggestCrescentToKeplr,
   suggestInjectiveToKeplr,
+  suggestKujiraToKeplr,
   suggestTerraClassicToKeplr,
   suggestTerraToKeplr,
 } from "./commons";
@@ -79,6 +80,10 @@ export default function Withdraw({
         token.withdrawals[selectedChainIndex].target_chain_name === "Crescent"
       ) {
         await suggestCrescentToKeplr(window.keplr);
+      } else if (
+        token.withdrawals[selectedChainIndex].target_chain_name === "Kujira"
+      ) {
+        await suggestKujiraToKeplr(window.keplr);
       }
 
       await window.keplr.enable(targetChainId);
@@ -223,6 +228,7 @@ export default function Withdraw({
             id="Amount to Withdraw"
             fullWidth
             type="text"
+            autoComplete="off"
             inputRef={inputRef}
             startAdornment={
               <InputAdornment position="start">

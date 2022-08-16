@@ -192,3 +192,44 @@ export async function suggestCrescentToKeplr(keplr: Keplr) {
     features: ["ibc-transfer"],
   });
 }
+
+export async function suggestKujiraToKeplr(keplr: Keplr) {
+  await keplr.experimentalSuggestChain({
+    rpc: "https://rpc.kaiyo.kujira.setten.io",
+    rest: "https://lcd.kaiyo.kujira.setten.io",
+    chainId: "kaiyo-1",
+    chainName: "Kujira",
+    stakeCurrency: {
+      coinDenom: "KUJI",
+      coinMinimalDenom: "ukuji",
+      coinDecimals: 6,
+      coinGeckoId: "kujira",
+    },
+    bip44: {
+      coinType: 118,
+    },
+    bech32Config: Bech32Address.defaultBech32Config("kujira"),
+    currencies: [
+      {
+        coinDenom: "KUJI",
+        coinMinimalDenom: "ukuji",
+        coinDecimals: 6,
+        coinGeckoId: "kujira",
+      },
+    ],
+    feeCurrencies: [
+      {
+        coinDenom: "KUJI",
+        coinMinimalDenom: "ukuji",
+        coinDecimals: 6,
+        coinGeckoId: "kujira",
+      },
+    ],
+    gasPriceStep: {
+      low: 0.01,
+      average: 0.025,
+      high: 0.03,
+    },
+    features: ["ibc-transfer"],
+  });
+}
