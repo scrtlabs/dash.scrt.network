@@ -217,7 +217,7 @@ export const tokens: Token[] = [
   },
   {
     name: "CRE",
-    address: "secret1fgntdkvu6v3s8z4e5zcv69jywhr09et3akv4a4",
+    address: "secret1tatdlkyznf00m3a7hftw5daaq2nk38ugfphuyr",
     code_hash:
       "5a085bd8ed89de92b35134ddd12505a602c7759ea25fb5c089ba03c8535b3042",
     image: "/cre.svg",
