@@ -797,10 +797,10 @@
   resolved "https://registry.yarnpkg.com/@noble/hashes/-/hashes-1.1.2.tgz#e9e035b9b166ca0af657a7848eb2718f0f22f183"
   integrity sha512-KYRCASVTv6aeUi1tsF8/vpyR7zpfs3FUzy2Jqm+MU+LmUKhQ0y2FpfwqkCcxSg2ua4GALJd8k2R76WxwZGbQpA==
 
-"@noble/secp256k1@1.5.2":
-  version "1.5.2"
-  resolved "https://registry.npmjs.org/@noble/secp256k1/-/secp256k1-1.5.2.tgz"
-  integrity sha512-5mzA40W2q55VCRuC9XzmkiEnODdY0c5a7qsK2QcOfI5/MuVQyBaWGQyE6YOEF7kDwp+tDVWGsCDVJUME+wsWWw==
+"@noble/secp256k1@1.6.3":
+  version "1.6.3"
+  resolved "https://registry.yarnpkg.com/@noble/secp256k1/-/secp256k1-1.6.3.tgz#7eed12d9f4404b416999d0c87686836c4c5c9b94"
+  integrity sha512-T04e4iTurVy7I8Sw4+c5OSN9/RkPlo1uKxAomtxQNLq8j1uPAqnsqG1bqvY3Jv7c13gyr6dui0zmh/I3+f/JaQ==
 
 "@osmonauts/helpers@0.3.8":
   version "0.3.8"
@@ -2169,17 +2169,17 @@ scheduler@^0.20.2:
     loose-envify "^1.1.0"
     object-assign "^4.1.1"
 
-secretjs@1.3.0-beta.7:
-  version "1.3.0-beta.7"
-  resolved "https://registry.yarnpkg.com/secretjs/-/secretjs-1.3.0-beta.7.tgz#934be9cc4419fc971a504ac9874089cd39746d0f"
-  integrity sha512-QJm9IW+9arapE2q9mG83OlLuZc/pDlMPS6PeJcJL2VOo0Nmu5YLUGiLUjcyJxCTCQ7UYlh54WPasyqep2EYpGg==
+secretjs@1.3.0-beta.18:
+  version "1.3.0-beta.18"
+  resolved "https://registry.yarnpkg.com/secretjs/-/secretjs-1.3.0-beta.18.tgz#3b04fb39190bce85485f136e086f7cf0893c0f86"
+  integrity sha512-R8s8c6F6/bRofkwwX85bd2bK5owU4eCfdk5FAk53tFAQdMIkTNHhSRx+TZLqLDGLFabKvUv4tGswVlqScncz9g==
   dependencies:
     "@cosmjs/encoding" "0.27.1"
     "@cosmjs/math" "0.27.1"
     "@improbable-eng/grpc-web" "0.15.0"
     "@improbable-eng/grpc-web-node-http-transport" "0.15.0"
     "@noble/hashes" "1.0.0"
-    "@noble/secp256k1" "1.5.2"
+    "@noble/secp256k1" "1.6.3"
     "@osmonauts/helpers" "0.3.8"
     bech32 "2.0.0"
     bignumber.js "9.0.2"
