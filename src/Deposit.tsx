@@ -24,6 +24,7 @@ import {
   sleep,
   suggestCrescentToKeplr,
   suggestInjectiveToKeplr,
+  suggestKujiraToKeplr,
   suggestTerraClassicToKeplr,
   suggestTerraToKeplr,
 } from "./commons";
@@ -116,6 +117,8 @@ export default function Deposit({
         await suggestInjectiveToKeplr(window.keplr);
       } else if ("CRE" === token.name.toUpperCase()) {
         await suggestCrescentToKeplr(window.keplr);
+      } else if ("KUJI" === token.name.toUpperCase()) {
+        await suggestKujiraToKeplr(window.keplr);
       }
 
       // Initialize cosmjs on the target chain, because it has sendIbcTokens()
@@ -268,6 +271,7 @@ export default function Deposit({
             id="Amount to Deposit"
             fullWidth
             type="text"
+            autoComplete="off"
             inputRef={inputRef}
             startAdornment={
               <InputAdornment position="start">

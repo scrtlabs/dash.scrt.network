@@ -458,6 +458,7 @@ export default function TokenRow({
                 },
               }}
               inputRef={wrapInputRef}
+              autoComplete="off"
             />
             <Button
               disabled={token.address === ""}
