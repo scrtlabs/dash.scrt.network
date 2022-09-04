@@ -2,6 +2,7 @@ import { CircularProgress, Button, Typography, Tooltip } from "@mui/material";
 import React, { useState } from "react";
 import CopyToClipboard from "react-copy-to-clipboard";
 import { FileCopyOutlined } from "@mui/icons-material";
+import { Breakpoint } from "react-socks";
 
 export default function CopyableAddress({
   address,
@@ -30,7 +31,12 @@ export default function CopyableAddress({
             color: "inherit",
           }}
         >
-          {address}
+          <Breakpoint small down>
+            {address.slice(0, 8) + "...." + address.slice(-8)}
+          </Breakpoint>
+          <Breakpoint medium up>
+            {address}
+          </Breakpoint>
         </a>
       </Typography>
       <CopyToClipboard

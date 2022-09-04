@@ -14,6 +14,7 @@ import {
 import BigNumber from "bignumber.js";
 import React, { useEffect, useRef, useState } from "react";
 import { Else, If, Then } from "react-if";
+import { useCurrentBreakpointName } from "react-socks";
 import { MsgTransfer, SecretNetworkClient } from "secretjs";
 import {
   sleep,
@@ -41,6 +42,7 @@ export default function Withdraw({
   onSuccess: (txhash: string) => any;
   onFailure: (error: any) => any;
 }) {
+  const breakpoint = useCurrentBreakpointName();
   const [targetAddress, setTargetAddress] = useState<string>("");
   const [loadingTx, setLoading] = useState<boolean>(false);
   const [selectedChainIndex, setSelectedChainIndex] = useState<number>(0);
@@ -102,6 +104,10 @@ export default function Withdraw({
             display: "flex",
             placeItems: "center",
             gap: "0.5em",
+            flexDirection:
+              breakpoint === "small" || breakpoint === "xsmall"
+                ? "column"
+                : "row",
           }}
         >
           <Typography>
