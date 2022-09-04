@@ -2,7 +2,7 @@ import { Window as KeplrWindow } from "@keplr-wallet/types";
 import { Avatar, Typography } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import ReactDOM from "react-dom";
-import { BreakpointProvider } from "react-socks";
+import { Breakpoint, BreakpointProvider } from "react-socks";
 import { SecretNetworkClient } from "secretjs";
 import { chains, tokens } from "./config";
 import "./index.css";
@@ -190,6 +190,9 @@ export default function App() {
           private balances and private transfers.
         </Typography>
       </div>
+      <Breakpoint small down>
+        <div style={{ height: 40 }} />
+      </Breakpoint>
       {tokens.map((t) => (
         <ErrorBoundary key={t.name}>
           <TokenRow
