@@ -32,7 +32,7 @@ export default function CopyableAddress({
           }}
         >
           <Breakpoint small down>
-            {address.slice(0, 8) + "...." + address.slice(-8)}
+            {address.slice(0, 7) + "..." + address.slice(-7)}
           </Breakpoint>
           <Breakpoint medium up>
             {address}
