@@ -2,6 +2,8 @@ import { FileCopyOutlined } from "@mui/icons-material";
 import Button from "@mui/material/Button";
 import React, { useState } from "react";
 import CopyToClipboard from "react-copy-to-clipboard";
+import { Else, If, Then } from "react-if";
+import { Breakpoint } from "react-socks";
 import { SecretNetworkClient } from "secretjs";
 import { chains } from "./config";
 
@@ -27,9 +29,25 @@ export function KeplrPanel({
 
   const content = (
     <div style={{ display: "flex", placeItems: "center", borderRadius: 10 }}>
-      <img src="/keplr.svg" style={{ width: "1.8rem", borderRadius: 10 }} />
+      <Breakpoint small down>
+        <img src="/fina.webp" style={{ width: "1.8rem", borderRadius: 10 }} />
+      </Breakpoint>
+      <Breakpoint medium up>
+        <img src="/keplr.svg" style={{ width: "1.8rem", borderRadius: 10 }} />
+      </Breakpoint>
       <span style={{ margin: "0 0.3rem" }}>
-        {secretjs ? secretAddress : "Connect wallet"}
+        <If condition={secretAddress.length > 0}>
+          <Then>
+            <Breakpoint small down>{`${secretAddress.slice(
+              0,
+              10
+            )}...${secretAddress.slice(-7)}`}</Breakpoint>
+            <Breakpoint medium up>
+              {secretAddress}
+            </Breakpoint>
+          </Then>
+          <Else>Connect wallet</Else>
+        </If>
       </span>
     </div>
   );
