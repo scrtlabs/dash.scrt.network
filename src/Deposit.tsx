@@ -33,6 +33,7 @@ import CopyableAddress from "./CopyableAddress";
 
 import { fromBase64, toBase64, toHex } from "secretjs";
 import { TxRaw } from "secretjs/dist/protobuf_stuff/cosmos/tx/v1beta1/tx";
+import { useCurrentBreakpointName } from "react-socks";
 
 export default function Deposit({
   token,
@@ -45,6 +46,7 @@ export default function Deposit({
   onSuccess: (txhash: string) => any;
   onFailure: (error: any) => any;
 }) {
+  const breakpoint = useCurrentBreakpointName();
   const [sourceAddress, setSourceAddress] = useState<string>("");
   const [availableBalance, setAvailableBalance] = useState<string>("");
   const [loadingTx, setLoading] = useState<boolean>(false);
@@ -145,6 +147,10 @@ export default function Deposit({
             display: "flex",
             placeItems: "center",
             gap: token.deposits.length === 1 ? "0.3em" : "0.5em",
+            flexDirection:
+              breakpoint === "small" || breakpoint === "xsmall"
+                ? "column"
+                : "row",
           }}
         >
           <Typography>
