@@ -300,7 +300,7 @@ export default function TokenRow({
                 }),
               ],
               {
-                gasLimit: 40_000,
+                gasLimit: 150_000,
                 gasPriceInFeeDenom: 0.25,
                 feeDenom: "uscrt",
               }
@@ -377,7 +377,7 @@ export default function TokenRow({
                 }),
               ],
               {
-                gasLimit: 40_000,
+                gasLimit: 150_000,
                 gasPriceInFeeDenom: 0.25,
                 feeDenom: "uscrt",
               }
