@@ -21,7 +21,6 @@ import {
   suggestCrescentToKeplr,
   suggestInjectiveToKeplr,
   suggestKujiraToKeplr,
-  suggestTerraClassicToKeplr,
   suggestTerraToKeplr,
 } from "./commons";
 import { chains, Token } from "./config";
@@ -65,14 +64,7 @@ export default function Withdraw({
       // Find address on target chain
       const { chain_id: targetChainId } =
         chains[token.withdrawals[selectedChainIndex].target_chain_name];
-      if (
-        token.withdrawals[selectedChainIndex].target_chain_name ===
-        "Terra Classic"
-      ) {
-        await suggestTerraClassicToKeplr(window.keplr);
-      } else if (
-        token.withdrawals[selectedChainIndex].target_chain_name === "Terra"
-      ) {
+      if (token.withdrawals[selectedChainIndex].target_chain_name === "Terra") {
         await suggestTerraToKeplr(window.keplr);
       } else if (
         token.withdrawals[selectedChainIndex].target_chain_name === "Injective"
