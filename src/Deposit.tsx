@@ -25,7 +25,6 @@ import {
   suggestCrescentToKeplr,
   suggestInjectiveToKeplr,
   suggestKujiraToKeplr,
-  suggestTerraClassicToKeplr,
   suggestTerraToKeplr,
 } from "./commons";
 import { chains, Token } from "./config";
@@ -111,9 +110,7 @@ export default function Deposit({
         await sleep(100);
       }
 
-      if (["LUNC", "UST"].includes(token.name.toUpperCase())) {
-        await suggestTerraClassicToKeplr(window.keplr);
-      } else if ("LUNA" === token.name.toUpperCase()) {
+      if ("LUNA" === token.name.toUpperCase()) {
         await suggestTerraToKeplr(window.keplr);
       } else if ("INJ" === token.name.toUpperCase()) {
         await suggestInjectiveToKeplr(window.keplr);

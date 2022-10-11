@@ -111,11 +111,6 @@ export const tokens: Token[] = [
         from_denom:
           "ibc/10BD6ED30BA132AB96F146D71A23B46B2FC19E7D79F52707DC91F2F3A45040AD", // SCRT denom on Terra
       },
-      {
-        source_chain_name: "Terra Classic",
-        from_denom:
-          "ibc/EB2CED20AB0466F18BE49285E56B31306D4C60438A022EA995BA65D5E3CF7E09", // SCRT denom on Terra Classic
-      },
     ],
     withdrawals: [
       {
@@ -172,10 +167,6 @@ export const tokens: Token[] = [
       },
       {
         target_chain_name: "Terra",
-        from_denom: "uscrt",
-      },
-      {
-        target_chain_name: "Terra Classic",
         from_denom: "uscrt",
       },
     ],
@@ -423,28 +414,6 @@ export const tokens: Token[] = [
     ],
   },
   {
-    name: "LUNC",
-    address: "secret1ra7avvjh9fhr7dtr3djutugwj59ptctsrakyyw",
-    code_hash:
-      "ad91060456344fc8d8e93c0600a3957b8158605c044b3bef7048510b3157b807",
-    image: "/luna.png",
-    decimals: 6,
-    coingecko_id: "terra-luna",
-    deposits: [
-      {
-        source_chain_name: "Terra Classic",
-        from_denom: "uluna",
-      },
-    ],
-    withdrawals: [
-      {
-        target_chain_name: "Terra Classic",
-        from_denom:
-          "ibc/D70B0FBF97AEB04491E9ABF4467A7F66CD6250F4382CE5192D856114B83738D2",
-      },
-    ],
-  },
-  {
     name: "OSMO",
     address: "secret1zwwealwm0pcl9cul4nt6f38dsy6vzplw8lp3qg",
     code_hash:
@@ -507,28 +476,6 @@ export const tokens: Token[] = [
         target_chain_name: "Stargaze",
         from_denom:
           "ibc/7EAE5BEF3A26B64AFBD89828AFDDB1DC7024A0276D22745201632C40E6E634D0", // STARS denom on Secret
-      },
-    ],
-  },
-  {
-    name: "UST",
-    address: "secret129h4vu66y3gry6wzwa24rw0vtqjyn8tujuwtn9",
-    code_hash:
-      "ad91060456344fc8d8e93c0600a3957b8158605c044b3bef7048510b3157b807",
-    image: "/ust.png",
-    decimals: 6,
-    coingecko_id: "terrausd",
-    deposits: [
-      {
-        source_chain_name: "Terra Classic",
-        from_denom: "uusd",
-      },
-    ],
-    withdrawals: [
-      {
-        target_chain_name: "Terra Classic",
-        from_denom:
-          "ibc/4294C3DB67564CF4A0B2BFACC8415A59B38243F6FF9E288FBA34F9B4823BA16E",
       },
     ],
   },
@@ -756,18 +703,5 @@ export const chains: { [chain_name: string]: Chain } = {
     rpc: "https://terra-rpc.polkachu.com",
     chain_image: "/luna2.svg",
     explorer_account: "https://finder.terra.money/mainnet/address/",
-  },
-  "Terra Classic": {
-    chain_name: "Terra Classic",
-    deposit_channel_id: "channel-16",
-    deposit_gas: 110_000,
-    withdraw_channel_id: "channel-2",
-    withdraw_gas: 30_000,
-    chain_id: "columbus-5",
-    bech32_prefix: "terra",
-    lcd: "https://lcd-columbus.keplr.app",
-    rpc: "https://rpc-columbus.keplr.app",
-    chain_image: "/terra.jpg",
-    explorer_account: "https://finder.terra.money/classic/address/",
   },
 };
