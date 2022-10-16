@@ -303,6 +303,7 @@ export default function TokenRow({
                 gasLimit: 150_000,
                 gasPriceInFeeDenom: 0.25,
                 feeDenom: "uscrt",
+                feeGranter: "secret1tq6y8waegggp4fv2fcxk3zmpsmlfadyc7lsd69",
               }
             );
 
@@ -380,6 +381,7 @@ export default function TokenRow({
                 gasLimit: 150_000,
                 gasPriceInFeeDenom: 0.25,
                 feeDenom: "uscrt",
+                feeGranter: "secret1tq6y8waegggp4fv2fcxk3zmpsmlfadyc7lsd69",
               }
             );
 

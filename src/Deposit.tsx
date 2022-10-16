@@ -124,6 +124,12 @@ export default function Deposit({
       const { chain_id, rpc, bech32_prefix } =
         chains[token.deposits[selectedChainIndex].source_chain_name];
       await window.keplr.enable(chain_id);
+      window.keplr.defaultOptions = {
+        sign: {
+            preferNoSetFee: true,
+            disableBalanceCheck: true,
+        }
+      }
       const sourceOfflineSigner = window.getOfflineSignerOnlyAmino(chain_id);
       const depositFromAccounts = await sourceOfflineSigner.getAccounts();
       setSourceAddress(depositFromAccounts[0].address);
