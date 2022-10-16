@@ -107,6 +107,12 @@ async function setupKeplr(
   }
 
   await window.keplr.enable(SECRET_CHAIN_ID);
+  window.keplr.defaultOptions = {
+    sign: {
+      preferNoSetFee: true,
+      disableBalanceCheck: true,
+    },
+  };
 
   const keplrOfflineSigner = window.getOfflineSignerOnlyAmino(SECRET_CHAIN_ID);
   const accounts = await keplrOfflineSigner.getAccounts();
@@ -130,7 +136,7 @@ export async function setKeplrViewingKey(token: string) {
     console.error("Keplr not present");
     return;
   }
-
+  
   await window.keplr.suggestToken(SECRET_CHAIN_ID, token);
 }
 
@@ -141,6 +147,7 @@ export async function getKeplrViewingKey(
     console.error("Keplr not present");
     return null;
   }
+
 
   try {
     return await window.keplr.getSecret20ViewingKey(SECRET_CHAIN_ID, token);
