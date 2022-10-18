@@ -314,8 +314,11 @@ export default function Withdraw({
               .multipliedBy(`1e${token.decimals}`)
               .toFixed(0, BigNumber.ROUND_DOWN);
 
-            const { withdraw_channel_id, withdraw_gas } =
-              chains[token.withdrawals[selectedChainIndex].target_chain_name];
+            const {
+              withdraw_channel_id,
+              withdraw_gas,
+              lcd: lcdDstChain,
+            } = chains[token.withdrawals[selectedChainIndex].target_chain_name];
             try {
               const tx = await secretjs.tx.broadcast(
                 [
@@ -343,6 +346,68 @@ export default function Withdraw({
               if (tx.code === 0) {
                 inputRef.current.value = "";
                 onSuccess(tx.transactionHash);
+
+                const packetSrcChannel = tx.arrayLog?.find(
+                  (x) =>
+                    x.type === "send_packet" && x.key === "packet_src_channel"
+                )?.value!;
+                const packetDstChannel = tx.arrayLog?.find(
+                  (x) =>
+                    x.type === "send_packet" && x.key === "packet_dst_channel"
+                )?.value!;
+                const packetSequence = tx.arrayLog?.find(
+                  (x) => x.type === "send_packet" && x.key === "packet_sequence"
+                )?.value!;
+
+                console.log(packetSrcChannel, packetDstChannel, packetSequence);
+
+                // Try finding the recv_packet every 15 seconds for 10 minutes
+                let tries = 40;
+                while (tries > 0) {
+                  const {
+                    tx_responses,
+                  }: {
+                    tx_responses?: Array<{ code: number; txhash: string }>;
+                  } = await (
+                    await fetch(
+                      `${lcdDstChain}/cosmos/tx/v1beta1/txs?events=recv_packet.packet_dst_channel%3D%27${packetDstChannel}%27&events=recv_packet.packet_sequence%3D%27${packetSequence}%27`
+                    )
+                  ).json();
+
+                  if (tx_responses) {
+                    const recvTx = tx_responses.find((x) => x.code === 0);
+
+                    if (recvTx) {
+                      console.log(`Original tx: ${tx.transactionHash}`);
+                      console.log(
+                        `IBC recv_packet on other chain tx: ${recvTx.txhash}`
+                      );
+                      break;
+                    }
+                  }
+
+                  tries -= 1;
+                  await sleep(15000);
+                }
+
+                // Try finding the ack every 15 seconds for 10 minutes
+                tries = 40;
+                while (tries > 0) {
+                  const txs = await secretjs.query.txsQuery(
+                    `acknowledge_packet.packet_sequence = '${packetSequence}' AND acknowledge_packet.packet_src_channel = '${packetSrcChannel}'`
+                  );
+
+                  const ackTx = txs.find((x) => x.code === 0);
+
+                  if (ackTx) {
+                    console.log(`Original tx: ${tx.transactionHash}`);
+                    console.log(`IBC ack tx: ${ackTx.transactionHash}`);
+                    break;
+                  }
+
+                  tries -= 1;
+                  await sleep(15000);
+                }
               } else {
                 onFailure(tx.rawLog);
               }
