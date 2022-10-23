@@ -26,6 +26,7 @@ export default function TokenRow({
   balances,
   loadingCoinBalances,
   price,
+  useFeegrant,
 }: {
   secretjs: SecretNetworkClient | null;
   secretAddress: string;
@@ -33,6 +34,7 @@ export default function TokenRow({
   token: Token;
   balances: Map<string, string>;
   price: number;
+  useFeegrant: boolean;
 }) {
   const wrapInputRef = useRef<any>();
 
@@ -303,7 +305,7 @@ export default function TokenRow({
                 gasLimit: 150_000,
                 gasPriceInFeeDenom: 0.25,
                 feeDenom: "uscrt",
-                feeGranter: "secret1tq6y8waegggp4fv2fcxk3zmpsmlfadyc7lsd69",
+                feeGranter: useFeegrant ? "secret1tq6y8waegggp4fv2fcxk3zmpsmlfadyc7lsd69" : "",
               }
             );
 
@@ -381,7 +383,6 @@ export default function TokenRow({
                 gasLimit: 150_000,
                 gasPriceInFeeDenom: 0.25,
                 feeDenom: "uscrt",
-                feeGranter: "secret1tq6y8waegggp4fv2fcxk3zmpsmlfadyc7lsd69",
               }
             );
 
