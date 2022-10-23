@@ -164,20 +164,21 @@ export default function App() {
         }}
       >
       <Button
-         disabled={!secretAddress}
+          disabled={!secretAddress}
           size="small"
           variant="text"
+          id = "grantButton"
           onClick={async () => 
             { await fetch("https://faucet.secretsaturn.net/claim", {
               method: 'POST',
               body: JSON.stringify({"Address": secretAddress}),
               headers: {'Content-Type': 'application/json'} }
-              .then(alert("Sent fee grant to address: "+ secretAddress), setUseFeegrant(true))
+              .then(alert("Sent fee grant to address: "+ secretAddress), setUseFeegrant(true), document.getElementById('grantButton').style.color = "green", document.getElementById('grantButton').textContent = "Fee Granted!")
               ); 
             }
         }
         >
-        Grant Fee (up to 0.1 SCRT)
+        Click to Grant Fee (up to 0.1 SCRT)
         </Button>
         <KeplrPanel
           secretjs={secretjs}
