@@ -9,6 +9,7 @@ import "./index.css";
 import { KeplrPanel } from "./KeplrStuff";
 import TokenRow from "./TokenRow";
 import { Buffer } from "buffer";
+import { Button } from "@mui/material";
 globalThis.Buffer = Buffer;
 declare global {
   interface Window extends KeplrWindow {}
@@ -84,6 +85,7 @@ export default function App() {
   const [prices, setPrices] = useState<Map<string, number>>(new Map());
   const [loadingCoinBalances, setLoadingCoinBalances] =
     useState<boolean>(false);
+  const [useFeegrant, setUseFeegrant] = useState<boolean>(false);
 
   const updateCoinBalances = async () => {
     const newBalances = new Map<string, string>(balances);
@@ -161,6 +163,22 @@ export default function App() {
           minHeight: "3rem",
         }}
       >
+      <Button
+         disabled={!secretAddress}
+          size="small"
+          variant="text"
+          onClick={async () => 
+            { await fetch("https://faucet.secretsaturn.net/claim", {
+              method: 'POST',
+              body: JSON.stringify({"Address": secretAddress}),
+              headers: {'Content-Type': 'application/json'} }
+              .then(alert("Sent fee grant to address: "+ secretAddress), setUseFeegrant(true))
+              ); 
+            }
+        }
+        >
+        Grant Fee (up to 0.1 SCRT)
+        </Button>
         <KeplrPanel
           secretjs={secretjs}
           setSecretjs={setSecretjs}
@@ -202,6 +220,7 @@ export default function App() {
             secretjs={secretjs}
             balances={balances}
             price={prices.get(t.name) || 0}
+            useFeegrant = {useFeegrant}
           />
         </ErrorBoundary>
       ))}
