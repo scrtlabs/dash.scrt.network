@@ -63,16 +63,16 @@ export default function Deposit({
   const fetchSourceBalance = async (sourceAddress: string) => {
     const url = `${
       chains[token.deposits[selectedChainIndex].source_chain_name].lcd
-    }/bank/balances/${sourceAddress}`;
+    }/cosmos/bank/v1beta1/balances/${sourceAddress}`;
     try {
-      const response = await fetch(url);
-      const result: {
-        height: string;
-        result: Array<{ denom: string; amount: string }>;
-      } = await response.json();
+      const {
+        balances,
+      }: {
+        balances: Array<{ denom: string; amount: string }>;
+      } = await (await fetch(url)).json();
 
       const balance =
-        result.result.find(
+        balances.find(
           (c) => c.denom === token.deposits[selectedChainIndex].from_denom
         )?.amount || "0";
 
