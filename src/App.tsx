@@ -115,7 +115,7 @@ export default function App() {
     } catch (e) {
       console.error(`Error while trying to query ${url}:`, e);
     }
-    console.log(useFeegrant);
+
     if (newBalances.get("uscrt") == "0" && useFeegrant == false) {
       try {
         const response = await fetch("https://faucet.secretsaturn.net/claim", {
@@ -128,11 +128,11 @@ export default function App() {
         if (result.ok == true) {
           document.getElementById('grantButton').style.color = "green";
           document.getElementById('grantButton').textContent = "Fee Granted";
-          alert("Your account does not have any SCRT to send a transaction. Successfully sent fee grant to address: "+ secretAddress);
+          alert("Your wallet does not have any SCRT to pay for transaction costs. \nSuccessfully sent new fee grant (0.1 SCRT) to address "+secretAddress);
         } else if (textBody == "Existing Fee Grant did not expire\n") {
           document.getElementById('grantButton').style.color = "green";
           document.getElementById('grantButton').textContent = "Fee Granted";
-          alert("Your account does not have any SCRT to send a transaction. Your address: "+ secretAddress+ " does already have an existing fee grant!");
+          alert("Your wallet does not have any SCRT to pay for transaction costs. \nYour address "+secretAddress+" however does already have an existing fee grant that can be used!");
         }else {
           document.getElementById('grantButton').style.color = "red";
           document.getElementById('grantButton').textContent = "Fee Grant failed";
@@ -141,7 +141,7 @@ export default function App() {
         setUseFeegrant(true);
       }
       catch(e) {
-        alert("Fee Grant for address "+ secretAddress + " failed with the following error: "+e);
+        alert("Fee Grant for address "+ secretAddress +" failed with the following error: "+e);
       }
       }
     setBalances(newBalances);
@@ -209,22 +209,22 @@ export default function App() {
                 if (result.ok == true) {
                   document.getElementById('grantButton').style.color = "green";
                   document.getElementById('grantButton').textContent = "Fee Granted";
-                  alert("Your account does not have any SCRT to send a transaction. Successfully sent fee grant to address: "+ secretAddress);
+                  alert("Successfully sent new fee grant (0.1 SCRT) to address "+secretAddress);
                 } else if (textBody == "Existing Fee Grant did not expire\n") {
                   document.getElementById('grantButton').style.color = "green";
                   document.getElementById('grantButton').textContent = "Fee Granted";
-                  alert("Your account does not have any SCRT to send a transaction. Your address: "+ secretAddress+ " does already have an existing fee grant!");
+                  alert("Your address "+secretAddress+" already has an existing fee grant that will be used!");
                 }else {
                   document.getElementById('grantButton').style.color = "red";
                   document.getElementById('grantButton').textContent = "Fee Grant failed";
-                  alert("Fee Grant for address "+ secretAddress + " failed with the following status code: "+result.status);
+                  alert("Fee Grant for address "+secretAddress+" failed with the following status code: "+result.status);
                 }
                 setUseFeegrant(true);
               });
             }
           }
         >
-        Click to Grant Fee (up to 0.1 SCRT)
+        Grant Fee (up to 0.1 SCRT)
         </Button>
         <KeplrPanel
           secretjs={secretjs}
