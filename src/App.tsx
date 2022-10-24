@@ -10,6 +10,9 @@ import { KeplrPanel } from "./KeplrStuff";
 import TokenRow from "./TokenRow";
 import { Buffer } from "buffer";
 import { Button } from "@mui/material";
+import { timelineClasses } from "@mui/lab";
+import { Result } from "secretjs/dist/protobuf_stuff/cosmos/base/abci/v1beta1/abci";
+import { responseResultTypeToJSON } from "secretjs/dist/protobuf_stuff/ibc/core/channel/v1/tx";
 globalThis.Buffer = Buffer;
 declare global {
   interface Window extends KeplrWindow {}
@@ -113,7 +116,35 @@ export default function App() {
     } catch (e) {
       console.error(`Error while trying to query ${url}:`, e);
     }
-
+    console.log(useFeegrant);
+    if (newBalances.get("uscrt") == "0" && useFeegrant == false) {
+      try {
+        const response = await fetch("https://faucet.secretsaturn.net/claim", {
+          method: 'POST',
+          body: JSON.stringify({"Address": secretAddress}),
+          headers: {'Content-Type': 'application/json'}
+        });
+        const result = await response;
+        const textBody = await result.text();
+        if (result.ok == true) {
+          document.getElementById('grantButton').style.color = "green";
+          document.getElementById('grantButton').textContent = "Fee Granted";
+          alert("Your account does not have any SCRT to send a transaction. Successfully sent fee grant to address: "+ secretAddress);
+        } else if (textBody == "Existing Fee Grant did not expire\n") {
+          document.getElementById('grantButton').style.color = "green";
+          document.getElementById('grantButton').textContent = "Fee Granted";
+          alert("Your account does not have any SCRT to send a transaction. Your address: "+ secretAddress+ " does already have an existing fee grant!");
+        }else {
+          document.getElementById('grantButton').style.color = "red";
+          document.getElementById('grantButton').textContent = "Fee Grant failed";
+          alert("Fee Grant for address "+ secretAddress + " failed with the following status code: "+result.status);
+        }
+        setUseFeegrant(true);
+      }
+      catch(e) {
+        alert("Fee Grant for address "+ secretAddress + " failed with the following error: "+e);
+      }
+      }
     setBalances(newBalances);
   };
 
@@ -133,7 +164,7 @@ export default function App() {
     return () => {
       clearInterval(interval);
     };
-  }, [secretAddress, secretjs]);
+  }, [secretAddress, secretjs, useFeegrant]);
 
   useEffect(() => {
     fetch(
@@ -167,16 +198,32 @@ export default function App() {
           disabled={!secretAddress}
           size="small"
           variant="text"
-          id = "grantButton"
-          onClick={async () => 
-            { await fetch("https://faucet.secretsaturn.net/claim", {
-              method: 'POST',
-              body: JSON.stringify({"Address": secretAddress}),
-              headers: {'Content-Type': 'application/json'} }
-              .then(alert("Sent fee grant to address: "+ secretAddress), setUseFeegrant(true), document.getElementById('grantButton').style.color = "green", document.getElementById('grantButton').textContent = "Fee Granted!")
-              ); 
+          id="grantButton"
+          onClick={async () => {
+              await fetch("https://faucet.secretsaturn.net/claim", {
+                method: 'POST',
+                body: JSON.stringify({ "Address": secretAddress }),
+                headers: { 'Content-Type': 'application/json' }
+              }).then(async (result) => {
+                const textBody = await result.text();
+                console.log(textBody);
+                if (result.ok == true) {
+                  document.getElementById('grantButton').style.color = "green";
+                  document.getElementById('grantButton').textContent = "Fee Granted";
+                  alert("Your account does not have any SCRT to send a transaction. Successfully sent fee grant to address: "+ secretAddress);
+                } else if (textBody == "Existing Fee Grant did not expire\n") {
+                  document.getElementById('grantButton').style.color = "green";
+                  document.getElementById('grantButton').textContent = "Fee Granted";
+                  alert("Your account does not have any SCRT to send a transaction. Your address: "+ secretAddress+ " does already have an existing fee grant!");
+                }else {
+                  document.getElementById('grantButton').style.color = "red";
+                  document.getElementById('grantButton').textContent = "Fee Grant failed";
+                  alert("Fee Grant for address "+ secretAddress + " failed with the following status code: "+result.status);
+                }
+                setUseFeegrant(true);
+              });
             }
-        }
+          }
         >
         Click to Grant Fee (up to 0.1 SCRT)
         </Button>
