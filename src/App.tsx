@@ -93,13 +93,13 @@ export default function App() {
   const updateCoinBalances = async () => {
     const newBalances = new Map<string, string>(balances);
 
-    const url = `${chains["Secret Network"].lcd}/bank/balances/${secretAddress}`;
+    const url = `${chains["Secret Network"].lcd}/cosmos/bank/v1beta1/balances/${secretAddress}`;
     try {
-      const response = await fetch(url);
-      const result: {
-        height: string;
-        result: Array<{ denom: string; amount: string }>;
-      } = await response.json();
+      const {
+        balances,
+      }: {
+        balances: Array<{ denom: string; amount: string }>;
+      } = await (await fetch(url)).json();
 
       const denoms = Array.from(
         new Set(
@@ -108,8 +108,7 @@ export default function App() {
       );
 
       for (const denom of denoms) {
-        const balance =
-          result.result.find((c) => c.denom === denom)?.amount || "0";
+        const balance = balances.find((c) => c.denom === denom)?.amount || "0";
 
         newBalances.set(denom, balance);
       }

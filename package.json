@@ -8,6 +8,7 @@
     "preview": "yarn build && vite preview"
   },
   "dependencies": {
+    "@babel/core": "^7.0.0",
     "@cosmjs/stargate": "0.26.5",
     "@emotion/react": "11.6.0",
     "@emotion/styled": "11.6.0",
@@ -19,6 +20,7 @@
     "@tharsis/transactions": "0.2.5",
     "bignumber.js": "9.0.1",
     "buffer": "6.0.3",
+    "google-protobuf": "^3.14.0",
     "long": "5.2.0",
     "react": "17.0.2",
     "react-copy-to-clipboard": "5.0.4",
