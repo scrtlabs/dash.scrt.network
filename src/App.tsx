@@ -9,7 +9,7 @@ import "./index.css";
 import { KeplrPanel } from "./KeplrStuff";
 import TokenRow from "./TokenRow";
 import { Buffer } from "buffer";
-import { ToastContainer } from "react-toastify";
+import { Flip, ToastContainer } from "react-toastify";
 globalThis.Buffer = Buffer;
 declare global {
   interface Window extends KeplrWindow {}
@@ -205,7 +205,15 @@ export default function App() {
           />
         </ErrorBoundary>
       ))}
-      <ToastContainer style={{ marginTop: "3rem" }} />
+      <ToastContainer
+        position={"top-left"}
+        autoClose={false}
+        hideProgressBar={true}
+        closeOnClick={false}
+        draggable={false}
+        theme={"light"}
+        transition={Flip}
+      />
     </div>
   );
 }
