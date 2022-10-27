@@ -364,8 +364,20 @@ export default function Deposit({
               .multipliedBy(`1e${token.decimals}`)
               .toFixed(0, BigNumber.ROUND_DOWN);
 
-            const { deposit_channel_id, deposit_gas } =
-              chains[token.deposits[selectedChainIndex].source_chain_name];
+            const {
+              deposit_channel_id,
+              deposit_gas,
+              lcd: lcdSrcChain,
+            } = chains[token.deposits[selectedChainIndex].source_chain_name];
+
+            const toastId = toast.loading(
+              `Sending ${normalizedAmount} ${token.name} from ${token.deposits[selectedChainIndex].source_chain_name} to Secret`,
+              {
+                closeButton: true,
+              }
+            );
+
+            onSuccess("");
 
             try {
               let transactionHash: string = "";
@@ -495,9 +507,129 @@ export default function Deposit({
                 transactionHash = toHex(sha256(txBytes));
               }
 
-              inputRef.current.value = "";
-              onSuccess(transactionHash);
+              // Try finding the send_packet every 5 seconds for 1 minute
+              let tries = 12;
+              while (tries > 0) {
+                const {
+                  tx_response: sendTx,
+                }: {
+                  tx_response?: {
+                    code: number;
+                    txhash: string;
+                    raw_log: string;
+                    logs: Array<{
+                      msg_index: number;
+                      events: Array<{
+                        type: string;
+                        attributes: Array<{
+                          key: string;
+                          value: string;
+                        }>;
+                      }>;
+                    }>;
+                  };
+                } = await (
+                  await fetch(
+                    `${lcdSrcChain}/cosmos/tx/v1beta1/txs/${transactionHash.toUpperCase()}`
+                  )
+                ).json();
+
+                if (sendTx) {
+                  if (sendTx.code !== 0) {
+                    toast.update(toastId, {
+                      render: `Failed sending ${normalizedAmount} ${token.name} from ${token.deposits[selectedChainIndex].source_chain_name} to Secret: ${sendTx.raw_log}`,
+                      type: "error",
+                      isLoading: false,
+                    });
+                    return;
+                  } else {
+                    // console.log(`Original tx: ${sendTx.txhash}`);
+
+                    toast.update(toastId, {
+                      render: `Receiving ${normalizedAmount} ${token.name} from ${token.deposits[selectedChainIndex].source_chain_name} on Secret`,
+                    });
+
+                    const packetSrcChannel = sendTx.logs[0].events
+                      .find((e) => e.type === "send_packet")
+                      ?.attributes.find((a) => a.key === "packet_src_channel")
+                      ?.value!;
+                    const packetDstChannel = sendTx.logs[0].events
+                      .find((e) => e.type === "send_packet")
+                      ?.attributes.find((a) => a.key === "packet_dst_channel")
+                      ?.value!;
+                    const packetSequence = sendTx.logs[0].events
+                      .find((e) => e.type === "send_packet")
+                      ?.attributes.find((a) => a.key === "packet_sequence")
+                      ?.value!;
+
+                    // console.log(
+                    //   packetSrcChannel,
+                    //   packetDstChannel,
+                    //   packetSequence
+                    // );
+
+                    // Try finding the recv_packet every 15 seconds for 10 minutes
+                    let tries = 40;
+                    while (tries > 0) {
+                      const {
+                        tx_responses,
+                      }: {
+                        tx_responses?: Array<{ code: number; txhash: string }>;
+                      } = await (
+                        await fetch(
+                          `${chains["Secret Network"].lcd}/cosmos/tx/v1beta1/txs?events=recv_packet.packet_dst_channel%3D%27${packetDstChannel}%27&events=recv_packet.packet_sequence%3D%27${packetSequence}%27`
+                        )
+                      ).json();
+
+                      if (tx_responses) {
+                        const recvTx = tx_responses.find((x) => x.code === 0);
+
+                        if (recvTx) {
+                          // console.log(`Original tx: ${sendTx.txhash}`);
+                          // console.log(
+                          //   `IBC recv_packet on other chain tx: ${recvTx.txhash}`
+                          // );
+
+                          toast.update(toastId, {
+                            render: `Received ${normalizedAmount} ${token.name} from ${token.deposits[selectedChainIndex].source_chain_name} on Secret`,
+                            type: "success",
+                            isLoading: false,
+                            closeOnClick: true,
+                          });
+
+                          return;
+                        }
+                      }
+
+                      tries -= 1;
+                      await sleep(15000);
+                    }
+
+                    if (tries === 0) {
+                      toast.update(toastId, {
+                        render: `Timed out while waiting to receive ${normalizedAmount} ${token.name} from ${token.deposits[selectedChainIndex].source_chain_name} on ${token.withdrawals[selectedChainIndex].target_chain_name}`,
+                        type: "warning",
+                        isLoading: false,
+                      });
+                    }
+
+                    break;
+                  }
+                }
+
+                tries -= 1;
+                await sleep(15000);
+              }
             } catch (e) {
+              toast.update(toastId, {
+                render: `Failed sending ${normalizedAmount} ${
+                  token.name
+                } from ${
+                  token.deposits[selectedChainIndex].source_chain_name
+                } to Secret: ${JSON.stringify(e)}`,
+                type: "error",
+                isLoading: false,
+              });
               onFailure(e);
             } finally {
               setLoading(false);

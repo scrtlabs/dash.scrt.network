@@ -205,15 +205,29 @@ export default function App() {
           />
         </ErrorBoundary>
       ))}
-      <ToastContainer
-        position={"top-left"}
-        autoClose={false}
-        hideProgressBar={true}
-        closeOnClick={false}
-        draggable={false}
-        theme={"light"}
-        transition={Flip}
-      />
+
+      <Breakpoint medium up>
+        <ToastContainer
+          position={"top-left"}
+          autoClose={false}
+          hideProgressBar={true}
+          closeOnClick={false}
+          draggable={false}
+          theme={"light"}
+          transition={Flip}
+        />
+      </Breakpoint>
+      <Breakpoint small down>
+        <ToastContainer
+          position={"bottom-left"}
+          autoClose={false}
+          hideProgressBar={true}
+          closeOnClick={false}
+          draggable={false}
+          theme={"light"}
+          transition={Flip}
+        />
+      </Breakpoint>
     </div>
   );
 }
