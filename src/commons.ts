@@ -54,7 +54,7 @@ export async function suggestTerraToKeplr(keplr: Keplr) {
       average: 0.15,
       high: 0.15,
     },
-    features: ["ibc-transfer"],
+    features: ["stargate", "ibc-transfer", "no-legacy-stdTx", "ibc-go"],
   });
 }
 
@@ -95,7 +95,7 @@ export async function suggestInjectiveToKeplr(keplr: Keplr) {
       average: 0.0007,
       high: 0.0009,
     },
-    features: ["ibc-transfer"],
+    features: ["stargate", "ibc-transfer", "no-legacy-stdTx", "ibc-go"],
   });
 }
 
@@ -136,7 +136,7 @@ export async function suggestCrescentToKeplr(keplr: Keplr) {
       average: 0.01,
       high: 0.02,
     },
-    features: ["ibc-transfer"],
+    features: ["stargate", "ibc-transfer", "no-legacy-stdTx", "ibc-go"],
   });
 }
 
@@ -177,6 +177,6 @@ export async function suggestKujiraToKeplr(keplr: Keplr) {
       average: 0.025,
       high: 0.03,
     },
-    features: ["ibc-transfer"],
+    features: ["stargate", "ibc-transfer", "no-legacy-stdTx", "ibc-go"],
   });
 }
