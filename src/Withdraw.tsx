@@ -324,14 +324,7 @@ export default function Withdraw({
             const toastId = toast.loading(
               `Sending ${normalizedAmount} ${token.name} to ${token.withdrawals[selectedChainIndex].target_chain_name}`,
               {
-                position: "top-right",
-                autoClose: false,
-                hideProgressBar: true,
-                closeOnClick: false,
-                draggable: false,
-                theme: "light",
                 closeButton: true,
-                transition: Flip,
               }
             );
 
