@@ -22,7 +22,7 @@ export default function CopyableAddress({
         gap: "0.1em",
       }}
     >
-      <Typography sx={{ opacity: 0.8 }}>
+      <Typography component={"span"} sx={{ opacity: 0.8 }}>
         <a
           href={`${explorerPrefix}${address}`}
           target="_blank"
