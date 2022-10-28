@@ -223,7 +223,6 @@ export default function Withdraw({
             Amount to Withdraw
           </InputLabel>
           <Input
-            autoFocus
             id="Amount to Withdraw"
             fullWidth
             type="text"
