@@ -272,7 +272,6 @@ export default function Deposit({
         <FormControl sx={{ width: "100%" }} variant="standard">
           <InputLabel htmlFor="Amount to Deposit">Amount to Deposit</InputLabel>
           <Input
-            autoFocus
             id="Amount to Deposit"
             fullWidth
             type="text"
