@@ -13,6 +13,8 @@ import { Button } from "@mui/material";
 import { timelineClasses } from "@mui/lab";
 import { Result } from "secretjs/dist/protobuf_stuff/cosmos/base/abci/v1beta1/abci";
 import { responseResultTypeToJSON } from "secretjs/dist/protobuf_stuff/ibc/core/channel/v1/tx";
+import { Flip, ToastContainer } from "react-toastify";
+
 globalThis.Buffer = Buffer;
 declare global {
   interface Window extends KeplrWindow {}
@@ -271,6 +273,29 @@ export default function App() {
           />
         </ErrorBoundary>
       ))}
+
+      <Breakpoint medium up>
+        <ToastContainer
+          position={"top-left"}
+          autoClose={false}
+          hideProgressBar={true}
+          closeOnClick={false}
+          draggable={false}
+          theme={"light"}
+          transition={Flip}
+        />
+      </Breakpoint>
+      <Breakpoint small down>
+        <ToastContainer
+          position={"bottom-left"}
+          autoClose={false}
+          hideProgressBar={true}
+          closeOnClick={false}
+          draggable={false}
+          theme={"light"}
+          transition={Flip}
+        />
+      </Breakpoint>
     </div>
   );
 }
