@@ -1,6 +1,8 @@
 export type Token = {
   /** display name of the token */
   name: string;
+  /** a snip20 token that's originated from Secret Network */
+  is_snip20?: boolean;
   /** secret contract address of the token */
   address: string;
   /** secret contract code hash of the token */
@@ -22,6 +24,11 @@ export type Deposit = {
   source_chain_name: string;
   /** denom on the other chain */
   from_denom: string;
+
+  /** channel_id on the chain (snip20) */
+  channel_id?: string;
+  /** gas limit for ibc transfer from the chain to Secret Network (snip20) */
+  gas?: number;
 };
 
 export type Withdraw = {
@@ -29,6 +36,11 @@ export type Withdraw = {
   target_chain_name: string;
   /** denom on Secret Network */
   from_denom: string;
+
+  /** channel_id on Secret Network (snip20) */
+  channel_id?: string;
+  /** gas limit for ibc transfer from Secret Network to the chain (snip20) */
+  gas?: number;
 };
 
 export const tokens: Token[] = [
@@ -177,6 +189,86 @@ export const tokens: Token[] = [
       {
         target_chain_name: "Terra",
         from_denom: "uscrt",
+      },
+    ],
+  },
+  {
+    name: "ALTER",
+    is_snip20: true,
+    address: "secret12rcvz0umvk875kd6a803txhtlu7y0pnd73kcej",
+    code_hash:
+      "d4f32c1bca133f15f69d557bd0722da10f45e31e5475a12900ca1e62e63e8f76",
+    image: "/alter.jpg",
+    decimals: 6,
+    coingecko_id: "alter",
+    deposits: [
+      {
+        source_chain_name: "Osmosis",
+        from_denom:
+          "ibc/EB467E258F15B4BA15C4B4EB74D4069A05BBEC9C5BC6A38853C0FA04426534E5", // ALTER denom on Osmosis
+        channel_id: "channel-474",
+        gas: 130_000,
+      },
+    ],
+    withdrawals: [
+      {
+        target_chain_name: "Osmosis",
+        from_denom: "secret12rcvz0umvk875kd6a803txhtlu7y0pnd73kcej",
+        channel_id: "channel-39",
+        gas: 350_000,
+      },
+    ],
+  },
+  {
+    name: "SHD",
+    is_snip20: true,
+    address: "secret1qfql357amn448duf5gvp9gr48sxx9tsnhupu3d",
+    code_hash:
+      "fa824c4504f21fc59250da0cdf549dd392fd862baf2689d246a07b9e941f04a9",
+    image: "/shd.jpg",
+    decimals: 8,
+    coingecko_id: "shade-protocol",
+    deposits: [
+      {
+        source_chain_name: "Osmosis",
+        from_denom:
+          "ibc/566F2C62660F261CFDE1CD49EB7CDAEFF517D88C43FCB5A930DD4168AB522003", // SHD denom on Osmosis
+        channel_id: "channel-474",
+        gas: 130_000,
+      },
+    ],
+    withdrawals: [
+      {
+        target_chain_name: "Osmosis",
+        from_denom: "secret1qfql357amn448duf5gvp9gr48sxx9tsnhupu3d",
+        channel_id: "channel-39",
+        gas: 350_000,
+      },
+    ],
+  },
+  {
+    name: "SIENNA",
+    is_snip20: true,
+    address: "secret1rgm2m5t530tdzyd99775n6vzumxa5luxcllml4",
+    code_hash:
+      "c1dc8261059fee1de9f1873cd1359ccd7a6bc5623772661fa3d55332eb652084",
+    image: "/sienna.jpg",
+    decimals: 18,
+    coingecko_id: "sienna",
+    deposits: [
+      {
+        source_chain_name: "Osmosis",
+        from_denom: "TODO", // SIENNA denom on Osmosis
+        channel_id: "channel-474",
+        gas: 130_000,
+      },
+    ],
+    withdrawals: [
+      {
+        target_chain_name: "Osmosis",
+        from_denom: "secret1rgm2m5t530tdzyd99775n6vzumxa5luxcllml4",
+        channel_id: "channel-39",
+        gas: 350_000,
       },
     ],
   },
