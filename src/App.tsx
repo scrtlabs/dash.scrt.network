@@ -5,6 +5,7 @@ import ReactDOM from "react-dom";
 import { Breakpoint, BreakpointProvider } from "react-socks";
 import { SecretNetworkClient } from "secretjs";
 import { chains, tokens } from "./config";
+import { faucetURL } from "./commons";
 import "./index.css";
 import { KeplrPanel } from "./KeplrStuff";
 import TokenRow from "./TokenRow";
@@ -13,7 +14,7 @@ import { Button } from "@mui/material";
 import { timelineClasses } from "@mui/lab";
 import { Result } from "secretjs/dist/protobuf_stuff/cosmos/base/abci/v1beta1/abci";
 import { responseResultTypeToJSON } from "secretjs/dist/protobuf_stuff/ibc/core/channel/v1/tx";
-import { Flip, ToastContainer } from "react-toastify";
+import { Flip, ToastContainer, toast} from "react-toastify";
 
 globalThis.Buffer = Buffer;
 declare global {
@@ -120,7 +121,7 @@ export default function App() {
 
     if (newBalances.get("uscrt") == "0" && useFeegrant == false) {
       try {
-        const response = await fetch("https://faucet.secretsaturn.net/claim", {
+        const response = await fetch(faucetURL, {
           method: 'POST',
           body: JSON.stringify({"Address": secretAddress}),
           headers: {'Content-Type': 'application/json'}
@@ -130,20 +131,22 @@ export default function App() {
         if (result.ok == true) {
           document.getElementById('grantButton').style.color = "green";
           document.getElementById('grantButton').textContent = "Fee Granted";
-          alert("Your wallet does not have any SCRT to pay for transaction costs. \nSuccessfully sent new fee grant (0.1 SCRT) to address "+secretAddress);
+          toast.success(`Your wallet does not have any SCRT to pay for transaction costs. \n Successfully sent new fee grant (0.1 SCRT) for unwrapping tokens to address ${secretAddress}`);
         } else if (textBody == "Existing Fee Grant did not expire\n") {
           document.getElementById('grantButton').style.color = "green";
           document.getElementById('grantButton').textContent = "Fee Granted";
-          alert("Your wallet does not have any SCRT to pay for transaction costs. \nYour address "+secretAddress+" however does already have an existing fee grant that can be used!");
-        }else {
+          toast.success(`Your wallet does not have any SCRT to pay for transaction costs. \nYour address ${secretAddress} however does already have an existing fee grant that will be used for unwrapping!"`);
+        } else {
           document.getElementById('grantButton').style.color = "red";
           document.getElementById('grantButton').textContent = "Fee Grant failed";
-          alert("Fee Grant for address "+ secretAddress + " failed with the following status code: "+result.status);
+          toast.error(`Fee Grant for address ${secretAddress} failed with status code: ${result.status}`);
         }
         setUseFeegrant(true);
       }
       catch(e) {
-        alert("Fee Grant for address "+ secretAddress +" failed with the following error: "+e);
+        document.getElementById('grantButton').style.color = "red";
+        document.getElementById('grantButton').textContent = "Fee Grant failed";
+        toast.error(`Fee Grant for address ${secretAddress} failed with error: ${e}`);
       }
       }
     setBalances(newBalances);
@@ -201,27 +204,31 @@ export default function App() {
           variant="text"
           id="grantButton"
           onClick={async () => {
-              await fetch("https://faucet.secretsaturn.net/claim", {
-                method: 'POST',
-                body: JSON.stringify({ "Address": secretAddress }),
-                headers: { 'Content-Type': 'application/json' }
-              }).then(async (result) => {
-                const textBody = await result.text();
-                console.log(textBody);
-                if (result.ok == true) {
-                  document.getElementById('grantButton').style.color = "green";
-                  document.getElementById('grantButton').textContent = "Fee Granted";
-                  alert("Successfully sent new fee grant (0.1 SCRT) to address "+secretAddress);
-                } else if (textBody == "Existing Fee Grant did not expire\n") {
-                  document.getElementById('grantButton').style.color = "green";
-                  document.getElementById('grantButton').textContent = "Fee Granted";
-                  alert("Your address "+secretAddress+" already has an existing fee grant that will be used!");
-                }else {
-                  document.getElementById('grantButton').style.color = "red";
-                  document.getElementById('grantButton').textContent = "Fee Grant failed";
-                  alert("Fee Grant for address "+secretAddress+" failed with the following status code: "+result.status);
-                }
-                setUseFeegrant(true);
+              fetch(faucetURL, {
+              method: 'POST',
+              body: JSON.stringify({ "Address": secretAddress }),
+              headers: { 'Content-Type': 'application/json' }
+            }).then(async (result) => {
+              const textBody = await result.text();
+              console.log(textBody);
+              if (result.ok == true) {
+                document.getElementById('grantButton').style.color = "green";
+                document.getElementById('grantButton').textContent = "Fee Granted";
+                toast.success(`Successfully sent new fee grant (0.1 SCRT) to address ${secretAddress}`);
+              } else if (textBody == "Existing Fee Grant did not expire\n") {
+                document.getElementById('grantButton').style.color = "green";
+                document.getElementById('grantButton').textContent = "Fee Granted";
+                toast.success(`Your address ${secretAddress} already has an existing fee grant that will be used for unwrapping!`);
+              } else {
+                document.getElementById('grantButton').style.color = "red";
+                document.getElementById('grantButton').textContent = "Fee Grant failed";
+                toast.error(`Fee Grant for address ${secretAddress} failed with status code: ${result.status}`);
+              }
+              setUseFeegrant(true);
+            }).catch((error) => { 
+                document.getElementById('grantButton').style.color = "red";
+                document.getElementById('grantButton').textContent = "Fee Grant failed";
+                toast.error(`Fee Grant for address ${secretAddress} failed with error: ${error}`);
               });
             }
           }
@@ -276,17 +283,18 @@ export default function App() {
 
       <Breakpoint medium up>
         <ToastContainer
+          style={{ width: "450px" }}
           position={"top-left"}
           autoClose={false}
           hideProgressBar={true}
           closeOnClick={false}
-          draggable={false}
+          draggable={false} 
           theme={"light"}
           transition={Flip}
         />
       </Breakpoint>
       <Breakpoint small down>
-        <ToastContainer
+        <ToastContainer 
           position={"bottom-left"}
           autoClose={false}
           hideProgressBar={true}

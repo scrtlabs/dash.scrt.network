@@ -14,7 +14,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { Else, If, Then, When } from "react-if";
 import { Breakpoint } from "react-socks";
 import { MsgExecuteContract, SecretNetworkClient } from "secretjs";
-import { sleep, viewingKeyErrorString } from "./commons";
+import { sleep, viewingKeyErrorString ,faucetAddress} from "./commons";
 import { Token } from "./config";
 import DepositWithdrawDialog from "./DepositWithdrawDialog";
 import { getKeplrViewingKey, setKeplrViewingKey } from "./KeplrStuff";
@@ -305,7 +305,7 @@ export default function TokenRow({
                 gasLimit: 150_000,
                 gasPriceInFeeDenom: 0.25,
                 feeDenom: "uscrt",
-                feeGranter: useFeegrant ? "secret1tq6y8waegggp4fv2fcxk3zmpsmlfadyc7lsd69" : "",
+                feeGranter: useFeegrant ? faucetAddress : "",
               }
             );
 
