@@ -107,6 +107,11 @@ export const tokens: Token[] = [
           "ibc/B55B08EF3667B0C6F029C2CC9CAA6B00788CF639EBB84B34818C85CBABA33ABD", // SCRT denom on Stargaze
       },
       {
+        source_chain_name: "Stride",
+        from_denom:
+          "ibc/563C6CB7E0423BE8B9FD1DAB9EAC201A6C2413D96F73618240B114CE4896734C", // SCRT denom on Stride
+      },
+      {
         source_chain_name: "Terra",
         from_denom:
           "ibc/10BD6ED30BA132AB96F146D71A23B46B2FC19E7D79F52707DC91F2F3A45040AD", // SCRT denom on Terra
@@ -163,6 +168,10 @@ export const tokens: Token[] = [
       },
       {
         target_chain_name: "Stargaze",
+        from_denom: "uscrt",
+      },
+      {
+        target_chain_name: "Stride",
         from_denom: "uscrt",
       },
       {
@@ -479,6 +488,28 @@ export const tokens: Token[] = [
       },
     ],
   },
+  {
+    name: "STRD",
+    address: "secret17gg8xcx04ldqkvkrd7r9w60rdae4ck8aslt9cf",
+    code_hash:
+      "5a085bd8ed89de92b35134ddd12505a602c7759ea25fb5c089ba03c8535b3042",
+    image: "/stride.svg",
+    decimals: 6,
+    coingecko_id: "stride",
+    deposits: [
+      {
+        source_chain_name: "Stride",
+        from_denom: "ustrd",
+      },
+    ],
+    withdrawals: [
+      {
+        target_chain_name: "Stride",
+        from_denom:
+          "ibc/CE591002C567BE4B8C4EC3F3F3D18AF7A1CA9FADBF5876C8413F8B2BD83CE8FF", // STRD denom on Secret
+      },
+    ],
+  },
 ];
 
 export type Chain = {
@@ -691,6 +722,19 @@ export const chains: { [chain_name: string]: Chain } = {
     chain_image: "/stars.webp",
     explorer_account: "https://www.mintscan.io/stargaze/account/",
   },
+  Stride: {
+    chain_name: "Stride",
+    deposit_channel_id: "channel-40",
+    deposit_gas: 150_000,
+    withdraw_channel_id: "channel-37",
+    withdraw_gas: 30_000,
+    chain_id: "stride-1",
+    bech32_prefix: "stride",
+    lcd: "https://stride-api.lavenderfive.com",
+    rpc: "https://stride-rpc.lavenderfive.com",
+    chain_image: "/stride.svg",
+    explorer_account: "https://www.mintscan.io/stride/account/",
+  },
   Terra: {
     chain_name: "Terra",
     deposit_channel_id: "channel-3",
@@ -699,8 +743,8 @@ export const chains: { [chain_name: string]: Chain } = {
     withdraw_gas: 30_000,
     chain_id: "phoenix-1",
     bech32_prefix: "terra",
-    lcd: "https://terra-api.polkachu.com",
-    rpc: "https://terra-rpc.polkachu.com",
+    lcd: "https://phoenix-lcd.terra.dev",
+    rpc: "https://terra-rpc.lavenderfive.com",
     chain_image: "/luna2.svg",
     explorer_account: "https://finder.terra.money/mainnet/address/",
   },

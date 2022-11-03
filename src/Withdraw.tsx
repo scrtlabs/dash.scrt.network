@@ -15,6 +15,7 @@ import BigNumber from "bignumber.js";
 import React, { useEffect, useRef, useState } from "react";
 import { Else, If, Then } from "react-if";
 import { useCurrentBreakpointName } from "react-socks";
+import { Flip, toast } from "react-toastify";
 import { MsgTransfer, SecretNetworkClient } from "secretjs";
 import {
   sleep,
@@ -228,7 +229,6 @@ export default function Withdraw({
             Amount to Withdraw
           </InputLabel>
           <Input
-            autoFocus
             id="Amount to Withdraw"
             fullWidth
             type="text"
@@ -325,7 +325,17 @@ export default function Withdraw({
               withdraw_gas,
               lcd: lcdDstChain,
             } = chains[token.withdrawals[selectedChainIndex].target_chain_name];
+
+            const toastId = toast.loading(
+              `Sending ${normalizedAmount} ${token.name} from Secret to ${token.withdrawals[selectedChainIndex].target_chain_name}`,
+              {
+                closeButton: true,
+              }
+            );
+
             try {
+              onSuccess("");
+
               const tx = await secretjs.tx.broadcast(
                 [
                   new MsgTransfer({
@@ -350,8 +360,9 @@ export default function Withdraw({
               );
 
               if (tx.code === 0) {
-                inputRef.current.value = "";
-                onSuccess(tx.transactionHash);
+                toast.update(toastId, {
+                  render: `Receiving ${normalizedAmount} ${token.name} from Secret on ${token.withdrawals[selectedChainIndex].target_chain_name}`,
+                });
 
                 const packetSrcChannel = tx.arrayLog?.find(
                   (x) =>
@@ -365,7 +376,7 @@ export default function Withdraw({
                   (x) => x.type === "send_packet" && x.key === "packet_sequence"
                 )?.value!;
 
-                console.log(packetSrcChannel, packetDstChannel, packetSequence);
+                // console.log(packetSrcChannel, packetDstChannel, packetSequence);
 
                 // Try finding the recv_packet every 15 seconds for 10 minutes
                 let tries = 40;
@@ -384,10 +395,18 @@ export default function Withdraw({
                     const recvTx = tx_responses.find((x) => x.code === 0);
 
                     if (recvTx) {
-                      console.log(`Original tx: ${tx.transactionHash}`);
-                      console.log(
-                        `IBC recv_packet on other chain tx: ${recvTx.txhash}`
-                      );
+                      // console.log(`Original tx: ${tx.transactionHash}`);
+                      // console.log(
+                      //   `IBC recv_packet on other chain tx: ${recvTx.txhash}`
+                      // );
+
+                      toast.update(toastId, {
+                        render: `Received ${normalizedAmount} ${token.name} from Secret on ${token.withdrawals[selectedChainIndex].target_chain_name}`,
+                        type: "success",
+                        isLoading: false,
+                        closeOnClick: true,
+                      });
+
                       break;
                     }
                   }
@@ -396,29 +415,51 @@ export default function Withdraw({
                   await sleep(15000);
                 }
 
-                // Try finding the ack every 15 seconds for 10 minutes
-                tries = 40;
-                while (tries > 0) {
-                  const txs = await secretjs.query.txsQuery(
-                    `acknowledge_packet.packet_sequence = '${packetSequence}' AND acknowledge_packet.packet_src_channel = '${packetSrcChannel}'`
-                  );
-
-                  const ackTx = txs.find((x) => x.code === 0);
-
-                  if (ackTx) {
-                    console.log(`Original tx: ${tx.transactionHash}`);
-                    console.log(`IBC ack tx: ${ackTx.transactionHash}`);
-                    break;
-                  }
-
-                  tries -= 1;
-                  await sleep(15000);
+                if (tries === 0) {
+                  toast.update(toastId, {
+                    render: `Timed out while waiting to receive ${normalizedAmount} ${token.name} from Secret on ${token.withdrawals[selectedChainIndex].target_chain_name}`,
+                    type: "warning",
+                    isLoading: false,
+                  });
                 }
+
+                // Try finding the ack every 15 seconds for 10 minutes
+                // tries = 40;
+                // while (tries > 0) {
+                //   const txs = await secretjs.query.txsQuery(
+                //     `acknowledge_packet.packet_sequence = '${packetSequence}' AND acknowledge_packet.packet_src_channel = '${packetSrcChannel}'`
+                //   );
+
+                //   const ackTx = txs.find((x) => x.code === 0);
+
+                //   if (ackTx) {
+                //     console.log(`Original tx: ${tx.transactionHash}`);
+                //     console.log(`IBC ack tx: ${ackTx.transactionHash}`);
+                //     break;
+                //   }
+
+                //   tries -= 1;
+                //   await sleep(15000);
+                // }
               } else {
+                toast.update(toastId, {
+                  render: `Failed sending ${normalizedAmount} ${token.name} from Secret to ${token.withdrawals[selectedChainIndex].target_chain_name}: ${tx.rawLog}`,
+                  type: "error",
+                  isLoading: false,
+                });
                 onFailure(tx.rawLog);
               }
             } catch (e) {
               onFailure(e);
+              toast.update(toastId, {
+                render: `Failed sending ${normalizedAmount} ${
+                  token.name
+                } from Secret to ${
+                  token.withdrawals[selectedChainIndex].target_chain_name
+                }: ${JSON.stringify(e)}`,
+                type: "error",
+                isLoading: false,
+              });
             } finally {
               setLoading(false);
             }
