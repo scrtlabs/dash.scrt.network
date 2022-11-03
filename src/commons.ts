@@ -4,6 +4,9 @@ import { Keplr } from "@keplr-wallet/types";
 
 export const viewingKeyErrorString = "🧐";
 
+export const faucetURL = "https://faucet.secretsaturn.net/claim";
+export const faucetAddress = "secret1tq6y8waegggp4fv2fcxk3zmpsmlfadyc7lsd69";
+
 export const sleep = (ms: number) =>
   new Promise((resolve) => setTimeout(resolve, ms));
 
