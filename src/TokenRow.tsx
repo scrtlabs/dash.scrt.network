@@ -56,6 +56,7 @@ export default function TokenRow({
     const key = await getKeplrViewingKey(token.address);
     if (!key) {
       setTokenBalance(viewingKeyErrorString);
+      balances.set(token.address, viewingKeyErrorString);
       return;
     }
 
@@ -75,13 +76,17 @@ export default function TokenRow({
 
       if (result.viewing_key_error) {
         setTokenBalance(viewingKeyErrorString);
+        balances.set(token.address, viewingKeyErrorString);
         return;
       }
+
       setTokenBalance(result.balance.amount);
+      balances.set(token.address, result.balance.amount);
     } catch (e) {
       console.error(`Error getting balance for s${token.name}`, e);
 
       setTokenBalance(viewingKeyErrorString);
+      balances.set(token.address, viewingKeyErrorString);
     }
   };
 
@@ -110,12 +115,19 @@ export default function TokenRow({
           <div style={{ opacity: 0 }}>placeholder</div>
         </div>
       );
-    } else if (balances.get(denomOnSecret)) {
+    } else if (
+      balances.get(denomOnSecret) ||
+      (balances.get("uscrt") && token.is_snip20)
+    ) {
       balanceIbcCoin = (
         <div>
           <div
-            style={{ cursor: "pointer" }}
+            style={{ cursor: !token.is_snip20 ? "pointer" : "auto" }}
             onClick={() => {
+              if (token.is_snip20) {
+                return;
+              }
+
               wrapInputRef.current.value = new BigNumber(
                 balances.get(denomOnSecret)!
               )
@@ -123,11 +135,16 @@ export default function TokenRow({
                 .toFixed();
             }}
           >
-            {`Balance: ${new BigNumber(balances.get(denomOnSecret)!)
-              .dividedBy(`1e${token.decimals}`)
-              .toFormat()}`}
+            <If condition={token.is_snip20}>
+              <Then>SNIP-20</Then>
+              <Else>
+                {`Balance: ${new BigNumber(balances.get(denomOnSecret)!)
+                  .dividedBy(`1e${token.decimals}`)
+                  .toFormat()}`}
+              </Else>
+            </If>
           </div>
-          <div style={{ display: "flex", opacity: 0.7 }}>
+          <div style={{ display: "flex", opacity: token.is_snip20 ? 0 : 0.7 }}>
             {usdString.format(
               new BigNumber(balances.get(denomOnSecret)!)
                 .dividedBy(`1e${token.decimals}`)
@@ -254,7 +271,7 @@ export default function TokenRow({
       }}
     >
       <Button
-        disabled={token.address === ""}
+        disabled={token.address === "" || token.is_snip20}
         size="small"
         variant="text"
         startIcon={
@@ -327,7 +344,7 @@ export default function TokenRow({
         Unwrap
       </Button>
       <Input
-        disabled={token.address === ""}
+        disabled={token.address === "" || token.is_snip20}
         // TODO add input validation
         placeholder="Amount"
         inputProps={{
@@ -340,7 +357,7 @@ export default function TokenRow({
         autoComplete="off"
       />
       <Button
-        disabled={token.address === ""}
+        disabled={token.address === "" || token.is_snip20}
         size="small"
         variant="text"
         endIcon={
@@ -495,7 +512,10 @@ export default function TokenRow({
               placeItems: "flex-end",
             }}
           >
-            <span>s{token.name}</span>
+            <span>
+              {!token.is_snip20 ? "s" : ""}
+              {token.name}
+            </span>
             <div
               style={{
                 fontSize: "0.75rem",

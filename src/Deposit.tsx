@@ -363,11 +363,16 @@ export default function Deposit({
               .multipliedBy(`1e${token.decimals}`)
               .toFixed(0, BigNumber.ROUND_DOWN);
 
-            const {
+            let {
               deposit_channel_id,
               deposit_gas,
               lcd: lcdSrcChain,
             } = chains[token.deposits[selectedChainIndex].source_chain_name];
+
+            deposit_channel_id =
+              token.deposits[selectedChainIndex].channel_id ||
+              deposit_channel_id;
+            deposit_gas = token.deposits[selectedChainIndex].gas || deposit_gas;
 
             const toastId = toast.loading(
               `Sending ${normalizedAmount} ${token.name} from ${token.deposits[selectedChainIndex].source_chain_name} to Secret`,

@@ -103,9 +103,8 @@ export default function App() {
         )
       );
 
-      for (const denom of denoms) {
+      for (const denom of denoms.filter((d) => !d.startsWith("secret1"))) {
         const balance = balances.find((c) => c.denom === denom)?.amount || "0";
-
         newBalances.set(denom, balance);
       }
     } catch (e) {
