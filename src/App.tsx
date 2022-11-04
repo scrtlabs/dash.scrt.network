@@ -131,11 +131,11 @@ export default function App() {
         if (result.ok == true) {
           document.getElementById('grantButton').style.color = "green";
           document.getElementById('grantButton').textContent = "Fee Granted";
-          toast.success(`Your wallet does not have any SCRT to pay for transaction costs. \n Successfully sent new fee grant (0.1 SCRT) for unwrapping tokens to address ${secretAddress}`);
+          toast.success(`Your wallet does not have any SCRT to pay for transaction costs. Successfully sent new fee grant (0.1 SCRT) for unwrapping tokens to address ${secretAddress}`);
         } else if (textBody == "Existing Fee Grant did not expire\n") {
           document.getElementById('grantButton').style.color = "green";
           document.getElementById('grantButton').textContent = "Fee Granted";
-          toast.success(`Your wallet does not have any SCRT to pay for transaction costs. \nYour address ${secretAddress} however does already have an existing fee grant that will be used for unwrapping!"`);
+          toast.success(`Your wallet does not have any SCRT to pay for transaction costs. Your address ${secretAddress} however does already have an existing fee grant which will be used for unwrapping`);
         } else {
           document.getElementById('grantButton').style.color = "red";
           document.getElementById('grantButton').textContent = "Fee Grant failed";
@@ -214,11 +214,11 @@ export default function App() {
               if (result.ok == true) {
                 document.getElementById('grantButton').style.color = "green";
                 document.getElementById('grantButton').textContent = "Fee Granted";
-                toast.success(`Successfully sent new fee grant (0.1 SCRT) to address ${secretAddress}`);
+                toast.success(`Successfully sent new fee grant (0.1 SCRT) for unwrapping tokens to address ${secretAddress}`);
               } else if (textBody == "Existing Fee Grant did not expire\n") {
                 document.getElementById('grantButton').style.color = "green";
                 document.getElementById('grantButton').textContent = "Fee Granted";
-                toast.success(`Your address ${secretAddress} already has an existing fee grant that will be used for unwrapping!`);
+                toast.success(`Your address ${secretAddress} already has an existing fee grant which will be used for unwrapping tokens`);
               } else {
                 document.getElementById('grantButton').style.color = "red";
                 document.getElementById('grantButton').textContent = "Fee Grant failed";
@@ -233,7 +233,7 @@ export default function App() {
             }
           }
         >
-        Grant Fee (up to 0.1 SCRT)
+        Grant Fee for unwrapping (0.1 SCRT)
         </Button>
         <KeplrPanel
           secretjs={secretjs}
