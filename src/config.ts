@@ -205,8 +205,8 @@ export const tokens: Token[] = [
       {
         source_chain_name: "Osmosis",
         from_denom:
-          "ibc/EB467E258F15B4BA15C4B4EB74D4069A05BBEC9C5BC6A38853C0FA04426534E5", // ALTER denom on Osmosis
-        channel_id: "channel-474",
+          "ibc/A6383B6CF5EA23E067666C06BC34E2A96869927BD9744DC0C1643E589C710AA3", // ALTER denom on Osmosis
+        channel_id: "channel-476",
         gas: 130_000,
       },
     ],
@@ -214,7 +214,7 @@ export const tokens: Token[] = [
       {
         target_chain_name: "Osmosis",
         from_denom: "secret12rcvz0umvk875kd6a803txhtlu7y0pnd73kcej",
-        channel_id: "channel-39",
+        channel_id: "channel-44",
         gas: 350_000,
       },
     ],
@@ -232,8 +232,8 @@ export const tokens: Token[] = [
       {
         source_chain_name: "Osmosis",
         from_denom:
-          "ibc/566F2C62660F261CFDE1CD49EB7CDAEFF517D88C43FCB5A930DD4168AB522003", // SHD denom on Osmosis
-        channel_id: "channel-474",
+          "ibc/71055835C7639739EAE03AACD1324FE162DBA41D09F197CB72D966D014225B1C", // SHD denom on Osmosis
+        channel_id: "channel-476",
         gas: 130_000,
       },
     ],
@@ -241,7 +241,7 @@ export const tokens: Token[] = [
       {
         target_chain_name: "Osmosis",
         from_denom: "secret1qfql357amn448duf5gvp9gr48sxx9tsnhupu3d",
-        channel_id: "channel-39",
+        channel_id: "channel-44",
         gas: 350_000,
       },
     ],
@@ -258,8 +258,9 @@ export const tokens: Token[] = [
     deposits: [
       {
         source_chain_name: "Osmosis",
-        from_denom: "TODO", // SIENNA denom on Osmosis
-        channel_id: "channel-474",
+        from_denom:
+          "ibc/9A8A93D04917A149C8AC7C16D3DA8F470D59E8D867499C4DA97450E1D7363213", // SIENNA denom on Osmosis
+        channel_id: "channel-476",
         gas: 130_000,
       },
     ],
@@ -267,7 +268,7 @@ export const tokens: Token[] = [
       {
         target_chain_name: "Osmosis",
         from_denom: "secret1rgm2m5t530tdzyd99775n6vzumxa5luxcllml4",
-        channel_id: "channel-39",
+        channel_id: "channel-44",
         gas: 350_000,
       },
     ],
