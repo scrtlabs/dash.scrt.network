@@ -264,6 +264,33 @@ export const tokens: Token[] = [
     ],
   },
   {
+    name: "BUTT",
+    is_snip20: true,
+    address: "secret1yxcexylwyxlq58umhgsjgstgcg2a0ytfy4d9lt",
+    code_hash:
+      "f8b27343ff08290827560a1ba358eece600c9ea7f403b02684ad87ae7af0f288",
+    image: "/butt.png",
+    decimals: 6,
+    coingecko_id: "button",
+    deposits: [
+      {
+        source_chain_name: "Osmosis",
+        from_denom:
+          "ibc/1FBA9E763B8679BEF7BAAAF2D16BCA78C3B297D226C3F31312C769D7B8F992D8", // BUTT denom on Osmosis
+        channel_id: "channel-476",
+        gas: 130_000,
+      },
+    ],
+    withdrawals: [
+      {
+        target_chain_name: "Osmosis",
+        from_denom: "secret1yxcexylwyxlq58umhgsjgstgcg2a0ytfy4d9lt",
+        channel_id: "channel-44",
+        gas: 350_000,
+      },
+    ],
+  },
+  {
     name: "CRE",
     address: "secret1tatdlkyznf00m3a7hftw5daaq2nk38ugfphuyr",
     code_hash:
