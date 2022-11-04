@@ -15,14 +15,8 @@ import BigNumber from "bignumber.js";
 import React, { useEffect, useRef, useState } from "react";
 import { Else, If, Then } from "react-if";
 import { useCurrentBreakpointName } from "react-socks";
-import { Flip, toast } from "react-toastify";
-import {
-  MsgTransfer,
-  SecretNetworkClient,
-  toBase64,
-  toUtf8,
-  Tx,
-} from "secretjs";
+import { toast } from "react-toastify";
+import { SecretNetworkClient, toBase64, toUtf8, Tx } from "secretjs";
 import {
   sleep,
   suggestCrescentToKeplr,
@@ -354,9 +348,9 @@ export default function Withdraw({
                     msg: {
                       send: {
                         recipient:
-                          "secret180sjm5790gpgw8r3yepq8ulzvj0p5xft8j0lal", // snip20-ics20
+                          "secret1tqmms5awftpuhalcv5h5mg76fa0tkdz4jv9ex4", // cw20-ics20
                         recipient_code_hash:
-                          "2e4d14404132be3542301cc7b570a566b2011614cd441d1d18501b9fd9601c23",
+                          "f85b413b547b9460162958bafd51113ac266dac96a84c33b9150f68f045f2641",
                         amount,
                         msg: toBase64(
                           toUtf8(
