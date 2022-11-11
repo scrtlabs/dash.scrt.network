@@ -231,12 +231,25 @@ export const tokens: Token[] = [
         channel_id: "channel-476",
         gas: 130_000,
       },
+      {
+        source_chain_name: "Kujira",
+        from_denom:
+          "ibc/7D366323A7EE9B278763F78734FDE3F6309CCC132707A85EA1C0C31617EF63D8", // ALTER denom on Kujira
+        channel_id: "channel-44",
+        gas: 130_000,
+      },
     ],
     withdrawals: [
       {
         target_chain_name: "Osmosis",
         from_denom: "secret12rcvz0umvk875kd6a803txhtlu7y0pnd73kcej",
         channel_id: "channel-44",
+        gas: 350_000,
+      },
+      {
+        target_chain_name: "Kujira",
+        from_denom: "secret1qfql357amn448duf5gvp9gr48sxx9tsnhupu3d",
+        channel_id: "channel-46",
         gas: 350_000,
       },
     ],
@@ -280,12 +293,25 @@ export const tokens: Token[] = [
         channel_id: "channel-476",
         gas: 130_000,
       },
+      {
+        source_chain_name: "Kujira",
+        from_denom:
+          "ibc/115373976C7BA066D7612C0FBFB64504D807770FF8248DE005942B7FDD4DAADC", // BUTT denom on Kujira
+        channel_id: "channel-44",
+        gas: 130_000,
+      },
     ],
     withdrawals: [
       {
         target_chain_name: "Osmosis",
         from_denom: "secret1yxcexylwyxlq58umhgsjgstgcg2a0ytfy4d9lt",
         channel_id: "channel-44",
+        gas: 350_000,
+      },
+      {
+        target_chain_name: "Kujira",
+        from_denom: "secret1qfql357amn448duf5gvp9gr48sxx9tsnhupu3d",
+        channel_id: "channel-46",
         gas: 350_000,
       },
     ],
@@ -549,12 +575,25 @@ export const tokens: Token[] = [
         channel_id: "channel-476",
         gas: 130_000,
       },
+      {
+        source_chain_name: "Kujira",
+        from_denom:
+          "ibc/21038E447A2D4A1183628C0EC366FE79C2E0B0BD91F9A85E6C906CD911FD676E", // SHD denom on Kujira
+        channel_id: "channel-44",
+        gas: 130_000,
+      },
     ],
     withdrawals: [
       {
         target_chain_name: "Osmosis",
         from_denom: "secret1qfql357amn448duf5gvp9gr48sxx9tsnhupu3d",
         channel_id: "channel-44",
+        gas: 350_000,
+      },
+      {
+        target_chain_name: "Kujira",
+        from_denom: "secret1qfql357amn448duf5gvp9gr48sxx9tsnhupu3d",
+        channel_id: "channel-46",
         gas: 350_000,
       },
     ],
@@ -576,12 +615,25 @@ export const tokens: Token[] = [
         channel_id: "channel-476",
         gas: 130_000,
       },
+      {
+        source_chain_name: "Kujira",
+        from_denom:
+          "ibc/ED487C9513A933BECB5ABA64CAE441C15E5AF66C3383061FB5A8BC0F671B933F", // SIENNA denom on Kujira
+        channel_id: "channel-44",
+        gas: 130_000,
+      },
     ],
     withdrawals: [
       {
         target_chain_name: "Osmosis",
         from_denom: "secret1rgm2m5t530tdzyd99775n6vzumxa5luxcllml4",
         channel_id: "channel-44",
+        gas: 350_000,
+      },
+      {
+        target_chain_name: "Kujira",
+        from_denom: "secret1qfql357amn448duf5gvp9gr48sxx9tsnhupu3d",
+        channel_id: "channel-46",
         gas: 350_000,
       },
     ],
