@@ -681,7 +681,7 @@ export const chains: { [chain_name: string]: Chain } = {
     withdraw_gas: 30_000,
     chain_id: "akashnet-2",
     bech32_prefix: "akash",
-    lcd: "https://akash.c29r3.xyz:443/api",
+    lcd: "https://akash-api.lavenderfive.com:443",
     rpc: "https://rpc.akash.forbole.com",
     chain_image: "/akt.svg",
     explorer_account: "https://www.mintscan.io/akash/account/",
