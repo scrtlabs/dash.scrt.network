@@ -215,60 +215,6 @@ export const tokens: Token[] = [
     ],
   },
   {
-    name: "ALTER",
-    is_snip20: true,
-    address: "secret12rcvz0umvk875kd6a803txhtlu7y0pnd73kcej",
-    code_hash:
-      "d4f32c1bca133f15f69d557bd0722da10f45e31e5475a12900ca1e62e63e8f76",
-    image: "/alter.jpg",
-    decimals: 6,
-    coingecko_id: "alter",
-    deposits: [
-      {
-        source_chain_name: "Osmosis",
-        from_denom:
-          "ibc/A6383B6CF5EA23E067666C06BC34E2A96869927BD9744DC0C1643E589C710AA3", // ALTER denom on Osmosis
-        channel_id: "channel-476",
-        gas: 130_000,
-      },
-      {
-        source_chain_name: "Kujira",
-        from_denom:
-          "ibc/7D366323A7EE9B278763F78734FDE3F6309CCC132707A85EA1C0C31617EF63D8", // ALTER denom on Kujira
-        channel_id: "channel-44",
-        gas: 130_000,
-      },
-      {
-        source_chain_name: "Juno",
-        from_denom:
-          "ibc/8301F2E358BBCBF0E44DFFCA61889BF21B086B57AC39D48BE3164E68E443CCEF", // ALTER denom on Juno
-        channel_id: "channel-163",
-        gas: 130_000,
-      }
-    ],
-    withdrawals: [
-      {
-        target_chain_name: "Osmosis",
-        from_denom: "secret12rcvz0umvk875kd6a803txhtlu7y0pnd73kcej",
-        channel_id: "channel-44",
-        gas: 350_000,
-      },
-      {
-        target_chain_name: "Kujira",
-        from_denom: "secret12rcvz0umvk875kd6a803txhtlu7y0pnd73kcej",
-        channel_id: "channel-46",
-        gas: 350_000,
-      },
-      {
-        target_chain_name: "Juno",
-        from_denom: "secret12rcvz0umvk875kd6a803txhtlu7y0pnd73kcej",
-        channel_id: "channel-45",
-        gas: 350_000,
-      },
-
-    ],
-  },
-  {
     name: "ATOM",
     address: "secret14mzwd0ps5q277l20ly2q3aetqe3ev4m4260gf4",
     code_hash:
@@ -287,60 +233,6 @@ export const tokens: Token[] = [
         target_chain_name: "Cosmos Hub",
         from_denom:
           "ibc/27394FB092D2ECCD56123C74F36E4C1F926001CEADA9CA97EA622B25F41E5EB2",
-      },
-    ],
-  },
-  {
-    name: "BUTT",
-    is_snip20: true,
-    address: "secret1yxcexylwyxlq58umhgsjgstgcg2a0ytfy4d9lt",
-    code_hash:
-      "f8b27343ff08290827560a1ba358eece600c9ea7f403b02684ad87ae7af0f288",
-    image: "/butt.png",
-    decimals: 6,
-    coingecko_id: "button",
-    deposits: [
-      {
-        source_chain_name: "Osmosis",
-        from_denom:
-          "ibc/1FBA9E763B8679BEF7BAAAF2D16BCA78C3B297D226C3F31312C769D7B8F992D8", // BUTT denom on Osmosis
-        channel_id: "channel-476",
-        gas: 130_000,
-      },
-      {
-        source_chain_name: "Kujira",
-        from_denom:
-          "ibc/115373976C7BA066D7612C0FBFB64504D807770FF8248DE005942B7FDD4DAADC", // BUTT denom on Kujira
-        channel_id: "channel-44",
-        gas: 130_000,
-      },
-      {
-        source_chain_name: "Juno",
-        from_denom:
-          "ibc/15996DE9D2D6B5DFB9A01C2095320D96FB5A3A2D5ACCC1E773338D748CA9C175", // BUTT denom on Juno
-        channel_id: "channel-163",
-        gas: 130_000,
-      },
-      
-    ],
-    withdrawals: [
-      {
-        target_chain_name: "Osmosis",
-        from_denom: "secret1yxcexylwyxlq58umhgsjgstgcg2a0ytfy4d9lt",
-        channel_id: "channel-44",
-        gas: 350_000,
-      },
-      {
-        target_chain_name: "Kujira",
-        from_denom: "secret1yxcexylwyxlq58umhgsjgstgcg2a0ytfy4d9lt",
-        channel_id: "channel-46",
-        gas: 350_000,
-      },
-      {
-        target_chain_name: "Juno",
-        from_denom: "secret1yxcexylwyxlq58umhgsjgstgcg2a0ytfy4d9lt",
-        channel_id: "channel-45",
-        gas: 350_000,
       },
     ],
   },
@@ -587,6 +479,161 @@ export const tokens: Token[] = [
     ],
   },
   {
+    name: "STARS",
+    address: "secret1x0dqckf2khtxyrjwhlkrx9lwwmz44k24vcv2vv",
+    code_hash:
+      "5a085bd8ed89de92b35134ddd12505a602c7759ea25fb5c089ba03c8535b3042",
+    image: "/stars.webp",
+    decimals: 6,
+    coingecko_id: "stargaze",
+    deposits: [
+      {
+        source_chain_name: "Stargaze",
+        from_denom: "ustars",
+      },
+    ],
+    withdrawals: [
+      {
+        target_chain_name: "Stargaze",
+        from_denom:
+          "ibc/7EAE5BEF3A26B64AFBD89828AFDDB1DC7024A0276D22745201632C40E6E634D0", // STARS denom on Secret
+      },
+    ],
+  },
+  {
+    name: "STRD",
+    address: "secret17gg8xcx04ldqkvkrd7r9w60rdae4ck8aslt9cf",
+    code_hash:
+      "5a085bd8ed89de92b35134ddd12505a602c7759ea25fb5c089ba03c8535b3042",
+    image: "/stride.svg",
+    decimals: 6,
+    coingecko_id: "stride",
+    deposits: [
+      {
+        source_chain_name: "Stride",
+        from_denom: "ustrd",
+      },
+    ],
+    withdrawals: [
+      {
+        target_chain_name: "Stride",
+        from_denom:
+          "ibc/CE591002C567BE4B8C4EC3F3F3D18AF7A1CA9FADBF5876C8413F8B2BD83CE8FF", // STRD denom on Secret
+      },
+    ],
+  }
+];
+
+export const snips: Token[] = [
+  {
+    name: "ALTER",
+    is_snip20: true,
+    address: "secret12rcvz0umvk875kd6a803txhtlu7y0pnd73kcej",
+    code_hash:
+      "d4f32c1bca133f15f69d557bd0722da10f45e31e5475a12900ca1e62e63e8f76",
+    image: "/alter.jpg",
+    decimals: 6,
+    coingecko_id: "alter",
+    deposits: [
+      {
+        source_chain_name: "Osmosis",
+        from_denom:
+          "ibc/A6383B6CF5EA23E067666C06BC34E2A96869927BD9744DC0C1643E589C710AA3", // ALTER denom on Osmosis
+        channel_id: "channel-476",
+        gas: 130_000,
+      },
+      {
+        source_chain_name: "Kujira",
+        from_denom:
+          "ibc/7D366323A7EE9B278763F78734FDE3F6309CCC132707A85EA1C0C31617EF63D8", // ALTER denom on Kujira
+        channel_id: "channel-44",
+        gas: 130_000,
+      },
+      {
+        source_chain_name: "Juno",
+        from_denom:
+          "ibc/8301F2E358BBCBF0E44DFFCA61889BF21B086B57AC39D48BE3164E68E443CCEF", // ALTER denom on Juno
+        channel_id: "channel-163",
+        gas: 130_000,
+      }
+    ],
+    withdrawals: [
+      {
+        target_chain_name: "Osmosis",
+        from_denom: "secret12rcvz0umvk875kd6a803txhtlu7y0pnd73kcej",
+        channel_id: "channel-44",
+        gas: 350_000,
+      },
+      {
+        target_chain_name: "Kujira",
+        from_denom: "secret12rcvz0umvk875kd6a803txhtlu7y0pnd73kcej",
+        channel_id: "channel-46",
+        gas: 350_000,
+      },
+      {
+        target_chain_name: "Juno",
+        from_denom: "secret12rcvz0umvk875kd6a803txhtlu7y0pnd73kcej",
+        channel_id: "channel-45",
+        gas: 350_000,
+      },
+
+    ],
+  },
+  {
+    name: "BUTT",
+    is_snip20: true,
+    address: "secret1yxcexylwyxlq58umhgsjgstgcg2a0ytfy4d9lt",
+    code_hash:
+      "f8b27343ff08290827560a1ba358eece600c9ea7f403b02684ad87ae7af0f288",
+    image: "/butt.png",
+    decimals: 6,
+    coingecko_id: "button",
+    deposits: [
+      {
+        source_chain_name: "Osmosis",
+        from_denom:
+          "ibc/1FBA9E763B8679BEF7BAAAF2D16BCA78C3B297D226C3F31312C769D7B8F992D8", // BUTT denom on Osmosis
+        channel_id: "channel-476",
+        gas: 130_000,
+      },
+      {
+        source_chain_name: "Kujira",
+        from_denom:
+          "ibc/115373976C7BA066D7612C0FBFB64504D807770FF8248DE005942B7FDD4DAADC", // BUTT denom on Kujira
+        channel_id: "channel-44",
+        gas: 130_000,
+      },
+      {
+        source_chain_name: "Juno",
+        from_denom:
+          "ibc/15996DE9D2D6B5DFB9A01C2095320D96FB5A3A2D5ACCC1E773338D748CA9C175", // BUTT denom on Juno
+        channel_id: "channel-163",
+        gas: 130_000,
+      },
+      
+    ],
+    withdrawals: [
+      {
+        target_chain_name: "Osmosis",
+        from_denom: "secret1yxcexylwyxlq58umhgsjgstgcg2a0ytfy4d9lt",
+        channel_id: "channel-44",
+        gas: 350_000,
+      },
+      {
+        target_chain_name: "Kujira",
+        from_denom: "secret1yxcexylwyxlq58umhgsjgstgcg2a0ytfy4d9lt",
+        channel_id: "channel-46",
+        gas: 350_000,
+      },
+      {
+        target_chain_name: "Juno",
+        from_denom: "secret1yxcexylwyxlq58umhgsjgstgcg2a0ytfy4d9lt",
+        channel_id: "channel-45",
+        gas: 350_000,
+      },
+    ],
+  },
+  {
     name: "SHD",
     is_snip20: true,
     address: "secret1qfql357amn448duf5gvp9gr48sxx9tsnhupu3d",
@@ -724,51 +771,7 @@ export const tokens: Token[] = [
         gas: 350_000,
       },
     ],
-  },
-  {
-    name: "STARS",
-    address: "secret1x0dqckf2khtxyrjwhlkrx9lwwmz44k24vcv2vv",
-    code_hash:
-      "5a085bd8ed89de92b35134ddd12505a602c7759ea25fb5c089ba03c8535b3042",
-    image: "/stars.webp",
-    decimals: 6,
-    coingecko_id: "stargaze",
-    deposits: [
-      {
-        source_chain_name: "Stargaze",
-        from_denom: "ustars",
-      },
-    ],
-    withdrawals: [
-      {
-        target_chain_name: "Stargaze",
-        from_denom:
-          "ibc/7EAE5BEF3A26B64AFBD89828AFDDB1DC7024A0276D22745201632C40E6E634D0", // STARS denom on Secret
-      },
-    ],
-  },
-  {
-    name: "STRD",
-    address: "secret17gg8xcx04ldqkvkrd7r9w60rdae4ck8aslt9cf",
-    code_hash:
-      "5a085bd8ed89de92b35134ddd12505a602c7759ea25fb5c089ba03c8535b3042",
-    image: "/stride.svg",
-    decimals: 6,
-    coingecko_id: "stride",
-    deposits: [
-      {
-        source_chain_name: "Stride",
-        from_denom: "ustrd",
-      },
-    ],
-    withdrawals: [
-      {
-        target_chain_name: "Stride",
-        from_denom:
-          "ibc/CE591002C567BE4B8C4EC3F3F3D18AF7A1CA9FADBF5876C8413F8B2BD83CE8FF", // STRD denom on Secret
-      },
-    ],
-  },
+  }
 ];
 
 export type Chain = {
