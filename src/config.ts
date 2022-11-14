@@ -43,6 +43,7 @@ export type Withdraw = {
   gas?: number;
 };
 
+// Native tokens of chains (and tokens from external chains)
 export const tokens: Token[] = [
   {
     name: "SCRT",
@@ -524,6 +525,7 @@ export const tokens: Token[] = [
   }
 ];
 
+// These are snip 20 tokens that are IBC compatible (no need to wrap them manually)
 export const snips: Token[] = [
   {
     name: "ALTER",
