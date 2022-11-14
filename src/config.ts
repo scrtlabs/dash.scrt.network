@@ -238,6 +238,13 @@ export const tokens: Token[] = [
         channel_id: "channel-44",
         gas: 130_000,
       },
+      {
+        source_chain_name: "Juno",
+        from_denom:
+          "ibc/8301F2E358BBCBF0E44DFFCA61889BF21B086B57AC39D48BE3164E68E443CCEF", // ALTER denom on Juno
+        channel_id: "channel-163",
+        gas: 130_000,
+      }
     ],
     withdrawals: [
       {
@@ -248,10 +255,17 @@ export const tokens: Token[] = [
       },
       {
         target_chain_name: "Kujira",
-        from_denom: "secret1qfql357amn448duf5gvp9gr48sxx9tsnhupu3d",
+        from_denom: "secret12rcvz0umvk875kd6a803txhtlu7y0pnd73kcej",
         channel_id: "channel-46",
         gas: 350_000,
       },
+      {
+        target_chain_name: "Juno",
+        from_denom: "secret12rcvz0umvk875kd6a803txhtlu7y0pnd73kcej",
+        channel_id: "channel-45",
+        gas: 350_000,
+      },
+
     ],
   },
   {
@@ -300,6 +314,14 @@ export const tokens: Token[] = [
         channel_id: "channel-44",
         gas: 130_000,
       },
+      {
+        source_chain_name: "Juno",
+        from_denom:
+          "ibc/15996DE9D2D6B5DFB9A01C2095320D96FB5A3A2D5ACCC1E773338D748CA9C175", // BUTT denom on Juno
+        channel_id: "channel-163",
+        gas: 130_000,
+      },
+      
     ],
     withdrawals: [
       {
@@ -310,8 +332,14 @@ export const tokens: Token[] = [
       },
       {
         target_chain_name: "Kujira",
-        from_denom: "secret1qfql357amn448duf5gvp9gr48sxx9tsnhupu3d",
+        from_denom: "secret1yxcexylwyxlq58umhgsjgstgcg2a0ytfy4d9lt",
         channel_id: "channel-46",
+        gas: 350_000,
+      },
+      {
+        target_chain_name: "Juno",
+        from_denom: "secret1yxcexylwyxlq58umhgsjgstgcg2a0ytfy4d9lt",
+        channel_id: "channel-45",
         gas: 350_000,
       },
     ],
@@ -582,6 +610,14 @@ export const tokens: Token[] = [
         channel_id: "channel-44",
         gas: 130_000,
       },
+      {
+        source_chain_name: "Juno",
+        from_denom:
+          "ibc/8D34BDDD6C534FEABA8BBAD7894E1793D3097E9147E94FC516FAB464AA598C23", // SHD denom on Juno
+        channel_id: "channel-163",
+        gas: 130_000,
+      },
+      
     ],
     withdrawals: [
       {
@@ -594,6 +630,12 @@ export const tokens: Token[] = [
         target_chain_name: "Kujira",
         from_denom: "secret1qfql357amn448duf5gvp9gr48sxx9tsnhupu3d",
         channel_id: "channel-46",
+        gas: 350_000,
+      },
+      {
+        target_chain_name: "Juno",
+        from_denom: "secret1qfql357amn448duf5gvp9gr48sxx9tsnhupu3d",
+        channel_id: "channel-45",
         gas: 350_000,
       },
     ],
@@ -622,6 +664,13 @@ export const tokens: Token[] = [
         channel_id: "channel-44",
         gas: 130_000,
       },
+      {
+        source_chain_name: "Juno",
+        from_denom:
+          "ibc/C1197A19D70157ABE9E7058D5494CA9317E3BA374A2720FDAAAFF6F9548FF084", // SIENNA denom on Juno
+        channel_id: "channel-163",
+        gas: 130_000,
+      },
     ],
     withdrawals: [
       {
@@ -632,8 +681,14 @@ export const tokens: Token[] = [
       },
       {
         target_chain_name: "Kujira",
-        from_denom: "secret1qfql357amn448duf5gvp9gr48sxx9tsnhupu3d",
+        from_denom: "secret1rgm2m5t530tdzyd99775n6vzumxa5luxcllml4",
         channel_id: "channel-46",
+        gas: 350_000,
+      },
+      {
+        target_chain_name: "Juno",
+        from_denom: "secret1rgm2m5t530tdzyd99775n6vzumxa5luxcllml4",
+        channel_id: "channel-45",
         gas: 350_000,
       },
     ],
