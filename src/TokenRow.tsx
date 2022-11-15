@@ -18,6 +18,8 @@ import { sleep, viewingKeyErrorString ,faucetAddress} from "./commons";
 import { Token } from "./config";
 import DepositWithdrawDialog from "./DepositWithdrawDialog";
 import { getKeplrViewingKey, setKeplrViewingKey } from "./KeplrStuff";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function TokenRow({
   secretjs,
@@ -282,6 +284,12 @@ export default function TokenRow({
             return;
           }
           setLoadingUnwrap(true);
+          const toastId = toast.loading(
+            `Unwrapping ${token.name}`,
+            {
+              closeButton: true,
+            }
+          );
           try {
             const tx = await secretjs.tx.broadcast(
               [
@@ -311,8 +319,20 @@ export default function TokenRow({
 
             if (tx.code === 0) {
               wrapInputRef.current.value = "";
+              toast.update(toastId, {
+                render: `Unwrapped ${token.name} successfully`,
+                type: "success",
+                isLoading: false,
+                closeOnClick: true,
+              });
               console.log(`Unwrapped successfully`);
             } else {
+              toast.update(toastId, {
+                render: `Unwrapping of ${token.name} failed: ${tx.rawLog}`,
+                type: "error",
+                isLoading: false,
+                closeOnClick: true,
+              });
               console.error(`Tx failed: ${tx.rawLog}`);
             }
           } finally {
@@ -366,6 +386,12 @@ export default function TokenRow({
             return;
           }
           setLoadingWrap(true);
+          const toastId = toast.loading(
+            `Wrapping ${token.name}`,
+            {
+              closeButton: true,
+            }
+          );
           try {
             const tx = await secretjs.tx.broadcast(
               [
@@ -388,8 +414,20 @@ export default function TokenRow({
 
             if (tx.code === 0) {
               wrapInputRef.current.value = "";
+              toast.update(toastId, {
+                render: `Wrapped ${token.name} successfully`,
+                type: "success",
+                isLoading: false,
+                closeOnClick: true,
+              });
               console.log(`Wrapped successfully`);
             } else {
+              toast.update(toastId, {
+                render: `Wrapping of ${token.name} failed: ${tx.rawLog}`,
+                type: "error",
+                isLoading: false,
+                closeOnClick: true,
+              });
               console.error(`Tx failed: ${tx.rawLog}`);
             }
           } finally {
