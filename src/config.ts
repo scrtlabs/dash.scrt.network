@@ -699,6 +699,28 @@ export const snips: Token[] = [
     decimals: 8,
     coingecko_id: "stkd-scrt",
     deposits: [
+      {
+        source_chain_name: "Osmosis",
+        from_denom:
+          "ibc/D0E5BF2940FB58D9B283A339032DE88111407AAD7D94A7F1F3EB78874F8616D4", // stkd-SCRT denom on Osmosis
+        channel_id: "channel-476",
+        gas: 130_000,
+      },
+      {
+        source_chain_name: "Kujira",
+        from_denom:
+          "ibc/A81564DE9A1F0D66D715B508601E27AB89E0FADDE6A3706FC15F8C80BB774563", // stkd-scrt denom on Kujira
+        channel_id: "channel-44",
+        gas: 130_000,
+      },
+      {
+        source_chain_name: "Juno",
+        from_denom:
+          "ibc/D16A9D5D85BCF482A389BA74C5B6E71B9E731CD5C97885C343DC0D64037FE688", // stkd-scrt denom on Juno
+        channel_id: "channel-163",
+        gas: 130_000,
+      },
+      
     ],
     withdrawals: [
       {
