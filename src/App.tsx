@@ -11,9 +11,6 @@ import { KeplrPanel } from "./KeplrStuff";
 import TokenRow from "./TokenRow";
 import { Buffer } from "buffer";
 import { Button } from "@mui/material";
-import { timelineClasses } from "@mui/lab";
-import { Result } from "secretjs/dist/protobuf_stuff/cosmos/base/abci/v1beta1/abci";
-import { responseResultTypeToJSON } from "secretjs/dist/protobuf_stuff/ibc/core/channel/v1/tx";
 import { Flip, ToastContainer, toast} from "react-toastify";
 
 globalThis.Buffer = Buffer;
