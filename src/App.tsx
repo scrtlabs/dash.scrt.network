@@ -5,11 +5,14 @@ import ReactDOM from "react-dom";
 import { Breakpoint, BreakpointProvider } from "react-socks";
 import { SecretNetworkClient } from "secretjs";
 import { chains, tokens, snips } from "./config";
+import { faucetURL } from "./commons";
 import "./index.css";
 import { KeplrPanel } from "./KeplrStuff";
 import TokenRow from "./TokenRow";
 import { Buffer } from "buffer";
-import { Flip, ToastContainer } from "react-toastify";
+import { Button } from "@mui/material";
+import { Flip, ToastContainer, toast} from "react-toastify";
+
 globalThis.Buffer = Buffer;
 declare global {
   interface Window extends KeplrWindow {}
@@ -85,7 +88,15 @@ export default function App() {
   const [prices, setPrices] = useState<Map<string, number>>(new Map());
   const [loadingCoinBalances, setLoadingCoinBalances] =
     useState<boolean>(false);
+  const [useFeegrant, setUseFeegrant] = useState<boolean>(false);
 
+  const updateFeeGrantButton = (text : string, color : string) => {
+    let btnFeeGrant = document.getElementById('grantButton');
+    if (btnFeeGrant != null) {
+      btnFeeGrant.style.color = color;
+      btnFeeGrant.textContent = text;
+    }
+  }
   const updateCoinBalances = async () => {
     const newBalances = new Map<string, string>(balances);
 
@@ -111,6 +122,32 @@ export default function App() {
       console.error(`Error while trying to query ${url}:`, e);
     }
 
+    if (newBalances.get("uscrt") == "0" && useFeegrant == false) {
+      try {
+        const response = await fetch(faucetURL, {
+          method: 'POST',
+          body: JSON.stringify({"Address": secretAddress}),
+          headers: {'Content-Type': 'application/json'}
+        });
+        const result = await response;
+        const textBody = await result.text();
+        if (result.ok == true) {
+          updateFeeGrantButton("Fee Granted","green");
+          toast.success(`Your wallet does not have any SCRT to pay for transaction costs. Successfully sent new fee grant (0.1 SCRT) for unwrapping tokens to address ${secretAddress}`);
+        } else if (textBody == "Existing Fee Grant did not expire\n") {
+          updateFeeGrantButton("Fee Granted","green");
+          toast.success(`Your wallet does not have any SCRT to pay for transaction costs. Your address ${secretAddress} however does already have an existing fee grant which will be used for unwrapping`);
+        } else {
+          updateFeeGrantButton("Fee Grant failed","red");
+          toast.error(`Fee Grant for address ${secretAddress} failed with status code: ${result.status}`);
+        }
+        setUseFeegrant(true);
+      }
+      catch(e) {
+        updateFeeGrantButton("Fee Grant failed","red");
+        toast.error(`Fee Grant for address ${secretAddress} failed with error: ${e}`);
+      }
+      }
     setBalances(newBalances);
   };
 
@@ -130,7 +167,7 @@ export default function App() {
     return () => {
       clearInterval(interval);
     };
-  }, [secretAddress, secretjs]);
+  }, [secretAddress, secretjs, useFeegrant]);
 
   useEffect(() => {
     fetch(
@@ -160,6 +197,39 @@ export default function App() {
           minHeight: "3rem",
         }}
       >
+      <Button
+          disabled={!secretAddress}
+          size="small"
+          variant="text"
+          id="grantButton"
+          onClick={async () => {
+              fetch(faucetURL, {
+              method: 'POST',
+              body: JSON.stringify({ "Address": secretAddress }),
+              headers: { 'Content-Type': 'application/json' }
+            }).then(async (result) => {
+              const textBody = await result.text();
+              console.log(textBody);
+              if (result.ok == true) {
+                updateFeeGrantButton("Fee Granted","green");
+                toast.success(`Successfully sent new fee grant (0.1 SCRT) for unwrapping tokens to address ${secretAddress}`);
+              } else if (textBody == "Existing Fee Grant did not expire\n") {
+                updateFeeGrantButton("Fee Granted","green");
+                toast.success(`Your address ${secretAddress} already has an existing fee grant which will be used for unwrapping tokens`);
+              } else {
+                updateFeeGrantButton("Fee Grant failed","red");
+                toast.error(`Fee Grant for address ${secretAddress} failed with status code: ${result.status}`);
+              }
+              setUseFeegrant(true);
+            }).catch((error) => { 
+                updateFeeGrantButton("Fee Grant failed","red");
+                toast.error(`Fee Grant for address ${secretAddress} failed with error: ${error}`);
+              });
+            }
+          }
+        >
+        Grant Fee for unwrapping (0.1 SCRT)
+        </Button>
         <KeplrPanel
           secretjs={secretjs}
           setSecretjs={setSecretjs}
@@ -201,6 +271,7 @@ export default function App() {
             secretjs={secretjs}
             balances={balances}
             price={prices.get(t.name) || 0}
+            useFeegrant = {useFeegrant}
           />
         </ErrorBoundary>
       ))}
@@ -223,23 +294,25 @@ export default function App() {
             secretjs={secretjs}
             balances={balances}
             price={prices.get(t.name) || 0}
+            useFeegrant = {useFeegrant}
           />
         </ErrorBoundary>
       ))}
 
       <Breakpoint medium up>
         <ToastContainer
+          style={{ width: "450px" }}
           position={"top-left"}
           autoClose={false}
           hideProgressBar={true}
           closeOnClick={false}
-          draggable={false}
+          draggable={false} 
           theme={"light"}
           transition={Flip}
         />
       </Breakpoint>
       <Breakpoint small down>
-        <ToastContainer
+        <ToastContainer 
           position={"bottom-left"}
           autoClose={false}
           hideProgressBar={true}

@@ -4,6 +4,9 @@ import { Keplr } from "@keplr-wallet/types";
 
 export const viewingKeyErrorString = "🧐";
 
+export const faucetURL = "https://faucet.secretsaturn.net/claim";
+export const faucetAddress = "secret1tq6y8waegggp4fv2fcxk3zmpsmlfadyc7lsd69";
+
 export const sleep = (ms: number) =>
   new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -47,13 +50,13 @@ export async function suggestTerraToKeplr(keplr: Keplr) {
         coinMinimalDenom: "uluna",
         coinDecimals: 6,
         coinGeckoId: "terra-luna-2",
+        gasPriceStep: {
+          low: 0.15,
+          average: 0.15,
+          high: 0.15,
+        },
       },
     ],
-    gasPriceStep: {
-      low: 0.15,
-      average: 0.15,
-      high: 0.15,
-    },
     features: ["stargate", "ibc-transfer", "no-legacy-stdTx", "ibc-go"],
   });
 }
@@ -88,13 +91,13 @@ export async function suggestInjectiveToKeplr(keplr: Keplr) {
         coinMinimalDenom: "inj",
         coinDecimals: 18,
         coinGeckoId: "injective-protocol",
+        gasPriceStep: {
+          low: 0.0005,
+          average: 0.0007,
+          high: 0.0009,
+        },
       },
     ],
-    gasPriceStep: {
-      low: 0.0005,
-      average: 0.0007,
-      high: 0.0009,
-    },
     features: ["stargate", "ibc-transfer", "no-legacy-stdTx", "ibc-go"],
   });
 }
@@ -129,13 +132,13 @@ export async function suggestCrescentToKeplr(keplr: Keplr) {
         coinMinimalDenom: "ucre",
         coinDecimals: 6,
         coinGeckoId: "crescent-network",
+        gasPriceStep: {
+          low: 0.01,
+          average: 0.01,
+          high: 0.02,
+        },
       },
     ],
-    gasPriceStep: {
-      low: 0.01,
-      average: 0.01,
-      high: 0.02,
-    },
     features: ["stargate", "ibc-transfer", "no-legacy-stdTx", "ibc-go"],
   });
 }
@@ -170,13 +173,13 @@ export async function suggestKujiraToKeplr(keplr: Keplr) {
         coinMinimalDenom: "ukuji",
         coinDecimals: 6,
         coinGeckoId: "kujira",
+        gasPriceStep: {
+          low: 0.01,
+          average: 0.025,
+          high: 0.03,
+        },
       },
     ],
-    gasPriceStep: {
-      low: 0.01,
-      average: 0.025,
-      high: 0.03,
-    },
     features: ["stargate", "ibc-transfer", "no-legacy-stdTx", "ibc-go"],
   });
 }
