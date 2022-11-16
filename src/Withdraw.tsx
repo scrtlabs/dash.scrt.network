@@ -15,8 +15,8 @@ import BigNumber from "bignumber.js";
 import React, { useEffect, useRef, useState } from "react";
 import { Else, If, Then } from "react-if";
 import { useCurrentBreakpointName } from "react-socks";
-import { Flip, toast } from "react-toastify";
-import { MsgTransfer, SecretNetworkClient } from "secretjs";
+import { toast } from "react-toastify";
+import { SecretNetworkClient, toBase64, toUtf8, Tx } from "secretjs";
 import {
   sleep,
   suggestCrescentToKeplr,
@@ -320,11 +320,17 @@ export default function Withdraw({
               .multipliedBy(`1e${token.decimals}`)
               .toFixed(0, BigNumber.ROUND_DOWN);
 
-            const {
+            let {
               withdraw_channel_id,
               withdraw_gas,
               lcd: lcdDstChain,
             } = chains[token.withdrawals[selectedChainIndex].target_chain_name];
+
+            withdraw_channel_id =
+              token.withdrawals[selectedChainIndex].channel_id ||
+              withdraw_channel_id;
+            withdraw_gas =
+              token.withdrawals[selectedChainIndex].gas || withdraw_gas;
 
             const toastId = toast.loading(
               `Sending ${normalizedAmount} ${token.name} from Secret to ${token.withdrawals[selectedChainIndex].target_chain_name}`,
@@ -336,9 +342,42 @@ export default function Withdraw({
             try {
               onSuccess("");
 
-              const tx = await secretjs.tx.broadcast(
-                [
-                  new MsgTransfer({
+              let tx: Tx;
+
+              if (token.is_snip20) {
+                tx = await secretjs.tx.compute.executeContract(
+                  {
+                    contractAddress: token.address,
+                    codeHash: token.code_hash,
+                    sender: secretAddress,
+                    msg: {
+                      send: {
+                        recipient:
+                          "secret1tqmms5awftpuhalcv5h5mg76fa0tkdz4jv9ex4", // cw20-ics20
+                        recipient_code_hash:
+                          "f85b413b547b9460162958bafd51113ac266dac96a84c33b9150f68f045f2641",
+                        amount,
+                        msg: toBase64(
+                          toUtf8(
+                            JSON.stringify({
+                              channel: withdraw_channel_id,
+                              remote_address: targetAddress,
+                              timeout: 600, // 10 minute timeout
+                            })
+                          )
+                        ),
+                      },
+                    },
+                  },
+                  {
+                    gasLimit: withdraw_gas,
+                    gasPriceInFeeDenom: 0.1,
+                    feeDenom: "uscrt",
+                  }
+                );
+              } else {
+                tx = await secretjs.tx.ibc.transfer(
+                  {
                     sender: secretAddress,
                     receiver: targetAddress,
                     sourceChannel: withdraw_channel_id,
@@ -350,14 +389,14 @@ export default function Withdraw({
                     timeoutTimestampSec: String(
                       Math.floor(Date.now() / 1000) + 10 * 60
                     ), // 10 minute timeout
-                  }),
-                ],
-                {
-                  gasLimit: withdraw_gas,
-                  gasPriceInFeeDenom: 0.25,
-                  feeDenom: "uscrt",
-                }
-              );
+                  },
+                  {
+                    gasLimit: withdraw_gas,
+                    gasPriceInFeeDenom: 0.1,
+                    feeDenom: "uscrt",
+                  }
+                );
+              }
 
               if (tx.code === 0) {
                 toast.update(toastId, {

@@ -1,10 +1,10 @@
 import { Window as KeplrWindow } from "@keplr-wallet/types";
-import { Avatar, Typography } from "@mui/material";
+import { Avatar, Typography, Divider } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import ReactDOM from "react-dom";
 import { Breakpoint, BreakpointProvider } from "react-socks";
 import { SecretNetworkClient } from "secretjs";
-import { chains, tokens } from "./config";
+import { chains, tokens, snips } from "./config";
 import { faucetURL } from "./commons";
 import "./index.css";
 import { KeplrPanel } from "./KeplrStuff";
@@ -110,9 +110,8 @@ export default function App() {
         )
       );
 
-      for (const denom of denoms) {
+      for (const denom of denoms.filter((d) => !d.startsWith("secret1"))) {
         const balance = balances.find((c) => c.denom === denom)?.amount || "0";
-
         newBalances.set(denom, balance);
       }
     } catch (e) {
@@ -277,6 +276,28 @@ export default function App() {
             balances={balances}
             price={prices.get(t.name) || 0}
             useFeegrant = {useFeegrant}
+          />
+        </ErrorBoundary>
+      ))}
+      <Divider variant="middle"/>
+      <Typography
+          component="div"
+          align="center"
+          sx={{
+            marginBottom: "0.5rem",
+          }}
+        >
+          SNIP20s via IBC
+        </Typography>
+      {snips.map((t) => (
+        <ErrorBoundary key={t.name}>
+          <TokenRow
+            token={t}
+            loadingCoinBalances={loadingCoinBalances}
+            secretAddress={secretAddress}
+            secretjs={secretjs}
+            balances={balances}
+            price={prices.get(t.name) || 0}
           />
         </ErrorBoundary>
       ))}
