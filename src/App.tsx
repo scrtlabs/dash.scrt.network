@@ -93,6 +93,13 @@ export default function App() {
     useState<boolean>(false);
   const [useFeegrant, setUseFeegrant] = useState<boolean>(false);
 
+  const updateFeeGrantButton = (text : string, color : string) => {
+    let btnFeeGrant = document.getElementById('grantButton');
+    if (btnFeeGrant != null) {
+      btnFeeGrant.style.color = color;
+      btnFeeGrant.textContent = text;
+    }
+  }
   const updateCoinBalances = async () => {
     const newBalances = new Map<string, string>(balances);
 
@@ -127,34 +134,20 @@ export default function App() {
         });
         const result = await response;
         const textBody = await result.text();
-        let btnFeeGrant = document.getElementById('grantButton');
         if (result.ok == true) {
-          if (btnFeeGrant != null) {
-            btnFeeGrant.style.color = "green";
-            btnFeeGrant.textContent = "Fee Granted";
-          }
+          updateFeeGrantButton("Fee Granted","green");
           toast.success(`Your wallet does not have any SCRT to pay for transaction costs. Successfully sent new fee grant (0.1 SCRT) for unwrapping tokens to address ${secretAddress}`);
         } else if (textBody == "Existing Fee Grant did not expire\n") {
-          if (btnFeeGrant != null) {
-            btnFeeGrant.style.color = "green";
-            btnFeeGrant.textContent = "Fee Granted";
-          }
+          updateFeeGrantButton("Fee Granted","green");
           toast.success(`Your wallet does not have any SCRT to pay for transaction costs. Your address ${secretAddress} however does already have an existing fee grant which will be used for unwrapping`);
         } else {
-          if (btnFeeGrant != null) {
-            btnFeeGrant.style.color = "red";
-            btnFeeGrant.textContent = "Fee Grant failed";
-          }
+          updateFeeGrantButton("Fee Grant failed","red");
           toast.error(`Fee Grant for address ${secretAddress} failed with status code: ${result.status}`);
         }
         setUseFeegrant(true);
       }
       catch(e) {
-        let btnFeeGrant = document.getElementById('grantButton');
-        if (btnFeeGrant != null) {
-          btnFeeGrant.style.color = "red";
-          btnFeeGrant.textContent = "Fee Grant failed";
-        }
+        updateFeeGrantButton("Fee Grant failed","red");
         toast.error(`Fee Grant for address ${secretAddress} failed with error: ${e}`);
       }
       }
@@ -220,33 +213,19 @@ export default function App() {
             }).then(async (result) => {
               const textBody = await result.text();
               console.log(textBody);
-              let btnFeeGrant = document.getElementById('grantButton');
               if (result.ok == true) {
-                if (btnFeeGrant != null) {
-                  btnFeeGrant.style.color = "green";
-                  btnFeeGrant.textContent = "Fee Granted";
-                }
+                updateFeeGrantButton("Fee Granted","green");
                 toast.success(`Successfully sent new fee grant (0.1 SCRT) for unwrapping tokens to address ${secretAddress}`);
               } else if (textBody == "Existing Fee Grant did not expire\n") {
-                if (btnFeeGrant != null) {
-                  btnFeeGrant.style.color = "green";
-                  btnFeeGrant.textContent = "Fee Granted";
-                }
+                updateFeeGrantButton("Fee Granted","green");
                 toast.success(`Your address ${secretAddress} already has an existing fee grant which will be used for unwrapping tokens`);
               } else {
-                if (btnFeeGrant != null) {
-                  btnFeeGrant.style.color = "red";
-                  btnFeeGrant.textContent = "Fee Grant failed";
-                }
+                updateFeeGrantButton("Fee Grant failed","red");
                 toast.error(`Fee Grant for address ${secretAddress} failed with status code: ${result.status}`);
               }
               setUseFeegrant(true);
             }).catch((error) => { 
-              let btnFeeGrant = document.getElementById('grantButton');
-              if (btnFeeGrant != null) {
-                btnFeeGrant.style.color = "red";
-                btnFeeGrant.textContent = "Fee Grant failed";
-              }
+                updateFeeGrantButton("Fee Grant failed","red");
                 toast.error(`Fee Grant for address ${secretAddress} failed with error: ${error}`);
               });
             }
