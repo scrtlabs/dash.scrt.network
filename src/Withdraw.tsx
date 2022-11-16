@@ -82,6 +82,12 @@ export default function Withdraw({
       }
 
       await window.keplr.enable(targetChainId);
+      window.keplr.defaultOptions = {
+        sign: {
+            preferNoSetFee: true,
+            disableBalanceCheck: true,
+        },
+      } 
       const targetOfflineSigner =
         window.getOfflineSignerOnlyAmino(targetChainId);
       const targetFromAccounts = await targetOfflineSigner.getAccounts();
