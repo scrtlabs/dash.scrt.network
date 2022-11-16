@@ -1,10 +1,10 @@
 import { Window as KeplrWindow } from "@keplr-wallet/types";
-import { Avatar, Typography } from "@mui/material";
+import { Avatar, Typography, Divider } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import ReactDOM from "react-dom";
 import { Breakpoint, BreakpointProvider } from "react-socks";
 import { SecretNetworkClient } from "secretjs";
-import { chains, tokens } from "./config";
+import { chains, tokens, snips } from "./config";
 import "./index.css";
 import { KeplrPanel } from "./KeplrStuff";
 import TokenRow from "./TokenRow";
@@ -193,6 +193,28 @@ export default function App() {
         <div style={{ height: 40 }} />
       </Breakpoint>
       {tokens.map((t) => (
+        <ErrorBoundary key={t.name}>
+          <TokenRow
+            token={t}
+            loadingCoinBalances={loadingCoinBalances}
+            secretAddress={secretAddress}
+            secretjs={secretjs}
+            balances={balances}
+            price={prices.get(t.name) || 0}
+          />
+        </ErrorBoundary>
+      ))}
+      <Divider variant="middle"/>
+      <Typography
+          component="div"
+          align="center"
+          sx={{
+            marginBottom: "0.5rem",
+          }}
+        >
+          SNIP20s via IBC
+        </Typography>
+      {snips.map((t) => (
         <ErrorBoundary key={t.name}>
           <TokenRow
             token={t}
