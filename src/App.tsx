@@ -318,6 +318,7 @@ export default function App() {
             secretjs={secretjs}
             balances={balances}
             price={prices.get(t.name) || 0}
+            useFeegrant = {useFeegrant}
           />
         </ErrorBoundary>
       ))}
