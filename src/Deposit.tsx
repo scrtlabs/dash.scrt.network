@@ -128,7 +128,7 @@ export default function Deposit({
       await window.keplr.enable(chain_id);
       window.keplr.defaultOptions = {
         sign: {
-            preferNoSetFee: true,
+            preferNoSetFee: false,
             disableBalanceCheck: true,
         }
       }
