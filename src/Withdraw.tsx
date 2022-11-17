@@ -84,7 +84,7 @@ export default function Withdraw({
       await window.keplr.enable(targetChainId);
       window.keplr.defaultOptions = {
         sign: {
-            preferNoSetFee: true,
+            preferNoSetFee: false,
             disableBalanceCheck: true,
         },
       } 
