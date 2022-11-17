@@ -109,7 +109,7 @@ async function setupKeplr(
   await window.keplr.enable(SECRET_CHAIN_ID);
   window.keplr.defaultOptions = {
     sign: {
-      preferNoSetFee: true,
+      preferNoSetFee: false,
       disableBalanceCheck: true,
     },
   };
