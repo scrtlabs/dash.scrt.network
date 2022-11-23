@@ -1,17 +1,29 @@
 import { Window as KeplrWindow } from "@keplr-wallet/types";
-import { Avatar, Typography, Divider } from "@mui/material";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef} from "react";
 import ReactDOM from "react-dom";
 import { Breakpoint, BreakpointProvider } from "react-socks";
-import { SecretNetworkClient } from "secretjs";
-import { chains, tokens, snips } from "./config";
-import { faucetURL } from "./commons";
+import { MsgExecuteContract, SecretNetworkClient } from "secretjs";
+import { chains, Token, tokens, snips } from "./config";
+import { sleep, faucetURL , faucetAddress} from "./commons";
 import "./index.css";
 import { KeplrPanel } from "./KeplrStuff";
 import TokenRow from "./TokenRow";
+import DepositWithdrawDialog from "./DepositWithdrawDialog";
 import { Buffer } from "buffer";
-import { Button } from "@mui/material";
+import {
+  Avatar,
+  Button,
+  CircularProgress,
+  Input,
+  Tooltip,
+  Typography
+} from "@mui/material";
+import BigNumber from "bignumber.js";
 import { Flip, ToastContainer, toast} from "react-toastify";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { library } from "@fortawesome/fontawesome-svg-core";
+import { faDownLong, faUpLong, faArrowRightArrowLeft, faCaretDown, faBoltLightning, faLock, faRotateRight} from '@fortawesome/free-solid-svg-icons'
+import {SingleTokenWrapped, SingleTokenNative} from "./SingleToken";
 
 globalThis.Buffer = Buffer;
 declare global {
@@ -51,31 +63,13 @@ class ErrorBoundary extends React.Component<{}, { hasError: boolean }> {
 
 const footerHeight = "1.8rem";
 
+
 ReactDOM.render(
   <BreakpointProvider>
     <React.StrictMode>
-      <div style={{ minHeight: `calc(100vh - ${footerHeight})` }}>
+      <div>
         <App />
       </div>
-      <a
-        href="https://SCRT.network"
-        target="_blank"
-        style={{
-          height: footerHeight,
-          backgroundColor: "#e7e7e7",
-          display: "flex",
-          placeContent: "center",
-          placeItems: "center",
-          position: "relative",
-          left: 0,
-          bottom: 0,
-          gap: "0.3em",
-          textDecoration: "none",
-        }}
-      >
-        <Avatar src="/scrt.svg" sx={{ width: "1em", height: "1em" }} />
-        <span style={{ color: "black" }}>Powered by Secret Network</span>
-      </a>
     </React.StrictMode>
   </BreakpointProvider>,
   document.getElementById("root")
@@ -89,7 +83,25 @@ export default function App() {
   const [loadingCoinBalances, setLoadingCoinBalances] =
     useState<boolean>(false);
   const [useFeegrant, setUseFeegrant] = useState<boolean>(false);
+  const [chosenToken, setChosenToken] = useState<Token>(tokens.filter(token => token.name === "SCRT")[0]);
+  const [isWrapping, setIsWrapping] = useState<boolean>(true);
+  const [isNativeTokenPickerVisible, setIsNativeTokenPickerVisible] = useState<boolean>(false);
+  const [isWrappedTokenPickerVisible, setIsWrappedTokenPickerVisible] = useState<boolean>(false);
+  const nativeValue = useRef<any>();
+  const wrappedValue = useRef<any>();
+  const [isDepositWithdrawDialogOpen, setIsDepositWithdrawDialogOpen] =
+  useState<boolean>(true);
+  const [loadingWrapOrUnwrap, setLoadingWrapOrUnwrap] =
+  useState<boolean>(false);
 
+  function handleNativePickerChoice(token: Token) {
+    if (token != chosenToken) {
+      setChosenToken(token);
+    }
+    setIsNativeTokenPickerVisible(false)
+    setIsWrappedTokenPickerVisible(false)
+  }
+  
   const updateFeeGrantButton = (text : string, color : string) => {
     let btnFeeGrant = document.getElementById('grantButton');
     if (btnFeeGrant != null) {
@@ -132,10 +144,10 @@ export default function App() {
         const result = await response;
         const textBody = await result.text();
         if (result.ok == true) {
-          updateFeeGrantButton("Fee Granted","green");
+          updateFeeGrantButton("Fee Granted for unwrapping","green");
           toast.success(`Your wallet does not have any SCRT to pay for transaction costs. Successfully sent new fee grant (0.1 SCRT) for unwrapping tokens to address ${secretAddress}`);
         } else if (textBody == "Existing Fee Grant did not expire\n") {
-          updateFeeGrantButton("Fee Granted","green");
+          updateFeeGrantButton("Fee Granted for unwrapping","green");
           toast.success(`Your wallet does not have any SCRT to pay for transaction costs. Your address ${secretAddress} however does already have an existing fee grant which will be used for unwrapping`);
         } else {
           updateFeeGrantButton("Fee Grant failed","red");
@@ -188,16 +200,121 @@ export default function App() {
   }, []);
 
   return (
-    <div style={{ padding: "0.5rem" }}>
+    <div>
+      <div className="flex justify-end p-4">
+        <KeplrPanel
+          secretjs={secretjs}
+          setSecretjs={setSecretjs}
+          secretAddress={secretAddress}
+          setSecretAddress={setSecretAddress}
+        />
+      </div>
+
       <div
         style={{
-          display: "flex",
-          placeContent: "flex-end",
-          placeItems: "center",
-          minHeight: "3rem",
+          display: "grid",
+          flexDirection: "column",
+          gridTemplateColumns: "1fr 1fr",
+          placeItems: "top",
+          placeContent: "top",
+          overflow: "auto",
         }}
       >
-      <Button
+        <div className="w-full max-w-xl mx-auto">
+      <div className="border rounded-lg p-12 pb-7 border-neutral-700 bg-gradient-to-t from-black to-zinc-900/75 w-full">
+      <div className="mb-4">
+              <h1 className="inline text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-purple-500 mb-4">IBC transfers</h1>
+            </div>
+            <p className="text-neutral-400 mb-10">
+              Transfer your tokens via IBC
+            </p>
+      <DepositWithdrawDialog
+        token={chosenToken}
+        balances={balances}
+        secretAddress={secretAddress}
+        secretjs={secretjs}
+        isOpen={isDepositWithdrawDialogOpen}
+        setIsOpen={setIsDepositWithdrawDialogOpen}
+        />
+      </div>
+      </div>
+        <div className="w-full max-w-xl mx-auto">
+          <div className="border rounded-lg p-12 pb-7 border-neutral-700 bg-gradient-to-t from-black to-zinc-900/75 w-full">
+
+            {/* header */}
+            <div className="mb-4">
+              <h1 className="inline text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-purple-500 mb-4">Enable Privacy</h1>
+
+            </div>
+            <p className="text-neutral-400 mb-10">
+              Wrapping Coins as Secret Tokens immediately supercharges them with private balances and private transfers.
+            </p>
+          
+            
+            <div className="space-y-6">
+              <div>
+                <div className="flex">
+                  <button onClick={() => setIsNativeTokenPickerVisible(!isNativeTokenPickerVisible)} className="inline-flex items-center px-3 text-sm font-semibold bg-neutral-800 rounded-l-md border border-r-0 border-neutral-800 text-neutral-400 focus:border-neutral-900 focus:ring-neutral-900 focus:ring-4 focus:outline-none">
+                    <img src={chosenToken.image} alt={chosenToken.name} className="w-7 h-7 mr-2"/>
+                    {chosenToken.name}
+                    <FontAwesomeIcon icon={faCaretDown} className="ml-2" />
+                  </button>
+
+                  
+                  { isNativeTokenPickerVisible &&
+                    <ul className="overflow-y-scroll scrollbar-hide h-64 text-white z-2 absolute mt-16 rounded bg-black ring-1 ring-neutral-800 left-0 right-0 mx-12">
+                      {tokens.map(token => (
+                        <li className="cursor-pointer select-none p-2 hover:bg-neutral-800 flex items-center" onClick={() => handleNativePickerChoice(token)} key={token.name}>
+                          <img src={token.image} alt="Logo" className="w-7 h-7 mr-2"/>
+                          {token.name}
+                        </li>
+                      ))}
+                      {/* <li className="cursor-pointer select-none p-2 hover:bg-neutral-800 flex items-center">
+                        <img :src="'img/' + service.image" alt="Logo" class="w-7 h-7 mr-2">
+                        <span>xx</span>
+                      </li> */}
+                    </ul>
+                  }
+
+                  <Input
+                  name="nativeValue" id="nativeValue" className="block flex-1 min-w-0 w-full bg-neutral-900 text-white p-4 rounded-r-md"
+                  disabled={chosenToken.address === "" || chosenToken.is_snip20}
+                  placeholder="Amount"
+                  inputProps={{
+                  style: {
+                    color: "white",
+                    textAlign: "center",
+                    textOverflow: "ellipsis",
+                 },
+                 }}
+                 inputRef={nativeValue}
+                 autoComplete="off"
+                />
+                </div>
+
+                
+                  <div className="flex items-center mt-3">
+                    <div className="flex-1 text-sm">
+                      <SingleTokenNative
+                      loadingCoinBalances={loadingCoinBalances}
+                      secretAddress={secretAddress}
+                      secretjs={secretjs}
+                      balances={balances}
+                      price={prices.get(chosenToken.name) || 0}
+                      token={chosenToken}
+                      useFeegrant = {useFeegrant}/>
+                      {/* <button className="text-neutral-400">Balance: XX XX</button> */}
+                    </div>
+                  </div>
+              </div>
+
+              
+              <div className="space-x-4 text-center">
+                <button onClick={() => setIsWrapping(true)} className={"py-1 px-3 rounded border transition-colors font-semibold" + (isWrapping ? "border border-blue-500 bg-blue-500/40" : "hover:bg-zinc-700 active:bg-zinc-800")}><FontAwesomeIcon icon={faDownLong} className="mr-2" />Wrap</button>
+                <button onClick={() => setIsWrapping(false)} className={"py-1 px-3 rounded border transition-colors font-semibold" + (!isWrapping ? "border border-blue-500 bg-blue-500/40" : "hover:bg-zinc-700 active:bg-zinc-800")}><FontAwesomeIcon icon={faUpLong} className="mr-2" />Unwrap</button>
+              </div>
+              
+              <Button
           disabled={!secretAddress}
           size="small"
           variant="text"
@@ -211,10 +328,10 @@ export default function App() {
               const textBody = await result.text();
               console.log(textBody);
               if (result.ok == true) {
-                updateFeeGrantButton("Fee Granted","green");
+                updateFeeGrantButton("Fee Granted for unwrapping","green");
                 toast.success(`Successfully sent new fee grant (0.1 SCRT) for unwrapping tokens to address ${secretAddress}`);
               } else if (textBody == "Existing Fee Grant did not expire\n") {
-                updateFeeGrantButton("Fee Granted","green");
+                updateFeeGrantButton("Fee Granted for unwrapping","green");
                 toast.success(`Your address ${secretAddress} already has an existing fee grant which will be used for unwrapping tokens`);
               } else {
                 updateFeeGrantButton("Fee Grant failed","red");
@@ -230,82 +347,200 @@ export default function App() {
         >
         Grant Fee for unwrapping (0.1 SCRT)
         </Button>
-        <KeplrPanel
-          secretjs={secretjs}
-          setSecretjs={setSecretjs}
-          secretAddress={secretAddress}
-          setSecretAddress={setSecretAddress}
-        />
-      </div>
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          placeItems: "center",
-          placeContent: "center",
+            
+              <div className="flex">
+                  <button onClick={() => setIsWrappedTokenPickerVisible(!isWrappedTokenPickerVisible)} className="inline-flex items-center px-3 text-sm font-semibold bg-neutral-800 rounded-l-md border border-r-0 border-neutral-800 text-neutral-400 focus:border-neutral-900 focus:ring-neutral-900 focus:ring-4 focus:outline-none">
+                    <img src={chosenToken.image} alt={chosenToken.name} className="w-7 h-7 mr-2" />
+                    {!chosenToken.is_snip20 ? "s" : ""}{chosenToken.name}
+                    <FontAwesomeIcon icon={faCaretDown} className="ml-2" />
+                  </button>
+
+                  <Input
+                  name="wrappedValue" id="wrappedValue" className="block flex-1 min-w-0 w-full bg-neutral-900 text-white p-4 rounded-r-md"
+                  disabled={chosenToken.address === "" || chosenToken.is_snip20}
+                  placeholder="Amount"
+                  inputProps={{
+                  style: {
+                    color: "white",
+                    textAlign: "center",
+                    textOverflow: "ellipsis",
+                 },
+                 }}
+                 inputRef={wrappedValue}
+                 autoComplete="off"
+                />
+              </div>
+            
+            
+                  
+            { isWrappedTokenPickerVisible &&
+              <ul className="overflow-y-scroll scrollbar-hide h-64 text-white z-2 absolute mt-16 rounded bg-black ring-1 ring-neutral-800 left-0 right-0 mx-12">
+                {tokens.map(token => (
+                  <li className="cursor-pointer select-none p-2 hover:bg-neutral-800 flex items-center" onClick={() => handleNativePickerChoice(token)} key={token.name}>
+                    <img src={token.image} alt="Logo" className="w-7 h-7 mr-2"/>
+                    {!token.is_snip20 ? "s" : ""}{token.name}
+                  </li>
+                ))}
+                {/* <li className="cursor-pointer select-none p-2 hover:bg-neutral-800 flex items-center">
+                  <img :src="'img/' + service.image" alt="Logo" class="w-7 h-7 mr-2">
+                  <span>xx</span>
+                </li> */}
+              </ul>
+            }
+
+              <div className="text-sm space-x-3">
+                <SingleTokenWrapped
+                loadingCoinBalances={loadingCoinBalances}
+                secretAddress={secretAddress}
+                secretjs={secretjs}
+                balances={balances}
+                price={prices.get(chosenToken.name) || 0}
+                token={chosenToken}
+                useFeegrant = {useFeegrant}/>
+                {/* <button className="text-neutral-400">Balance: XX XX</button> */}
+              </div>
+              
+              <div>
+                <button
+                  disabled={chosenToken.address === "" || chosenToken.is_snip20}
+                  className="w-full py-3 px-3 bg-emerald-500/50 rounded border border-emerald-500 hover:bg-emerald-600 active:bg-emerald-700 transition-colors font-semibold"
+                  onClick={async () => {
+                    if (!secretjs || !secretAddress) {
+                      return;
+                    }
+                    const baseAmount = isWrapping ? nativeValue?.current?.value : wrappedValue?.current?.value
+                    const amount = new BigNumber(baseAmount)
+                   .multipliedBy(`1e${chosenToken.decimals}`)
+                   .toFixed(0, BigNumber.ROUND_DOWN);
+                    if (amount === "NaN") {
+                      console.error("NaN amount", baseAmount);
+                    return;
+                  }
+                try {
+                  setLoadingWrapOrUnwrap(true);
+                  const toastId = toast.loading(
+                    isWrapping ? `Wrapping ${chosenToken.name}` : `Unwrapping ${chosenToken.name}`,
+                    {
+                      closeButton: true,
+                    }
+                  );
+                  if (isWrapping) {
+                    const tx = await secretjs.tx.broadcast(
+                      [
+                        new MsgExecuteContract({
+                          sender: secretAddress,
+                          contractAddress: chosenToken.address,
+                          codeHash: chosenToken.code_hash,
+                          sentFunds: [
+                            { denom: chosenToken.withdrawals[0].from_denom, amount },
+                          ],
+                          msg: { deposit: {} },
+                        }),
+                      ],
+                      {
+                        gasLimit: 150_000,
+                        gasPriceInFeeDenom: 0.25,
+                        feeDenom: "uscrt",
+                      }
+                    );
+        
+                    if (tx.code === 0) {
+                      nativeValue.current.value = "";
+                      toast.update(toastId, {
+                        render: `Wrapped ${chosenToken.name} successfully`,
+                        type: "success",
+                        isLoading: false,
+                        closeOnClick: true,
+                      });
+                      console.log(`Wrapped successfully`);
+                    } else {
+                      toast.update(toastId, {
+                        render: `Wrapping of ${chosenToken.name} failed: ${tx.rawLog}`,
+                        type: "error",
+                        isLoading: false,
+                        closeOnClick: true,
+                      });
+                      console.error(`Tx failed: ${tx.rawLog}`);
+                    }
+                  }
+                  else {
+                    const tx = await secretjs.tx.broadcast(
+                      [
+                        new MsgExecuteContract({
+                          sender: secretAddress,
+                          contractAddress: chosenToken.address,
+                          codeHash: chosenToken.code_hash,
+                          sentFunds: [],
+                          msg: {
+                            redeem: {
+                              amount,
+                              denom:
+                                chosenToken.name === "SCRT"
+                                  ? undefined
+                                  : chosenToken.withdrawals[0].from_denom,
+                            },
+                          },
+                        }),
+                      ],
+                      {
+                        gasLimit: 150_000,
+                        gasPriceInFeeDenom: 0.25,
+                        feeDenom: "uscrt",
+                        feeGranter: useFeegrant ? faucetAddress : "",
+                      }
+                    );
+        
+                    if (tx.code === 0) {
+                      wrappedValue.current.value = "";
+                      toast.update(toastId, {
+                        render: `Unwrapped ${chosenToken.name} successfully`,
+                        type: "success",
+                        isLoading: false,
+                        closeOnClick: true,
+                      });
+                      console.log(`Unwrapped successfully`);
+                    } else {
+                      toast.update(toastId, {
+                        render: `Unwrapping of ${chosenToken.name} failed: ${tx.rawLog}`,
+                        type: "error",
+                        isLoading: false,
+                        closeOnClick: true,
+                      });
+                      console.error(`Tx failed: ${tx.rawLog}`);
+                    }
+                
+            }
+          } finally {
+            setLoadingWrapOrUnwrap(false);
+            try {
+              setLoadingCoinBalances(true);
+              await sleep(1000); // sometimes query nodes lag
+              await updateCoinBalances();
+            } finally {
+              setLoadingCoinBalances(false);
+            }
+          }
         }}
       >
-        <Typography variant="h2" component="div" align="center">
-          Get Privacy
-        </Typography>
-        <Typography
-          component="div"
-          align="center"
-          sx={{
-            marginBottom: "0.5rem",
-          }}
-        >
-          Wrapping Coins as Secret Tokens immediately supercharges them with
-          private balances and private transfers.
-        </Typography>
-      </div>
-      <Breakpoint small down>
-        <div style={{ height: 40 }} />
-      </Breakpoint>
-      {tokens.map((t) => (
-        <ErrorBoundary key={t.name}>
-          <TokenRow
-            token={t}
-            loadingCoinBalances={loadingCoinBalances}
-            secretAddress={secretAddress}
-            secretjs={secretjs}
-            balances={balances}
-            price={prices.get(t.name) || 0}
-            useFeegrant = {useFeegrant}
-          />
-        </ErrorBoundary>
-      ))}
-      <Divider variant="middle"/>
-      <Typography
-          component="div"
-          align="center"
-          sx={{
-            marginBottom: "0.5rem",
-          }}
-        >
-          SNIP20s via IBC
-        </Typography>
-      {snips.map((t) => (
-        <ErrorBoundary key={t.name}>
-          <TokenRow
-            token={t}
-            loadingCoinBalances={loadingCoinBalances}
-            secretAddress={secretAddress}
-            secretjs={secretjs}
-            balances={balances}
-            price={prices.get(t.name) || 0}
-            useFeegrant = {useFeegrant}
-          />
-        </ErrorBoundary>
-      ))}
+      {loadingWrapOrUnwrap ? (<CircularProgress size="0.8em" />) : <FontAwesomeIcon icon={faArrowRightArrowLeft} className="mr-2"/>} {isWrapping ? "Execute Wrapping" : "Execute Unwrapping"}
+      </button>
+              </div>
+            </div>
 
+
+          </div>
+        </div>
+      </div>
+      <div className="text-center text-neutral-600">
+                <a href="https://scrt.network/" target="_blank"><FontAwesomeIcon icon={faBoltLightning} className="mr-2 text-amber-600" />Powered by Secret Network & 🪐 𝕊ecret 𝕊aturn</a>
+      </div>
       <Breakpoint medium up>
         <ToastContainer
           style={{ width: "450px" }}
           position={"top-left"}
           autoClose={false}
           hideProgressBar={true}
-          closeOnClick={false}
+          closeOnClick={true}
           draggable={false} 
           theme={"light"}
           transition={Flip}
@@ -316,7 +551,7 @@ export default function App() {
           position={"bottom-left"}
           autoClose={false}
           hideProgressBar={true}
-          closeOnClick={false}
+          closeOnClick={true}
           draggable={false}
           theme={"light"}
           transition={Flip}
