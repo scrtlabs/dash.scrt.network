@@ -29,21 +29,7 @@ export default function DepositWithdrawDialog({
   };
 
   return (
-    <Dialog open={isOpen} fullWidth={true} onClose={closeDialog}>
-      <TabContext value={selectedTab}>
-        <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
-          <Tabs
-            value={selectedTab}
-            variant="fullWidth"
-            onChange={(_event: React.SyntheticEvent, newSelectedTab: string) =>
-              setSelectedTab(newSelectedTab)
-            }
-          >
-            <Tab label="IBC Deposit" value={"deposit"} />
-            <Tab label="IBC Withdraw" value={"withdraw"} />
-          </Tabs>
-        </Box>
-        <TabPanel value={"deposit"}>
+    <div>
           <Deposit
             token={token}
             secretAddress={secretAddress}
@@ -53,8 +39,6 @@ export default function DepositWithdrawDialog({
             }}
             onFailure={(error) => console.error(error)}
           />
-        </TabPanel>
-        <TabPanel value={"withdraw"}>
           <Withdraw
             token={token}
             secretjs={secretjs}
@@ -66,8 +50,6 @@ export default function DepositWithdrawDialog({
             }}
             onFailure={(error) => console.error(error)}
           />
-        </TabPanel>
-      </TabContext>
-    </Dialog>
+    </div>
   );
 }

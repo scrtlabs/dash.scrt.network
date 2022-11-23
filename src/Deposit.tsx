@@ -333,15 +333,8 @@ export default function Deposit({
           marginBottom: "0.4em",
         }}
       >
-        <LoadingButton
-          variant="contained"
-          sx={{
-            padding: "0.5em 0",
-            width: "10em",
-            fontWeight: "bold",
-            fontSize: "1.2em",
-          }}
-          loading={loadingTx}
+        <button
+          className="w-full py-3 px-3 bg-emerald-500/50 rounded border border-emerald-500 hover:bg-emerald-600 active:bg-emerald-700 transition-colors font-semibold"
           onClick={async () => {
             if (!sourceCosmJs) {
               console.error("No cosmjs");
@@ -646,8 +639,8 @@ export default function Deposit({
             }
           }}
         >
-          Deposit
-        </LoadingButton>
+          {loadingTx ? <CircularProgress size="0.8em"/> : "Deposit"}
+        </button>
       </div>
     </>
   );
