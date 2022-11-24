@@ -1,5 +1,6 @@
+import { Footer } from 'components/Footer';
 import { KeplrPanel } from 'components/Keplr';
-import { Navigation } from 'components/navigation';
+import { Navigation } from 'components/Navigation';
 import React, { useState } from 'react';
 import { SecretNetworkClient } from 'secretjs';
 
@@ -10,7 +11,7 @@ const DefaultLayout =({children}) =>{
         <>
 
           <div className="flex">
-            <aside className="w-72 fixed left-0 top-0 h-screen bg-black p-10 overflow-x-hidden">
+            <aside className="w-72 fixed left-0 top-0 h-screen bg-zinc-800 p-10 overflow-x-hidden">
               <Navigation />
             </aside>
             <main className="flex-1 ml-72">
@@ -25,14 +26,9 @@ const DefaultLayout =({children}) =>{
               </div>
               {/* Real Main */}
               {children}
+              <Footer />
             </main>
           </div>
-
-
-
-
-
-
         </>
     )
 }
