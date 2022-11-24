@@ -1,11 +1,8 @@
-import { TabContext, TabPanel } from "@mui/lab";
-import { Box, Dialog, Tab, Tabs } from "@mui/material";
 import React, { useState } from "react";
-import { toast } from "react-toastify";
 import { SecretNetworkClient } from "secretjs";
-import { Token } from "./config";
-import Deposit from "./Deposit";
-import Withdraw from "./Withdraw";
+import { Token } from "config/config";
+import Deposit from "components/Deposit";
+import Withdraw from "components/Withdraw";
 
 export default function DepositWithdrawDialog({
   token,
