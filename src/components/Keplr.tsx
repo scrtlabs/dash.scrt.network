@@ -1,11 +1,9 @@
-import { FileCopyOutlined } from "@mui/icons-material";
-import Button from "@mui/material/Button";
 import React, { useState } from "react";
 import CopyToClipboard from "react-copy-to-clipboard";
 import { Else, If, Then } from "react-if";
 import { Breakpoint } from "react-socks";
 import { SecretNetworkClient } from "secretjs";
-import { chains } from "./config";
+import { chains } from "config/config";
 
 const SECRET_CHAIN_ID = chains["Secret Network"].chain_id;
 const SECRET_RPC = chains["Secret Network"].rpc;
@@ -28,14 +26,14 @@ export function KeplrPanel({
   // }, []);
 
   const content = (
-    <div style={{ display: "flex", placeItems: "center", borderRadius: 10 }}>
+    <div className="flex items-center font-semibold border rounded border-neutral-700 bg-neutral-800 px-4 py-2 hover:bg-neutral-700 active:bg-neutral-600 transition-colors">
       <Breakpoint small down style={{ display: "flex" }}>
-        <img src="/fina.webp" style={{ width: "1.8rem", borderRadius: 10 }} />
+        <img src="/fina.webp" className="w-7 h-7 inline mr-2"/>
       </Breakpoint>
       <Breakpoint medium up style={{ display: "flex" }}>
-        <img src="/keplr.svg" style={{ width: "1.8rem", borderRadius: 10 }} />
+        <img src="/keplr.svg" className="w-7 h-7 inline mr-2"/>
       </Breakpoint>
-      <span style={{ margin: "0 0.3rem" }}>
+      <span>
         <If condition={secretAddress.length > 0}>
           <Then>
             <Breakpoint small down>{`${secretAddress.slice(
@@ -46,7 +44,7 @@ export function KeplrPanel({
               {secretAddress}
             </Breakpoint>
           </Then>
-          <Else>Connect wallet</Else>
+          <Else>Connect Wallet</Else>
         </If>
       </span>
     </div>
@@ -61,32 +59,20 @@ export function KeplrPanel({
           setTimeout(() => setIsCopied(false), 3000);
         }}
       >
-        <Button
-          variant="contained"
-          style={{
-            background: "white",
-            textTransform: "none",
-            color: "black",
-          }}
-        >
+        <button className="w-full md:w-auto">
           {content}{" "}
-          <FileCopyOutlined
-            fontSize="small"
-            style={isCopied ? { fill: "green" } : undefined}
-          />
-        </Button>
+        </button>
       </CopyToClipboard>
     );
   } else {
     return (
-      <Button
+      <button
         id="keplr-button"
-        variant="contained"
-        style={{ background: "white", color: "black" }}
         onClick={() => setupKeplr(setSecretjs, setSecretAddress)}
+        className="w-full md:w-auto"
       >
         {content}
-      </Button>
+      </button>
     );
   }
 }
@@ -107,12 +93,6 @@ async function setupKeplr(
   }
 
   await window.keplr.enable(SECRET_CHAIN_ID);
-  window.keplr.defaultOptions = {
-    sign: {
-      preferNoSetFee: false,
-      disableBalanceCheck: true,
-    },
-  };
 
   const keplrOfflineSigner = window.getOfflineSignerOnlyAmino(SECRET_CHAIN_ID);
   const accounts = await keplrOfflineSigner.getAccounts();
@@ -136,7 +116,7 @@ export async function setKeplrViewingKey(token: string) {
     console.error("Keplr not present");
     return;
   }
-  
+
   await window.keplr.suggestToken(SECRET_CHAIN_ID, token);
 }
 
@@ -147,7 +127,6 @@ export async function getKeplrViewingKey(
     console.error("Keplr not present");
     return null;
   }
-
 
   try {
     return await window.keplr.getSecret20ViewingKey(SECRET_CHAIN_ID, token);

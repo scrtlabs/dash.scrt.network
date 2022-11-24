@@ -1,4 +1,3 @@
-import LoadingButton from "@mui/lab/LoadingButton";
 import {
   Avatar,
   Button,
@@ -23,8 +22,8 @@ import {
   suggestInjectiveToKeplr,
   suggestKujiraToKeplr,
   suggestTerraToKeplr,
-} from "./commons";
-import { chains, Token } from "./config";
+} from "config/commons";
+import { chains, Token } from "config/config";
 import CopyableAddress from "./CopyableAddress";
 
 export default function Withdraw({
