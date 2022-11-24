@@ -1,8 +1,8 @@
-import { Button, Typography } from "@mui/material";
 import React, { useState } from "react";
 import CopyToClipboard from "react-copy-to-clipboard";
-import { FileCopyOutlined } from "@mui/icons-material";
 import { Breakpoint } from "react-socks";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCopy } from "@fortawesome/free-solid-svg-icons";
 
 export default function CopyableAddress({
   address,
@@ -22,7 +22,7 @@ export default function CopyableAddress({
         gap: "0.1em",
       }}
     >
-      <Typography component={"span"} sx={{ opacity: 0.8 }}>
+      <span>
         <a
           href={`${explorerPrefix}${address}`}
           target="_blank"
@@ -38,7 +38,7 @@ export default function CopyableAddress({
             {address}
           </Breakpoint>
         </a>
-      </Typography>
+      </span>
       <CopyToClipboard
         text={address}
         onCopy={() => {
@@ -46,12 +46,9 @@ export default function CopyableAddress({
           setTimeout(() => setIsCopied(false), 3000);
         }}
       >
-        <Button style={{ color: "black", minWidth: 0 }}>
-          <FileCopyOutlined
-            fontSize="small"
-            style={{ fill: isCopied ? "green" : undefined }}
-          />
-        </Button>
+        <button className="text-zinc-700 hover:text-white active:text-zinc-500 transition-colors">
+          <FontAwesomeIcon icon={faCopy}/>
+        </button>
       </CopyToClipboard>
     </div>
   );

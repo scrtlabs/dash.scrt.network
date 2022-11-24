@@ -142,22 +142,22 @@ export function Wrap() {
   return (
     <>
       <div className="w-full max-w-xl mx-auto px-4">
-        <div className="border rounded-lg p-12 pb-7 border-neutral-700 bg-gradient-to-t from-black to-zinc-900/75 w-full">
+        <div className="border rounded-lg p-12 pb-7 border-zinc-700 w-full bg-zinc-800 text-zinc-200">
 
           {/* header */}
           <div className="mb-4">
             <h1 className="inline text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-purple-500 mb-4">Enable Privacy</h1>
 
           </div>
-          <p className="text-neutral-400 mb-10">
-            Wrapping Coins as Secret Tokens immediately supercharges them with private balances and private transfers.
+          <p className="mb-10">
+            Wrapping coins as secret tokens immediately supercharges them with private balances and private transfers.
           </p>
         
           
           <div className="space-y-6">
             <div>
               <div className="flex">
-                <button onClick={() => setIsNativeTokenPickerVisible(!isNativeTokenPickerVisible)} className="inline-flex items-center px-3 text-sm font-semibold bg-neutral-800 rounded-l-md border border-r-0 border-neutral-800 text-neutral-400 focus:border-neutral-900 focus:ring-neutral-900 focus:ring-4 focus:outline-none">
+                <button onClick={() => setIsNativeTokenPickerVisible(!isNativeTokenPickerVisible)} className="inline-flex items-center px-3 text-sm font-semibold bg-zinc-800 rounded-l-md border border-r-0 border-zinc-800 text-zinc-400 focus:border-zinc-900 focus:ring-zinc-900 focus:ring-4 focus:outline-none">
                   <img src={chosenToken.image} alt={chosenToken.name} className="w-7 h-7 mr-2"/>
                   {chosenToken.name}
                   <FontAwesomeIcon icon={faCaretDown} className="ml-2" />
@@ -165,14 +165,14 @@ export function Wrap() {
 
                 
                 { isNativeTokenPickerVisible &&
-                  <ul className="overflow-y-scroll scrollbar-hide h-64 text-white z-2 absolute mt-16 rounded bg-black ring-1 ring-neutral-800 left-0 right-0 mx-12">
+                  <ul className="overflow-y-scroll scrollbar-hide h-64 text-white z-2 absolute mt-16 rounded bg-black ring-1 ring-zinc-800 left-0 right-0 mx-12">
                     {tokens.map(token => (
-                      <li className="cursor-pointer select-none p-2 hover:bg-neutral-800 flex items-center" onClick={() => handleNativePickerChoice(token)} key={token.name}>
+                      <li className="cursor-pointer select-none p-2 hover:bg-zinc-800 flex items-center" onClick={() => handleNativePickerChoice(token)} key={token.name}>
                         <img src={token.image} alt="Logo" className="w-7 h-7 mr-2"/>
                         {token.name}
                       </li>
                     ))}
-                    {/* <li className="cursor-pointer select-none p-2 hover:bg-neutral-800 flex items-center">
+                    {/* <li className="cursor-pointer select-none p-2 hover:bg-zinc-800 flex items-center">
                       <img :src="'img/' + service.image" alt="Logo" class="w-7 h-7 mr-2">
                       <span>xx</span>
                     </li> */}
@@ -180,7 +180,7 @@ export function Wrap() {
                 }
 
                 <Input
-                name="nativeValue" id="nativeValue" className="block flex-1 min-w-0 w-full bg-neutral-900 text-white p-4 rounded-r-md"
+                name="nativeValue" id="nativeValue" className="block flex-1 min-w-0 w-full bg-zinc-900 text-white p-4 rounded-r-md"
                 disabled={chosenToken.address === "" || chosenToken.is_snip20}
                 placeholder="Amount"
                 inputProps={{
@@ -206,7 +206,7 @@ export function Wrap() {
                     price={prices.get(chosenToken.name) || 0}
                     token={chosenToken}
                     useFeegrant = {useFeegrant}/>
-                    {/* <button className="text-neutral-400">Balance: XX XX</button> */}
+                    {/* <button className="text-zinc-400">Balance: XX XX</button> */}
                   </div>
                 </div>
             </div>
@@ -217,7 +217,6 @@ export function Wrap() {
             
             <Button
         disabled={!secretAddress}
-        size="small"
         variant="text"
         id="grantButton"
         onClick={async () => {
@@ -250,14 +249,14 @@ export function Wrap() {
       </Button>
           
             <div className="flex">
-                <button onClick={() => setIsWrappedTokenPickerVisible(!isWrappedTokenPickerVisible)} className="inline-flex items-center px-3 text-sm font-semibold bg-neutral-800 rounded-l-md border border-r-0 border-neutral-800 text-neutral-400 focus:border-neutral-900 focus:ring-neutral-900 focus:ring-4 focus:outline-none">
+                <button onClick={() => setIsWrappedTokenPickerVisible(!isWrappedTokenPickerVisible)} className="inline-flex items-center px-3 text-sm font-semibold bg-zinc-800 rounded-l-md border border-r-0 border-zinc-800 text-zinc-400 focus:border-zinc-900 focus:ring-zinc-900 focus:ring-4 focus:outline-none">
                   <img src={chosenToken.image} alt={chosenToken.name} className="w-7 h-7 mr-2" />
                   {!chosenToken.is_snip20 ? "s" : ""}{chosenToken.name}
                   <FontAwesomeIcon icon={faCaretDown} className="ml-2" />
                 </button>
 
                 <Input
-                name="wrappedValue" id="wrappedValue" className="block flex-1 min-w-0 w-full bg-neutral-900 text-white p-4 rounded-r-md"
+                name="wrappedValue" id="wrappedValue" className="block flex-1 min-w-0 w-full bg-zinc-900 text-white p-4 rounded-r-md"
                 disabled={chosenToken.address === "" || chosenToken.is_snip20}
                 placeholder="Amount"
                 inputProps={{
@@ -272,14 +271,14 @@ export function Wrap() {
               />
             </div>
             { isWrappedTokenPickerVisible &&
-              <ul className="overflow-y-scroll scrollbar-hide h-64 text-white z-2 absolute mt-16 rounded bg-black ring-1 ring-neutral-800 left-0 right-0 mx-12">
+              <ul className="overflow-y-scroll scrollbar-hide h-64 text-white z-2 absolute mt-16 rounded bg-black ring-1 ring-zinc-800 left-0 right-0 mx-12">
                 {tokens.map(token => (
-                  <li className="cursor-pointer select-none p-2 hover:bg-neutral-800 flex items-center" onClick={() => handleNativePickerChoice(token)} key={token.name}>
+                  <li className="cursor-pointer select-none p-2 hover:bg-zinc-800 flex items-center" onClick={() => handleNativePickerChoice(token)} key={token.name}>
                     <img src={token.image} alt="Logo" className="w-7 h-7 mr-2"/>
                     {!token.is_snip20 ? "s" : ""}{token.name}
                   </li>
                 ))}
-                {/* <li className="cursor-pointer select-none p-2 hover:bg-neutral-800 flex items-center">
+                {/* <li className="cursor-pointer select-none p-2 hover:bg-zinc-800 flex items-center">
                   <img :src="'img/' + service.image" alt="Logo" class="w-7 h-7 mr-2">
                   <span>xx</span>
                 </li> */}
@@ -295,7 +294,7 @@ export function Wrap() {
                 price={prices.get(chosenToken.name) || 0}
                 token={chosenToken}
                 useFeegrant = {useFeegrant}/>
-                {/* <button className="text-neutral-400">Balance: XX XX</button> */}
+                {/* <button className="text-zinc-400">Balance: XX XX</button> */}
               </div>
               
               <div>
@@ -425,9 +424,6 @@ export function Wrap() {
             </div>
           </div>
         </div>
-      </div>
-      <div className="text-center text-neutral-600 text-sm">
-        ⚡ Powered by <a href="https://scrt.network/" target="_blank">Secret Network</a> and <a href="https://scrt.network/" target="_blank">🪐 𝕊ecret 𝕊aturn</a>
       </div>
       <Breakpoint medium up>
         <ToastContainer

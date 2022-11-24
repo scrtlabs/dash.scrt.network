@@ -136,25 +136,6 @@ export function Ibc() {
   
   return (
     <div>
-      <div className="flex justify-end p-4">
-        {/* <KeplrPanel
-          secretjs={secretjs}
-          setSecretjs={setSecretjs}
-          secretAddress={secretAddress}
-          setSecretAddress={setSecretAddress}
-        /> */}
-      </div>
-
-      <div
-        style={{
-          display: "grid",
-          flexDirection: "column",
-          gridTemplateColumns: "1fr 1fr",
-          placeItems: "top",
-          placeContent: "top",
-          overflow: "auto",
-        }}
-      >
       <div className="w-full max-w-xl mx-auto">
         <div className="border rounded-lg p-12 pb-7 border-neutral-700 bg-gradient-to-t from-black to-zinc-900/75 w-full">
         <div className="mb-4">
@@ -172,10 +153,6 @@ export function Ibc() {
           setIsOpen={setIsDepositWithdrawDialogOpen}
           />
         </div>
-      </div>
-      </div>
-      <div className="text-center text-neutral-600 text-sm">
-        ⚡ Powered by <a href="https://scrt.network/" target="_blank">Secret Network</a> and <a href="https://scrt.network/" target="_blank">🪐 𝕊ecret 𝕊aturn</a>
       </div>
       <Breakpoint medium up>
         <ToastContainer
