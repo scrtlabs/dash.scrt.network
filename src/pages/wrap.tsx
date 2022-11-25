@@ -1,26 +1,21 @@
-import React, { useEffect, useState, useRef, useContext} from "react";
+import React, { useEffect, useState, useRef, useContext, createContext } from "react";
 import { Breakpoint } from "react-socks";
 import { MsgExecuteContract, SecretNetworkClient } from "secretjs";
-import { chains, Token, tokens } from "config/config";
-import { sleep, faucetURL , faucetAddress} from "config/commons";
-import {KeplrContext} from "layouts/defaultLayout";
-import {
-  Button,
-  CircularProgress,
-  Input,
-} from "@mui/material";
+import { chains, Token, tokens } from "utils/config";
+import { sleep, faucetURL , faucetAddress } from "utils/commons";
+import { KeplrContext } from "layouts/defaultLayout";
 import BigNumber from "bignumber.js";
 import { Flip, ToastContainer, toast} from "react-toastify";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { library } from "@fortawesome/fontawesome-svg-core";
-import { faDownLong, faUpLong, faArrowRightArrowLeft, faCaretDown, faBoltLightning, faLock, faRotateRight} from '@fortawesome/free-solid-svg-icons'
-import {SingleTokenWrapped, SingleTokenNative} from "../components/SingleToken";
+import { faDownLong, faUpLong, faArrowRightArrowLeft, faCaretDown } from '@fortawesome/free-solid-svg-icons'
+import { SingleTokenWrapped, SingleTokenNative } from "components/wrap/SingleToken";
+
+export const WrapContext = createContext(null);
 
 export function Wrap() {
   const [balances, setBalances] = useState<Map<string, string>>(new Map());
   const [prices, setPrices] = useState<Map<string, number>>(new Map());
-  const [loadingCoinBalances, setLoadingCoinBalances] =
-    useState<boolean>(false);
+  const [loadingCoinBalances, setLoadingCoinBalances] = useState<boolean>(false);
   const [useFeegrant, setUseFeegrant] = useState<boolean>(false);
   const [chosenToken, setChosenToken] = useState<Token>(tokens.filter(token => token.name === "SCRT")[0]);
   const [isWrapping, setIsWrapping] = useState<boolean>(true);
@@ -41,6 +36,15 @@ export function Wrap() {
     }
     setIsNativeTokenPickerVisible(false)
     setIsWrappedTokenPickerVisible(false)
+
+    async () => {
+      try {
+        setLoadingCoinBalances(true);
+        await updateCoinBalances();
+      } finally {
+        setLoadingCoinBalances(false);
+      }
+    }
   }
   
   const updateFeeGrantButton = (text : string, color : string) => {
@@ -147,7 +151,7 @@ export function Wrap() {
 
           {/* header */}
           <div className="mb-4">
-            <h1 className="inline text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-purple-500 mb-4">Enable Privacy</h1>
+            <h1 className="inline text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-purple-500 mb-4">Secret Wrap</h1>
 
           </div>
           <p className="mb-10">
@@ -163,10 +167,8 @@ export function Wrap() {
                   {chosenToken.name}
                   <FontAwesomeIcon icon={faCaretDown} className="ml-2" />
                 </button>
-
-                
                 { isNativeTokenPickerVisible &&
-                  <ul className="overflow-y-scroll scrollbar-hide h-64 text-white z-2 absolute mt-16 rounded bg-black ring-1 ring-zinc-800 left-0 right-0 mx-12">
+                  <ul className="overflow-y-scroll scrollbar-hide h-64 text-white z-5 mt-16 rounded bg-black ring-1 ring-zinc-800 w-96 absolute left-1/2">
                     {tokens.map(token => (
                       <li className="cursor-pointer select-none p-2 hover:bg-zinc-800 flex items-center" onClick={() => handleNativePickerChoice(token)} key={token.name}>
                         <img src={token.image} alt="Logo" className="w-7 h-7 mr-2"/>
@@ -180,20 +182,8 @@ export function Wrap() {
                   </ul>
                 }
 
-                <Input
-                name="nativeValue" id="nativeValue" className="block flex-1 min-w-0 w-full bg-zinc-900 text-white p-4 rounded-r-md"
-                disabled={chosenToken.address === "" || chosenToken.is_snip20}
-                placeholder="Amount"
-                inputProps={{
-                style: {
-                  color: "white",
-                  textAlign: "center",
-                  textOverflow: "ellipsis",
-              },
-              }}
-              inputRef={nativeValue}
-              autoComplete="off"
-              />
+                <input ref={nativeValue} type="text" className="block flex-1 min-w-0 w-full bg-zinc-900 text-white p-4 rounded-r-md" name="nativeValue" id="nativeValue" placeholder="Amount" disabled={chosenToken.address === "" || chosenToken.is_snip20}/>
+
               </div>
 
               
@@ -212,64 +202,44 @@ export function Wrap() {
                 </div>
             </div>
             <div className="space-x-4 text-center">
-              <button onClick={() => setIsWrapping(true)} className={"py-1 px-3 rounded border transition-colors font-semibold" + (isWrapping ? "border border-blue-500 bg-blue-500/40" : "hover:bg-zinc-700 active:bg-zinc-800")}><FontAwesomeIcon icon={faDownLong} className="mr-2" />Wrap</button>
-              <button onClick={() => setIsWrapping(false)} className={"py-1 px-3 rounded border transition-colors font-semibold" + (!isWrapping ? "border border-blue-500 bg-blue-500/40" : "hover:bg-zinc-700 active:bg-zinc-800")}><FontAwesomeIcon icon={faUpLong} className="mr-2" />Unwrap</button>
+              <button onClick={() => setIsWrapping(true)} className={"py-1 px-3 font-semibold rounded-md border transition-colors" + (isWrapping ? "border border-blue-500 bg-blue-500/40" : "hover:bg-zinc-700 active:bg-zinc-700")}><FontAwesomeIcon icon={faDownLong} className="mr-2" />Wrap</button>
+              <button onClick={() => setIsWrapping(false)} className={"py-1 px-3 font-semibold rounded-md border transition-colors" + (!isWrapping ? "border border-blue-500 bg-blue-500/40" : "hover:bg-zinc-700 active:bg-zinc-700")}><FontAwesomeIcon icon={faUpLong} className="mr-2" />Unwrap</button>
             </div>
-            
-            <Button
-        disabled={!secretAddress}
-        variant="text"
-        id="grantButton"
-        onClick={async () => {
-            fetch(faucetURL, {
-            method: 'POST',
-            body: JSON.stringify({ "Address": secretAddress }),
-            headers: { 'Content-Type': 'application/json' }
-          }).then(async (result) => {
-            const textBody = await result.text();
-            console.log(textBody);
-            if (result.ok == true) {
-              updateFeeGrantButton("Fee Granted for unwrapping","green");
-              toast.success(`Successfully sent new fee grant (0.1 SCRT) for unwrapping tokens to address ${secretAddress}`);
-            } else if (textBody == "Existing Fee Grant did not expire\n") {
-              updateFeeGrantButton("Fee Granted for unwrapping","green");
-              toast.success(`Your address ${secretAddress} already has an existing fee grant which will be used for unwrapping tokens`);
-            } else {
-              updateFeeGrantButton("Fee Grant failed","red");
-              toast.error(`Fee Grant for address ${secretAddress} failed with status code: ${result.status}`);
-            }
-            setUseFeegrant(true);
-          }).catch((error) => { 
-              updateFeeGrantButton("Fee Grant failed","red");
-              toast.error(`Fee Grant for address ${secretAddress} failed with error: ${error}`);
-            });
-          }
-        }
-      >
-      Grant Fee for unwrapping (0.1 SCRT)
-      </Button>
-          
+
+            <button disabled={!secretAddress} id="grantButton" className="flex-initial inline text-xs font-semibold px-2 py-0.5 rounded border border-sky-800 text-sky-700 transition-colors hover:border-sky-500 hover:text-sky-500" onClick={async () => {
+              fetch(faucetURL, {
+                method: 'POST',
+                body: JSON.stringify({ "Address": secretAddress }),
+                headers: { 'Content-Type': 'application/json' }
+              }).then(async (result) => {
+                const textBody = await result.text();
+                console.log(textBody);
+                if (result.ok == true) {
+                  updateFeeGrantButton("Fee Granted for unwrapping","green");
+                  toast.success(`Successfully sent new fee grant (0.1 SCRT) for unwrapping tokens to address ${secretAddress}`);
+                } else if (textBody == "Existing Fee Grant did not expire\n") {
+                  updateFeeGrantButton("Fee Granted for unwrapping","green");
+                  toast.success(`Fee granted for unwrapping!`);
+                } else {
+                  updateFeeGrantButton("Fee Grant failed","red");
+                  toast.error(`Fee grant failed. Status Code: ${result.status}`);
+                }
+                setUseFeegrant(true);
+              }).catch((error) => { 
+                updateFeeGrantButton("Fee Grant failed","red");
+                toast.error(`Fee Grant for address ${secretAddress} failed with error: ${error}`);
+              });
+            }}>
+                Grant Fee for unwrapping (max. 0.1 SCRT)
+            </button>
             <div className="flex">
                 <button onClick={() => setIsWrappedTokenPickerVisible(!isWrappedTokenPickerVisible)} className="inline-flex items-center px-3 text-sm font-semibold bg-zinc-800 rounded-l-md border border-r-0 border-zinc-800 text-zinc-400 focus:border-zinc-900 focus:ring-zinc-900 focus:ring-4 focus:outline-none">
                   <img src={chosenToken.image} alt={chosenToken.name} className="w-7 h-7 mr-2" />
                   {!chosenToken.is_snip20 ? "s" : ""}{chosenToken.name}
                   <FontAwesomeIcon icon={faCaretDown} className="ml-2" />
                 </button>
-
-                <Input
-                name="wrappedValue" id="wrappedValue" className="block flex-1 min-w-0 w-full bg-zinc-900 text-white p-4 rounded-r-md"
-                disabled={chosenToken.address === "" || chosenToken.is_snip20}
-                placeholder="Amount"
-                inputProps={{
-                style: {
-                  color: "white",
-                  textAlign: "center",
-                  textOverflow: "ellipsis",
-              },
-              }}
-              inputRef={wrappedValue}
-              autoComplete="off"
-              />
+                
+                <input ref={wrappedValue} type="text" className="block flex-1 min-w-0 w-full bg-zinc-900 text-white p-4 rounded-r-md" name="wrappedValue" id="wrappedValue" placeholder="Amount" disabled={chosenToken.address === "" || chosenToken.is_snip20}/>
             </div>
             { isWrappedTokenPickerVisible &&
               <ul className="overflow-y-scroll scrollbar-hide h-64 text-white z-2 absolute mt-16 rounded bg-black ring-1 ring-zinc-800 left-0 right-0 mx-12">
@@ -288,14 +258,13 @@ export function Wrap() {
 
               <div className="text-sm space-x-3">
                 <SingleTokenWrapped
-                loadingCoinBalances={loadingCoinBalances}
-                secretAddress={secretAddress}
-                secretjs={secretjs}
-                balances={balances}
-                price={prices.get(chosenToken.name) || 0}
-                token={chosenToken}
+                  loadingCoinBalances={loadingCoinBalances}
+                  secretAddress={secretAddress}
+                  secretjs={secretjs}
+                  balances={balances}
+                  price={prices.get(chosenToken.name) || 0}
+                  token={chosenToken}
                 />
-                {/* <button className="text-zinc-400">Balance: XX XX</button> */}
               </div>
               
               <div>
@@ -308,134 +277,133 @@ export function Wrap() {
                     }
                     const baseAmount = isWrapping ? nativeValue?.current?.value : wrappedValue?.current?.value
                     const amount = new BigNumber(baseAmount)
-                  .multipliedBy(`1e${chosenToken.decimals}`)
-                  .toFixed(0, BigNumber.ROUND_DOWN);
-                    if (amount === "NaN") {
-                      console.error("NaN amount", baseAmount);
-                    return;
-                  }
-                try {
-                  setLoadingWrapOrUnwrap(true);
-                  const toastId = toast.loading(
-                    isWrapping ? `Wrapping ${chosenToken.name}` : `Unwrapping ${chosenToken.name}`,
-                    {
-                      closeButton: true,
+                    .multipliedBy(`1e${chosenToken.decimals}`)
+                    .toFixed(0, BigNumber.ROUND_DOWN);
+                      if (amount === "NaN") {
+                        console.error("NaN amount", baseAmount);
+                      return;
                     }
-                  );
-                  if (isWrapping) {
-                    const tx = await secretjs.tx.broadcast(
-                      [
-                        new MsgExecuteContract({
-                          sender: secretAddress,
-                          contractAddress: chosenToken.address,
-                          codeHash: chosenToken.code_hash,
-                          sentFunds: [
-                            { denom: chosenToken.withdrawals[0].from_denom, amount },
-                          ],
-                          msg: { deposit: {} },
-                        }),
-                      ],
+                  try {
+                    setLoadingWrapOrUnwrap(true);
+                    const toastId = toast.loading(
+                      isWrapping ? `Wrapping ${chosenToken.name}` : `Unwrapping ${chosenToken.name}`,
                       {
-                        gasLimit: 150_000,
-                        gasPriceInFeeDenom: 0.25,
-                        feeDenom: "uscrt",
+                        closeButton: true,
                       }
                     );
-        
-                    if (tx.code === 0) {
-                      nativeValue.current.value = "";
-                      toast.update(toastId, {
-                        render: `Wrapped ${chosenToken.name} successfully`,
-                        type: "success",
-                        isLoading: false,
-                        closeOnClick: true,
-                      });
-                      console.log(`Wrapped successfully`);
-                    } else {
-                      toast.update(toastId, {
-                        render: `Wrapping of ${chosenToken.name} failed: ${tx.rawLog}`,
-                        type: "error",
-                        isLoading: false,
-                        closeOnClick: true,
-                      });
-                      console.error(`Tx failed: ${tx.rawLog}`);
+                    if (isWrapping) {
+                      const tx = await secretjs.tx.broadcast(
+                        [
+                          new MsgExecuteContract({
+                            sender: secretAddress,
+                            contractAddress: chosenToken.address,
+                            codeHash: chosenToken.code_hash,
+                            sentFunds: [
+                              { denom: chosenToken.withdrawals[0].from_denom, amount },
+                            ],
+                            msg: { deposit: {} },
+                          }),
+                        ],
+                        {
+                          gasLimit: 150_000,
+                          gasPriceInFeeDenom: 0.25,
+                          feeDenom: "uscrt",
+                        }
+                      );
+          
+                      if (tx.code === 0) {
+                        nativeValue.current.value = "";
+                        toast.update(toastId, {
+                          render: `Wrapped ${chosenToken.name} successfully`,
+                          type: "success",
+                          isLoading: false,
+                          closeOnClick: true,
+                        });
+                        console.log(`Wrapped successfully`);
+                      } else {
+                        toast.update(toastId, {
+                          render: `Wrapping of ${chosenToken.name} failed: ${tx.rawLog}`,
+                          type: "error",
+                          isLoading: false,
+                          closeOnClick: true,
+                        });
+                        console.error(`Tx failed: ${tx.rawLog}`);
+                      }
                     }
-                  }
-                  else {
-                    const tx = await secretjs.tx.broadcast(
-                      [
-                        new MsgExecuteContract({
-                          sender: secretAddress,
-                          contractAddress: chosenToken.address,
-                          codeHash: chosenToken.code_hash,
-                          sentFunds: [],
-                          msg: {
-                            redeem: {
-                              amount,
-                              denom:
-                                chosenToken.name === "SCRT"
-                                  ? undefined
-                                  : chosenToken.withdrawals[0].from_denom,
+                    else {
+                      const tx = await secretjs.tx.broadcast(
+                        [
+                          new MsgExecuteContract({
+                            sender: secretAddress,
+                            contractAddress: chosenToken.address,
+                            codeHash: chosenToken.code_hash,
+                            sentFunds: [],
+                            msg: {
+                              redeem: {
+                                amount,
+                                denom:
+                                  chosenToken.name === "SCRT"
+                                    ? undefined
+                                    : chosenToken.withdrawals[0].from_denom,
+                              },
                             },
-                          },
-                        }),
-                      ],
-                      {
-                        gasLimit: 150_000,
-                        gasPriceInFeeDenom: 0.25,
-                        feeDenom: "uscrt",
-                        feeGranter: useFeegrant ? faucetAddress : "",
+                          }),
+                        ],
+                        {
+                          gasLimit: 150_000,
+                          gasPriceInFeeDenom: 0.25,
+                          feeDenom: "uscrt",
+                          feeGranter: useFeegrant ? faucetAddress : "",
+                        }
+                      );
+                      if (tx.code === 0) {
+                        wrappedValue.current.value = "";
+                        toast.update(toastId, {
+                          render: `Unwrapped ${chosenToken.name} successfully`,
+                          type: "success",
+                          isLoading: false,
+                          closeOnClick: true,
+                        });
+                        console.log(`Unwrapped successfully`);
+                      } else {
+                        toast.update(toastId, {
+                          render: `Unwrapping of ${chosenToken.name} failed: ${tx.rawLog}`,
+                          type: "error",
+                          isLoading: false,
+                          closeOnClick: true,
+                        });
+                        console.error(`Tx failed: ${tx.rawLog}`);
                       }
-                    );
-        
-                    if (tx.code === 0) {
-                      wrappedValue.current.value = "";
-                      toast.update(toastId, {
-                        render: `Unwrapped ${chosenToken.name} successfully`,
-                        type: "success",
-                        isLoading: false,
-                        closeOnClick: true,
-                      });
-                      console.log(`Unwrapped successfully`);
-                    } else {
-                      toast.update(toastId, {
-                        render: `Unwrapping of ${chosenToken.name} failed: ${tx.rawLog}`,
-                        type: "error",
-                        isLoading: false,
-                        closeOnClick: true,
-                      });
-                      console.error(`Tx failed: ${tx.rawLog}`);
                     }
-                
-            }
-          } finally {
-            setLoadingWrapOrUnwrap(false);
-            try {
-              setLoadingCoinBalances(true);
-              await sleep(1000); // sometimes query nodes lag
-              await updateCoinBalances();
-            } finally {
-              setLoadingCoinBalances(false);
-            }
-          }
-        }}
-      >
-      {loadingWrapOrUnwrap ? (<CircularProgress size="0.8em" />) : <FontAwesomeIcon icon={faArrowRightArrowLeft} className="mr-2"/>} {isWrapping ? "Execute Wrapping" : "Execute Unwrapping"}
-      </button>
-            </div>
+                  } finally {
+                    setLoadingWrapOrUnwrap(false);
+                    try {
+                      setLoadingCoinBalances(true);
+                      await sleep(1000); // sometimes query nodes lag
+                      await updateCoinBalances();
+                    } finally {
+                      setLoadingCoinBalances(false);
+                    }
+                  }
+                }}>
+                  {loadingWrapOrUnwrap ? (<svg className="inline-block animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"> <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle> <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path> </svg>) : ''} <FontAwesomeIcon icon={faArrowRightArrowLeft} className="mr-2"/>{isWrapping ? "Execute Wrapping" : "Execute Unwrapping"}
+                </button>
+              </div>
           </div>
         </div>
       </div>
       <Breakpoint medium up>
         <ToastContainer
-          style={{ width: "450px" }}
-          position={"top-left"}
-          autoClose={false}
-          hideProgressBar={true}
-          closeOnClick={true}
-          draggable={false} 
-          theme={"dark"}
-          transition={Flip}
+          position="bottom-left"
+          autoClose={5000}
+          hideProgressBar
+          newestOnTop={true}
+          closeOnClick={false}
+          rtl={false}
+          pauseOnFocusLoss
+          draggable={false}
+          pauseOnHover={true}
+          theme="dark"
         />
       </Breakpoint>
       <Breakpoint small down>

@@ -1,14 +1,11 @@
 import React, { useEffect, useState, useRef } from "react";
 import { Breakpoint } from "react-socks";
 import { SecretNetworkClient } from "secretjs";
-import { chains, Token, tokens } from "config/config";
-import { faucetURL } from "config/commons";
+import { chains, Token, tokens } from "utils/config";
+import { faucetURL } from "utils/commons";
 import "assets/css/index.css";
-import DepositWithdrawDialog from "../components/DepositWithdrawDialog";
+import DepositWithdrawDialog from "components/ibc/DepositWithdrawDialog";
 import { Flip, ToastContainer, toast} from "react-toastify";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBoltLightning } from '@fortawesome/free-solid-svg-icons'
-
 
 export function Ibc() {
   const [secretjs, setSecretjs] = useState<SecretNetworkClient | null>(null);
@@ -139,7 +136,7 @@ export function Ibc() {
       <div className="w-full max-w-xl mx-auto">
         <div className="border rounded-lg p-12 pb-7 border-neutral-700 bg-gradient-to-t from-black to-zinc-900/75 w-full">
         <div className="mb-4">
-          <h1 className="inline text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-purple-500 mb-4">IBC transfers</h1>
+          <h1 className="inline text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-purple-500 mb-4">IBC Transfers</h1>
         </div>
         <p className="text-neutral-400 mb-10">
           Transfer your tokens via IBC

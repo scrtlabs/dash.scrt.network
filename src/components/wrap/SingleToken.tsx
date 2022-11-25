@@ -12,9 +12,9 @@ import React, { useEffect, useRef, useState } from "react";
 import { Else, If, Then, When } from "react-if";
 import { Breakpoint } from "react-socks";
 import { MsgExecuteContract, SecretNetworkClient } from "secretjs";
-import { sleep, viewingKeyErrorString ,faucetAddress} from "../config/commons";
-import { Token } from "config/config";
-import { getKeplrViewingKey, setKeplrViewingKey } from "components/Keplr";
+import { sleep, viewingKeyErrorString ,faucetAddress} from "utils/commons";
+import { Token } from "utils/config";
+import { getKeplrViewingKey, setKeplrViewingKey } from "components/general/Keplr";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -45,10 +45,8 @@ export function SingleTokenNative({
   const [loadingWrap, setLoadingWrap] = useState<boolean>(false);
   const [loadingUnwrap, setLoadingUnwrap] = useState<boolean>(false);
   const [tokenBalance, setTokenBalance] = useState<string>("");
-  const [loadingTokenBalance, setLoadingTokenBalance] =
-    useState<boolean>(false);
-  const [isDepositWithdrawDialogOpen, setIsDepositWithdrawDialogOpen] =
-    useState<boolean>(false);
+  const [loadingTokenBalance, setLoadingTokenBalance] = useState<boolean>(false);
+  const [isDepositWithdrawDialogOpen, setIsDepositWithdrawDialogOpen] = useState<boolean>(false);
 
   const updateTokenBalance = async () => {
     if (!token.address) {
@@ -126,14 +124,12 @@ export function SingleTokenNative({
       (balances.get("uscrt") && token.is_snip20)
     ) {
       balanceCoin = (
-        <div>
           <div
             style={{ cursor: !token.is_snip20 ? "pointer" : "auto" }}
             onClick={() => {
               if (token.is_snip20) {
                 return;
               }
-
               wrapInputRef.current.value = new BigNumber(
                 balances.get(denomOnSecret)!
               )
@@ -144,35 +140,26 @@ export function SingleTokenNative({
             <If condition={token.is_snip20}>
               <Then>SNIP-20</Then>
               <Else>
-                {`Balance: ${new BigNumber(balances.get(denomOnSecret)!)
+                {`Available: ${new BigNumber(balances.get(denomOnSecret)!)
                   .dividedBy(`1e${token.decimals}`)
-                  .toFormat()}`}
+                  .toFormat()}`} {token.name}
               </Else>
             </If>
-          </div>
-          <div style={{ display: "flex", opacity: token.is_snip20 ? 0 : 0.7 }}>
-            {usdString.format(
+            <> ({usdString.format(
               new BigNumber(balances.get(denomOnSecret)!)
                 .dividedBy(`1e${token.decimals}`)
                 .multipliedBy(price)
                 .toNumber()
-            )}
-          </div>
+            )})</>
         </div>
       );
     } else {
       balanceCoin = (
-        <div>
-          <div
-            style={{ cursor: "pointer" }}
-            onClick={() => {
-              document.getElementById("keplr-button")?.click();
-            }}
-          >
-            connect wallet
-          </div>
-          <div style={{ opacity: 0 }}>(please)</div>
-        </div>
+        <>
+          {/* <button onClick={() => {document.getElementById("keplr-button")?.click()}} className="ml-2 flex-initial inline text-xs font-semibold px-2 py-0.5 rounded border border-sky-800 text-sky-700 transition-colors hover:border-sky-500 hover:text-sky-500">
+            Connect Wallet
+          </button> */}
+        </>
       );
     }
   } else {
@@ -203,7 +190,7 @@ export function SingleTokenNative({
       balanceToken = (
         <div>
           <div>
-            Balance: <CircularProgress size="0.8em" />
+            Balance: <CircularProgress size="15rem" />
           </div>
           <div style={{ opacity: 0 }}>placeholder</div>
         </div>
@@ -270,34 +257,8 @@ export function SingleTokenNative({
 
   return (
     <>
-    <div
-      style={{
-        display: "flex",
-        placeItems: "center",
-        gap: "0.8rem",
-        borderRadius: 20,
-      }}
-    >
-      <div
-        style={{
-          display: "flex",
-          width: 150,
-          height: 20,
-        }}
-      >
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            placeItems: "flex-start",
-          }}
-        >
-          <span style={{ fontSize: "0.75rem" }}>{balanceCoin}</span>
-        </div>
-      </div>
-      <span style={{ flex: 1 }}></span>
-    </div>
-  </>
+      <div className="text-xs">{balanceCoin}</div>
+    </>
 );
 }
 
@@ -390,12 +351,9 @@ export function SingleTokenWrapped({
   if (token.address) {
     if (loadingCoinBalances) {
       balanceCoin = (
-        <div>
-          <div>
-            Balance: <CircularProgress size="0.8em" />
-          </div>
-          <div style={{ opacity: 0 }}>placeholder</div>
-        </div>
+        <>
+          Balance: <CircularProgress size="0.8em" />
+        </>
       );
     } else if (
       balances.get(denomOnSecret) ||
