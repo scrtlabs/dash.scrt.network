@@ -2,7 +2,7 @@ import React from 'react';
 import { Window as KeplrWindow } from "@keplr-wallet/types";
 import ReactDOM from "react-dom";
 import { BreakpointProvider } from "react-socks";
-import "assets/css/index.css";
+import "assets/scss/index.scss";
 import { Buffer } from "buffer";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 

@@ -59,7 +59,7 @@ export function KeplrPanel({
           setTimeout(() => setIsCopied(false), 3000);
         }}
       >
-        <button className="w-full md:w-auto">
+        <button className="w-full lg:w-auto">
           {content}{" "}
         </button>
       </CopyToClipboard>
@@ -69,7 +69,7 @@ export function KeplrPanel({
       <button
         id="keplr-button"
         onClick={() => setupKeplr(setSecretjs, setSecretAddress)}
-        className="w-full md:w-auto"
+        className="w-full lg:w-auto"
       >
         {content}
       </button>
