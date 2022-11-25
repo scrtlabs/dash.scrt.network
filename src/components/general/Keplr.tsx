@@ -1,9 +1,9 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import CopyToClipboard from "react-copy-to-clipboard";
 import { Else, If, Then } from "react-if";
 import { Breakpoint } from "react-socks";
 import { SecretNetworkClient } from "secretjs";
-import { chains } from "config/config";
+import { chains } from "utils/config";
 
 const SECRET_CHAIN_ID = chains["Secret Network"].chain_id;
 const SECRET_RPC = chains["Secret Network"].rpc;

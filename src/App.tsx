@@ -48,9 +48,6 @@ class ErrorBoundary extends React.Component<{}, { hasError: boolean }> {
   }
 }
 
-const footerHeight = "1.8rem";
-
-
 ReactDOM.render(
   <BreakpointProvider>
     <React.StrictMode>
@@ -65,11 +62,11 @@ ReactDOM.render(
 );
 
 export default function App() {
-
-
-  return <Routes>
-    <Route path="/" element={<Home />}/>
-    <Route path="/ibc" element={<Ibc />}/>
-    <Route path="/wrap" element={<Wrap />}/>
-  </Routes>
+  return (
+    <Routes>
+      <Route path="/" element={<Home />}/>
+      <Route path="/ibc" element={<Ibc />}/>
+      <Route path="/wrap" element={<Wrap />}/>
+    </Routes>
+  );
 }

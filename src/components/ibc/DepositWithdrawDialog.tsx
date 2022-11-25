@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { SecretNetworkClient } from "secretjs";
-import { Token } from "config/config";
-import Deposit from "components/Deposit";
-import Withdraw from "components/Withdraw";
+import { Token } from "utils/config";
+import Deposit from "components/ibc/Deposit";
+import Withdraw from "components/ibc/Withdraw";
 
 export default function DepositWithdrawDialog({
   token,

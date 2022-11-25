@@ -22,9 +22,9 @@ import {
   suggestInjectiveToKeplr,
   suggestKujiraToKeplr,
   suggestTerraToKeplr,
-} from "config/commons";
-import { chains, Token } from "config/config";
-import CopyableAddress from "./CopyableAddress";
+} from "utils/commons";
+import { chains, Token } from "utils/config";
+import CopyableAddress from "components/ibc/CopyableAddress";
 
 export default function Withdraw({
   token,
