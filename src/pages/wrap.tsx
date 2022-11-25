@@ -1,8 +1,9 @@
-import React, { useEffect, useState, useRef} from "react";
+import React, { useEffect, useState, useRef, useContext} from "react";
 import { Breakpoint } from "react-socks";
 import { MsgExecuteContract, SecretNetworkClient } from "secretjs";
 import { chains, Token, tokens } from "config/config";
 import { sleep, faucetURL , faucetAddress} from "config/commons";
+import {KeplrContext} from "layouts/defaultLayout";
 import {
   Button,
   CircularProgress,
@@ -16,8 +17,6 @@ import { faDownLong, faUpLong, faArrowRightArrowLeft, faCaretDown, faBoltLightni
 import {SingleTokenWrapped, SingleTokenNative} from "../components/SingleToken";
 
 export function Wrap() {
-  const [secretjs, setSecretjs] = useState<SecretNetworkClient | null>(null);
-  const [secretAddress, setSecretAddress] = useState<string>("");
   const [balances, setBalances] = useState<Map<string, string>>(new Map());
   const [prices, setPrices] = useState<Map<string, number>>(new Map());
   const [loadingCoinBalances, setLoadingCoinBalances] =
@@ -33,6 +32,8 @@ export function Wrap() {
   useState<boolean>(true);
   const [loadingWrapOrUnwrap, setLoadingWrapOrUnwrap] =
   useState<boolean>(false);
+
+  const {secretjs, secretAddress} = useContext(KeplrContext);
 
   function handleNativePickerChoice(token: Token) {
     if (token != chosenToken) {
@@ -205,7 +206,7 @@ export function Wrap() {
                     balances={balances}
                     price={prices.get(chosenToken.name) || 0}
                     token={chosenToken}
-                    useFeegrant = {useFeegrant}/>
+                    />
                     {/* <button className="text-zinc-400">Balance: XX XX</button> */}
                   </div>
                 </div>
@@ -293,7 +294,7 @@ export function Wrap() {
                 balances={balances}
                 price={prices.get(chosenToken.name) || 0}
                 token={chosenToken}
-                useFeegrant = {useFeegrant}/>
+                />
                 {/* <button className="text-zinc-400">Balance: XX XX</button> */}
               </div>
               
@@ -433,7 +434,7 @@ export function Wrap() {
           hideProgressBar={true}
           closeOnClick={true}
           draggable={false} 
-          theme={"light"}
+          theme={"dark"}
           transition={Flip}
         />
       </Breakpoint>
@@ -444,7 +445,7 @@ export function Wrap() {
           hideProgressBar={true}
           closeOnClick={true}
           draggable={false}
-          theme={"light"}
+          theme={"dark"}
           transition={Flip}
         />
       </Breakpoint>

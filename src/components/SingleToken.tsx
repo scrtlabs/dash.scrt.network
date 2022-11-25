@@ -18,6 +18,13 @@ import { getKeplrViewingKey, setKeplrViewingKey } from "components/Keplr";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
+const usdString = new Intl.NumberFormat("en-US", {
+  style: "currency",
+  currency: "USD",
+  minimumFractionDigits: 0,
+  maximumFractionDigits: 2,
+});
+
 export function SingleTokenNative({
   secretjs,
   secretAddress,
@@ -25,7 +32,6 @@ export function SingleTokenNative({
   balances,
   loadingCoinBalances,
   price,
-  useFeegrant,
 }: {
   secretjs: SecretNetworkClient | null;
   secretAddress: string;
@@ -33,7 +39,6 @@ export function SingleTokenNative({
   token: Token;
   balances: Map<string, string>;
   price: number;
-  useFeegrant: boolean;
 }) {
   const wrapInputRef = useRef<any>();
 
@@ -103,12 +108,12 @@ export function SingleTokenNative({
   }, [secretjs]);
 
   const denomOnSecret = token.withdrawals[0]?.from_denom;
-  let balanceIbcCoin;
+  let balanceCoin;
   let balanceToken;
 
   if (token.address) {
     if (loadingCoinBalances) {
-      balanceIbcCoin = (
+      balanceCoin = (
         <div>
           <div>
             Balance: <CircularProgress size="0.8em" />
@@ -120,7 +125,7 @@ export function SingleTokenNative({
       balances.get(denomOnSecret) ||
       (balances.get("uscrt") && token.is_snip20)
     ) {
-      balanceIbcCoin = (
+      balanceCoin = (
         <div>
           <div
             style={{ cursor: !token.is_snip20 ? "pointer" : "auto" }}
@@ -156,7 +161,7 @@ export function SingleTokenNative({
         </div>
       );
     } else {
-      balanceIbcCoin = (
+      balanceCoin = (
         <div>
           <div
             style={{ cursor: "pointer" }}
@@ -171,7 +176,7 @@ export function SingleTokenNative({
       );
     }
   } else {
-    balanceIbcCoin = (
+    balanceCoin = (
       <div>
         <div>coming soon</div>
         <div>(🤫)</div>
@@ -262,204 +267,6 @@ export function SingleTokenNative({
       </div>
     );
   }
-
-  const inputRow = (
-    <div
-      style={{
-        display: "flex",
-        placeItems: "center",
-        gap: "0.3rem",
-      }}
-    >
-      <Button
-        disabled={token.address === "" || token.is_snip20}
-        size="small"
-        variant="text"
-        startIcon={
-          <If condition={loadingUnwrap}>
-            <Then>
-              <CircularProgress size="0.8em" />
-            </Then>
-            <Else>
-              <KeyboardArrowLeftIcon />
-            </Else>
-          </If>
-        }
-        onClick={async () => {
-          if (!secretjs || !secretAddress || loadingWrap || loadingUnwrap) {
-            return;
-          }
-          const baseAmount = wrapInputRef?.current?.value;
-          const amount = new BigNumber(baseAmount)
-            .multipliedBy(`1e${token.decimals}`)
-            .toFixed(0, BigNumber.ROUND_DOWN);
-          if (amount === "NaN") {
-            console.error("NaN amount", baseAmount);
-            return;
-          }
-          setLoadingUnwrap(true);
-          const toastId = toast.loading(
-            `Unwrapping ${token.name}`,
-            {
-              closeButton: true,
-            }
-          );
-          try {
-            const tx = await secretjs.tx.broadcast(
-              [
-                new MsgExecuteContract({
-                  sender: secretAddress,
-                  contractAddress: token.address,
-                  codeHash: token.code_hash,
-                  sentFunds: [],
-                  msg: {
-                    redeem: {
-                      amount,
-                      denom:
-                        token.name === "SCRT"
-                          ? undefined
-                          : token.withdrawals[0].from_denom,
-                    },
-                  },
-                }),
-              ],
-              {
-                gasLimit: 150_000,
-                gasPriceInFeeDenom: 0.25,
-                feeDenom: "uscrt",
-                feeGranter: useFeegrant ? faucetAddress : "",
-              }
-            );
-
-            if (tx.code === 0) {
-              wrapInputRef.current.value = "";
-              toast.update(toastId, {
-                render: `Unwrapped ${token.name} successfully`,
-                type: "success",
-                isLoading: false,
-                closeOnClick: true,
-              });
-              console.log(`Unwrapped successfully`);
-            } else {
-              toast.update(toastId, {
-                render: `Unwrapping of ${token.name} failed: ${tx.rawLog}`,
-                type: "error",
-                isLoading: false,
-                closeOnClick: true,
-              });
-              console.error(`Tx failed: ${tx.rawLog}`);
-            }
-          } finally {
-            setLoadingUnwrap(false);
-            try {
-              setLoadingTokenBalance(true);
-              await sleep(1000); // sometimes query nodes lag
-              await updateTokenBalance();
-            } finally {
-              setLoadingTokenBalance(false);
-            }
-          }
-        }}
-      >
-        Unwrap
-      </Button>
-      <Input
-        disabled={token.address === "" || token.is_snip20}
-        // TODO add input validation
-        placeholder="Amount"
-        inputProps={{
-          style: {
-            textAlign: "center",
-            textOverflow: "ellipsis",
-          },
-        }}
-        inputRef={wrapInputRef}
-        autoComplete="off"
-      />
-      <Button
-        disabled={token.address === "" || token.is_snip20}
-        size="small"
-        variant="text"
-        endIcon={
-          loadingWrap ? (
-            <CircularProgress size="0.8em" />
-          ) : (
-            <KeyboardArrowRightIcon />
-          )
-        }
-        onClick={async () => {
-          if (!secretjs || !secretAddress || loadingWrap || loadingUnwrap) {
-            return;
-          }
-          const baseAmount = wrapInputRef?.current?.value;
-          const amount = new BigNumber(baseAmount)
-            .multipliedBy(`1e${token.decimals}`)
-            .toFixed(0, BigNumber.ROUND_DOWN);
-          if (amount === "NaN") {
-            console.error("NaN amount", baseAmount);
-            return;
-          }
-          setLoadingWrap(true);
-          const toastId = toast.loading(
-            `Wrapping ${token.name}`,
-            {
-              closeButton: true,
-            }
-          );
-          try {
-            const tx = await secretjs.tx.broadcast(
-              [
-                new MsgExecuteContract({
-                  sender: secretAddress,
-                  contractAddress: token.address,
-                  codeHash: token.code_hash,
-                  sentFunds: [
-                    { denom: token.withdrawals[0].from_denom, amount },
-                  ],
-                  msg: { deposit: {} },
-                }),
-              ],
-              {
-                gasLimit: 150_000,
-                gasPriceInFeeDenom: 0.25,
-                feeDenom: "uscrt",
-              }
-            );
-
-            if (tx.code === 0) {
-              wrapInputRef.current.value = "";
-              toast.update(toastId, {
-                render: `Wrapped ${token.name} successfully`,
-                type: "success",
-                isLoading: false,
-                closeOnClick: true,
-              });
-              console.log(`Wrapped successfully`);
-            } else {
-              toast.update(toastId, {
-                render: `Wrapping of ${token.name} failed: ${tx.rawLog}`,
-                type: "error",
-                isLoading: false,
-                closeOnClick: true,
-              });
-              console.error(`Tx failed: ${tx.rawLog}`);
-            }
-          } finally {
-            setLoadingWrap(false);
-            try {
-              setLoadingTokenBalance(true);
-              await sleep(1000); // sometimes query nodes lag
-              await updateTokenBalance();
-            } finally {
-              setLoadingTokenBalance(false);
-            }
-          }
-        }}
-      >
-        Wrap
-      </Button>
-    </div>
-  );
 
   return (
     <>
@@ -485,32 +292,14 @@ export function SingleTokenNative({
             placeItems: "flex-start",
           }}
         >
-          <span style={{ fontSize: "0.75rem" }}>{balanceIbcCoin}</span>
+          <span style={{ fontSize: "0.75rem" }}>{balanceCoin}</span>
         </div>
       </div>
       <span style={{ flex: 1 }}></span>
     </div>
-    <Breakpoint small down>
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          margin: "10px 0 60px 0",
-        }}
-      >
-        {inputRow}
-      </div>
-    </Breakpoint>
   </>
 );
 }
-
-const usdString = new Intl.NumberFormat("en-US", {
-  style: "currency",
-  currency: "USD",
-  minimumFractionDigits: 0,
-  maximumFractionDigits: 2,
-});
 
 export function SingleTokenWrapped({
   secretjs,
@@ -519,7 +308,6 @@ export function SingleTokenWrapped({
   balances,
   loadingCoinBalances,
   price,
-  useFeegrant,
 }: {
   secretjs: SecretNetworkClient | null;
   secretAddress: string;
@@ -527,7 +315,6 @@ export function SingleTokenWrapped({
   token: Token;
   balances: Map<string, string>;
   price: number;
-  useFeegrant: boolean;
 }) {
   const wrapInputRef = useRef<any>();
 
@@ -597,12 +384,12 @@ export function SingleTokenWrapped({
   }, [secretjs]);
 
   const denomOnSecret = token.withdrawals[0]?.from_denom;
-  let balanceIbcCoin;
+  let balanceCoin;
   let balanceToken;
 
   if (token.address) {
     if (loadingCoinBalances) {
-      balanceIbcCoin = (
+      balanceCoin = (
         <div>
           <div>
             Balance: <CircularProgress size="0.8em" />
@@ -614,7 +401,7 @@ export function SingleTokenWrapped({
       balances.get(denomOnSecret) ||
       (balances.get("uscrt") && token.is_snip20)
     ) {
-      balanceIbcCoin = (
+      balanceCoin = (
         <div>
           <div
             style={{ cursor: !token.is_snip20 ? "pointer" : "auto" }}
@@ -650,7 +437,7 @@ export function SingleTokenWrapped({
         </div>
       );
     } else {
-      balanceIbcCoin = (
+      balanceCoin = (
         <div>
           <div
             style={{ cursor: "pointer" }}
@@ -665,7 +452,7 @@ export function SingleTokenWrapped({
       );
     }
   } else {
-    balanceIbcCoin = (
+    balanceCoin = (
       <div>
         <div>coming soon</div>
         <div>(🤫)</div>
@@ -756,204 +543,6 @@ export function SingleTokenWrapped({
       </div>
     );
   }
-
-  const inputRow = (
-    <div
-      style={{
-        display: "flex",
-        placeItems: "center",
-        gap: "0.3rem",
-      }}
-    >
-      <Button
-        disabled={token.address === "" || token.is_snip20}
-        size="small"
-        variant="text"
-        startIcon={
-          <If condition={loadingUnwrap}>
-            <Then>
-              <CircularProgress size="0.8em" />
-            </Then>
-            <Else>
-              <KeyboardArrowLeftIcon />
-            </Else>
-          </If>
-        }
-        onClick={async () => {
-          if (!secretjs || !secretAddress || loadingWrap || loadingUnwrap) {
-            return;
-          }
-          const baseAmount = wrapInputRef?.current?.value;
-          const amount = new BigNumber(baseAmount)
-            .multipliedBy(`1e${token.decimals}`)
-            .toFixed(0, BigNumber.ROUND_DOWN);
-          if (amount === "NaN") {
-            console.error("NaN amount", baseAmount);
-            return;
-          }
-          setLoadingUnwrap(true);
-          const toastId = toast.loading(
-            `Unwrapping ${token.name}`,
-            {
-              closeButton: true,
-            }
-          );
-          try {
-            const tx = await secretjs.tx.broadcast(
-              [
-                new MsgExecuteContract({
-                  sender: secretAddress,
-                  contractAddress: token.address,
-                  codeHash: token.code_hash,
-                  sentFunds: [],
-                  msg: {
-                    redeem: {
-                      amount,
-                      denom:
-                        token.name === "SCRT"
-                          ? undefined
-                          : token.withdrawals[0].from_denom,
-                    },
-                  },
-                }),
-              ],
-              {
-                gasLimit: 150_000,
-                gasPriceInFeeDenom: 0.25,
-                feeDenom: "uscrt",
-                feeGranter: useFeegrant ? faucetAddress : "",
-              }
-            );
-
-            if (tx.code === 0) {
-              wrapInputRef.current.value = "";
-              toast.update(toastId, {
-                render: `Unwrapped ${token.name} successfully`,
-                type: "success",
-                isLoading: false,
-                closeOnClick: true,
-              });
-              console.log(`Unwrapped successfully`);
-            } else {
-              toast.update(toastId, {
-                render: `Unwrapping of ${token.name} failed: ${tx.rawLog}`,
-                type: "error",
-                isLoading: false,
-                closeOnClick: true,
-              });
-              console.error(`Tx failed: ${tx.rawLog}`);
-            }
-          } finally {
-            setLoadingUnwrap(false);
-            try {
-              setLoadingTokenBalance(true);
-              await sleep(1000); // sometimes query nodes lag
-              await updateTokenBalance();
-            } finally {
-              setLoadingTokenBalance(false);
-            }
-          }
-        }}
-      >
-        Unwrap
-      </Button>
-      <Input
-        disabled={token.address === "" || token.is_snip20}
-        // TODO add input validation
-        placeholder="Amount"
-        inputProps={{
-          style: {
-            textAlign: "center",
-            textOverflow: "ellipsis",
-          },
-        }}
-        inputRef={wrapInputRef}
-        autoComplete="off"
-      />
-      <Button
-        disabled={token.address === "" || token.is_snip20}
-        size="small"
-        variant="text"
-        endIcon={
-          loadingWrap ? (
-            <CircularProgress size="0.8em" />
-          ) : (
-            <KeyboardArrowRightIcon />
-          )
-        }
-        onClick={async () => {
-          if (!secretjs || !secretAddress || loadingWrap || loadingUnwrap) {
-            return;
-          }
-          const baseAmount = wrapInputRef?.current?.value;
-          const amount = new BigNumber(baseAmount)
-            .multipliedBy(`1e${token.decimals}`)
-            .toFixed(0, BigNumber.ROUND_DOWN);
-          if (amount === "NaN") {
-            console.error("NaN amount", baseAmount);
-            return;
-          }
-          setLoadingWrap(true);
-          const toastId = toast.loading(
-            `Wrapping ${token.name}`,
-            {
-              closeButton: true,
-            }
-          );
-          try {
-            const tx = await secretjs.tx.broadcast(
-              [
-                new MsgExecuteContract({
-                  sender: secretAddress,
-                  contractAddress: token.address,
-                  codeHash: token.code_hash,
-                  sentFunds: [
-                    { denom: token.withdrawals[0].from_denom, amount },
-                  ],
-                  msg: { deposit: {} },
-                }),
-              ],
-              {
-                gasLimit: 150_000,
-                gasPriceInFeeDenom: 0.25,
-                feeDenom: "uscrt",
-              }
-            );
-
-            if (tx.code === 0) {
-              wrapInputRef.current.value = "";
-              toast.update(toastId, {
-                render: `Wrapped ${token.name} successfully`,
-                type: "success",
-                isLoading: false,
-                closeOnClick: true,
-              });
-              console.log(`Wrapped successfully`);
-            } else {
-              toast.update(toastId, {
-                render: `Wrapping of ${token.name} failed: ${tx.rawLog}`,
-                type: "error",
-                isLoading: false,
-                closeOnClick: true,
-              });
-              console.error(`Tx failed: ${tx.rawLog}`);
-            }
-          } finally {
-            setLoadingWrap(false);
-            try {
-              setLoadingTokenBalance(true);
-              await sleep(1000); // sometimes query nodes lag
-              await updateTokenBalance();
-            } finally {
-              setLoadingTokenBalance(false);
-            }
-          }
-        }}
-      >
-        Wrap
-      </Button>
-    </div>
-  );
 
   return (
     <>
@@ -1015,17 +604,6 @@ export function SingleTokenWrapped({
         </div>
         <span style={{ flex: 1 }}></span>
       </div>
-      <Breakpoint small down>
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            margin: "10px 0 60px 0",
-          }}
-        >
-          {inputRow}
-        </div>
-      </Breakpoint>
     </>
   );
 }
