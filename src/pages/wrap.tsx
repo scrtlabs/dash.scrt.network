@@ -2,31 +2,43 @@ import React, { useEffect, useState, useRef, useContext, createContext } from "r
 import { Breakpoint } from "react-socks";
 import { MsgExecuteContract, SecretNetworkClient } from "secretjs";
 import { chains, Token, tokens } from "utils/config";
-import { sleep, faucetURL , faucetAddress } from "utils/commons";
+import { sleep, faucetURL, faucetAddress, viewingKeyErrorString} from "utils/commons";
 import { KeplrContext } from "layouts/defaultLayout";
 import BigNumber from "bignumber.js";
+import { Else, If, Then, When } from "react-if";
 import { Flip, ToastContainer, toast} from "react-toastify";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faDownLong, faUpLong, faArrowRightArrowLeft, faCaretDown } from '@fortawesome/free-solid-svg-icons'
-import { SingleTokenWrapped, SingleTokenNative } from "components/wrap/SingleToken";
+import { getKeplrViewingKey, setKeplrViewingKey } from "components/general/Keplr";
+
+import {
+  Button,
+  CircularProgress,
+  Input,
+  Tooltip,
+} from "@mui/material";
+import RefreshIcon from "@mui/icons-material/Refresh";
 
 export const WrapContext = createContext(null);
 
 export function Wrap() {
-  const [balances, setBalances] = useState<Map<string, string>>(new Map());
-  const [prices, setPrices] = useState<Map<string, number>>(new Map());
-  const [loadingCoinBalances, setLoadingCoinBalances] = useState<boolean>(false);
-  const [useFeegrant, setUseFeegrant] = useState<boolean>(false);
+  const [price, setPrice] = useState <number>();
+
   const [chosenToken, setChosenToken] = useState<Token>(tokens.filter(token => token.name === "SCRT")[0]);
   const [isWrapping, setIsWrapping] = useState<boolean>(true);
   const [isNativeTokenPickerVisible, setIsNativeTokenPickerVisible] = useState<boolean>(false);
   const [isWrappedTokenPickerVisible, setIsWrappedTokenPickerVisible] = useState<boolean>(false);
+
   const nativeValue = useRef<any>();
   const wrappedValue = useRef<any>();
-  const [isDepositWithdrawDialogOpen, setIsDepositWithdrawDialogOpen] =
-  useState<boolean>(true);
-  const [loadingWrapOrUnwrap, setLoadingWrapOrUnwrap] =
-  useState<boolean>(false);
+  const [useFeegrant, setUseFeegrant] = useState<boolean>(false);
+
+  const [loadingWrapOrUnwrap, setLoadingWrapOrUnwrap] = useState<boolean>(false);
+  const [loadingTokenBalance, setLoadingTokenBalance] = useState<boolean>(false);
+  const [loadingCoinBalance, setLoadingCoinBalance] = useState<boolean>(false);
+
+  const [tokenNativeBalance, setTokenNativeBalance] = useState<string>("");
+  const [tokenWrappedBalance, setTokenWrappedBalance] = useState<string>("");
 
   const {secretjs, secretAddress} = useContext(KeplrContext);
 
@@ -38,22 +50,179 @@ export function Wrap() {
     setIsWrappedTokenPickerVisible(false)
 
       try {
-        setLoadingCoinBalances(true);
-        await updateCoinBalances();
+        setLoadingCoinBalance(true);
+        setLoadingTokenBalance(true);
+        await updateCoinBalance();
+        await updateTokenBalance();
       } finally {
-        setLoadingCoinBalances(false);
+        setLoadingCoinBalance(false);
+        setLoadingTokenBalance(false);
       }
   }
   
-  const updateFeeGrantButton = (text : string, color : string) => {
-    let btnFeeGrant = document.getElementById('grantButton');
-    if (btnFeeGrant != null) {
-      btnFeeGrant.style.color = color;
-      btnFeeGrant.textContent = text;
+  const usdString = new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "USD",
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 2,
+  });
+
+  const updateTokenBalance = async () => {
+    if (!chosenToken.address) {
+      return;
     }
+
+    if (!secretjs) {
+      return;
+    }
+
+    const key = await getKeplrViewingKey(chosenToken.address);
+    if (!key) {
+      setTokenWrappedBalance(viewingKeyErrorString);
+      return;
+    }
+
+    try {
+      const result: {
+        viewing_key_error: any;
+        balance: {
+          amount: string;
+        };
+      } = await secretjs.query.compute.queryContract({
+        contractAddress: chosenToken.address,
+        codeHash: chosenToken.code_hash,
+        query: {
+          balance: { address: secretAddress, key },
+        },
+      });
+
+      if (result.viewing_key_error) {
+        setTokenWrappedBalance(viewingKeyErrorString);
+        return;
+      }
+
+      setTokenWrappedBalance(result.balance.amount);
+    } catch (e) {
+      console.error(`Error getting balance for s${chosenToken.name}`, e);
+
+      setTokenWrappedBalance(viewingKeyErrorString);
+    }
+  };
+
+  let balanceCoin;
+  let balanceToken;
+
+  if (chosenToken != null) {
+    if (loadingCoinBalance) {
+      balanceCoin = (
+        <>
+          Balance: <CircularProgress size="0.8em" />
+        </>
+      );
+    } else if (chosenToken) {
+      balanceCoin = (
+        <div>
+          <div
+            style={{ cursor: !chosenToken.is_snip20 ? "pointer" : "auto" }}
+            onClick={() => {
+              if (chosenToken.is_snip20) {
+                return;
+              }
+              nativeValue.current.value = new BigNumber(
+                tokenNativeBalance!
+              )
+                .dividedBy(`1e${chosenToken.decimals}`)
+                .toFixed();
+            }}
+          >
+          </div>
+          <div style={{ display: "flex", opacity: chosenToken.is_snip20 ? 0 : 0.7 }}>
+           <>{`Available: ${new BigNumber(tokenNativeBalance!)
+                  .dividedBy(`1e${chosenToken.decimals}`)
+                  .toFormat()}`} {chosenToken.name}({usdString.format(
+              new BigNumber(tokenNativeBalance!)
+                .dividedBy(`1e${chosenToken.decimals}`)
+                .multipliedBy(Number(price))
+                .toNumber()
+              )})</>
+          </div>
+        </div>
+      );
+    } else {
+    }
+  } else {
+    balanceCoin = (
+      <div>
+        <div>coming soon</div>
+        <div>(🤫)</div>
+      </div>
+    );
   }
-  const updateCoinBalances = async () => {
-    const newBalances = new Map<string, string>(balances);
+
+  if (chosenToken != null) {
+    if (!secretjs) {
+      balanceToken = (
+        <>
+        </>
+      );
+    } else if (loadingTokenBalance) {
+      balanceToken = (
+        <div>
+          <div>
+            Balance: <CircularProgress size="0.8em" />
+          </div>
+          <div style={{ opacity: 0 }}>placeholder</div>
+        </div>
+      );
+    } else if (tokenWrappedBalance == viewingKeyErrorString) {
+      balanceToken = (
+        <div>
+          <Tooltip title="Set Viewing Key" placement="top">
+            <div
+              style={{ cursor: "pointer" }}
+              onClick={async () => {
+                await setKeplrViewingKey(chosenToken.address);
+                try {
+                  setLoadingTokenBalance(true);
+                  await sleep(1000); // sometimes query nodes lag
+                  await updateTokenBalance();
+                } finally {
+                  setLoadingTokenBalance(false);
+                }
+              }}
+            >
+              {`Balance: ${viewingKeyErrorString}`}
+            </div>
+          </Tooltip>
+          <div style={{ opacity: 0 }}>placeholder</div>
+        </div>
+      );
+    } else if (Number(tokenWrappedBalance) > -1) {
+      balanceToken = (
+        <div>
+          <button onClick={() => {wrappedValue.current.value = new BigNumber(tokenWrappedBalance).dividedBy(`1e${chosenToken.decimals}`).toFixed();}}>
+            <>{`Available: ${new BigNumber(tokenWrappedBalance!)
+                  .dividedBy(`1e${chosenToken.decimals}`)
+                  .toFormat()}`}{' s' + chosenToken.name}({usdString.format(
+              new BigNumber(tokenNativeBalance!)
+                .dividedBy(`1e${chosenToken.decimals}`)
+                .multipliedBy(Number(price))
+                .toNumber()
+              )})</>
+          </button>
+        </div>
+      );
+    }
+  } else {
+    balanceToken = (
+      <div>
+        <div>coming soon</div>
+        <div style={{ display: "flex", placeContent: "flex-end" }}>(🤫)</div>
+      </div>
+    );
+  }
+
+  const updateCoinBalance = async () => {
 
     const url = `${chains["Secret Network"].lcd}/cosmos/bank/v1beta1/balances/${secretAddress}`;
     try {
@@ -70,75 +239,38 @@ export function Wrap() {
       );
 
       for (const denom of denoms.filter((d) => !d.startsWith("secret1"))) {
-        const balance = balances.find((c) => c.denom === denom)?.amount || "0";
-        newBalances.set(denom, balance);
+        const balance_tmp = balances.find((c) => c.denom === denom)?.amount || "0";
+        if (denom == chosenToken.withdrawals[0]?.from_denom) { 
+          setTokenNativeBalance(balance_tmp);
+        }
       }
     } catch (e) {
       console.error(`Error while trying to query ${url}:`, e);
     }
-
-    if (newBalances.get("uscrt") == "0" && useFeegrant == false) {
-      try {
-        const response = await fetch(faucetURL, {
-          method: 'POST',
-          body: JSON.stringify({"Address": secretAddress}),
-          headers: {'Content-Type': 'application/json'}
-        });
-        const result = await response;
-        const textBody = await result.text();
-        if (result.ok == true) {
-          updateFeeGrantButton("Fee Granted for unwrapping","green");
-          toast.success(`Your wallet does not have any SCRT to pay for transaction costs. Successfully sent new fee grant (0.1 SCRT) for unwrapping tokens to address ${secretAddress}`);
-        } else if (textBody == "Existing Fee Grant did not expire\n") {
-          updateFeeGrantButton("Fee Granted for unwrapping","green");
-          toast.success(`Your wallet does not have any SCRT to pay for transaction costs. Your address ${secretAddress} however does already have an existing fee grant which will be used for unwrapping`);
-        } else {
-          updateFeeGrantButton("Fee Grant failed","red");
-          toast.error(`Fee Grant for address ${secretAddress} failed with status code: ${result.status}`);
-        }
-        setUseFeegrant(true);
-      }
-      catch(e) {
-        updateFeeGrantButton("Fee Grant failed","red");
-        toast.error(`Fee Grant for address ${secretAddress} failed with error: ${e}`);
-      }
-    }
-    setBalances(newBalances);
-  };
-
+  }
   useEffect(() => {
     if (!secretjs || !secretAddress) {
       return;
     }
 
-    const interval = setInterval(updateCoinBalances, 10_000);
+    const interval = setInterval(handleNativePickerChoice, 10_000);
 
     (async () => {
-      setLoadingCoinBalances(true);
-      await updateCoinBalances();
-      setLoadingCoinBalances(false);
+      handleNativePickerChoice(chosenToken);
     })();
 
     return () => {
       clearInterval(interval);
     };
-  }, [secretAddress, secretjs, useFeegrant]);
+  }, [secretAddress, secretjs]);
 
   useEffect(() => {
     fetch(
-      `https://api.coingecko.com/api/v3/simple/price?ids=${tokens
-        .map((t) => t.coingecko_id)
-        .join(",")}&vs_currencies=USD`
+      `https://api.coingecko.com/api/v3/simple/price?ids=${chosenToken.coingecko_id}&vs_currencies=USD`
     )
       .then((resp) => resp.json())
       .then((result: { [coingecko_id: string]: { usd: number } }) => {
-        const prices = new Map<string, number>();
-        for (const token of tokens) {
-          if (result[token.coingecko_id]) {
-            prices.set(token.name, result[token.coingecko_id].usd);
-          }
-        }
-        setPrices(prices);
+        setPrice(result[chosenToken.coingecko_id].usd);
       });
   }, []);
   
@@ -187,14 +319,7 @@ export function Wrap() {
               
                 <div className="flex items-center mt-3">
                   <div className="flex-1 text-sm">
-                    <SingleTokenNative
-                    loadingCoinBalances={loadingCoinBalances}
-                    secretAddress={secretAddress}
-                    secretjs={secretjs}
-                    balances={balances}
-                    price={prices.get(chosenToken.name) || 0}
-                    token={chosenToken}
-                    />
+                  <div className="text-xs">{balanceCoin}</div>
                     {/* <button className="text-zinc-400">Balance: XX XX</button> */}
                   </div>
                 </div>
@@ -204,32 +329,6 @@ export function Wrap() {
               <button onClick={() => setIsWrapping(false)} className={"py-1 px-3 font-semibold rounded-md border transition-colors" + (!isWrapping ? "border border-blue-500 bg-blue-500/40" : "hover:bg-zinc-700 active:bg-zinc-700")}><FontAwesomeIcon icon={faUpLong} className="mr-2" />Unwrap</button>
             </div>
 
-            <button disabled={!secretAddress} id="grantButton" className="flex-initial inline text-xs font-semibold px-2 py-0.5 rounded border border-sky-800 text-sky-700 transition-colors hover:border-sky-500 hover:text-sky-500" onClick={async () => {
-              fetch(faucetURL, {
-                method: 'POST',
-                body: JSON.stringify({ "Address": secretAddress }),
-                headers: { 'Content-Type': 'application/json' }
-              }).then(async (result) => {
-                const textBody = await result.text();
-                console.log(textBody);
-                if (result.ok == true) {
-                  updateFeeGrantButton("Fee Granted for unwrapping","green");
-                  toast.success(`Successfully sent new fee grant (0.1 SCRT) for unwrapping tokens to address ${secretAddress}`);
-                } else if (textBody == "Existing Fee Grant did not expire\n") {
-                  updateFeeGrantButton("Fee Granted for unwrapping","green");
-                  toast.success(`Fee granted for unwrapping!`);
-                } else {
-                  updateFeeGrantButton("Fee Grant failed","red");
-                  toast.error(`Fee grant failed. Status Code: ${result.status}`);
-                }
-                setUseFeegrant(true);
-              }).catch((error) => { 
-                updateFeeGrantButton("Fee Grant failed","red");
-                toast.error(`Fee Grant for address ${secretAddress} failed with error: ${error}`);
-              });
-            }}>
-                Grant Fee for unwrapping (max. 0.1 SCRT)
-            </button>
             <div className="flex">
                 <button onClick={() => setIsWrappedTokenPickerVisible(!isWrappedTokenPickerVisible)} className="inline-flex items-center px-3 text-sm font-semibold bg-zinc-800 rounded-l-md border border-r-0 border-zinc-800 text-zinc-400 focus:border-zinc-900 focus:ring-zinc-900 focus:ring-4 focus:outline-none">
                   <img src={chosenToken.image} alt={chosenToken.name} className="w-7 h-7 mr-2" />
@@ -255,14 +354,54 @@ export function Wrap() {
             }
 
               <div className="text-sm space-x-3">
-                <SingleTokenWrapped
-                  loadingCoinBalances={loadingCoinBalances}
-                  secretAddress={secretAddress}
-                  secretjs={secretjs}
-                  balances={balances}
-                  price={prices.get(chosenToken.name) || 0}
-                  token={chosenToken}
-                />
+                <div
+        style={{
+          display: "flex",
+          placeItems: "center",
+          gap: "0.8rem",
+          borderRadius: 20,
+        }}>
+        <div
+          style={{
+            display: "flex",
+            width: 200,
+            height: 20,
+            placeContent: "flex-start",
+          }}
+        >
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              placeItems: "flex-end",
+            }}
+          >
+            <div className="text-xs">
+              <div>{balanceToken}</div>
+              <When condition={chosenToken.address && secretAddress}>
+                <Tooltip title="Refresh Balance" placement="top">
+                  <Button
+                    style={{
+                      display: loadingTokenBalance ? "none" : undefined,
+                    }}
+                    onClick={async () => {
+                      try {
+                        setLoadingTokenBalance(true);
+                        await updateTokenBalance();
+                      } finally {
+                        setLoadingTokenBalance(false);
+                      }
+                    }}
+                  >
+                    <RefreshIcon sx={{ height: "0.7em" }} />
+                  </Button>
+                </Tooltip>
+              </When>
+            </div>
+          </div>
+        </div>
+        <span style={{ flex: 1 }}></span>
+      </div>
               </div>
               
               <div>
@@ -376,11 +515,11 @@ export function Wrap() {
                   } finally {
                     setLoadingWrapOrUnwrap(false);
                     try {
-                      setLoadingCoinBalances(true);
+                      setLoadingCoinBalance(true);
                       await sleep(1000); // sometimes query nodes lag
-                      await updateCoinBalances();
+                      await updateCoinBalance();
                     } finally {
-                      setLoadingCoinBalances(false);
+                      setLoadingCoinBalance(false);
                     }
                   }
                 }}>
