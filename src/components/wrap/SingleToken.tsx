@@ -421,17 +421,8 @@ export function SingleTokenWrapped({
   if (token.address) {
     if (!secretjs) {
       balanceToken = (
-        <div>
-          <div
-            style={{ cursor: "pointer" }}
-            onClick={() => {
-              document.getElementById("keplr-button")?.click();
-            }}
-          >
-            connect wallet
-          </div>
-          <div style={{ opacity: 0 }}>(please)</div>
-        </div>
+        <>
+        </>
       );
     } else if (loadingTokenBalance) {
       balanceToken = (
@@ -468,28 +459,17 @@ export function SingleTokenWrapped({
     } else if (Number(tokenBalance) > -1) {
       balanceToken = (
         <div>
-          <div
-            style={{ cursor: "pointer" }}
-            onClick={() => {
-              wrapInputRef.current.value = new BigNumber(tokenBalance)
-                .dividedBy(`1e${token.decimals}`)
-                .toFixed();
-            }}
-          >
-            {`Balance: ${new BigNumber(tokenBalance)
+          <button onClick={() => {wrapInputRef.current.value = new BigNumber(tokenBalance).dividedBy(`1e${token.decimals}`).toFixed();}}>
+            {'Available: ' + `${new BigNumber(tokenBalance)
               .dividedBy(`1e${token.decimals}`)
-              .toFormat()}`}
-          </div>
-          <div
-            style={{ display: "flex", placeContent: "flex-end", opacity: 0.7 }}
-          >
-            {usdString.format(
+              .toFormat()}` + ' s' + token.name}
+              {' (' + usdString.format(
               new BigNumber(tokenBalance)
                 .dividedBy(`1e${token.decimals}`)
                 .multipliedBy(price)
                 .toNumber()
-            )}
-          </div>
+            ) + ')'}
+          </button>
         </div>
       );
     }
@@ -526,22 +506,12 @@ export function SingleTokenWrapped({
               placeItems: "flex-end",
             }}
           >
-            <div
-              style={{
-                fontSize: "0.75rem",
-                display: "flex",
-                placeItems: "flex-start",
-                gap: "0.2em",
-              }}
-            >
-              <span>{balanceToken}</span>
+            <div className="text-xs">
+              <div>{balanceToken}</div>
               <When condition={token.address && secretAddress}>
                 <Tooltip title="Refresh Balance" placement="top">
                   <Button
                     style={{
-                      color: "black",
-                      minWidth: 0,
-                      padding: 0,
                       display: loadingTokenBalance ? "none" : undefined,
                     }}
                     onClick={async () => {

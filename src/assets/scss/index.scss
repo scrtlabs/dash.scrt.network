@@ -1,7 +1,11 @@
+@use './components/discord';
+
+// Tailwind
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+// General
 body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;

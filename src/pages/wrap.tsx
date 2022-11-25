@@ -30,21 +30,19 @@ export function Wrap() {
 
   const {secretjs, secretAddress} = useContext(KeplrContext);
 
-  function handleNativePickerChoice(token: Token) {
+  async function handleNativePickerChoice(token: Token) {
     if (token != chosenToken) {
       setChosenToken(token);
     }
     setIsNativeTokenPickerVisible(false)
     setIsWrappedTokenPickerVisible(false)
 
-    async () => {
       try {
         setLoadingCoinBalances(true);
         await updateCoinBalances();
       } finally {
         setLoadingCoinBalances(false);
       }
-    }
   }
   
   const updateFeeGrantButton = (text : string, color : string) => {
@@ -104,7 +102,7 @@ export function Wrap() {
         updateFeeGrantButton("Fee Grant failed","red");
         toast.error(`Fee Grant for address ${secretAddress} failed with error: ${e}`);
       }
-      }
+    }
     setBalances(newBalances);
   };
 

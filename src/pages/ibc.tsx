@@ -3,7 +3,6 @@ import { Breakpoint } from "react-socks";
 import { SecretNetworkClient } from "secretjs";
 import { chains, Token, tokens } from "utils/config";
 import { faucetURL } from "utils/commons";
-import "assets/css/index.css";
 import DepositWithdrawDialog from "components/ibc/DepositWithdrawDialog";
 import { Flip, ToastContainer, toast} from "react-toastify";
 
