@@ -162,7 +162,7 @@ export function Wrap() {
           >
           </div>
           <div style={{ display: "flex", opacity: chosenToken.is_snip20 ? 0 : 0.7 }}>
-           <>{`Available: ${new BigNumber(tokenNativeBalance!)
+            <>{`Available: ${new BigNumber(tokenNativeBalance!)
                   .dividedBy(`1e${chosenToken.decimals}`)
                   .toFormat()}`} {chosenToken.name}({usdString.format(
               new BigNumber(tokenNativeBalance!)
@@ -278,7 +278,7 @@ export function Wrap() {
       return;
     }
 
-    const interval = setInterval(handleNativePickerChoice, 10_000);
+    const interval = setInterval(handleNativePickerChoice, 10_000, chosenToken);
 
     (async () => {
       handleNativePickerChoice(chosenToken);
@@ -287,7 +287,7 @@ export function Wrap() {
     return () => {
       clearInterval(interval);
     };
-  }, [secretAddress, secretjs]);
+  }, [secretAddress, secretjs, chosenToken]);
 
   useEffect(() => {
     fetch(
