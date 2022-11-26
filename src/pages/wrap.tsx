@@ -10,7 +10,6 @@ import { Flip, ToastContainer, toast} from "react-toastify";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faDownLong, faUpLong, faArrowRightArrowLeft, faCaretDown } from '@fortawesome/free-solid-svg-icons'
 import { getKeplrViewingKey, setKeplrViewingKey } from "components/general/Keplr";
-
 import {
   Button,
   CircularProgress,
@@ -20,9 +19,22 @@ import RefreshIcon from "@mui/icons-material/Refresh";
 
 export const WrapContext = createContext(null);
 
-
 export function Wrap() {
   const [price, setPrice] = useState <number>();
+
+  const [nativeValue, setNativeValue] = useState <string>();
+  const [wrappedValue, setWrappedValue] = useState <string>();
+  const handleInputChange = (e: { target: { value: React.SetStateAction<string | undefined>; }; }) => {
+    setNativeValue(e.target.value);
+    setWrappedValue(e.target.value);
+
+    alert(nativeValue);
+    alert(Number(tokenNativeBalance));
+    if (Number(nativeValue) > Number(tokenNativeBalance)) {
+      setNativeAmountValidationMessage("Maximum amount exceeded!");
+      setIsValidNativeAmount(false);
+    }
+  };
 
   // wrapping mode
   enum WrappingMode {
@@ -38,19 +50,20 @@ export function Wrap() {
   // UI
   const [isNativeTokenPickerVisible, setIsNativeTokenPickerVisible] = useState<boolean>(false);
   const [isWrappedTokenPickerVisible, setIsWrappedTokenPickerVisible] = useState<boolean>(false);
+  const [nativeAmountValidationMessage, setNativeAmountValidationMessage] = useState<string>("Maximum amount exceeded!");
+  const [isValidNativeAmount, setIsValidNativeAmount] = useState<boolean>(true);
 
-  // input values
-  const nativeValue = useRef<any>();
-  const wrappedValue = useRef<any>();
-
+  // handles [25% | 50% | 75% | Max] Button-Group
   function setAmountByPercentage(percentage: number) {
-    if (true) {
+    if (tokenNativeBalance) {
       let availableAmount = Number(tokenNativeBalance) * (10**(-chosenToken.decimals));
       let potentialInput = (availableAmount * (percentage * 0.01)).toFixed(chosenToken.decimals);
       if (Number(potentialInput) == 0) {
-        nativeValue.current.value = ""
+        setNativeValue("");
+        setWrappedValue("");
       } else {
-        nativeValue.current.value = potentialInput;
+        setNativeValue(potentialInput);
+        setWrappedValue(potentialInput);
       }
     }
   }
@@ -70,6 +83,8 @@ export function Wrap() {
   async function handleNativePickerChoice(token: Token) {
     if (token != chosenToken) {
       setChosenToken(token);
+      setNativeValue("");
+      setWrappedValue("");
     }
     setIsNativeTokenPickerVisible(false)
     setIsWrappedTokenPickerVisible(false)
@@ -153,16 +168,16 @@ export function Wrap() {
               if (chosenToken.is_snip20) {
                 return;
               }
-              nativeValue.current.value = new BigNumber(
+              setNativeValue(new BigNumber(
                 tokenNativeBalance!
               )
                 .dividedBy(`1e${chosenToken.decimals}`)
-                .toFixed();
+                .toFixed());
             }}
           >
           </div>
           <div style={{ display: "flex", opacity: chosenToken.is_snip20 ? 0 : 0.7 }}>
-            <>{`Available: ${new BigNumber(tokenNativeBalance!)
+            <>{`AvailableYYY: ${new BigNumber(tokenNativeBalance!)
                   .dividedBy(`1e${chosenToken.decimals}`)
                   .toFormat()}`} {chosenToken.name}({usdString.format(
               new BigNumber(tokenNativeBalance!)
@@ -225,8 +240,8 @@ export function Wrap() {
     } else if (Number(tokenWrappedBalance) > -1) {
       balanceToken = (
         <div>
-          <button onClick={() => {wrappedValue.current.value = new BigNumber(tokenWrappedBalance).dividedBy(`1e${chosenToken.decimals}`).toFixed();}}>
-            <>{`Available: ${new BigNumber(tokenWrappedBalance!)
+          <button onClick={() => {setWrappedValue(new BigNumber(tokenWrappedBalance).dividedBy(`1e${chosenToken.decimals}`).toFixed())}}>
+            <>{`AvailableXXX: ${new BigNumber(tokenWrappedBalance!)
                   .dividedBy(`1e${chosenToken.decimals}`)
                   .toFormat()}`}{' s' + chosenToken.name}({usdString.format(
               new BigNumber(tokenNativeBalance!)
@@ -316,6 +331,12 @@ export function Wrap() {
           
           <div className="space-y-6">
             <div>
+
+              {/* Validation Message */}
+              {!isValidNativeAmount && (
+                <div className="text-red-500 text-xs text-right mb-2">{nativeAmountValidationMessage}</div>
+              )}
+
               <div className="flex">
                 <button onClick={() => setIsNativeTokenPickerVisible(!isNativeTokenPickerVisible)} className="hover:bg-zinc-700 active:bg-zinc-800 transition-colors inline-flex items-center px-3 text-sm font-semibold bg-zinc-800 rounded-l-md border border-r-0 border-zinc-900 text-zinc-400 focus:bg-zinc-700">
                   <img src={chosenToken.image} alt={chosenToken.name} className="w-7 h-7 mr-2"/>
@@ -323,7 +344,7 @@ export function Wrap() {
                   <FontAwesomeIcon icon={faCaretDown} className="ml-2" />
                 </button>
                 { isNativeTokenPickerVisible &&
-                  <ul className="overflow-y-scroll scrollbar-hide h-64 text-white z-5 mt-16 rounded bg-black ring-1 ring-zinc-800 w-96 absolute left-1/2">
+                  <ul className="overflow-y-scroll scrollbar-hide h-64 text-white z-20 mt-16 rounded bg-black ring-1 ring-zinc-800 w-96 absolute left-1/2">
                     {tokens.map(token => (
                       <li className="cursor-pointer select-none p-2 hover:bg-zinc-800 flex items-center" onClick={() => handleNativePickerChoice(token)} key={token.name}>
                         <img src={token.image} alt="Logo" className="w-7 h-7 mr-2"/>
@@ -337,33 +358,28 @@ export function Wrap() {
                   </ul>
                 }
 
-                <input ref={nativeValue} type="text" className="block flex-1 min-w-0 w-full bg-zinc-900 text-white p-4 rounded-r-md" name="nativeValue" id="nativeValue" placeholder="Amount" disabled={chosenToken.address === "" || chosenToken.is_snip20}/>
+                {/* <input ref={nativeValue} type="text" className="block flex-1 min-w-0 w-full bg-zinc-900 text-white p-4 rounded-r-md" name="nativeValue" id="nativeValue" placeholder="Amount" disabled={chosenToken.address === "" || chosenToken.is_snip20}/> */}
+                <input value={nativeValue} onChange={handleInputChange} type="number" className={" block flex-1 min-w-0 w-full bg-zinc-900 text-white p-4 rounded-r-md" + (!isValidNativeAmount ? " border border-red-500" : "")} name="nativeValue" id="nativeValue" placeholder="Amount" disabled={chosenToken.address === "" || chosenToken.is_snip20}/>
 
               </div>
 
               
               <div className="flex items-center mt-3">
-                <div className="flex-1 text-sm">
-                <div className="text-xs">{balanceCoin}</div>
-                  {/* <button className="text-zinc-400">Balance: XX XX</button> */}
+                <div className="flex-1 text-xs">
+                  {balanceCoin}
+                </div>
+                <div className="flex-initial">
+                  <div className="inline-flex rounded-full text-xs">
+                    <button onClick={() => setAmountByPercentage(25)} className="py-0.5 px-1.5 font-medium rounded-l-full border focus:z-10 focus:ring-2 bg-zinc-800 border-zinc-600 text-white hover:text-black hover:bg-white active:bg-zinc-300 transition-colors">25%</button>
+                    <button onClick={() => setAmountByPercentage(50)} className="py-0.5 px-1.5 font-medium border-t border-b focus:z-10 focus:ring-2 bg-zinc-800 border-zinc-600 text-white hover:text-black hover:bg-white active:bg-zinc-300 transition-colors">50%</button>
+                    <button onClick={() => setAmountByPercentage(75)} className="py-0.5 px-1.5 font-medium border-t border-b focus:z-10 focus:ring-2 bg-zinc-800 border-zinc-600 text-white hover:text-black hover:bg-white active:bg-zinc-300 transition-colors">75%</button>
+                    <button onClick={() => setAmountByPercentage(100)} className="py-0.5 px-1.5 font-medium rounded-r-full border focus:z-10 focus:ring-2 bg-zinc-800 border-zinc-600 text-white hover:text-black hover:bg-white active:bg-zinc-300 transition-colors">Max</button>
+                  </div>
                 </div>
               </div>
             </div>
 
-            <div className="inline-flex rounded-full text-xs">
-              <button onClick={() => setAmountByPercentage(25)} className="py-0.5 px-1.5 font-medium rounded-l-full border focus:z-10 focus:ring-2 bg-zinc-800 border-zinc-600 text-white hover:text-black hover:bg-white active:bg-zinc-300 transition-colors">
-                25%
-              </button>
-              <button onClick={() => setAmountByPercentage(50)} className="py-0.5 px-1.5 font-medium border-t border-b focus:z-10 focus:ring-2 bg-zinc-800 border-zinc-600 text-white hover:text-black hover:bg-white active:bg-zinc-300 transition-colors">
-                50%
-              </button>
-              <button onClick={() => setAmountByPercentage(75)} className="py-0.5 px-1.5 font-medium border-t border-b focus:z-10 focus:ring-2 bg-zinc-800 border-zinc-600 text-white hover:text-black hover:bg-white active:bg-zinc-300 transition-colors">
-                75%
-              </button>
-              <button onClick={() => setAmountByPercentage(100)} className="py-0.5 px-1.5 font-medium rounded-r-full border focus:z-10 focus:ring-2 bg-zinc-800 border-zinc-600 text-white hover:text-black hover:bg-white active:bg-zinc-300 transition-colors">
-                Max
-              </button>
-            </div>
+
 
 
             {/* Wrap / Unwrap Buttons */}
@@ -379,10 +395,10 @@ export function Wrap() {
                   <FontAwesomeIcon icon={faCaretDown} className="ml-2" />
                 </button>
                 
-                <input ref={wrappedValue} type="text" className="block flex-1 min-w-0 w-full bg-zinc-900 text-white p-4 rounded-r-md" name="wrappedValue" id="wrappedValue" placeholder="Amount" disabled={chosenToken.address === "" || chosenToken.is_snip20}/>
+                <input value={wrappedValue} type="number" className="block flex-1 min-w-0 w-full bg-zinc-900 text-white p-4 rounded-r-md" name="wrappedValue" id="wrappedValue" placeholder="Amount" disabled={chosenToken.address === "" || chosenToken.is_snip20}/>
             </div>
             { isWrappedTokenPickerVisible &&
-              <ul className="overflow-y-scroll scrollbar-hide h-64 text-white z-2 absolute mt-16 rounded bg-black ring-1 ring-zinc-800 left-0 right-0 mx-12">
+              <ul className="overflow-y-scroll scrollbar-hide h-64 text-white z-20 absolute mt-16 rounded bg-black ring-1 ring-zinc-800 left-0 right-0 mx-12">
                 {tokens.map(token => (
                   <li className="cursor-pointer select-none p-2 hover:bg-zinc-800 flex items-center" onClick={() => handleNativePickerChoice(token)} key={token.name}>
                     <img src={token.image} alt="Logo" className="w-7 h-7 mr-2"/>
@@ -449,14 +465,14 @@ export function Wrap() {
               
               <div>
                 <button
-                  disabled={chosenToken.address === "" || chosenToken.is_snip20}
-                  className="w-full py-3 px-3 bg-emerald-500/50 rounded border border-emerald-500 hover:bg-emerald-600 active:bg-emerald-700 transition-colors font-semibold"
+                  disabled={chosenToken.address === "" || chosenToken.is_snip20 || (!nativeValue || !wrappedValue)}
+                  className="disabled:bg-zinc-500 disabled:border-zinc-500 disabled:opacity-40 w-full py-3 px-3 bg-emerald-500/50 rounded border border-emerald-500 hover:bg-emerald-600 active:bg-emerald-700 transition-colors font-semibold"
                   onClick={async () => {
                     if (!secretjs || !secretAddress) {
                       return;
                     }
-                    const baseAmount = wrappingMode === WrappingMode.Unwrap ? nativeValue?.current?.value : wrappedValue?.current?.value
-                    const amount = new BigNumber(baseAmount)
+                    const baseAmount = wrappingMode === WrappingMode.Unwrap ? nativeValue : wrappedValue
+                    const amount = new BigNumber(Number(baseAmount))
                     .multipliedBy(`1e${chosenToken.decimals}`)
                     .toFixed(0, BigNumber.ROUND_DOWN);
                       if (amount === "NaN") {
@@ -492,7 +508,7 @@ export function Wrap() {
                       );
           
                       if (tx.code === 0) {
-                        nativeValue.current.value = "";
+                        setNativeValue("");
                         toast.update(toastId, {
                           render: `Wrapped ${chosenToken.name} successfully`,
                           type: "success",
@@ -537,7 +553,7 @@ export function Wrap() {
                         }
                       );
                       if (tx.code === 0) {
-                        wrappedValue.current.value = "";
+                        setWrappedValue("");
                         toast.update(toastId, {
                           render: `Unwrapped ${chosenToken.name} successfully`,
                           type: "success",
