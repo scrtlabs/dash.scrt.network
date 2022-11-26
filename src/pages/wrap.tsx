@@ -14,23 +14,48 @@ import { getKeplrViewingKey, setKeplrViewingKey } from "components/general/Keplr
 import {
   Button,
   CircularProgress,
-  Input,
   Tooltip,
 } from "@mui/material";
 import RefreshIcon from "@mui/icons-material/Refresh";
 
 export const WrapContext = createContext(null);
 
+
 export function Wrap() {
   const [price, setPrice] = useState <number>();
 
+  // wrapping mode
+  enum WrappingMode {
+    Wrap,
+    Unwrap
+  }
+
+  const [wrappingMode, setWrappingMode] = useState<WrappingMode>(WrappingMode.Wrap);
+
+  // token
   const [chosenToken, setChosenToken] = useState<Token>(tokens.filter(token => token.name === "SCRT")[0]);
-  const [isWrapping, setIsWrapping] = useState<boolean>(true);
+
+  // UI
   const [isNativeTokenPickerVisible, setIsNativeTokenPickerVisible] = useState<boolean>(false);
   const [isWrappedTokenPickerVisible, setIsWrappedTokenPickerVisible] = useState<boolean>(false);
 
+  // input values
   const nativeValue = useRef<any>();
   const wrappedValue = useRef<any>();
+
+  function setAmountByPercentage(percentage: number) {
+    if (true) {
+      let availableAmount = Number(tokenNativeBalance) * (10**(-chosenToken.decimals));
+      let potentialInput = (availableAmount * (percentage * 0.01)).toFixed(chosenToken.decimals);
+      if (Number(potentialInput) == 0) {
+        nativeValue.current.value = ""
+      } else {
+        nativeValue.current.value = potentialInput;
+      }
+    }
+  }
+
+
   const [useFeegrant, setUseFeegrant] = useState<boolean>(false);
 
   const [loadingWrapOrUnwrap, setLoadingWrapOrUnwrap] = useState<boolean>(false);
@@ -292,7 +317,7 @@ export function Wrap() {
           <div className="space-y-6">
             <div>
               <div className="flex">
-                <button onClick={() => setIsNativeTokenPickerVisible(!isNativeTokenPickerVisible)} className="inline-flex items-center px-3 text-sm font-semibold bg-zinc-800 rounded-l-md border border-r-0 border-zinc-800 text-zinc-400 focus:border-zinc-900 focus:ring-zinc-900 focus:ring-4 focus:outline-none">
+                <button onClick={() => setIsNativeTokenPickerVisible(!isNativeTokenPickerVisible)} className="hover:bg-zinc-700 active:bg-zinc-800 transition-colors inline-flex items-center px-3 text-sm font-semibold bg-zinc-800 rounded-l-md border border-r-0 border-zinc-900 text-zinc-400 focus:bg-zinc-700">
                   <img src={chosenToken.image} alt={chosenToken.name} className="w-7 h-7 mr-2"/>
                   {chosenToken.name}
                   <FontAwesomeIcon icon={faCaretDown} className="ml-2" />
@@ -306,7 +331,7 @@ export function Wrap() {
                       </li>
                     ))}
                     {/* <li className="cursor-pointer select-none p-2 hover:bg-zinc-800 flex items-center">
-                      <img :src="'img/' + service.image" alt="Logo" class="w-7 h-7 mr-2">
+                      <img :src="'img/' + service.image" alt="Logo" className="w-7 h-7 mr-2">
                       <span>xx</span>
                     </li> */}
                   </ul>
@@ -317,20 +342,38 @@ export function Wrap() {
               </div>
 
               
-                <div className="flex items-center mt-3">
-                  <div className="flex-1 text-sm">
-                  <div className="text-xs">{balanceCoin}</div>
-                    {/* <button className="text-zinc-400">Balance: XX XX</button> */}
-                  </div>
+              <div className="flex items-center mt-3">
+                <div className="flex-1 text-sm">
+                <div className="text-xs">{balanceCoin}</div>
+                  {/* <button className="text-zinc-400">Balance: XX XX</button> */}
                 </div>
+              </div>
             </div>
+
+            <div className="inline-flex rounded-full text-xs">
+              <button onClick={() => setAmountByPercentage(25)} className="py-0.5 px-1.5 font-medium rounded-l-full border focus:z-10 focus:ring-2 bg-zinc-800 border-zinc-600 text-white hover:text-black hover:bg-white active:bg-zinc-300 transition-colors">
+                25%
+              </button>
+              <button onClick={() => setAmountByPercentage(50)} className="py-0.5 px-1.5 font-medium border-t border-b focus:z-10 focus:ring-2 bg-zinc-800 border-zinc-600 text-white hover:text-black hover:bg-white active:bg-zinc-300 transition-colors">
+                50%
+              </button>
+              <button onClick={() => setAmountByPercentage(75)} className="py-0.5 px-1.5 font-medium border-t border-b focus:z-10 focus:ring-2 bg-zinc-800 border-zinc-600 text-white hover:text-black hover:bg-white active:bg-zinc-300 transition-colors">
+                75%
+              </button>
+              <button onClick={() => setAmountByPercentage(100)} className="py-0.5 px-1.5 font-medium rounded-r-full border focus:z-10 focus:ring-2 bg-zinc-800 border-zinc-600 text-white hover:text-black hover:bg-white active:bg-zinc-300 transition-colors">
+                Max
+              </button>
+            </div>
+
+
+            {/* Wrap / Unwrap Buttons */}
             <div className="space-x-4 text-center">
-              <button onClick={() => setIsWrapping(true)} className={"py-1 px-3 font-semibold rounded-md border transition-colors" + (isWrapping ? "border border-blue-500 bg-blue-500/40" : "hover:bg-zinc-700 active:bg-zinc-700")}><FontAwesomeIcon icon={faDownLong} className="mr-2" />Wrap</button>
-              <button onClick={() => setIsWrapping(false)} className={"py-1 px-3 font-semibold rounded-md border transition-colors" + (!isWrapping ? "border border-blue-500 bg-blue-500/40" : "hover:bg-zinc-700 active:bg-zinc-700")}><FontAwesomeIcon icon={faUpLong} className="mr-2" />Unwrap</button>
+              <button onClick={() => setWrappingMode(WrappingMode.Wrap)} className={"py-1 px-3 font-semibold rounded-md border transition-colors" + (wrappingMode === WrappingMode.Wrap ? "border border-blue-500 bg-blue-500/40" : "hover:bg-zinc-700 active:bg-zinc-700")}><FontAwesomeIcon icon={faDownLong} className="mr-2" />Wrap</button>
+              <button onClick={() => setWrappingMode(WrappingMode.Unwrap)} className={"py-1 px-3 font-semibold rounded-md border transition-colors" + (wrappingMode !== WrappingMode.Wrap ? "border border-blue-500 bg-blue-500/40" : "hover:bg-zinc-700 active:bg-zinc-700")}><FontAwesomeIcon icon={faUpLong} className="mr-2" />Unwrap</button>
             </div>
 
             <div className="flex">
-                <button onClick={() => setIsWrappedTokenPickerVisible(!isWrappedTokenPickerVisible)} className="inline-flex items-center px-3 text-sm font-semibold bg-zinc-800 rounded-l-md border border-r-0 border-zinc-800 text-zinc-400 focus:border-zinc-900 focus:ring-zinc-900 focus:ring-4 focus:outline-none">
+                <button onClick={() => setIsWrappedTokenPickerVisible(!isWrappedTokenPickerVisible)} className="inline-flex items-center px-3 text-sm font-semibold bg-zinc-800 rounded-l-md border border-r-0 border-zinc-900 text-zinc-400 focus:border-zinc-900 focus:ring-zinc-900 focus:ring-4 focus:outline-none">
                   <img src={chosenToken.image} alt={chosenToken.name} className="w-7 h-7 mr-2" />
                   {!chosenToken.is_snip20 ? "s" : ""}{chosenToken.name}
                   <FontAwesomeIcon icon={faCaretDown} className="ml-2" />
@@ -347,7 +390,7 @@ export function Wrap() {
                   </li>
                 ))}
                 {/* <li className="cursor-pointer select-none p-2 hover:bg-zinc-800 flex items-center">
-                  <img :src="'img/' + service.image" alt="Logo" class="w-7 h-7 mr-2">
+                  <img :src="'img/' + service.image" alt="Logo" className="w-7 h-7 mr-2">
                   <span>xx</span>
                 </li> */}
               </ul>
@@ -412,7 +455,7 @@ export function Wrap() {
                     if (!secretjs || !secretAddress) {
                       return;
                     }
-                    const baseAmount = isWrapping ? nativeValue?.current?.value : wrappedValue?.current?.value
+                    const baseAmount = wrappingMode === WrappingMode.Unwrap ? nativeValue?.current?.value : wrappedValue?.current?.value
                     const amount = new BigNumber(baseAmount)
                     .multipliedBy(`1e${chosenToken.decimals}`)
                     .toFixed(0, BigNumber.ROUND_DOWN);
@@ -423,12 +466,12 @@ export function Wrap() {
                   try {
                     setLoadingWrapOrUnwrap(true);
                     const toastId = toast.loading(
-                      isWrapping ? `Wrapping ${chosenToken.name}` : `Unwrapping ${chosenToken.name}`,
+                      wrappingMode === WrappingMode.Unwrap ? `Wrapping ${chosenToken.name}` : `Unwrapping ${chosenToken.name}`,
                       {
                         closeButton: true,
                       }
                     );
-                    if (isWrapping) {
+                    if (wrappingMode === WrappingMode.Unwrap) {
                       const tx = await secretjs.tx.broadcast(
                         [
                           new MsgExecuteContract({
@@ -523,7 +566,7 @@ export function Wrap() {
                     }
                   }
                 }}>
-                  {loadingWrapOrUnwrap ? (<svg className="inline-block animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"> <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle> <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path> </svg>) : ''} <FontAwesomeIcon icon={faArrowRightArrowLeft} className="mr-2"/>{isWrapping ? "Execute Wrapping" : "Execute Unwrapping"}
+                  {loadingWrapOrUnwrap ? (<svg className="inline-block animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"> <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle> <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path> </svg>) : ''} <FontAwesomeIcon icon={faArrowRightArrowLeft} className="mr-2"/>{wrappingMode === WrappingMode.Unwrap ? "Execute Wrapping" : "Execute Unwrapping"}
                 </button>
               </div>
           </div>
