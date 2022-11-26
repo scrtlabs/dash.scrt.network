@@ -152,112 +152,62 @@ export function Wrap() {
   let balanceCoin;
   let balanceToken;
 
-  if (chosenToken != null) {
-    if (loadingCoinBalance) {
-      balanceCoin = (
-        <>
-          Balance: <CircularProgress size="0.8em" />
-        </>
-      );
-    } else if (chosenToken) {
-      balanceCoin = (
-        <div>
-          <div
-            style={{ cursor: !chosenToken.is_snip20 ? "pointer" : "auto" }}
-            onClick={() => {
-              if (chosenToken.is_snip20) {
-                return;
-              }
-              setNativeValue(new BigNumber(
-                tokenNativeBalance!
-              )
-                .dividedBy(`1e${chosenToken.decimals}`)
-                .toFixed());
-            }}
-          >
-          </div>
-          <div style={{ display: "flex", opacity: chosenToken.is_snip20 ? 0 : 0.7 }}>
-            <>{`AvailableYYY: ${new BigNumber(tokenNativeBalance!)
-                  .dividedBy(`1e${chosenToken.decimals}`)
-                  .toFormat()}`} {chosenToken.name}({usdString.format(
-              new BigNumber(tokenNativeBalance!)
-                .dividedBy(`1e${chosenToken.decimals}`)
-                .multipliedBy(Number(price))
-                .toNumber()
-              )})</>
-          </div>
-        </div>
-      );
-    } else {
-    }
-  } else {
+  if (!loadingCoinBalance && secretjs && secretAddress) {
     balanceCoin = (
-      <div>
-        <div>coming soon</div>
-        <div>(🤫)</div>
-      </div>
+      <>
+        {`Available: ${new BigNumber(tokenNativeBalance!)
+          .dividedBy(`1e${chosenToken.decimals}`)
+          .toFormat()}`} {chosenToken.name}({usdString.format(
+        new BigNumber(tokenNativeBalance!)
+          .dividedBy(`1e${chosenToken.decimals}`)
+          .multipliedBy(Number(price))
+          .toNumber()
+        )})
+      </>
     );
   }
 
-  if (chosenToken != null) {
-    if (!secretjs) {
-      balanceToken = (
-        <>
-        </>
-      );
-    } else if (loadingTokenBalance) {
-      balanceToken = (
-        <div>
-          <div>
-            Balance: <CircularProgress size="0.8em" />
-          </div>
-          <div style={{ opacity: 0 }}>placeholder</div>
-        </div>
-      );
-    } else if (tokenWrappedBalance == viewingKeyErrorString) {
-      balanceToken = (
-        <div>
-          <Tooltip title="Set Viewing Key" placement="top">
-            <div
-              style={{ cursor: "pointer" }}
-              onClick={async () => {
-                await setKeplrViewingKey(chosenToken.address);
-                try {
-                  setLoadingTokenBalance(true);
-                  await sleep(1000); // sometimes query nodes lag
-                  await updateTokenBalance();
-                } finally {
-                  setLoadingTokenBalance(false);
-                }
-              }}
-            >
-              {`Balance: ${viewingKeyErrorString}`}
-            </div>
-          </Tooltip>
-          <div style={{ opacity: 0 }}>placeholder</div>
-        </div>
-      );
-    } else if (Number(tokenWrappedBalance) > -1) {
-      balanceToken = (
-        <div>
-          <button onClick={() => {setWrappedValue(new BigNumber(tokenWrappedBalance).dividedBy(`1e${chosenToken.decimals}`).toFixed())}}>
-            <>{`AvailableXXX: ${new BigNumber(tokenWrappedBalance!)
-                  .dividedBy(`1e${chosenToken.decimals}`)
-                  .toFormat()}`}{' s' + chosenToken.name}({usdString.format(
-              new BigNumber(tokenNativeBalance!)
-                .dividedBy(`1e${chosenToken.decimals}`)
-                .multipliedBy(Number(price))
-                .toNumber()
-              )})</>
-          </button>
-        </div>
-      );
-    }
-  } else {
+  if (!secretjs || loadingTokenBalance) {
+    balanceToken = (
+      <>
+      </>
+    );
+  } else if (tokenWrappedBalance == viewingKeyErrorString) {
     balanceToken = (
       <div>
-        <div>coming soon</div>
-        <div style={{ display: "flex", placeContent: "flex-end" }}>(🤫)</div>
+        <Tooltip title="Set Viewing Key" placement="top">
+          <div
+            style={{ cursor: "pointer" }}
+            onClick={async () => {
+              await setKeplrViewingKey(chosenToken.address);
+              try {
+                setLoadingTokenBalance(true);
+                await sleep(1000); // sometimes query nodes lag
+                await updateTokenBalance();
+              } finally {
+                setLoadingTokenBalance(false);
+              }
+            }}
+          >
+            {`Balance: ${viewingKeyErrorString}`}
+          </div>
+        </Tooltip>
+        <div style={{ opacity: 0 }}>placeholder</div>
+      </div>
+    );
+  } else if (Number(tokenWrappedBalance) > -1) {
+    balanceToken = (
+      <div>
+        <button onClick={() => {setWrappedValue(new BigNumber(tokenWrappedBalance).dividedBy(`1e${chosenToken.decimals}`).toFixed())}}>
+          <>{`AvailableXXX: ${new BigNumber(tokenWrappedBalance!)
+                .dividedBy(`1e${chosenToken.decimals}`)
+                .toFormat()}`}{' s' + chosenToken.name}({usdString.format(
+            new BigNumber(tokenNativeBalance!)
+              .dividedBy(`1e${chosenToken.decimals}`)
+              .multipliedBy(Number(price))
+              .toNumber()
+            )})</>
+        </button>
       </div>
     );
   }
