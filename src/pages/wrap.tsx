@@ -263,31 +263,20 @@ export function Wrap() {
   }
 
   const updateCoinBalance = async () => {
-
-    const url = `${chains["Secret Network"].lcd}/cosmos/bank/v1beta1/balances/${secretAddress}`;
-    try {
-      const {
-        balances,
-      }: {
-        balances: Array<{ denom: string; amount: string }>;
-      } = await (await fetch(url)).json();
-
-      const denoms = Array.from(
-        new Set(
-          tokens.map((t) => t.withdrawals.map((w) => w.from_denom)).flat()
-        )
-      );
-
-      for (const denom of denoms.filter((d) => !d.startsWith("secret1"))) {
-        const balance_tmp = balances.find((c) => c.denom === denom)?.amount || "0";
-        if (denom == chosenToken.withdrawals[0]?.from_denom) { 
-          setTokenNativeBalance(balance_tmp);
-        }
+      try {
+        const {
+          balance: { amount },
+        } = await secretjs.query.bank.balance(
+          {
+            address: secretAddress,
+            denom: chosenToken.withdrawals[0]?.from_denom,
+          },
+        );
+        setTokenNativeBalance(amount);
+      } catch (e) {
+        console.error(`Error while trying to query ${chosenToken.name}:`, e);
       }
-    } catch (e) {
-      console.error(`Error while trying to query ${url}:`, e);
     }
-  }
   useEffect(() => {
     if (!secretjs || !secretAddress) {
       return;
