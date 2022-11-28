@@ -5,17 +5,10 @@ import { chains, Token, tokens } from "utils/config";
 import { sleep, faucetURL, faucetAddress, viewingKeyErrorString} from "utils/commons";
 import { KeplrContext } from "layouts/defaultLayout";
 import BigNumber from "bignumber.js";
-import { Else, If, Then, When } from "react-if";
 import { Flip, ToastContainer, toast} from "react-toastify";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faDownLong, faUpLong, faArrowRightArrowLeft, faCaretDown } from '@fortawesome/free-solid-svg-icons'
 import { getKeplrViewingKey, setKeplrViewingKey } from "components/general/Keplr";
-import {
-  Button,
-  CircularProgress,
-  Tooltip,
-} from "@mui/material";
-import RefreshIcon from "@mui/icons-material/Refresh";
 
 export const WrapContext = createContext(null);
 
@@ -30,13 +23,17 @@ export function Wrap() {
 
     const availableAmount = Number(tokenNativeBalance) * (10**(-chosenToken.decimals));
 
-    var numberRegex = /(\d*\.?\d)/;
+    var numberRegex = /^-?[0-9]+([.,][0-9]+)?$/;
+
+    function matchExact(r, str) {
+      var match = str.match(r);
+      return match && str === match[0];
+    }
     
     if (Number(e.target.value) > Number(availableAmount)) {
       setNativeAmountValidationMessage("Not enough balance");
       setIsValidNativeAmount(false);
-    } else if (!numberRegex.test(e.target.value)) {
-      console.log(numberRegex.test(e.target.value));
+    } else if (!matchExact(numberRegex, e.target.value)) {
       setNativeAmountValidationMessage("Please enter a valid number");
       setIsValidNativeAmount(false);
     } else {
@@ -258,36 +255,35 @@ export function Wrap() {
         
           
           <div className="space-y-6">
-            <div>
 
+            <div>
               {/* Validation Message */}
               {!isValidNativeAmount && (
                 <div className="text-red-500 text-xs text-right mb-2">{nativeAmountValidationMessage}</div>
               )}
 
+              {/* Native Token Picker */}
+              { isNativeTokenPickerVisible && <>
+                  <div className="relative">
+                    <ul className="overflow-y-scroll scrollbar-hide h-64 text-white z-20 mt-16 rounded bg-zinc-900 ring-1 ring-zinc-800 absolute left-0 right-0">
+                      {tokens.map(token => (
+                        <li className="cursor-pointer select-none p-2 bg-zinc-900 hover:bg-black flex items-center" onClick={() => handleNativePickerChoice(token)} key={token.name}>
+                          <img src={token.image} alt="Logo" className="w-7 h-7 mr-2"/>
+                          {token.name}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+              </>}
+
               <div className="flex">
-                <button onClick={() => setIsNativeTokenPickerVisible(!isNativeTokenPickerVisible)} className="hover:bg-zinc-700 active:bg-zinc-800 transition-colors inline-flex items-center px-3 text-sm font-semibold bg-zinc-800 rounded-l-md border border-r-0 border-zinc-900 text-zinc-400 focus:bg-zinc-700">
+                <button onClick={() => {setIsNativeTokenPickerVisible(!isNativeTokenPickerVisible); setIsWrappedTokenPickerVisible(false)}} className="hover:bg-zinc-700 active:bg-zinc-800 transition-colors inline-flex items-center px-3 text-sm font-semibold bg-zinc-800 rounded-l-md border border-r-0 border-zinc-900 text-zinc-400 focus:bg-zinc-700 disabled:hover:bg-zinc-800" disabled={!chosenToken.address || !secretAddress}>
                   <img src={chosenToken.image} alt={chosenToken.name} className="w-7 h-7 mr-2"/>
                   {chosenToken.name}
                   <FontAwesomeIcon icon={faCaretDown} className="ml-2" />
                 </button>
-                { isNativeTokenPickerVisible &&
-                  <ul className="overflow-y-scroll scrollbar-hide h-64 text-white z-20 mt-16 rounded bg-black ring-1 ring-zinc-800 w-96 absolute left-1/2">
-                    {tokens.map(token => (
-                      <li className="cursor-pointer select-none p-2 hover:bg-zinc-800 flex items-center" onClick={() => handleNativePickerChoice(token)} key={token.name}>
-                        <img src={token.image} alt="Logo" className="w-7 h-7 mr-2"/>
-                        {token.name}
-                      </li>
-                    ))}
-                    {/* <li className="cursor-pointer select-none p-2 hover:bg-zinc-800 flex items-center">
-                      <img :src="'img/' + service.image" alt="Logo" className="w-7 h-7 mr-2">
-                      <span>xx</span>
-                    </li> */}
-                  </ul>
-                }
 
-                {/* <input ref={nativeValue} type="text" className="block flex-1 min-w-0 w-full bg-zinc-900 text-white p-4 rounded-r-md" name="nativeValue" id="nativeValue" placeholder="Amount" disabled={chosenToken.address === "" || chosenToken.is_snip20}/> */}
-                <input value={nativeValue} onChange={handleInputChange} type="text" className={" block flex-1 min-w-0 w-full bg-zinc-900 text-white p-4 rounded-r-md disabled:placeholder-zinc-700 transition-colors" + (!isValidNativeAmount ? " border border-red-500" : "")} name="nativeValue" id="nativeValue" placeholder="Amount" disabled={chosenToken.address === "" || chosenToken.is_snip20 || !secretAddress}/>
+                <input value={nativeValue} onChange={handleInputChange} type="text" className={" block flex-1 min-w-0 w-full bg-zinc-900 text-white p-4 rounded-r-md disabled:placeholder-zinc-700 transition-colors" + (!isValidNativeAmount ? " border border-red-500" : "")} name="nativeValue" id="nativeValue" placeholder="Amount" disabled={!chosenToken.address || !secretAddress}/>
 
               </div>
 
@@ -307,38 +303,43 @@ export function Wrap() {
               </div>
             </div>
 
-
-
-
             {/* Wrap / Unwrap Buttons */}
             <div className="space-x-4 text-center">
               <button onClick={() => setWrappingMode(WrappingMode.Wrap)} className={(wrappingMode === WrappingMode.Wrap ? "border border-blue-500 bg-blue-500/40" : "hover:bg-zinc-700 active:bg-zinc-800") + " py-1 px-3 font-semibold rounded-md border transition-colors disabled:bg-zinc-500 disabled:text-zinc-900 disabled:border-zinc-500"} disabled={!secretAddress}><FontAwesomeIcon icon={faDownLong} className="mr-2" />Wrap</button>
               <button onClick={() => setWrappingMode(WrappingMode.Unwrap)} className={(wrappingMode === WrappingMode.Unwrap ? "border border-blue-500 bg-blue-500/40" : "hover:bg-zinc-700 active:bg-zinc-800") + " py-1 px-3 font-semibold rounded-md border transition-colors disabled:bg-zinc-500 disabled:text-zinc-900 disabled:border-zinc-500"} disabled={!secretAddress}><FontAwesomeIcon icon={faUpLong} className="mr-2" />Unwrap</button>
             </div>
 
+            <div>
+            {/* Validation Message */}
+            {!isValidNativeAmount && (
+              <div className="text-red-500 text-xs text-right mb-2">{nativeAmountValidationMessage}</div>
+            )}
+
+            {/* Wrapped Token Picker */}
+            { isWrappedTokenPickerVisible && <>
+              <div className="relative">
+                <ul className="overflow-y-scroll scrollbar-hide h-64 text-white z-20 absolute mt-16 rounded bg-black ring-1 ring-zinc-800 left-0 right-0">
+                  {tokens.map(token => (
+                    <li className="cursor-pointer select-none p-2 hover:bg-zinc-800 flex items-center" onClick={() => handleNativePickerChoice(token)} key={token.name}>
+                      <img src={token.image} alt="Logo" className="w-7 h-7 mr-2"/>
+                      s{token.name}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </>}
+
             <div className="flex">
-                <button onClick={() => setIsWrappedTokenPickerVisible(!isWrappedTokenPickerVisible)} className="inline-flex items-center px-3 text-sm font-semibold bg-zinc-800 rounded-l-md border border-r-0 border-zinc-900 text-zinc-400 focus:border-zinc-900 focus:ring-zinc-900 focus:ring-4 focus:outline-none">
+                <button onClick={() => {setIsWrappedTokenPickerVisible(!isWrappedTokenPickerVisible); setIsNativeTokenPickerVisible(false)}} className="hover:bg-zinc-700 active:bg-zinc-800 transition-colors inline-flex items-center px-3 text-sm font-semibold bg-zinc-800 rounded-l-md border border-r-0 border-zinc-900 text-zinc-400 focus:bg-zinc-700 disabled:hover:bg-zinc-800" disabled={!chosenToken.address || !secretAddress}>
                   <img src={chosenToken.image} alt={chosenToken.name} className="w-7 h-7 mr-2" />
-                  {!chosenToken.is_snip20 ? "s" : ""}{chosenToken.name}
+                  s{chosenToken.name}
                   <FontAwesomeIcon icon={faCaretDown} className="ml-2" />
                 </button>
                 
-                <input value={wrappedValue} type="text" className="block flex-1 min-w-0 w-full bg-zinc-900 text-white p-4 rounded-r-md disabled:placeholder-zinc-700 transition-colors" name="wrappedValue" id="wrappedValue" placeholder="Amount" disabled={chosenToken.address === "" || chosenToken.is_snip20 || !secretAddress}/>
+                <input value={wrappedValue} onChange={handleInputChange} type="text" className={"block flex-1 min-w-0 w-full bg-zinc-900 text-white p-4 rounded-r-md disabled:placeholder-zinc-700 transition-colors" + (!isValidNativeAmount ? " border border-red-500" : "")} name="wrappedValue" id="wrappedValue" placeholder="Amount" disabled={!chosenToken.address || !secretAddress}/>
             </div>
-            { isWrappedTokenPickerVisible &&
-              <ul className="overflow-y-scroll scrollbar-hide h-64 text-white z-20 absolute mt-16 rounded bg-black ring-1 ring-zinc-800 left-0 right-0 mx-12">
-                {tokens.map(token => (
-                  <li className="cursor-pointer select-none p-2 hover:bg-zinc-800 flex items-center" onClick={() => handleNativePickerChoice(token)} key={token.name}>
-                    <img src={token.image} alt="Logo" className="w-7 h-7 mr-2"/>
-                    {!token.is_snip20 ? "s" : ""}{token.name}
-                  </li>
-                ))}
-                {/* <li className="cursor-pointer select-none p-2 hover:bg-zinc-800 flex items-center">
-                  <img :src="'img/' + service.image" alt="Logo" className="w-7 h-7 mr-2">
-                  <span>xx</span>
-                </li> */}
-              </ul>
-            }
+
+            </div>
 
               <div className="text-sm space-x-3">
                 <div
@@ -373,7 +374,7 @@ export function Wrap() {
     </div>
               
             <button
-              disabled={chosenToken.address === "" || chosenToken.is_snip20 || (!nativeValue || !wrappedValue)}
+              disabled={chosenToken.address === "" || (!nativeValue || !wrappedValue)}
               className="flex items-center justify-center disabled:bg-zinc-500 disabled:border-zinc-500 disabled:opacity-40 w-full py-3 px-3 bg-emerald-500/50 rounded border border-emerald-500 hover:bg-emerald-600 active:bg-emerald-700 transition-colors font-semibold"
               onClick={async () => {
                 if (!secretjs || !secretAddress) {

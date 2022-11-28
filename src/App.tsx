@@ -4,7 +4,7 @@ import ReactDOM from "react-dom";
 import { BreakpointProvider } from "react-socks";
 import "assets/scss/index.scss";
 import { Buffer } from "buffer";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 
 // Pages
 import { Ibc } from "pages/ibc";
@@ -64,7 +64,7 @@ ReactDOM.render(
 export default function App() {
   return (
     <Routes>
-      <Route path="/" element={<Home />}/>
+      <Route path="/" element={<Navigate to="/wrap"/>}/>
       <Route path="/ibc" element={<Ibc />}/>
       <Route path="/wrap" element={<Wrap />}/>
     </Routes>
