@@ -24,15 +24,23 @@ export function Wrap() {
 
   const [nativeValue, setNativeValue] = useState <string>();
   const [wrappedValue, setWrappedValue] = useState <string>();
-  const handleInputChange = (e: { target: { value: React.SetStateAction<string | undefined>; }; }) => {
+  const handleInputChange = e => {
     setNativeValue(e.target.value);
     setWrappedValue(e.target.value);
 
-    alert(nativeValue);
-    alert(Number(tokenNativeBalance));
-    if (Number(nativeValue) > Number(tokenNativeBalance)) {
-      setNativeAmountValidationMessage("Maximum amount exceeded!");
+    const availableAmount = Number(tokenNativeBalance) * (10**(-chosenToken.decimals));
+
+    var numberRegex = /(\d*\.?\d)/;
+    
+    if (Number(e.target.value) > Number(availableAmount)) {
+      setNativeAmountValidationMessage("Not enough balance");
       setIsValidNativeAmount(false);
+    } else if (!numberRegex.test(e.target.value)) {
+      console.log(numberRegex.test(e.target.value));
+      setNativeAmountValidationMessage("Please enter a valid number");
+      setIsValidNativeAmount(false);
+    } else {
+      setIsValidNativeAmount(true);
     }
   };
 
@@ -50,14 +58,14 @@ export function Wrap() {
   // UI
   const [isNativeTokenPickerVisible, setIsNativeTokenPickerVisible] = useState<boolean>(false);
   const [isWrappedTokenPickerVisible, setIsWrappedTokenPickerVisible] = useState<boolean>(false);
-  const [nativeAmountValidationMessage, setNativeAmountValidationMessage] = useState<string>("Maximum amount exceeded!");
+  const [nativeAmountValidationMessage, setNativeAmountValidationMessage] = useState<string>("");
   const [isValidNativeAmount, setIsValidNativeAmount] = useState<boolean>(true);
 
   // handles [25% | 50% | 75% | Max] Button-Group
   function setAmountByPercentage(percentage: number) {
     if (tokenNativeBalance) {
       let availableAmount = Number(tokenNativeBalance) * (10**(-chosenToken.decimals));
-      let potentialInput = (availableAmount * (percentage * 0.01)).toFixed(chosenToken.decimals);
+      let potentialInput = new BigNumber(availableAmount * (percentage * 0.01)).toFormat();
       if (Number(potentialInput) == 0) {
         setNativeValue("");
         setWrappedValue("");
@@ -157,7 +165,7 @@ export function Wrap() {
       <>
         {`Available: ${new BigNumber(tokenNativeBalance!)
           .dividedBy(`1e${chosenToken.decimals}`)
-          .toFormat()}`} {chosenToken.name}({usdString.format(
+          .toFormat()}`} {chosenToken.name} ({usdString.format(
         new BigNumber(tokenNativeBalance!)
           .dividedBy(`1e${chosenToken.decimals}`)
           .multipliedBy(Number(price))
@@ -175,39 +183,20 @@ export function Wrap() {
   } else if (tokenWrappedBalance == viewingKeyErrorString) {
     balanceToken = (
       <div>
-        <Tooltip title="Set Viewing Key" placement="top">
-          <div
-            style={{ cursor: "pointer" }}
-            onClick={async () => {
-              await setKeplrViewingKey(chosenToken.address);
-              try {
-                setLoadingTokenBalance(true);
-                await sleep(1000); // sometimes query nodes lag
-                await updateTokenBalance();
-              } finally {
-                setLoadingTokenBalance(false);
-              }
-            }}
-          >
-            {`Balance: ${viewingKeyErrorString}`}
-          </div>
-        </Tooltip>
         <div style={{ opacity: 0 }}>placeholder</div>
       </div>
     );
   } else if (Number(tokenWrappedBalance) > -1) {
     balanceToken = (
       <div>
-        <button onClick={() => {setWrappedValue(new BigNumber(tokenWrappedBalance).dividedBy(`1e${chosenToken.decimals}`).toFixed())}}>
-          <>{`AvailableXXX: ${new BigNumber(tokenWrappedBalance!)
-                .dividedBy(`1e${chosenToken.decimals}`)
-                .toFormat()}`}{' s' + chosenToken.name}({usdString.format(
-            new BigNumber(tokenNativeBalance!)
+        <>{`Available: ${new BigNumber(tokenWrappedBalance!)
               .dividedBy(`1e${chosenToken.decimals}`)
-              .multipliedBy(Number(price))
-              .toNumber()
-            )})</>
-        </button>
+              .toFormat()}`}{' s' + chosenToken.name} ({usdString.format(
+          new BigNumber(tokenWrappedBalance!)
+            .dividedBy(`1e${chosenToken.decimals}`)
+            .multipliedBy(Number(price))
+            .toNumber()
+          )})</>
       </div>
     );
   }
@@ -298,7 +287,7 @@ export function Wrap() {
                 }
 
                 {/* <input ref={nativeValue} type="text" className="block flex-1 min-w-0 w-full bg-zinc-900 text-white p-4 rounded-r-md" name="nativeValue" id="nativeValue" placeholder="Amount" disabled={chosenToken.address === "" || chosenToken.is_snip20}/> */}
-                <input value={nativeValue} onChange={handleInputChange} type="number" className={" block flex-1 min-w-0 w-full bg-zinc-900 text-white p-4 rounded-r-md" + (!isValidNativeAmount ? " border border-red-500" : "")} name="nativeValue" id="nativeValue" placeholder="Amount" disabled={chosenToken.address === "" || chosenToken.is_snip20}/>
+                <input value={nativeValue} onChange={handleInputChange} type="text" className={" block flex-1 min-w-0 w-full bg-zinc-900 text-white p-4 rounded-r-md disabled:placeholder-zinc-700 transition-colors" + (!isValidNativeAmount ? " border border-red-500" : "")} name="nativeValue" id="nativeValue" placeholder="Amount" disabled={chosenToken.address === "" || chosenToken.is_snip20 || !secretAddress}/>
 
               </div>
 
@@ -309,10 +298,10 @@ export function Wrap() {
                 </div>
                 <div className="flex-initial">
                   <div className="inline-flex rounded-full text-xs">
-                    <button onClick={() => setAmountByPercentage(25)} className="py-0.5 px-1.5 font-medium rounded-l-full border focus:z-10 focus:ring-2 bg-zinc-800 border-zinc-600 text-white hover:text-black hover:bg-white active:bg-zinc-300 transition-colors">25%</button>
-                    <button onClick={() => setAmountByPercentage(50)} className="py-0.5 px-1.5 font-medium border-t border-b focus:z-10 focus:ring-2 bg-zinc-800 border-zinc-600 text-white hover:text-black hover:bg-white active:bg-zinc-300 transition-colors">50%</button>
-                    <button onClick={() => setAmountByPercentage(75)} className="py-0.5 px-1.5 font-medium border-t border-b focus:z-10 focus:ring-2 bg-zinc-800 border-zinc-600 text-white hover:text-black hover:bg-white active:bg-zinc-300 transition-colors">75%</button>
-                    <button onClick={() => setAmountByPercentage(100)} className="py-0.5 px-1.5 font-medium rounded-r-full border focus:z-10 focus:ring-2 bg-zinc-800 border-zinc-600 text-white hover:text-black hover:bg-white active:bg-zinc-300 transition-colors">Max</button>
+                    <button onClick={() => setAmountByPercentage(25)} className="py-0.5 px-1.5 font-medium rounded-l-full border focus:z-10 focus:ring-2 bg-zinc-800 border-zinc-600 text-white hover:text-black hover:bg-white active:bg-zinc-300 transition-colors disabled:text-gray-400 disabled:hover:bg-zinc-800 disabled:hover:text-gray-400 disabled:hover:border-zinc-600" disabled={!secretAddress}>25%</button>
+                    <button onClick={() => setAmountByPercentage(50)} className="py-0.5 px-1.5 font-medium border-t border-b focus:z-10 focus:ring-2 bg-zinc-800 border-zinc-600 text-white hover:text-black hover:bg-white active:bg-zinc-300 transition-colors disabled:text-gray-400 disabled:hover:bg-zinc-800 disabled:hover:text-gray-400 disabled:hover:border-zinc-600" disabled={!secretAddress}>50%</button>
+                    <button onClick={() => setAmountByPercentage(75)} className="py-0.5 px-1.5 font-medium border-t border-b focus:z-10 focus:ring-2 bg-zinc-800 border-zinc-600 text-white hover:text-black hover:bg-white active:bg-zinc-300 transition-colors disabled:text-gray-400 disabled:hover:bg-zinc-800 disabled:hover:text-gray-400 disabled:hover:border-zinc-600" disabled={!secretAddress}>75%</button>
+                    <button onClick={() => setAmountByPercentage(100)} className="py-0.5 px-1.5 font-medium rounded-r-full border focus:z-10 focus:ring-2 bg-zinc-800 border-zinc-600 text-white hover:text-black hover:bg-white active:bg-zinc-300 transition-colors disabled:text-gray-400 disabled:hover:bg-zinc-800 disabled:hover:text-gray-400 disabled:hover:border-zinc-600" disabled={!secretAddress}>Max</button>
                   </div>
                 </div>
               </div>
@@ -323,8 +312,8 @@ export function Wrap() {
 
             {/* Wrap / Unwrap Buttons */}
             <div className="space-x-4 text-center">
-              <button onClick={() => setWrappingMode(WrappingMode.Wrap)} className={"py-1 px-3 font-semibold rounded-md border transition-colors" + (wrappingMode === WrappingMode.Wrap ? "border border-blue-500 bg-blue-500/40" : "hover:bg-zinc-700 active:bg-zinc-700")}><FontAwesomeIcon icon={faDownLong} className="mr-2" />Wrap</button>
-              <button onClick={() => setWrappingMode(WrappingMode.Unwrap)} className={"py-1 px-3 font-semibold rounded-md border transition-colors" + (wrappingMode !== WrappingMode.Wrap ? "border border-blue-500 bg-blue-500/40" : "hover:bg-zinc-700 active:bg-zinc-700")}><FontAwesomeIcon icon={faUpLong} className="mr-2" />Unwrap</button>
+              <button onClick={() => setWrappingMode(WrappingMode.Wrap)} className={(wrappingMode === WrappingMode.Wrap ? "border border-blue-500 bg-blue-500/40" : "hover:bg-zinc-700 active:bg-zinc-800") + " py-1 px-3 font-semibold rounded-md border transition-colors disabled:bg-zinc-500 disabled:text-zinc-900 disabled:border-zinc-500"} disabled={!secretAddress}><FontAwesomeIcon icon={faDownLong} className="mr-2" />Wrap</button>
+              <button onClick={() => setWrappingMode(WrappingMode.Unwrap)} className={(wrappingMode === WrappingMode.Unwrap ? "border border-blue-500 bg-blue-500/40" : "hover:bg-zinc-700 active:bg-zinc-800") + " py-1 px-3 font-semibold rounded-md border transition-colors disabled:bg-zinc-500 disabled:text-zinc-900 disabled:border-zinc-500"} disabled={!secretAddress}><FontAwesomeIcon icon={faUpLong} className="mr-2" />Unwrap</button>
             </div>
 
             <div className="flex">
@@ -334,7 +323,7 @@ export function Wrap() {
                   <FontAwesomeIcon icon={faCaretDown} className="ml-2" />
                 </button>
                 
-                <input value={wrappedValue} type="number" className="block flex-1 min-w-0 w-full bg-zinc-900 text-white p-4 rounded-r-md" name="wrappedValue" id="wrappedValue" placeholder="Amount" disabled={chosenToken.address === "" || chosenToken.is_snip20}/>
+                <input value={wrappedValue} type="text" className="block flex-1 min-w-0 w-full bg-zinc-900 text-white p-4 rounded-r-md disabled:placeholder-zinc-700 transition-colors" name="wrappedValue" id="wrappedValue" placeholder="Amount" disabled={chosenToken.address === "" || chosenToken.is_snip20 || !secretAddress}/>
             </div>
             { isWrappedTokenPickerVisible &&
               <ul className="overflow-y-scroll scrollbar-hide h-64 text-white z-20 absolute mt-16 rounded bg-black ring-1 ring-zinc-800 left-0 right-0 mx-12">
@@ -376,154 +365,145 @@ export function Wrap() {
           >
             <div className="text-xs">
               <div>{balanceToken}</div>
-              <When condition={chosenToken.address && secretAddress}>
-                <Tooltip title="Refresh Balance" placement="top">
-                  <Button
-                    style={{
-                      display: loadingTokenBalance ? "none" : undefined,
-                    }}
-                    onClick={async () => {
-                      try {
-                        setLoadingTokenBalance(true);
-                        await updateTokenBalance();
-                      } finally {
-                        setLoadingTokenBalance(false);
-                      }
-                    }}
-                  >
-                    <RefreshIcon sx={{ height: "0.7em" }} />
-                  </Button>
-                </Tooltip>
-              </When>
             </div>
           </div>
         </div>
         <span style={{ flex: 1 }}></span>
       </div>
-              </div>
+    </div>
               
-              <div>
-                <button
-                  disabled={chosenToken.address === "" || chosenToken.is_snip20 || (!nativeValue || !wrappedValue)}
-                  className="disabled:bg-zinc-500 disabled:border-zinc-500 disabled:opacity-40 w-full py-3 px-3 bg-emerald-500/50 rounded border border-emerald-500 hover:bg-emerald-600 active:bg-emerald-700 transition-colors font-semibold"
-                  onClick={async () => {
-                    if (!secretjs || !secretAddress) {
-                      return;
-                    }
-                    const baseAmount = wrappingMode === WrappingMode.Unwrap ? nativeValue : wrappedValue
-                    const amount = new BigNumber(Number(baseAmount))
-                    .multipliedBy(`1e${chosenToken.decimals}`)
-                    .toFixed(0, BigNumber.ROUND_DOWN);
-                      if (amount === "NaN") {
-                        console.error("NaN amount", baseAmount);
-                      return;
-                    }
-                  try {
-                    setLoadingWrapOrUnwrap(true);
-                    const toastId = toast.loading(
-                      wrappingMode === WrappingMode.Unwrap ? `Wrapping ${chosenToken.name}` : `Unwrapping ${chosenToken.name}`,
-                      {
-                        closeButton: true,
-                      }
-                    );
-                    if (wrappingMode === WrappingMode.Unwrap) {
-                      const tx = await secretjs.tx.broadcast(
-                        [
-                          new MsgExecuteContract({
-                            sender: secretAddress,
-                            contractAddress: chosenToken.address,
-                            codeHash: chosenToken.code_hash,
-                            sentFunds: [
-                              { denom: chosenToken.withdrawals[0].from_denom, amount },
-                            ],
-                            msg: { deposit: {} },
-                          }),
+            <button
+              disabled={chosenToken.address === "" || chosenToken.is_snip20 || (!nativeValue || !wrappedValue)}
+              className="flex items-center justify-center disabled:bg-zinc-500 disabled:border-zinc-500 disabled:opacity-40 w-full py-3 px-3 bg-emerald-500/50 rounded border border-emerald-500 hover:bg-emerald-600 active:bg-emerald-700 transition-colors font-semibold"
+              onClick={async () => {
+                if (!secretjs || !secretAddress) {
+                  return;
+                }
+                const baseAmount = wrappingMode === WrappingMode.Wrap ? nativeValue : wrappedValue
+                const amount = new BigNumber(Number(baseAmount))
+                .multipliedBy(`1e${chosenToken.decimals}`)
+                .toFixed(0, BigNumber.ROUND_DOWN);
+                  if (amount === "NaN") {
+                    console.error("NaN amount", baseAmount);
+                  return;
+                }
+              try {
+                setLoadingWrapOrUnwrap(true);
+                const toastId = toast.loading(
+                  wrappingMode === WrappingMode.Wrap ? `Wrapping ${chosenToken.name}` : `Unwrapping ${chosenToken.name}`, { closeButton: true }
+                );
+                if (wrappingMode === WrappingMode.Wrap) {
+                  const tx = await secretjs.tx.broadcast(
+                    [
+                      new MsgExecuteContract({
+                        sender: secretAddress,
+                        contractAddress: chosenToken.address,
+                        codeHash: chosenToken.code_hash,
+                        sentFunds: [
+                          { denom: chosenToken.withdrawals[0].from_denom, amount },
                         ],
-                        {
-                          gasLimit: 150_000,
-                          gasPriceInFeeDenom: 0.25,
-                          feeDenom: "uscrt",
-                        }
-                      );
-          
-                      if (tx.code === 0) {
-                        setNativeValue("");
-                        toast.update(toastId, {
-                          render: `Wrapped ${chosenToken.name} successfully`,
-                          type: "success",
-                          isLoading: false,
-                          closeOnClick: true,
-                        });
-                        console.log(`Wrapped successfully`);
-                      } else {
-                        toast.update(toastId, {
-                          render: `Wrapping of ${chosenToken.name} failed: ${tx.rawLog}`,
-                          type: "error",
-                          isLoading: false,
-                          closeOnClick: true,
-                        });
-                        console.error(`Tx failed: ${tx.rawLog}`);
-                      }
+                        msg: { deposit: {} },
+                      }),
+                    ],
+                    {
+                      gasLimit: 150_000,
+                      gasPriceInFeeDenom: 0.25,
+                      feeDenom: "uscrt",
                     }
-                    else {
-                      const tx = await secretjs.tx.broadcast(
-                        [
-                          new MsgExecuteContract({
-                            sender: secretAddress,
-                            contractAddress: chosenToken.address,
-                            codeHash: chosenToken.code_hash,
-                            sentFunds: [],
-                            msg: {
-                              redeem: {
-                                amount,
-                                denom:
-                                  chosenToken.name === "SCRT"
-                                    ? undefined
-                                    : chosenToken.withdrawals[0].from_denom,
-                              },
-                            },
-                          }),
-                        ],
-                        {
-                          gasLimit: 150_000,
-                          gasPriceInFeeDenom: 0.25,
-                          feeDenom: "uscrt",
-                          feeGranter: useFeegrant ? faucetAddress : "",
-                        }
-                      );
-                      if (tx.code === 0) {
-                        setWrappedValue("");
-                        toast.update(toastId, {
-                          render: `Unwrapped ${chosenToken.name} successfully`,
-                          type: "success",
-                          isLoading: false,
-                          closeOnClick: true,
-                        });
-                        console.log(`Unwrapped successfully`);
-                      } else {
-                        toast.update(toastId, {
-                          render: `Unwrapping of ${chosenToken.name} failed: ${tx.rawLog}`,
-                          type: "error",
-                          isLoading: false,
-                          closeOnClick: true,
-                        });
-                        console.error(`Tx failed: ${tx.rawLog}`);
-                      }
-                    }
-                  } finally {
-                    setLoadingWrapOrUnwrap(false);
-                    try {
-                      setLoadingCoinBalance(true);
-                      await sleep(1000); // sometimes query nodes lag
-                      await updateCoinBalance();
-                    } finally {
-                      setLoadingCoinBalance(false);
-                    }
+                  );
+      
+                  if (tx.code === 0) {
+                    setNativeValue("");
+                    setWrappedValue("");
+                    toast.update(toastId, {
+                      render: `Wrapped ${chosenToken.name} successfully`,
+                      type: "success",
+                      isLoading: false,
+                      closeOnClick: true,
+                    });
+                    console.log(`Wrapped successfully`);
+                  } else {
+                    toast.update(toastId, {
+                      render: `Wrapping of ${chosenToken.name} failed: ${tx.rawLog}`,
+                      type: "error",
+                      isLoading: false,
+                      closeOnClick: true,
+                    });
+                    console.error(`Tx failed: ${tx.rawLog}`);
                   }
-                }}>
-                  {loadingWrapOrUnwrap ? (<svg className="inline-block animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"> <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle> <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path> </svg>) : ''} <FontAwesomeIcon icon={faArrowRightArrowLeft} className="mr-2"/>{wrappingMode === WrappingMode.Unwrap ? "Execute Wrapping" : "Execute Unwrapping"}
-                </button>
-              </div>
+                }
+                else {
+                  const tx = await secretjs.tx.broadcast(
+                    [
+                      new MsgExecuteContract({
+                        sender: secretAddress,
+                        contractAddress: chosenToken.address,
+                        codeHash: chosenToken.code_hash,
+                        sentFunds: [],
+                        msg: {
+                          redeem: {
+                            amount,
+                            denom:
+                              chosenToken.name === "SCRT"
+                                ? undefined
+                                : chosenToken.withdrawals[0].from_denom,
+                          },
+                        },
+                      }),
+                    ],
+                    {
+                      gasLimit: 150_000,
+                      gasPriceInFeeDenom: 0.25,
+                      feeDenom: "uscrt",
+                      feeGranter: useFeegrant ? faucetAddress : "",
+                    }
+                  );
+                  if (tx.code === 0) {
+                    setNativeValue("");
+                    setWrappedValue("");
+                    toast.update(toastId, {
+                      render: `Unwrapped ${chosenToken.name} successfully`,
+                      type: "success",
+                      isLoading: false,
+                      closeOnClick: true,
+                    });
+                    console.log(`Unwrapped successfully`);
+                  } else {
+                    toast.update(toastId, {
+                      render: `Unwrapping of ${chosenToken.name} failed: ${tx.rawLog}`,
+                      type: "error",
+                      isLoading: false,
+                      closeOnClick: true,
+                    });
+                    console.error(`Tx failed: ${tx.rawLog}`);
+                  }
+                }
+              } finally {
+                setLoadingWrapOrUnwrap(false);
+                try {
+                  setLoadingCoinBalance(true);
+                  await sleep(1000); // sometimes query nodes lag
+                  await updateCoinBalance();
+                } finally {
+                  setLoadingCoinBalance(false);
+                }
+              }
+            }}>
+              {loadingWrapOrUnwrap ? (<svg className="inline-block animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"> <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle> <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path> </svg>) : ''} <FontAwesomeIcon icon={faArrowRightArrowLeft} className="mr-2"/>
+              
+              {(wrappingMode === WrappingMode.Wrap && nativeValue) && (<>
+                Wrap <span className="text-xs font-normal mx-1">{nativeValue} {chosenToken.name}</span> into <span className="text-xs font-normal mx-1">{wrappedValue} s{chosenToken.name}</span>
+              </>)}
+
+              {(wrappingMode === WrappingMode.Unwrap && wrappedValue) && (<>
+                Unwrap <span className="text-xs font-normal mx-1">{wrappedValue} s{chosenToken.name}</span> into <span className="text-xs font-normal mx-1">{nativeValue} {chosenToken.name}</span>
+              </>)}
+
+              {(!nativeValue || !wrappedValue) && (<>
+                {wrappingMode === WrappingMode.Wrap ? "Wrap" : "Unwrap"}
+              </>)}
+
+            </button>
           </div>
         </div>
       </div>
