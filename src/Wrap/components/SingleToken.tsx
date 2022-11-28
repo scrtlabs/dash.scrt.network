@@ -12,9 +12,9 @@ import React, { useEffect, useRef, useState } from "react";
 import { Else, If, Then, When } from "react-if";
 import { Breakpoint } from "react-socks";
 import { MsgExecuteContract, SecretNetworkClient } from "secretjs";
-import { sleep, viewingKeyErrorString ,faucetAddress} from "utils/commons";
-import { Token } from "utils/config";
-import { getKeplrViewingKey, setKeplrViewingKey } from "components/general/Keplr";
+import { sleep, viewingKeyErrorString ,faucetAddress} from "General/Utils/commons";
+import { Token } from "General/Utils/config";
+import { getKeplrViewingKey, setKeplrViewingKey } from "General/Components/Keplr";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -153,15 +153,7 @@ export function SingleTokenNative({
             )})</>
         </div>
       );
-    } else {
-      balanceCoin = (
-        <>
-          {/* <button onClick={() => {document.getElementById("keplr-button")?.click()}} className="ml-2 flex-initial inline text-xs font-semibold px-2 py-0.5 rounded border border-sky-800 text-sky-700 transition-colors hover:border-sky-500 hover:text-sky-500">
-            Connect Wallet
-          </button> */}
-        </>
-      );
-    }
+    } else { balanceCoin =  <></>; }
   } else {
     balanceCoin = (
       <div>

@@ -3,7 +3,7 @@ import CopyToClipboard from "react-copy-to-clipboard";
 import { Else, If, Then } from "react-if";
 import { Breakpoint } from "react-socks";
 import { SecretNetworkClient } from "secretjs";
-import { chains } from "utils/config";
+import { chains } from "General/Utils/config";
 
 const SECRET_CHAIN_ID = chains["Secret Network"].chain_id;
 const SECRET_RPC = chains["Secret Network"].rpc;
