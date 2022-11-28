@@ -2,15 +2,14 @@ import React from 'react';
 import { Window as KeplrWindow } from "@keplr-wallet/types";
 import ReactDOM from "react-dom";
 import { BreakpointProvider } from "react-socks";
-import "assets/scss/index.scss";
+import "General/assets/scss/index.scss";
 import { Buffer } from "buffer";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 
 // Pages
-import { Ibc } from "pages/ibc";
-import { Home } from "pages/home";
-import { Wrap } from "pages/wrap";
-import DefaultLayout from 'layouts/defaultLayout';
+import { Ibc } from "Ibc/Ibc";
+import { Wrap } from "Wrap/Wrap";
+import DefaultLayout from 'General/Layouts/defaultLayout';
 
 globalThis.Buffer = Buffer;
 declare global {

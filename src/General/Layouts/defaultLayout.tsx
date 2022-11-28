@@ -1,9 +1,9 @@
 import { faBars } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Discord } from 'components/general/Discord';
-import { Footer } from 'components/general/Footer';
-import { KeplrPanel } from 'components/general/Keplr';
-import { Navigation } from 'components/general/navigation';
+import { Discord } from 'General/Components/Discord';
+import { Footer } from 'General/Components/Footer';
+import { KeplrPanel } from 'General/Components/Keplr';
+import { Navigation } from 'General/Components/navigation';
 import React, { useState, createContext, useEffect} from 'react';
 import { SecretNetworkClient } from 'secretjs';
 

@@ -1,9 +1,9 @@
 import React, { useEffect, useState, useRef } from "react";
 import { Breakpoint } from "react-socks";
 import { SecretNetworkClient } from "secretjs";
-import { chains, Token, tokens } from "utils/config";
-import { faucetURL } from "utils/commons";
-import DepositWithdrawDialog from "components/ibc/DepositWithdrawDialog";
+import { chains, Token, tokens } from "General/Utils/config";
+import { faucetURL } from "General/Utils/commons";
+import DepositWithdrawDialog from "Ibc/components/DepositWithdrawDialog";
 import { Flip, ToastContainer, toast} from "react-toastify";
 
 export function Ibc() {
@@ -14,7 +14,7 @@ export function Ibc() {
   const [loadingCoinBalances, setLoadingCoinBalances] =
     useState<boolean>(false);
   const [useFeegrant, setUseFeegrant] = useState<boolean>(false);
-  const [chosenToken, setChosenToken] = useState<Token>(tokens.filter(token => token.name === "SCRT")[0]);
+  const [selectedToken, setselectedToken] = useState<Token>(tokens.filter(token => token.name === "SCRT")[0]);
   const [isWrapping, setIsWrapping] = useState<boolean>(true);
   const [isNativeTokenPickerVisible, setIsNativeTokenPickerVisible] = useState<boolean>(false);
   const [isWrappedTokenPickerVisible, setIsWrappedTokenPickerVisible] = useState<boolean>(false);
@@ -26,8 +26,8 @@ export function Ibc() {
   useState<boolean>(false);
 
   function handleNativePickerChoice(token: Token) {
-    if (token != chosenToken) {
-      setChosenToken(token);
+    if (token != selectedToken) {
+      setselectedToken(token);
     }
     setIsNativeTokenPickerVisible(false)
     setIsWrappedTokenPickerVisible(false)
@@ -141,7 +141,7 @@ export function Ibc() {
           Transfer your tokens via IBC
         </p>
         <DepositWithdrawDialog
-          token={chosenToken}
+          token={selectedToken}
           balances={balances}
           secretAddress={secretAddress}
           secretjs={secretjs}

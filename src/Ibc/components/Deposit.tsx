@@ -25,9 +25,9 @@ import {
   suggestInjectiveToKeplr,
   suggestKujiraToKeplr,
   suggestTerraToKeplr,
-} from "utils/commons";
-import { chains, Token } from "utils/config";
-import CopyableAddress from "components/ibc/CopyableAddress";
+} from "General/Utils/commons";
+import { chains, Token } from "General/Utils/config";
+import CopyableAddress from "Ibc/components/CopyableAddress";
 
 import { fromBase64, toBase64, toHex } from "secretjs";
 import { TxRaw } from "secretjs/dist/protobuf_stuff/cosmos/tx/v1beta1/tx";
