@@ -150,29 +150,6 @@ export function Ibc() {
           />
         </div>
       </div>
-      <Breakpoint medium up>
-        <ToastContainer
-          style={{ width: "450px" }}
-          position={"top-left"}
-          autoClose={false}
-          hideProgressBar={true}
-          closeOnClick={true}
-          draggable={false} 
-          theme={"light"}
-          transition={Flip}
-        />
-      </Breakpoint>
-      <Breakpoint small down>
-        <ToastContainer 
-          position={"bottom-left"}
-          autoClose={false}
-          hideProgressBar={true}
-          closeOnClick={true}
-          draggable={false}
-          theme={"light"}
-          transition={Flip}
-        />
-      </Breakpoint>
     </div>
   );
 }

@@ -2,24 +2,20 @@ import React, { useEffect, useState, useRef, useContext, createContext } from "r
 import { Breakpoint } from "react-socks";
 import { MsgExecuteContract, SecretNetworkClient } from "secretjs";
 import { chains, Token, tokens } from "utils/config";
-import { sleep, faucetURL, faucetAddress, viewingKeyErrorString} from "utils/commons";
-import { KeplrContext } from "layouts/defaultLayout";
+import { sleep, faucetAddress, faucetURL, viewingKeyErrorString} from "utils/commons";
+import { FeeGrantContext, KeplrContext } from "layouts/defaultLayout";
 import BigNumber from "bignumber.js";
-import { Else, If, Then, When } from "react-if";
 import { Flip, ToastContainer, toast} from "react-toastify";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faDownLong, faUpLong, faArrowRightArrowLeft, faCaretDown } from '@fortawesome/free-solid-svg-icons'
 import { getKeplrViewingKey, setKeplrViewingKey } from "components/general/Keplr";
-import {
-  Button,
-  CircularProgress,
-  Tooltip,
-} from "@mui/material";
-import RefreshIcon from "@mui/icons-material/Refresh";
 
 export const WrapContext = createContext(null);
 
 export function Wrap() {
+  const {secretjs, secretAddress} = useContext(KeplrContext)!;
+  const {useFeegrant, setUseFeegrant} = useContext(FeeGrantContext);
+
   const [price, setPrice] = useState <number>();
 
   const [nativeValue, setNativeValue] = useState <string>();
@@ -76,17 +72,12 @@ export function Wrap() {
     }
   }
 
-
-  const [useFeegrant, setUseFeegrant] = useState<boolean>(false);
-
   const [loadingWrapOrUnwrap, setLoadingWrapOrUnwrap] = useState<boolean>(false);
   const [loadingTokenBalance, setLoadingTokenBalance] = useState<boolean>(false);
   const [loadingCoinBalance, setLoadingCoinBalance] = useState<boolean>(false);
 
   const [tokenNativeBalance, setTokenNativeBalance] = useState<string>("");
   const [tokenWrappedBalance, setTokenWrappedBalance] = useState<string>("");
-
-  const {secretjs, secretAddress} = useContext(KeplrContext);
 
   async function handleNativePickerChoice(token: Token) {
     if (token != chosenToken) {
@@ -107,7 +98,15 @@ export function Wrap() {
         setLoadingTokenBalance(false);
       }
   }
-  
+
+  const updateFeeGrantButton = (text: string, color: string) => {
+    let btnFeeGrant = document.getElementById("grantButton");
+    if (btnFeeGrant != null) {
+      btnFeeGrant.style.color = color;
+      btnFeeGrant.textContent = text;
+    }
+  };
+
   const usdString = new Intl.NumberFormat("en-US", {
     style: "currency",
     currency: "USD",
@@ -182,11 +181,23 @@ export function Wrap() {
     );
   } else if (tokenWrappedBalance == viewingKeyErrorString) {
     balanceToken = (
-      <div>
-        <div style={{ opacity: 0 }}>placeholder</div>
-      </div>
-    );
-  } else if (Number(tokenWrappedBalance) > -1) {
+          <div
+            style={{ cursor: "pointer" }}
+            onClick={async () => {
+              await setKeplrViewingKey(chosenToken.address);
+              try {
+                setLoadingTokenBalance(true);
+                await sleep(1000); // sometimes query nodes lag
+                await updateTokenBalance();
+              } finally {
+                setLoadingTokenBalance(false);
+              }
+            }}
+          >
+            {`Balance: ${viewingKeyErrorString}`}
+          </div>
+      );
+    } else if (Number(tokenWrappedBalance) > -1) {
     balanceToken = (
       <div>
         <>{`Available: ${new BigNumber(tokenWrappedBalance!)
@@ -212,10 +223,36 @@ export function Wrap() {
           },
         );
         setTokenNativeBalance(amount);
+        if (chosenToken.withdrawals[0]?.from_denom == "uscrt" && amount == "0" && useFeegrant == false) {
+          try {
+            const response = await fetch(faucetURL, {
+              method: 'POST',
+              body: JSON.stringify({"Address": secretAddress}),
+              headers: {'Content-Type': 'application/json'}
+            });
+            const result = await response;
+            const textBody = await result.text();
+            if (result.ok == true) {
+              updateFeeGrantButton("Fee Granted","green");
+              toast.success(`Your wallet does not have any SCRT to pay for transaction costs. Successfully sent new fee grant (0.1 SCRT) for unwrapping tokens to address ${secretAddress}`);
+            } else if (textBody == "Existing Fee Grant did not expire\n") {
+              updateFeeGrantButton("Fee Granted","green");
+              toast.success(`Your wallet does not have any SCRT to pay for transaction costs. Your address ${secretAddress} however does already have an existing fee grant which will be used for unwrapping`);
+            } else {
+              updateFeeGrantButton("Fee Grant failed","red");
+              toast.error(`Fee Grant for address ${secretAddress} failed with status code: ${result.status}`);
+            }
+            setUseFeegrant(true)
+          }
+          catch(e) {
+            updateFeeGrantButton("Fee Grant failed","red");
+            toast.error(`Fee Grant for address ${secretAddress} failed with error: ${e}`);
+          }
+          }
       } catch (e) {
         console.error(`Error while trying to query ${chosenToken.name}:`, e);
       }
-    }
+  }
   useEffect(() => {
     if (!secretjs || !secretAddress) {
       return;
@@ -230,7 +267,7 @@ export function Wrap() {
     return () => {
       clearInterval(interval);
     };
-  }, [secretAddress, secretjs, chosenToken]);
+  }, [secretAddress, secretjs, chosenToken, useFeegrant]);
 
   useEffect(() => {
     fetch(
@@ -409,6 +446,7 @@ export function Wrap() {
                       gasLimit: 150_000,
                       gasPriceInFeeDenom: 0.25,
                       feeDenom: "uscrt",
+                      feeGranter: useFeegrant ? faucetAddress : "",
                     }
                   );
       
@@ -507,31 +545,6 @@ export function Wrap() {
           </div>
         </div>
       </div>
-      <Breakpoint medium up>
-        <ToastContainer
-          position="bottom-left"
-          autoClose={5000}
-          hideProgressBar
-          newestOnTop={true}
-          closeOnClick={false}
-          rtl={false}
-          pauseOnFocusLoss
-          draggable={false}
-          pauseOnHover={true}
-          theme="dark"
-        />
-      </Breakpoint>
-      <Breakpoint small down>
-        <ToastContainer 
-          position={"bottom-left"}
-          autoClose={false}
-          hideProgressBar={true}
-          closeOnClick={true}
-          draggable={false}
-          theme={"dark"}
-          transition={Flip}
-        />
-      </Breakpoint>
     </>
   );
 }

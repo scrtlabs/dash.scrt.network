@@ -22,6 +22,7 @@ import {
   suggestInjectiveToKeplr,
   suggestKujiraToKeplr,
   suggestTerraToKeplr,
+  faucetAddress,
 } from "utils/commons";
 import { chains, Token } from "utils/config";
 import CopyableAddress from "components/ibc/CopyableAddress";
@@ -365,6 +366,7 @@ export default function Withdraw({
                     gasLimit: withdraw_gas,
                     gasPriceInFeeDenom: 0.1,
                     feeDenom: "uscrt",
+                    feeGranter: useFeegrant ? faucetAddress : "",
                   }
                 );
               } else {
@@ -386,6 +388,7 @@ export default function Withdraw({
                     gasLimit: withdraw_gas,
                     gasPriceInFeeDenom: 0.1,
                     feeDenom: "uscrt",
+                    feeGranter: useFeegrant ? faucetAddress : "",
                   }
                 );
               }
