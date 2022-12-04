@@ -41,9 +41,9 @@ export function Wrap2() {
     }
   };
 
-  function NativeTokenInputWrapper() {
-    return (
-      <>
+  class NativeTokenInputWrapper extends React.Component {
+    render() {
+      return <>
         { isNativeTokenPickerVisible &&
           <div className="relative">
             <ul className="overflow-y-scroll scrollbar-hide h-64 text-white z-20 mt-16 rounded bg-zinc-900 ring-1 ring-zinc-800 absolute left-0 right-0">
@@ -63,8 +63,7 @@ export function Wrap2() {
             {selectedToken.name}
             <FontAwesomeIcon icon={faCaretDown} className="ml-2" />
           </button>
-          <NativeTokenFormField value={amountToWrap} onChange={handleInputChange}/>
-          {/* <input value={amountToWrap} onChange={handleInputChange} type="text" className={" block flex-1 min-w-0 w-full bg-zinc-900 text-white p-4 rounded-r-md disabled:placeholder-zinc-700 transition-colors" + (!isValidAmount && wrappingMode === WrappingMode.Wrap ? "  border border-red-500" : "")} name="nativeValue" id="nativeValue" placeholder="0.0" disabled={!selectedToken.address || !secretAddress}/> */}
+          <input value={amountToWrap} onChange={handleInputChange} type="text" className={" block flex-1 min-w-0 w-full bg-zinc-900 text-white p-4 rounded-r-md disabled:placeholder-zinc-700 transition-colors" + (!isValidAmount && wrappingMode === WrappingMode.Wrap ? "  border border-red-500" : "")} name="nativeValue" id="nativeValue" placeholder="0.0" disabled={!selectedToken.address || !secretAddress}/>
         </div>
         {wrappingMode === WrappingMode.Wrap &&
         <div className="flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 mt-3">
@@ -73,7 +72,7 @@ export function Wrap2() {
         </div>
           }
       </>
-    )
+    }
   }
 
   function WrappedTokenInputWrapper() {
@@ -308,10 +307,11 @@ export function Wrap2() {
     }
   }
 
-  function From() {
-    return (
-      <>
+  class From extends React.Component {
 
+    
+    render(){
+      return <>
         <div className="flex mb-2">
           <div className="flex-1">From:</div>
           {/* Validation */}
@@ -320,10 +320,36 @@ export function Wrap2() {
             {!isValidAmount && (<div className="text-red-500 text-xs text-right mb-2">{nativeAmountValidationMessage}</div>)}
           </div>
         </div>
-        {wrappingMode === WrappingMode.Wrap && <NativeTokenInputWrapper/>}
-        {wrappingMode === WrappingMode.Unwrap && <WrappedTokenInputWrapper/>}
+
+        { isNativeTokenPickerVisible &&
+          <div className="relative">
+            <ul className="overflow-y-scroll scrollbar-hide h-64 text-white z-20 mt-16 rounded bg-zinc-900 ring-1 ring-zinc-800 absolute left-0 right-0">
+              {tokens.map(token => (
+                <li className="cursor-pointer select-none p-2 bg-zinc-900 hover:bg-black flex items-center" onClick={() => handlePickerChoice(token)} key={token.name}>
+                  <img src={token.image} alt="Logo" className="w-7 h-7 mr-2"/>
+                  {token.name}
+                </li>
+              ))}
+            </ul>
+          </div>
+        }
+
+        <div className="flex">
+          <button onClick={() => {setIsNativeTokenPickerVisible(!isNativeTokenPickerVisible); setIsWrappedTokenPickerVisible(false)}} className="hover:bg-zinc-700 active:bg-zinc-800 transition-colors inline-flex items-center px-3 text-sm font-semibold bg-zinc-800 rounded-l-md border border-r-0 border-zinc-900 text-zinc-400 focus:bg-zinc-700 disabled:hover:bg-zinc-800" disabled={!selectedToken.address || !secretAddress}>
+            <img src={selectedToken.image} alt={selectedToken.name} className="w-7 h-7 mr-2"/>
+            {selectedToken.name}
+            <FontAwesomeIcon icon={faCaretDown} className="ml-2" />
+          </button>
+          <input value={amountToWrap} onChange={handleInputChange} type="text" className={" block flex-1 min-w-0 w-full bg-zinc-900 text-white p-4 rounded-r-md disabled:placeholder-zinc-700 transition-colors" + (!isValidAmount && wrappingMode === WrappingMode.Wrap ? "  border border-red-500" : "")} name="nativeValue" id="nativeValue" placeholder="0.0" disabled={!selectedToken.address || !secretAddress}/>
+        </div>
+        {wrappingMode === WrappingMode.Wrap &&
+          <div className="flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 mt-3">
+            <div className="flex-1 text-xs"><NativeTokenBalanceUi/></div>
+              <div className="sm:flex-initial text-xs"><PercentagePicker/></div>
+          </div>
+        }
       </>
-    )
+    }
   }
 
   function To() {
