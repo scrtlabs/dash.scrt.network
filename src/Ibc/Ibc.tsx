@@ -11,8 +11,7 @@ export function Ibc() {
   const [secretAddress, setSecretAddress] = useState<string>("");
   const [balances, setBalances] = useState<Map<string, string>>(new Map());
   const [prices, setPrices] = useState<Map<string, number>>(new Map());
-  const [loadingCoinBalances, setLoadingCoinBalances] =
-    useState<boolean>(false);
+  const [loadingCoinBalances, setLoadingCoinBalances] = useState<boolean>(false);
   const [useFeegrant, setUseFeegrant] = useState<boolean>(false);
   const [selectedToken, setselectedToken] = useState<Token>(tokens.filter(token => token.name === "SCRT")[0]);
   const [isWrapping, setIsWrapping] = useState<boolean>(true);
@@ -24,6 +23,17 @@ export function Ibc() {
   useState<boolean>(true);
   const [loadingWrapOrUnwrap, setLoadingWrapOrUnwrap] =
   useState<boolean>(false);
+
+  const header = <>
+  <div className="mb-4">
+    <h1 className="inline text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-violet-500">
+      IBC Transfer
+    </h1>
+  </div>
+  <span className="block mb-4">
+    Transfer your tokens via IBC (Inter-Blockchain Communication)
+  </span>
+  </>
 
   function handleNativePickerChoice(token: Token) {
     if (token != selectedToken) {
@@ -134,12 +144,10 @@ export function Ibc() {
     <div>
       <div className="w-full max-w-xl mx-auto">
         <div className="border rounded-lg p-12 pb-7 border-neutral-700 bg-gradient-to-t from-black to-zinc-900/75 w-full">
-        <div className="mb-4">
-          <h1 className="inline text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-purple-500 mb-4">IBC Transfers</h1>
-        </div>
-        <p className="text-neutral-400 mb-10">
-          Transfer your tokens via IBC
-        </p>
+
+        {header}
+
+
         <DepositWithdrawDialog
           token={selectedToken}
           balances={balances}

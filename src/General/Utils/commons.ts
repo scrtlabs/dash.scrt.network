@@ -183,3 +183,10 @@ export async function suggestKujiraToKeplr(keplr: Keplr) {
     features: ["stargate", "ibc-transfer", "no-legacy-stdTx", "ibc-go"],
   });
 }
+
+export const usdString = new Intl.NumberFormat("en-US", {
+  style: "currency",
+  currency: "USD",
+  minimumFractionDigits: 0,
+  maximumFractionDigits: 2,
+});
