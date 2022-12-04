@@ -28,11 +28,6 @@ export const DefaultLayout =({children}) =>{
     window.addEventListener('resize', handleResize);
   });
 
-
-  /**
-   * SecretJS & secretAddress init
-   */
-
   const [secretjs, setSecretjs] = useState<SecretNetworkClient | null >(null);
   const [secretAddress, setSecretAddress] = useState<string>("");
 
