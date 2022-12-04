@@ -1,7 +1,7 @@
 import { faArrowUpRightFromSquare, faChartLine, faCheckToSlot, faCircleNodes, faClose, faCoins, faShuffle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React from "react";
-import { Link, NavLink } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 
 export function Navigation({
   showMobileMenu,
@@ -31,6 +31,11 @@ export function Navigation({
         <li>
         <NavLink to="/wrap" className={({ isActive }) => isActive ? "text-white bg-gradient-to-r from-zinc-700 via-zinc-700-700 to-zinc-700/5 block w-full px-8 py-5 rounded-full transition-colors" : "hover:text-white block w-full px-8 py-5 rounded-full transition-colors"}>
           <FontAwesomeIcon icon={faShuffle} className="mr-2" />Wrap
+          </NavLink>
+        </li>
+        <li>
+        <NavLink to="/wrap2" className={({ isActive }) => isActive ? "text-white bg-gradient-to-r from-zinc-700 via-zinc-700-700 to-zinc-700/5 block w-full px-8 py-5 rounded-full transition-colors" : "hover:text-white block w-full px-8 py-5 rounded-full transition-colors"}>
+          <FontAwesomeIcon icon={faShuffle} className="mr-2" />Wrap (2)
           </NavLink>
         </li>
         <li>
