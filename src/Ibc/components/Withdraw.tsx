@@ -11,32 +11,30 @@ import {
   Typography,
 } from "@mui/material";
 import BigNumber from "bignumber.js";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, useContext } from "react";
 import { Else, If, Then } from "react-if";
 import { useCurrentBreakpointName } from "react-socks";
 import { toast } from "react-toastify";
 import { SecretNetworkClient, toBase64, toUtf8, Tx } from "secretjs";
+import { KeplrContext, FeeGrantContext } from "General/Layouts/defaultLayout";
 import {
   sleep,
   suggestCrescentToKeplr,
   suggestInjectiveToKeplr,
   suggestKujiraToKeplr,
   suggestTerraToKeplr,
+  faucetAddress
 } from "General/Utils/commons";
 import { chains, Token } from "General/Utils/config";
 import CopyableAddress from "Ibc/components/CopyableAddress";
 
 export default function Withdraw({
   token,
-  secretjs,
-  secretAddress,
   balances,
   onSuccess,
   onFailure,
 }: {
   token: Token;
-  secretjs: SecretNetworkClient | null;
-  secretAddress: string;
   balances: Map<string, string>;
   onSuccess: (txhash: string) => any;
   onFailure: (error: any) => any;
@@ -47,6 +45,8 @@ export default function Withdraw({
   const [selectedChainIndex, setSelectedChainIndex] = useState<number>(0);
   const inputRef = useRef<any>();
   const maxButtonRef = useRef<any>();
+  const {secretjs, secretAddress} = useContext(KeplrContext);
+  const {useFeegrant, setUseFeegrant} = useContext(FeeGrantContext);
 
   const sourceChain = chains["Secret Network"];
   const targetChain =
@@ -165,10 +165,8 @@ export default function Withdraw({
           }}
         >
           <Typography sx={{ fontWeight: "bold" }}>From:</Typography>
-          <CopyableAddress
-            address={secretAddress}
-            explorerPrefix={sourceChain.explorer_account}
-          />
+          <CopyableAddress address={secretAddress} explorerPrefix={sourceChain.explorer_account}/>
+          
         </div>
         <div
           style={{
@@ -365,6 +363,7 @@ export default function Withdraw({
                     gasLimit: withdraw_gas,
                     gasPriceInFeeDenom: 0.1,
                     feeDenom: "uscrt",
+                    feeGranter: useFeegrant ? faucetAddress : "",
                   }
                 );
               } else {
@@ -386,6 +385,7 @@ export default function Withdraw({
                     gasLimit: withdraw_gas,
                     gasPriceInFeeDenom: 0.1,
                     feeDenom: "uscrt",
+                    feeGranter: useFeegrant ? faucetAddress : "",
                   }
                 );
               }

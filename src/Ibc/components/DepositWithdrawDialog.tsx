@@ -29,7 +29,6 @@ export default function DepositWithdrawDialog({
     <div>
           <Deposit
             token={token}
-            secretAddress={secretAddress}
             onSuccess={(txhash) => {
               closeDialog();
               console.log("success", txhash);
@@ -38,8 +37,6 @@ export default function DepositWithdrawDialog({
           />
           <Withdraw
             token={token}
-            secretjs={secretjs}
-            secretAddress={secretAddress}
             balances={balances}
             onSuccess={(txhash) => {
               closeDialog();
