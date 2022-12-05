@@ -9,7 +9,6 @@ import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 // Pages
 import { Ibc } from "Ibc/Ibc";
 import { Wrap } from "Wrap/Wrap";
-import { Wrap2 } from "Wrap2/Wrap";
 import DefaultLayout from 'General/Layouts/defaultLayout';
 
 globalThis.Buffer = Buffer;
@@ -67,7 +66,6 @@ export default function App() {
       <Route path="/" element={<Navigate to="/wrap"/>}/>
       <Route path="/ibc" element={<Ibc />}/>
       <Route path="/wrap" element={<Wrap />}/>
-      <Route path="/wrap2" element={<Wrap2 />}/>
     </Routes>
   );
 }
