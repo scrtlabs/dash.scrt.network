@@ -1,11 +1,10 @@
 import React, { useEffect, useState, useContext, createContext } from "react";
-import { Breakpoint } from "react-socks";
 import { MsgExecuteContract, SecretNetworkClient } from "secretjs";
 import { chains, Token, tokens } from "General/Utils/config";
-import { sleep, faucetURL, faucetAddress, viewingKeyErrorString, usdString} from "General/Utils/commons";
-import { KeplrContext } from "General/Layouts/defaultLayout";
+import { sleep, faucetURL, faucetAddress, viewingKeyErrorString, usdString } from "General/Utils/commons";
+import { KeplrContext, FeeGrantContext } from "General/Layouts/defaultLayout";
 import BigNumber from "bignumber.js";
-import { Flip, ToastContainer, toast} from "react-toastify";
+import { toast} from "react-toastify";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faDownLong, faUpLong, faArrowRightArrowLeft, faCaretDown, faRightLeft } from '@fortawesome/free-solid-svg-icons'
 import { getKeplrViewingKey, setKeplrViewingKey } from "General/Components/Keplr";
@@ -22,6 +21,7 @@ export function Wrap() {
   }
 
   const {secretjs, secretAddress} = useContext(KeplrContext);
+  const {useFeegrant, setUseFeegrant} = useContext(FeeGrantContext);
 
   const [price, setPrice] = useState <number>();
   const [amountToWrap, setAmountToWrap] = useState<string>("");
@@ -33,8 +33,6 @@ export function Wrap() {
   const [isToPickerVisible, setisToPickerVisible] = useState<boolean>(false);
   const [validationMessage, setValidationMessage] = useState<string>("");
   const [isValidAmount, setisValidAmount] = useState<boolean>(true);
-
-  const [useFeegrant, setUseFeegrant] = useState<boolean>(false);
 
   const [loadingWrapOrUnwrap, setLoadingWrapOrUnwrap] = useState<boolean>(false);
   const [loadingTokenBalance, setLoadingTokenBalance] = useState<boolean>(false);
@@ -65,6 +63,13 @@ export function Wrap() {
       setisValidAmount(true);
     }
   }
+  const updateFeeGrantButton = (text: string, color: string) => {
+    let btnFeeGrant = document.getElementById("grantButton");
+    if (btnFeeGrant != null) {
+      btnFeeGrant.style.color = color;
+      btnFeeGrant.textContent = text;
+    }
+  }
 
   function toggleWrappingMode() {
     if (wrappingMode === WrappingMode.Wrap) {
@@ -75,8 +80,8 @@ export function Wrap() {
   }
 
   const message = (wrappingMode === WrappingMode.Wrap) ?
-  "Wrapping coins as secret tokens immediately supercharges them with private balances and private transfers." :
-  `Convert privacy-preserving s${selectedToken.name} tokens into its transparent equivalent (${selectedToken.name}) using the wrap functionality.`;
+  `Convert transparent ${selectedToken.name} into its privacy-preserving equivalent s${selectedToken.name} using the wrap functionality.`:
+  `Convert privacy-preserving s${selectedToken.name} into its transparent equivalent ${selectedToken.name} using the unwrap functionality.`;
 
   // handles [25% | 50% | 75% | Max] Button-Group
   function setAmountByPercentage(percentage: number) {
@@ -205,9 +210,28 @@ export function Wrap() {
   }
 
   function WrappedTokenBalanceUi() {
-    if (!secretjs || loadingTokenBalance || tokenWrappedBalance == viewingKeyErrorString) {
+    if (!secretjs || loadingTokenBalance) {
       return (<></>);
-    } else if (Number(tokenWrappedBalance) > -1) {
+    } else if (tokenWrappedBalance == viewingKeyErrorString) {
+      return (
+        <div
+          style={{ cursor: "pointer" }}
+          onClick={async () => {
+            await setKeplrViewingKey(selectedToken.address);
+            try {
+              setLoadingTokenBalance(true);
+              await sleep(1000); // sometimes query nodes lag
+              await updateTokenBalance();
+            } finally {
+              setLoadingTokenBalance(false);
+            }
+          }}
+        >
+          {`Balance: ${viewingKeyErrorString}`}
+        </div>
+      );
+    }
+    else if (Number(tokenWrappedBalance) > -1) {
       return (
         <>
           {/* Balance: 0.123456 sSCRT () */}
@@ -283,6 +307,7 @@ export function Wrap() {
                   gasLimit: 150_000,
                   gasPriceInFeeDenom: 0.25,
                   feeDenom: "uscrt",
+                  feeGranter: useFeegrant ? faucetAddress : "",
                 }
               );
 
@@ -391,6 +416,43 @@ export function Wrap() {
         },
       );
       setTokenNativeBalance(amount);
+      if (
+        selectedToken.withdrawals[0]?.from_denom == "uscrt" &&
+        amount == "0" &&
+        useFeegrant == false
+      ) {
+        try {
+          const response = await fetch(faucetURL, {
+            method: "POST",
+            body: JSON.stringify({ Address: secretAddress }),
+            headers: { "Content-Type": "application/json" },
+          });
+          const result = await response;
+          const textBody = await result.text();
+          if (result.ok == true) {
+            updateFeeGrantButton("Fee Granted", "green");
+            toast.success(
+              `Your wallet does not have any SCRT to pay for transaction costs. Successfully sent new fee grant (0.1 SCRT) to address ${secretAddress}`
+            );
+          } else if (textBody == "Existing Fee Grant did not expire\n") {
+            updateFeeGrantButton("Fee Granted", "green");
+            toast.success(
+              `Your wallet does not have any SCRT to pay for transaction costs. Your address ${secretAddress} however does already have an existing fee grant`
+            );
+          } else {
+            updateFeeGrantButton("Fee Grant failed", "red");
+            toast.error(
+              `Fee Grant for address ${secretAddress} failed with status code: ${result.status}`
+            );
+          }
+          setUseFeegrant(true);
+        } catch (e) {
+          updateFeeGrantButton("Fee Grant failed", "red");
+          toast.error(
+            `Fee Grant for address ${secretAddress} failed with error: ${e}`
+          );
+        }
+      }
     } catch (e) {
       console.error(`Error while trying to query ${selectedToken.name}:`, e);
     }
@@ -408,7 +470,7 @@ export function Wrap() {
     return () => {
       clearInterval(interval);
     };
-  }, [secretAddress, secretjs, selectedToken]);
+  }, [secretAddress, secretjs, selectedToken, useFeegrant]);
 
   useEffect(() => {
     fetch(`https://api.coingecko.com/api/v3/simple/price?ids=${selectedToken.coingecko_id}&vs_currencies=USD`)
@@ -541,32 +603,6 @@ export function Wrap() {
 
         </div>
       </div>
-
-      <Breakpoint medium up>
-        <ToastContainer
-          position="bottom-left"
-          autoClose={5000}
-          hideProgressBar
-          newestOnTop={true}
-          closeOnClick={false}
-          rtl={false}
-          pauseOnFocusLoss
-          draggable={false}
-          pauseOnHover={true}
-          theme="dark"
-        />
-      </Breakpoint>
-      <Breakpoint small down>
-        <ToastContainer 
-          position={"bottom-left"}
-          autoClose={false}
-          hideProgressBar={true}
-          closeOnClick={true}
-          draggable={false}
-          theme={"dark"}
-          transition={Flip}
-        />
-      </Breakpoint>
     </>
   )
 }

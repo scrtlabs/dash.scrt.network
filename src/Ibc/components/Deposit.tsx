@@ -16,7 +16,8 @@ import { createTxIBCMsgTransfer } from "@tharsis/transactions";
 import { cosmos } from "@tharsis/proto/dist/proto/cosmos/tx/v1beta1/tx";
 import BigNumber from "bignumber.js";
 import Long from "long";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, useContext} from "react";
+import { KeplrContext, FeeGrantContext } from "General/Layouts/defaultLayout";
 import { Else, If, Then } from "react-if";
 import {
   gasToFee,
@@ -37,12 +38,10 @@ import "react-toastify/dist/ReactToastify.css";
 
 export default function Deposit({
   token,
-  secretAddress,
   onSuccess,
   onFailure,
 }: {
   token: Token;
-  secretAddress: string;
   onSuccess: (txhash: string) => any;
   onFailure: (error: any) => any;
 }) {
@@ -56,6 +55,7 @@ export default function Deposit({
   const [fetchBalanceInterval, setFetchBalanceInterval] = useState<any>(null);
   const inputRef = useRef<any>();
   const maxButtonRef = useRef<any>();
+  const {secretjs, secretAddress} = useContext(KeplrContext);
 
   const sourceChain =
     chains[token.deposits[selectedChainIndex].source_chain_name];
