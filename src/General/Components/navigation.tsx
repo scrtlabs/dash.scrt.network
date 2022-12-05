@@ -34,11 +34,6 @@ export function Navigation({
           </NavLink>
         </li>
         <li>
-        <NavLink to="/wrap2" className={({ isActive }) => isActive ? "text-white bg-gradient-to-r from-zinc-700 via-zinc-700-700 to-zinc-700/5 block w-full px-8 py-5 rounded-full transition-colors" : "hover:text-white block w-full px-8 py-5 rounded-full transition-colors"}>
-          <FontAwesomeIcon icon={faShuffle} className="mr-2" />Wrap (2)
-          </NavLink>
-        </li>
-        <li>
           <a href="https://wallet.keplr.app/chains/secret-network?tab=staking" target="_blank" className="hover:text-white block w-full px-8 py-5 rounded-full transition-colors">
           <FontAwesomeIcon icon={faCoins} className="mr-2" />Stake<FontAwesomeIcon icon={faArrowUpRightFromSquare} className="text-xs ml-2" />
           </a>

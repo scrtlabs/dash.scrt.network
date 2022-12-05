@@ -7,13 +7,12 @@ import { KeplrContext } from "General/Layouts/defaultLayout";
 import BigNumber from "bignumber.js";
 import { Flip, ToastContainer, toast} from "react-toastify";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faDownLong, faUpLong, faArrowRightArrowLeft, faCaretDown, faRightLeft } from '@fortawesome/free-solid-svg-icons'
+import { faDownLong, faUpLong, faArrowRightArrowLeft, faCaretDown } from '@fortawesome/free-solid-svg-icons'
 import { getKeplrViewingKey, setKeplrViewingKey } from "General/Components/Keplr";
-import { Header } from "./WrapComponents";
 
 export const WrapContext = createContext(null);
 
-export function Wrap2() {
+export function Wrap() {
 
   enum WrappingMode {
     Wrap,
@@ -23,15 +22,15 @@ export function Wrap2() {
   const {secretjs, secretAddress} = useContext(KeplrContext);
 
   const [price, setPrice] = useState <number>();
-  const [amountToWrap, setAmountToWrap] = useState<string>("");
+  const [amountToWrap, setAmountToWrap] = useState <string>();
   const [wrappingMode, setWrappingMode] = useState<WrappingMode>(WrappingMode.Wrap);
   const [selectedToken, setselectedToken] = useState<Token>(tokens.filter(token => token.name === "SCRT")[0]);
 
   // UI
-  const [isFromPickerVisible, setIsFromPickerVisible] = useState<boolean>(false);
-  const [isToPickerVisible, setisToPickerVisible] = useState<boolean>(false);
-  const [validationMessage, setValidationMessage] = useState<string>("");
-  const [isValidAmount, setisValidAmount] = useState<boolean>(true);
+  const [isNativeTokenPickerVisible, setIsNativeTokenPickerVisible] = useState<boolean>(false);
+  const [isWrappedTokenPickerVisible, setIsWrappedTokenPickerVisible] = useState<boolean>(false);
+  const [nativeAmountValidationMessage, setNativeAmountValidationMessage] = useState<string>("");
+  const [isValidNativeAmount, setIsValidNativeAmount] = useState<boolean>(true);
 
   const [useFeegrant, setUseFeegrant] = useState<boolean>(false);
 
@@ -42,8 +41,8 @@ export function Wrap2() {
   const [tokenNativeBalance, setTokenNativeBalance] = useState<string>("");
   const [tokenWrappedBalance, setTokenWrappedBalance] = useState<string>("");
 
-  function handleInputChange(event: any) {
-    setAmountToWrap(event.target.value);
+  const handleInputChange = e => {
+    setAmountToWrap(e.target.value);
 
     const availableAmount = Number(tokenNativeBalance) * (10**(-selectedToken.decimals));
 
@@ -54,28 +53,16 @@ export function Wrap2() {
       return match && str === match[0];
     }
 
-    if (Number(event.target.value) > Number(availableAmount)) {
-      setValidationMessage("Not enough balance");
-      setisValidAmount(false);
-    } else if (!matchExact(numberRegex, event.target.value)) {
-      setValidationMessage("Please enter a valid number");
-      setisValidAmount(false);
+    if (Number(e.target.value) > Number(availableAmount)) {
+      setNativeAmountValidationMessage("Not enough balance");
+      setIsValidNativeAmount(false);
+    } else if (!matchExact(numberRegex, e.target.value)) {
+      setNativeAmountValidationMessage("Please enter a valid number");
+      setIsValidNativeAmount(false);
     } else {
-      setisValidAmount(true);
+      setIsValidNativeAmount(true);
     }
-  }
-
-  function toggleWrappingMode() {
-    if (wrappingMode === WrappingMode.Wrap) {
-      setWrappingMode(WrappingMode.Unwrap);
-    } else {
-      setWrappingMode(WrappingMode.Wrap);
-    }
-  }
-
-  const message = (wrappingMode === WrappingMode.Wrap) ?
-  "Wrapping coins as secret tokens immediately supercharges them with private balances and private transfers." :
-  `Convert privacy-preserving s${selectedToken.name} tokens into its transparent equivalent (${selectedToken.name}) using the wrap functionality.`;
+  };
 
   // handles [25% | 50% | 75% | Max] Button-Group
   function setAmountByPercentage(percentage: number) {
@@ -96,18 +83,25 @@ export function Wrap2() {
       }
 
       if (Number(amountToWrap) > Number(availableAmount)) {
-        setValidationMessage("Not enough balance");
-        setisValidAmount(false);
+        setNativeAmountValidationMessage("Not enough balance");
+        setIsValidNativeAmount(false);
       } else if (!matchExact(numberRegex, amountToWrap)) {
-        setValidationMessage("Please enter a valid number");
-        setisValidAmount(false);
+        setNativeAmountValidationMessage("Please enter a valid number");
+        setIsValidNativeAmount(false);
       } else {
-        setisValidAmount(true);
+        setIsValidNativeAmount(true);
       }
     }
   }
 
-  async function setBalance() {
+  async function handlePickerChoice(token: Token) {
+    if (token != selectedToken) {
+      setselectedToken(token);
+      setAmountToWrap("");
+    }
+    setIsNativeTokenPickerVisible(false)
+    setIsWrappedTokenPickerVisible(false)
+
     try {
       setLoadingCoinBalance(true);
       setLoadingTokenBalance(true);
@@ -117,17 +111,6 @@ export function Wrap2() {
       setLoadingCoinBalance(false);
       setLoadingTokenBalance(false);
     }
-  }
-
-  async function handlePickerChoice(token: Token) {
-    if (token != selectedToken) {
-      setselectedToken(token);
-      setAmountToWrap("");
-    }
-    setIsFromPickerVisible(false)
-    setisToPickerVisible(false)
-
-    setBalance();
   }
 
   const updateTokenBalance = async () => {
@@ -168,6 +151,19 @@ export function Wrap2() {
     }
   };
 
+  function Header(props: { title: string; text: string; }) {
+        return <>
+          <div className="mb-4">
+            <h1 className="inline text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-violet-500">
+              {props.title}
+            </h1>
+          </div>
+          <span className="block mb-4">
+            {props.text}
+          </span>
+        </>
+  }
+
   function PercentagePicker() {
     return (
       <div className="inline-flex rounded-full">
@@ -183,7 +179,7 @@ export function Wrap2() {
     if (!loadingCoinBalance && secretjs && secretAddress) {
       return (
         <>
-          {`Balance: ${new BigNumber(tokenNativeBalance!)
+          {`Available: ${new BigNumber(tokenNativeBalance!)
             .dividedBy(`1e${selectedToken.decimals}`)
             .toFormat()}`} {selectedToken.name} ({usdString.format(
           new BigNumber(tokenNativeBalance!)
@@ -202,12 +198,14 @@ export function Wrap2() {
 
   function WrappedTokenBalanceUi() {
     if (!secretjs || loadingTokenBalance || tokenWrappedBalance == viewingKeyErrorString) {
-      return (<></>);
+      return (
+        <div className="h-4"></div>
+      );
     } else if (Number(tokenWrappedBalance) > -1) {
       return (
         <>
-          {/* Balance: 0.123456 sSCRT () */}
-          {`Balance: ${new BigNumber(tokenWrappedBalance!)
+          {/* Available: 0.123456 sSCRT () */}
+          {`Available: ${new BigNumber(tokenWrappedBalance!)
                 .dividedBy(`1e${selectedToken.decimals}`)
                 .toFormat()} s` + selectedToken.name + ` (${usdString.format(
             new BigNumber(tokenWrappedBalance!)
@@ -220,14 +218,102 @@ export function Wrap2() {
     }
   }
 
+  function NativeTokenInputComponent() {
+    return (
+      <>
+        {!isValidNativeAmount && (
+          <div className="text-red-500 text-xs text-right mb-2">{nativeAmountValidationMessage}</div>
+        )}
+        {/* Validation Message */}
+        {isValidNativeAmount && (
+          <div className="h-4 mb-2"></div>
+        )}
+
+        { isNativeTokenPickerVisible &&
+          <div className="relative">
+            <ul className="overflow-y-scroll scrollbar-hide h-64 text-white z-20 mt-16 rounded bg-zinc-900 ring-1 ring-zinc-800 absolute left-0 right-0">
+              {tokens.map(token => (
+                <li className="cursor-pointer select-none p-2 bg-zinc-900 hover:bg-black flex items-center bg-red-500" onClick={() => handlePickerChoice(token)} key={token.name}>
+                  <img src={token.image} alt="Logo" className="w-7 h-7 mr-2"/>
+                  {token.name}
+                </li>
+              ))}
+            </ul>
+          </div>
+        }
+
+        <div className="flex">
+          <button onClick={() => {setIsNativeTokenPickerVisible(!isNativeTokenPickerVisible); setIsWrappedTokenPickerVisible(false)}} className="hover:bg-zinc-700 active:bg-zinc-800 transition-colors inline-flex items-center px-3 text-sm font-semibold bg-zinc-800 rounded-l-md border border-r-0 border-zinc-900 text-zinc-400 focus:bg-zinc-700 disabled:hover:bg-zinc-800" disabled={!selectedToken.address || !secretAddress}>
+            <img src={selectedToken.image} alt={selectedToken.name} className="w-7 h-7 mr-2"/>
+            {selectedToken.name}
+            <FontAwesomeIcon icon={faCaretDown} className="ml-2" />
+          </button>
+          <input value={amountToWrap} onChange={handleInputChange} type="text" className={" block flex-1 min-w-0 w-full bg-zinc-900 text-white p-4 rounded-r-md disabled:placeholder-zinc-700 transition-colors border border-zinc-800" + (!isValidNativeAmount ? "  border-red-500" : "")} name="nativeValue" id="nativeValue" placeholder="Amount" disabled={!selectedToken.address || !secretAddress}/>
+        </div>
+
+        <div className="flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 mt-3">
+          <div className="flex-1 text-xs"><NativeTokenBalanceUi/></div>
+          <div className="sm:flex-initial text-xs"><PercentagePicker/></div>
+        </div>
+      </>
+    )
+  }
+
+  function WrappedTokenInputComponent() {
+    return (
+      <>
+        <div>
+          {/* Validation Message */}
+          {!isValidNativeAmount && (
+            <div className="text-red-500 text-xs text-right mb-2">{nativeAmountValidationMessage}</div>
+          )}
+          {/* Validation Message */}
+          {isValidNativeAmount && (
+            <div className="h-4 mb-2"></div>
+          )}
+
+          {/* Wrapped Token Picker */}
+          { isWrappedTokenPickerVisible &&
+            <div className="relative">
+              <ul className="overflow-y-scroll scrollbar-hide h-64 text-white z-20 absolute mt-16 rounded bg-black ring-1 ring-zinc-800 left-0 right-0">
+                {tokens.map(token => (
+                  <li className="cursor-pointer select-none p-2 hover:bg-zinc-800 flex items-center" onClick={() => handlePickerChoice(token)} key={token.name}>
+                    <img src={token.image} alt="Logo" className="w-7 h-7 mr-2"/>
+                    {`s` + token.name}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          }
+
+          <div className="flex">
+            <button onClick={() => {setIsWrappedTokenPickerVisible(!isWrappedTokenPickerVisible); setIsNativeTokenPickerVisible(false)}} className="hover:bg-zinc-700 active:bg-zinc-800 transition-colors inline-flex items-center px-3 text-sm font-semibold bg-zinc-800 rounded-l-md border border-r-0 border-zinc-900 text-zinc-400 focus:bg-zinc-700 disabled:hover:bg-zinc-800" disabled={!selectedToken.address || !secretAddress}>
+              <img src={selectedToken.image} alt={selectedToken.name} className="w-7 h-7 mr-2" />
+              s{selectedToken.name}
+              <FontAwesomeIcon icon={faCaretDown} className="ml-2" />
+            </button>
+            <input value={amountToWrap} onChange={handleInputChange} type="text" className={"block flex-1 min-w-0 w-full bg-zinc-900 text-white p-4 rounded-r-md disabled:placeholder-zinc-700 transition-colors" + (!isValidNativeAmount ? " border border-red-500" : "")} name="wrappedValue" id="wrappedValue" placeholder="Amount" disabled={!selectedToken.address || !secretAddress}/>
+          </div>
+        </div>
+
+
+        <div className="flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 mt-3">
+          <div className="flex-1 text-xs"><WrappedTokenBalanceUi/></div>
+          <div className="sm:flex-initial text-xs"><PercentagePicker/></div>
+        </div>
+      </>
+    )
+  }
+
   function WrappingModeSwitchInputComponent(props: { wrappingMode: WrappingMode; disabled: boolean; }) {
+    const handleSetWrapping = () => { setWrappingMode(WrappingMode.Wrap) };
+    const handleSetUnwrapping = () => { setWrappingMode(WrappingMode.Unwrap) };
     const disabled = props.disabled;
 
     return (
-      <div className="space-x-4 text-center mt-3">
-        <button onClick={() => toggleWrappingMode()} disabled={disabled} className={"bg-zinc-900 px-3 py-2 text-zinc-400 transition-colors rounded-full" + (!disabled ? " hover:text-white" : "")}>
-          <FontAwesomeIcon icon={faRightLeft} className="fa-rotate-90 fa-fw" />
-        </button>
+      <div className="space-x-4 text-center my-12">
+        <button onClick={handleSetWrapping} disabled={disabled} className={(wrappingMode === WrappingMode.Wrap ? "border border-blue-500 bg-blue-500/40" : "hover:bg-zinc-700 active:bg-zinc-800") + " py-1 px-3 font-semibold rounded-md border transition-colors disabled:bg-zinc-500 disabled:text-zinc-900 disabled:border-zinc-500"}><FontAwesomeIcon icon={faDownLong} className="mr-2" />Wrap</button>
+        <button onClick={handleSetUnwrapping} disabled={disabled} className={(wrappingMode === WrappingMode.Unwrap ? "border border-blue-500 bg-blue-500/40" : "hover:bg-zinc-700 active:bg-zinc-800") + " py-1 px-3 font-semibold rounded-md border transition-colors disabled:bg-zinc-500 disabled:text-zinc-900 disabled:border-zinc-500"}><FontAwesomeIcon icon={faUpLong} className="mr-2" />Unwrap</button>
       </div>
     )
   }
@@ -242,7 +328,7 @@ export function Wrap2() {
     return (
       <button
         disabled={disabled}
-        className={"flex items-center justify-center w-full py-3 px-3 rounded transition-colors font-semibold mt-12 border" + (disabled ? " bg-zinc-500 border-zinc-500 opacity-40" : " bg-emerald-500/50 border-emerald-500 hover:bg-emerald-600 active:bg-emerald-700")}
+        className="flex items-center justify-center disabled:bg-zinc-500 disabled:border-zinc-500 disabled:opacity-40 w-full py-3 px-3 bg-emerald-500/50 rounded border border-emerald-500 hover:bg-emerald-600 active:bg-emerald-700 transition-colors font-semibold mt-12"
         onClick={async () => {
 
           if (!secretjs || !secretAddress) { return; }
@@ -393,12 +479,14 @@ export function Wrap2() {
   }
 
   useEffect(() => {
-    if (!secretjs || !secretAddress) { return; }
+    if (!secretjs || !secretAddress) {
+      return;
+    }
 
-    const interval = setInterval(setBalance, 10000, selectedToken);
+    const interval = setInterval(handlePickerChoice, 10_000, selectedToken);
 
     (async () => {
-      setBalance();
+      handlePickerChoice(selectedToken);
     })();
 
     return () => {
@@ -419,121 +507,13 @@ export function Wrap2() {
       <div className="w-full max-w-xl mx-auto px-4">
         <div className="border rounded-lg p-12 pb-7 border-zinc-700 w-full bg-zinc-800 text-zinc-200">
 
-          <Header title="Secret Wrap" text={message}/>
+          <Header title="Secret Wrap" text="Wrapping coins as secret tokens immediately supercharges them with private balances and private transfers."/>
 
-
-
-
-
-          {/* *** From *** */}
-
-          {/* Head */}
-          <div className="flex mb-2">
-            <div className="flex-1">From:</div>
-            {/* Validation */}
-            <div className="flex-initial">
-              {isValidAmount && (<div className="h-4 mb-2"></div>)}
-              {!isValidAmount && (<div className="text-red-500 text-xs text-right mb-2">{validationMessage}</div>)}
-            </div>
-          </div>
-  
-  
-          {/* Asset Picker */}
-          { isFromPickerVisible &&
-            <div className="relative">
-              <ul className="overflow-y-scroll scrollbar-hide h-64 text-white z-20 mt-16 rounded bg-zinc-900 ring-1 ring-zinc-800 absolute left-0 right-0">
-                {tokens.map(token => (
-                  <li className="cursor-pointer select-none p-2 bg-zinc-900 hover:bg-black flex items-center" onClick={() => handlePickerChoice(token)} key={token.name}>
-                    <img src={token.image} alt="Logo" className="w-7 h-7 mr-2"/>
-                    {wrappingMode === WrappingMode.Unwrap ? "s" : ""}{token.name}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          }
-
-          {/* 'from' Token Field */}
-          <div className="flex">
-            <button onClick={() => {setIsFromPickerVisible(!isFromPickerVisible); setisToPickerVisible(false)}} className="hover:bg-zinc-700 active:bg-zinc-800 transition-colors inline-flex items-center px-3 text-sm font-semibold bg-zinc-800 rounded-l-md border border-r-0 border-zinc-900 text-zinc-400 focus:bg-zinc-700 disabled:hover:bg-zinc-800" disabled={!selectedToken.address || !secretAddress}>
-              <img src={selectedToken.image} alt={selectedToken.name} className="w-7 h-7 mr-2"/>
-              {wrappingMode === WrappingMode.Unwrap ? "s" : ""}{selectedToken.name}
-              <FontAwesomeIcon icon={faCaretDown} className="ml-2" />
-            </button>
-            <input value={amountToWrap} onChange={handleInputChange} type="text" className={" block flex-1 min-w-0 w-full bg-zinc-900 text-white p-4 rounded-r-md disabled:placeholder-zinc-700 transition-colors" + (!isValidAmount ? "  border border-red-500" : "")} name="fromValue" id="fromValue" placeholder="0.0" disabled={!secretAddress}/>
-          </div>
-
-          {/* Balance | [25%|50%|75%|Max] */}
-          <div className="flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 mt-3">
-            <div className="flex-1 text-xs">
-              {wrappingMode === WrappingMode.Wrap && (
-                <NativeTokenBalanceUi/>
-              )}
-              {wrappingMode === WrappingMode.Unwrap && (
-                <WrappedTokenBalanceUi/>
-              )}
-            </div>
-            <div className="sm:flex-initial text-xs">
-              <PercentagePicker/>
-            </div>
-          </div>
-
-
-
-
-
-
-
+          {/* Form */}
+          <NativeTokenInputComponent/>
           <WrappingModeSwitchInputComponent wrappingMode={wrappingMode} disabled={!secretAddress}/>
-
-
-
-
-
-
-
-
-
-          <div>
-            <div className="flex mb-2">
-              <div className="flex-1">To:</div>
-            </div>
-            
-            {/* 'to' Token Picker */}
-            { isToPickerVisible &&
-              <div className="relative">
-                <ul className="overflow-y-scroll scrollbar-hide h-64 text-white z-20 absolute mt-16 rounded bg-black ring-1 ring-zinc-800 left-0 right-0">
-                  {tokens.map(token => (
-                    <li className="cursor-pointer select-none p-2 hover:bg-zinc-800 flex items-center" onClick={() => handlePickerChoice(token)} key={token.name}>
-                      <img src={token.image} alt="Logo" className="w-7 h-7 mr-2"/>
-                      {wrappingMode === WrappingMode.Wrap && `s`}{token.name}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            }
-
-            <div className="flex">
-              <button onClick={() => {setisToPickerVisible(!isToPickerVisible); setIsFromPickerVisible(false)}} className="hover:bg-zinc-700 active:bg-zinc-800 transition-colors inline-flex items-center px-3 text-sm font-semibold bg-zinc-800 rounded-l-md border border-r-0 border-zinc-900 text-zinc-400 focus:bg-zinc-700 disabled:hover:bg-zinc-800" disabled={!selectedToken.address || !secretAddress}>
-                <img src={selectedToken.image} alt={selectedToken.name} className="w-7 h-7 mr-2" />
-                {wrappingMode === WrappingMode.Wrap && `s`}{selectedToken.name}
-                <FontAwesomeIcon icon={faCaretDown} className="ml-2" />
-              </button>
-              <input value={amountToWrap} onChange={handleInputChange} type="text" className={"block flex-1 min-w-0 w-full bg-zinc-900 text-white p-4 rounded-r-md disabled:placeholder-zinc-700 transition-colors" + (!isValidAmount && wrappingMode === WrappingMode.Unwrap ? " border border-red-500" : "")} name="wrappedValue" id="wrappedValue" placeholder="0.0" disabled={!selectedToken.address || !secretAddress}/>
-            </div>
-          </div>
-
-
-
-
-
-
-
-
-
-
-
-          {/* <To/> */}
-          <SubmitButton disabled={!selectedToken.address || !secretAddress || !amountToWrap || !isValidAmount} amountToWrap={amountToWrap} nativeCurrency={selectedToken.name} wrappedAmount={amountToWrap} wrappedCurrency={"s" + selectedToken.name} wrappingMode={wrappingMode}/>
+          <WrappedTokenInputComponent/>
+          <SubmitButton disabled={!selectedToken.address || !setAmountToWrap} amountToWrap={amountToWrap} nativeCurrency={selectedToken.name} wrappedAmount={amountToWrap} wrappedCurrency={"s" + selectedToken.name} wrappingMode={wrappingMode}/>
 
         </div>
       </div>
