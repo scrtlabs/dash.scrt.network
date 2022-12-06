@@ -1,12 +1,18 @@
 import React, { useEffect, useState, useRef } from "react";
-import { Breakpoint } from "react-socks";
 import { SecretNetworkClient } from "secretjs";
 import { chains, Token, tokens } from "General/Utils/config";
 import { faucetURL } from "General/Utils/commons";
 import DepositWithdrawDialog from "Ibc/components/DepositWithdrawDialog";
-import { Flip, ToastContainer, toast} from "react-toastify";
+import { toast} from "react-toastify";
+import Deposit from "./components/Deposit";
+import Withdraw from "./components/Withdraw";
 
 export function Ibc() {
+  enum IbcMode {
+    Deposit,
+    Withdrawal
+  }
+
   const [secretjs, setSecretjs] = useState<SecretNetworkClient | null>(null);
   const [secretAddress, setSecretAddress] = useState<string>("");
   const [balances, setBalances] = useState<Map<string, string>>(new Map());
@@ -19,21 +25,23 @@ export function Ibc() {
   const [isWrappedTokenPickerVisible, setIsWrappedTokenPickerVisible] = useState<boolean>(false);
   const nativeValue = useRef<any>();
   const wrappedValue = useRef<any>();
-  const [isDepositWithdrawDialogOpen, setIsDepositWithdrawDialogOpen] =
-  useState<boolean>(true);
-  const [loadingWrapOrUnwrap, setLoadingWrapOrUnwrap] =
-  useState<boolean>(false);
+  const [isDepositWithdrawDialogOpen, setIsDepositWithdrawDialogOpen] = useState<boolean>(true);
+  const [loadingWrapOrUnwrap, setLoadingWrapOrUnwrap] = useState<boolean>(false);
 
-  const header = <>
-  <div className="mb-4">
-    <h1 className="inline text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-violet-500">
-      IBC Transfer
-    </h1>
-  </div>
-  <span className="block mb-4">
-    Transfer your tokens via IBC (Inter-Blockchain Communication)
-  </span>
-  </>
+  const [ibcMode, setIbcMode] = useState<IbcMode>(IbcMode.Deposit);
+
+  function Header() {
+    return <>
+      <div className="mb-4">
+        <h1 className="inline text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-violet-500">
+          IBC Transfer
+        </h1>
+      </div>
+      <span className="block mb-4">
+        Transfer your tokens via IBC (Inter-Blockchain Communication)
+      </span>
+    </>
+  }
 
   function handleNativePickerChoice(token: Token) {
     if (token != selectedToken) {
@@ -141,21 +149,44 @@ export function Ibc() {
   }, []);
   
   return (
-    <div>
-      <div className="w-full max-w-xl mx-auto">
-        <div className="border rounded-lg p-12 pb-7 border-neutral-700 bg-gradient-to-t from-black to-zinc-900/75 w-full">
+    <div className="w-full max-w-xl mx-auto px-4">
+      <div className="border rounded-lg border-zinc-700 w-full bg-zinc-800 text-zinc-200">
 
-        {header}
+        {/* <Header/> */}
+        
+        {/* [Deposit|Withdrawal] */}
+        <div className="flex">
+          <button onClick={() => setIbcMode(IbcMode.Deposit)} className={"flex-1 py-4" + (ibcMode === IbcMode.Deposit ? "  bg-zinc-800 rounded-tl-lg cursor-default" : "  bg-zinc-700/50 rounded-tl-lg hover:bg-zinc-600 transition-colors")}>
+          <h1 className={ibcMode === IbcMode.Deposit ? "inline text-lg font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-violet-500" : "text-lg"}>Deposit</h1>
+          </button>
+          <button onClick={() => setIbcMode(IbcMode.Withdrawal)} className={"flex-1 py-4" + (ibcMode === IbcMode.Withdrawal ? "  bg-zinc-800 rounded-tl-lg cursor-default" : "  bg-zinc-700/50 rounded-tr-lg hover:bg-zinc-600 transition-colors")}>
+            <h1 className={ibcMode === IbcMode.Withdrawal ? "inline text-lg font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-violet-500" : "text-lg font-medium"}>Withdrawal</h1>
+          </button>
+        </div>
 
+        <div className="px-12 pb-7">
+          {/* Deposit */}
+          {ibcMode === IbcMode.Deposit &&
+            <Deposit
+              token={selectedToken}
+              onSuccess={(txhash) => {
+                console.log("success", txhash);
+              }}
+              onFailure={(error) => console.error(error)}
+            />
+          }
 
-        <DepositWithdrawDialog
-          token={selectedToken}
-          balances={balances}
-          secretAddress={secretAddress}
-          secretjs={secretjs}
-          isOpen={isDepositWithdrawDialogOpen}
-          setIsOpen={setIsDepositWithdrawDialogOpen}
-          />
+          {/* Withdrawal */}
+          {ibcMode === IbcMode.Withdrawal &&
+            <Withdraw
+              token={selectedToken}
+              balances={balances}
+              onSuccess={(txhash) => {
+                console.log("success", txhash);
+              }}
+              onFailure={(error) => console.error(error)}
+            />
+          }
         </div>
       </div>
     </div>
