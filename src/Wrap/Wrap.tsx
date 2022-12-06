@@ -14,19 +14,30 @@ import { Link } from "react-router-dom";
 export const WrapContext = createContext(null);
 
 export function Wrap() {
-
   enum WrappingMode {
     Wrap,
     Unwrap
   }
+
+  const queryParams = new URLSearchParams(window.location.search)
+  const tokenByQueryParam = queryParams.get("token") // "scrt", "akash", etc.
+  const modeByQueryParam = queryParams.get("mode") // "wrap" or "unwrap"
+  const tokenPreselection = 
+    tokens.filter(token => token.name === tokenByQueryParam?.toUpperCase())[0]
+    ? tokenByQueryParam?.toUpperCase() : "SCRT";
+  const modePreselection = 
+    modeByQueryParam?.toLowerCase() === "unwrap"
+    ? WrappingMode.Unwrap : WrappingMode.Wrap;
+
+  
 
   const {secretjs, secretAddress} = useContext(KeplrContext);
   const {useFeegrant, setUseFeegrant} = useContext(FeeGrantContext);
 
   const [price, setPrice] = useState <number>();
   const [amountToWrap, setAmountToWrap] = useState<string>("");
-  const [wrappingMode, setWrappingMode] = useState<WrappingMode>(WrappingMode.Wrap);
-  const [selectedToken, setselectedToken] = useState<Token>(tokens.filter(token => token.name === "SCRT")[0]);
+  const [wrappingMode, setWrappingMode] = useState<WrappingMode>(modePreselection);
+  const [selectedToken, setselectedToken] = useState<Token>(tokens.filter(token => token.name === tokenPreselection)[0]);
 
   // UI
   const [isFromPickerVisible, setIsFromPickerVisible] = useState<boolean>(false);
