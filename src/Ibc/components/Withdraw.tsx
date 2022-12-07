@@ -30,12 +30,10 @@ import CopyableAddress from "Ibc/components/CopyableAddress";
 
 export default function Withdraw({
   token,
-  balances,
   onSuccess,
   onFailure,
 }: {
   token: Token;
-  balances: Map<string, string>;
   onSuccess: (txhash: string) => any;
   onFailure: (error: any) => any;
 }) {
@@ -43,24 +41,38 @@ export default function Withdraw({
   const [targetAddress, setTargetAddress] = useState<string>("");
   const [loadingTx, setLoading] = useState<boolean>(false);
   const [selectedChainIndex, setSelectedChainIndex] = useState<number>(0);
+  const [availableBalance, setAvailableBalance] = useState<number>(0);
   const inputRef = useRef<any>();
   const maxButtonRef = useRef<any>();
   const {secretjs, secretAddress} = useContext(KeplrContext);
   const {useFeegrant, setUseFeegrant} = useContext(FeeGrantContext);
 
   const sourceChain = chains["Secret Network"];
-  const targetChain =
-    chains[token.withdrawals[selectedChainIndex].target_chain_name];
+  const targetChain = chains[token.withdrawals[selectedChainIndex].target_chain_name];
 
-  const availableBalance =
-    balances.get(token.withdrawals[selectedChainIndex].from_denom) || "";
+  const updateCoinBalance = async () => {
+    try {
+      const {
+        balance: { amount },
+      } = await secretjs.query.bank.balance(
+        {
+          address: secretAddress,
+          denom: token.withdrawals[0]?.from_denom,
+        },
+      );
+      setAvailableBalance(amount)
+    } catch (e) {
+      console.error(`Error while trying to query ${token.name}:`, e);
+    }
+  }
+
 
   useEffect(() => {
     (async () => {
       while (!window.keplr || !window.getOfflineSignerOnlyAmino) {
         await sleep(100);
       }
-
+      updateCoinBalance()
       // Find address on target chain
       const { chain_id: targetChainId } =
         chains[token.withdrawals[selectedChainIndex].target_chain_name];
