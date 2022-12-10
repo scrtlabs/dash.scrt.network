@@ -35,6 +35,9 @@ import { TxRaw } from "secretjs/dist/protobuf_stuff/cosmos/tx/v1beta1/tx";
 import { useCurrentBreakpointName } from "react-socks";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import CopyToClipboard from "react-copy-to-clipboard";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPaste } from "@fortawesome/free-solid-svg-icons";
 
 export default function Deposit({
   token,
@@ -143,188 +146,240 @@ export default function Deposit({
     })();
   }, [selectedChainIndex]);
 
+  
+  const [isCopied, setIsCopied] = useState<boolean>(false);
+
   return (
     <>
-      <div style={{ padding: "1.5em" }}>
-        <div
-          style={{
-            display: "flex",
-            placeItems: "center",
-            gap: token.deposits.length === 1 ? "0.3em" : "0.5em",
-            flexDirection:
-              breakpoint === "small" || breakpoint === "xsmall"
-                ? "column"
-                : "row",
-          }}
-        >
-          <Typography>
-            Deposit <strong>{token.name}</strong> from
-          </Typography>
-          <If condition={token.deposits.length === 1}>
-            <Then>
-              <Typography>
-                <strong>
-                  {token.deposits[selectedChainIndex].source_chain_name}
-                </strong>
-              </Typography>
-            </Then>
-            <Else>
-              <FormControl>
-                <Select
-                  value={selectedChainIndex}
-                  onChange={(e) =>
-                    setSelectedChainIndex(Number(e.target.value))
-                  }
-                >
-                  {token.deposits.map((chain, index) => (
-                    <MenuItem value={index} key={index}>
-                      <div
-                        style={{
-                          display: "flex",
-                          gap: "0.5em",
-                          placeItems: "center",
+      <div
+        style={{
+          display: "flex",
+          placeItems: "center",
+          gap: token.deposits.length === 1 ? "0.3em" : "0.5em",
+          flexDirection:
+            breakpoint === "small" || breakpoint === "xsmall"
+              ? "column"
+              : "row",
+        }}
+      >
+        <Typography>
+          Deposit <strong>{token.name}</strong> from
+        </Typography>
+        <If condition={token.deposits.length === 1}>
+          <Then>
+            <Typography>
+              <strong>
+                {token.deposits[selectedChainIndex].source_chain_name}
+              </strong>
+            </Typography>
+          </Then>
+          <Else>
+            <FormControl>
+              <Select
+                value={selectedChainIndex}
+                onChange={(e) =>
+                  setSelectedChainIndex(Number(e.target.value))
+                }
+              >
+                {token.deposits.map((chain, index) => (
+                  <MenuItem value={index} key={index}>
+                    <div
+                      style={{
+                        display: "flex",
+                        gap: "0.5em",
+                        placeItems: "center",
+                      }}
+                    >
+                      <Avatar
+                        src={chains[chain.source_chain_name].chain_image}
+                        sx={{
+                          marginLeft: "0.3em",
+                          width: "1em",
+                          height: "1em",
+                          boxShadow: "rgba(0, 0, 0, 0.15) 0px 6px 10px",
                         }}
-                      >
-                        <Avatar
-                          src={chains[chain.source_chain_name].chain_image}
-                          sx={{
-                            marginLeft: "0.3em",
-                            width: "1em",
-                            height: "1em",
-                            boxShadow: "rgba(0, 0, 0, 0.15) 0px 6px 10px",
-                          }}
-                        />
-                        <strong>{chain.source_chain_name}</strong>
-                      </div>
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-            </Else>
-          </If>
-          <Typography>
-            to <strong>Secret Network</strong>
-          </Typography>
+                      />
+                      <strong>{chain.source_chain_name}</strong>
+                    </div>
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </Else>
+        </If>
+        <Typography>
+          to <strong>Secret Network</strong>
+        </Typography>
+      </div>
+
+
+
+
+
+
+
+
+
+
+      <div className="bg-zinc-900 p-6 rounded border border-zinc-700 space-y-2">
+        <div className="flex">
+          <div className="font-bold mr-4 w-10">From:</div>
+
+          {/* Address */}
+          <div className="flex-1 truncate">
+            <a href={`${sourceChain.explorer_account}${sourceAddress}`} target="_blank">{sourceAddress}</a>
+          </div>
+          
+          {/* Copy to Clipboard */}
+          <div className="flex-initial ml-4">
+            <CopyToClipboard
+              text={sourceAddress}
+              onCopy={() => {
+                setIsCopied(true);
+                setTimeout(() => setIsCopied(false), 3000);
+              }}
+            >
+              <button className="text-zinc-700 hover:text-white active:text-zinc-500 transition-colors">
+                <FontAwesomeIcon icon={faPaste}/>
+              </button>
+            </CopyToClipboard>
+
+          </div>
+
+          
         </div>
-        <br />
-        <div
-          style={{
-            display: "flex",
-            placeContent: "space-between",
-            placeItems: "center",
-            gap: "1em",
-          }}
-        >
-          <Typography sx={{ fontWeight: "bold" }}>From:</Typography>
-          <CopyableAddress
-            address={sourceAddress}
-            explorerPrefix={sourceChain.explorer_account}
-          />
-        </div>
-        <div
-          style={{
-            display: "flex",
-            placeContent: "space-between",
-            placeItems: "center",
-            gap: "1em",
-          }}
-        >
-          <Typography sx={{ fontWeight: "bold" }}>To:</Typography>
-          <CopyableAddress
+
+
+        <div className="flex">
+          {/* Label */}
+          <div className="flex-initial font-bold mr-4 w-10">To:</div>
+
+          {/* Address */}
+          <div className="flex-1 truncate">
+            <a href={`${targetChain.explorer_account}${secretAddress}`} target="_blank">{secretAddress}</a>
+          </div>
+          
+          {/* Copy to Clipboard */}
+          <div className="flex-initial ml-4">
+            <CopyToClipboard
+              text={secretAddress}
+              onCopy={() => {
+                setIsCopied(true);
+                setTimeout(() => setIsCopied(false), 3000);
+              }}
+            >
+              <button className="text-zinc-700 hover:text-white active:text-zinc-500 transition-colors">
+                <FontAwesomeIcon icon={faPaste}/>
+              </button>
+            </CopyToClipboard>
+
+          </div>
+
+
+          {/* <CopyableAddress
             address={secretAddress}
             explorerPrefix={targetChain.explorer_account}
-          />
+          /> */}
         </div>
-        <br />
-        <div
-          style={{
-            display: "flex",
-            placeItems: "center",
-            gap: "0.3em",
-            marginBottom: "0.8em",
+
+      </div>
+
+
+
+
+
+
+
+
+      <br />
+      <div
+        style={{
+          display: "flex",
+          placeItems: "center",
+          gap: "0.3em",
+          marginBottom: "0.8em",
+        }}
+      >
+        <Typography sx={{ fontSize: "0.8em", fontWeight: "bold" }}>
+          Available to Deposit:
+        </Typography>
+        <Typography
+          sx={{
+            fontSize: "0.8em",
+            opacity: 0.8,
+            cursor: "pointer",
+          }}
+          onClick={() => {
+            maxButtonRef.current.click();
           }}
         >
-          <Typography sx={{ fontSize: "0.8em", fontWeight: "bold" }}>
-            Available to Deposit:
-          </Typography>
-          <Typography
-            sx={{
-              fontSize: "0.8em",
-              opacity: 0.8,
-              cursor: "pointer",
-            }}
-            onClick={() => {
-              maxButtonRef.current.click();
-            }}
-          >
-            {(() => {
-              if (availableBalance === "") {
-                return <CircularProgress size="0.6em" />;
-              }
-
-              const prettyBalance = new BigNumber(availableBalance)
-                .dividedBy(`1e${token.decimals}`)
-                .toFormat();
-
-              if (prettyBalance === "NaN") {
-                return "Error";
-              }
-
-              return `${prettyBalance} ${token.name}`;
-            })()}
-          </Typography>
-        </div>
-        <FormControl sx={{ width: "100%" }} variant="standard">
-          <InputLabel htmlFor="Amount to Deposit">Amount to Deposit</InputLabel>
-          <Input
-            id="Amount to Deposit"
-            fullWidth
-            type="text"
-            autoComplete="off"
-            inputRef={inputRef}
-            startAdornment={
-              <InputAdornment position="start">
-                <Avatar
-                  src={token.image}
-                  sx={{
-                    width: "1em",
-                    height: "1em",
-                    boxShadow: "rgba(0, 0, 0, 0.15) 0px 6px 10px",
-                  }}
-                />
-              </InputAdornment>
+          {(() => {
+            if (availableBalance === "") {
+              return <CircularProgress size="0.6em" />;
             }
-            endAdornment={
-              <InputAdornment position="end">
-                <Button
-                  ref={maxButtonRef}
-                  style={{
-                    padding: "0.1em 0.5em",
-                    minWidth: 0,
-                  }}
-                  onClick={() => {
-                    if (availableBalance === "") {
-                      return;
-                    }
 
-                    const prettyBalance = new BigNumber(availableBalance)
-                      .dividedBy(`1e${token.decimals}`)
-                      .toFormat();
+            const prettyBalance = new BigNumber(availableBalance)
+              .dividedBy(`1e${token.decimals}`)
+              .toFormat();
 
-                    if (prettyBalance === "NaN") {
-                      return;
-                    }
-
-                    inputRef.current.value = prettyBalance;
-                  }}
-                >
-                  MAX
-                </Button>
-              </InputAdornment>
+            if (prettyBalance === "NaN") {
+              return "Error";
             }
-          />
-        </FormControl>
+
+            return `${prettyBalance} ${token.name}`;
+          })()}
+        </Typography>
       </div>
+      <FormControl sx={{ width: "100%" }} variant="standard">
+        <InputLabel htmlFor="Amount to Deposit">Amount to Deposit</InputLabel>
+        <Input
+          id="Amount to Deposit"
+          fullWidth
+          type="text"
+          autoComplete="off"
+          inputRef={inputRef}
+          startAdornment={
+            <InputAdornment position="start">
+              <Avatar
+                src={token.image}
+                sx={{
+                  width: "1em",
+                  height: "1em",
+                  boxShadow: "rgba(0, 0, 0, 0.15) 0px 6px 10px",
+                }}
+              />
+            </InputAdornment>
+          }
+          endAdornment={
+            <InputAdornment position="end">
+              <Button
+                ref={maxButtonRef}
+                style={{
+                  padding: "0.1em 0.5em",
+                  minWidth: 0,
+                }}
+                onClick={() => {
+                  if (availableBalance === "") {
+                    return;
+                  }
+
+                  const prettyBalance = new BigNumber(availableBalance)
+                    .dividedBy(`1e${token.decimals}`)
+                    .toFormat();
+
+                  if (prettyBalance === "NaN") {
+                    return;
+                  }
+
+                  inputRef.current.value = prettyBalance;
+                }}
+              >
+                MAX
+              </Button>
+            </InputAdornment>
+          }
+        />
+      </FormControl>
       <div
         style={{
           display: "flex",
