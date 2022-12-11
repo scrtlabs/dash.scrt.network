@@ -93,7 +93,7 @@ export default function Deposit({
   }
 
   function togglePosition() {
-    alert('hi')
+    alert('Withdrawal – coming soon!')
   }
 
 
@@ -344,7 +344,8 @@ export default function Deposit({
             }
             sx={{
               color: 'white',
-              borderColor: 'red'
+              borderColor: 'red',
+              border: 0
             }}
           >
             {tokens.map((token, index) => (
