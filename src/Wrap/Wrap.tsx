@@ -19,9 +19,9 @@ export function Wrap() {
     Unwrap
   }
 
-  const queryParams = new URLSearchParams(window.location.search)
-  const tokenByQueryParam = queryParams.get("token") // "scrt", "akash", etc.
-  const modeByQueryParam = queryParams.get("mode") // "wrap" or "unwrap"
+  const queryParams = new URLSearchParams(window.location.search);
+  const tokenByQueryParam = queryParams.get("token"); // "scrt", "akash", etc.
+  const modeByQueryParam = queryParams.get("mode"); // "wrap" or "unwrap"
   const tokenPreselection = 
     tokens.filter(token => token.name === tokenByQueryParam?.toUpperCase())[0]
     ? tokenByQueryParam?.toUpperCase() : "SCRT";
@@ -52,8 +52,8 @@ export function Wrap() {
   const [tokenNativeBalance, setTokenNativeBalance] = useState<string>("");
   const [tokenWrappedBalance, setTokenWrappedBalance] = useState<string>("");
 
-  function handleInputChange(event: any) {
-    setAmountToWrap(event.target.value);
+  function handleInputChange(e: any) {
+    setAmountToWrap(e.target.value);
 
     const availableAmount = Number(tokenNativeBalance) * (10**(-selectedToken.decimals));
 
@@ -64,16 +64,17 @@ export function Wrap() {
       return match && str === match[0];
     }
 
-    if (Number(event.target.value) > Number(availableAmount)) {
+    if (Number(e.target.value) > Number(availableAmount)) {
       setValidationMessage("Not enough balance");
       setisValidAmount(false);
-    } else if (!matchExact(numberRegex, event.target.value)) {
+    } else if (!matchExact(numberRegex, e.target.value)) {
       setValidationMessage("Please enter a valid number");
       setisValidAmount(false);
     } else {
       setisValidAmount(true);
     }
   }
+
   const updateFeeGrantButton = (text: string, color: string) => {
     let btnFeeGrant = document.getElementById("grantButton");
     if (btnFeeGrant != null) {
@@ -265,7 +266,7 @@ export function Wrap() {
     return (
       <div className="space-x-4 text-center mt-3">
         <button onClick={() => toggleWrappingMode()} disabled={disabled} className={"bg-zinc-900 px-3 py-2 text-zinc-400 transition-colors rounded-full" + (!disabled ? " hover:text-white" : "")}>
-          <FontAwesomeIcon icon={faRightLeft} className="fa-rotate-90 fa-fw" />
+          <FontAwesomeIcon icon={faRightLeft} className="fa-rotate-90" />
         </button>
       </div>
     )
@@ -598,10 +599,6 @@ export function Wrap() {
               <input value={amountToWrap} onChange={handleInputChange} type="text" className={"block flex-1 min-w-0 w-full bg-zinc-900 text-white p-4 rounded-r-md disabled:placeholder-zinc-700 transition-colors" + (!isValidAmount && wrappingMode === WrappingMode.Unwrap ? " border border-red-500" : "")} name="wrappedValue" id="wrappedValue" placeholder="0.0" disabled={!selectedToken.address || !secretAddress}/>
             </div>
           </div>
-
-
-
-
 
 
 

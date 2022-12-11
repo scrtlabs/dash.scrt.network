@@ -37,14 +37,16 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import CopyToClipboard from "react-copy-to-clipboard";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPaste } from "@fortawesome/free-solid-svg-icons";
+import { faCaretDown, faPaste, faRightLeft } from "@fortawesome/free-solid-svg-icons";
 
 export default function Deposit({
   token,
+  tokens,
   onSuccess,
   onFailure,
 }: {
   token: Token;
+  tokens: Token[],
   onSuccess: (txhash: string) => any;
   onFailure: (error: any) => any;
 }) {
@@ -52,13 +54,39 @@ export default function Deposit({
   const [sourceAddress, setSourceAddress] = useState<string>("");
   const [availableBalance, setAvailableBalance] = useState<string>("");
   const [loadingTx, setLoading] = useState<boolean>(false);
-  const [sourceCosmJs, setSourceCosmJs] =
-    useState<SigningStargateClient | null>(null);
+  const [sourceCosmJs, setSourceCosmJs] = useState<SigningStargateClient | null>(null);
   const [selectedChainIndex, setSelectedChainIndex] = useState<number>(0);
   const [fetchBalanceInterval, setFetchBalanceInterval] = useState<any>(null);
-  const inputRef = useRef<any>();
-  const maxButtonRef = useRef<any>();
+  const [amountToTransfer, setAmountToTransfer] = useState<string>("");
   const {secretjs, secretAddress} = useContext(KeplrContext);
+
+  const queryParams = new URLSearchParams(window.location.search);
+  const tokenByQueryParam = queryParams.get("token"); // "scrt", "akash", etc.
+  const tokenPreselection = tokens.filter(token => token.name === tokenByQueryParam?.toUpperCase())[0] ? tokenByQueryParam?.toUpperCase() : "INJ";
+  const [selectedToken, setselectedToken] = useState<Token>(tokens.filter(token => token.name === tokenPreselection)[0]);
+  const [selectedTokenIndex, setSelectedTokenIndex] = useState<number>(0);
+
+  function handleInputChange(e: any) {
+    setAmountToTransfer(e.target.value);
+  }
+
+  // handles [25% | 50% | 75% | Max] Button-Group
+  function setAmountByPercentage(percentage: number) {
+    if (availableBalance) {
+      let availableAmount = Number(availableBalance) * (10**(-selectedToken.decimals));
+      let potentialInput = new BigNumber(availableAmount * (percentage * 0.01)).toFormat();
+      if (Number(potentialInput) == 0) {
+        setAmountToTransfer("");
+      } else {
+        setAmountToTransfer(potentialInput);
+      }
+    }
+  }
+
+  function togglePosition() {
+    alert('hi')
+  }
+
 
   const sourceChain =
     chains[token.deposits[selectedChainIndex].source_chain_name];
@@ -108,6 +136,15 @@ export default function Deposit({
     return () => clearInterval(interval);
   }, [sourceAddress]);
 
+  const tokenOptions = [
+    {value: 'SCRT', label: 'SCRT'},
+    {value: 'AKASH', label: 'AKASH'}
+  ]
+
+
+
+
+
   useEffect(() => {
     (async () => {
       while (!window.keplr || !window.getOfflineSignerOnlyAmino) {
@@ -151,30 +188,27 @@ export default function Deposit({
 
   return (
     <>
-      <div
-        style={{
-          display: "flex",
-          placeItems: "center",
-          gap: token.deposits.length === 1 ? "0.3em" : "0.5em",
-          flexDirection:
-            breakpoint === "small" || breakpoint === "xsmall"
-              ? "column"
-              : "row",
-        }}
-      >
-        <Typography>
-          Deposit <strong>{token.name}</strong> from
-        </Typography>
-        <If condition={token.deposits.length === 1}>
-          <Then>
-            <Typography>
-              <strong>
-                {token.deposits[selectedChainIndex].source_chain_name}
-              </strong>
-            </Typography>
-          </Then>
-          <Else>
-            <FormControl>
+      {/* [From|To] Picker */}
+      <div className="flex mb-8">
+        {/* *** From *** */}
+        <div className="flex-initial w-1/3">
+          {/* circle */}
+          <div className="w-full relative rounded-full overflow-hidden border-2 border-blue-500" style={{paddingTop: '100%'}}>
+            <div className="img-wrapper absolute top-1/2 left-0 right-0 -translate-y-1/2 text-center">
+              <div className="w-1/2 inline-block">
+                <div className="relative">
+                  <div className="absolute inset-0 bg-blue-500/60 blur-md rounded-full overflow-hidden"></div>
+                  <img src="https://wrap.scrt.network/atom.jpg" className="w-full relative inline-block rounded-full overflow-hiden" />
+                </div>
+              </div>
+            </div>
+            <div className="absolute left-1/2 -translate-x-1/2 text-center uppercase text-sm font-bold text-zinc-500" style={{bottom: '10%'}}>
+              From
+            </div>
+          </div>
+          {/* Chain Picker */}
+          <div className="-mt-3 relative z-10 w-full">
+            <FormControl className="-mt-3 relative z-10 w-full bg-zinc-700 rounded">
               <Select
                 value={selectedChainIndex}
                 onChange={(e) =>
@@ -205,32 +239,57 @@ export default function Deposit({
                 ))}
               </Select>
             </FormControl>
-          </Else>
-        </If>
-        <Typography>
-          to <strong>Secret Network</strong>
-        </Typography>
+            
+
+
+
+
+
+
+
+
+
+          </div>
+        </div>
+        <div className="flex-1">
+          <div className="relative" style={{paddingTop: '100%'}}>
+            <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+              <button onClick={togglePosition} className="bg-zinc-900 px-3 py-2 text-zinc-400 transition-colors rounded-full hover:text-white">
+                <FontAwesomeIcon icon={faRightLeft} />
+              </button>
+            </div>
+          </div>
+        </div>
+        {/* *** To *** */}
+        <div className="flex-initial w-1/3">
+          <div className="w-full relative rounded-full overflow-hidden border-2 border-violet-500" style={{paddingTop: '100%'}}>
+            <div className="img-wrapper absolute top-1/2 left-0 right-0 -translate-y-1/2 text-center">
+              <div className="w-1/2 inline-block">
+                <div className="relative">
+                  <div className="absolute inset-0 bg-violet-500/60 blur-md rounded-full overflow-hidden"></div>
+                  <img src="https://wrap.scrt.network/scrt.svg" className="w-full relative inline-block rounded-full overflow-hiden" />
+                </div>
+              </div>
+            </div>
+            <div className="absolute left-0 right-0 text-center uppercase text-sm font-bold text-zinc-500" style={{bottom: '10%'}}>To</div>
+          </div>
+          {/* Chain Picker */}
+          <div className="-mt-3 relative z-10 w-full">
+            <button className="inline-block w-full hover:bg-zinc-700 active:bg-zinc-800 transition-colors px-3 py-2 text-sm font-semibold bg-zinc-700 rounded text-zinc-400 focus:bg-zinc-700 disabled:hover:bg-zinc-800">
+              Secret Network
+              <FontAwesomeIcon icon={faCaretDown} className="ml-2"/>
+            </button>
+          </div>
+        </div>
       </div>
 
 
-
-
-
-
-
-
-
-
-      <div className="bg-zinc-900 p-6 rounded border border-zinc-700 space-y-2">
+      <div className="bg-zinc-900 p-6 rounded border border-zinc-700 space-y-6">
         <div className="flex">
           <div className="font-bold mr-4 w-10">From:</div>
-
-          {/* Address */}
           <div className="flex-1 truncate">
             <a href={`${sourceChain.explorer_account}${sourceAddress}`} target="_blank">{sourceAddress}</a>
           </div>
-          
-          {/* Copy to Clipboard */}
           <div className="flex-initial ml-4">
             <CopyToClipboard
               text={sourceAddress}
@@ -243,23 +302,14 @@ export default function Deposit({
                 <FontAwesomeIcon icon={faPaste}/>
               </button>
             </CopyToClipboard>
-
           </div>
-
-          
         </div>
 
-
         <div className="flex">
-          {/* Label */}
           <div className="flex-initial font-bold mr-4 w-10">To:</div>
-
-          {/* Address */}
           <div className="flex-1 truncate">
             <a href={`${targetChain.explorer_account}${secretAddress}`} target="_blank">{secretAddress}</a>
           </div>
-          
-          {/* Copy to Clipboard */}
           <div className="flex-initial ml-4">
             <CopyToClipboard
               text={secretAddress}
@@ -272,114 +322,70 @@ export default function Deposit({
                 <FontAwesomeIcon icon={faPaste}/>
               </button>
             </CopyToClipboard>
-
           </div>
-
-
-          {/* <CopyableAddress
-            address={secretAddress}
-            explorerPrefix={targetChain.explorer_account}
-          /> */}
         </div>
-
       </div>
 
-
-
-
-
-
-
-
-      <br />
-      <div
-        style={{
-          display: "flex",
-          placeItems: "center",
-          gap: "0.3em",
-          marginBottom: "0.8em",
-        }}
-      >
-        <Typography sx={{ fontSize: "0.8em", fontWeight: "bold" }}>
-          Available to Deposit:
-        </Typography>
-        <Typography
+      <div className="flex mt-8">
+        <Select
+          value={selectedTokenIndex}
+          onChange={(e) =>
+            setSelectedTokenIndex(Number(e.target.value))
+          }
           sx={{
-            fontSize: "0.8em",
-            opacity: 0.8,
-            cursor: "pointer",
-          }}
-          onClick={() => {
-            maxButtonRef.current.click();
+            color: 'white',
+            borderColor: 'red'
           }}
         >
-          {(() => {
-            if (availableBalance === "") {
-              return <CircularProgress size="0.6em" />;
-            }
-
-            const prettyBalance = new BigNumber(availableBalance)
-              .dividedBy(`1e${token.decimals}`)
-              .toFormat();
-
-            if (prettyBalance === "NaN") {
-              return "Error";
-            }
-
-            return `${prettyBalance} ${token.name}`;
-          })()}
-        </Typography>
-      </div>
-      <FormControl sx={{ width: "100%" }} variant="standard">
-        <InputLabel htmlFor="Amount to Deposit">Amount to Deposit</InputLabel>
-        <Input
-          id="Amount to Deposit"
-          fullWidth
-          type="text"
-          autoComplete="off"
-          inputRef={inputRef}
-          startAdornment={
-            <InputAdornment position="start">
-              <Avatar
-                src={token.image}
-                sx={{
-                  width: "1em",
-                  height: "1em",
-                  boxShadow: "rgba(0, 0, 0, 0.15) 0px 6px 10px",
-                }}
-              />
-            </InputAdornment>
-          }
-          endAdornment={
-            <InputAdornment position="end">
-              <Button
-                ref={maxButtonRef}
+          {tokens.map((token, index) => (
+            <MenuItem value={index} key={index}>
+              <div
                 style={{
-                  padding: "0.1em 0.5em",
-                  minWidth: 0,
-                }}
-                onClick={() => {
-                  if (availableBalance === "") {
-                    return;
-                  }
-
-                  const prettyBalance = new BigNumber(availableBalance)
-                    .dividedBy(`1e${token.decimals}`)
-                    .toFormat();
-
-                  if (prettyBalance === "NaN") {
-                    return;
-                  }
-
-                  inputRef.current.value = prettyBalance;
+                  display: "flex",
+                  gap: "0.5em",
+                  placeItems: "center",
                 }}
               >
-                MAX
-              </Button>
-            </InputAdornment>
-          }
-        />
-      </FormControl>
+                <Avatar
+                  src={token.image}
+                  sx={{
+                    marginLeft: "0.3em",
+                    width: "1em",
+                    height: "1em",
+                    boxShadow: "rgba(0, 0, 0, 0.15) 0px 6px 10px",
+                  }}
+                />
+                <strong>{token.name}</strong>
+              </div>
+            </MenuItem>
+          ))}
+        </Select>
+        <input type="text" value={amountToTransfer} onChange={handleInputChange} className="block flex-1 min-w-0 w-full bg-zinc-900 text-white p-4 rounded-r-md disabled:placeholder-zinc-700 transition-colors" name="fromValue" id="fromValue" placeholder="0.0" disabled={!secretAddress}/>
+      </div>
+
+      {/* Balance | [25%|50%|75%|Max] */}
+      <div className="flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 mt-3 mb-8">
+        <div className="flex-1 text-xs">
+          Available for deposit:
+          <button onClick={() => {setAmountByPercentage(100)}}>
+            {(() => {
+              if (availableBalance === "") {return <CircularProgress size="0.6em" />;}
+              const prettyBalance = new BigNumber(availableBalance).dividedBy(`1e${token.decimals}`).toFormat();
+              if (prettyBalance === "NaN") {return "Error";}
+              return `${prettyBalance} ${token.name}`;
+            })()}
+          </button>
+        </div>
+        <div className="sm:flex-initial text-xs">
+          <div className="inline-flex rounded-full">
+            <button onClick={() => setAmountByPercentage(100)} className="py-0.5 px-1.5 font-medium rounded-l-full border focus:z-10 focus:ring-2 bg-zinc-800 border-zinc-600 text-white hover:text-black hover:bg-white active:bg-zinc-300 transition-colors disabled:text-gray-400 disabled:hover:bg-zinc-800 disabled:hover:text-gray-400 disabled:hover:border-zinc-600">25%</button>
+            <button onClick={() => setAmountByPercentage(100)} className="py-0.5 px-1.5 font-medium border-t border-b border-r focus:z-10 focus:ring-2 bg-zinc-800 border-zinc-600 text-white hover:text-black hover:bg-white active:bg-zinc-300 transition-colors disabled:text-gray-400 disabled:hover:bg-zinc-800 disabled:hover:text-gray-400 disabled:hover:border-zinc-600">50%</button>
+            <button onClick={() => setAmountByPercentage(100)} className="py-0.5 px-1.5 font-medium border-t border-b focus:z-10 focus:ring-2 bg-zinc-800 border-zinc-600 text-white hover:text-black hover:bg-white active:bg-zinc-300 transition-colors disabled:text-gray-400 disabled:hover:bg-zinc-800 disabled:hover:text-gray-400 disabled:hover:border-zinc-600">75%</button>
+            <button onClick={() => setAmountByPercentage(100)} className="py-0.5 px-1.5 font-medium rounded-r-full border focus:z-10 focus:ring-2 bg-zinc-800 border-zinc-600 text-white hover:text-black hover:bg-white active:bg-zinc-300 transition-colors disabled:text-gray-400 disabled:hover:bg-zinc-800 disabled:hover:text-gray-400 disabled:hover:border-zinc-600">Max</button>
+          </div>
+        </div>
+      </div>
+      
       <div
         style={{
           display: "flex",
@@ -395,12 +401,12 @@ export default function Deposit({
               return;
             }
 
-            if (!inputRef?.current?.value) {
+            if (!amountToTransfer) {
               console.error("Empty deposit");
               return;
             }
 
-            const normalizedAmount = (inputRef.current.value as string).replace(
+            const normalizedAmount = (amountToTransfer as string).replace(
               /,/g,
               ""
             );
@@ -693,7 +699,7 @@ export default function Deposit({
             }
           }}
         >
-          {loadingTx ? <CircularProgress size="0.8em"/> : "Deposit"}
+          {loadingTx ? <CircularProgress size="0.8em"/> : "Execute Transfer"}
         </button>
       </div>
     </>
