@@ -31,6 +31,7 @@ import "react-toastify/dist/ReactToastify.css";
 import CopyToClipboard from "react-copy-to-clipboard";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCaretDown, faPaste, faRightLeft } from "@fortawesome/free-solid-svg-icons";
+import { InsertEmoticon } from "@mui/icons-material";
 
 export default function Deposit({
   token,
@@ -56,6 +57,7 @@ export default function Deposit({
   const queryParams = new URLSearchParams(window.location.search);
   const tokenByQueryParam = queryParams.get("token"); // "scrt", "akash", etc.
   const tokenPreselection = tokens.filter(token => token.name === tokenByQueryParam?.toUpperCase())[0] ? tokenByQueryParam?.toUpperCase() : "INJ";
+  const [selectedSource, setSelectedSource] = useState<any>(token.deposits.filter(deposit => deposit.source_chain_name.toLowerCase() === "osmosis")[0]);
   const [selectedToken, setselectedToken] = useState<Token>(tokens.filter(token => token.name === tokenPreselection)[0]);
   const [selectedTokenIndex, setSelectedTokenIndex] = useState<number>(0);
 
@@ -199,7 +201,7 @@ export default function Deposit({
                 <div className="w-1/2 inline-block">
                   <div className="relative">
                     <div className="absolute inset-0 bg-blue-500/60 blur-md rounded-full overflow-hidden"></div>
-                    <img src={sourceChain.chain_image} className="w-full relative inline-block rounded-full overflow-hiden" />
+                    <img src={chains[selectedSource.source_chain_name].chain_image} className="w-full relative inline-block rounded-full overflow-hiden" />
                   </div>
                 </div>
               </div>
@@ -207,10 +209,10 @@ export default function Deposit({
             </div>
             {/* Chain Picker */}
             <div className="-mt-3 relative z-10 w-full">
-
-            <Select options={token.deposits} formatOptionLabel={option => (
+            {/* {value} */}
+            <Select options={token.deposits} value={selectedSource} onChange={setSelectedSource} formatOptionLabel={option => (
                 <div className="flex items-center">
-                  <img src={sourceChain.chain_image} className="w-6 h-6 mr-2" />
+                  <img src={chains[option.source_chain_name].chain_image} className="w-6 h-6 mr-2" />
                   <span className="font-semibold text-sm">{option.source_chain_name}</span>
                 </div>
               )} />
