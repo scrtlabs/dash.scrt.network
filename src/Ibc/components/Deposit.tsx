@@ -1,18 +1,10 @@
 import { SigningStargateClient } from "@cosmjs/stargate";
 import {
-  Avatar,
-  Button,
   CircularProgress,
   createTheme,
-  FormControl,
-  Input,
-  InputAdornment,
-  InputLabel,
-  MenuItem,
-  Select,
   ThemeProvider,
-  Typography,
 } from "@mui/material";
+import Select from 'react-select';
 import { sha256 } from "@noble/hashes/sha256";
 import { createTxIBCMsgTransfer } from "@tharsis/transactions";
 import { cosmos } from "@tharsis/proto/dist/proto/cosmos/tx/v1beta1/tx";
@@ -20,7 +12,6 @@ import BigNumber from "bignumber.js";
 import Long from "long";
 import React, { useEffect, useRef, useState, useContext} from "react";
 import { KeplrContext, FeeGrantContext } from "General/Layouts/defaultLayout";
-import { Else, If, Then } from "react-if";
 import {
   gasToFee,
   sleep,
@@ -212,13 +203,31 @@ export default function Deposit({
                   </div>
                 </div>
               </div>
-              <div className="absolute left-1/2 -translate-x-1/2 text-center uppercase text-sm font-bold text-zinc-500" style={{bottom: '10%'}}>
-                From
-              </div>
+              <div className="absolute left-1/2 -translate-x-1/2 text-center uppercase text-sm font-bold text-zinc-500" style={{bottom: '10%'}}>From</div>
             </div>
             {/* Chain Picker */}
             <div className="-mt-3 relative z-10 w-full">
-              <FormControl className="-mt-3 relative z-10 w-full bg-zinc-700 rounded">
+
+            <Select options={token.deposits} formatOptionLabel={option => (
+                <div className="flex items-center">
+                  <img src={sourceChain.chain_image} className="w-6 h-6 mr-2" />
+                  <span className="font-semibold text-sm">{option.source_chain_name}</span>
+                </div>
+              )} />
+{/* 
+                <Select options={token.deposits}  
+            formatOptionLabel={option => (
+              <div className="country-option">
+                <img src={option.image} alt="country-image" />
+                <span>{option.label}</span>
+              </div>
+              )}
+              />  */}
+              {/* <select name="sourceChain" id="sourceChain" className="-mt-3 relative z-10 w-full bg-zinc-700 rounded py-3 px-3 text-center block font-bold text-sm truncate cursor-pointer">
+                <option value="x">Akash</option>
+                <option value="y">Secret Network</option>
+              </select> */}
+              {/* <FormControl className="-mt-3 relative z-10 w-full bg-zinc-700 rounded">
                 <Select
                   value={selectedChainIndex}
                   onChange={(e) =>
@@ -248,7 +257,7 @@ export default function Deposit({
                     </MenuItem>
                   ))}
                 </Select>
-              </FormControl>
+              </FormControl> */}
               
 
 
@@ -337,7 +346,7 @@ export default function Deposit({
         </div>
 
         <div className="flex mt-8">
-          <Select
+          {/* <Select
             value={selectedTokenIndex}
             onChange={(e) =>
               setSelectedTokenIndex(Number(e.target.value))
@@ -370,7 +379,7 @@ export default function Deposit({
                 </div>
               </MenuItem>
             ))}
-          </Select>
+          </Select> */}
           <input type="text" value={amountToTransfer} onChange={handleInputChange} className="block flex-1 min-w-0 w-full bg-zinc-900 text-white p-4 rounded-r-md disabled:placeholder-zinc-700 transition-colors" name="fromValue" id="fromValue" placeholder="0.0" disabled={!secretAddress}/>
         </div>
 
