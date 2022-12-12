@@ -25,7 +25,7 @@ export function Ibc() {
     )}
 
   return (
-    <div className="w-full max-w-xl mx-auto px-4">
+    <div className="w-full max-w-2xl mx-auto px-4">
       <div className="border rounded-lg p-12 pb-7 border-zinc-700 w-full bg-zinc-800 text-zinc-200">
         <Header />
 
