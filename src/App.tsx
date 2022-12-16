@@ -10,6 +10,7 @@ import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import { Ibc } from "Ibc/Ibc";
 import { Wrap } from "Wrap/Wrap";
 import DefaultLayout from 'General/Layouts/defaultLayout';
+import { Dashboard } from 'Dashboard/Dashboard';
 
 globalThis.Buffer = Buffer;
 declare global {
@@ -64,7 +65,7 @@ export default function App() {
 
   return (
     <Routes>
-      <Route path="/" element={<Navigate to="/wrap"/>}/>
+    <Route path="/" element={<Dashboard />}/>
       <Route path="/ibc" element={<Ibc />}/>
       <Route path="/wrap" element={<Wrap />}/>
     </Routes>

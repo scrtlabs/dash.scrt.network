@@ -19,9 +19,9 @@ export function Navigation({
           </button>
         </li>
         <li>
-        <div className="block w-full px-8 py-5 rounded-full flex items-center cursor-default">
-          <FontAwesomeIcon icon={faChartLine} className="mr-2" />Dashboard <span className="text-xs ml-2 bg-zinc-700 px-1 rounded">soon</span>
-          </div>
+        <NavLink to="/" className={({ isActive }) => isActive ? "text-white bg-gradient-to-r from-zinc-700 via-zinc-700-700 to-zinc-700/5 block w-full px-8 py-5 rounded-full transition-colors" : "hover:text-white block w-full px-8 py-5 rounded-full transition-colors"}>
+          <FontAwesomeIcon icon={faChartLine} className="mr-2" />Dashboard
+          </NavLink>
         </li>
         <li>
         <NavLink to="/ibc" className={({ isActive }) => isActive ? "text-white bg-gradient-to-r from-zinc-700 via-zinc-700-700 to-zinc-700/5 block w-full px-8 py-5 rounded-full transition-colors" : "hover:text-white block w-full px-8 py-5 rounded-full transition-colors"}>
