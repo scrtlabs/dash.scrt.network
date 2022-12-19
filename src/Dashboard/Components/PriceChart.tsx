@@ -19,7 +19,7 @@ ChartJS.register(
   LineElement,
   Title,
   Tooltip,
-  Legend
+  Legend,
 )
 
 
@@ -38,19 +38,33 @@ export default function PriceChart() {
   // console.log(apiData);
   console.log(apiData.map(x => ({ x: x[0], y: x[1] })));
 
-  const chartData = {
+  const data = {
     labels: apiData.map(x => ({ x: x[0], y: x[1] })),
     datasets: [{
-      label: 'My First Dataset',
+      label: 'Prices',
       data: apiData.map(x => ({ x: x[0], y: x[1] })),
       fill: false,
-      borderColor: 'rgb(75, 192, 192)',
-      tension: 0.1
+      borderColor: '#34d399',
+      tension: 0.1,
+      pointHitRadius: '5',
     }]
   };
 
+  const options = {
+    responsive: true,
+    plugins: {
+      legend: {
+        display: false
+      },
+    },
+
+    xaxis: {
+      type: 'datetime',
+    },
+  };
+
   return (
-    <Line data={chartData}/>
+    <Line data={data} options={options}/>
   );
 }
 function componentDidMount() {
