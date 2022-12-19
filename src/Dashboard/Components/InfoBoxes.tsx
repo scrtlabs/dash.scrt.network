@@ -10,8 +10,8 @@ export default function InfoBoxes() {
 
 
   const [communityPool, setCommunityPool] = useState(null); // in uscrt
-  const [inflation, setInflation] = useState(null);
-  const [queryParams, setQueryParams] = useState(null);
+  const [blockHeight, setBlockHeight] = useState(null);
+  const [currentPrice, setCurrentPrice] = useState(null);
 
   // let foundationTax: { tax: any; } | null = null;
   // async function setFoundationTax() {
@@ -22,9 +22,10 @@ export default function InfoBoxes() {
 
 
   useEffect(() => {
-    secretjs?.query?.distribution?.communityPool()?.then(res => setCommunityPool(Math.floor((res.pool[1].amount) / 1000000000000000000000000)));
+    secretjs?.query?.distribution?.communityPool()?.then(res => setCommunityPool(Math.floor((res.pool[1].amount) / 10e23)));
+    secretjs?.query?.tendermint?.getLatestBlock()?.then(res => setBlockHeight(res.block.header.height));
+    setCurrentPrice(apiData?.prices[apiData?.prices?.length-1][1]);
   }, [secretjs]);
-
 
 
   return (
@@ -37,7 +38,7 @@ export default function InfoBoxes() {
               <FontAwesomeIcon icon={faCircle} className="fa-stack-2x text-emerald-900" />
               <FontAwesomeIcon icon={faCube} className="fa-stack-1x fa-inverse text-emerald-400" />
             </span>
-            <div className="font-bold text-lg">$0.61</div>
+            <div className="font-bold text-lg">{currentPrice ? currentPrice.toLocaleString("en-US", {style:"currency", currency:"USD"}) : ""}</div>
             <div className="text-md text-zinc-400">Current Price [USD]</div>
           </div>
         </div>
@@ -48,7 +49,7 @@ export default function InfoBoxes() {
               <FontAwesomeIcon icon={faCircle} className="fa-stack-2x text-cyan-900" />
               <FontAwesomeIcon icon={faCube} className="fa-stack-1x fa-inverse text-cyan-400" />
             </span>
-            <div className="font-bold text-lg">6587852</div>
+            <div className="font-bold text-lg">{blockHeight}</div>
             <div className="text-md text-zinc-400">Block Height</div>
           </div>
         </div>
