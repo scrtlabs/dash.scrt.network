@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from "react";
+import React, { createContext, useContext, useEffect, useState } from "react";
+import { DashboardContext } from "../Dashboard";
 
 import {
   Chart as ChartJS,
@@ -22,33 +23,37 @@ ChartJS.register(
   Legend,
 )
 
+enum ChartType {
+  Price,
+  Volume
+}
 
-export default function PriceChart() {
-  const [apiData, setApiData] = useState([]);
+enum ChartRange {
+  Day,
+  Month,
+  Year
+}
+
+export default function PriceChart(props: any) {
+  // const [apiData, setApiData] = useState([]);
+  const { apiData, setApiData, isLoading } = useContext(DashboardContext);
   const [marketData, setMarketData] = useState([]);
 
-  useEffect(() => {
-    let url = 'https://api.coingecko.com/api/v3/coins/secret/market_chart?vs_currency=usd&days=30';
-    fetch(url).then(response => response.json()).then((items) => {
-        setApiData(items.prices);
-    });
-  }, []);
+  const [chartType, setChartType] = useState<ChartType>(ChartType.Price);
+  const [chartRange, setChartRange] = useState<ChartRange>(ChartRange.Day);
 
 
-  // console.log(apiData);
-  console.log(apiData.map(x => ({ x: x[0], y: x[1] })));
-
-  const data = {
-    labels: apiData.map(x => ({ x: x[0], y: x[1] })),
-    datasets: [{
-      label: 'Prices',
-      data: apiData.map(x => ({ x: x[0], y: x[1] })),
-      fill: false,
-      borderColor: '#34d399',
-      tension: 0.1,
-      pointHitRadius: '5',
-    }]
-  };
+    const data = {
+      labels: apiData?.prices?.map((x: any[]) => ({ x: x[0] }).x),
+      datasets: [{
+        label: 'Prices',
+        data: apiData.prices.map((x: any[]) => ({ x: x[0], y: x[1] })),
+        fill: false,
+        borderColor: '#3b82f6',
+        tension: 0.1,
+        pointHitRadius: '5',
+      }]
+    };
 
   const options = {
     responsive: true,
@@ -57,37 +62,50 @@ export default function PriceChart() {
         display: false
       },
     },
-
-    xaxis: {
-      type: 'datetime',
-    },
+    pointStyle: false,
+    fill: {
+      type: 'gradient',
+      gradient: {
+        shade: 'dark',
+        inverseColors: false,
+        gradientToColors: ["#ff0000"],
+        shadeIntensity: 1,
+        type: 'horizontal',
+        opacityFrom: 1,
+        opacityTo: 1,
+        stops: [0, 100, 100, 100],
+      }
+    }
   };
 
   return (
     <>
     <div className="flex items-center mb-4">
-      <div className="flex-1 inline-flex rounded-md shadow-sm" role="group">
-        <button type="button" className="py-1.5 px-3 text-xs font-medium text-zinc-200 bg-zinc-700 rounded-l-lg border border-zinc-400 hover:bg-zinc-500 hover:text-white focus:z-10 focus:ring-2 focus:ring-zinc-700 focus:text-white">
+      {/* <div className="flex-1 inline-flex rounded-md shadow-sm" role="group">
+        <button onClick={() => setChartType(ChartType.Price)} type="button" className={"py-1.5 px-3 text-xs font-medium text-zinc-200 rounded-l-lg border border-zinc-400" + (chartType == ChartType.Price ? " bg-blue-500" : "bg-zinc-700 hover:bg-zinc-500 hover:text-white focus:z-10 focus:ring-2 focus:ring-zinc-700 focus:text-white")}>
           Price
         </button>
-        <button type="button" className="py-1.5 px-3 text-xs font-medium text-zinc-200 bg-zinc-700 rounded-r-md border-t border-b border-r border-zinc-400 hover:bg-zinc-500 hover:text-white focus:z-10 focus:ring-2 focus:ring-zinc-700 focus:text-white">
+        <button onClick={() => setChartType(ChartType.Volume)} type="button" className={"py-1.5 px-3 text-xs font-medium text-zinc-200 rounded-r-lg border-t border-r border-b border-zinc-400" + (chartType == ChartType.Volume ? " bg-blue-500" : "bg-zinc-700 hover:bg-zinc-500 hover:text-white focus:z-10 focus:ring-2 focus:ring-zinc-700 focus:text-white")}>
           Volume
         </button>
+      </div> */}
+      <div className="flex-1">
+        <h1 className="text-2xl font-bold">Price History</h1>
       </div>
 
       <div className="flex-initial inline-flex rounded-md shadow-sm" role="group">
-        <button type="button" className="py-1.5 px-3 text-xs font-medium text-zinc-200 bg-zinc-700 rounded-l-lg border border-zinc-400 hover:bg-zinc-500 hover:text-white focus:z-10 focus:ring-2 focus:ring-zinc-700 focus:text-white">
+        <button onClick={() => setChartRange(ChartRange.Day)} type="button" className={"py-1.5 px-3 text-xs font-medium text-zinc-200 rounded-l-lg border border-zinc-400" + (chartRange == ChartRange.Day ? " bg-blue-500" : "bg-zinc-700 hover:bg-zinc-500 hover:text-white focus:z-10 focus:ring-2 focus:ring-zinc-700 focus:text-white")}>
           Day
         </button>
-        <button type="button" className="py-1.5 px-3 text-xs font-medium text-zinc-200 bg-zinc-700 border-t border-b border-zinc-400 hover:bg-zinc-500 hover:text-white focus:z-10 focus:ring-2 focus:ring-zinc-700 focus:text-white">
+        <button onClick={() => setChartRange(ChartRange.Month)} type="button" className={"py-1.5 px-3 text-xs font-medium text-zinc-200 border-t border-r border-b border-zinc-400" + (chartRange == ChartRange.Month ? " bg-blue-500" : "bg-zinc-700 hover:bg-zinc-500 hover:text-white focus:z-10 focus:ring-2 focus:ring-zinc-700 focus:text-white")}>
           Month
         </button>
-        <button type="button" className="py-1.5 px-3 text-xs font-medium text-zinc-200 bg-zinc-700 rounded-r-md border border-zinc-400 hover:bg-zinc-500 hover:text-white focus:z-10 focus:ring-2 focus:ring-zinc-700 focus:text-white">
+        <button onClick={() => setChartRange(ChartRange.Year)} type="button" className={"py-1.5 px-3 text-xs font-medium text-zinc-200 rounded-r-lg border-t border-r border-b border-zinc-400" + (chartRange == ChartRange.Year ? " bg-blue-500" : "bg-zinc-700 hover:bg-zinc-500 hover:text-white focus:z-10 focus:ring-2 focus:ring-zinc-700 focus:text-white")}>
           Year
         </button>
       </div>
     </div>
-    <Line data={data} options={options}/>
+    {!isLoading ? <Line data={apiData} options={options}/> : <div></div>}
     </>
   );
 }
