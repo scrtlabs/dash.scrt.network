@@ -34,8 +34,7 @@ enum ChartRange {
   Year
 }
 
-export default function PriceChart(props: any) {
-  // const [apiData, setApiData] = useState([]);
+export default function VolumeChart(props: any) {
   const { apiData, setApiData } = useDashboardContext();
   const [marketData, setMarketData] = useState([]);
 
@@ -44,10 +43,10 @@ export default function PriceChart(props: any) {
   const [chartRange, setChartRange] = useState<ChartRange>(ChartRange.Day);
 
   const data = {
-    labels: apiData?.prices.map((x: any[]) => ({ x: x[0] }).x),
+    labels: apiData?.total_volumes.map((x: any[]) => ({ x: x[0] }).x),
     datasets: [{
       label: 'Prices',
-      data: apiData?.prices.map((x: any[]) => ({ x: x[0], y: x[1] })),
+      data: apiData?.total_volumes.map((x: any[]) => ({ x: x[0], y: x[1] })),
       fill: false,
       borderColor: '#3b82f6',
       tension: 0.1,
@@ -83,7 +82,7 @@ export default function PriceChart(props: any) {
     <div className="flex items-center mb-4">
       {/* Title */}
       <div className="flex-1">
-        <h1 className="text-2xl font-bold">Price History</h1>
+        <h1 className="text-2xl font-bold">Volume History</h1>
       </div>
 
       <div className="flex-initial inline-flex rounded-md shadow-sm" role="group">

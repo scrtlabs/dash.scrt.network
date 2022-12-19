@@ -10,7 +10,7 @@ export default function InfoBoxes() {
     <div className="px-4 mx-auto">
       <div className="grid grid-cols-12 gap-4">
         {/* Item */}
-        <div className="col-span-2 bg-zinc-800 p-4 rounded-lg">
+        <div className="col-span-12 sm:col-span-6 md:col-span-4 xl:col-span-2 bg-zinc-800 p-4 rounded-lg">
           <div className="flex flex-col items-center">
             <span className="fa-stack fa-2x mb-2">
               <FontAwesomeIcon icon={faCircle} className="fa-stack-2x text-emerald-900" />
@@ -21,7 +21,7 @@ export default function InfoBoxes() {
           </div>
         </div>
         {/* Item */}
-        <div className="col-span-2 bg-zinc-800 p-4 rounded-lg">
+        <div className="col-span-12 sm:col-span-6 md:col-span-4 xl:col-span-2 bg-zinc-800 p-4 rounded-lg">
           <div className="flex flex-col items-center">
             <span className="fa-stack fa-2x mb-2">
               <FontAwesomeIcon icon={faCircle} className="fa-stack-2x text-cyan-900" />
@@ -32,7 +32,7 @@ export default function InfoBoxes() {
           </div>
         </div>
         {/* Item */}
-        <div className="col-span-2 bg-zinc-800 p-4 rounded-lg">
+        <div className="col-span-12 sm:col-span-6 md:col-span-4 xl:col-span-2 bg-zinc-800 p-4 rounded-lg">
           <div className="flex flex-col items-center">
             <span className="fa-stack fa-2x mb-2">
               <FontAwesomeIcon icon={faCircle} className="fa-stack-2x text-amber-900" />
@@ -43,7 +43,7 @@ export default function InfoBoxes() {
           </div>
         </div>
         {/* Item */}
-        <div className="col-span-2 bg-zinc-800 p-4 rounded-lg">
+        <div className="col-span-12 sm:col-span-6 md:col-span-4 xl:col-span-2 bg-zinc-800 p-4 rounded-lg">
           <div className="flex flex-col items-center">
             <span className="fa-stack fa-2x mb-2">
               <FontAwesomeIcon icon={faCircle} className="fa-stack-2x text-red-900" />
@@ -54,7 +54,7 @@ export default function InfoBoxes() {
           </div>
         </div>
         {/* Item */}
-        <div className="col-span-2 bg-zinc-800 p-4 rounded-lg">
+        <div className="col-span-12 sm:col-span-6 md:col-span-4 xl:col-span-2 bg-zinc-800 p-4 rounded-lg">
           <div className="flex flex-col items-center">
             <span className="fa-stack fa-2x mb-2">
               <FontAwesomeIcon icon={faCircle} className="fa-stack-2x text-pink-900" />
@@ -65,7 +65,7 @@ export default function InfoBoxes() {
           </div>
         </div>
         {/* Item */}
-        <div className="col-span-2 bg-zinc-800 p-4 rounded-lg">
+        <div className="col-span-12 sm:col-span-6 md:col-span-4 xl:col-span-2 bg-zinc-800 p-4 rounded-lg">
           <div className="flex flex-col items-center">
             <span className="fa-stack fa-2x mb-2">
               <FontAwesomeIcon icon={faCircle} className="fa-stack-2x text-purple-900" />
