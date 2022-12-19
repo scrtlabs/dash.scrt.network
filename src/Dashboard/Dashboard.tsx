@@ -1,3 +1,4 @@
+import { KeplrContext } from "General/Layouts/defaultLayout";
 import React, { useEffect, useState, createContext, useContext } from "react";
 import InfoBoxes from "./Components/InfoBoxes";
 import PriceChart from "./Components/PriceChart";
@@ -7,6 +8,7 @@ export const DashboardContext = createContext(null);
 
 export function Dashboard() {
   const [apiData, setApiData] = useState();
+  const {secretjs, secretAddress} = useContext(KeplrContext);
 
   useEffect(() => {
     let url = 'https://api.coingecko.com/api/v3/coins/secret/market_chart?vs_currency=usd&days=30';
@@ -15,11 +17,9 @@ export function Dashboard() {
     });
   }, []);
 
-
-
   return (
     <>
-      <DashboardContext.Provider value={{apiData, setApiData}}>
+      <DashboardContext.Provider value={{ apiData, setApiData, secretjs, secretAddress }}>
         <InfoBoxes/>
         <div className="mt-4 px-4 mx-auto">
           <div className="grid grid-cols-12 gap-4">
