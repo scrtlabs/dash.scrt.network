@@ -9,7 +9,9 @@ export default function InfoBoxes() {
   const { apiData, setApiData, secretjs, secretAddress } = useDashboardContext();
 
 
-  const [communityPool, setCommunityPool] = useState([]);
+  const [communityPool, setCommunityPool] = useState(null); // in uscrt
+  const [inflation, setInflation] = useState(null);
+  const [queryParams, setQueryParams] = useState(null);
 
   // let foundationTax: { tax: any; } | null = null;
   // async function setFoundationTax() {
@@ -20,13 +22,10 @@ export default function InfoBoxes() {
 
 
   useEffect(() => {
-      secretjs?.query?.distribution?.communityPool().then(data => setCommunityPool(data));
+    secretjs?.query?.distribution?.communityPool()?.then(res => setCommunityPool(Math.floor((res.pool[1].amount) / 1000000000000000000000000)));
+  }, [secretjs]);
 
-  }, [communityPool]);
 
-  console.log("***")
-  console.log(communityPool)
-  console.log("***")
 
   return (
     <div className="px-4 mx-auto">
@@ -93,7 +92,7 @@ export default function InfoBoxes() {
               <FontAwesomeIcon icon={faCircle} className="fa-stack-2x text-purple-900" />
               <FontAwesomeIcon icon={faAward} className="fa-stack-1x fa-inverse text-purple-400" />
             </span>
-            <div className="font-bold text-lg">873,871 SCRT</div>
+            <div className="font-bold text-lg">{communityPool ? communityPool.toLocaleString() : ""} SCRT</div>
             <div className="text-md text-zinc-400">Community Pool</div>
           </div>
         </div>
@@ -101,3 +100,7 @@ export default function InfoBoxes() {
     </div>
   );
 }
+function async(arg0: () => void) {
+  throw new Error("Function not implemented.");
+}
+
