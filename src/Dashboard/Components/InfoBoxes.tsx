@@ -16,6 +16,17 @@ export default function InfoBoxes() {
               <FontAwesomeIcon icon={faCircle} className="fa-stack-2x text-emerald-900" />
               <FontAwesomeIcon icon={faCube} className="fa-stack-1x fa-inverse text-emerald-400" />
             </span>
+            <div className="font-bold text-lg">$0.62</div>
+            <div className="text-md text-zinc-400">Current Price [USD]</div>
+          </div>
+        </div>
+        {/* Item */}
+        <div className="col-span-2 bg-zinc-800 p-4 rounded-lg">
+          <div className="flex flex-col items-center">
+            <span className="fa-stack fa-2x mb-2">
+              <FontAwesomeIcon icon={faCircle} className="fa-stack-2x text-cyan-900" />
+              <FontAwesomeIcon icon={faCube} className="fa-stack-1x fa-inverse text-cyan-400" />
+            </span>
             <div className="font-bold text-lg">6587852</div>
             <div className="text-md text-zinc-400">Block Height</div>
           </div>
@@ -46,8 +57,8 @@ export default function InfoBoxes() {
         <div className="col-span-2 bg-zinc-800 p-4 rounded-lg">
           <div className="flex flex-col items-center">
             <span className="fa-stack fa-2x mb-2">
-              <FontAwesomeIcon icon={faCircle} className="fa-stack-2x text-purple-900" />
-              <FontAwesomeIcon icon={faArrowTrendUp} className="fa-stack-1x fa-inverse text-purple-400" />
+              <FontAwesomeIcon icon={faCircle} className="fa-stack-2x text-pink-900" />
+              <FontAwesomeIcon icon={faArrowTrendUp} className="fa-stack-1x fa-inverse text-pink-400" />
             </span>
             <div className="font-bold text-lg">15%</div>
             <div className="text-md text-zinc-400">Inflation</div>
