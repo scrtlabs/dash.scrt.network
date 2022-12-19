@@ -1,10 +1,32 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import CopyToClipboard from "react-copy-to-clipboard";
 import { Breakpoint } from "react-socks";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowTrendUp, faAward, faCircle, faCopy, faCube, faDollar, faPercentage } from "@fortawesome/free-solid-svg-icons";
+import { useDashboardContext } from "Dashboard/Dashboard";
 
 export default function InfoBoxes() {
+  const { apiData, setApiData, secretjs, secretAddress } = useDashboardContext();
+
+
+  const [communityPool, setCommunityPool] = useState([]);
+
+  // let foundationTax: { tax: any; } | null = null;
+  // async function setFoundationTax() {
+  //   foundationTax = await secretjs?.query?.distribution?.foundationTax();
+  // }
+  // setFoundationTax();
+
+
+
+  useEffect(() => {
+      secretjs?.query?.distribution?.communityPool().then(data => setCommunityPool(data));
+
+  }, [communityPool]);
+
+  console.log("***")
+  console.log(communityPool)
+  console.log("***")
 
   return (
     <div className="px-4 mx-auto">
@@ -16,7 +38,7 @@ export default function InfoBoxes() {
               <FontAwesomeIcon icon={faCircle} className="fa-stack-2x text-emerald-900" />
               <FontAwesomeIcon icon={faCube} className="fa-stack-1x fa-inverse text-emerald-400" />
             </span>
-            <div className="font-bold text-lg">$0.62</div>
+            <div className="font-bold text-lg">$0.61</div>
             <div className="text-md text-zinc-400">Current Price [USD]</div>
           </div>
         </div>
