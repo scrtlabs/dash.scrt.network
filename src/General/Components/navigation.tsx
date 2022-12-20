@@ -12,6 +12,7 @@ export function Navigation({
 }) {
   return (
     <>
+      <a href="https://scrt.network/" target="_blank" className="block ml-4 mb-12" style={{maxWidth: "9rem"}}><img src="https://scrt.network/assets/img/new-secret-logo.c2794f7c.svg" alt="Secret Network Logo" className="w-full inline-block" /></a>
       <ul className="space-y-4 font-bold text-neutral-400">
         <li className="lg:hidden">
           <button onClick={() => setShowMobileMenu(false)} className="hover:text-white fixed top-0 right-0 float-right px-8 py-5 rounded-full transition-colors">
