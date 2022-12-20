@@ -83,7 +83,7 @@ export default function Deposit({
   function togglePosition() {
     alert('Withdrawal – coming soon!')
   }
-
+console.log(selectedSource.source_chain_name)
   const sourceChain =
     chains[token.deposits[selectedChainIndex].source_chain_name];
   const targetChain = chains["Secret Network"];
@@ -148,7 +148,8 @@ export default function Deposit({
         await suggestKujiraToKeplr(window.keplr);
       }
 
-      // Initialize cosmjs on the target chain, because it has sendIbcTokens()
+      console.log(token.deposits);
+      // Initialize cosmjs on the source chain, because it has sendIbcTokens()
       const { chain_id, rpc, bech32_prefix } =
         chains[token.deposits[selectedChainIndex].source_chain_name];
       await window.keplr.enable(chain_id);
@@ -288,7 +289,6 @@ export default function Deposit({
           </div>
         </div>
       </div>
-
 
       <div className="bg-zinc-900 p-6 rounded border border-zinc-700 space-y-6">
         <div className="flex">

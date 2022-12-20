@@ -4,6 +4,9 @@ import { Breakpoint } from "react-socks";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowTrendUp, faAward, faCircle, faCopy, faCube, faDollar, faPercentage } from "@fortawesome/free-solid-svg-icons";
 import { useDashboardContext } from "Dashboard/Dashboard";
+import { chains } from "General/Utils/config";
+import { SecretNetworkClient } from "secretjs";
+const SECRET_RPC = chains["Secret Network"].rpc;
 
 export default function InfoBoxes() {
   const { apiData, setApiData, secretjs, secretAddress } = useDashboardContext();
@@ -27,15 +30,19 @@ export default function InfoBoxes() {
   }
 
   useEffect(() => {
-    secretjs?.query?.distribution?.communityPool()?.then(res => setCommunityPool(Math.floor((res.pool[1].amount) / 10e23)));
-    secretjs?.query?.tendermint?.getLatestBlock()?.then(res => setBlockHeight(res.block.header.height));
-    secretjs?.query?.mint?.inflation()?.then(res => setInflation(parseInt(String.fromCharCode.apply(null, res.inflation)) / 10e15));
-    secretjs?.query?.staking?.pool()?.then(res => setPool(res.pool));
-    setCurrentPrice(apiData?.prices[apiData?.prices?.length-1][1]);
-  }, [secretjs]);
-
-  console.log(inflation)
-
+    const queryData = async () => {
+      const secretjsquery = await SecretNetworkClient.create({
+        grpcWebUrl: SECRET_RPC,
+        chainId: "secret-4",
+      });
+      secretjsquery?.query?.distribution?.communityPool()?.then(res => setCommunityPool(Math.floor((res.pool[1].amount) / 10e23)));
+      secretjsquery?.query?.tendermint?.getLatestBlock()?.then(res => setBlockHeight(res.block.header.height));
+      secretjsquery?.query?.mint?.inflation()?.then(res => setInflation(parseInt(String.fromCharCode.apply(null, res.inflation)) / 10e15));
+      secretjsquery?.query?.staking?.pool()?.then(res => setPool(res.pool));
+      setCurrentPrice(apiData?.prices[apiData?.prices?.length-1][1]);
+    }
+    queryData();
+  }, []);
 
   const bondedToken = parseInt(pool?.bondedTokens) / 10e5;
   const notBondedTokens = parseInt(pool?.notBondedTokens) / 10e4;
