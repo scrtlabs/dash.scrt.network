@@ -26,12 +26,10 @@ export default function InfoBoxes() {
     return result;
   }
 
-
-
   useEffect(() => {
     secretjs?.query?.distribution?.communityPool()?.then(res => setCommunityPool(Math.floor((res.pool[1].amount) / 10e23)));
     secretjs?.query?.tendermint?.getLatestBlock()?.then(res => setBlockHeight(res.block.header.height));
-    secretjs?.query?.mint?.params()?.then(res => setInflation(res.params.inflationMax));
+    secretjs?.query?.mint?.inflation()?.then(res => setInflation(parseInt(String.fromCharCode.apply(null, res.inflation)) / 10e15));
     secretjs?.query?.staking?.pool()?.then(res => setPool(res.pool));
     setCurrentPrice(apiData?.prices[apiData?.prices?.length-1][1]);
   }, [secretjs]);
