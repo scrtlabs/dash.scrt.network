@@ -34,6 +34,7 @@ enum ChartRange {
   Year
 }
 
+
 export default function PriceChart(props: any) {
   // const [apiData, setApiData] = useState([]);
   const { apiData, setApiData } = useDashboardContext();
