@@ -10,6 +10,7 @@ import { faDownLong, faUpLong, faArrowRightArrowLeft, faCaretDown, faRightLeft }
 import { getKeplrViewingKey, setKeplrViewingKey } from "General/Components/Keplr";
 import { Header } from "./Components/Header";
 import { Link } from "react-router-dom";
+import Select from "react-select";
 
 export const WrapContext = createContext(null);
 
@@ -40,8 +41,6 @@ export function Wrap() {
   const [selectedToken, setselectedToken] = useState<Token>(tokens.filter(token => token.name === tokenPreselection)[0]);
 
   // UI
-  const [isFromPickerVisible, setIsFromPickerVisible] = useState<boolean>(false);
-  const [isToPickerVisible, setisToPickerVisible] = useState<boolean>(false);
   const [validationMessage, setValidationMessage] = useState<string>("");
   const [isValidAmount, setisValidAmount] = useState<boolean>(true);
 
@@ -137,17 +136,6 @@ export function Wrap() {
     }
   }
 
-  async function handlePickerChoice(token: Token) {
-    if (token != selectedToken) {
-      setselectedToken(token);
-      setAmountToWrap("");
-    }
-    setIsFromPickerVisible(false)
-    setisToPickerVisible(false)
-
-    setBalance();
-  }
-
   const updateTokenBalance = async () => {
     if (!selectedToken.address || !secretjs) {
       return;
@@ -188,11 +176,11 @@ export function Wrap() {
 
   function PercentagePicker() {
     return (
-      <div className="inline-flex rounded-full">
-        <button onClick={() => setAmountByPercentage(25)} className="py-0.5 px-1.5 font-medium rounded-l-full border focus:z-10 focus:ring-2 bg-zinc-800 border-zinc-600 text-white hover:text-black hover:bg-white active:bg-zinc-300 transition-colors disabled:text-gray-400 disabled:hover:bg-zinc-800 disabled:hover:text-gray-400 disabled:hover:border-zinc-600" disabled={!secretAddress}>25%</button>
-        <button onClick={() => setAmountByPercentage(50)} className="py-0.5 px-1.5 font-medium border-t border-b border-r focus:z-10 focus:ring-2 bg-zinc-800 border-zinc-600 text-white hover:text-black hover:bg-white active:bg-zinc-300 transition-colors disabled:text-gray-400 disabled:hover:bg-zinc-800 disabled:hover:text-gray-400 disabled:hover:border-zinc-600" disabled={!secretAddress}>50%</button>
-        <button onClick={() => setAmountByPercentage(75)} className="py-0.5 px-1.5 font-medium border-t border-b focus:z-10 focus:ring-2 bg-zinc-800 border-zinc-600 text-white hover:text-black hover:bg-white active:bg-zinc-300 transition-colors disabled:text-gray-400 disabled:hover:bg-zinc-800 disabled:hover:text-gray-400 disabled:hover:border-zinc-600" disabled={!secretAddress}>75%</button>
-        <button onClick={() => setAmountByPercentage(100)} className="py-0.5 px-1.5 font-medium rounded-r-full border focus:z-10 focus:ring-2 bg-zinc-800 border-zinc-600 text-white hover:text-black hover:bg-white active:bg-zinc-300 transition-colors disabled:text-gray-400 disabled:hover:bg-zinc-800 disabled:hover:text-gray-400 disabled:hover:border-zinc-600" disabled={!secretAddress}>Max</button>
+      <div className="inline-flex rounded-full text-xs font-bold">
+        <button onClick={() => setAmountByPercentage(25)} className="bg-zinc-900 px-2 py-1 rounded-l-lg transition-colors hover:bg-zinc-700 focus:bg-zinc-500 cursor-pointer" disabled={!secretAddress}>25%</button>
+        <button onClick={() => setAmountByPercentage(50)} className="bg-zinc-900 px-2 py-1 border-l border-zinc-700 transition-colors hover:bg-zinc-700 focus:bg-zinc-500 cursor-pointer" disabled={!secretAddress}>50%</button>
+        <button onClick={() => setAmountByPercentage(75)} className="bg-zinc-900 px-2 py-1 border-l border-zinc-700 transition-colors hover:bg-zinc-700 focus:bg-zinc-500 cursor-pointer" disabled={!secretAddress}>75%</button>
+        <button onClick={() => setAmountByPercentage(100)} className="bg-zinc-900 px-2 py-1 rounded-r-lg border-l border-zinc-700 transition-colors hover:bg-zinc-700 focus:bg-zinc-500 cursor-pointer" disabled={!secretAddress}>MAX</button>
       </div>
     )
   }
@@ -201,7 +189,7 @@ export function Wrap() {
     if (!loadingCoinBalance && secretjs && secretAddress) {
       return (
         <>
-          {`Balance: ${new BigNumber(tokenNativeBalance!)
+          {`Available: ${new BigNumber(tokenNativeBalance!)
             .dividedBy(`1e${selectedToken.decimals}`)
             .toFormat()}`} {selectedToken.name} ({usdString.format(
           new BigNumber(tokenNativeBalance!)
@@ -209,7 +197,7 @@ export function Wrap() {
             .multipliedBy(Number(price))
             .toNumber()
           )})
-          <Link to={'/ibc?token=' + selectedToken.name.toLowerCase()} className="ml-2 hover:text-white transition-colors hover:bg-zinc-900 px-1.5 py-0.5 rounded">
+          <Link to={'/ibc'} className="ml-2 hover:text-white transition-colors hover:bg-zinc-900 px-1.5 py-0.5 rounded">
             <FontAwesomeIcon icon={faArrowRightArrowLeft} />
           </Link>
         </>
@@ -239,15 +227,15 @@ export function Wrap() {
             }
           }}
         >
-          {`Balance: ${viewingKeyErrorString}`}
+          {`Available: ${viewingKeyErrorString}`}
         </div>
       );
     }
     else if (Number(tokenWrappedBalance) > -1) {
       return (
         <>
-          {/* Balance: 0.123456 sSCRT () */}
-          {`Balance: ${new BigNumber(tokenWrappedBalance!)
+          {/* Available: 0.123456 sSCRT () */}
+          {`Available: ${new BigNumber(tokenWrappedBalance!)
                 .dividedBy(`1e${selectedToken.decimals}`)
                 .toFormat()} s` + selectedToken.name + ` (${usdString.format(
             new BigNumber(tokenWrappedBalance!)
@@ -282,7 +270,7 @@ export function Wrap() {
     return (
       <button
         disabled={disabled}
-        className={"flex items-center justify-center w-full py-3 px-3 rounded transition-colors font-semibold mt-12 border" + (disabled ? " bg-zinc-500 border-zinc-500 opacity-40" : " bg-emerald-500/50 border-emerald-500 hover:bg-emerald-600 active:bg-emerald-700")}
+        className={"flex items-center justify-center w-full py-3 px-3 rounded transition-colors font-semibold mt-12 border" + (disabled ? " bg-zinc-500 border-zinc-600 opacity-40" : " bg-blue-500 border-blue-500 hover:bg-blue-600 active:bg-blue-700")}
         onClick={async () => {
 
           if (!secretjs || !secretAddress) { return; }
@@ -398,9 +386,6 @@ export function Wrap() {
           }
         }
       }>
-        {/* loading animation */}
-        {loadingWrapOrUnwrap ? (<svg className="inline-block animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"> <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle> <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path> </svg>) : ''} <FontAwesomeIcon icon={faArrowRightArrowLeft} className="mr-2"/>
-        
         {/* text for wrapping with value */}
         {(wrappingMode === WrappingMode.Wrap && amountToWrap) && (<>
           Wrap <span className="text-xs font-normal mx-1">{amountToWrap} {nativeCurrency}</span> into <span className="text-xs font-normal mx-1">{amountToWrap} {wrappedCurrency}</span>
@@ -502,39 +487,24 @@ export function Wrap() {
 
           {/* *** From *** */}
 
-          {/* Head */}
           <div className="flex mb-2">
-            <div className="flex-1 font-bold">From:</div>
-            {/* Validation */}
+            <div className="flex-1 font-bold">From</div>
             <div className="flex-initial">
               {isValidAmount && (<div className="h-4 mb-2"></div>)}
               {!isValidAmount && (<div className="text-red-500 text-xs text-right mb-2">{validationMessage}</div>)}
             </div>
           </div>
-  
-  
-          {/* Asset Picker */}
-          { isFromPickerVisible &&
-            <div className="relative">
-              <ul className="overflow-y-scroll scrollbar-hide h-64 text-white z-20 mt-16 rounded bg-zinc-900 ring-1 ring-zinc-800 absolute left-0 right-0">
-                {tokens.map(token => (
-                  <li className="cursor-pointer select-none p-2 bg-zinc-900 hover:bg-black flex items-center" onClick={() => handlePickerChoice(token)} key={token.name}>
-                    <img src={token.image} alt="Logo" className="w-7 h-7 mr-2"/>
-                    {wrappingMode === WrappingMode.Unwrap ? "s" : ""}{token.name}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          }
 
           {/* 'from' Token Field */}
           <div className="flex">
-            <button onClick={() => {setIsFromPickerVisible(!isFromPickerVisible); setisToPickerVisible(false)}} className="hover:bg-zinc-700 active:bg-zinc-800 transition-colors inline-flex items-center px-3 text-sm font-semibold bg-zinc-800 rounded-l-md border border-r-0 border-zinc-900 text-zinc-400 focus:bg-zinc-700 disabled:hover:bg-zinc-800" disabled={!selectedToken.address || !secretAddress}>
-              <img src={selectedToken.image} alt={selectedToken.name} className="w-7 h-7 mr-2"/>
-              {wrappingMode === WrappingMode.Unwrap ? "s" : ""}{selectedToken.name}
-              <FontAwesomeIcon icon={faCaretDown} className="ml-2" />
-            </button>
-            <input value={amountToWrap} onChange={handleInputChange} type="text" className={" block flex-1 min-w-0 w-full bg-zinc-900 text-white p-4 rounded-r-md disabled:placeholder-zinc-700 transition-colors" + (!isValidAmount ? "  border border-red-500" : "")} name="fromValue" id="fromValue" placeholder="0.0" disabled={!secretAddress}/>
+            <Select options={tokens} value={selectedToken} onChange={setselectedToken}
+              formatOptionLabel={token => (
+                <div className="flex items-center">
+                  <img src={token.image} className="w-6 h-6 mr-2 rounded-full" />
+                  <span className="font-bold text-sm">{token.name}</span>
+                </div>
+              )} className="react-select-wrap-container" classNamePrefix="react-select-wrap" />
+            <input value={amountToWrap} onChange={handleInputChange} type="text" className={"block flex-1 min-w-0 w-full bg-zinc-900 text-white p-4 rounded-r-lg disabled:placeholder-zinc-700 transition-colors" + (!isValidAmount ? "  border border-red-500" : "")} name="fromValue" id="fromValue" placeholder="0" disabled={!secretAddress}/>
           </div>
 
           {/* Balance | [25%|50%|75%|Max] */}
@@ -557,7 +527,6 @@ export function Wrap() {
 
 
 
-
           <WrappingModeSwitchInputComponent wrappingMode={wrappingMode} disabled={!secretAddress}/>
 
 
@@ -570,37 +539,20 @@ export function Wrap() {
 
           <div>
             <div className="flex mb-2">
-              <div className="flex-1 font-bold">To:</div>
+              <div className="flex-1 font-bold">To</div>
             </div>
-            
-            {/* 'to' Token Picker */}
-            { isToPickerVisible &&
-              <div className="relative">
-                <ul className="overflow-y-scroll scrollbar-hide h-64 text-white z-20 absolute mt-16 rounded bg-black ring-1 ring-zinc-800 left-0 right-0">
-                  {tokens.map(token => (
-                    <li className="cursor-pointer select-none p-2 hover:bg-zinc-800 flex items-center" onClick={() => handlePickerChoice(token)} key={token.name}>
-                      <img src={token.image} alt="Logo" className="w-7 h-7 mr-2"/>
-                      {wrappingMode === WrappingMode.Wrap && `s`}{token.name}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            }
 
             <div className="flex">
-              <button onClick={() => {setisToPickerVisible(!isToPickerVisible); setIsFromPickerVisible(false)}} className="hover:bg-zinc-700 active:bg-zinc-800 transition-colors inline-flex items-center px-3 text-sm font-semibold bg-zinc-800 rounded-l-md border border-r-0 border-zinc-900 text-zinc-400 focus:bg-zinc-700 disabled:hover:bg-zinc-800" disabled={!selectedToken.address || !secretAddress}>
-                <img src={selectedToken.image} alt={selectedToken.name} className="w-7 h-7 mr-2" />
-                {wrappingMode === WrappingMode.Wrap && `s`}{selectedToken.name}
-                <FontAwesomeIcon icon={faCaretDown} className="ml-2" />
-              </button>
-              <input value={amountToWrap} onChange={handleInputChange} type="text" className={"block flex-1 min-w-0 w-full bg-zinc-900 text-white p-4 rounded-r-md disabled:placeholder-zinc-700 transition-colors" + (!isValidAmount && wrappingMode === WrappingMode.Unwrap ? " border border-red-500" : "")} name="wrappedValue" id="wrappedValue" placeholder="0.0" disabled={!selectedToken.address || !secretAddress}/>
+              <Select options={tokens} value={selectedToken} onChange={setselectedToken}
+                formatOptionLabel={token => (
+                  <div className="flex items-center">
+                    <img src={token.image} className="w-6 h-6 mr-2 rounded-full" />
+                    <span className="font-bold text-sm">s{token.name}</span>
+                  </div>
+                )} className="react-select-wrap-container" classNamePrefix="react-select-wrap" />
+                <input value={amountToWrap} onChange={handleInputChange} type="text" className={"block flex-1 min-w-0 w-full bg-zinc-900 text-white p-4 rounded-r-md disabled:placeholder-zinc-700 transition-colors" + (!isValidAmount && wrappingMode === WrappingMode.Unwrap ? " border border-red-500" : "")} name="wrappedValue" id="wrappedValue" placeholder="0" disabled={!selectedToken.address || !secretAddress}/>
             </div>
           </div>
-
-
-
-
-
 
 
           {/* <To/> */}
