@@ -12,10 +12,10 @@ export default function InfoBoxes() {
   const { apiData, setApiData, secretjs, secretAddress } = useDashboardContext();
 
 
-  const [communityPool, setCommunityPool] = useState(null); // in uscrt
+  const [communityPool, setCommunityPool] = useState(Number); // in uscrt
   const [blockHeight, setBlockHeight] = useState(null);
-  const [currentPrice, setCurrentPrice] = useState(null);
-  const [inflation, setInflation] = useState(null);
+  const [currentPrice, setCurrentPrice] = useState(Number);
+  const [inflation, setInflation] = useState(Number);
   const [pool, setPool] = useState(null);
 
   const COUNT_ABBRS = ['', 'K', 'M', 'B', 't', 'q', 's', 'S', 'o', 'n', 'd', 'U', 'D', 'T', 'Qt', 'Qd', 'Sd', 'St'];
@@ -35,13 +35,22 @@ export default function InfoBoxes() {
         grpcWebUrl: SECRET_RPC,
         chainId: "secret-4",
       });
-      secretjsquery?.query?.distribution?.communityPool()?.then(res => setCommunityPool(Math.floor((res.pool[1].amount) / 10e23)));
-      secretjsquery?.query?.tendermint?.getLatestBlock()?.then(res => setBlockHeight(res.block.header.height));
-      secretjsquery?.query?.mint?.inflation()?.then(res => setInflation(parseInt(String.fromCharCode.apply(null, res.inflation)) / 10e15));
-      secretjsquery?.query?.staking?.pool()?.then(res => setPool(res.pool));
+      secretjsquery?.query?.distribution?.communityPool()?.then((res: { pool: { amount: any; }[]; }) => setCommunityPool(Math.floor((res.pool[1].amount) / 10e23)));
+      secretjsquery?.query?.tendermint?.getLatestBlock()?.then((res: { block: { header: { height: React.SetStateAction<null>; }; }; }) => setBlockHeight(res.block.header.height));
+      secretjsquery?.query?.mint?.inflation()?.then((res: { inflation: number[]; }) => setInflation(parseInt(String.fromCharCode.apply(null, res.inflation)) / 10e15));
+      secretjsquery?.query?.staking?.pool()?.then((res: { pool: React.SetStateAction<null>; }) => setPool(res.pool));
       setCurrentPrice(apiData?.prices[apiData?.prices?.length-1][1]);
     }
+    
     queryData();
+  }, []);
+
+  useEffect(() => {
+    fetch(`https://api.coingecko.com/api/v3/simple/price?ids=secret&vs_currencies=USD`)
+      .then((resp) => resp.json())
+      .then((result: { [coingecko_id: string]: { usd: number } }) => {
+        setCurrentPrice(result["secret"].usd)
+      });
   }, []);
 
   const bondedToken = parseInt(pool?.bondedTokens) / 10e5;
