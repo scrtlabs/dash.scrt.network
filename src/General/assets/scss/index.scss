@@ -16,6 +16,7 @@ body {
 // }
 
 .react-select__control {
+  cursor: pointer !important;
   background-color: #3f3f46 !important;
   border-color: #71717a !important;
   color: red !important;
@@ -32,4 +33,36 @@ body {
 
 .react-select__option:hover {
   background-color: #52525b !important;
+}
+
+
+
+
+
+
+
+
+.react-select-wrap__control {
+  cursor: pointer !important;
+  background-color: #27272a !important;
+  border-color: #52525b !important;
+  color: red !important;
+  @apply py-2.5;
+  border-radius: 0.5rem 0 0 0.5rem !important;
+}
+
+.react-select-wrap__single-value {
+  color: white !important;
+}
+
+.react-select-wrap__menu, .react-select-wrap__option {
+  background-color: #3f3f46 !important;
+}
+
+.react-select-wrap__option:hover {
+  background-color: #52525b !important;
+}
+
+.react-select-wrap__indicator-separator {
+  display: none;
 }
