@@ -19,9 +19,8 @@ import {
   suggestKujiraToKeplr,
   suggestTerraToKeplr,
 } from "General/Utils/commons";
-import { chains, Token } from "General/Utils/config";
+import { chains, Token, tokens } from "General/Utils/config";
 import CopyableAddress from "Ibc/components/CopyableAddress";
-
 import { fromBase64, toBase64, toHex } from "secretjs";
 import { TxRaw } from "secretjs/dist/protobuf_stuff/cosmos/tx/v1beta1/tx";
 import { useCurrentBreakpointName } from "react-socks";
@@ -34,22 +33,15 @@ import { InsertEmoticon } from "@mui/icons-material";
 import { red } from "@mui/material/colors";
 
 export default function Deposit({
-  token,
-  tokens,
-  onSuccess,
-  onFailure,
+
 }: {
-  token: Token;
-  tokens: Token[],
-  onSuccess: (txhash: string) => any;
-  onFailure: (error: any) => any;
+
 }) {
   const breakpoint = useCurrentBreakpointName();
   const [sourceAddress, setSourceAddress] = useState<string>("");
   const [availableBalance, setAvailableBalance] = useState<string>("");
   const [loadingTx, setLoading] = useState<boolean>(false);
   const [sourceCosmJs, setSourceCosmJs] = useState<SigningStargateClient | null>(null);
-  const [selectedChainIndex, setSelectedChainIndex] = useState<number>(0);
   const [fetchBalanceInterval, setFetchBalanceInterval] = useState<any>(null);
   const [amountToTransfer, setAmountToTransfer] = useState<string>("");
   const {secretjs, secretAddress} = useContext(KeplrContext);
@@ -57,10 +49,12 @@ export default function Deposit({
   const queryParams = new URLSearchParams(window.location.search);
   const tokenByQueryParam = queryParams.get("token"); // "scrt", "akash", etc.
   const chainByQueryParam = queryParams.get("chain"); // "scrt", "akash", etc.
+  const [selectedToken, setselectedToken] = useState<Token>(tokens.filter(token => token.name === 'SCRT')[0]);
+  const sourcePreselection = selectedToken.deposits.filter(deposit => deposit.source_chain_name.toLowerCase() === chainByQueryParam?.toLowerCase())[0] ? chainByQueryParam?.toLowerCase() : "osmosis";
+  const [selectedSource, setSelectedSource] = useState<any>(selectedToken.deposits.filter(deposit => deposit.source_chain_name.toLowerCase() === sourcePreselection)[0]);
+
   const tokenPreselection = tokens.filter(token => token.name === tokenByQueryParam?.toUpperCase())[0] ? tokenByQueryParam?.toUpperCase() : "INJ";
-  const sourcePreselection = token.deposits.filter(deposit => deposit.source_chain_name.toLowerCase() === chainByQueryParam?.toLowerCase())[0] ? chainByQueryParam?.toLowerCase() : "osmosis";
-  const [selectedSource, setSelectedSource] = useState<any>(token.deposits.filter(deposit => deposit.source_chain_name.toLowerCase() === sourcePreselection)[0]);
-  const [selectedToken, setselectedToken] = useState<Token>(tokens.filter(token => token.name === tokenPreselection)[0]);
+
   const [selectedTokenIndex, setSelectedTokenIndex] = useState<number>(0);
 
   function handleInputChange(e: any) {
@@ -83,14 +77,14 @@ export default function Deposit({
   function togglePosition() {
     alert('Withdrawal – coming soon!')
   }
-console.log(selectedSource.source_chain_name)
+  console.log(selectedSource.source_chain_name)
   const sourceChain =
-    chains[token.deposits[selectedChainIndex].source_chain_name];
+    chains[selectedSource.source_chain_name];
   const targetChain = chains["Secret Network"];
 
   const fetchSourceBalance = async (sourceAddress: string) => {
     const url = `${
-      chains[token.deposits[selectedChainIndex].source_chain_name].lcd
+      chains[selectedSource.source_chain_name].lcd
     }/cosmos/bank/v1beta1/balances/${sourceAddress}`;
     try {
       const {
@@ -101,7 +95,7 @@ console.log(selectedSource.source_chain_name)
 
       const balance =
         balances.find(
-          (c) => c.denom === token.deposits[selectedChainIndex].from_denom
+          (c) => c.denom === selectedSource.from_denom
         )?.amount || "0";
 
       setAvailableBalance(balance);
@@ -138,20 +132,20 @@ console.log(selectedSource.source_chain_name)
         await sleep(100);
       }
 
-      if ("LUNA" === token.name.toUpperCase()) {
+      if ("LUNA" === selectedToken.name.toUpperCase()) {
         await suggestTerraToKeplr(window.keplr);
-      } else if ("INJ" === token.name.toUpperCase()) {
+      } else if ("INJ" === selectedToken.name.toUpperCase()) {
         await suggestInjectiveToKeplr(window.keplr);
-      } else if ("CRE" === token.name.toUpperCase()) {
+      } else if ("CRE" === selectedToken.name.toUpperCase()) {
         await suggestCrescentToKeplr(window.keplr);
-      } else if ("KUJI" === token.name.toUpperCase()) {
+      } else if ("KUJI" === selectedToken.name.toUpperCase()) {
         await suggestKujiraToKeplr(window.keplr);
       }
 
-      console.log(token.deposits);
+      console.log(selectedToken.deposits);
       // Initialize cosmjs on the source chain, because it has sendIbcTokens()
       const { chain_id, rpc, bech32_prefix } =
-        chains[token.deposits[selectedChainIndex].source_chain_name];
+        chains[selectedSource.source_chain_name];
       await window.keplr.enable(chain_id);
       window.keplr.defaultOptions = {
         sign: {
@@ -169,7 +163,7 @@ console.log(selectedSource.source_chain_name)
       );
       setSourceCosmJs(cosmjs);
     })();
-  }, [selectedChainIndex]);
+  }, [selectedSource]);
 
   
   const [isCopied, setIsCopied] = useState<boolean>(false);
@@ -195,7 +189,7 @@ console.log(selectedSource.source_chain_name)
           {/* Chain Picker */}
           <div className="-mt-3 relative z-10 w-full">
           {/* {value} */}
-          <Select options={token.deposits} value={selectedSource} onChange={setSelectedSource}
+          <Select options={selectedToken.deposits} value={selectedSource} onChange={setSelectedSource}
             formatOptionLabel={option => (
               <div className="flex items-center">
                 <img src={chains[option.source_chain_name].chain_image} className="w-6 h-6 mr-2 rounded-full" />
@@ -377,9 +371,9 @@ console.log(selectedSource.source_chain_name)
           <button onClick={() => {setAmountByPercentage(100)}}>
             {(() => {
               if (availableBalance === "") {return <CircularProgress size="0.6em" />;}
-              const prettyBalance = new BigNumber(availableBalance).dividedBy(`1e${token.decimals}`).toFormat();
+              const prettyBalance = new BigNumber(availableBalance).dividedBy(`1e${selectedToken.decimals}`).toFormat();
               if (prettyBalance === "NaN") {return "Error";}
-              return `${prettyBalance} ${token.name}`;
+              return `${prettyBalance} ${selectedToken.name}`;
             })()}
           </button>
         </div>
@@ -426,35 +420,33 @@ console.log(selectedSource.source_chain_name)
             setLoading(true);
 
             const amount = new BigNumber(normalizedAmount)
-              .multipliedBy(`1e${token.decimals}`)
+              .multipliedBy(`1e${selectedToken.decimals}`)
               .toFixed(0, BigNumber.ROUND_DOWN);
 
             let {
               deposit_channel_id,
               deposit_gas,
               lcd: lcdSrcChain,
-            } = chains[token.deposits[selectedChainIndex].source_chain_name];
+            } = chains[selectedChain.source_chain_name];
 
             deposit_channel_id =
-              token.deposits[selectedChainIndex].channel_id ||
+            selectedSource.channel_id ||
               deposit_channel_id;
-            deposit_gas = token.deposits[selectedChainIndex].gas || deposit_gas;
+            deposit_gas = selectedSource.gas || deposit_gas;
 
             const toastId = toast.loading(
-              `Sending ${normalizedAmount} ${token.name} from ${token.deposits[selectedChainIndex].source_chain_name} to Secret`,
+              `Sending ${normalizedAmount} ${selectedToken.name} from ${selectedSource.source_chain_name} to Secret`,
               {
                 closeButton: true,
               }
             );
-
-            onSuccess("");
 
             try {
               let transactionHash: string = "";
 
               if (
                 !["Evmos", "Injective"].includes(
-                  token.deposits[selectedChainIndex].source_chain_name
+                  selectedSource.source_chain_name
                 )
               ) {
                 // Regular cosmos chain (not ethermint signing)
@@ -463,7 +455,7 @@ console.log(selectedSource.source_chain_name)
                   secretAddress,
                   {
                     amount,
-                    denom: token.deposits[selectedChainIndex].from_denom,
+                    denom: selectedSource.from_denom,
                   },
                   "transfer",
                   deposit_channel_id,
@@ -476,7 +468,7 @@ console.log(selectedSource.source_chain_name)
                 // Handle IBC transfers from Ethermint chains like Evmos & Injective
 
                 const sourceChain =
-                  chains[token.deposits[selectedChainIndex].source_chain_name];
+                  chains[selectedSource.source_chain_name];
 
                 // Get Evmos/Injective account_number & sequence
                 const {
@@ -528,7 +520,7 @@ console.log(selectedSource.source_chain_name)
                     sourcePort: "transfer",
                     sourceChannel: deposit_channel_id,
                     amount,
-                    denom: token.deposits[selectedChainIndex].from_denom,
+                    denom: selectedToken.deposits[selectedChainIndex].from_denom,
                     receiver: secretAddress,
                     revisionNumber: 0,
                     revisionHeight: 0,
@@ -607,7 +599,7 @@ console.log(selectedSource.source_chain_name)
                 if (sendTx) {
                   if (sendTx.code !== 0) {
                     toast.update(toastId, {
-                      render: `Failed sending ${normalizedAmount} ${token.name} from ${token.deposits[selectedChainIndex].source_chain_name} to Secret: ${sendTx.raw_log}`,
+                      render: `Failed sending ${normalizedAmount} ${selectedToken.name} from ${selectedToken.deposits[selectedChainIndex].source_chain_name} to Secret: ${sendTx.raw_log}`,
                       type: "error",
                       isLoading: false,
                     });
@@ -616,7 +608,7 @@ console.log(selectedSource.source_chain_name)
                     // console.log(`Original tx: ${sendTx.txhash}`);
 
                     toast.update(toastId, {
-                      render: `Receiving ${normalizedAmount} ${token.name} from ${token.deposits[selectedChainIndex].source_chain_name} on Secret`,
+                      render: `Receiving ${normalizedAmount} ${selectedToken.name} from ${selectedToken.deposits[selectedChainIndex].source_chain_name} on Secret`,
                     });
 
                     const packetSrcChannel = sendTx.logs[0].events
@@ -661,7 +653,7 @@ console.log(selectedSource.source_chain_name)
                           // );
 
                           toast.update(toastId, {
-                            render: `Received ${normalizedAmount} ${token.name} from ${token.deposits[selectedChainIndex].source_chain_name} on Secret`,
+                            render: `Received ${normalizedAmount} ${selectedToken.name} from ${selectedToken.deposits[selectedChainIndex].source_chain_name} on Secret`,
                             type: "success",
                             isLoading: false,
                             closeOnClick: true,
@@ -677,7 +669,7 @@ console.log(selectedSource.source_chain_name)
 
                     if (tries === 0) {
                       toast.update(toastId, {
-                        render: `Timed out while waiting to receive ${normalizedAmount} ${token.name} from ${token.deposits[selectedChainIndex].source_chain_name} on ${token.withdrawals[selectedChainIndex].target_chain_name}`,
+                        render: `Timed out while waiting to receive ${normalizedAmount} ${selectedToken.name} from ${selectedToken.deposits[selectedChainIndex].source_chain_name} on ${token.withdrawals[selectedChainIndex].target_chain_name}`,
                         type: "warning",
                         isLoading: false,
                       });
@@ -693,14 +685,13 @@ console.log(selectedSource.source_chain_name)
             } catch (e) {
               toast.update(toastId, {
                 render: `Failed sending ${normalizedAmount} ${
-                  token.name
+                  selectedToken.name
                 } from ${
-                  token.deposits[selectedChainIndex].source_chain_name
+                  selectedToken.deposits[selectedChainIndex].source_chain_name
                 } to Secret: ${JSON.stringify(e)}`,
                 type: "error",
                 isLoading: false,
               });
-              onFailure(e);
             } finally {
               setLoading(false);
             }
