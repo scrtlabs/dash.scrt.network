@@ -520,7 +520,7 @@ export default function Deposit({
                     sourcePort: "transfer",
                     sourceChannel: deposit_channel_id,
                     amount,
-                    denom: selectedToken.deposits[selectedChainIndex].from_denom,
+                    denom: selectedSource.from_denom,
                     receiver: secretAddress,
                     revisionNumber: 0,
                     revisionHeight: 0,
@@ -599,7 +599,7 @@ export default function Deposit({
                 if (sendTx) {
                   if (sendTx.code !== 0) {
                     toast.update(toastId, {
-                      render: `Failed sending ${normalizedAmount} ${selectedToken.name} from ${selectedToken.deposits[selectedChainIndex].source_chain_name} to Secret: ${sendTx.raw_log}`,
+                      render: `Failed sending ${normalizedAmount} ${selectedToken.name} from ${selectedSource.source_chain_name} to Secret: ${sendTx.raw_log}`,
                       type: "error",
                       isLoading: false,
                     });
@@ -608,7 +608,7 @@ export default function Deposit({
                     // console.log(`Original tx: ${sendTx.txhash}`);
 
                     toast.update(toastId, {
-                      render: `Receiving ${normalizedAmount} ${selectedToken.name} from ${selectedToken.deposits[selectedChainIndex].source_chain_name} on Secret`,
+                      render: `Receiving ${normalizedAmount} ${selectedToken.name} from ${selectedSource.source_chain_name} on Secret`,
                     });
 
                     const packetSrcChannel = sendTx.logs[0].events
@@ -653,7 +653,7 @@ export default function Deposit({
                           // );
 
                           toast.update(toastId, {
-                            render: `Received ${normalizedAmount} ${selectedToken.name} from ${selectedToken.deposits[selectedChainIndex].source_chain_name} on Secret`,
+                            render: `Received ${normalizedAmount} ${selectedToken.name} from ${selectedSource.source_chain_name} on Secret`,
                             type: "success",
                             isLoading: false,
                             closeOnClick: true,
@@ -669,7 +669,7 @@ export default function Deposit({
 
                     if (tries === 0) {
                       toast.update(toastId, {
-                        render: `Timed out while waiting to receive ${normalizedAmount} ${selectedToken.name} from ${selectedToken.deposits[selectedChainIndex].source_chain_name} on ${token.withdrawals[selectedChainIndex].target_chain_name}`,
+                        render: `Timed out while waiting to receive ${normalizedAmount} ${selectedToken.name} from ${selectedSource.source_chain_name} on ${selectedToken.withdrawals[selectedChainIndex].target_chain_name}`,
                         type: "warning",
                         isLoading: false,
                       });
@@ -687,7 +687,7 @@ export default function Deposit({
                 render: `Failed sending ${normalizedAmount} ${
                   selectedToken.name
                 } from ${
-                  selectedToken.deposits[selectedChainIndex].source_chain_name
+                  selectedSource.source_chain_name
                 } to Secret: ${JSON.stringify(e)}`,
                 type: "error",
                 isLoading: false,
