@@ -94,8 +94,15 @@ export function Wrap() {
 
   // handles [25% | 50% | 75% | Max] Button-Group
   function setAmountByPercentage(percentage: number) {
-    if (tokenNativeBalance) {
-      let availableAmount = Number(tokenNativeBalance) * (10**(-selectedToken.decimals));
+    let maxValue = "0";
+    if (wrappingMode === WrappingMode.Wrap) {
+      maxValue = tokenNativeBalance;
+    } else {
+      maxValue = tokenWrappedBalance;
+    }
+
+    if (maxValue) {
+      let availableAmount = Number(maxValue) * (10**(-selectedToken.decimals));
       let potentialInput = new BigNumber(availableAmount * (percentage * 0.01)).toFormat();
       if (Number(potentialInput) == 0) {
         setAmountToWrap("");
@@ -175,10 +182,10 @@ export function Wrap() {
   function PercentagePicker() {
     return (
       <div className="inline-flex rounded-full text-xs font-bold">
-        <button onClick={() => setAmountByPercentage(25)} className="bg-zinc-900 px-2 py-1 rounded-l-lg transition-colors hover:bg-zinc-700 focus:bg-zinc-500 cursor-pointer" disabled={!secretAddress}>25%</button>
-        <button onClick={() => setAmountByPercentage(50)} className="bg-zinc-900 px-2 py-1 border-l border-zinc-700 transition-colors hover:bg-zinc-700 focus:bg-zinc-500 cursor-pointer" disabled={!secretAddress}>50%</button>
-        <button onClick={() => setAmountByPercentage(75)} className="bg-zinc-900 px-2 py-1 border-l border-zinc-700 transition-colors hover:bg-zinc-700 focus:bg-zinc-500 cursor-pointer" disabled={!secretAddress}>75%</button>
-        <button onClick={() => setAmountByPercentage(100)} className="bg-zinc-900 px-2 py-1 rounded-r-lg border-l border-zinc-700 transition-colors hover:bg-zinc-700 focus:bg-zinc-500 cursor-pointer" disabled={!secretAddress}>MAX</button>
+        <button onClick={() => setAmountByPercentage(25)} className="bg-zinc-900 px-2 py-1 rounded-l-lg transition-colors hover:bg-zinc-700 focus:bg-zinc-500 cursor-pointer disabled:text-zinc-500 disabled:hover:bg-zinc-900 disabled:cursor-default" disabled={!secretAddress}>25%</button>
+        <button onClick={() => setAmountByPercentage(50)} className="bg-zinc-900 px-2 py-1 border-l border-zinc-700 transition-colors hover:bg-zinc-700 focus:bg-zinc-500 cursor-pointer disabled:text-zinc-500 disabled:hover:bg-zinc-900 disabled:cursor-default" disabled={!secretAddress}>50%</button>
+        <button onClick={() => setAmountByPercentage(75)} className="bg-zinc-900 px-2 py-1 border-l border-zinc-700 transition-colors hover:bg-zinc-700 focus:bg-zinc-500 cursor-pointer disabled:text-zinc-500 disabled:hover:bg-zinc-900 disabled:cursor-default" disabled={!secretAddress}>75%</button>
+        <button onClick={() => setAmountByPercentage(100)} className="bg-zinc-900 px-2 py-1 rounded-r-lg border-l border-zinc-700 transition-colors hover:bg-zinc-700 focus:bg-zinc-500 cursor-pointer disabled:text-zinc-500 disabled:hover:bg-zinc-900 disabled:cursor-default" disabled={!secretAddress}>MAX</button>
       </div>
     )
   }
