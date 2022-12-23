@@ -7,6 +7,8 @@ import { useDashboardContext } from "Dashboard/Dashboard";
 import { chains } from "General/Utils/config";
 import { SecretNetworkClient } from "secretjs";
 const SECRET_RPC = chains["Secret Network"].rpc;
+const SECRET_LCD = chains["Secret Network"].lcd;
+const SECRET_CHAIN_ID = chains["Secret Network"].chain_id;
 
 export default function InfoBoxes() {
   const { apiData, setApiData} = useDashboardContext();
@@ -29,14 +31,14 @@ export default function InfoBoxes() {
 
   useEffect(() => {
     const queryData = async () => {
-      const secretjsquery = await (SecretNetworkClient as any).create({
-        grpcWebUrl: SECRET_RPC,
+      const secretjsquery = new SecretNetworkClient({
+        url: SECRET_LCD,
         chainId: "secret-4",
       });
-      secretjsquery?.query?.distribution?.communityPool()?.then((res: { pool: { amount: any; }[]; }) => setCommunityPool(Math.floor((res.pool[1].amount) / 10e23)));
-      secretjsquery?.query?.tendermint?.getLatestBlock()?.then((res: { block: { header: { height: React.SetStateAction<null>; }; }; }) => setBlockHeight(res.block.header.height));
-      secretjsquery?.query?.mint?.inflation()?.then((res: { inflation: number[]; }) => setInflation(parseInt(String.fromCharCode.apply(null, res.inflation)) / 10e15));
-      secretjsquery?.query?.staking?.pool()?.then((res: { pool: React.SetStateAction<null>; }) => setPool(res.pool));
+      secretjsquery?.query?.distribution?.communityPool("")?.then(res => setCommunityPool(Math.floor((res.pool[1].amount) / 10e5)));
+      secretjsquery?.query?.tendermint?.getLatestBlock("")?.then(res => setBlockHeight(res.block.header.height));
+      secretjsquery?.query?.mint?.inflation("")?.then(res => setInflation((res.inflation*100).toFixed(2)));
+      secretjsquery?.query?.staking?.pool("")?.then(res => setPool(res.pool));
       setCurrentPrice(apiData?.prices[apiData?.prices?.length-1][1]);
     }
     
@@ -51,9 +53,9 @@ export default function InfoBoxes() {
       });
   }, []);
 
-  const bondedToken = parseInt(pool?.bondedTokens) / 10e5;
-  const notBondedTokens = parseInt(pool?.notBondedTokens) / 10e4;
-  const totalPool = bondedToken + notBondedTokens;
+  const bondedToken = parseInt(pool?.bonded_tokens) / 10e5;
+  const notBondedToken = parseInt(pool?.not_bonded_tokens) / 10e4;
+  const totalPool = bondedToken + notBondedToken;
   const poolPercentageBonded = (bondedToken / totalPool * 100).toFixed(2);
 
   return (
@@ -101,6 +103,7 @@ export default function InfoBoxes() {
             </span>
             <div className="font-bold text-lg">{poolPercentageBonded}%</div>
             <div className="text-md text-zinc-400">Bonded: {formatNumber(bondedToken, true, 2)}</div>
+            <div className="text-md text-zinc-400">Not bonded: {formatNumber(notBondedToken, true, 2)}</div>
           </div>
         </div>
         {/* Item */}
