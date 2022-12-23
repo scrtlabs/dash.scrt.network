@@ -109,8 +109,8 @@ async function setupKeplr(
 
   const secretAddress = accounts[0].address;
 
-  const secretjs = await (SecretNetworkClient as any).create({
-    grpcWebUrl: SECRET_RPC,
+  const secretjs = new SecretNetworkClient({
+    url: "https://lcd.mainnet.secretsaturn.net:443",
     chainId: SECRET_CHAIN_ID,
     wallet: keplrOfflineSigner,
     walletAddress: secretAddress,

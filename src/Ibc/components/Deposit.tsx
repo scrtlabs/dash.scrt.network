@@ -22,7 +22,7 @@ import {
 import { chains, Token, tokens } from "General/Utils/config";
 import CopyableAddress from "Ibc/components/CopyableAddress";
 import { fromBase64, toBase64, toHex } from "secretjs";
-import { TxRaw } from "secretjs/dist/protobuf_stuff/cosmos/tx/v1beta1/tx";
+import { TxRaw } from "secretjs/dist/protobuf/cosmos/tx/v1beta1/tx";
 import { useCurrentBreakpointName } from "react-socks";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
