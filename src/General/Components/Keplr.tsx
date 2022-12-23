@@ -104,6 +104,12 @@ async function setupKeplr(
   }
 
   await window.keplr.enable(SECRET_CHAIN_ID);
+  window.keplr.defaultOptions = {
+    sign: {
+      preferNoSetFee: false,
+      disableBalanceCheck: true,
+    },
+  };
 
   const keplrOfflineSigner = window.getOfflineSignerOnlyAmino(SECRET_CHAIN_ID);
   const accounts = await keplrOfflineSigner.getAccounts();
