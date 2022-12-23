@@ -6,7 +6,7 @@ import { KeplrContext, FeeGrantContext } from "General/Layouts/defaultLayout";
 import BigNumber from "bignumber.js";
 import { toast} from "react-toastify";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faKey, faDownLong, faUpLong, faArrowRightArrowLeft, faCaretDown, faRightLeft } from '@fortawesome/free-solid-svg-icons'
+import { faKey, faArrowRightArrowLeft, faRightLeft } from '@fortawesome/free-solid-svg-icons'
 import { getKeplrViewingKey, setKeplrViewingKey } from "General/Components/Keplr";
 import { Header } from "./Components/Header";
 import { Link } from "react-router-dom";
@@ -29,8 +29,6 @@ export function Wrap() {
   const modePreselection = 
     modeByQueryParam?.toLowerCase() === "unwrap"
     ? WrappingMode.Unwrap : WrappingMode.Wrap;
-
-  
 
   const {secretjs, secretAddress} = useContext(KeplrContext);
   const {useFeegrant, setUseFeegrant} = useContext(FeeGrantContext);
@@ -215,7 +213,9 @@ export function Wrap() {
       return (<></>);
     } else if (tokenWrappedBalance == viewingKeyErrorString) {
       return (
-        <div className="cursor-pointer"
+        <>
+          <span className="font-bold">Available:</span>
+          <button className="bg-zinc-900 px-2 py-1 rounded-lg transition-colors hover:bg-zinc-700 focus:bg-zinc-500 ml-2 font-semibold" 
           onClick={async () => {
             await setKeplrViewingKey(selectedToken.address);
             try {
@@ -225,13 +225,10 @@ export function Wrap() {
             } finally {
               setLoadingTokenBalance(false);
             }
-          }}
-        >
-        <span className="font-bold">Available:</span>
-          <button className="bg-zinc-900 px-2 py-1 rounded-lg transition-colors hover:bg-zinc-700 focus:bg-zinc-500 ml-2 font-semibold">
+          }}>
             <FontAwesomeIcon icon={faKey} className="mr-2" />Set Viewing Key
           </button>
-        </div>
+        </>
       );
     }
     else if (Number(tokenWrappedBalance) > -1) {
@@ -505,7 +502,7 @@ export function Wrap() {
 
           {/* Input Field */}
           <div className="flex">
-            <Select options={tokens.sort((a, b) => a.name.localeCompare(b.name))} value={selectedToken} onChange={setselectedToken}
+            <Select options={tokens.sort((a, b) => a.name.localeCompare(b.name))} value={selectedToken} onChange={setselectedToken} isSearchable={false}
               formatOptionLabel={token => (
                 <div className="flex items-center">
                   <img src={token.image} className="w-6 h-6 mr-2 rounded-full" />
@@ -549,7 +546,7 @@ export function Wrap() {
             </div>
 
             <div className="flex">
-              <Select options={tokens.sort((a, b) => a.name.localeCompare(b.name))} value={selectedToken} onChange={setselectedToken} formatOptionLabel={token => (
+              <Select options={tokens.sort((a, b) => a.name.localeCompare(b.name))} value={selectedToken} onChange={setselectedToken} isSearchable={false} formatOptionLabel={token => (
                 <div className="flex items-center">
                   <img src={token.image} className="w-6 h-6 mr-2 rounded-full" />
                   <span className="font-bold text-sm">
