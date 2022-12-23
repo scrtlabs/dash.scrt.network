@@ -23,9 +23,9 @@ export function KeplrPanel({
   const [isCopied, setIsCopied] = useState<boolean>(false);
 
   // Auto Setup Keplr
-  useEffect(() => {
-    setupKeplr(setSecretjs, setSecretAddress);
-  }, []);
+  // useEffect(() => {
+  //   setupKeplr(setSecretjs, setSecretAddress);
+  // }, []);
 
   const content = (
     <div className="flex items-center font-semibold border rounded border-neutral-700 bg-neutral-800 px-4 py-2 hover:bg-neutral-700 active:bg-neutral-600 transition-colors">
