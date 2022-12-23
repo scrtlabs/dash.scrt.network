@@ -10,11 +10,11 @@ import { Breakpoint } from "react-socks";
 import { Flip, ToastContainer, toast} from "react-toastify";
 import { faucetURL } from "General/Utils/commons";
 
-export const KeplrContext = createContext(null);
-export const NavigationContext = createContext(null);
+export const KeplrContext = createContext<{ secretjs: SecretNetworkClient | null ; secretAddress: string }| null >(null);
+export const NavigationContext = createContext<boolean | null>(null);
 export const FeeGrantContext = createContext(null);
 
-export const DefaultLayout =({children}) =>{
+export const DefaultLayout =({children}:any) =>{
 
   /**
    * Mobile Menu Handler
@@ -61,8 +61,8 @@ export const DefaultLayout =({children}) =>{
         >
           <NavigationContext.Provider value={{ showMobileMenu }}>
             <Navigation
-              showMobileMenu={showMobileMenu}
-              setShowMobileMenu={setShowMobileMenu}
+              showMobileMenu={showMobileMenu!}
+              setShowMobileMenu={setShowMobileMenu!}
             />
           </NavigationContext.Provider>
         </aside>

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import CopyToClipboard from "react-copy-to-clipboard";
 import { Else, If, Then } from "react-if";
 import { Breakpoint } from "react-socks";
-import { SecretNetworkClient } from "secretjs";
+import { SecretNetworkClient} from "secretjs";
 import { chains } from "General/Utils/config";
 
 const SECRET_CHAIN_ID = chains["Secret Network"].chain_id;
@@ -100,7 +100,7 @@ async function setupKeplr(
 
   const secretAddress = accounts[0].address;
 
-  const secretjs = await SecretNetworkClient.create({
+  const secretjs = await (SecretNetworkClient as any).create({
     grpcWebUrl: SECRET_RPC,
     chainId: SECRET_CHAIN_ID,
     wallet: keplrOfflineSigner,

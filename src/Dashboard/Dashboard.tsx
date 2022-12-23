@@ -4,7 +4,7 @@ import InfoBoxes from "./Components/InfoBoxes";
 import PriceChart from "./Components/PriceChart";
 import VolumeChart from "./Components/VolumeChart";
 
-export const DashboardContext = createContext(null);
+export const DashboardContext = createContext<{ apiData: undefined; setApiData: React.Dispatch<React.SetStateAction<undefined>>; }| null>(null);
 
 export function Dashboard() {
   const [apiData, setApiData] = useState();
@@ -19,7 +19,7 @@ export function Dashboard() {
 
   return (
     <>
-      <DashboardContext.Provider value={{ apiData, setApiData, secretjs, secretAddress }}>
+      <DashboardContext.Provider value={{ apiData, setApiData }}>
         <InfoBoxes/>
         <div className="mt-4 px-4 mx-auto">
           <div className="grid grid-cols-12 gap-4">
