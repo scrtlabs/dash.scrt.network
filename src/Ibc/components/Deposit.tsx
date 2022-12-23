@@ -189,7 +189,7 @@ export default function Deposit({
           {/* Chain Picker */}
           <div className="-mt-3 relative z-10 w-full">
           {/* {value} */}
-          <Select options={selectedToken.deposits} value={selectedSource} onChange={setSelectedSource}
+          <Select options={selectedToken.deposits} value={selectedSource} onChange={setSelectedSource} isSearchable={false}
             formatOptionLabel={option => (
               <div className="flex items-center">
                 <img src={chains[option.source_chain_name].chain_image} className="w-6 h-6 mr-2 rounded-full" />
@@ -276,10 +276,12 @@ export default function Deposit({
           </div>
           {/* Chain Picker */}
           <div className="-mt-3 relative z-10 w-full">
-            <button className="inline-block w-full hover:bg-zinc-700 active:bg-zinc-800 transition-colors px-3 py-4 text-xs font-semibold bg-zinc-700 rounded text-zinc-400 focus:bg-zinc-700 disabled:hover:bg-zinc-800">
-              <img src="http://localhost:5173/scrt.svg" className="inline-block w-5 h-5 mr-2" />
-              Secret Network
-            </button>
+            <div style={{paddingTop: ".9rem", paddingBottom: ".9rem"}} className="flex items-center w-full text-sm font-semibold select-none bg-zinc-700 rounded text-zinc-200 focus:bg-zinc-700 disabled:hover:bg-zinc-800">
+              <div className="flex-1 text-center">
+                <img src="http://localhost:5173/scrt.svg" className="inline-block w-5 h-5 mr-2" />
+                <span>Secret Network</span>
+              </div>
+            </div>
           </div>
         </div>
       </div>
