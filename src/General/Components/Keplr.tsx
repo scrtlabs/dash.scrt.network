@@ -50,7 +50,8 @@ export function KeplrPanel({
               10
             )}...${secretAddress.slice(-7)}`}</Breakpoint>
             <Breakpoint medium up>
-              {secretAddress}
+              {/* {secretAddress} */}
+              Connected
             </Breakpoint>
           </Then>
           <Else>Connect Wallet</Else>

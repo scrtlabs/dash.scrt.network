@@ -6,7 +6,7 @@ import { KeplrContext, FeeGrantContext } from "General/Layouts/defaultLayout";
 import BigNumber from "bignumber.js";
 import { toast} from "react-toastify";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faDownLong, faUpLong, faArrowRightArrowLeft, faCaretDown, faRightLeft } from '@fortawesome/free-solid-svg-icons'
+import { faKey, faDownLong, faUpLong, faArrowRightArrowLeft, faCaretDown, faRightLeft } from '@fortawesome/free-solid-svg-icons'
 import { getKeplrViewingKey, setKeplrViewingKey } from "General/Components/Keplr";
 import { Header } from "./Components/Header";
 import { Link } from "react-router-dom";
@@ -189,9 +189,10 @@ export function Wrap() {
     if (!loadingCoinBalance && secretjs && secretAddress) {
       return (
         <>
-          {`Available: ${new BigNumber(tokenNativeBalance!)
+          <span className="font-bold">Available:</span>
+          {' ' + new BigNumber(tokenNativeBalance!)
             .dividedBy(`1e${selectedToken.decimals}`)
-            .toFormat()}`} {selectedToken.name} ({usdString.format(
+            .toFormat()} {selectedToken.name} ({usdString.format(
           new BigNumber(tokenNativeBalance!)
             .dividedBy(`1e${selectedToken.decimals}`)
             .multipliedBy(Number(price))
@@ -214,8 +215,7 @@ export function Wrap() {
       return (<></>);
     } else if (tokenWrappedBalance == viewingKeyErrorString) {
       return (
-        <div
-          style={{ cursor: "pointer" }}
+        <div className="cursor-pointer"
           onClick={async () => {
             await setKeplrViewingKey(selectedToken.address);
             try {
@@ -227,7 +227,10 @@ export function Wrap() {
             }
           }}
         >
-          {`Available: ${viewingKeyErrorString}`}
+        <span className="font-bold">Available:</span>
+          <button className="bg-zinc-900 px-2 py-1 rounded-lg transition-colors hover:bg-zinc-700 focus:bg-zinc-500 ml-2 font-semibold">
+            <FontAwesomeIcon icon={faKey} className="mr-2" />Set Viewing Key
+          </button>
         </div>
       );
     }
@@ -235,7 +238,8 @@ export function Wrap() {
       return (
         <>
           {/* Available: 0.123456 sSCRT () */}
-          {`Available: ${new BigNumber(tokenWrappedBalance!)
+          <span className="font-bold">Available:</span>
+          {` ${new BigNumber(tokenWrappedBalance!)
                 .dividedBy(`1e${selectedToken.decimals}`)
                 .toFormat()} s` + selectedToken.name + ` (${usdString.format(
             new BigNumber(tokenWrappedBalance!)
@@ -485,6 +489,9 @@ export function Wrap() {
           <Header title="Secret Wrap" text={message}/>
 
 
+
+
+
           {/* *** From *** */}
 
           {/* Title Bar */}
@@ -498,18 +505,21 @@ export function Wrap() {
 
           {/* Input Field */}
           <div className="flex">
-            <Select options={tokens} value={selectedToken} onChange={setselectedToken}
+            <Select options={tokens.sort((a, b) => a.name.localeCompare(b.name))} value={selectedToken} onChange={setselectedToken}
               formatOptionLabel={token => (
                 <div className="flex items-center">
                   <img src={token.image} className="w-6 h-6 mr-2 rounded-full" />
-                  <span className="font-bold text-sm">{token.name}</span>
+                  <span className="font-bold text-sm">
+                    {wrappingMode == WrappingMode.Unwrap && 's'}
+                    {token.name}
+                  </span>
                 </div>
               )} className="react-select-wrap-container" classNamePrefix="react-select-wrap" />
             <input value={amountToWrap} onChange={handleInputChange} type="text" className={"block flex-1 min-w-0 w-full bg-zinc-900 text-white p-4 rounded-r-lg disabled:placeholder-zinc-700 transition-colors" + (!isValidAmount ? "  border border-red-500" : "")} name="fromValue" id="fromValue" placeholder="0" disabled={!secretAddress}/>
           </div>
 
           {/* Balance | [25%|50%|75%|Max] */}
-          <div className="flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 mt-3">
+          <div className="flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 mt-2">
             <div className="flex-1 text-xs">
               {wrappingMode === WrappingMode.Wrap && (
                 <NativeTokenBalanceUi/>
@@ -533,36 +543,32 @@ export function Wrap() {
 
 
 
-
-
-
           <div>
             <div className="flex mb-2">
               <div className="flex-1 font-bold">To</div>
             </div>
 
             <div className="flex">
-              <Select options={tokens} value={selectedToken} onChange={setselectedToken}
-                formatOptionLabel={token => (
-                  <div className="flex items-center">
-                    <img src={token.image} className="w-6 h-6 mr-2 rounded-full" />
-                    <span className="font-bold text-sm">s{token.name}</span>
-                  </div>
-                )} className="react-select-wrap-container" classNamePrefix="react-select-wrap" />
-                <input value={amountToWrap} onChange={handleInputChange} type="text" className={"block flex-1 min-w-0 w-full bg-zinc-900 text-white p-4 rounded-r-md disabled:placeholder-zinc-700 transition-colors" + (!isValidAmount && wrappingMode === WrappingMode.Unwrap ? " border border-red-500" : "")} name="wrappedValue" id="wrappedValue" placeholder="0" disabled={!selectedToken.address || !secretAddress}/>
-                <div className="flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 mt-3">
-          </div>
+              <Select options={tokens.sort((a, b) => a.name.localeCompare(b.name))} value={selectedToken} onChange={setselectedToken} formatOptionLabel={token => (
+                <div className="flex items-center">
+                  <img src={token.image} className="w-6 h-6 mr-2 rounded-full" />
+                  <span className="font-bold text-sm">
+                    {wrappingMode == WrappingMode.Wrap && 's'}
+                    {token.name}
+                  </span>
+                </div>
+              )} className="react-select-wrap-container" classNamePrefix="react-select-wrap" />
+              <input value={amountToWrap} onChange={handleInputChange} type="text" className={"block flex-1 min-w-0 w-full bg-zinc-900 text-white p-4 rounded-r-md disabled:placeholder-zinc-700 transition-colors" + (!isValidAmount && wrappingMode === WrappingMode.Unwrap ? " border border-red-500" : "")} name="wrappedValue" id="wrappedValue" placeholder="0" disabled={!selectedToken.address || !secretAddress}/>
             </div>
           </div>
-          <div className="flex-1 text-xs">
-              {wrappingMode === WrappingMode.Wrap && (
-                <WrappedTokenBalanceUi/>
-              )}
-              {wrappingMode === WrappingMode.Unwrap && (
-                <NativeTokenBalanceUi/>
-              )}
-            </div>
-
+          <div className="flex-1 text-xs mt-3">
+            {wrappingMode === WrappingMode.Wrap && (
+              <WrappedTokenBalanceUi/>
+            )}
+            {wrappingMode === WrappingMode.Unwrap && (
+              <NativeTokenBalanceUi/>
+            )}
+          </div>
 
           {/* <To/> */}
           <SubmitButton disabled={!selectedToken.address || !secretAddress || !amountToWrap || !isValidAmount} amountToWrap={amountToWrap} nativeCurrency={selectedToken.name} wrappedAmount={amountToWrap} wrappedCurrency={"s" + selectedToken.name} wrappingMode={wrappingMode}/>
