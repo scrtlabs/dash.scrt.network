@@ -61,7 +61,7 @@ export function Wrap() {
       return match && str === match[0];
     }
 
-    if (Number(e.target.value) > Number(availableAmount)) {
+    if (Number(e.target.value) > Number(availableAmount) && !(tokenWrappedBalance == viewingKeyErrorString && wrappingMode === WrappingMode.Unwrap)) {
       setValidationMessage("Not enough balance");
       setisValidAmount(false);
     } else if (!matchExact(numberRegex, e.target.value)) {
