@@ -248,7 +248,7 @@ export function Wrap() {
     }
   }
 
-  function WrappingModeSwitchInputComponent(props: { wrappingMode: WrappingMode; disabled: boolean; }) {
+  function WrappingModeSwitch(props: { wrappingMode: WrappingMode; disabled: boolean; }) {
     const disabled = props.disabled;
 
     return (
@@ -487,6 +487,7 @@ export function Wrap() {
 
           {/* *** From *** */}
 
+          {/* Title Bar */}
           <div className="flex mb-2">
             <div className="flex-1 font-bold">From</div>
             <div className="flex-initial">
@@ -495,7 +496,7 @@ export function Wrap() {
             </div>
           </div>
 
-          {/* 'from' Token Field */}
+          {/* Input Field */}
           <div className="flex">
             <Select options={tokens} value={selectedToken} onChange={setselectedToken}
               formatOptionLabel={token => (
@@ -513,10 +514,7 @@ export function Wrap() {
               {wrappingMode === WrappingMode.Wrap && (
                 <NativeTokenBalanceUi/>
               )}
-              {wrappingMode === WrappingMode.Unwrap && (
-
-                <WrappedTokenBalanceUi/>
-              )}
+              {wrappingMode === WrappingMode.Unwrap && <WrappedTokenBalanceUi/>}
             </div>
             <div className="sm:flex-initial text-xs">
               <PercentagePicker/>
@@ -527,8 +525,8 @@ export function Wrap() {
 
 
 
-
-          <WrappingModeSwitchInputComponent wrappingMode={wrappingMode} disabled={!secretAddress}/>
+          {/* Wrapping Mode Switch */}
+          <WrappingModeSwitch wrappingMode={wrappingMode} disabled={!secretAddress}/>
 
 
 
