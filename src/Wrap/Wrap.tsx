@@ -502,7 +502,7 @@ export function Wrap() {
 
           {/* Input Field */}
           <div className="flex">
-            <Select options={tokens.sort((a, b) => a.name.localeCompare(b.name))} value={selectedToken} onChange={setselectedToken} isSearchable={false}
+            <Select isDisabled={!selectedToken.address || !secretAddress} options={tokens.sort((a, b) => a.name.localeCompare(b.name))} value={selectedToken} onChange={setselectedToken} isSearchable={false}
               formatOptionLabel={token => (
                 <div className="flex items-center">
                   <img src={token.image} className="w-6 h-6 mr-2 rounded-full" />
@@ -546,7 +546,7 @@ export function Wrap() {
             </div>
 
             <div className="flex">
-              <Select options={tokens.sort((a, b) => a.name.localeCompare(b.name))} value={selectedToken} onChange={setselectedToken} isSearchable={false} formatOptionLabel={token => (
+              <Select isDisabled={!selectedToken.address || !secretAddress} options={tokens.sort((a, b) => a.name.localeCompare(b.name))} value={selectedToken} onChange={setselectedToken} isSearchable={false} formatOptionLabel={token => (
                 <div className="flex items-center">
                   <img src={token.image} className="w-6 h-6 mr-2 rounded-full" />
                   <span className="font-bold text-sm">
