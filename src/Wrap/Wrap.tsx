@@ -301,7 +301,7 @@ export function Wrap() {
                       { denom: selectedToken.withdrawals[0].from_denom, amount },
                     ],
                     msg: { deposit: {} },
-                  }),
+                  } as any),
                 ],
                 {
                   gasLimit: 150_000,
@@ -346,7 +346,7 @@ export function Wrap() {
                             : selectedToken.withdrawals[0].from_denom,
                       },
                     },
-                  }),
+                  } as any),
                 ],
                 {
                   gasLimit: 150_000,
@@ -514,6 +514,7 @@ export function Wrap() {
                 <NativeTokenBalanceUi/>
               )}
               {wrappingMode === WrappingMode.Unwrap && (
+
                 <WrappedTokenBalanceUi/>
               )}
             </div>
@@ -551,13 +552,23 @@ export function Wrap() {
                   </div>
                 )} className="react-select-wrap-container" classNamePrefix="react-select-wrap" />
                 <input value={amountToWrap} onChange={handleInputChange} type="text" className={"block flex-1 min-w-0 w-full bg-zinc-900 text-white p-4 rounded-r-md disabled:placeholder-zinc-700 transition-colors" + (!isValidAmount && wrappingMode === WrappingMode.Unwrap ? " border border-red-500" : "")} name="wrappedValue" id="wrappedValue" placeholder="0" disabled={!selectedToken.address || !secretAddress}/>
+                <div className="flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 mt-3">
+          </div>
             </div>
           </div>
+          <div className="flex-1 text-xs">
+              {wrappingMode === WrappingMode.Wrap && (
+                <WrappedTokenBalanceUi/>
+              )}
+              {wrappingMode === WrappingMode.Unwrap && (
+                <NativeTokenBalanceUi/>
+              )}
+            </div>
 
 
           {/* <To/> */}
           <SubmitButton disabled={!selectedToken.address || !secretAddress || !amountToWrap || !isValidAmount} amountToWrap={amountToWrap} nativeCurrency={selectedToken.name} wrappedAmount={amountToWrap} wrappedCurrency={"s" + selectedToken.name} wrappingMode={wrappingMode}/>
-
+                    
         </div>
       </div>
     </>

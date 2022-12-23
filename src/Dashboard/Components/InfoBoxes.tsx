@@ -9,7 +9,7 @@ import { SecretNetworkClient } from "secretjs";
 const SECRET_RPC = chains["Secret Network"].rpc;
 
 export default function InfoBoxes() {
-  const { apiData, setApiData, secretjs, secretAddress } = useDashboardContext();
+  const { apiData, setApiData} = useDashboardContext();
 
 
   const [communityPool, setCommunityPool] = useState(Number); // in uscrt
@@ -20,18 +20,16 @@ export default function InfoBoxes() {
 
   const COUNT_ABBRS = ['', 'K', 'M', 'B', 't', 'q', 's', 'S', 'o', 'n', 'd', 'U', 'D', 'T', 'Qt', 'Qd', 'Sd', 'St'];
 
-  function formatNumber(count, withAbbr = false, decimals = 2) {
+  function formatNumber(count: number, withAbbr = false, decimals = 2) {
     const i = count === 0 ? count : Math.floor(Math.log(count) / Math.log(1000));
-    let result = parseFloat((count / (1000 ** i)).toFixed(decimals));
     if (withAbbr && COUNT_ABBRS[i]) {
-      result = result.toString() + COUNT_ABBRS[i];
+      return parseFloat((count / (1000 ** i)).toFixed(decimals)).toString() + COUNT_ABBRS[i];
     }
-    return result;
   }
 
   useEffect(() => {
     const queryData = async () => {
-      const secretjsquery = await SecretNetworkClient.create({
+      const secretjsquery = await (SecretNetworkClient as any).create({
         grpcWebUrl: SECRET_RPC,
         chainId: "secret-4",
       });
@@ -53,8 +51,8 @@ export default function InfoBoxes() {
       });
   }, []);
 
-  const bondedToken = parseInt(pool?.bondedTokens) / 10e5;
-  const notBondedTokens = parseInt(pool?.notBondedTokens) / 10e4;
+  const bondedToken = parseInt((pool as any).bondedTokens) / 10e5;
+  const notBondedTokens = parseInt((pool as any).notBondedTokens) / 10e4;
   const totalPool = bondedToken + notBondedTokens;
   const poolPercentageBonded = (bondedToken / totalPool * 100).toFixed(2);
 
