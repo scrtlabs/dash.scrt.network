@@ -51,8 +51,8 @@ export default function InfoBoxes() {
       });
   }, []);
 
-  const bondedToken = parseInt((pool as any).bondedTokens) / 10e5;
-  const notBondedTokens = parseInt((pool as any).notBondedTokens) / 10e4;
+  const bondedToken = parseInt(pool?.bondedTokens) / 10e5;
+  const notBondedTokens = parseInt(pool?.notBondedTokens) / 10e4;
   const totalPool = bondedToken + notBondedTokens;
   const poolPercentageBonded = (bondedToken / totalPool * 100).toFixed(2);
 
