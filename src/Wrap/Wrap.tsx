@@ -152,8 +152,8 @@ export function Wrap() {
           amount: string;
         };
       } = await secretjs.query.compute.queryContract({
-        contractAddress: selectedToken.address,
-        codeHash: selectedToken.code_hash,
+        contract_address: selectedToken.address,
+        code_hash: selectedToken.code_hash,
         query: {
           balance: { address: secretAddress, key },
         },
@@ -296,9 +296,9 @@ export function Wrap() {
                 [
                   new MsgExecuteContract({
                     sender: secretAddress,
-                    contractAddress: selectedToken.address,
-                    codeHash: selectedToken.code_hash,
-                    sentFunds: [
+                    contract_address: selectedToken.address,
+                    code_hash: selectedToken.code_hash,
+                    sent_funds: [
                       { denom: selectedToken.withdrawals[0].from_denom, amount },
                     ],
                     msg: { deposit: {} },
@@ -335,9 +335,9 @@ export function Wrap() {
                 [
                   new MsgExecuteContract({
                     sender: secretAddress,
-                    contractAddress: selectedToken.address,
-                    codeHash: selectedToken.code_hash,
-                    sentFunds: [],
+                    contract_address: selectedToken.address,
+                    code_hash: selectedToken.code_hash,
+                    sent_funds: [],
                     msg: {
                       redeem: {
                         amount,
