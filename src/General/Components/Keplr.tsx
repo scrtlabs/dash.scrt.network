@@ -6,6 +6,7 @@ import { SecretNetworkClient} from "secretjs";
 import { chains } from "General/Utils/config";
 
 const SECRET_CHAIN_ID = chains["Secret Network"].chain_id;
+const SECRET_LCD = chains["Secret Network"].lcd;
 const SECRET_RPC = chains["Secret Network"].rpc;
 
 export function KeplrPanel({
@@ -110,7 +111,7 @@ async function setupKeplr(
   const secretAddress = accounts[0].address;
 
   const secretjs = new SecretNetworkClient({
-    url: "https://lcd.mainnet.secretsaturn.net:443",
+    url: SECRET_LCD,
     chainId: SECRET_CHAIN_ID,
     wallet: keplrOfflineSigner,
     walletAddress: secretAddress,
