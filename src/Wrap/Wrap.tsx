@@ -49,27 +49,35 @@ export function Wrap() {
   const [tokenNativeBalance, setTokenNativeBalance] = useState<string>("");
   const [tokenWrappedBalance, setTokenWrappedBalance] = useState<string>("");
 
-  function handleInputChange(e: any) {
-    setAmountToWrap(e.target.value);
+  function validateForm() {
+    
+    const availableAmount = wrappingMode === WrappingMode.Wrap ? Number(tokenNativeBalance) * (10**(-selectedToken.decimals)) : Number(tokenWrappedBalance) * (10**(-selectedToken.decimals));
 
-    const availableAmount = Number(tokenNativeBalance) * (10**(-selectedToken.decimals));
-
-    const numberRegex = /^-?[0-9]+([.,][0-9]+)?$/;
+    // const numberRegex = /^-?[0-9]+([.,][0-9]+)?$/;
+    const numberRegex = /^(?:[1-9]\d*|0)?(?:\.\d+)?$/;
 
     function matchExact(r, str) {
       var match = str.match(r);
       return match && str === match[0];
     }
 
-    if (Number(e.target.value) > Number(availableAmount) && !(tokenWrappedBalance == viewingKeyErrorString && wrappingMode === WrappingMode.Unwrap)) {
+    if (Number(amountToWrap) > Number(availableAmount) && !(tokenWrappedBalance == viewingKeyErrorString && wrappingMode === WrappingMode.Unwrap)) {
       setValidationMessage("Not enough balance");
       setisValidAmount(false);
-    } else if (!matchExact(numberRegex, e.target.value)) {
-      setValidationMessage("Please enter a valid number");
+    } else if (!matchExact(numberRegex, amountToWrap)) {
+      setValidationMessage("Please enter a valid amount");
       setisValidAmount(false);
     } else {
       setisValidAmount(true);
     }
+  }
+
+  useEffect(() => {
+    validateForm();
+}, [amountToWrap, wrappingMode]);
+
+  async function handleInputChange(e: any) {
+    await setAmountToWrap(e.target.value);
   }
 
   const updateFeeGrantButton = (text: string, color: string) => {
@@ -109,23 +117,8 @@ export function Wrap() {
       } else {
         setAmountToWrap(potentialInput);
       }
-
-      const numberRegex = /^-?[0-9]+([.,][0-9]+)?$/;
-
-      function matchExact(r, str) {
-        var match = str.match(r);
-        return match && str === match[0];
-      }
-
-      if (Number(amountToWrap) > Number(availableAmount)) {
-        setValidationMessage("Not enough balance");
-        setisValidAmount(false);
-      } else if (!matchExact(numberRegex, amountToWrap)) {
-        setValidationMessage("Please enter a valid number");
-        setisValidAmount(false);
-      } else {
-        setisValidAmount(true);
-      }
+      
+      validateForm();
     }
   }
 
@@ -574,8 +567,12 @@ export function Wrap() {
             )}
           </div>
 
+          <div className="bg-zinc-900 p-4 mt-8 rounded-lg">
+            {message}
+          </div>
+
           {/* <To/> */}
-          <SubmitButton disabled={!selectedToken.address || !secretAddress || !amountToWrap || !isValidAmount} amountToWrap={amountToWrap} nativeCurrency={selectedToken.name} wrappedAmount={amountToWrap} wrappedCurrency={"s" + selectedToken.name} wrappingMode={wrappingMode}/>
+          <SubmitButton disabled={!selectedToken.address || !secretAddress || !amountToWrap || !isValidAmount || amountToWrap === "0"} amountToWrap={amountToWrap} nativeCurrency={selectedToken.name} wrappedAmount={amountToWrap} wrappedCurrency={"s" + selectedToken.name} wrappingMode={wrappingMode}/>
                     
         </div>
       </div>

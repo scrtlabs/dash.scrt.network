@@ -13,9 +13,9 @@ class Header extends Component<IHeaderProps> {
           {this.props.title}
         </h1>
       </div>
-      <span className="block mb-4">
+      {/* <span className="block mb-4">
         {this.props.text}
-      </span>
+      </span> */}
     </>
   }
 }
