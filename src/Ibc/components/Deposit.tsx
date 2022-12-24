@@ -214,7 +214,7 @@ console.log(selectedSource);
               <div className="w-1/2 inline-block">
                 <div className="relative">
                   <div className="absolute inset-0 bg-blue-500/60 blur-md rounded-full overflow-hidden"></div>
-                  <img src={ibcMode === IbcMode.Deposit ? chains[selectedSource.source_chain_name].chain_image : "https://wrap.scrt.network/scrt.svg"} className="w-full relative inline-block rounded-full overflow-hiden" />
+                  <img src={ibcMode === IbcMode.Deposit ? chains[selectedSource.source_chain_name].chain_image : "scrt.svg"} className="w-full relative inline-block rounded-full overflow-hiden" />
                 </div>
               </div>
             </div>
@@ -304,7 +304,7 @@ console.log(selectedSource);
               <div className="w-1/2 inline-block">
                 <div className="relative">
                   <div className="absolute inset-0 bg-violet-500/60 blur-md rounded-full overflow-hidden"></div>
-                  <img src={ibcMode === IbcMode.Withdrawal ? chains[selectedSource.source_chain_name].chain_image : "https://wrap.scrt.network/scrt.svg"} className="w-full relative inline-block rounded-full overflow-hiden" />
+                  <img src={ibcMode === IbcMode.Withdrawal ? chains[selectedSource.source_chain_name].chain_image : "scrt.svg"} className="w-full relative inline-block rounded-full overflow-hiden" />
                 </div>
               </div>
             </div>
