@@ -9,7 +9,7 @@ import { createTxIBCMsgTransfer } from "@tharsis/transactions";
 import { cosmos } from "@tharsis/proto/dist/proto/cosmos/tx/v1beta1/tx";
 import BigNumber from "bignumber.js";
 import Long from "long";
-import React, { useEffect, useRef, useState, useContext} from "react";
+import React, { useEffect, useRef, useState, useContext, Component} from "react";
 import { KeplrContext, FeeGrantContext } from "General/Layouts/defaultLayout";
 import {
   gasToFee,
@@ -28,7 +28,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import CopyToClipboard from "react-copy-to-clipboard";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCaretDown, faPaste, faRightLeft } from "@fortawesome/free-solid-svg-icons";
+import { faCaretDown, faCircleInfo, faPaste, faRightLeft } from "@fortawesome/free-solid-svg-icons";
 import { InsertEmoticon } from "@mui/icons-material";
 import { red } from "@mui/material/colors";
 
@@ -57,9 +57,42 @@ export default function Deposit({
 
   const [selectedTokenIndex, setSelectedTokenIndex] = useState<number>(0);
 
+  enum IbcMode {
+    Deposit,
+    Withdrawal
+  }
+
+  const [ibcMode, setIbcMode] = useState<IbcMode>(IbcMode.Deposit);
+
+  function toggleIbcMode() {
+    if (ibcMode === IbcMode.Deposit) {
+      setIbcMode(IbcMode.Withdrawal);
+    } else {
+      setIbcMode(IbcMode.Deposit);
+    }
+  }
+
   function handleInputChange(e: any) {
     setAmountToTransfer(e.target.value);
   }
+
+
+
+
+
+  class SomeSelect extends Component {
+    render() {
+      return <>
+        <Select options={selectedToken.deposits} value={selectedSource} onChange={setSelectedSource} isSearchable={false}
+                formatOptionLabel={option => (
+                  <div className="flex items-center">
+                    <img src={chains[option.source_chain_name].chain_image} className="w-6 h-6 mr-2 rounded-full" />
+                    <span className="font-semibold text-sm">{option.source_chain_name}</span>
+                  </div>
+                )} className="react-select-container" classNamePrefix="react-select" />
+      </>
+    }
+}
 
   // handles [25% | 50% | 75% | Max] Button-Group
   function setAmountByPercentage(percentage: number) {
@@ -74,9 +107,6 @@ export default function Deposit({
     }
   }
 
-  function togglePosition() {
-    alert('Withdrawal – coming soon!')
-  }
   console.log(selectedSource.source_chain_name)
   const sourceChain =
     chains[selectedSource.source_chain_name];
@@ -180,22 +210,24 @@ export default function Deposit({
               <div className="w-1/2 inline-block">
                 <div className="relative">
                   <div className="absolute inset-0 bg-blue-500/60 blur-md rounded-full overflow-hidden"></div>
-                  <img src={chains[selectedSource.source_chain_name].chain_image} className="w-full relative inline-block rounded-full overflow-hiden" />
+                  <img src={ibcMode === IbcMode.Deposit ? chains[selectedSource.source_chain_name].chain_image : "https://wrap.scrt.network/scrt.svg"} className="w-full relative inline-block rounded-full overflow-hiden" />
                 </div>
               </div>
             </div>
-            <div className="absolute left-1/2 -translate-x-1/2 text-center uppercase text-sm font-bold text-zinc-500" style={{bottom: '10%'}}>From</div>
+            <div className="absolute left-1/2 -translate-x-1/2 text-center uppercase text-sm font-bold text-zinc-300" style={{bottom: '10%'}}>From</div>
           </div>
           {/* Chain Picker */}
           <div className="-mt-3 relative z-10 w-full">
           {/* {value} */}
-          <Select options={selectedToken.deposits} value={selectedSource} onChange={setSelectedSource} isSearchable={false}
-            formatOptionLabel={option => (
-              <div className="flex items-center">
-                <img src={chains[option.source_chain_name].chain_image} className="w-6 h-6 mr-2 rounded-full" />
-                <span className="font-semibold text-sm">{option.source_chain_name}</span>
+          {ibcMode === IbcMode.Deposit && (<SomeSelect/>)}
+            {ibcMode === IbcMode.Withdrawal && (
+              <div style={{paddingTop: ".9rem", paddingBottom: ".9rem"}} className="flex items-center w-full text-sm font-semibold select-none bg-zinc-700 rounded text-zinc-200 focus:bg-zinc-700 disabled:hover:bg-zinc-800 border border-zinc-500">
+                <div className="flex-1 px-3">
+                  <span>Secret Network</span>
+                </div>
               </div>
-            )} className="react-select-container" classNamePrefix="react-select" />
+            )}
+
 {/* 
               <Select options={token.deposits}  
           formatOptionLabel={option => (
@@ -255,7 +287,7 @@ export default function Deposit({
         <div className="flex-1">
           <div className="relative" style={{paddingTop: '100%'}}>
             <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-              <button onClick={togglePosition} className="bg-zinc-900 px-3 py-2 text-zinc-400 transition-colors rounded-full hover:text-white">
+              <button onClick={toggleIbcMode} className="bg-zinc-900 px-3 py-2 text-zinc-400 transition-colors rounded-full hover:text-white">
                 <FontAwesomeIcon icon={faRightLeft} />
               </button>
             </div>
@@ -268,20 +300,22 @@ export default function Deposit({
               <div className="w-1/2 inline-block">
                 <div className="relative">
                   <div className="absolute inset-0 bg-violet-500/60 blur-md rounded-full overflow-hidden"></div>
-                  <img src="https://wrap.scrt.network/scrt.svg" className="w-full relative inline-block rounded-full overflow-hiden" />
+                  <img src={ibcMode === IbcMode.Withdrawal ? chains[selectedSource.source_chain_name].chain_image : "https://wrap.scrt.network/scrt.svg"} className="w-full relative inline-block rounded-full overflow-hiden" />
                 </div>
               </div>
             </div>
-            <div className="absolute left-0 right-0 text-center uppercase text-sm font-bold text-zinc-500" style={{bottom: '10%'}}>To</div>
+            <div className="absolute left-0 right-0 text-center uppercase text-sm font-bold text-zinc-300" style={{bottom: '10%'}}>To</div>
           </div>
           {/* Chain Picker */}
           <div className="-mt-3 relative z-10 w-full">
-            <div style={{paddingTop: ".9rem", paddingBottom: ".9rem"}} className="flex items-center w-full text-sm font-semibold select-none bg-zinc-700 rounded text-zinc-200 focus:bg-zinc-700 disabled:hover:bg-zinc-800">
-              <div className="flex-1 text-center">
-                <img src="http://localhost:5173/scrt.svg" className="inline-block w-5 h-5 mr-2" />
-                <span>Secret Network</span>
+            {ibcMode === IbcMode.Withdrawal && (<SomeSelect/>)}
+            {ibcMode === IbcMode.Deposit && (
+              <div style={{paddingTop: ".9rem", paddingBottom: ".9rem"}} className="flex items-center w-full text-sm font-semibold select-none bg-zinc-700 rounded text-zinc-200 focus:bg-zinc-700 disabled:hover:bg-zinc-800 border border-zinc-500">
+                <div className="flex-1 px-3">
+                  <span>Secret Network</span>
+                </div>
               </div>
-            </div>
+            )}
           </div>
         </div>
       </div>
@@ -363,13 +397,13 @@ export default function Deposit({
             </MenuItem>
           ))}
         </Select> */}
-        <input type="text" value={amountToTransfer} onChange={handleInputChange} className="block flex-1 min-w-0 w-full bg-zinc-900 text-white p-4 rounded-r-md disabled:placeholder-zinc-700 transition-colors" name="fromValue" id="fromValue" placeholder="0.0" disabled={!secretAddress}/>
+        <input type="text" value={amountToTransfer} onChange={handleInputChange} className="block flex-1 min-w-0 w-full bg-zinc-900 text-white p-4 rounded-r-md disabled:placeholder-zinc-700 transition-colors" name="fromValue" id="fromValue" placeholder="0" disabled={!secretAddress}/>
       </div>
 
       {/* Balance | [25%|50%|75%|Max] */}
       <div className="flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 mt-3 mb-8">
         <div className="flex-1 text-xs">
-          Available for deposit:
+          <span className="font-bold">Available: </span>
           <button onClick={() => {setAmountByPercentage(100)}}>
             {(() => {
               if (availableBalance === "") {return <CircularProgress size="0.6em" />;}
@@ -380,12 +414,20 @@ export default function Deposit({
           </button>
         </div>
         <div className="sm:flex-initial text-xs">
-          <div className="inline-flex rounded-full">
-            <button onClick={() => setAmountByPercentage(100)} className="py-0.5 px-1.5 font-medium rounded-l-full border focus:z-10 focus:ring-2 bg-zinc-800 border-zinc-600 text-white hover:text-black hover:bg-white active:bg-zinc-300 transition-colors disabled:text-gray-400 disabled:hover:bg-zinc-800 disabled:hover:text-gray-400 disabled:hover:border-zinc-600">25%</button>
-            <button onClick={() => setAmountByPercentage(100)} className="py-0.5 px-1.5 font-medium border-t border-b border-r focus:z-10 focus:ring-2 bg-zinc-800 border-zinc-600 text-white hover:text-black hover:bg-white active:bg-zinc-300 transition-colors disabled:text-gray-400 disabled:hover:bg-zinc-800 disabled:hover:text-gray-400 disabled:hover:border-zinc-600">50%</button>
-            <button onClick={() => setAmountByPercentage(100)} className="py-0.5 px-1.5 font-medium border-t border-b focus:z-10 focus:ring-2 bg-zinc-800 border-zinc-600 text-white hover:text-black hover:bg-white active:bg-zinc-300 transition-colors disabled:text-gray-400 disabled:hover:bg-zinc-800 disabled:hover:text-gray-400 disabled:hover:border-zinc-600">75%</button>
-            <button onClick={() => setAmountByPercentage(100)} className="py-0.5 px-1.5 font-medium rounded-r-full border focus:z-10 focus:ring-2 bg-zinc-800 border-zinc-600 text-white hover:text-black hover:bg-white active:bg-zinc-300 transition-colors disabled:text-gray-400 disabled:hover:bg-zinc-800 disabled:hover:text-gray-400 disabled:hover:border-zinc-600">Max</button>
+          <div className="inline-flex rounded-full text-xs font-bold">
+            <button onClick={() => setAmountByPercentage(25)} className="bg-zinc-900 px-2 py-1 rounded-l-lg transition-colors hover:bg-zinc-700 focus:bg-zinc-500 cursor-pointer disabled:text-zinc-500 disabled:hover:bg-zinc-900 disabled:cursor-default" disabled={!secretAddress}>25%</button>
+            <button onClick={() => setAmountByPercentage(50)} className="bg-zinc-900 px-2 py-1 border-l border-zinc-700 transition-colors hover:bg-zinc-700 focus:bg-zinc-500 cursor-pointer disabled:text-zinc-500 disabled:hover:bg-zinc-900 disabled:cursor-default" disabled={!secretAddress}>50%</button>
+            <button onClick={() => setAmountByPercentage(75)} className="bg-zinc-900 px-2 py-1 border-l border-zinc-700 transition-colors hover:bg-zinc-700 focus:bg-zinc-500 cursor-pointer disabled:text-zinc-500 disabled:hover:bg-zinc-900 disabled:cursor-default" disabled={!secretAddress}>75%</button>
+            <button onClick={() => setAmountByPercentage(100)} className="bg-zinc-900 px-2 py-1 rounded-r-lg border-l border-zinc-700 transition-colors hover:bg-zinc-700 focus:bg-zinc-500 cursor-pointer disabled:text-zinc-500 disabled:hover:bg-zinc-900 disabled:cursor-default" disabled={!secretAddress}>MAX</button>
           </div>
+        </div>
+      </div>
+
+
+      <div className="bg-zinc-900 p-4 mt-8 rounded-lg select-none flex items-center mb-8">
+        <FontAwesomeIcon icon={faCircleInfo} className="flex-initial mr-4" />
+        <div className="flex-1">
+          Transfer your tokens via IBC (Inter-Blockchain Communication)
         </div>
       </div>
       
