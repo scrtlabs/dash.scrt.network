@@ -18,9 +18,6 @@ export function Ibc() {
             IBC Transfer
           </h1>
         </div>
-        <span className="block">
-          Transfer your tokens via IBC (Inter-Blockchain Communication)
-        </span>
       </div>
     )}
 
@@ -38,6 +35,8 @@ export function Ibc() {
             }}
             onFailure={(error) => console.error(error)}
           />
+
+          
       </div>
     </div>
   );
