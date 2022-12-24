@@ -76,9 +76,13 @@ export default function Deposit({
     setAmountToTransfer(e.target.value);
   }
 
+  const message = (ibcMode === IbcMode.Deposit) ?
+  `Deposit your SCRT via IBC transfer from ${selectedSource.source_chain_name} to Secret Network` :
+  `Withdraw your SCRT via IBC transfer from Secret Network to ${selectedSource.source_chain_name}`
 
 
 
+console.log(selectedSource);
 
   class SomeSelect extends Component {
     render() {
@@ -214,7 +218,7 @@ export default function Deposit({
                 </div>
               </div>
             </div>
-            <div className="absolute left-1/2 -translate-x-1/2 text-center uppercase text-sm font-bold text-zinc-300" style={{bottom: '10%'}}>From</div>
+            <div className="absolute left-1/2 -translate-x-1/2 text-center text-sm font-bold text-white" style={{bottom: '10%'}}>From</div>
           </div>
           {/* Chain Picker */}
           <div className="-mt-3 relative z-10 w-full">
@@ -287,7 +291,7 @@ export default function Deposit({
         <div className="flex-1">
           <div className="relative" style={{paddingTop: '100%'}}>
             <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-              <button onClick={toggleIbcMode} className="bg-zinc-900 px-3 py-2 text-zinc-400 transition-colors rounded-full hover:text-white">
+              <button onClick={toggleIbcMode} className="bg-zinc-900 px-3 py-2 text-zinc-400 transition-colors rounded-full hover:text-white disabled:hover:text-zinc-400" disabled={!secretAddress}>
                 <FontAwesomeIcon icon={faRightLeft} />
               </button>
             </div>
@@ -304,7 +308,7 @@ export default function Deposit({
                 </div>
               </div>
             </div>
-            <div className="absolute left-0 right-0 text-center uppercase text-sm font-bold text-zinc-300" style={{bottom: '10%'}}>To</div>
+            <div className="absolute left-0 right-0 text-center text-sm font-bold text-white" style={{bottom: '10%'}}>To</div>
           </div>
           {/* Chain Picker */}
           <div className="-mt-3 relative z-10 w-full">
@@ -320,15 +324,20 @@ export default function Deposit({
         </div>
       </div>
 
-      <div className="bg-zinc-900 p-6 rounded border border-zinc-700 space-y-6">
+      <div className="bg-zinc-900 p-6 rounded-lg border border-zinc-700 space-y-6">
         <div className="flex">
           <div className="font-bold mr-4 w-10">From:</div>
           <div className="flex-1 truncate">
-            <a href={`${sourceChain.explorer_account}${sourceAddress}`} target="_blank">{sourceAddress}</a>
+            {ibcMode === IbcMode.Deposit && (
+              <a href={`${sourceChain.explorer_account}${sourceAddress}`} target="_blank">{sourceAddress}</a>
+            )}
+            {ibcMode === IbcMode.Withdrawal && (
+              <a href={`${targetChain.explorer_account}${secretAddress}`} target="_blank">{secretAddress}</a>
+            )}
           </div>
           <div className="flex-initial ml-4">
             <CopyToClipboard
-              text={sourceAddress}
+              text={ibcMode === IbcMode.Deposit ? sourceAddress : secretAddress}
               onCopy={() => {
                 setIsCopied(true);
                 setTimeout(() => setIsCopied(false), 3000);
@@ -344,11 +353,16 @@ export default function Deposit({
         <div className="flex">
           <div className="flex-initial font-bold mr-4 w-10">To:</div>
           <div className="flex-1 truncate">
-            <a href={`${targetChain.explorer_account}${secretAddress}`} target="_blank">{secretAddress}</a>
+            {ibcMode === IbcMode.Withdrawal && (
+                <a href={`${sourceChain.explorer_account}${sourceAddress}`} target="_blank">{sourceAddress}</a>
+              )}
+              {ibcMode === IbcMode.Deposit && (
+                <a href={`${targetChain.explorer_account}${secretAddress}`} target="_blank">{secretAddress}</a>
+              )}
           </div>
           <div className="flex-initial ml-4">
             <CopyToClipboard
-              text={secretAddress}
+              text={ibcMode === IbcMode.Withdrawal ? sourceAddress : secretAddress}
               onCopy={() => {
                 setIsCopied(true);
                 setTimeout(() => setIsCopied(false), 3000);
@@ -363,41 +377,7 @@ export default function Deposit({
       </div>
 
       <div className="flex mt-8">
-        {/* <Select
-          value={selectedTokenIndex}
-          onChange={(e) =>
-            setSelectedTokenIndex(Number(e.target.value))
-          }
-          sx={{
-            color: 'white',
-            borderColor: 'red',
-            border: 0
-          }}
-        >
-          {tokens.map((token, index) => (
-            <MenuItem value={index} key={index}>
-              <div
-                style={{
-                  display: "flex",
-                  gap: "0.5em",
-                  placeItems: "center",
-                }}
-              >
-                <Avatar
-                  src={token.image}
-                  sx={{
-                    marginLeft: "0.3em",
-                    width: "1em",
-                    height: "1em",
-                    boxShadow: "rgba(0, 0, 0, 0.15) 0px 6px 10px",
-                  }}
-                />
-                <strong>{token.name}</strong>
-              </div>
-            </MenuItem>
-          ))}
-        </Select> */}
-        <input type="text" value={amountToTransfer} onChange={handleInputChange} className="block flex-1 min-w-0 w-full bg-zinc-900 text-white p-4 rounded-r-md disabled:placeholder-zinc-700 transition-colors" name="fromValue" id="fromValue" placeholder="0" disabled={!secretAddress}/>
+        <input type="text" value={amountToTransfer} onChange={handleInputChange} className="block flex-1 min-w-0 w-full bg-zinc-900 text-white p-4 rounded-lg disabled:placeholder-zinc-700 transition-colors" name="fromValue" id="fromValue" placeholder="0" disabled={!secretAddress}/>
       </div>
 
       {/* Balance | [25%|50%|75%|Max] */}
@@ -427,7 +407,7 @@ export default function Deposit({
       <div className="bg-zinc-900 p-4 mt-8 rounded-lg select-none flex items-center mb-8">
         <FontAwesomeIcon icon={faCircleInfo} className="flex-initial mr-4" />
         <div className="flex-1">
-          Transfer your tokens via IBC (Inter-Blockchain Communication)
+          {message}
         </div>
       </div>
       
