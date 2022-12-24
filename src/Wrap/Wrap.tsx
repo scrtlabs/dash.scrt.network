@@ -134,6 +134,15 @@ export function Wrap() {
     }
   }
 
+  async function updateBalance() {
+    try {
+      await updateCoinBalance();
+      await updateTokenBalance();
+    } catch (e) {
+      console.log(e);
+    }
+  }
+
   const updateTokenBalance = async () => {
     if (!selectedToken.address || !secretjs) {
       return;
@@ -459,7 +468,7 @@ export function Wrap() {
   useEffect(() => {
     if (!secretjs || !secretAddress) { return; }
 
-    const interval = setInterval(setBalance, 10000, selectedToken);
+    const interval = setInterval(updateBalance, 10000, selectedToken);
 
     (async () => {
       setBalance();
@@ -567,7 +576,7 @@ export function Wrap() {
             )}
           </div>
 
-          <div className="bg-zinc-900 p-4 mt-8 rounded-lg">
+          <div className="bg-zinc-900 p-4 mt-8 rounded-lg select-none">
             {message}
           </div>
 
