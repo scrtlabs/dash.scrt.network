@@ -12,14 +12,13 @@ import { Header } from "./Components/Header";
 import { Link } from "react-router-dom";
 import Select from "react-select";
 
-
 export const WrapContext = createContext(null);
 
 export function Wrap() {
   enum WrappingMode {
     Wrap,
     Unwrap
-  };
+  }
 
   const queryParams = new URLSearchParams(window.location.search);
   const tokenByQueryParam = queryParams.get("token"); // "scrt", "akash", etc.
@@ -35,7 +34,7 @@ export function Wrap() {
   const {useFeegrant, setUseFeegrant} = useContext(FeeGrantContext);
 
   const [price, setPrice] = useState <number>();
-  const [amount, setAmount] = useState<string>("");
+  const [amountToWrap, setAmountToWrap] = useState<string>("");
   const [wrappingMode, setWrappingMode] = useState<WrappingMode>(modePreselection);
   const [selectedToken, setselectedToken] = useState<Token>(tokens.filter(token => token.name === tokenPreselection)[0]);
 
@@ -50,14 +49,9 @@ export function Wrap() {
   const [tokenNativeBalance, setTokenNativeBalance] = useState<string>("");
   const [tokenWrappedBalance, setTokenWrappedBalance] = useState<string>("");
 
-<<<<<<< HEAD
-  function handleInputChange(e: any) {
-    setAmount(e.target.value);
-=======
   function validateForm() {
     
     const availableAmount = wrappingMode === WrappingMode.Wrap ? Number(tokenNativeBalance) * (10**(-selectedToken.decimals)) : Number(tokenWrappedBalance) * (10**(-selectedToken.decimals));
->>>>>>> b1e3df887c9c3e6441cd96d64b1301dc9853daf8
 
     // const numberRegex = /^-?[0-9]+([.,][0-9]+)?$/;
     const numberRegex = /^(?:[1-9]\d*|0)?(?:\.\d+)?$/;
@@ -108,62 +102,6 @@ export function Wrap() {
 
   // handles [25% | 50% | 75% | Max] Button-Group
   function setAmountByPercentage(percentage: number) {
-<<<<<<< HEAD
-    if (wrappingMode == WrappingMode.Wrap) {
-      if (tokenNativeBalance) {
-        let availableAmount = Number(tokenNativeBalance) * (10**(-selectedToken.decimals));
-        let potentialInput = new BigNumber(availableAmount * (percentage * 0.01)).toFormat();
-        if (Number(potentialInput) == 0) {
-          setAmount("");
-        } else {
-          setAmount(potentialInput);
-        }
-
-        const numberRegex = /^-?[0-9]+([.,][0-9]+)?$/;
-
-        function matchExact(r, str) {
-          var match = str.match(r);
-          return match && str === match[0];
-        }
-
-        if (Number(amount) > Number(availableAmount)) {
-          setValidationMessage("Not enough balance");
-          setisValidAmount(false);
-        } else if (!matchExact(numberRegex, amount)) {
-          setValidationMessage("Please enter a valid number");
-          setisValidAmount(false);
-        } else {
-          setisValidAmount(true);
-        }
-      }
-    } else {
-      if (tokenWrappedBalance) {
-        let availableAmount = Number(tokenWrappedBalance) * (10**(-selectedToken.decimals));
-        let potentialInput = new BigNumber(availableAmount * (percentage * 0.01)).toFormat();
-        if (Number(potentialInput) == 0) {
-          setAmount("");
-        } else {
-          setAmount(potentialInput);
-        }
-
-        const numberRegex = /^-?[0-9]+([.,][0-9]+)?$/;
-
-        function matchExact(r, str) {
-          var match = str.match(r);
-          return match && str === match[0];
-        }
-
-        if (Number(amount) > Number(availableAmount)) {
-          setValidationMessage("Not enough balance");
-          setisValidAmount(false);
-        } else if (!matchExact(numberRegex, amount)) {
-          setValidationMessage("Please enter a valid number");
-          setisValidAmount(false);
-        } else {
-          setisValidAmount(true);
-        }
-      }
-=======
     let maxValue = "0";
     if (wrappingMode === WrappingMode.Wrap) {
       maxValue = tokenNativeBalance;
@@ -181,7 +119,6 @@ export function Wrap() {
       }
       
       validateForm();
->>>>>>> b1e3df887c9c3e6441cd96d64b1301dc9853daf8
     }
   }
 
@@ -385,7 +322,7 @@ export function Wrap() {
               );
 
               if (tx.code === 0) {
-                setAmount("");
+                setAmountToWrap("");
                 toast.update(toastId, {
                   render: `Wrapped ${selectedToken.name} successfully`,
                   type: "success",
@@ -429,7 +366,7 @@ export function Wrap() {
                 }
               );
               if (tx.code === 0) {
-                setAmount("");
+                setAmountToWrap("");
                 toast.update(toastId, {
                   render: `Unwrapped ${selectedToken.name} successfully`,
                   type: "success",
@@ -561,7 +498,6 @@ export function Wrap() {
 
 
 
-
           {/* *** From *** */}
 
           {/* Title Bar */}
@@ -585,11 +521,7 @@ export function Wrap() {
                   </span>
                 </div>
               )} className="react-select-wrap-container" classNamePrefix="react-select-wrap" />
-<<<<<<< HEAD
-            <input value={amount} onChange={handleInputChange} type="text" className={"block flex-1 min-w-0 w-full bg-zinc-900 text-white p-4 rounded-r-lg disabled:placeholder-zinc-700 transition-colors" + (!isValidAmount ? "  border border-red-500" : "")} name="fromValue" id="fromValue" placeholder="0" disabled={!secretAddress}/>
-=======
             <input value={amountToWrap} onChange={handleInputChange} type="text" className={"focus:z-10 block flex-1 min-w-0 w-full bg-zinc-900 text-white p-4 rounded-r-lg disabled:placeholder-zinc-700 transition-colors" + (!isValidAmount ? "  border border-red-500" : "")} name="fromValue" id="fromValue" placeholder="0" disabled={!secretAddress}/>
->>>>>>> b1e3df887c9c3e6441cd96d64b1301dc9853daf8
           </div>
 
           {/* Balance | [25%|50%|75%|Max] */}
@@ -632,11 +564,7 @@ export function Wrap() {
                   </span>
                 </div>
               )} className="react-select-wrap-container" classNamePrefix="react-select-wrap" />
-<<<<<<< HEAD
-              <input value={amount} onChange={handleInputChange} type="text" className={"block flex-1 min-w-0 w-full bg-zinc-900 text-white p-4 rounded-r-md disabled:placeholder-zinc-700 transition-colors" + (!isValidAmount && wrappingMode === WrappingMode.Unwrap ? " border border-red-500" : "")} name="wrappedValue" id="wrappedValue" placeholder="0" disabled={!selectedToken.address || !secretAddress}/>
-=======
               <input value={amountToWrap} onChange={handleInputChange} type="text" className={"focus:z-10 block flex-1 min-w-0 w-full bg-zinc-900 text-white p-4 rounded-r-lg disabled:placeholder-zinc-700 transition-colors" + (!isValidAmount && wrappingMode === WrappingMode.Unwrap ? " border border-red-500" : "")} name="wrappedValue" id="wrappedValue" placeholder="0" disabled={!selectedToken.address || !secretAddress}/>
->>>>>>> b1e3df887c9c3e6441cd96d64b1301dc9853daf8
             </div>
           </div>
           <div className="flex-1 text-xs mt-3">
@@ -656,12 +584,7 @@ export function Wrap() {
           </div>
 
           {/* <To/> */}
-<<<<<<< HEAD
-          <SubmitButton disabled={!selectedToken.address || !secretAddress || !amount || !isValidAmount} amountToWrap={amount} nativeCurrency={selectedToken.name} wrappedAmount={amount} wrappedCurrency={"s" + selectedToken.name} wrappingMode={wrappingMode}/>
-                    
-=======
           <SubmitButton disabled={!selectedToken.address || !secretAddress || !amountToWrap || !isValidAmount || amountToWrap === "0"} amountToWrap={amountToWrap} nativeCurrency={selectedToken.name} wrappedAmount={amountToWrap} wrappedCurrency={"s" + selectedToken.name} wrappingMode={wrappingMode}/>
->>>>>>> b1e3df887c9c3e6441cd96d64b1301dc9853daf8
         </div>
       </div>
     </>
