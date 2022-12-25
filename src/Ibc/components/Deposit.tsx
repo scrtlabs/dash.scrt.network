@@ -86,10 +86,10 @@ export default function Deposit({
 
 console.log(selectedSource);
 
-  class SomeSelect extends Component {
+  class ChainSelect extends Component {
     render() {
       return <>
-        <Select options={selectedToken.deposits} value={selectedSource} onChange={setSelectedSource} isSearchable={false}
+        <Select options={tokens.filter(token => token.name === 'SCRT')[0].deposits} value={selectedSource} onChange={setSelectedSource} isSearchable={false}
                 formatOptionLabel={option => (
                   <div className="flex items-center">
                     <img src={chains[option.source_chain_name].chain_image} className="w-6 h-6 mr-2 rounded-full" />
@@ -256,7 +256,7 @@ console.log(selectedSource);
           {/* Chain Picker */}
           <div className="-mt-3 relative z-10 w-full">
           {/* {value} */}
-          {ibcMode === IbcMode.Deposit && (<SomeSelect/>)}
+          {ibcMode === IbcMode.Deposit && (<ChainSelect/>)}
             {ibcMode === IbcMode.Withdrawal && (
               <div style={{paddingTop: ".9rem", paddingBottom: ".9rem"}} className="flex items-center w-full text-sm font-semibold select-none bg-zinc-700 rounded text-zinc-200 focus:bg-zinc-700 disabled:hover:bg-zinc-800 border border-zinc-500">
                 <div className="flex-1 px-3">
@@ -345,7 +345,7 @@ console.log(selectedSource);
           </div>
           {/* Chain Picker */}
           <div className="-mt-3 relative z-10 w-full">
-            {ibcMode === IbcMode.Withdrawal && (<SomeSelect/>)}
+            {ibcMode === IbcMode.Withdrawal && (<ChainSelect/>)}
             {ibcMode === IbcMode.Deposit && (
               <div style={{paddingTop: ".9rem", paddingBottom: ".9rem"}} className="flex items-center w-full text-sm font-semibold select-none bg-zinc-700 rounded text-zinc-200 focus:bg-zinc-700 disabled:hover:bg-zinc-800 border border-zinc-500">
                 <div className="flex-1 px-3">
@@ -408,7 +408,6 @@ console.log(selectedSource);
           </div>
         </div>
       </div>
-
       <div className="flex mt-8">
         <Select options={supportedTokens} value={selectedToken} onChange={setSelectedToken} formatOptionLabel={token => (
                 <div className="flex items-center">
