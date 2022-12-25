@@ -88,7 +88,7 @@ export default function Deposit({
   class ChainSelect extends Component {
     render() {
       return <>
-        <Select options={tokens.filter(token => token.name === 'SCRT')[0].deposits} value={selectedSource} onChange={setSelectedSource} isSearchable={false}
+        <Select options={tokens.filter(token => token.name === 'SCRT')[0].deposits} value={selectedSource} onChange={setSelectedSource} isSearchable={false} isDisabled={!secretjs || !secretAddress}
                 formatOptionLabel={option => (
                   <div className="flex items-center">
                     <img src={chains[option.source_chain_name].chain_image} className="w-6 h-6 mr-2 rounded-full" />
@@ -229,9 +229,10 @@ export default function Deposit({
   const [supportedTokens, setSupportedTokens] = useState<Token[]>([]);
 
   useEffect(() => {
-    const possibleSnips = snips.filter(token => token.deposits.find(token => token.source_chain_name == sourceChain.chain_name)!)
-    setSupportedTokens((tokens.filter(token => token.deposits.find(token => token.source_chain_name == sourceChain.chain_name)!)).concat(possibleSnips))
-    setSelectedToken(tokens.filter(token => token.name === 'SCRT')[0]);
+    const possibleSnips = snips.filter(token => token.deposits.find(token => token.source_chain_name == sourceChain.chain_name)!);
+    const possibleTokens = tokens.filter(token => token.deposits.find(token => token.source_chain_name == sourceChain.chain_name)!);
+    setSupportedTokens(possibleTokens.concat(possibleSnips));
+    setSelectedToken(possibleTokens.concat(possibleSnips)[0]);
   }, [sourceChain]);
 
 
@@ -360,7 +361,7 @@ export default function Deposit({
         </div>
       </div>
       <div className="flex mt-8">
-        <Select options={supportedTokens} value={selectedToken} onChange={setSelectedToken} formatOptionLabel={token => (
+        <Select options={supportedTokens} value={selectedToken} onChange={setSelectedToken} isDisabled={!secretjs || !secretAddress} formatOptionLabel={token => (
                 <div className="flex items-center">
                   <img src={token.image} className="w-6 h-6 mr-2 rounded-full" />
                   <span className="font-bold text-sm">
@@ -804,7 +805,7 @@ export default function Deposit({
                         amount,
                         denom: selectedToken.withdrawals.filter(withdraw => withdraw.target_chain_name === selectedSource.source_chain_name)[0].from_denom,
                       },
-                      timeoutTimestampSec: String(
+                      timeout_timestamp: String(
                         Math.floor(Date.now() / 1000) + 10 * 60
                       ), // 10 minute timeout
                     },
