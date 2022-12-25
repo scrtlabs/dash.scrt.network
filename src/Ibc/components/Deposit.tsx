@@ -21,7 +21,7 @@ import {
   faucetAddress, 
   usdString
 } from "General/Utils/commons";
-import { chains, Token, tokens } from "General/Utils/config";
+import { chains, Token, tokens, snips } from "General/Utils/config";
 import CopyableAddress from "Ibc/components/CopyableAddress";
 import { fromBase64, toBase64, toHex } from "secretjs";
 import { TxRaw } from "secretjs/dist/protobuf/cosmos/tx/v1beta1/tx";
@@ -84,7 +84,6 @@ export default function Deposit({
 
 
 
-console.log(selectedSource);
 
   class ChainSelect extends Component {
     render() {
@@ -114,18 +113,20 @@ console.log(selectedSource);
   }
 
   const updateCoinBalance = async () => {
-    try {
-      const {
-        balance: { amount },
-      } = await secretjs.query.bank.balance(
-        {
-          address: secretAddress,
-          denom: selectedToken.withdrawals[0]?.from_denom,
-        },
-      );
-      setAvailableBalance(amount)
-    } catch (e) {
-      console.error(`Error while trying to query ${selectedToken.name}:`, e);
+    if (secretjs && secretAddress) {
+      try {
+        const {
+          balance: { amount },
+        } = await secretjs.query.bank.balance(
+          {
+            address: secretAddress,
+            denom: selectedToken.withdrawals[0]?.from_denom,
+          },
+        );
+        setAvailableBalance(amount)
+      } catch (e) {
+        console.error(`Error while trying to query ${selectedToken.name}:`, e);
+      }
     }
   }
 
@@ -181,12 +182,13 @@ console.log(selectedSource);
     return () => clearInterval(interval);
   }, [sourceAddress]);
 
+
   useEffect(() => {
     (async () => {
       while (!window.keplr || !window.getOfflineSignerOnlyAmino) {
         await sleep(100);
       }
-      updateCoinBalance()
+      updateCoinBalance();
       if ("LUNA" === selectedToken.name.toUpperCase()) {
         await suggestTerraToKeplr(window.keplr);
       } else if ("INJ" === selectedToken.name.toUpperCase()) {
@@ -197,7 +199,6 @@ console.log(selectedSource);
         await suggestKujiraToKeplr(window.keplr);
       }
 
-      console.log(selectedToken.deposits);
       // Initialize cosmjs on the source chain, because it has sendIbcTokens()
       const { chain_id, rpc, bech32_prefix } =
         chains[selectedSource.source_chain_name];
@@ -225,16 +226,18 @@ console.log(selectedSource);
   
   const [isCopied, setIsCopied] = useState<boolean>(false); 
 
-
-
   const [supportedTokens, setSupportedTokens] = useState<Token[]>([]);
-
 
   useEffect(() => {
     setSupportedTokens(tokens.filter(token => token.deposits.find(token => token.source_chain_name == sourceChain.chain_name)!));
+    setSupportedTokens(supportedTokens.concat(snips.filter(token => token.deposits.find(token => token.source_chain_name == sourceChain.chain_name)!)));
     setSelectedToken(tokens.filter(token => token.name === 'SCRT')[0]);
   }, [sourceChain]);
 
+
+  console.log(snips);
+
+  
   return (
     <>
       {/* [From|To] Picker */}
@@ -264,61 +267,6 @@ console.log(selectedSource);
                 </div>
               </div>
             )}
-
-{/* 
-              <Select options={token.deposits}  
-          formatOptionLabel={option => (
-            <div className="country-option">
-              <img src={option.image} alt="country-image" />
-              <span>{option.label}</span>
-            </div>
-            )}
-            />  */}
-            {/* <select name="sourceChain" id="sourceChain" className="-mt-3 relative z-10 w-full bg-zinc-700 rounded py-3 px-3 text-center block font-bold text-sm truncate cursor-pointer">
-              <option value="x">Akash</option>
-              <option value="y">Secret Network</option>
-            </select> */}
-            {/* <FormControl className="-mt-3 relative z-10 w-full bg-zinc-700 rounded">
-              <Select
-                value={selectedChainIndex}
-                onChange={(e) =>
-                  setSelectedChainIndex(Number(e.target.value))
-                }
-              >
-                {token.deposits.map((chain, index) => (
-                  <MenuItem value={index} key={index}>
-                    <div
-                      style={{
-                        display: "flex",
-                        gap: "0.5em",
-                        placeItems: "center",
-                      }}
-                    >
-                      <Avatar
-                        src={chains[chain.source_chain_name].chain_image}
-                        sx={{
-                          marginLeft: "0.3em",
-                          width: "1em",
-                          height: "1em",
-                          boxShadow: "rgba(0, 0, 0, 0.15) 0px 6px 10px",
-                        }}
-                      />
-                      <strong>{chain.source_chain_name}</strong>
-                    </div>
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl> */}
-            
-
-
-
-
-
-
-
-
-
           </div>
         </div>
         <div className="flex-1">
@@ -842,7 +790,7 @@ console.log(selectedSource);
                     }
                   );
                 } else {
-                  console.log(selectedToken.withdrawals.filter(withdraw => withdraw.target_chain_name === selectedSource.source_chain_name)[0].from_denom)
+                  // console.log(selectedToken.withdrawals.filter(withdraw => withdraw.target_chain_name === selectedSource.source_chain_name)[0].from_denom)
                   tx = await secretjs.tx.ibc.transfer(
                     {
                       sender: secretAddress,
@@ -929,25 +877,6 @@ console.log(selectedSource);
                       isLoading: false,
                     });
                   }
-  
-                  // Try finding the ack every 15 seconds for 10 minutes
-                  // tries = 40;
-                  // while (tries > 0) {
-                  //   const txs = await secretjs.query.txsQuery(
-                  //     `acknowledge_packet.packet_sequence = '${packetSequence}' AND acknowledge_packet.packet_src_channel = '${packetSrcChannel}'`
-                  //   );
-  
-                  //   const ackTx = txs.find((x) => x.code === 0);
-  
-                  //   if (ackTx) {
-                  //     console.log(`Original tx: ${tx.transactionHash}`);
-                  //     console.log(`IBC ack tx: ${ackTx.transactionHash}`);
-                  //     break;
-                  //   }
-  
-                  //   tries -= 1;
-                  //   await sleep(15000);
-                  // }
                 } else {
                   toast.update(toastId, {
                     render: `Failed sending ${normalizedAmount} ${selectedToken.name} from Secret to ${selectedSource.source_chain_name}: ${tx.rawLog}`,
