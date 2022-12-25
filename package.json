@@ -1,6 +1,6 @@
 {
-  "name": "wrap.scrt.network",
-  "description": "An awesome app to do awesome things",
+  "name": "Secret Dashboard",
+  "description": "An entry point for new users into Secret Network",
   "version": "0.0.0",
   "scripts": {
     "start": "vite",

@@ -6,7 +6,7 @@ import { KeplrContext, FeeGrantContext } from "General/Layouts/defaultLayout";
 import BigNumber from "bignumber.js";
 import { toast} from "react-toastify";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faKey, faDownLong, faUpLong, faArrowRightArrowLeft, faCaretDown, faRightLeft } from '@fortawesome/free-solid-svg-icons'
+import { faKey, faArrowRightArrowLeft, faRightLeft, faCircleInfo } from '@fortawesome/free-solid-svg-icons'
 import { getKeplrViewingKey, setKeplrViewingKey } from "General/Components/Keplr";
 import { Header } from "./Components/Header";
 import { Link } from "react-router-dom";
@@ -31,8 +31,6 @@ export function Wrap() {
     modeByQueryParam?.toLowerCase() === "unwrap"
     ? WrappingMode.Unwrap : WrappingMode.Wrap;
 
-  
-
   const {secretjs, secretAddress} = useContext(KeplrContext);
   const {useFeegrant, setUseFeegrant} = useContext(FeeGrantContext);
 
@@ -52,27 +50,40 @@ export function Wrap() {
   const [tokenNativeBalance, setTokenNativeBalance] = useState<string>("");
   const [tokenWrappedBalance, setTokenWrappedBalance] = useState<string>("");
 
+<<<<<<< HEAD
   function handleInputChange(e: any) {
     setAmount(e.target.value);
+=======
+  function validateForm() {
+    
+    const availableAmount = wrappingMode === WrappingMode.Wrap ? Number(tokenNativeBalance) * (10**(-selectedToken.decimals)) : Number(tokenWrappedBalance) * (10**(-selectedToken.decimals));
+>>>>>>> b1e3df887c9c3e6441cd96d64b1301dc9853daf8
 
-    const availableAmount = Number(tokenNativeBalance) * (10**(-selectedToken.decimals));
-
-    const numberRegex = /^-?[0-9]+([.,][0-9]+)?$/;
+    // const numberRegex = /^-?[0-9]+([.,][0-9]+)?$/;
+    const numberRegex = /^(?:[1-9]\d*|0)?(?:\.\d+)?$/;
 
     function matchExact(r, str) {
       var match = str.match(r);
       return match && str === match[0];
     }
 
-    if (Number(e.target.value) > Number(availableAmount)) {
+    if (Number(amountToWrap) > Number(availableAmount) && !(tokenWrappedBalance == viewingKeyErrorString && wrappingMode === WrappingMode.Unwrap)) {
       setValidationMessage("Not enough balance");
       setisValidAmount(false);
-    } else if (!matchExact(numberRegex, e.target.value)) {
-      setValidationMessage("Please enter a valid number");
+    } else if (!matchExact(numberRegex, amountToWrap)) {
+      setValidationMessage("Please enter a valid amount");
       setisValidAmount(false);
     } else {
       setisValidAmount(true);
     }
+  }
+
+  useEffect(() => {
+    validateForm();
+}, [amountToWrap, wrappingMode]);
+
+  async function handleInputChange(e: any) {
+    await setAmountToWrap(e.target.value);
   }
 
   const updateFeeGrantButton = (text: string, color: string) => {
@@ -97,6 +108,7 @@ export function Wrap() {
 
   // handles [25% | 50% | 75% | Max] Button-Group
   function setAmountByPercentage(percentage: number) {
+<<<<<<< HEAD
     if (wrappingMode == WrappingMode.Wrap) {
       if (tokenNativeBalance) {
         let availableAmount = Number(tokenNativeBalance) * (10**(-selectedToken.decimals));
@@ -151,6 +163,25 @@ export function Wrap() {
           setisValidAmount(true);
         }
       }
+=======
+    let maxValue = "0";
+    if (wrappingMode === WrappingMode.Wrap) {
+      maxValue = tokenNativeBalance;
+    } else {
+      maxValue = tokenWrappedBalance;
+    }
+
+    if (maxValue) {
+      let availableAmount = Number(maxValue) * (10**(-selectedToken.decimals));
+      let potentialInput = new BigNumber(availableAmount * (percentage * 0.01)).toFormat();
+      if (Number(potentialInput) == 0) {
+        setAmountToWrap("");
+      } else {
+        setAmountToWrap(potentialInput);
+      }
+      
+      validateForm();
+>>>>>>> b1e3df887c9c3e6441cd96d64b1301dc9853daf8
     }
   }
 
@@ -163,6 +194,15 @@ export function Wrap() {
     } finally {
       setLoadingCoinBalance(false);
       setLoadingTokenBalance(false);
+    }
+  }
+
+  async function updateBalance() {
+    try {
+      await updateCoinBalance();
+      await updateTokenBalance();
+    } catch (e) {
+      console.log(e);
     }
   }
 
@@ -184,8 +224,8 @@ export function Wrap() {
           amount: string;
         };
       } = await secretjs.query.compute.queryContract({
-        contractAddress: selectedToken.address,
-        codeHash: selectedToken.code_hash,
+        contract_address: selectedToken.address,
+        code_hash: selectedToken.code_hash,
         query: {
           balance: { address: secretAddress, key },
         },
@@ -207,10 +247,10 @@ export function Wrap() {
   function PercentagePicker() {
     return (
       <div className="inline-flex rounded-full text-xs font-bold">
-        <button onClick={() => setAmountByPercentage(25)} className="bg-zinc-900 px-2 py-1 rounded-l-lg transition-colors hover:bg-zinc-700 focus:bg-zinc-500 cursor-pointer" disabled={!secretAddress}>25%</button>
-        <button onClick={() => setAmountByPercentage(50)} className="bg-zinc-900 px-2 py-1 border-l border-zinc-700 transition-colors hover:bg-zinc-700 focus:bg-zinc-500 cursor-pointer" disabled={!secretAddress}>50%</button>
-        <button onClick={() => setAmountByPercentage(75)} className="bg-zinc-900 px-2 py-1 border-l border-zinc-700 transition-colors hover:bg-zinc-700 focus:bg-zinc-500 cursor-pointer" disabled={!secretAddress}>75%</button>
-        <button onClick={() => setAmountByPercentage(100)} className="bg-zinc-900 px-2 py-1 rounded-r-lg border-l border-zinc-700 transition-colors hover:bg-zinc-700 focus:bg-zinc-500 cursor-pointer" disabled={!secretAddress}>MAX</button>
+        <button onClick={() => setAmountByPercentage(25)} className="bg-zinc-900 px-2 py-1 rounded-l-lg transition-colors hover:bg-zinc-700 focus:bg-zinc-500 cursor-pointer disabled:text-zinc-500 disabled:hover:bg-zinc-900 disabled:cursor-default" disabled={!secretAddress}>25%</button>
+        <button onClick={() => setAmountByPercentage(50)} className="bg-zinc-900 px-2 py-1 border-l border-zinc-700 transition-colors hover:bg-zinc-700 focus:bg-zinc-500 cursor-pointer disabled:text-zinc-500 disabled:hover:bg-zinc-900 disabled:cursor-default" disabled={!secretAddress}>50%</button>
+        <button onClick={() => setAmountByPercentage(75)} className="bg-zinc-900 px-2 py-1 border-l border-zinc-700 transition-colors hover:bg-zinc-700 focus:bg-zinc-500 cursor-pointer disabled:text-zinc-500 disabled:hover:bg-zinc-900 disabled:cursor-default" disabled={!secretAddress}>75%</button>
+        <button onClick={() => setAmountByPercentage(100)} className="bg-zinc-900 px-2 py-1 rounded-r-lg border-l border-zinc-700 transition-colors hover:bg-zinc-700 focus:bg-zinc-500 cursor-pointer disabled:text-zinc-500 disabled:hover:bg-zinc-900 disabled:cursor-default" disabled={!secretAddress}>MAX</button>
       </div>
     )
   }
@@ -245,7 +285,9 @@ export function Wrap() {
       return (<></>);
     } else if (tokenWrappedBalance == viewingKeyErrorString) {
       return (
-        <div className="cursor-pointer"
+        <>
+          <span className="font-bold">Available:</span>
+          <button className="bg-zinc-900 px-2 py-1 rounded-lg transition-colors hover:bg-zinc-700 focus:bg-zinc-500 ml-2 font-semibold" 
           onClick={async () => {
             await setKeplrViewingKey(selectedToken.address);
             try {
@@ -255,13 +297,10 @@ export function Wrap() {
             } finally {
               setLoadingTokenBalance(false);
             }
-          }}
-        >
-        <span className="font-bold">Available:</span>
-          <button className="bg-zinc-900 px-2 py-1 rounded-lg transition-colors hover:bg-zinc-700 focus:bg-zinc-500 ml-2 font-semibold">
+          }}>
             <FontAwesomeIcon icon={faKey} className="mr-2" />Set Viewing Key
           </button>
-        </div>
+        </>
       );
     }
     else if (Number(tokenWrappedBalance) > -1) {
@@ -304,7 +343,7 @@ export function Wrap() {
     return (
       <button
         disabled={disabled}
-        className={"flex items-center justify-center w-full py-3 px-3 rounded transition-colors font-semibold mt-12 border" + (disabled ? " bg-zinc-500 border-zinc-600 opacity-40" : " bg-blue-500 border-blue-500 hover:bg-blue-600 active:bg-blue-700")}
+        className={"flex items-center justify-center w-full py-3 px-3 rounded-lg transition-colors font-semibold mt-12 border" + (disabled ? " bg-zinc-500 border-zinc-600 opacity-40" : " bg-blue-500 border-blue-500 hover:bg-blue-600 active:bg-blue-700")}
         onClick={async () => {
 
           if (!secretjs || !secretAddress) { return; }
@@ -329,9 +368,9 @@ export function Wrap() {
                 [
                   new MsgExecuteContract({
                     sender: secretAddress,
-                    contractAddress: selectedToken.address,
-                    codeHash: selectedToken.code_hash,
-                    sentFunds: [
+                    contract_address: selectedToken.address,
+                    code_hash: selectedToken.code_hash,
+                    sent_funds: [
                       { denom: selectedToken.withdrawals[0].from_denom, amount },
                     ],
                     msg: { deposit: {} },
@@ -368,9 +407,9 @@ export function Wrap() {
                 [
                   new MsgExecuteContract({
                     sender: secretAddress,
-                    contractAddress: selectedToken.address,
-                    codeHash: selectedToken.code_hash,
-                    sentFunds: [],
+                    contract_address: selectedToken.address,
+                    code_hash: selectedToken.code_hash,
+                    sent_funds: [],
                     msg: {
                       redeem: {
                         amount,
@@ -492,7 +531,7 @@ export function Wrap() {
   useEffect(() => {
     if (!secretjs || !secretAddress) { return; }
 
-    const interval = setInterval(setBalance, 10000, selectedToken);
+    const interval = setInterval(updateBalance, 10000, selectedToken);
 
     (async () => {
       setBalance();
@@ -536,7 +575,7 @@ export function Wrap() {
 
           {/* Input Field */}
           <div className="flex">
-            <Select options={tokens.sort((a, b) => a.name.localeCompare(b.name))} value={selectedToken} onChange={setselectedToken}
+            <Select isDisabled={!selectedToken.address || !secretAddress} options={tokens.sort((a, b) => a.name.localeCompare(b.name))} value={selectedToken} onChange={setselectedToken} isSearchable={false}
               formatOptionLabel={token => (
                 <div className="flex items-center">
                   <img src={token.image} className="w-6 h-6 mr-2 rounded-full" />
@@ -546,7 +585,11 @@ export function Wrap() {
                   </span>
                 </div>
               )} className="react-select-wrap-container" classNamePrefix="react-select-wrap" />
+<<<<<<< HEAD
             <input value={amount} onChange={handleInputChange} type="text" className={"block flex-1 min-w-0 w-full bg-zinc-900 text-white p-4 rounded-r-lg disabled:placeholder-zinc-700 transition-colors" + (!isValidAmount ? "  border border-red-500" : "")} name="fromValue" id="fromValue" placeholder="0" disabled={!secretAddress}/>
+=======
+            <input value={amountToWrap} onChange={handleInputChange} type="text" className={"focus:z-10 block flex-1 min-w-0 w-full bg-zinc-900 text-white p-4 rounded-r-lg disabled:placeholder-zinc-700 transition-colors" + (!isValidAmount ? "  border border-red-500" : "")} name="fromValue" id="fromValue" placeholder="0" disabled={!secretAddress}/>
+>>>>>>> b1e3df887c9c3e6441cd96d64b1301dc9853daf8
           </div>
 
           {/* Balance | [25%|50%|75%|Max] */}
@@ -580,7 +623,7 @@ export function Wrap() {
             </div>
 
             <div className="flex">
-              <Select options={tokens.sort((a, b) => a.name.localeCompare(b.name))} value={selectedToken} onChange={setselectedToken} formatOptionLabel={token => (
+              <Select isDisabled={!selectedToken.address || !secretAddress} options={tokens.sort((a, b) => a.name.localeCompare(b.name))} value={selectedToken} onChange={setselectedToken} isSearchable={false} formatOptionLabel={token => (
                 <div className="flex items-center">
                   <img src={token.image} className="w-6 h-6 mr-2 rounded-full" />
                   <span className="font-bold text-sm">
@@ -589,7 +632,11 @@ export function Wrap() {
                   </span>
                 </div>
               )} className="react-select-wrap-container" classNamePrefix="react-select-wrap" />
+<<<<<<< HEAD
               <input value={amount} onChange={handleInputChange} type="text" className={"block flex-1 min-w-0 w-full bg-zinc-900 text-white p-4 rounded-r-md disabled:placeholder-zinc-700 transition-colors" + (!isValidAmount && wrappingMode === WrappingMode.Unwrap ? " border border-red-500" : "")} name="wrappedValue" id="wrappedValue" placeholder="0" disabled={!selectedToken.address || !secretAddress}/>
+=======
+              <input value={amountToWrap} onChange={handleInputChange} type="text" className={"focus:z-10 block flex-1 min-w-0 w-full bg-zinc-900 text-white p-4 rounded-r-lg disabled:placeholder-zinc-700 transition-colors" + (!isValidAmount && wrappingMode === WrappingMode.Unwrap ? " border border-red-500" : "")} name="wrappedValue" id="wrappedValue" placeholder="0" disabled={!selectedToken.address || !secretAddress}/>
+>>>>>>> b1e3df887c9c3e6441cd96d64b1301dc9853daf8
             </div>
           </div>
           <div className="flex-1 text-xs mt-3">
@@ -601,9 +648,20 @@ export function Wrap() {
             )}
           </div>
 
+          <div className="bg-zinc-900 p-4 mt-8 rounded-lg select-none flex items-center">
+            <FontAwesomeIcon icon={faCircleInfo} className="flex-initial mr-4" />
+            <div className="flex-1">
+              {message}
+            </div>
+          </div>
+
           {/* <To/> */}
+<<<<<<< HEAD
           <SubmitButton disabled={!selectedToken.address || !secretAddress || !amount || !isValidAmount} amountToWrap={amount} nativeCurrency={selectedToken.name} wrappedAmount={amount} wrappedCurrency={"s" + selectedToken.name} wrappingMode={wrappingMode}/>
                     
+=======
+          <SubmitButton disabled={!selectedToken.address || !secretAddress || !amountToWrap || !isValidAmount || amountToWrap === "0"} amountToWrap={amountToWrap} nativeCurrency={selectedToken.name} wrappedAmount={amountToWrap} wrappedCurrency={"s" + selectedToken.name} wrappingMode={wrappingMode}/>
+>>>>>>> b1e3df887c9c3e6441cd96d64b1301dc9853daf8
         </div>
       </div>
     </>
