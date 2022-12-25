@@ -6,6 +6,7 @@ import { SecretNetworkClient} from "secretjs";
 import { chains } from "General/Utils/config";
 
 const SECRET_CHAIN_ID = chains["Secret Network"].chain_id;
+const SECRET_LCD = chains["Secret Network"].lcd;
 const SECRET_RPC = chains["Secret Network"].rpc;
 
 export function KeplrPanel({
@@ -22,9 +23,9 @@ export function KeplrPanel({
   const [isCopied, setIsCopied] = useState<boolean>(false);
 
   // Auto Setup Keplr
-  useEffect(() => {
-    setupKeplr(setSecretjs, setSecretAddress);
-  }, []);
+  // useEffect(() => {
+  //   setupKeplr(setSecretjs, setSecretAddress);
+  // }, []);
 
   const content = (
     <div className="flex items-center font-semibold border rounded border-neutral-700 bg-neutral-800 px-4 py-2 hover:bg-neutral-700 active:bg-neutral-600 transition-colors">
@@ -103,14 +104,20 @@ async function setupKeplr(
   }
 
   await window.keplr.enable(SECRET_CHAIN_ID);
+  window.keplr.defaultOptions = {
+    sign: {
+      preferNoSetFee: false,
+      disableBalanceCheck: true,
+    },
+  };
 
   const keplrOfflineSigner = window.getOfflineSignerOnlyAmino(SECRET_CHAIN_ID);
   const accounts = await keplrOfflineSigner.getAccounts();
 
   const secretAddress = accounts[0].address;
 
-  const secretjs = await (SecretNetworkClient as any).create({
-    grpcWebUrl: SECRET_RPC,
+  const secretjs = new SecretNetworkClient({
+    url: SECRET_LCD,
     chainId: SECRET_CHAIN_ID,
     wallet: keplrOfflineSigner,
     walletAddress: secretAddress,
