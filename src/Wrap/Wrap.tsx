@@ -280,7 +280,7 @@ export function Wrap() {
     return (
       <button
         disabled={disabled}
-        className={"flex items-center justify-center w-full py-3 px-3 rounded-lg transition-colors font-semibold mt-12 border" + (disabled ? " bg-zinc-500 border-zinc-600 opacity-40" : " bg-blue-500 border-blue-500 hover:bg-blue-600 active:bg-blue-700")}
+        className={"flex items-center justify-center w-full py-3 px-3 rounded-lg transition-colors font-semibold mt-12 border" + (disabled ? " bg-zinc-500 border-zinc-600 opacity-40" : " bg-emerald-500/50 border-emerald-500 hover:bg-emerald-600 active:bg-emerald-700")}
         onClick={async () => {
 
           if (!secretjs || !secretAddress) { return; }
@@ -492,8 +492,10 @@ export function Wrap() {
       <div className="w-full max-w-2xl mx-auto px-4">
         <div className="border rounded-lg p-12 pb-7 border-zinc-700 w-full bg-zinc-800 text-zinc-200">
 
-          <Header title="Secret Wrap" text={message}/>
-
+          {/* Header */}
+          <div className="mb-8">
+            <h1 className="inline text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-violet-500">Secret Wrap</h1>
+          </div>
 
 
 
