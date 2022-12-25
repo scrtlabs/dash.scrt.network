@@ -4,6 +4,7 @@ import { Else, If, Then } from "react-if";
 import { Breakpoint } from "react-socks";
 import { SecretNetworkClient} from "secretjs";
 import { chains } from "General/Utils/config";
+import Tooltip from "@mui/material/Tooltip";
 
 const SECRET_CHAIN_ID = chains["Secret Network"].chain_id;
 const SECRET_LCD = chains["Secret Network"].lcd;
@@ -28,11 +29,8 @@ export function KeplrPanel({
   // }, []);
 
   const content = (
-    <div className="flex items-center font-semibold border rounded border-neutral-700 bg-neutral-800 px-4 py-2 hover:bg-neutral-700 active:bg-neutral-600 transition-colors">
-      <Breakpoint small down style={{ display: "flex" }}>
-        <img src="/fina.webp" className="w-7 h-7 inline mr-2"/>
-      </Breakpoint>
-      <Breakpoint medium up style={{ display: "flex" }}>
+    <div className="flex items-center font-semibold">
+      <div className="flex">
         <If condition={secretAddress.length > 0}>
           <span className="relative w-2.5 mr-3">
             <span className="flex absolute h-2 w-2 top-2.5 left-0.5">
@@ -41,20 +39,12 @@ export function KeplrPanel({
             </span>
           </span>
         </If>
-        <img src="/keplr.svg" className="w-7 h-7 inline mr-2"/>
-      </Breakpoint>
+        <img src="/fina.webp" className="w-7 h-7 mr-2 inline md:hidden"/>
+        <img src="/keplr.svg" className="w-7 h-7 mr-2 hidden md:inline"/>
+      </div>
       <span>
         <If condition={secretAddress.length > 0}>
-          <Then>
-            <Breakpoint small down>{`${secretAddress.slice(
-              0,
-              10
-            )}...${secretAddress.slice(-7)}`}</Breakpoint>
-            <Breakpoint medium up>
-              {/* {secretAddress} */}
-              Connected
-            </Breakpoint>
-          </Then>
+          <Then>Connected</Then>
           <Else>Connect Wallet</Else>
         </If>
       </span>
@@ -64,23 +54,23 @@ export function KeplrPanel({
   if (secretjs) {
     return (
       <CopyToClipboard
-        text={secretAddress}
-        onCopy={() => {
-          setIsCopied(true);
-          setTimeout(() => setIsCopied(false), 3000);
-        }}
-      >
-        <button className="w-full lg:w-auto">
-          {content}{" "}
-        </button>
+          text={secretAddress}
+          onCopy={() => {
+            setIsCopied(true);
+            setTimeout(() => setIsCopied(false), 3000);
+          }}
+        >
+        <Tooltip title={secretAddress} placement="bottom-end">
+          <div className="w-full sm:w-auto rounded px-4 py-2 border border-neutral-700 bg-neutral-800 select-none">
+            {content}
+          </div>
+        </Tooltip>
       </CopyToClipboard>
     );
   } else {
     return (
-      <button
-        id="keplr-button"
-        onClick={() => setupKeplr(setSecretjs, setSecretAddress)}
-        className="w-full lg:w-auto"
+      <button id="keplr-button" onClick={() => setupKeplr(setSecretjs, setSecretAddress)}
+        className="w-full sm:w-auto rounded px-4 py-2 border border-neutral-700 bg-neutral-800 hover:bg-neutral-700 active:bg-neutral-600 transition-colors select-none"
       >
         {content}
       </button>
