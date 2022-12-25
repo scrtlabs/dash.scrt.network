@@ -1,5 +1,5 @@
 {
-  "name": "Secret Dashboard",
+  "name": "secret_dashboard",
   "description": "An entry point for new users into Secret Network",
   "version": "0.0.0",
   "scripts": {
