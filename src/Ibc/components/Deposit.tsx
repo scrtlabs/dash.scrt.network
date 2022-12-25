@@ -53,7 +53,7 @@ export default function Deposit({
   const queryParams = new URLSearchParams(window.location.search);
   const tokenByQueryParam = queryParams.get("token"); // "scrt", "akash", etc.
   const chainByQueryParam = queryParams.get("chain"); // "scrt", "akash", etc.
-  const [selectedToken, setselectedToken] = useState<Token>(tokens.filter(token => token.name === 'SCRT')[0]);
+  const [selectedToken, setSelectedToken] = useState<Token>(tokens.filter(token => token.name === 'SCRT')[0]);
   const sourcePreselection = selectedToken.deposits.filter(deposit => deposit.source_chain_name.toLowerCase() === chainByQueryParam?.toLowerCase())[0] ? chainByQueryParam?.toLowerCase() : "osmosis";
   const [selectedSource, setSelectedSource] = useState<any>(selectedToken.deposits.filter(deposit => deposit.source_chain_name.toLowerCase() === sourcePreselection)[0]);
 
@@ -131,7 +131,8 @@ console.log(selectedSource);
 
 
 
-  console.log(selectedSource.source_chain_name)
+
+
   const sourceChain =
     chains[selectedSource.source_chain_name];
   const targetChain = chains["Secret Network"];
@@ -222,7 +223,17 @@ console.log(selectedSource);
   }, [selectedSource]);
 
   
-  const [isCopied, setIsCopied] = useState<boolean>(false);
+  const [isCopied, setIsCopied] = useState<boolean>(false); 
+
+
+
+  const [supportedTokens, setSupportedTokens] = useState<Token[]>([]);
+
+
+  useEffect(() => {
+    setSupportedTokens(tokens.filter(token => token.deposits.find(token => token.source_chain_name == sourceChain.chain_name)!));
+    setSelectedToken(tokens.filter(token => token.name === 'SCRT')[0]);
+  }, [sourceChain]);
 
   return (
     <>
@@ -399,7 +410,15 @@ console.log(selectedSource);
       </div>
 
       <div className="flex mt-8">
-        <input type="text" value={amountToTransfer} onChange={handleInputChange} className="block flex-1 min-w-0 w-full bg-zinc-900 text-white p-4 rounded-lg disabled:placeholder-zinc-700 transition-colors" name="fromValue" id="fromValue" placeholder="0" disabled={!secretAddress}/>
+        <Select options={supportedTokens} value={selectedToken} onChange={setSelectedToken} formatOptionLabel={token => (
+                <div className="flex items-center">
+                  <img src={token.image} className="w-6 h-6 mr-2 rounded-full" />
+                  <span className="font-bold text-sm">
+                    {token.name}
+                  </span>
+                </div>
+              )}  className="react-select-wrap-container" classNamePrefix="react-select-wrap"/>
+        <input type="text" value={amountToTransfer} onChange={handleInputChange} className={"focus:z-10 block flex-1 min-w-0 w-full bg-zinc-900 text-white p-4 rounded-r-lg disabled:placeholder-zinc-700 transition-colors" + (false ? "  border border-red-500" : "")} name="fromValue" id="fromValue" placeholder="0" disabled={!secretAddress}/>
       </div>
 
       {/* Balance | [25%|50%|75%|Max] */}
