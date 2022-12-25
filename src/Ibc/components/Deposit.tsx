@@ -23,7 +23,7 @@ import {
 } from "General/Utils/commons";
 import { chains, Token, tokens, snips } from "General/Utils/config";
 import CopyableAddress from "Ibc/components/CopyableAddress";
-import { fromBase64, toBase64, toHex } from "secretjs";
+import { fromBase64, toBase64, toHex, toUtf8 } from "secretjs";
 import { TxRaw } from "secretjs/dist/protobuf/cosmos/tx/v1beta1/tx";
 import { useCurrentBreakpointName } from "react-socks";
 import { ToastContainer, toast } from "react-toastify";
@@ -229,13 +229,16 @@ export default function Deposit({
   const [supportedTokens, setSupportedTokens] = useState<Token[]>([]);
 
   useEffect(() => {
-    setSupportedTokens(tokens.filter(token => token.deposits.find(token => token.source_chain_name == sourceChain.chain_name)!));
-    setSupportedTokens(supportedTokens.concat(snips.filter(token => token.deposits.find(token => token.source_chain_name == sourceChain.chain_name)!)));
+    const possibleSnips = snips.filter(token => token.deposits.find(token => token.source_chain_name == sourceChain.chain_name)!)
+    setSupportedTokens((tokens.filter(token => token.deposits.find(token => token.source_chain_name == sourceChain.chain_name)!)).concat(possibleSnips))
     setSelectedToken(tokens.filter(token => token.name === 'SCRT')[0]);
   }, [sourceChain]);
 
 
-  console.log(snips);
+  console.log("supportedTokens", supportedTokens);
+
+
+  // console.log(snips);
 
   
   return (
