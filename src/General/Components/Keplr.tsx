@@ -33,14 +33,14 @@ export function KeplrPanel({
       <div className="flex">
         <If condition={secretAddress.length > 0}>
           <span className="relative w-2.5 mr-3">
-            <span className="flex absolute h-2 w-2 top-2.5 left-0.5">
+            <span className="flex absolute h-2 w-2 top-1.5 left-0.5">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-1/2"></span>
               <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
             </span>
           </span>
         </If>
-        <img src="/fina.webp" className="w-7 h-7 mr-2 inline md:hidden"/>
-        <img src="/keplr.svg" className="w-7 h-7 mr-2 hidden md:inline"/>
+        <img src="/fina.webp" className="w-5 h-5 mr-2 inline md:hidden"/>
+        <img src="/keplr.svg" className="w-5 h-5 mr-2 hidden md:inline"/>
       </div>
       <span>
         <If condition={secretAddress.length > 0}>
