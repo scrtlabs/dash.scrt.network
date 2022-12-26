@@ -235,12 +235,6 @@ export default function Deposit({
     setSelectedToken(possibleTokens.concat(possibleSnips)[0]);
   }, [sourceChain]);
 
-
-  console.log("supportedTokens", supportedTokens);
-
-
-  // console.log(snips);
-
   
   return (
     <>
@@ -459,14 +453,11 @@ export default function Deposit({
 
               try {
                 let transactionHash: string = "";
+                let txResponse = null;
 
-                if (
-                  !["Evmos", "Injective"].includes(
-                    selectedSource.source_chain_name
-                  )
-                ) {
+                if (!["Evmos", "Injective"].includes(selectedSource.source_chain_name)) {
                   // Regular cosmos chain (not ethermint signing)
-                  const txResponse = await sourceCosmJs.sendIbcTokens(
+                  txResponse = await sourceCosmJs.sendIbcTokens(
                     sourceAddress,
                     secretAddress,
                     {
@@ -696,7 +687,7 @@ export default function Deposit({
                       break;
                     }
                   }
-
+                  console.log(txResponse)
                   tries -= 1;
                   await sleep(15000);
                 }
@@ -706,7 +697,7 @@ export default function Deposit({
                     selectedToken.name
                   } from ${
                     selectedSource.source_chain_name
-                  } to Secret: ${JSON.stringify(e)}`,
+                  } to Secret: ${e}`,
                   type: "error",
                   isLoading: false,
                 });
@@ -894,7 +885,7 @@ export default function Deposit({
                     selectedToken.name
                   } from Secret to ${
                     selectedSource.source_chain_name
-                  }: ${JSON.stringify(e)}`,
+                  }: ${e}`,
                   type: "error",
                   isLoading: false,
                 });
