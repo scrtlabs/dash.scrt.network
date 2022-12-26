@@ -22,24 +22,15 @@ import {
   usdString
 } from "General/Utils/commons";
 import { chains, Token, tokens, snips } from "General/Utils/config";
-import CopyableAddress from "Ibc/components/CopyableAddress";
 import { fromBase64, toBase64, toHex, toUtf8 } from "secretjs";
 import { TxRaw } from "secretjs/dist/protobuf/cosmos/tx/v1beta1/tx";
-import { useCurrentBreakpointName } from "react-socks";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import CopyToClipboard from "react-copy-to-clipboard";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCaretDown, faCircleInfo, faPaste, faRightLeft } from "@fortawesome/free-solid-svg-icons";
-import { InsertEmoticon } from "@mui/icons-material";
-import { red } from "@mui/material/colors";
 
-export default function Deposit({
-
-}: {
-
-}) {
-  const breakpoint = useCurrentBreakpointName();
+export default function Deposit () {
   const [sourceAddress, setSourceAddress] = useState<string>("");
   const [availableBalance, setAvailableBalance] = useState<string>("");
   const [loadingTx, setLoading] = useState<boolean>(false);
@@ -81,7 +72,6 @@ export default function Deposit({
   const message = (ibcMode === IbcMode.Deposit) ?
   `Deposit your SCRT via IBC transfer from ${selectedSource.source_chain_name} to Secret Network` :
   `Withdraw your SCRT via IBC transfer from Secret Network to ${selectedSource.source_chain_name}`
-
 
 
 
@@ -131,11 +121,7 @@ export default function Deposit({
   }
 
 
-
-
-
-  const sourceChain =
-    chains[selectedSource.source_chain_name];
+  const sourceChain = chains[selectedSource.source_chain_name];
   const targetChain = chains["Secret Network"];
 
   const fetchSourceBalance = async (sourceAddress: string) => {
@@ -437,11 +423,11 @@ export default function Deposit({
               let {
                 deposit_channel_id,
                 deposit_gas,
+                deposit_gas_denom,
                 lcd: lcdSrcChain,
               } = chains[selectedSource.source_chain_name];
 
-              deposit_channel_id =
-                selectedSource.channel_id || deposit_channel_id;
+              deposit_channel_id = selectedSource.channel_id || deposit_channel_id;
               deposit_gas = selectedSource.gas || deposit_gas;
 
               const toastId = toast.loading(
@@ -468,7 +454,7 @@ export default function Deposit({
                     deposit_channel_id,
                     undefined,
                     Math.floor(Date.now() / 1000) + 10 * 60, // 10 minute timeout (sec)
-                    gasToFee(deposit_gas)
+                    gasToFee(deposit_gas, deposit_gas_denom)
                   );
                   transactionHash = txResponse.transactionHash;
                 } else {
