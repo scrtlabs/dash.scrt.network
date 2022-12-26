@@ -24,6 +24,9 @@ export function Dashboard() {
         <InfoBoxes/>
         <div className="mt-4 px-4 mx-auto">
           <div className="grid grid-cols-12 gap-4">
+          <div className="col-span-12 sm:col-span-6 lg:col-span-6 xl:col-span-4 2xl:col-span-3 bg-zinc-800 px-6 py-8 rounded-lg">
+              <StakingChart />
+            </div>
             {/* Item */}
             <div className="col-span-12 xl:col-span-6 bg-zinc-800 p-4 rounded-lg">
               <PriceChart />
@@ -31,9 +34,6 @@ export function Dashboard() {
             {/* Item */}
             <div className="col-span-12 xl:col-span-6 bg-zinc-800 p-4 rounded-lg">
               <VolumeChart />
-            </div>
-            <div className="col-span-12 sm:col-span-6 lg:col-span-6 xl:col-span-4 2xl:col-span-3 bg-zinc-800 px-6 py-8 rounded-lg">
-              <StakingChart />
             </div>
           </div>
         </div>
