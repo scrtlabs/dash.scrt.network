@@ -1,6 +1,8 @@
 import { StdFee } from "@cosmjs/stargate";
 import { Bech32Address } from "@keplr-wallet/cosmos";
 import { Keplr } from "@keplr-wallet/types";
+import { sha256 } from "@noble/hashes/sha256";
+import { toHex, toUtf8 } from "secretjs";
 
 export const viewingKeyErrorString = "🧐";
 
@@ -11,10 +13,10 @@ export const sleep = (ms: number) =>
   new Promise((resolve) => setTimeout(resolve, ms));
 
 export const gasPriceUscrt = 0.25;
-export function gasToFee(gas: number): StdFee {
+export function gasToFee(gas: number, denom: string): StdFee {
   return {
     amount: [
-      { amount: String(Math.floor(gas * gasPriceUscrt) + 1), denom: "uscrt" },
+      { amount: String(Math.floor(gas * gasPriceUscrt) + 1), denom: denom ? denom : "uscrt" },
     ],
     gas: String(gas),
   };
