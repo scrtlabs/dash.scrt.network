@@ -190,3 +190,21 @@ export const usdString = new Intl.NumberFormat("en-US", {
   minimumFractionDigits: 2,
   maximumFractionDigits: 2,
 });
+
+export const ibcDenom = (
+  paths: {
+    incomingPortId: string;
+    incomingChannelId: string;
+  }[],
+  coinMinimalDenom: string
+): string => {
+  const prefixes = [];
+  for (const path of paths) {
+    prefixes.push(`${path.incomingPortId}/${path.incomingChannelId}`);
+  }
+
+  const prefix = prefixes.join("/");
+  const denom = `${prefix}/${coinMinimalDenom}`;
+
+  return "ibc/" + toHex(sha256(toUtf8(denom))).toUpperCase();
+};
