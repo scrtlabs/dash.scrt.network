@@ -40,8 +40,6 @@ export default function PriceChart(props: any) {
   const { apiData, setApiData } = useDashboardContext();
   const [marketData, setMarketData] = useState([]);
 
-  console.log(apiData);
-
   const [chartRange, setChartRange] = useState<ChartRange>(ChartRange.Day);
 
   const data = {

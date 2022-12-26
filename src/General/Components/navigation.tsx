@@ -1,4 +1,4 @@
-import { faArrowUpRightFromSquare, faBox, faChartLine, faCheckToSlot, faCircleNodes, faClose, faCoins, faShuffle } from "@fortawesome/free-solid-svg-icons";
+import { faArrowUpRightFromSquare, faBox, faChartLine, faCheckToSlot, faCircleNodes, faClose, faCoins, faEllipsis, faShuffle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React from "react";
 import { NavLink } from "react-router-dom";
@@ -12,7 +12,7 @@ export function Navigation({
 }) {
   return (
     <>
-      <a href="https://scrt.network/" target="_blank" className="block ml-4 mb-12" style={{maxWidth: "9rem"}}><img src="https://scrt.network/assets/img/new-secret-logo.c2794f7c.svg" alt="Secret Network Logo" className="w-full inline-block" /></a>
+      <NavLink to="/" className="block ml-4 mb-12" style={{maxWidth: "9rem"}}><img src="https://scrt.network/assets/img/new-secret-logo.c2794f7c.svg" alt="Secret Network Logo" className="w-full inline-block" /></NavLink>
       <ul className="space-y-4 font-bold text-neutral-400">
         <li className="lg:hidden">
           <button onClick={() => setShowMobileMenu(false)} className="hover:text-white fixed top-0 right-0 float-right px-8 py-5 rounded-full transition-colors">
@@ -33,6 +33,11 @@ export function Navigation({
         <NavLink to="/wrap" className={({ isActive }) => isActive ? "text-white bg-gradient-to-r from-zinc-700 via-zinc-700-700 to-zinc-700/5 block w-full px-8 py-5 rounded-full transition-colors" : "hover:text-white block w-full px-8 py-5 rounded-full transition-colors"}>
           <FontAwesomeIcon icon={faShuffle} className="mr-2" />Wrap
           </NavLink>
+        </li>
+        <li>
+        <a href="https://satellite.money/?destination_address=&asset_denom=uusdc&source=ethereum&destination=secret" target="_blank" className="hover:text-white block w-full px-8 py-5 rounded-full transition-colors">
+        <FontAwesomeIcon icon={faEllipsis} className="mr-2" />Bridge<FontAwesomeIcon icon={faArrowUpRightFromSquare} className="text-xs ml-2" />
+          </a>
         </li>
         <li>
         <NavLink to="/dapps" className={({ isActive }) => isActive ? "text-white bg-gradient-to-r from-zinc-700 via-zinc-700-700 to-zinc-700/5 block w-full px-8 py-5 rounded-full transition-colors" : "hover:text-white block w-full px-8 py-5 rounded-full transition-colors"}>
