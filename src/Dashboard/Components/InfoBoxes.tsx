@@ -19,6 +19,7 @@ export default function InfoBoxes() {
   const [currentPrice, setCurrentPrice] = useState(Number);
   const [inflation, setInflation] = useState(Number);
   const [pool, setPool] = useState(null);
+  const [totalSupply, setTotalSupply] = useState(null);
 
   const COUNT_ABBRS = ['', 'K', 'M', 'B', 't', 'q', 's', 'S', 'o', 'n', 'd', 'U', 'D', 'T', 'Qt', 'Qd', 'Sd', 'St'];
 
@@ -39,6 +40,7 @@ export default function InfoBoxes() {
       secretjsquery?.query?.tendermint?.getLatestBlock("")?.then(res => setBlockHeight(res.block.header.height));
       secretjsquery?.query?.mint?.inflation("")?.then(res => setInflation((res.inflation*100).toFixed(2)));
       secretjsquery?.query?.staking?.pool("")?.then(res => setPool(res.pool));
+      secretjsquery?.query?.bank?.supplyOf({denom:"uscrt"})?.then(res => setTotalSupply(res.amount.amount/1e6));
       setCurrentPrice(apiData?.prices[apiData?.prices?.length-1][1]);
     }
     
@@ -54,8 +56,8 @@ export default function InfoBoxes() {
   }, []);
 
   const bondedToken = parseInt(pool?.bonded_tokens) / 10e5;
-  const notBondedToken = parseInt(pool?.not_bonded_tokens) / 10e4;
-  const totalPool = bondedToken + notBondedToken;
+  const notBondedToken = totalSupply-bondedToken
+  const totalPool = totalSupply;
   const poolPercentageBonded = (bondedToken / totalPool * 100).toFixed(2);
 
   return (
@@ -95,7 +97,7 @@ export default function InfoBoxes() {
           </div>
         </div>
         {/* Item */}
-        <div className="col-span-12 sm:col-span-6 md:col-span-4 xl:col-span-2 bg-zinc-800 p-4 rounded-lg">
+        {/* <div className="col-span-12 sm:col-span-6 md:col-span-4 xl:col-span-2 bg-zinc-800 p-4 rounded-lg">
           <div className="flex flex-col items-center">
             <span className="fa-stack fa-2x mb-2">
               <FontAwesomeIcon icon={faCircle} className="fa-stack-2x text-red-900" />
@@ -105,7 +107,7 @@ export default function InfoBoxes() {
             <div className="text-md text-zinc-400">Bonded: {formatNumber(bondedToken, true, 2)}</div>
             <div className="text-md text-zinc-400">Not bonded: {formatNumber(notBondedToken, true, 2)}</div>
           </div>
-        </div>
+        </div> */}
         {/* Item */}
         <div className="col-span-12 sm:col-span-6 md:col-span-4 xl:col-span-2 bg-zinc-800 p-4 rounded-lg">
           <div className="flex flex-col items-center">
