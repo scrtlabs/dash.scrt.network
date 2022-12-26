@@ -44,7 +44,7 @@ export function KeplrPanel({
       </div>
       <span>
         <If condition={secretAddress.length > 0}>
-          <Then>Connected</Then>
+          <Then>secret...{secretAddress.substring(secretAddress.length - 6)}</Then>
           <Else>Connect Wallet</Else>
         </If>
       </span>
