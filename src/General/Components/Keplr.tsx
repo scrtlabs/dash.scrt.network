@@ -1,10 +1,13 @@
-import React, { useEffect, useState } from "react";
+import React, { Component, useEffect, useState } from "react";
 import CopyToClipboard from "react-copy-to-clipboard";
 import { Else, If, Then } from "react-if";
-import { Breakpoint } from "react-socks";
 import { SecretNetworkClient} from "secretjs";
 import { chains } from "General/Utils/config";
 import Tooltip from "@mui/material/Tooltip";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCheck, faCopy, faRotateRight, faX } from "@fortawesome/free-solid-svg-icons";
+import { faucetURL } from "General/Utils/commons";
+import { toast } from "react-toastify";
 
 const SECRET_CHAIN_ID = chains["Secret Network"].chain_id;
 const SECRET_LCD = chains["Secret Network"].lcd;
@@ -21,12 +24,108 @@ export function KeplrPanel({
   secretAddress: string;
   setSecretAddress: React.Dispatch<React.SetStateAction<string>>;
 }) {
-  const [isCopied, setIsCopied] = useState<boolean>(false);
 
   // Auto Setup Keplr
   // useEffect(() => {
   //   setupKeplr(setSecretjs, setSecretAddress);
   // }, []);
+
+  const [isFeeGranted, setIsFeeGranted] = useState<boolean>(false);
+
+  function disconnectWallet() {
+    setSecretAddress("");
+    setSecretjs(null);
+    toast.success("Wallet disconnected!");
+  }
+
+  enum FeeGrantStatus {
+    Success,
+    Fail,
+    Untouched
+  }
+  const [feeGrantStatus, setFeeGrantStatus] = useState<FeeGrantStatus>(FeeGrantStatus.Untouched);
+
+  async function grantButtonAction() {
+    fetch(faucetURL, {
+      method: "POST",
+      body: JSON.stringify({ Address: secretAddress }),
+      headers: { "Content-Type": "application/json" },
+    })
+      .then(async (result) => {
+        const textBody = await result.text();
+        console.log(textBody);
+        if (result.ok == true) {
+          setFeeGrantStatus(FeeGrantStatus.Success);
+          toast.success(`Successfully sent new Fee Grant!`);
+        } else if (
+          textBody == "Existing Fee Grant did not expire\n"
+        ) {
+          setFeeGrantStatus(FeeGrantStatus.Success);
+          toast.success(`Using existing fee grant!`);
+        } else {
+          setFeeGrantStatus(FeeGrantStatus.Fail);
+          toast.error(`Fee Grant failed: ${result.status}`);
+        }
+        setIsFeeGranted(true);
+      })
+      .catch((error) => {
+        toast.error(`Fee Grant failed with error: ${error}`);
+      });
+  }
+
+  class FeeGrantButton extends Component {
+    render() {
+      return <>
+        {/* <FeeGrant */}
+        {secretAddress && (
+          <>
+            {/* Untouched */}
+            <If condition={feeGrantStatus === FeeGrantStatus.Untouched}>
+              <button onClick={grantButtonAction} className="w-full p-1.5 rounded-md text-emerald-500 border border-emerald-500 hover:bg-emerald-600 hover:text-white transition-colors select-none">
+                Request Fee Grant
+              </button>
+            </If>
+
+            {/* Success */}
+            <If condition={feeGrantStatus === FeeGrantStatus.Success}>
+              <div className="w-full text-center p-1.5 rounded-md text-emerald-500 border border-emerald-500 select-none">
+                <FontAwesomeIcon icon={faCheck} className="mr-2 text-emerald-500"/>
+                Fee Granted
+              </div>
+            </If>
+
+            {/* Fail */}
+            <If condition={feeGrantStatus === FeeGrantStatus.Fail}>
+              <button onClick={grantButtonAction} className="group w-full p-1.5 rounded-md border border-red-500 hover:text-white transition-colors select-none">
+                <FontAwesomeIcon icon={faX} className="mr-2 text-red-500"/>
+                Fee Grant failed
+                <FontAwesomeIcon icon={faRotateRight} className="ml-2 text-zinc-500 group-hover:text-white transition-colors" />
+              </button>
+            </If>
+          </>
+        )}
+      </>
+    }
+  }
+
+class KeplrMenu extends Component {
+  render() {
+    return <>
+        <div className="bg-zinc-800 border text-xs border-zinc-500 p-4 z-50 absolute top-16 right-4 w-auto rounded-lg">
+          <CopyToClipboard text={secretAddress} onCopy={ () => {toast.success("Address copied to clipboard!")} }>
+            <button className="flex gap-2 items-center group mb-2">
+              <div>{secretAddress.slice(0, 14) + "..." + secretAddress.slice(-14)}</div>
+              <div className="block text-zinc-500 group-hover:text-white transition-colors"><FontAwesomeIcon icon={faCopy}/></div>
+            </button>
+          </CopyToClipboard>
+          <div className="mb-4">
+            <FeeGrantButton/>
+          </div>
+          <button onClick={disconnectWallet} className="float-right px-3 py-1.5 rounded-md text-zinc-300 border border-zinc-400 hover:border-red-600 hover:text-red-600 transition-colors">Disconnect Wallet</button>
+        </div>
+    </>
+  }
+}
 
   const content = (
     <div className="flex items-center font-semibold">
@@ -44,7 +143,7 @@ export function KeplrPanel({
       </div>
       <span>
         <If condition={secretAddress.length > 0}>
-          <Then>secret...{secretAddress.substring(secretAddress.length - 6)}</Then>
+          <Then>Connected</Then>
           <Else>Connect Wallet</Else>
         </If>
       </span>
@@ -52,21 +151,14 @@ export function KeplrPanel({
   );
 
   if (secretjs) {
-    return (
-      <CopyToClipboard
-          text={secretAddress}
-          onCopy={() => {
-            setIsCopied(true);
-            setTimeout(() => setIsCopied(false), 3000);
-          }}
-        >
-        <Tooltip title={secretAddress} placement="bottom-end">
-          <div className="w-full sm:w-auto rounded px-4 py-2 border border-neutral-700 bg-neutral-800 select-none">
-            {content}
-          </div>
-        </Tooltip>
-      </CopyToClipboard>
-    );
+    return (<>
+      <KeplrMenu/>
+      {/* <Tooltip title={secretAddress} placement="bottom-end"> */}
+        <div className="w-full sm:w-auto rounded px-4 py-2 border border-neutral-700 bg-neutral-800 select-none">
+          {content}
+        </div>
+        {/* </Tooltip> */}
+      </>);
   } else {
     return (
       <button id="keplr-button" onClick={() => setupKeplr(setSecretjs, setSecretAddress)}

@@ -1,9 +1,8 @@
 import { SigningStargateClient } from "@cosmjs/stargate";
 import {
   CircularProgress,
-  createTheme,
 } from "@mui/material";
-import Select, { StylesConfig } from 'react-select';
+import Select from 'react-select';
 import { sha256 } from "@noble/hashes/sha256";
 import { createTxIBCMsgTransfer } from "@tharsis/transactions";
 import { cosmos } from "@tharsis/proto/dist/proto/cosmos/tx/v1beta1/tx";
@@ -28,7 +27,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import CopyToClipboard from "react-copy-to-clipboard";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCaretDown, faCircleInfo, faPaste, faRightLeft } from "@fortawesome/free-solid-svg-icons";
+import { faCircleInfo, faPaste, faRightLeft } from "@fortawesome/free-solid-svg-icons";
 
 export default function Deposit () {
   const [sourceAddress, setSourceAddress] = useState<string>("");

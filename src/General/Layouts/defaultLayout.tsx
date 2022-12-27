@@ -1,10 +1,10 @@
-import { faBars, faCheck, faRotateRight, faX } from '@fortawesome/free-solid-svg-icons';
+import { faBars, faCheck, faCopy, faRotateRight, faX } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Discord } from 'General/Components/Discord';
 import { Footer } from 'General/Components/Footer';
 import { KeplrPanel } from 'General/Components/Keplr';
 import { Navigation } from 'General/Components/navigation';
-import React, { useState, createContext, useEffect} from 'react';
+import React, { useState, createContext, useEffect, Component} from 'react';
 import { SecretNetworkClient } from 'secretjs';
 import { Breakpoint } from "react-socks";
 import { Flip, ToastContainer, toast} from "react-toastify";
@@ -17,13 +17,6 @@ export const NavigationContext = createContext<boolean | null>(null);
 export const FeeGrantContext = createContext(null);
 
 export const DefaultLayout =({children}:any) =>{
-
-  enum FeeGrantStatus {
-    Success,
-    Fail,
-    Untouched
-  }
-  const [feeGrantStatus, setFeeGrantStatus] = useState<FeeGrantStatus>(FeeGrantStatus.Untouched);
 
   /**
    * Mobile Menu Handler
@@ -41,37 +34,11 @@ export const DefaultLayout =({children}:any) =>{
 
   const [secretjs, setSecretjs] = useState<SecretNetworkClient | null >(null);
   const [secretAddress, setSecretAddress] = useState<string>("");
+
+
+// Fee Grant
   const [isFeeGranted, setIsFeeGranted] = useState<boolean>(false);
 
-  async function grantButtonAction() {
-    fetch(faucetURL, {
-      method: "POST",
-      body: JSON.stringify({ Address: secretAddress }),
-      headers: { "Content-Type": "application/json" },
-    })
-      .then(async (result) => {
-        const textBody = await result.text();
-        console.log(textBody);
-        if (result.ok == true) {
-          setFeeGrantStatus(FeeGrantStatus.Success);
-          toast.success(`Successfully sent new Fee Grant!`);
-        } else if (
-          textBody == "Existing Fee Grant did not expire\n"
-        ) {
-          setFeeGrantStatus(FeeGrantStatus.Success);
-          toast.success(`Using existing fee grant!`);
-        } else {
-          setFeeGrantStatus(FeeGrantStatus.Fail);
-          toast.error(`Fee Grant failed: ${result.status}`);
-        }
-        setIsFeeGranted(true);
-      })
-      .catch((error) => {
-        toast.error(
-          `Fee Grant failed with error: ${error}`
-        );
-      });
-  }
 
   return (
     <>
@@ -107,37 +74,6 @@ export const DefaultLayout =({children}:any) =>{
                       <FontAwesomeIcon icon={faBars} size="lg" />
                     </button>
                   </div>
-
-                  {/* <FeeGrant */}
-                  {secretAddress && (
-                    <>
-                      {/* Untouched */}
-                      <If condition={feeGrantStatus === FeeGrantStatus.Untouched}>
-                          <button onClick={grantButtonAction} className="bg-zinc-800 px-2 py-1 text-sm rounded-md hover:bg-zinc-700 transition-colors select-none">
-                            Request Fee Grant
-                          </button>
-                      </If>
-
-                      {/* Success */}
-                      <If condition={feeGrantStatus === FeeGrantStatus.Success}>
-                        <div className="bg-zinc-800 px-2 py-1 text-sm rounded-md select-none">
-                          <FontAwesomeIcon icon={faCheck} className="mr-2 text-green-500"/>
-                          Fee Granted
-                        </div>
-                      </If>
-
-                      {/* Fail */}
-                      <If condition={feeGrantStatus === FeeGrantStatus.Fail}>
-                        <Tooltip title={"Repeat request"} placement="bottom">
-                          <button onClick={grantButtonAction} className="group bg-zinc-800 px-2 py-1 text-sm rounded-md select-none">
-                            <FontAwesomeIcon icon={faX} className="mr-2 text-red-500"/>
-                            Fee Grant failed
-                            <FontAwesomeIcon icon={faRotateRight} className="ml-2 text-zinc-500 group-hover:text-white transition-colors" />
-                          </button>
-                        </Tooltip>
-                      </If>
-                    </>
-                  )}
 
                   <div className="flex-1 sm:flex sm:justify-end">
                     <KeplrPanel
