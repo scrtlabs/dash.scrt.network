@@ -1,6 +1,7 @@
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import React, { Component } from "react";
+import React, { Component, useState } from "react";
+
 
 export function Apps() {
   const dappsData = [
@@ -239,6 +240,25 @@ export function Apps() {
     }
   }
 
+  const [tagsToBeFilteredBy, setTagsToBeFilteredBy] = useState<string[]>([]);
+  function isTagInFilterList(tag: string) {
+    return tagsToBeFilteredBy.find(e => e === tag);
+  }
+
+  function toggleTagFilter(tagName: string) {
+    if (tagsToBeFilteredBy.includes(tagName)) {
+      setTagsToBeFilteredBy(tagsToBeFilteredBy.filter(tag => tag !== tagName));
+    } else {
+      setTagsToBeFilteredBy(tagsToBeFilteredBy.concat(tagName));
+    }
+  }
+
+  function Tag(props: { name: string }) {
+    return <button onClick={() => toggleTagFilter(props.name)} className={"inline-block text-sm font-semibold px-1.5 py-0.5 rounded-md overflow-hidden transition-colors" + (isTagInFilterList(props.name) ? " bg-zinc-500 hover:bg-zinc-600" : " bg-zinc-800 hover:bg-zinc-700")}>{props.name}</button>
+  }
+
+  const [searchText, setSearchText] = useState<string>("");
+
   class SearchAndFilter extends Component {
     render() {
       let tags: string[] = [];
@@ -254,29 +274,45 @@ export function Apps() {
       return (
         <>
           {/* Search */}
-          <div className="relative w-full sm:w-96 mx-auto">
+          <div className="relative w-full sm:w-96 mx-auto mb-4">
             <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
               <FontAwesomeIcon icon={faMagnifyingGlass} className=""/>
             </div>
-            <input type="text" id="search" className="block w-full p-4 pl-10 text-sm rounded-lg bg-zinc-800 text-white" placeholder="Search" />
+            <input value={searchText} onChange={e => setSearchText(e.target.value)} type="text" id="search" className="block w-full p-4 pl-10 text-sm rounded-lg bg-zinc-800 text-white" placeholder="Search" />
           </div>
 
           {/* Filter */}
-          {tags}
+          {/* {tags} */}
+          <div className="space-x-2 text-center mb-8">
+            {tags.map((tag) =>
+              <Tag name={tag}/>
+            )}
+          </div>
 
         </>
       );
     }
   }
 
-  const items = dappsData.map((dapp) =>
+  function filteredDappsData() {
+    var items = dappsData;
+    if (searchText !== "") {
+      items = dappsData.filter(app => app.name.toLowerCase().includes(searchText.toLowerCase()));
+    }
+
+    if (tagsToBeFilteredBy.length > 0) {
+      items = items.filter(item => item.tags.find(tag => tagsToBeFilteredBy.includes(tag)));
+    }
+    return items;
+  }
+
+  const items = filteredDappsData().map((dapp) =>
     <DappItem name={dapp.name} description={dapp.description} tags={dapp.tags} image={dapp.image} url={dapp.url}/>
   )
 
   return (
     <>
       <div className="max-w-screen-2xl mx-auto px-6">
-        
         {/* Search and Filter */}
         <SearchAndFilter/>
 

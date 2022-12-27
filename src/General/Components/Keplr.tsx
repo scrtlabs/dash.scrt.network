@@ -9,6 +9,8 @@ import { faCheck, faCopy, faRotateRight, faX } from "@fortawesome/free-solid-svg
 import { faucetURL } from "General/Utils/commons";
 import { toast } from "react-toastify";
 
+
+
 const SECRET_CHAIN_ID = chains["Secret Network"].chain_id;
 const SECRET_LCD = chains["Secret Network"].lcd;
 const SECRET_RPC = chains["Secret Network"].rpc;
@@ -26,15 +28,24 @@ export function KeplrPanel({
 }) {
 
   // Auto Setup Keplr
-  // useEffect(() => {
-  //   setupKeplr(setSecretjs, setSecretAddress);
-  // }, []);
+  useEffect(() => {
+    setupKeplr(setSecretjs, setSecretAddress);
+  }, []);
 
   const [isFeeGranted, setIsFeeGranted] = useState<boolean>(false);
 
+  const [isMenuVisible, setIsMenuVisible] = useState<boolean>(false);
+
   function disconnectWallet() {
+    // reset secretjs and secretAddress
     setSecretAddress("");
     setSecretjs(null);
+
+    // reset fee grant
+    setIsFeeGranted(false);
+    setFeeGrantStatus(FeeGrantStatus.Untouched);
+
+    // Toast for success
     toast.success("Wallet disconnected!");
   }
 
@@ -111,17 +122,21 @@ export function KeplrPanel({
 class KeplrMenu extends Component {
   render() {
     return <>
-        <div className="bg-zinc-800 border text-xs border-zinc-500 p-4 z-50 absolute top-16 right-4 w-auto rounded-lg">
-          <CopyToClipboard text={secretAddress} onCopy={ () => {toast.success("Address copied to clipboard!")} }>
-            <button className="flex gap-2 items-center group mb-2">
-              <div>{secretAddress.slice(0, 14) + "..." + secretAddress.slice(-14)}</div>
-              <div className="block text-zinc-500 group-hover:text-white transition-colors"><FontAwesomeIcon icon={faCopy}/></div>
-            </button>
-          </CopyToClipboard>
-          <div className="mb-4">
-            <FeeGrantButton/>
+        <div className="absolute top-14 pt-2 right-4 z-50" onMouseEnter={() => setIsMenuVisible(true)} onMouseLeave={() => setIsMenuVisible(false)}>
+          <div className="bg-zinc-800 border text-xs border-zinc-500 p-4 w-auto rounded-lg">
+            <CopyToClipboard text={secretAddress} onCopy={ () => {toast.success("Address copied to clipboard!")} }>
+              <button className="flex gap-2 items-center group mb-2">
+                <div>{secretAddress.slice(0, 14) + "..." + secretAddress.slice(-14)}</div>
+                <div className="block text-zinc-500 group-hover:text-white transition-colors"><FontAwesomeIcon icon={faCopy}/></div>
+              </button>
+            </CopyToClipboard>
+            <div className="mb-4">
+              <FeeGrantButton/>
+            </div>
+            <div className="text-right">
+              <button onClick={disconnectWallet} className="px-3 py-1.5 rounded-md text-zinc-300 border border-zinc-400 hover:border-red-600 hover:text-red-600 transition-colors">Disconnect Wallet</button>
+            </div>
           </div>
-          <button onClick={disconnectWallet} className="float-right px-3 py-1.5 rounded-md text-zinc-300 border border-zinc-400 hover:border-red-600 hover:text-red-600 transition-colors">Disconnect Wallet</button>
         </div>
     </>
   }
@@ -152,20 +167,26 @@ class KeplrMenu extends Component {
 
   if (secretjs) {
     return (<>
-      <KeplrMenu/>
+    <If condition={isMenuVisible}>
+      <div  onMouseEnter={() => setIsMenuVisible(true)} onMouseLeave={() => setIsMenuVisible(false)}>
+        <KeplrMenu/>
+      </div>
+    </If>
       {/* <Tooltip title={secretAddress} placement="bottom-end"> */}
-        <div className="w-full sm:w-auto rounded px-4 py-2 border border-neutral-700 bg-neutral-800 select-none">
+        <div className="w-full sm:w-auto rounded px-4 py-2 border border-neutral-700 bg-neutral-800 select-none" onMouseEnter={() => setIsMenuVisible(true)} onMouseLeave={() => setIsMenuVisible(false)}>
           {content}
         </div>
         {/* </Tooltip> */}
       </>);
   } else {
     return (
-      <button id="keplr-button" onClick={() => setupKeplr(setSecretjs, setSecretAddress)}
-        className="w-full sm:w-auto rounded px-4 py-2 border border-neutral-700 bg-neutral-800 hover:bg-neutral-700 active:bg-neutral-600 transition-colors select-none"
-      >
-        {content}
-      </button>
+      <>
+        <button id="keplr-button" onClick={() => setupKeplr(setSecretjs, setSecretAddress)}
+          className="w-full sm:w-auto rounded px-4 py-2 border border-neutral-700 bg-neutral-800 hover:bg-neutral-700 active:bg-neutral-600 transition-colors select-none"
+        >
+          {content}
+        </button>
+      </>
     );
   }
 }
