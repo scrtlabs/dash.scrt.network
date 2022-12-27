@@ -4,20 +4,20 @@ import React, { Component } from "react";
 
 export function Apps() {
   const dappsData = [
-    {
-      "name": "Abakhus",
-      "description": "A protocol to secure health and life science data.",
-      "url": "https://abakhus.io/",
-      "image": "abakhus.png",
-      "tags": ["Communications"]
-    },
-    {
-      "name": "ActiList",
-      "description": "Interactive NFT marketplace with secret auctions and customizable access control.",
-      "url": "https://abakhus.io/",
-      "image": "actilist.webp",
-      "tags": ["NFTs"]
-    },
+    // {
+    //   "name": "Abakhus",
+    //   "description": "A protocol to secure health and life science data.",
+    //   "url": "https://abakhus.io/",
+    //   "image": "abakhus.png",
+    //   "tags": ["Communications"]
+    // },
+    // {
+    //   "name": "ActiList",
+    //   "description": "Interactive NFT marketplace with secret auctions and customizable access control.",
+    //   "url": "https://abakhus.io/",
+    //   "image": "actilist.webp",
+    //   "tags": ["NFTs"]
+    // },
     {
       "name": "Alter",
       "description": "A private and secure messaging app that protects your data and identity when communicating online.",
@@ -32,13 +32,13 @@ export function Apps() {
       "image": "amberdao.webp",
       "tags": ["Defi"]
     },
-    {
-      "name": "BIDSHOP",
-      "description": "The first and only trustless NFT marketplace with encrypted & secret bidding.",
-      "url": "https://www.bidshop.io/",
-      "image": "bidshop.webp",
-      "tags": ["NFTs", "Games"]
-    },
+    // {
+    //   "name": "BIDSHOP",
+    //   "description": "The first and only trustless NFT marketplace with encrypted & secret bidding.",
+    //   "url": "https://www.bidshop.io/",
+    //   "image": "bidshop.webp",
+    //   "tags": ["NFTs", "Games"]
+    // },
     {
       "name": "BlackBox",
       "description": "A collection of dApps to bring together privacy and convenience.",
@@ -46,13 +46,13 @@ export function Apps() {
       "image": "blackbox.webp",
       "tags": ["Defi"]
     },
-    {
-      "name": "Blizzard",
-      "description": "A balancer-like AMM that provides many features, competitive rates, and a zero-inflation stakeholder growth model.",
-      "url": "https://blizzard.finance/",
-      "image": "blizzard.svg",
-      "tags": ["Defi"]
-    },
+    // {
+    //   "name": "Blizzard",
+    //   "description": "A balancer-like AMM that provides many features, competitive rates, and a zero-inflation stakeholder growth model.",
+    //   "url": "https://blizzard.finance/",
+    //   "image": "blizzard.svg",
+    //   "tags": ["Defi"]
+    // },
     {
       "name": "btn.group",
       "description": "Home of Button Swap, Secret Network's only DEX aggregator, and other DEFI apps and dapps.",
@@ -60,13 +60,13 @@ export function Apps() {
       "image": "btngroup.webp",
       "tags": ["Defi", "NFTs", "Amm"]
     },
-    {
-      "name": "Bushi",
-      "description": "A competitive third-person shooter that blurs the lines between traditional games, web3 gaming, and esports.",
-      "url": "https://twitter.com/playBushi",
-      "image": "bushi.webp",
-      "tags": ["Games"]
-    },
+    // {
+    //   "name": "Bushi",
+    //   "description": "A competitive third-person shooter that blurs the lines between traditional games, web3 gaming, and esports.",
+    //   "url": "https://twitter.com/playBushi",
+    //   "image": "bushi.webp",
+    //   "tags": ["Games"]
+    // },
     {
       "name": "CertUP",
       "description": "Revolutionising official document distribution, verification and publication through Secret NFTs.",
@@ -102,13 +102,13 @@ export function Apps() {
       "image": "onenet.webp",
       "tags": ["Games"]
     },
-    {
-      "name": "Packs",
-      "description": "A DAO platform that allows web3 teams to easily organize digital assets and make decisions together.",
-      "url": "https://www.packs.space/",
-      "image": "packs.png",
-      "tags": ["Social", "Communications"]
-    },
+    // {
+    //   "name": "Packs",
+    //   "description": "A DAO platform that allows web3 teams to easily organize digital assets and make decisions together.",
+    //   "url": "https://www.packs.space/",
+    //   "image": "packs.png",
+    //   "tags": ["Social", "Communications"]
+    // },
     {
       "name": "Secret Bridges",
       "description": "Bridges from Ethereum, Binance Smart Chain, and Monero to Secret.",
@@ -130,13 +130,13 @@ export function Apps() {
       "image": "secrettimecapsule.webp",
       "tags": ["Communications", "Defi"]
     },
-    {
-      "name": "Secret Tokens",
-      "description": "Wrapping Coins as Secret Tokens immediately supercharges them with private balances and private transfers.",
-      "url": "https://wrap.scrt.network/",
-      "image": "secrettokens.webp",
-      "tags": []
-    },
+    // {
+    //   "name": "Secret Tokens",
+    //   "description": "Wrapping Coins as Secret Tokens immediately supercharges them with private balances and private transfers.",
+    //   "url": "https://wrap.scrt.network/",
+    //   "image": "secrettokens.webp",
+    //   "tags": []
+    // },
     {
       "name": "SecretDAO",
       "description": "SecretDAO is a DAO creation tooling platform that aims to make DAO creation simple, easy, and accessible.",
@@ -158,13 +158,13 @@ export function Apps() {
       "image": "selenian.webp",
       "tags": ["Defi"]
     },
-    {
-      "name": "Serenity Shield",
-      "description": "Serenity Shield provides a tool for backing up your seed phrase and other sensitive data, allowing recovery in an emergency event.",
-      "url": "https://serenityshield.io/",
-      "image": "serenityshield.png",
-      "tags": ["Defi"]
-    },
+    // {
+    //   "name": "Serenity Shield",
+    //   "description": "Serenity Shield provides a tool for backing up your seed phrase and other sensitive data, allowing recovery in an emergency event.",
+    //   "url": "https://serenityshield.io/",
+    //   "image": "serenityshield.png",
+    //   "tags": ["Defi"]
+    // },
     {
       "name": "Shade Protocol",
       "description": "An array of connected privacy-preserving DeFi applications built on Secret Network.",
@@ -200,13 +200,13 @@ export function Apps() {
       "image": "virl.webp",
       "tags": ["NFTs"]
     },
-    {
-      "name": "YOIU",
-      "description": "A gateway to future IDO's of tech startups, fueled by secret tokens.",
-      "url": "https://yoiu.notion.site/yoiu/YOIU-s-Gateway-a006a05c39a241638bb7cff2f7c2de5a",
-      "image": "yoiu.png",
-      "tags": ["Defi", "Social"]
-    }
+    // {
+    //   "name": "YOIU",
+    //   "description": "A gateway to future IDO's of tech startups, fueled by secret tokens.",
+    //   "url": "https://yoiu.notion.site/yoiu/YOIU-s-Gateway-a006a05c39a241638bb7cff2f7c2de5a",
+    //   "image": "yoiu.png",
+    //   "tags": ["Defi", "Social"]
+    // }
   ]
 
   interface IDappItemProps {

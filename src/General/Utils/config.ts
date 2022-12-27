@@ -44,6 +44,20 @@ export const chains: { [chain_name: string]: Chain } = {
     chain_image: "/scrt.svg",
     explorer_account: "https://www.mintscan.io/secret/account/",
   },
+  Agoric: {
+    chain_name: "Agoric",
+    deposit_channel_id: "channel-10",
+    deposit_gas: 150_000,
+    deposit_gas_denom: "ubld",
+    withdraw_channel_id: "channel-51",
+    withdraw_gas: 30_000,
+    chain_id: "agoric-3",
+    bech32_prefix: "agoric",
+    lcd: "https://main.api.agoric.net",
+    rpc: "https://main.rpc.agoric.net",
+    chain_image: "/bld.webp",
+    explorer_account: "https://agoric.explorers.guru/account/",
+  },
   Akash: {
     chain_name: "Akash",
     deposit_channel_id: "channel-43",
@@ -53,7 +67,7 @@ export const chains: { [chain_name: string]: Chain } = {
     withdraw_gas: 30_000,
     chain_id: "akashnet-2",
     bech32_prefix: "akash",
-    lcd: "https://akash-api.lavenderfive.com:443",
+    lcd: "https://akash-api.lavenderfive.com",
     rpc: "https://rpc.akash.forbole.com",
     chain_image: "/akt.svg",
     explorer_account: "https://www.mintscan.io/akash/account/",
@@ -313,6 +327,18 @@ export const tokens: Token[] = [
     coingecko_id: "secret",
     deposits: [
       {
+        source_chain_name: "Agoric",
+        from_denom: ibcDenom(
+          [
+            {
+              incomingChannelId: chains["Agoric"].deposit_channel_id,
+              incomingPortId: "transfer",
+            },
+          ],
+          "uscrt"
+        ),
+      },
+      {
         source_chain_name: "Akash",
         from_denom: ibcDenom(
           [
@@ -495,6 +521,10 @@ export const tokens: Token[] = [
     ],
     withdrawals: [
       {
+        target_chain_name: "Agoric",
+        from_denom: "uscrt",
+      },
+      {
         target_chain_name: "Akash",
         from_denom: "uscrt",
       },
@@ -610,6 +640,35 @@ export const tokens: Token[] = [
             },
           ],
           "uatom"
+        ),
+      },
+    ],
+  },
+  {
+    name: "BLD",
+    address: "secret1rw2l7z22s3ed6dl5v70ktvnckhurldy23a3a58",
+    code_hash:
+      "5a085bd8ed89de92b35134ddd12505a602c7759ea25fb5c089ba03c8535b3042",
+    image: "/bld.webp",
+    decimals: 6,
+    coingecko_id: "agoric",
+    deposits: [
+      {
+        source_chain_name: "Agoric",
+        from_denom: "ubld",
+      },
+    ],
+    withdrawals: [
+      {
+        target_chain_name: "Agoric",
+        from_denom: ibcDenom(
+          [
+            {
+              incomingChannelId: chains["Agoric"].withdraw_channel_id,
+              incomingPortId: "transfer",
+            },
+          ],
+          "ubld"
         ),
       },
     ],
