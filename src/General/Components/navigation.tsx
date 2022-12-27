@@ -40,8 +40,8 @@ export function Navigation({
           </a>
         </li>
         <li>
-        <NavLink to="/dapps" className={({ isActive }) => isActive ? "text-white bg-gradient-to-r from-zinc-700 via-zinc-700-700 to-zinc-700/5 block w-full px-8 py-5 rounded-full transition-colors" : "hover:text-white block w-full px-8 py-5 rounded-full transition-colors"}>
-          <FontAwesomeIcon icon={faBox} className="mr-2" />dApps
+        <NavLink to="/apps" className={({ isActive }) => isActive ? "text-white bg-gradient-to-r from-zinc-700 via-zinc-700-700 to-zinc-700/5 block w-full px-8 py-5 rounded-full transition-colors" : "hover:text-white block w-full px-8 py-5 rounded-full transition-colors"}>
+          <FontAwesomeIcon icon={faBox} className="mr-2" />Apps
           </NavLink>
         </li>
         <li>
