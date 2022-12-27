@@ -848,6 +848,35 @@ export const tokens: Token[] = [
     ],
   },
   {
+    name: "IST",
+    address: "secret176fwt6frltj2gjuegtu70ge9652kch2amx5kf0",
+    code_hash:
+      "5a085bd8ed89de92b35134ddd12505a602c7759ea25fb5c089ba03c8535b3042",
+    image: "/ist.webp",
+    decimals: 6,
+    coingecko_id: "inter-stable-token",
+    deposits: [
+      {
+        source_chain_name: "Agoric",
+        from_denom: "uist",
+      },
+    ],
+    withdrawals: [
+      {
+        target_chain_name: "Agoric",
+        from_denom: ibcDenom(
+          [
+            {
+              incomingChannelId: chains["Agoric"].withdraw_channel_id,
+              incomingPortId: "transfer",
+            },
+          ],
+          "uist"
+        ),
+      },
+    ],
+  },
+  {
     name: "JUNO",
     address: "secret1smmc5k24lcn4j2j8f3w0yaeafga6wmzl0qct03",
     code_hash:

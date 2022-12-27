@@ -59,7 +59,7 @@ export function Apps() {
       "description": "Home of Button Swap, Secret Network's only DEX aggregator, and other DEFI apps and dapps.",
       "url": "https://btn.group/",
       "image": "btngroup.webp",
-      "tags": ["Defi", "NFTs", "Amm"]
+      "tags": ["Defi", "NFTs", "AMM"]
     },
     // {
     //   "name": "Bushi",
@@ -150,7 +150,7 @@ export function Apps() {
       "description": "A liquidity hub DEX with sustainable and efficient liquidity",
       "url": "https://arufaresearch.com/",
       "image": "secretswap2_0.png",
-      "tags": ["Defi", "Amm"]
+      "tags": ["Defi", "AMM"]
     },
     {
       "name": "Selenian",
@@ -178,7 +178,7 @@ export function Apps() {
       "description": "Privacy-first & cross-chain defi platform. Privately swap, lend and convert your tokens into their private equivalent.",
       "url": "https://sienna.network/swap/",
       "image": "siennaswap.webp",
-      "tags": ["Defi", "Amm"]
+      "tags": ["Defi", "AMM"]
     },
     {
       "name": "Stake Easy",
