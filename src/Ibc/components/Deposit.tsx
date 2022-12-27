@@ -292,10 +292,10 @@ export default function Deposit () {
         <div className="flex">
           <div className="font-bold mr-4 w-10">From:</div>
           <div className="flex-1 truncate">
-            {ibcMode === IbcMode.Deposit && (
+            {(ibcMode === IbcMode.Deposit && secretjs && secretAddress) && (
               <a href={`${sourceChain.explorer_account}${sourceAddress}`} target="_blank">{sourceAddress}</a>
             )}
-            {ibcMode === IbcMode.Withdrawal && (
+            {(ibcMode === IbcMode.Withdrawal && secretjs && secretAddress) && (
               <a href={`${targetChain.explorer_account}${secretAddress}`} target="_blank">{secretAddress}</a>
             )}
           </div>
