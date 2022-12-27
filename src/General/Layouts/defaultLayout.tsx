@@ -42,7 +42,7 @@ export const DefaultLayout =({children}:any) =>{
 
   return (
     <>
-      <Discord />
+      {/* <Discord /> */}
 
       <div className="flex">
         <aside
