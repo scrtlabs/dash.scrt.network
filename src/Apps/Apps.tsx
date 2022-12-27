@@ -257,42 +257,19 @@ export function Apps() {
     return <button onClick={() => toggleTagFilter(props.name)} className={"inline-block text-sm font-semibold px-1.5 py-0.5 rounded-md overflow-hidden transition-colors" + (isTagInFilterList(props.name) ? " bg-zinc-500 hover:bg-zinc-600" : " bg-zinc-800 hover:bg-zinc-700")}>{props.name}</button>
   }
 
+
+  // Search and Filter
   const [searchText, setSearchText] = useState<string>("");
-
-  class SearchAndFilter extends Component {
-    render() {
-      let tags: string[] = [];
-      dappsData.forEach((app) => {
-        app.tags.forEach((tag) => {
-          if (!tags.find(tagItem => tagItem === tag)) {
-            tags.push(tag);
-          }
-        })
-      });
-      tags = tags.sort();
-
-      return (
-        <>
-          {/* Search */}
-          <div className="relative w-full sm:w-96 mx-auto mb-4">
-            <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-              <FontAwesomeIcon icon={faMagnifyingGlass} className=""/>
-            </div>
-            <input value={searchText} onChange={e => setSearchText(e.target.value)} type="text" id="search" className="block w-full p-4 pl-10 text-sm rounded-lg bg-zinc-800 text-white" placeholder="Search" />
-          </div>
-
-          {/* Filter */}
-          {/* {tags} */}
-          <div className="space-x-2 text-center mb-8">
-            {tags.map((tag) =>
-              <Tag name={tag}/>
-            )}
-          </div>
-
-        </>
-      );
-    }
-  }
+  
+  let tags: string[] = [];
+  dappsData.forEach((app) => {
+    app.tags.forEach((tag) => {
+      if (!tags.find(tagItem => tagItem === tag)) {
+        tags.push(tag);
+      }
+    })
+  });
+  tags = tags.sort();
 
   function filteredDappsData() {
     var items = dappsData;
@@ -314,7 +291,20 @@ export function Apps() {
     <>
       <div className="max-w-screen-2xl mx-auto px-6">
         {/* Search and Filter */}
-        <SearchAndFilter/>
+        <div className="relative w-full sm:w-96 mx-auto mb-4">
+          <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+            <FontAwesomeIcon icon={faMagnifyingGlass} className=""/>
+          </div>
+          <input value={searchText} onChange={e => setSearchText(e.target.value)} type="text" id="search" className="block w-full p-4 pl-10 text-sm rounded-lg bg-zinc-800 text-white" placeholder="Search" />
+        </div>
+
+          {/* Filter */}
+          {/* {tags} */}
+          <div className="space-x-2 text-center mb-8">
+            {tags.map((tag) =>
+              <Tag name={tag}/>
+            )}
+          </div>
 
         {/* items */}
         <div className="grid grid-cols-12 gap-4 auto-rows-auto">
