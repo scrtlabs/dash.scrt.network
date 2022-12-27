@@ -11,7 +11,7 @@ import { Ibc } from "Ibc/Ibc";
 import { Wrap } from "Wrap/Wrap";
 import DefaultLayout from 'General/Layouts/defaultLayout';
 import { Dashboard } from 'Dashboard/Dashboard';
-import { Dapps } from 'Dapps/Dapps';
+import { Apps } from 'Apps/Apps';
 
 globalThis.Buffer = Buffer;
 declare global {
@@ -69,7 +69,7 @@ export default function App() {
     <Route path="/" element={<Dashboard />}/>
       <Route path="/ibc" element={<Ibc />}/>
       <Route path="/wrap" element={<Wrap />}/>
-      <Route path="/dapps" element={<Dapps />}/>
+      <Route path="/apps" element={<Apps />}/>
     </Routes>
   );
 }

@@ -1,6 +1,8 @@
+import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { Component } from "react";
 
-export function Dapps() {
+export function Apps() {
   const dappsData = [
     {
       "name": "Abakhus",
@@ -220,18 +222,50 @@ export function Dapps() {
       var tags = this.props.tags?.map((tag) =>
         <span className="bg-zinc-900 text-xs font-semibold px-2 py-1 rounded-md inline-block">{tag}</span>
       );
-      return <>
-        <a href={this.props.url || "#"} target={this.props.url ? "_blank" : "_self"} className="col-span-12 sm:col-span-6 md:col-span-4 xl:col-span-3">
-          <div className="bg-zinc-800 hover:bg-zinc-700 transition-colors p-4 flex flex-col h-full rounded-xl overflow-hidden">
-            <img src={"/dapps/" + this.props.image} alt={`${this.props.name} logo`} className="w-16 h-16 rounded-xl block mb-4 bg-zinc-900 flex-initial"/>
-            <div className="text-2xl font-bold flex-initial">{this.props.name}</div>
-            <div className="text-zinc-400 flex-1">{this.props.description}</div>
-            <div className="space-x-2 mt-4 flex-initial">
-              {tags}
+      return ( 
+        <>
+          <a href={this.props.url || "#"} target={this.props.url ? "_blank" : "_self"} className="col-span-12 sm:col-span-6 md:col-span-4 xl:col-span-3">
+            <div className="bg-zinc-800 hover:bg-zinc-700 transition-colors p-4 flex flex-col h-full rounded-xl overflow-hidden">
+              <img src={"/dapps/" + this.props.image} alt={`${this.props.name} logo`} className="w-16 h-16 rounded-xl block mb-4 bg-zinc-900 flex-initial"/>
+              <div className="text-2xl font-bold flex-initial">{this.props.name}</div>
+              <div className="text-zinc-400 flex-1">{this.props.description}</div>
+              <div className="space-x-2 mt-4 flex-initial">
+                {tags}
+              </div>
             </div>
+          </a>
+        </>
+      );
+    }
+  }
+
+  class SearchAndFilter extends Component {
+    render() {
+      let tags: string[] = [];
+      dappsData.forEach((app) => {
+        app.tags.forEach((tag) => {
+          if (!tags.find(tagItem => tagItem === tag)) {
+            tags.push(tag);
+          }
+        })
+      });
+      tags = tags.sort();
+
+      return (
+        <>
+          {/* Search */}
+          <div className="relative w-full sm:w-96 mx-auto">
+            <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+              <FontAwesomeIcon icon={faMagnifyingGlass} className=""/>
+            </div>
+            <input type="text" id="search" className="block w-full p-4 pl-10 text-sm rounded-lg bg-zinc-800 text-white" placeholder="Search" />
           </div>
-        </a>
-      </>
+
+          {/* Filter */}
+          {tags}
+
+        </>
+      );
     }
   }
 
@@ -242,6 +276,11 @@ export function Dapps() {
   return (
     <>
       <div className="max-w-screen-2xl mx-auto px-6">
+        
+        {/* Search and Filter */}
+        <SearchAndFilter/>
+
+        {/* items */}
         <div className="grid grid-cols-12 gap-4 auto-rows-auto">
             {items}
         </div>
