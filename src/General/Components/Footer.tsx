@@ -13,10 +13,10 @@ export function Footer() {
         <div className="flex-initial space-x-3 text-xl">
           <a href="https://github.com/scrtlabs" target="_blank"><FontAwesomeIcon icon={faGithub} /></a>
           <a href="https://discord.com/invite/SJK32GY" target="_blank"><FontAwesomeIcon icon={faDiscord} /></a>
-          {/* <a href="https://t.me/SCRTcommunity" target="_blank"><FontAwesomeIcon icon={faTelegram} /></a> */}
+          <a href="https://t.me/SCRTcommunity" target="_blank"><FontAwesomeIcon icon={faTelegram} /></a>
           <a href="https://twitter.com/SecretNetwork" target="_blank"><FontAwesomeIcon icon={faTwitter} /></a>
-          {/* <a href="https://www.instagram.com/scrtnetwork" target="_blank"><FontAwesomeIcon icon={faInstagram} /></a> */}
-          {/* <a href="https://www.youtube.com/channel/UCZPqj7h7mzjwuSfw_UWxQPw" target="_blank"><FontAwesomeIcon icon={faYoutube} /></a> */}
+          <a href="https://www.instagram.com/scrtnetwork" target="_blank"><FontAwesomeIcon icon={faInstagram} /></a>
+          <a href="https://www.youtube.com/channel/UCZPqj7h7mzjwuSfw_UWxQPw" target="_blank"><FontAwesomeIcon icon={faYoutube} /></a>
         </div>
       </div>
     </>
