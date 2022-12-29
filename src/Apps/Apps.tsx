@@ -227,8 +227,8 @@ export function Apps() {
         <>
           <a href={this.props.url || "#"} target={this.props.url ? "_blank" : "_self"} className="col-span-12 sm:col-span-6 md:col-span-4 xl:col-span-3">
             <div className="bg-zinc-800 hover:bg-zinc-700 transition-colors p-4 flex flex-col h-full rounded-xl overflow-hidden">
-              <img src={"/dapps/" + this.props.image} alt={`${this.props.name} logo`} className="w-16 h-16 rounded-xl block mb-4 bg-zinc-900 flex-initial"/>
-              <div className="text-2xl font-bold flex-initial">{this.props.name}</div>
+              <img src={"/img/dapps/" + this.props.image} alt={`${this.props.name} logo`} className="w-16 h-16 rounded-xl block mb-4 bg-zinc-900 flex-initial"/>
+              <div className="text-xl font-semibold flex-initial mb-1">{this.props.name}</div>
               <div className="text-zinc-400 flex-1">{this.props.description}</div>
               <div className="space-x-2 mt-4 flex-initial">
                 {tags}
@@ -254,7 +254,7 @@ export function Apps() {
   }
 
   function Tag(props: { name: string }) {
-    return <button onClick={() => toggleTagFilter(props.name)} className={"inline-block text-sm font-semibold px-1.5 py-0.5 rounded-md overflow-hidden transition-colors" + (isTagInFilterList(props.name) ? " bg-zinc-500 hover:bg-zinc-600" : " bg-zinc-800 hover:bg-zinc-700")}>{props.name}</button>
+    return <button onClick={() => toggleTagFilter(props.name)} className={"inline-block text-sm px-1.5 py-0.5 rounded-md overflow-hidden transition-colors" + (isTagInFilterList(props.name) ? " bg-zinc-500 hover:bg-zinc-600 font-semibold" : " bg-zinc-800 hover:bg-zinc-700 font-medium")}>{props.name}</button>
   }
 
 
@@ -290,7 +290,7 @@ export function Apps() {
   return (
     <>
       <div className="max-w-screen-2xl mx-auto px-6">
-        <h1 className="text-center font-bold text-4xl mb-10">Applications</h1>
+        <h1 className="text-center font-bold text-4xl mb-10">Apps</h1>
         {/* Search and Filter */}
         <div className="relative w-full sm:w-96 mx-auto mb-4">
           <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">

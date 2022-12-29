@@ -6,14 +6,16 @@ import { KeplrContext, FeeGrantContext } from "General/Layouts/defaultLayout";
 import BigNumber from "bignumber.js";
 import { toast} from "react-toastify";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faKey, faArrowRightArrowLeft, faRightLeft, faCircleInfo } from '@fortawesome/free-solid-svg-icons'
+import { faKey, faArrowRightArrowLeft, faRightLeft, faCircleInfo, faInfoCircle } from '@fortawesome/free-solid-svg-icons'
 import { getKeplrViewingKey, setKeplrViewingKey } from "General/Components/Keplr";
 import { Link } from "react-router-dom";
 import Select from "react-select";
+import Tooltip from "@mui/material/Tooltip";
 
 export const WrapContext = createContext(null);
 
 export function Wrap() {
+  
   enum WrappingMode {
     Wrap,
     Unwrap
@@ -33,7 +35,7 @@ export function Wrap() {
   const {useFeegrant, setUseFeegrant} = useContext(FeeGrantContext);
 
   const [price, setPrice] = useState <number>();
-  const [amount, setAmount] = useState<string>("");
+  const [amountToWrap, setAmount] = useState<string>("");
   const [wrappingMode, setWrappingMode] = useState<WrappingMode>(modePreselection);
   const [selectedToken, setselectedToken] = useState<Token>(tokens.filter(token => token.name === tokenPreselection)[0]);
 
@@ -60,10 +62,10 @@ export function Wrap() {
       return match && str === match[0];
     }
 
-    if (new BigNumber(amount) > new BigNumber(availableAmount) && !(tokenWrappedBalance == viewingKeyErrorString && wrappingMode === WrappingMode.Unwrap)) {
+    if (new BigNumber(amountToWrap) > new BigNumber(availableAmount) && !(tokenWrappedBalance == viewingKeyErrorString && wrappingMode === WrappingMode.Unwrap)) {
       setValidationMessage("Not enough balance");
       setisValidAmount(false);
-    } else if (!matchExact(numberRegex, amount)) {
+    } else if (!matchExact(numberRegex, amountToWrap)) {
       setValidationMessage("Please enter a valid amount");
       setisValidAmount(false);
     } else {
@@ -73,7 +75,7 @@ export function Wrap() {
 
   useEffect(() => {
     validateForm();
-}, [amount, wrappingMode]);
+}, [amountToWrap, wrappingMode]);
 
   async function handleInputChange(e: any) {
     await setAmount(e.target.value);
@@ -202,18 +204,23 @@ export function Wrap() {
     if (!loadingCoinBalance && secretjs && secretAddress) {
       return (
         <>
-          <span className="font-bold">Available:</span>
-          {' ' + new BigNumber(tokenNativeBalance!)
-            .dividedBy(`1e${selectedToken.decimals}`)
-            .toFormat()} {selectedToken.name} ({usdString.format(
-          new BigNumber(tokenNativeBalance!)
-            .dividedBy(`1e${selectedToken.decimals}`)
-            .multipliedBy(Number(price))
-            .toNumber()
-          )})
-          <Link to={'/ibc'} className="ml-2 hover:text-white transition-colors hover:bg-zinc-900 px-1.5 py-0.5 rounded">
-            <FontAwesomeIcon icon={faArrowRightArrowLeft} />
-          </Link>
+          <span className="font-semibold">Available:</span>
+          <span className="font-medium">
+            {' ' + new BigNumber(tokenNativeBalance!)
+              .dividedBy(`1e${selectedToken.decimals}`)
+              .toFormat()} {selectedToken.name} ({usdString.format(
+            new BigNumber(tokenNativeBalance!)
+              .dividedBy(`1e${selectedToken.decimals}`)
+              .multipliedBy(Number(price))
+              .toNumber()
+            )})
+          </span>
+
+          <Tooltip title={`IBC Transfer`} placement="bottom">
+            <Link to={'/ibc'} className="ml-2 hover:text-white transition-colors hover:bg-zinc-900 px-1.5 py-0.5 rounded">
+              <FontAwesomeIcon icon={faArrowRightArrowLeft} />
+            </Link>
+          </Tooltip>
         </>
       );
     } else {
@@ -229,7 +236,7 @@ export function Wrap() {
     } else if (tokenWrappedBalance == viewingKeyErrorString) {
       return (
         <>
-          <span className="font-bold">Available:</span>
+          <span className="font-semibold">Available:</span>
           <button className="ml-2 bg-zinc-900 px-1.5 py-0.5 rounded-md border-zinc-700 transition-colors hover:bg-zinc-700 focus:bg-zinc-500 cursor-pointer disabled:text-zinc-500 disabled:hover:bg-zinc-900 disabled:cursor-default" 
           onClick={async () => {
             await setKeplrViewingKey(selectedToken.address);
@@ -251,14 +258,14 @@ export function Wrap() {
         <>
           {/* Available: 0.123456 sSCRT () */}
           <span className="font-bold">Available:</span>
-          {` ${new BigNumber(tokenWrappedBalance!)
+          <span className="font-medium">{` ${new BigNumber(tokenWrappedBalance!)
                 .dividedBy(`1e${selectedToken.decimals}`)
                 .toFormat()} s` + selectedToken.name + ` (${usdString.format(
             new BigNumber(tokenWrappedBalance!)
               .dividedBy(`1e${selectedToken.decimals}`)
               .multipliedBy(Number(price))
               .toNumber()
-            )})`}
+            )})`}</span>
         </>
       )
     }
@@ -269,9 +276,11 @@ export function Wrap() {
 
     return (
       <div className="text-center sm:mt-6 sm:mb-2 my-6">
-        <button onClick={() => toggleWrappingMode()} disabled={disabled} className={"bg-zinc-900 px-3 py-2 text-blue-600 transition-colors rounded-full" + (!disabled ? " hover:text-blue-400 focus:text-blue-600" : "")}>
-          <FontAwesomeIcon icon={faRightLeft} className="fa-rotate-90" />
-        </button>
+        <Tooltip title={`Switch to ${wrappingMode === WrappingMode.Wrap ? "Unwrapping" : "Wrapping"}`} placement="bottom">
+          <button onClick={() => toggleWrappingMode()} disabled={disabled} className={"bg-zinc-900 px-3 py-2 text-blue-600 transition-colors rounded-full" + (!disabled ? " hover:text-blue-400 focus:text-blue-600" : "")}>
+            <FontAwesomeIcon icon={faRightLeft} className="fa-rotate-90" />
+          </button>
+        </Tooltip>
       </div>
     )
   }
@@ -295,12 +304,12 @@ export function Wrap() {
     async function submit() {
       if (!secretjs || !secretAddress) { return; }
 
-      if (!isValidAmount || amount === "") {
+      if (!isValidAmount || amountToWrap === "") {
         uiFocusInput();
         return;
       }
 
-      const baseAmount = amount;
+      const baseAmount = amountToWrap;
       const amount = new BigNumber(Number(baseAmount))
         .multipliedBy(`1e${selectedToken.decimals}`)
         .toFixed(0, BigNumber.ROUND_DOWN);
@@ -417,13 +426,14 @@ export function Wrap() {
         onClick={() => submit()}>
         {/* {wrappingMode === WrappingMode.Wrap ? "Wrap" : "Unwrap"} */}
         {/* text for wrapping with value */}
-        {(secretAddress && secretjs && wrappingMode === WrappingMode.Wrap && amount) && (<>
-          Wrap <span className="text-xs font-bold mx-1">{amount} {nativeCurrency}</span> into <span className="text-xs font-normal mx-1">{amount} {wrappedCurrency}</span>
+        {(secretAddress && secretjs && wrappingMode === WrappingMode.Wrap && amount) && (
+        <>
+          {`Wrap ${amount} ${nativeCurrency} into ${amount} ${wrappedCurrency}`}
         </>)}
 
         {/* text for unwrapping with value */}
         {(secretAddress && secretjs && wrappingMode === WrappingMode.Unwrap && amount) && (<>
-          Unwrap <span className="text-xs font-bold mx-1">{amount} {wrappedCurrency}</span> into <span className="text-xs font-normal mx-1">{amount} {nativeCurrency}</span>
+          {`Unwrap ${amount} ${wrappedCurrency} into ${amount} ${nativeCurrency}`}
         </>)}
 
         {/* general text without value */}
@@ -513,16 +523,19 @@ export function Wrap() {
         <div className="border rounded-lg p-7 border-zinc-700 w-full bg-zinc-800 text-zinc-200">
 
           {/* Header */}
-          <div className="mb-4">
-            <h1 className="inline text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-violet-500">Secret Wrap</h1>
-          </div>
+          <div className="flex items-center mb-4">
+            <h1 className="inline text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-violet-500">Secret {wrappingMode === WrappingMode.Wrap ? "Wrap" : "Unwrap"}</h1>
 
+            <Tooltip title={message} placement="bottom">
+              <div className="ml-2 text-zinc-400 hover:text-white transition-colors cursor-pointer"><FontAwesomeIcon icon={faInfoCircle}/></div>
+            </Tooltip>
+          </div>
 
           {/* *** From *** */}
 
           {/* Title Bar */}
           <div className="flex flex-col sm:flex-row">
-            <div className="flex-1 font-bold mb-2 text-center sm:text-left">From</div>
+            <div className="flex-1 font-semibold mb-2 text-center sm:text-left">From</div>
             {!isValidAmount && (
               <div className="flex-initial">
                 <div className="text-red-500 text-xs text-center sm:text-right mb-2">{validationMessage}</div>
@@ -536,14 +549,14 @@ export function Wrap() {
             <Select isDisabled={!selectedToken.address || !secretAddress} options={tokens.sort((a, b) => a.name.localeCompare(b.name))} value={selectedToken} onChange={setselectedToken} isSearchable={false}
               formatOptionLabel={token => (
                 <div className="flex items-center">
-                  <img src={token.image} className="w-5 h-5 mr-2 rounded-full" />
-                  <span className="font-bold text-sm">
+                  <img src={`/img/assets/${token.image}`} className="w-5 h-5 mr-2 rounded-full" />
+                  <span className="font-semibold text-sm">
                     {wrappingMode == WrappingMode.Unwrap && 's'}
                     {token.name}
                   </span>
                 </div>
               )} className="react-select-wrap-container" classNamePrefix="react-select-wrap" />
-            <input value={amount} onChange={handleInputChange} type="text" className={"focus:z-10 block flex-1 min-w-0 w-full bg-zinc-900 text-white px-4 rounded-r-lg disabled:placeholder-zinc-700 transition-colors" + (!isValidAmount ? "  border border-red-500" : "")} name="fromValue" id="fromValue" placeholder="0" disabled={!secretAddress}/>
+            <input value={amountToWrap} onChange={handleInputChange} type="text" className={"focus:z-10 block flex-1 min-w-0 w-full bg-zinc-900 text-white px-4 rounded-r-lg disabled:placeholder-zinc-700 transition-colors" + (!isValidAmount ? "  border border-red-500" : "")} name="fromValue" id="fromValue" placeholder="0" disabled={!secretAddress}/>
           </div>
 
           {/* Balance | [25%|50%|75%|Max] */}
@@ -570,23 +583,23 @@ export function Wrap() {
 
           <div>
             <div className="flex">
-              <div className="flex-1 font-bold mb-2 text-center sm:text-left">To</div>
+              <div className="flex-1 font-semibold mb-2 text-center sm:text-left">To</div>
             </div>
 
             <div className="flex">
               <Select isDisabled={!selectedToken.address || !secretAddress} options={tokens.sort((a, b) => a.name.localeCompare(b.name))} value={selectedToken} onChange={setselectedToken} isSearchable={false} formatOptionLabel={token => (
                 <div className="flex items-center">
-                  <img src={token.image} className="w-6 h-6 mr-2 rounded-full" />
-                  <span className="font-bold text-sm">
+                  <img src={`/img/assets/${token.image}`} className="w-6 h-6 mr-2 rounded-full" />
+                  <span className="font-semibold text-sm">
                     {wrappingMode == WrappingMode.Wrap && 's'}
                     {token.name}
                   </span>
                 </div>
               )} className="react-select-wrap-container" classNamePrefix="react-select-wrap" />
-              <input value={amount} onChange={handleInputChange} type="text" className={"focus:z-10 block flex-1 min-w-0 w-full bg-zinc-900 text-white px-4 rounded-r-lg disabled:placeholder-zinc-700 transition-colors"} name="toValue" id="toValue" placeholder="0" disabled={!selectedToken.address || !secretAddress}/>
+              <input value={amountToWrap} onChange={handleInputChange} type="text" className={"focus:z-10 block flex-1 min-w-0 w-full bg-zinc-900 text-white px-4 rounded-r-lg disabled:placeholder-zinc-700 transition-colors"} name="toValue" id="toValue" placeholder="0" disabled={!selectedToken.address || !secretAddress}/>
             </div>
           </div>
-          <div className="flex-1 text-xs mt-3 text-center sm:text-left">
+          <div className="flex-1 text-xs mt-3 text-center sm:text-left mb-4">
             {wrappingMode === WrappingMode.Wrap && (
               <WrappedTokenBalanceUi/>
             )}
@@ -595,15 +608,15 @@ export function Wrap() {
             )}
           </div>
 
-          <div className="bg-zinc-900 p-4 rounded-lg select-none flex items-center my-4">
+          {/* <div className="bg-zinc-900 p-4 rounded-lg select-none flex items-center my-4">
             <FontAwesomeIcon icon={faCircleInfo} className="flex-initial mr-4" />
             <div className="flex-1 text-sm">
               {message}
             </div>
-          </div>
+          </div> */}
 
           {/* Submit Button */}
-          <SubmitButton disabled={!selectedToken.address || !secretAddress || !amount || !isValidAmount || amount === "0"} amount={amount} nativeCurrency={selectedToken.name} wrappedAmount={amount} wrappedCurrency={"s" + selectedToken.name} wrappingMode={wrappingMode}/>
+          <SubmitButton disabled={!selectedToken.address || !secretAddress || !amountToWrap || !isValidAmount || amountToWrap === "0"} amount={amountToWrap} nativeCurrency={selectedToken.name} wrappedAmount={amountToWrap} wrappedCurrency={"s" + selectedToken.name} wrappingMode={wrappingMode}/>
         </div>
       </div>
     </>

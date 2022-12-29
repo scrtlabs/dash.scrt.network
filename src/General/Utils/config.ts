@@ -41,7 +41,7 @@ export const chains: { [chain_name: string]: Chain } = {
     bech32_prefix: "secret",
     lcd: "https://lcd.mainnet.secretsaturn.net",
     rpc: "https://grpc.mainnet.secretsaturn.net", // gRPC-web
-    chain_image: "/scrt.svg",
+    chain_image: "img/assets/scrt.svg",
     explorer_account: "https://www.mintscan.io/secret/account/",
   },
   Agoric: {

@@ -70,7 +70,7 @@ export default function InfoBoxes() {
               <FontAwesomeIcon icon={faCircle} className="fa-stack-2x text-emerald-900" />
               <FontAwesomeIcon icon={faCube} className="fa-stack-1x fa-inverse text-emerald-400" />
             </span>
-            <div className="font-bold text-lg">{currentPrice ? currentPrice.toLocaleString("en-US", {style:"currency", currency:"USD"}) : ""}</div>
+            <div className="font-semibold text-lg">{currentPrice ? currentPrice.toLocaleString("en-US", {style:"currency", currency:"USD"}) : ""}</div>
             <div className="text-md text-zinc-400">Current Price</div>
           </div>
         </div>
@@ -81,7 +81,7 @@ export default function InfoBoxes() {
               <FontAwesomeIcon icon={faCircle} className="fa-stack-2x text-cyan-900" />
               <FontAwesomeIcon icon={faCube} className="fa-stack-1x fa-inverse text-cyan-400" />
             </span>
-            <div className="font-bold text-lg">{blockHeight}</div>
+            <div className="font-semibold text-lg">{blockHeight}</div>
             <div className="text-md text-zinc-400">Block Height</div>
           </div>
         </div>
@@ -91,7 +91,7 @@ export default function InfoBoxes() {
               <FontAwesomeIcon icon={faCircle} className="fa-stack-2x text-pink-900" />
               <FontAwesomeIcon icon={faArrowTrendUp} className="fa-stack-1x fa-inverse text-pink-400" />
             </span>
-            <div className="font-bold text-lg">{inflation}%</div>
+            <div className="font-semibold text-lg">{inflation}%</div>
             <div className="text-md text-zinc-400">Current Inflation</div>
           </div>
         </div>
@@ -102,7 +102,7 @@ export default function InfoBoxes() {
               <FontAwesomeIcon icon={faCircle} className="fa-stack-2x text-purple-900" />
               <FontAwesomeIcon icon={faAward} className="fa-stack-1x fa-inverse text-purple-400" />
             </span>
-            <div className="font-bold text-lg">{communityPool ? communityPool.toLocaleString() : ""} SCRT</div>
+            <div className="font-semibold text-lg">{communityPool ? communityPool.toLocaleString() : ""} SCRT</div>
             <div className="text-md text-zinc-400">Community Pool</div>
           </div>
         </div>

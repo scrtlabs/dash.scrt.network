@@ -2,6 +2,7 @@ import { SigningStargateClient } from "@cosmjs/stargate";
 import {
   CircularProgress,
 } from "@mui/material";
+import Tooltip from "@mui/material/Tooltip";
 import Select from 'react-select';
 import { sha256 } from "@noble/hashes/sha256";
 import { createTxIBCMsgTransfer } from "@tharsis/transactions";
@@ -80,7 +81,7 @@ export default function Deposit () {
         <Select options={tokens.filter(token => token.name === 'SCRT')[0].deposits} value={selectedSource} onChange={setSelectedSource} isSearchable={false} isDisabled={!secretjs || !secretAddress}
                 formatOptionLabel={option => (
                   <div className="flex items-center">
-                    <img src={chains[option.source_chain_name].chain_image} className="w-6 h-6 mr-2 rounded-full" />
+                    <img src={`/img/assets/${chains[option.source_chain_name].chain_image}`} className="w-6 h-6 mr-2 rounded-full" />
                     <span className="font-semibold text-sm">{option.source_chain_name}</span>
                   </div>
                 )} className="react-select-container" classNamePrefix="react-select" />
@@ -745,7 +746,7 @@ export default function Deposit () {
               <div className="w-1/2 inline-block">
                 <div className="relative">
                   <div className="absolute inset-0 bg-blue-500/60 blur-md rounded-full overflow-hidden"></div>
-                  <img src={ibcMode === IbcMode.Deposit ? chains[selectedSource.source_chain_name].chain_image : "scrt.svg"} className="w-full relative inline-block rounded-full overflow-hiden" />
+                  <img src={"/img/assets/" + (ibcMode === IbcMode.Deposit ? chains[selectedSource.source_chain_name].chain_image : "scrt.svg")} className="w-full relative inline-block rounded-full overflow-hiden" />
                 </div>
               </div>
             </div>
@@ -764,12 +765,21 @@ export default function Deposit () {
             )}
           </div>
         </div>
+        {/* <div className="text-center sm:mt-6 sm:mb-2 my-6">
+        <Tooltip title={`Switch to ${wrappingMode === WrappingMode.Wrap ? "Unwrapping" : "Wrapping"}`} placement="bottom">
+          <button onClick={() => toggleWrappingMode()} disabled={disabled} className={"bg-zinc-900 px-3 py-2 text-blue-600 transition-colors rounded-full" + (!disabled ? " hover:text-blue-400 focus:text-blue-600" : "")}>
+            <FontAwesomeIcon icon={faRightLeft} className="fa-rotate-90" />
+          </button>
+        </Tooltip>
+      </div> */}
         <div className="flex-1">
           <div className="relative" style={{paddingTop: '100%'}}>
             <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-              <button onClick={toggleIbcMode} className="bg-zinc-900 px-3 py-2 text-zinc-400 transition-colors rounded-full hover:text-white disabled:hover:text-zinc-400" disabled={!secretAddress}>
-                <FontAwesomeIcon icon={faRightLeft} />
-              </button>
+              <Tooltip title={`Switch chains`} placement="bottom">
+                <button onClick={toggleIbcMode} className="bg-zinc-900 px-3 py-2 text-zinc-400 transition-colors rounded-full hover:text-white disabled:hover:text-zinc-400" disabled={!secretAddress}>
+                  <FontAwesomeIcon icon={faRightLeft} />
+                </button>
+              </Tooltip>
             </div>
           </div>
         </div>
@@ -780,7 +790,7 @@ export default function Deposit () {
               <div className="w-1/2 inline-block">
                 <div className="relative">
                   <div className="absolute inset-0 bg-violet-500/60 blur-md rounded-full overflow-hidden"></div>
-                  <img src={ibcMode === IbcMode.Withdrawal ? chains[selectedSource.source_chain_name].chain_image : "scrt.svg"} className="w-full relative inline-block rounded-full overflow-hiden" />
+                  <img src={"/img/assets/" + (ibcMode === IbcMode.Withdrawal ? chains[selectedSource.source_chain_name].chain_image : "scrt.svg")} className="w-full relative inline-block rounded-full overflow-hiden" />
                 </div>
               </div>
             </div>
@@ -799,11 +809,12 @@ export default function Deposit () {
           </div>
         </div>
       </div>
+      
 
       <div className="bg-zinc-900 p-6 rounded-lg border border-zinc-700 space-y-6">
         <div className="flex">
-          <div className="font-bold mr-4 w-10">From:</div>
-          <div className="flex-1 truncate">
+          <div className="font-semibold mr-4 w-10">From:</div>
+          <div className="flex-1 truncate font-medium">
             {(ibcMode === IbcMode.Deposit && secretjs && secretAddress) && (
               <a href={`${sourceChain.explorer_account}${sourceAddress}`} target="_blank">{sourceAddress}</a>
             )}
@@ -819,16 +830,18 @@ export default function Deposit () {
                 setTimeout(() => setIsCopied(false), 3000);
               }}
             >
-              <button className="text-zinc-700 hover:text-white active:text-zinc-500 transition-colors">
-                <FontAwesomeIcon icon={faPaste}/>
-              </button>
+              <Tooltip title={"Copy to clipboard"} placement="bottom">
+                <button className="text-zinc-700 hover:text-white active:text-zinc-500 transition-colors">
+                  <FontAwesomeIcon icon={faPaste}/>
+                </button>
+              </Tooltip>
             </CopyToClipboard>
           </div>
         </div>
 
         <div className="flex">
-          <div className="flex-initial font-bold mr-4 w-10">To:</div>
-          <div className="flex-1 truncate">
+          <div className="flex-initial font-semibold mr-4 w-10">To:</div>
+          <div className="flex-1 truncate font-medium">
             {ibcMode === IbcMode.Withdrawal && (
                 <a href={`${sourceChain.explorer_account}${sourceAddress}`} target="_blank">{sourceAddress}</a>
               )}
@@ -837,25 +850,27 @@ export default function Deposit () {
               )}
           </div>
           <div className="flex-initial ml-4">
-            <CopyToClipboard
-              text={ibcMode === IbcMode.Withdrawal ? sourceAddress : secretAddress}
-              onCopy={() => {
-                setIsCopied(true);
-                setTimeout(() => setIsCopied(false), 3000);
-              }}
-            >
-              <button className="text-zinc-700 hover:text-white active:text-zinc-500 transition-colors">
-                <FontAwesomeIcon icon={faPaste}/>
-              </button>
-            </CopyToClipboard>
+              <CopyToClipboard
+                text={ibcMode === IbcMode.Withdrawal ? sourceAddress : secretAddress}
+                onCopy={() => {
+                  setIsCopied(true);
+                  setTimeout(() => setIsCopied(false), 3000);
+                }}
+              >
+                <Tooltip title={"Copy to clipboard"} placement="bottom">
+                  <button className="text-zinc-700 hover:text-white active:text-zinc-500 transition-colors">
+                    <FontAwesomeIcon icon={faPaste}/>
+                  </button>
+                </Tooltip>
+              </CopyToClipboard>
           </div>
         </div>
       </div>
       <div className="flex mt-8" id="inputWrapper">
         <Select options={supportedTokens} value={selectedToken} onChange={setSelectedToken} isDisabled={!secretjs || !secretAddress} formatOptionLabel={token => (
                 <div className="flex items-center">
-                  <img src={token.image} className="w-6 h-6 mr-2 rounded-full" />
-                  <span className="font-bold text-sm">
+                  <img src={`/img/assets/${token.image}`} className="w-6 h-6 mr-2 rounded-full" />
+                  <span className="font-semibold text-sm">
                     {token.name}
                   </span>
                 </div>
@@ -866,15 +881,15 @@ export default function Deposit () {
       {/* Balance | [25%|50%|75%|Max] */}
       <div className="flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 mt-3 mb-8">
         <div className="flex-1 text-xs">
-          <span className="font-bold">Available: </span>
-          <button onClick={() => {setAmountByPercentage(100)}}>
+          <span className="font-semibold">Available: </span>
+          <span className="font-medium">
             {(() => {
               if (availableBalance === "") {return <CircularProgress size="0.6em" />;}
               const prettyBalance = new BigNumber(availableBalance).dividedBy(`1e${selectedToken.decimals}`).toFormat();
               if (prettyBalance === "NaN") {return "Error";}
               return `${prettyBalance} ${selectedToken.name}`;
             })()}
-          </button>
+          </span>
         </div>
         <div className="sm:flex-initial text-xs">
           <div className="inline-flex rounded-full text-xs font-semibold">
@@ -887,12 +902,12 @@ export default function Deposit () {
       </div>
 
 
-      <div className="bg-zinc-900 p-4 mt-8 rounded-lg select-none flex items-center mb-8">
+      {/* <div className="bg-zinc-900 p-4 mt-8 rounded-lg select-none flex items-center mb-8">
         <FontAwesomeIcon icon={faCircleInfo} className="flex-initial mr-4" />
         <div className="flex-1 text-sm">
           {message}
         </div>
-      </div>
+      </div> */}
 
 
       
