@@ -25,6 +25,7 @@
     "@mui/material": "5.1.1",
     "@noble/hashes": "1.1.2",
     "@tharsis/transactions": "0.2.5",
+    "animate.css": "^4.1.1",
     "autoprefixer": "^10.4.13",
     "bignumber.js": "9.0.1",
     "buffer": "6.0.3",
