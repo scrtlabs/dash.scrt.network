@@ -423,6 +423,9 @@ export function Wrap() {
         {(secretAddress && secretjs && wrappingMode === WrappingMode.Unwrap && amountToWrap) && (<>
           Unwrap <span className="text-xs font-bold mx-1">{amountToWrap} {wrappedCurrency}</span> into <span className="text-xs font-normal mx-1">{amountToWrap} {nativeCurrency}</span>
         </>)}
+
+        {/* general text without value */}
+        {(!amountToWrap || !secretAddress || !secretAddress) && (wrappingMode === WrappingMode.Wrap ? "Wrap" : "Unwrap")}
       </button>
     )
   }
