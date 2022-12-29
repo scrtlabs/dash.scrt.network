@@ -8,7 +8,6 @@ import { toast} from "react-toastify";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faKey, faArrowRightArrowLeft, faRightLeft, faCircleInfo } from '@fortawesome/free-solid-svg-icons'
 import { getKeplrViewingKey, setKeplrViewingKey } from "General/Components/Keplr";
-import { Header } from "./Components/Header";
 import { Link } from "react-router-dom";
 import Select from "react-select";
 
@@ -271,9 +270,9 @@ export function Wrap() {
     )
   }
 
-  function SubmitButton(props: { disabled: boolean; amountToWrap: string | undefined; nativeCurrency: string; wrappedAmount: string | undefined; wrappedCurrency: string; wrappingMode: WrappingMode }) {
+  function SubmitButton(props: { disabled: boolean; amount: string | undefined; nativeCurrency: string; wrappedAmount: string | undefined; wrappedCurrency: string; wrappingMode: WrappingMode }) {
     const disabled = props.disabled;
-    const amountToWrap = props.amountToWrap;
+    const amount = props.amount;
     const nativeCurrency = props.nativeCurrency;
     const wrappedCurrency = props.wrappedCurrency;
     const wrappingMode = props.wrappingMode;
@@ -293,12 +292,12 @@ export function Wrap() {
 
       if (!secretjs || !secretAddress) { return; }
 
-      if (!isValidAmount || amountToWrap === "") {
+      if (!isValidAmount || amount === "") {
         uiFocusInput();
         return;
       }
 
-      const baseAmount = amountToWrap;
+      const baseAmount = amount;
       const amount = new BigNumber(Number(baseAmount))
         .multipliedBy(`1e${selectedToken.decimals}`)
         .toFixed(0, BigNumber.ROUND_DOWN);
@@ -415,17 +414,17 @@ export function Wrap() {
         onClick={() => submit()}>
         {/* {wrappingMode === WrappingMode.Wrap ? "Wrap" : "Unwrap"} */}
         {/* text for wrapping with value */}
-        {(secretAddress && secretjs && wrappingMode === WrappingMode.Wrap && amountToWrap) && (<>
-          Wrap <span className="text-xs font-bold mx-1">{amountToWrap} {nativeCurrency}</span> into <span className="text-xs font-normal mx-1">{amountToWrap} {wrappedCurrency}</span>
+        {(secretAddress && secretjs && wrappingMode === WrappingMode.Wrap && amount) && (<>
+          Wrap <span className="text-xs font-bold mx-1">{amount} {nativeCurrency}</span> into <span className="text-xs font-normal mx-1">{amount} {wrappedCurrency}</span>
         </>)}
 
         {/* text for unwrapping with value */}
-        {(secretAddress && secretjs && wrappingMode === WrappingMode.Unwrap && amountToWrap) && (<>
-          Unwrap <span className="text-xs font-bold mx-1">{amountToWrap} {wrappedCurrency}</span> into <span className="text-xs font-normal mx-1">{amountToWrap} {nativeCurrency}</span>
+        {(secretAddress && secretjs && wrappingMode === WrappingMode.Unwrap && amount) && (<>
+          Unwrap <span className="text-xs font-bold mx-1">{amount} {wrappedCurrency}</span> into <span className="text-xs font-normal mx-1">{amount} {nativeCurrency}</span>
         </>)}
 
         {/* general text without value */}
-        {(!amountToWrap || !secretAddress || !secretAddress) && (wrappingMode === WrappingMode.Wrap ? "Wrap" : "Unwrap")}
+        {(!amount || !secretAddress || !secretAddress) && (wrappingMode === WrappingMode.Wrap ? "Wrap" : "Unwrap")}
       </button>
     )
   }
@@ -601,7 +600,7 @@ export function Wrap() {
           </div>
 
           {/* <To/> */}
-          <SubmitButton disabled={!selectedToken.address || !secretAddress || !amount || !isValidAmount || amount === "0"} amountToWrap={amount} nativeCurrency={selectedToken.name} wrappedAmount={amount} wrappedCurrency={"s" + selectedToken.name} wrappingMode={wrappingMode}/>
+          <SubmitButton disabled={!selectedToken.address || !secretAddress || !amount || !isValidAmount || amount === "0"} amount={amount} nativeCurrency={selectedToken.name} wrappedAmount={amount} wrappedCurrency={"s" + selectedToken.name} wrappingMode={wrappingMode}/>
         </div>
       </div>
     </>
