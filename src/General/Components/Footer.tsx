@@ -6,11 +6,11 @@ import React from "react";
 export function Footer() {
   return (
     <>
-      <div className="flex items-center px-6 py-4 mt-12">
-        <div className="flex-1 text-sm text-zinc-400">
+      <div className="grid grid-cols-12 items-center px-6 py-4 mt-12 text-center md:text-left gap-4">
+        <div className="col-span-12 md:col-span-6 text-sm text-zinc-400">
           ⚡️ Powered by <a href="https://scrt.network/" target="_blank" className="transition-colors hover:text-white">Secret Network</a> &amp; <a href="https://secretsaturn.net/" target="_blank" className="transition-colors hover:text-white">🪐 𝕊ecret 𝕊aturn</a>
         </div>
-        <div className="flex-initial space-x-3 text-xl">
+        <div className="col-span-12 md:col-span-6 space-x-3 text-xl text-center md:text-right">
           <a href="https://github.com/scrtlabs" target="_blank"><FontAwesomeIcon icon={faGithub} /></a>
           <a href="https://discord.com/invite/SJK32GY" target="_blank"><FontAwesomeIcon icon={faDiscord} /></a>
           <a href="https://t.me/SCRTcommunity" target="_blank"><FontAwesomeIcon icon={faTelegram} /></a>

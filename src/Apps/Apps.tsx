@@ -290,6 +290,7 @@ export function Apps() {
   return (
     <>
       <div className="max-w-screen-2xl mx-auto px-6">
+        <h1 className="text-center font-bold text-4xl mb-10">Applications</h1>
         {/* Search and Filter */}
         <div className="relative w-full sm:w-96 mx-auto mb-4">
           <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
