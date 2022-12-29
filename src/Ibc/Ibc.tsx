@@ -16,7 +16,7 @@ export function Ibc() {
 
         {/* Header */}
         <div className="mb-4">
-          <h1 className="inline text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-violet-500">Secret Wrap</h1>
+          <h1 className="inline text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-violet-500">IBC Transfer</h1>
         </div>
 
         {/* Deposit */}
