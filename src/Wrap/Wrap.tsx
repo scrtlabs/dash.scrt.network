@@ -578,7 +578,7 @@ export function Wrap() {
 
           <div className="bg-zinc-900 p-4 rounded-lg select-none flex items-center my-4">
             <FontAwesomeIcon icon={faCircleInfo} className="flex-initial mr-4" />
-            <div className="flex-1">
+            <div className="flex-1 text-sm">
               {message}
             </div>
           </div>
