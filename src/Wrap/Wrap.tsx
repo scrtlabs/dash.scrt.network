@@ -263,8 +263,8 @@ export function Wrap() {
     const disabled = props.disabled;
 
     return (
-      <div className="text-center mt-6 mb-2">
-        <button onClick={() => toggleWrappingMode()} disabled={disabled} className={"bg-zinc-900 px-3 py-2 text-zinc-400 transition-colors rounded-full" + (!disabled ? " hover:text-white" : "")}>
+      <div className="text-center sm:mt-6 sm:mb-2 my-6">
+        <button onClick={() => toggleWrappingMode()} disabled={disabled} className={"bg-zinc-900 px-3 py-2 text-blue-600 transition-colors rounded-full" + (!disabled ? " hover:text-blue-400 focus:text-blue-600" : "")}>
           <FontAwesomeIcon icon={faRightLeft} className="fa-rotate-90" />
         </button>
       </div>
@@ -281,7 +281,7 @@ export function Wrap() {
     return (
       <button
         disabled={disabled}
-        className={"flex items-center justify-center w-full py-3 px-3 rounded-lg transition-colors font-semibold border" + (false ? " bg-zinc-500 border-zinc-600 opacity-40" : " bg-emerald-700 border-emerald-500 hover:bg-emerald-600 active:bg-emerald-700 shadow-lg shadow-emerald-800/40")}
+        className={"flex items-center justify-center w-full py-2 rounded-lg transition-colors font-semibold border" + (false ? " bg-zinc-500 border-zinc-600 opacity-40" : " bg-emerald-700 border-emerald-500 hover:bg-emerald-600 active:bg-emerald-700 shadow-lg shadow-emerald-800/40")}
         onClick={async () => {
 
           if (!secretjs || !secretAddress) { return; }
@@ -495,19 +495,20 @@ export function Wrap() {
 
           {/* Header */}
           <div className="mb-4">
-            <h1 className="inline text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-violet-500">Wrap</h1>
+            <h1 className="inline text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-violet-500">Secret Wrap</h1>
           </div>
 
 
           {/* *** From *** */}
 
           {/* Title Bar */}
-          <div className="flex">
-            <div className="flex-1 font-bold mb-2">From</div>
-            <div className="flex-initial">
-              {isValidAmount && (<div className="h-4 mb-2"></div>)}
-              {!isValidAmount && (<div className="text-red-500 text-xs text-right mb-2">{validationMessage}</div>)}
-            </div>
+          <div className="flex flex-col sm:flex-row">
+            <div className="flex-1 font-bold mb-2 text-center sm:text-left">From</div>
+            {!isValidAmount && (
+              <div className="flex-initial">
+                <div className="text-red-500 text-xs text-right mb-2">{validationMessage}</div>
+              </div>
+            )}
           </div>
 
 
@@ -550,7 +551,7 @@ export function Wrap() {
 
           <div>
             <div className="flex">
-              <div className="flex-1 font-bold mb-2">To</div>
+              <div className="flex-1 font-bold mb-2 text-center sm:text-left">To</div>
             </div>
 
             <div className="flex">
@@ -566,7 +567,7 @@ export function Wrap() {
               <input value={amountToWrap} onChange={handleInputChange} type="text" className={"focus:z-10 block flex-1 min-w-0 w-full bg-zinc-900 text-white px-4 rounded-r-lg disabled:placeholder-zinc-700 transition-colors" + (!isValidAmount && wrappingMode === WrappingMode.Unwrap ? " border border-red-500" : "")} name="wrappedValue" id="wrappedValue" placeholder="0" disabled={!selectedToken.address || !secretAddress}/>
             </div>
           </div>
-          <div className="flex-1 text-xs mt-3">
+          <div className="flex-1 text-xs mt-3 text-center sm:text-left">
             {wrappingMode === WrappingMode.Wrap && (
               <WrappedTokenBalanceUi/>
             )}
