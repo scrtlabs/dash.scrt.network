@@ -263,7 +263,7 @@ export function Wrap() {
     const disabled = props.disabled;
 
     return (
-      <div className="text-center mt-4 mb-2">
+      <div className="text-center mt-6 mb-2">
         <button onClick={() => toggleWrappingMode()} disabled={disabled} className={"bg-zinc-900 px-3 py-2 text-zinc-400 transition-colors rounded-full" + (!disabled ? " hover:text-white" : "")}>
           <FontAwesomeIcon icon={faRightLeft} className="fa-rotate-90" />
         </button>
@@ -281,7 +281,7 @@ export function Wrap() {
     return (
       <button
         disabled={disabled}
-        className={"flex items-center justify-center w-full py-3 px-3 rounded-lg transition-colors font-semibold border" + (disabled ? " bg-zinc-500 border-zinc-600 opacity-40" : " bg-emerald-500/50 border-emerald-500 hover:bg-emerald-600 active:bg-emerald-700")}
+        className={"flex items-center justify-center w-full py-3 px-3 rounded-lg transition-colors font-semibold border" + (false ? " bg-zinc-500 border-zinc-600 opacity-40" : " bg-emerald-700 border-emerald-500 hover:bg-emerald-600 active:bg-emerald-700 shadow-lg shadow-emerald-800/40")}
         onClick={async () => {
 
           if (!secretjs || !secretAddress) { return; }
@@ -396,19 +396,19 @@ export function Wrap() {
             }
           }
         }
-      }>
+      }>{wrappingMode === WrappingMode.Wrap ? "Wrap" : "Unwrap"}
         {/* text for wrapping with value */}
         {(wrappingMode === WrappingMode.Wrap && amountToWrap) && (<>
-          Wrap <span className="text-xs font-normal mx-1">{amountToWrap} {nativeCurrency}</span> into <span className="text-xs font-normal mx-1">{amountToWrap} {wrappedCurrency}</span>
+          {/* Wrap <span className="text-xs font-normal mx-1">{amountToWrap} {nativeCurrency}</span> into <span className="text-xs font-normal mx-1">{amountToWrap} {wrappedCurrency}</span> */}
         </>)}
 
         {/* text for unwrapping with value */}
         {(wrappingMode === WrappingMode.Unwrap && amountToWrap) && (<>
-          Unwrap <span className="text-xs font-normal mx-1">{amountToWrap} {wrappedCurrency}</span> into <span className="text-xs font-normal mx-1">{amountToWrap} {nativeCurrency}</span>
+          {/* Unwrap <span className="text-xs font-normal mx-1">{amountToWrap} {wrappedCurrency}</span> into <span className="text-xs font-normal mx-1">{amountToWrap} {nativeCurrency}</span> */}
         </>)}
 
         {/* general text without value */}
-        {(!amountToWrap) && (<>{wrappingMode === WrappingMode.Wrap ? "Wrap" : "Unwrap"}</>)}
+        {/* {(!amountToWrap) && (<>{wrappingMode === WrappingMode.Wrap ? "Wrap" : "Unwrap"}</>)} */}
       </button>
     )
   }
@@ -495,7 +495,7 @@ export function Wrap() {
 
           {/* Header */}
           <div className="mb-4">
-            <h1 className="inline text-2xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-violet-500">Wrap</h1>
+            <h1 className="inline text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-violet-500">Wrap</h1>
           </div>
 
 
