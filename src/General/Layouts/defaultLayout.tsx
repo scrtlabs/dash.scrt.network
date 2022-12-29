@@ -51,7 +51,7 @@ export const DefaultLayout =({children}:any) =>{
               ? "z-50 left-0 right-0 w-full lg:w-auto min-h-screen "
               : "hidden lg:block") +
             " " +
-            "lg:w-72 fixed left-0 top-0 h-screen p-10 overflow-x-hidden bg-zinc-900"
+            "lg:w-72 fixed left-0 top-0 h-screen p-6 overflow-x-hidden bg-zinc-900"
           }
         >
           <NavigationContext.Provider value={{ showMobileMenu }}>
@@ -65,7 +65,7 @@ export const DefaultLayout =({children}:any) =>{
           <FeeGrantContext.Provider value={{ useFeegrant: isFeeGranted, setUseFeegrant: setIsFeeGranted }}>
               <main className="flex-1 lg:ml-72">
                 {/* Keplr */}
-                <div className="flex items-center gap-4 m-4">
+                <div className="flex items-center gap-4 p-4">
                   <div className="flex-initial lg:hidden">
                     <button
                       onClick={() => setShowMobileMenu(true)}
@@ -84,6 +84,8 @@ export const DefaultLayout =({children}:any) =>{
                     />
                   </div>
                 </div>
+
+
                 {children}
                 <Footer />
               </main>

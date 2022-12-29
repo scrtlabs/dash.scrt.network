@@ -97,8 +97,8 @@ export function Wrap() {
 
 
   const message = (wrappingMode === WrappingMode.Wrap) ?
-  `Convert transparent ${selectedToken.name} into its privacy-preserving equivalent s${selectedToken.name} using the wrap functionality.`:
-  `Convert privacy-preserving s${selectedToken.name} into its transparent equivalent ${selectedToken.name} using the unwrap functionality.`;
+  `Converting publicly visible ${selectedToken.name} into its privacy-preserving equivalent s${selectedToken.name}. These tokens are not publicly visible and require a viewing key!` :
+  `Convert privacy-preserving s${selectedToken.name} into its publicly visible equivalent ${selectedToken.name}!`;
 
   {new BigNumber(tokenWrappedBalance!)
     .dividedBy(`1e${selectedToken.decimals}`)
