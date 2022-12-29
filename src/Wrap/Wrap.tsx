@@ -277,138 +277,155 @@ export function Wrap() {
     const nativeCurrency = props.nativeCurrency;
     const wrappedCurrency = props.wrappedCurrency;
     const wrappingMode = props.wrappingMode;
+    
+    function uiFocusInput() {
+      document.getElementById("fromInputWrapper")?.classList.add("animate__animated");
+      document.getElementById("fromInputWrapper")?.classList.add("animate__headShake");
+      setTimeout(() => {
+        document.getElementById("fromInputWrapper")?.classList.remove("animate__animated");
+        document.getElementById("fromInputWrapper")?.classList.remove("animate__headShake");
+      }, 1000);
+    }
+
+    async function submit() {
+
+
+
+      if (!secretjs || !secretAddress) { return; }
+
+      if (!isValidAmount || amountToWrap === "") {
+        uiFocusInput();
+        return;
+      }
+
+      const baseAmount = amountToWrap;
+      const amount = new BigNumber(Number(baseAmount))
+        .multipliedBy(`1e${selectedToken.decimals}`)
+        .toFixed(0, BigNumber.ROUND_DOWN);
+
+      if (amount === "NaN") {
+        console.error("NaN amount", baseAmount);
+        return;
+      }
+      
+      try {
+        setLoadingWrapOrUnwrap(true);
+        const toastId = toast.loading(
+          wrappingMode === WrappingMode.Wrap ? `Wrapping ${selectedToken.name}` : `Unwrapping ${selectedToken.name}`, { closeButton: true }
+        );
+        if (wrappingMode === WrappingMode.Wrap) {
+          const tx = await secretjs.tx.broadcast(
+            [
+              new MsgExecuteContract({
+                sender: secretAddress,
+                contract_address: selectedToken.address,
+                code_hash: selectedToken.code_hash,
+                sent_funds: [
+                  { denom: selectedToken.withdrawals[0].from_denom, amount },
+                ],
+                msg: { deposit: {} },
+              } as any),
+            ],
+            {
+              gasLimit: 150_000,
+              gasPriceInFeeDenom: 0.25,
+              feeDenom: "uscrt",
+              feeGranter: useFeegrant ? faucetAddress : "",
+            }
+          );
+
+          if (tx.code === 0) {
+            setAmountToWrap("");
+            toast.update(toastId, {
+              render: `Wrapped ${selectedToken.name} successfully`,
+              type: "success",
+              isLoading: false,
+              closeOnClick: true,
+            });
+            console.log(`Wrapped successfully`);
+          } else {
+            toast.update(toastId, {
+              render: `Wrapping of ${selectedToken.name} failed: ${tx.rawLog}`,
+              type: "error",
+              isLoading: false,
+              closeOnClick: true,
+            });
+            console.error(`Tx failed: ${tx.rawLog}`);
+          }
+        } else {
+          const tx = await secretjs.tx.broadcast(
+            [
+              new MsgExecuteContract({
+                sender: secretAddress,
+                contract_address: selectedToken.address,
+                code_hash: selectedToken.code_hash,
+                sent_funds: [],
+                msg: {
+                  redeem: {
+                    amount,
+                    denom:
+                      selectedToken.name === "SCRT"
+                        ? undefined
+                        : selectedToken.withdrawals[0].from_denom,
+                  },
+                },
+              } as any),
+            ],
+            {
+              gasLimit: 150_000,
+              gasPriceInFeeDenom: 0.25,
+              feeDenom: "uscrt",
+              feeGranter: useFeegrant ? faucetAddress : "",
+            }
+          );
+          if (tx.code === 0) {
+            setAmountToWrap("");
+            toast.update(toastId, {
+              render: `Unwrapped ${selectedToken.name} successfully`,
+              type: "success",
+              isLoading: false,
+              closeOnClick: true,
+            });
+            console.log(`Unwrapped successfully`);
+          } else {
+            toast.update(toastId, {
+              render: `Unwrapping of ${selectedToken.name} failed: ${tx.rawLog}`,
+              type: "error",
+              isLoading: false,
+              closeOnClick: true,
+            });
+            console.error(`Tx failed: ${tx.rawLog}`);
+          }
+        }
+      } finally {
+        setLoadingWrapOrUnwrap(false);
+        try {
+          setLoadingCoinBalance(true);
+          await sleep(1000); // sometimes query nodes lag
+          await updateCoinBalance();
+        } finally {
+          setLoadingCoinBalance(false);
+        }
+      }
+    }
 
     return (
       <button
-        disabled={disabled}
-        className={"flex items-center justify-center w-full py-2 rounded-lg transition-colors font-semibold border" + (false ? " bg-zinc-500 border-zinc-600 opacity-40" : " bg-emerald-700 border-emerald-500 hover:bg-emerald-600 active:bg-emerald-700 shadow-lg shadow-emerald-800/40")}
-        onClick={async () => {
-
-          if (!secretjs || !secretAddress) { return; }
-
-          const baseAmount = amountToWrap;
-          const amount = new BigNumber(Number(baseAmount))
-            .multipliedBy(`1e${selectedToken.decimals}`)
-            .toFixed(0, BigNumber.ROUND_DOWN);
-
-          if (amount === "NaN") {
-            console.error("NaN amount", baseAmount);
-            return;
-          }
-          
-          try {
-            setLoadingWrapOrUnwrap(true);
-            const toastId = toast.loading(
-              wrappingMode === WrappingMode.Wrap ? `Wrapping ${selectedToken.name}` : `Unwrapping ${selectedToken.name}`, { closeButton: true }
-            );
-            if (wrappingMode === WrappingMode.Wrap) {
-              const tx = await secretjs.tx.broadcast(
-                [
-                  new MsgExecuteContract({
-                    sender: secretAddress,
-                    contract_address: selectedToken.address,
-                    code_hash: selectedToken.code_hash,
-                    sent_funds: [
-                      { denom: selectedToken.withdrawals[0].from_denom, amount },
-                    ],
-                    msg: { deposit: {} },
-                  } as any),
-                ],
-                {
-                  gasLimit: 150_000,
-                  gasPriceInFeeDenom: 0.25,
-                  feeDenom: "uscrt",
-                  feeGranter: useFeegrant ? faucetAddress : "",
-                }
-              );
-
-              if (tx.code === 0) {
-                setAmountToWrap("");
-                toast.update(toastId, {
-                  render: `Wrapped ${selectedToken.name} successfully`,
-                  type: "success",
-                  isLoading: false,
-                  closeOnClick: true,
-                });
-                console.log(`Wrapped successfully`);
-              } else {
-                toast.update(toastId, {
-                  render: `Wrapping of ${selectedToken.name} failed: ${tx.rawLog}`,
-                  type: "error",
-                  isLoading: false,
-                  closeOnClick: true,
-                });
-                console.error(`Tx failed: ${tx.rawLog}`);
-              }
-            } else {
-              const tx = await secretjs.tx.broadcast(
-                [
-                  new MsgExecuteContract({
-                    sender: secretAddress,
-                    contract_address: selectedToken.address,
-                    code_hash: selectedToken.code_hash,
-                    sent_funds: [],
-                    msg: {
-                      redeem: {
-                        amount,
-                        denom:
-                          selectedToken.name === "SCRT"
-                            ? undefined
-                            : selectedToken.withdrawals[0].from_denom,
-                      },
-                    },
-                  } as any),
-                ],
-                {
-                  gasLimit: 150_000,
-                  gasPriceInFeeDenom: 0.25,
-                  feeDenom: "uscrt",
-                  feeGranter: useFeegrant ? faucetAddress : "",
-                }
-              );
-              if (tx.code === 0) {
-                setAmountToWrap("");
-                toast.update(toastId, {
-                  render: `Unwrapped ${selectedToken.name} successfully`,
-                  type: "success",
-                  isLoading: false,
-                  closeOnClick: true,
-                });
-                console.log(`Unwrapped successfully`);
-              } else {
-                toast.update(toastId, {
-                  render: `Unwrapping of ${selectedToken.name} failed: ${tx.rawLog}`,
-                  type: "error",
-                  isLoading: false,
-                  closeOnClick: true,
-                });
-                console.error(`Tx failed: ${tx.rawLog}`);
-              }
-            }
-          } finally {
-            setLoadingWrapOrUnwrap(false);
-            try {
-              setLoadingCoinBalance(true);
-              await sleep(1000); // sometimes query nodes lag
-              await updateCoinBalance();
-            } finally {
-              setLoadingCoinBalance(false);
-            }
-          }
-        }
-      }>{wrappingMode === WrappingMode.Wrap ? "Wrap" : "Unwrap"}
+        className={"flex items-center justify-center w-full py-2 rounded-lg transition-colors font-semibold border bg-emerald-700 border-emerald-500 hover:bg-emerald-600 active:bg-emerald-700 shadow-lg shadow-emerald-800/40"}
+        onClick={() => submit()}>
+        {/* {wrappingMode === WrappingMode.Wrap ? "Wrap" : "Unwrap"} */}
         {/* text for wrapping with value */}
-        {(wrappingMode === WrappingMode.Wrap && amountToWrap) && (<>
-          {/* Wrap <span className="text-xs font-normal mx-1">{amountToWrap} {nativeCurrency}</span> into <span className="text-xs font-normal mx-1">{amountToWrap} {wrappedCurrency}</span> */}
+        {(secretAddress && secretjs && wrappingMode === WrappingMode.Wrap && amountToWrap) && (<>
+          Wrap <span className="text-xs font-bold mx-1">{amountToWrap} {nativeCurrency}</span> into <span className="text-xs font-normal mx-1">{amountToWrap} {wrappedCurrency}</span>
         </>)}
 
         {/* text for unwrapping with value */}
-        {(wrappingMode === WrappingMode.Unwrap && amountToWrap) && (<>
-          {/* Unwrap <span className="text-xs font-normal mx-1">{amountToWrap} {wrappedCurrency}</span> into <span className="text-xs font-normal mx-1">{amountToWrap} {nativeCurrency}</span> */}
+        {(secretAddress && secretjs && wrappingMode === WrappingMode.Unwrap && amountToWrap) && (<>
+          Unwrap <span className="text-xs font-bold mx-1">{amountToWrap} {wrappedCurrency}</span> into <span className="text-xs font-normal mx-1">{amountToWrap} {nativeCurrency}</span>
         </>)}
 
         {/* general text without value */}
-        {/* {(!amountToWrap) && (<>{wrappingMode === WrappingMode.Wrap ? "Wrap" : "Unwrap"}</>)} */}
+        {(!secretAddress ||!secretjs) && wrappingMode === WrappingMode.Wrap ? "Wrap" : "Unwrap"}
       </button>
     )
   }
@@ -506,14 +523,14 @@ export function Wrap() {
             <div className="flex-1 font-bold mb-2 text-center sm:text-left">From</div>
             {!isValidAmount && (
               <div className="flex-initial">
-                <div className="text-red-500 text-xs text-right mb-2">{validationMessage}</div>
+                <div className="text-red-500 text-xs text-center sm:text-right -mb-2">{validationMessage}</div>
               </div>
             )}
           </div>
 
 
           {/* Input Field */}
-          <div className="flex">
+          <div className="flex" id="fromInputWrapper">
             <Select isDisabled={!selectedToken.address || !secretAddress} options={tokens.sort((a, b) => a.name.localeCompare(b.name))} value={selectedToken} onChange={setselectedToken} isSearchable={false}
               formatOptionLabel={token => (
                 <div className="flex items-center">
@@ -564,7 +581,7 @@ export function Wrap() {
                   </span>
                 </div>
               )} className="react-select-wrap-container" classNamePrefix="react-select-wrap" />
-              <input value={amountToWrap} onChange={handleInputChange} type="text" className={"focus:z-10 block flex-1 min-w-0 w-full bg-zinc-900 text-white px-4 rounded-r-lg disabled:placeholder-zinc-700 transition-colors" + (!isValidAmount && wrappingMode === WrappingMode.Unwrap ? " border border-red-500" : "")} name="wrappedValue" id="wrappedValue" placeholder="0" disabled={!selectedToken.address || !secretAddress}/>
+              <input value={amountToWrap} onChange={handleInputChange} type="text" className={"focus:z-10 block flex-1 min-w-0 w-full bg-zinc-900 text-white px-4 rounded-r-lg disabled:placeholder-zinc-700 transition-colors"} name="wrappedValue" id="wrappedValue" placeholder="0" disabled={!selectedToken.address || !secretAddress}/>
             </div>
           </div>
           <div className="flex-1 text-xs mt-3 text-center sm:text-left">
