@@ -293,9 +293,6 @@ export function Wrap() {
     }
 
     async function submit() {
-
-
-
       if (!secretjs || !secretAddress) { return; }
 
       if (!isValidAmount || amount === "") {
@@ -528,7 +525,7 @@ export function Wrap() {
             <div className="flex-1 font-bold mb-2 text-center sm:text-left">From</div>
             {!isValidAmount && (
               <div className="flex-initial">
-                <div className="text-red-500 text-xs text-center sm:text-right -mb-2">{validationMessage}</div>
+                <div className="text-red-500 text-xs text-center sm:text-right mb-2">{validationMessage}</div>
               </div>
             )}
           </div>
@@ -586,7 +583,7 @@ export function Wrap() {
                   </span>
                 </div>
               )} className="react-select-wrap-container" classNamePrefix="react-select-wrap" />
-              <input value={amount} onChange={handleInputChange} type="text" className={"focus:z-10 block flex-1 min-w-0 w-full bg-zinc-900 text-white px-4 rounded-r-lg disabled:placeholder-zinc-700 transition-colors"} name="wrappedValue" id="wrappedValue" placeholder="0" disabled={!selectedToken.address || !secretAddress}/>
+              <input value={amount} onChange={handleInputChange} type="text" className={"focus:z-10 block flex-1 min-w-0 w-full bg-zinc-900 text-white px-4 rounded-r-lg disabled:placeholder-zinc-700 transition-colors"} name="toValue" id="toValue" placeholder="0" disabled={!selectedToken.address || !secretAddress}/>
             </div>
           </div>
           <div className="flex-1 text-xs mt-3 text-center sm:text-left">
@@ -605,7 +602,7 @@ export function Wrap() {
             </div>
           </div>
 
-          {/* <To/> */}
+          {/* Submit Button */}
           <SubmitButton disabled={!selectedToken.address || !secretAddress || !amount || !isValidAmount || amount === "0"} amount={amount} nativeCurrency={selectedToken.name} wrappedAmount={amount} wrappedCurrency={"s" + selectedToken.name} wrappingMode={wrappingMode}/>
         </div>
       </div>
