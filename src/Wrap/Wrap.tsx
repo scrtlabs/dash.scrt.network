@@ -96,6 +96,7 @@ export function Wrap() {
     }
   }
 
+
   const message = (wrappingMode === WrappingMode.Wrap) ?
   `Convert transparent ${selectedToken.name} into its privacy-preserving equivalent s${selectedToken.name} using the wrap functionality.`:
   `Convert privacy-preserving s${selectedToken.name} into its transparent equivalent ${selectedToken.name} using the unwrap functionality.`;
@@ -183,11 +184,11 @@ export function Wrap() {
 
   function PercentagePicker() {
     return (
-      <div className="inline-flex rounded-full text-xs font-bold">
-        <button onClick={() => setAmountByPercentage(25)} className="bg-zinc-900 px-2 py-1 rounded-l-lg transition-colors hover:bg-zinc-700 focus:bg-zinc-500 cursor-pointer disabled:text-zinc-500 disabled:hover:bg-zinc-900 disabled:cursor-default" disabled={!secretAddress}>25%</button>
-        <button onClick={() => setAmountByPercentage(50)} className="bg-zinc-900 px-2 py-1 border-l border-zinc-700 transition-colors hover:bg-zinc-700 focus:bg-zinc-500 cursor-pointer disabled:text-zinc-500 disabled:hover:bg-zinc-900 disabled:cursor-default" disabled={!secretAddress}>50%</button>
-        <button onClick={() => setAmountByPercentage(75)} className="bg-zinc-900 px-2 py-1 border-l border-zinc-700 transition-colors hover:bg-zinc-700 focus:bg-zinc-500 cursor-pointer disabled:text-zinc-500 disabled:hover:bg-zinc-900 disabled:cursor-default" disabled={!secretAddress}>75%</button>
-        <button onClick={() => setAmountByPercentage(100)} className="bg-zinc-900 px-2 py-1 rounded-r-lg border-l border-zinc-700 transition-colors hover:bg-zinc-700 focus:bg-zinc-500 cursor-pointer disabled:text-zinc-500 disabled:hover:bg-zinc-900 disabled:cursor-default" disabled={!secretAddress}>MAX</button>
+      <div className="inline-flex rounded-full text-xs font-semibold">
+        <button onClick={() => setAmountByPercentage(25)} className="bg-zinc-900 px-1.5 py-0.5 rounded-l-md transition-colors hover:bg-zinc-700 focus:bg-zinc-500 cursor-pointer disabled:text-zinc-500 disabled:hover:bg-zinc-900 disabled:cursor-default" disabled={!secretAddress}>25%</button>
+        <button onClick={() => setAmountByPercentage(50)} className="bg-zinc-900 px-1.5 py-0.5 border-l border-zinc-700 transition-colors hover:bg-zinc-700 focus:bg-zinc-500 cursor-pointer disabled:text-zinc-500 disabled:hover:bg-zinc-900 disabled:cursor-default" disabled={!secretAddress}>50%</button>
+        <button onClick={() => setAmountByPercentage(75)} className="bg-zinc-900 px-1.5 py-0.5 border-l border-zinc-700 transition-colors hover:bg-zinc-700 focus:bg-zinc-500 cursor-pointer disabled:text-zinc-500 disabled:hover:bg-zinc-900 disabled:cursor-default" disabled={!secretAddress}>75%</button>
+        <button onClick={() => setAmountByPercentage(100)} className="bg-zinc-900 px-1.5 py-0.5 rounded-r-md border-l border-zinc-700 transition-colors hover:bg-zinc-700 focus:bg-zinc-500 cursor-pointer disabled:text-zinc-500 disabled:hover:bg-zinc-900 disabled:cursor-default" disabled={!secretAddress}>MAX</button>
       </div>
     )
   }
@@ -224,7 +225,7 @@ export function Wrap() {
       return (
         <>
           <span className="font-bold">Available:</span>
-          <button className="bg-zinc-900 px-2 py-1 rounded-lg transition-colors hover:bg-zinc-700 focus:bg-zinc-500 ml-2 font-semibold" 
+          <button className="ml-2 bg-zinc-900 px-1.5 py-0.5 rounded-md border-zinc-700 transition-colors hover:bg-zinc-700 focus:bg-zinc-500 cursor-pointer disabled:text-zinc-500 disabled:hover:bg-zinc-900 disabled:cursor-default" 
           onClick={async () => {
             await setKeplrViewingKey(selectedToken.address);
             try {
@@ -262,7 +263,7 @@ export function Wrap() {
     const disabled = props.disabled;
 
     return (
-      <div className="space-x-4 text-center mt-3">
+      <div className="text-center mt-4 mb-2">
         <button onClick={() => toggleWrappingMode()} disabled={disabled} className={"bg-zinc-900 px-3 py-2 text-zinc-400 transition-colors rounded-full" + (!disabled ? " hover:text-white" : "")}>
           <FontAwesomeIcon icon={faRightLeft} className="fa-rotate-90" />
         </button>
@@ -280,7 +281,7 @@ export function Wrap() {
     return (
       <button
         disabled={disabled}
-        className={"flex items-center justify-center w-full py-3 px-3 rounded-lg transition-colors font-semibold mt-12 border" + (disabled ? " bg-zinc-500 border-zinc-600 opacity-40" : " bg-emerald-500/50 border-emerald-500 hover:bg-emerald-600 active:bg-emerald-700")}
+        className={"flex items-center justify-center w-full py-3 px-3 rounded-lg transition-colors font-semibold border" + (disabled ? " bg-zinc-500 border-zinc-600 opacity-40" : " bg-emerald-500/50 border-emerald-500 hover:bg-emerald-600 active:bg-emerald-700")}
         onClick={async () => {
 
           if (!secretjs || !secretAddress) { return; }
@@ -489,41 +490,40 @@ export function Wrap() {
   
   return (
     <>
-      <div className="w-full max-w-2xl mx-auto px-4">
-        <div className="border rounded-lg p-12 pb-7 border-zinc-700 w-full bg-zinc-800 text-zinc-200">
+      <div className="w-full max-w-xl mx-auto px-4">
+        <div className="border rounded-lg p-7 border-zinc-700 w-full bg-zinc-800 text-zinc-200">
 
           {/* Header */}
-          <div className="mb-8">
-            <h1 className="inline text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-violet-500">Secret Wrap</h1>
+          <div className="mb-4">
+            <h1 className="inline text-2xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-violet-500">Wrap</h1>
           </div>
-
-
 
 
           {/* *** From *** */}
 
           {/* Title Bar */}
-          <div className="flex mb-2">
-            <div className="flex-1 font-bold">From</div>
+          <div className="flex">
+            <div className="flex-1 font-bold mb-2">From</div>
             <div className="flex-initial">
               {isValidAmount && (<div className="h-4 mb-2"></div>)}
               {!isValidAmount && (<div className="text-red-500 text-xs text-right mb-2">{validationMessage}</div>)}
             </div>
           </div>
 
+
           {/* Input Field */}
           <div className="flex">
             <Select isDisabled={!selectedToken.address || !secretAddress} options={tokens.sort((a, b) => a.name.localeCompare(b.name))} value={selectedToken} onChange={setselectedToken} isSearchable={false}
               formatOptionLabel={token => (
                 <div className="flex items-center">
-                  <img src={token.image} className="w-6 h-6 mr-2 rounded-full" />
+                  <img src={token.image} className="w-5 h-5 mr-2 rounded-full" />
                   <span className="font-bold text-sm">
                     {wrappingMode == WrappingMode.Unwrap && 's'}
                     {token.name}
                   </span>
                 </div>
               )} className="react-select-wrap-container" classNamePrefix="react-select-wrap" />
-            <input value={amountToWrap} onChange={handleInputChange} type="text" className={"focus:z-10 block flex-1 min-w-0 w-full bg-zinc-900 text-white p-4 rounded-r-lg disabled:placeholder-zinc-700 transition-colors" + (!isValidAmount ? "  border border-red-500" : "")} name="fromValue" id="fromValue" placeholder="0" disabled={!secretAddress}/>
+            <input value={amountToWrap} onChange={handleInputChange} type="text" className={"focus:z-10 block flex-1 min-w-0 w-full bg-zinc-900 text-white px-4 rounded-r-lg disabled:placeholder-zinc-700 transition-colors" + (!isValidAmount ? "  border border-red-500" : "")} name="fromValue" id="fromValue" placeholder="0" disabled={!secretAddress}/>
           </div>
 
           {/* Balance | [25%|50%|75%|Max] */}
@@ -548,12 +548,9 @@ export function Wrap() {
 
 
 
-
-
-
           <div>
-            <div className="flex mb-2">
-              <div className="flex-1 font-bold">To</div>
+            <div className="flex">
+              <div className="flex-1 font-bold mb-2">To</div>
             </div>
 
             <div className="flex">
@@ -566,7 +563,7 @@ export function Wrap() {
                   </span>
                 </div>
               )} className="react-select-wrap-container" classNamePrefix="react-select-wrap" />
-              <input value={amountToWrap} onChange={handleInputChange} type="text" className={"focus:z-10 block flex-1 min-w-0 w-full bg-zinc-900 text-white p-4 rounded-r-lg disabled:placeholder-zinc-700 transition-colors" + (!isValidAmount && wrappingMode === WrappingMode.Unwrap ? " border border-red-500" : "")} name="wrappedValue" id="wrappedValue" placeholder="0" disabled={!selectedToken.address || !secretAddress}/>
+              <input value={amountToWrap} onChange={handleInputChange} type="text" className={"focus:z-10 block flex-1 min-w-0 w-full bg-zinc-900 text-white px-4 rounded-r-lg disabled:placeholder-zinc-700 transition-colors" + (!isValidAmount && wrappingMode === WrappingMode.Unwrap ? " border border-red-500" : "")} name="wrappedValue" id="wrappedValue" placeholder="0" disabled={!selectedToken.address || !secretAddress}/>
             </div>
           </div>
           <div className="flex-1 text-xs mt-3">
@@ -578,7 +575,7 @@ export function Wrap() {
             )}
           </div>
 
-          <div className="bg-zinc-900 p-4 mt-8 rounded-lg select-none flex items-center">
+          <div className="bg-zinc-900 p-4 rounded-lg select-none flex items-center my-4">
             <FontAwesomeIcon icon={faCircleInfo} className="flex-initial mr-4" />
             <div className="flex-1">
               {message}
