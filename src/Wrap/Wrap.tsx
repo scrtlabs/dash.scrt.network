@@ -60,7 +60,10 @@ export function Wrap() {
       return match && str === match[0];
     }
 
-    if (Number(amount) > Number(availableAmount) && !(tokenWrappedBalance == viewingKeyErrorString && wrappingMode === WrappingMode.Unwrap)) {
+    console.log("amount", new BigNumber(amount))
+    console.log("availableAmount", new BigNumber(availableAmount))
+    console.log(new BigNumber(amount) > new BigNumber(availableAmount));
+    if (new BigNumber(amount) > new BigNumber(availableAmount) && !(tokenWrappedBalance == viewingKeyErrorString && wrappingMode === WrappingMode.Unwrap)) {
       setValidationMessage("Not enough balance");
       setisValidAmount(false);
     } else if (!matchExact(numberRegex, amount)) {
@@ -100,6 +103,10 @@ export function Wrap() {
   `Convert transparent ${selectedToken.name} into its privacy-preserving equivalent s${selectedToken.name} using the wrap functionality.`:
   `Convert privacy-preserving s${selectedToken.name} into its transparent equivalent ${selectedToken.name} using the unwrap functionality.`;
 
+  {new BigNumber(tokenWrappedBalance!)
+    .dividedBy(`1e${selectedToken.decimals}`)
+    .toFormat()}
+
   // handles [25% | 50% | 75% | Max] Button-Group
   function setAmountByPercentage(percentage: number) {
     let maxValue = "0";
@@ -110,12 +117,14 @@ export function Wrap() {
     }
 
     if (maxValue) {
-      let availableAmount = Number(maxValue) * (10**(-selectedToken.decimals));
-      let potentialInput = new BigNumber(availableAmount * (percentage * 0.01)).toFormat();
+      let availableAmount = new BigNumber(maxValue).dividedBy(`1e${selectedToken.decimals}`);
+      let potentialInput = availableAmount * (percentage * 0.01);
+      console.log("availableAmount", availableAmount);
+      console.log("potentialInput", potentialInput);
       if (Number(potentialInput) == 0) {
         setAmount("");
       } else {
-        setAmount(potentialInput);
+        setAmount(potentialInput.toString());
       }
       
       validateForm();
