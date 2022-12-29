@@ -219,6 +219,518 @@ export default function Deposit () {
     setSupportedTokens(possibleTokens.concat(possibleSnips));
     setSelectedToken(possibleTokens.concat(possibleSnips)[0]);
   }, [sourceChain]);
+    
+  function uiFocusInput() {
+    document.getElementById("inputWrapper")?.classList.add("animate__animated");
+    document.getElementById("inputWrapper")?.classList.add("animate__headShake");
+    setTimeout(() => {
+      document.getElementById("inputWrapper")?.classList.remove("animate__animated");
+      document.getElementById("inputWrapper")?.classList.remove("animate__headShake");
+    }, 1000);
+  }
+
+  function SubmitButton() {
+    async function submit() {
+      // TODO: add validation to form, including message
+      // if (!isValidAmount || amount === "") {
+      //   uiFocusInput();
+      //   return;
+      // }
+
+      if (ibcMode == IbcMode.Deposit) {
+        if (!sourceCosmJs) {
+          console.error("No cosmjs");
+          return;
+        }
+
+        if (!amountToTransfer) {
+          console.error("Empty deposit");
+          return;
+        }
+
+        const normalizedAmount = (amountToTransfer as string).replace(
+          /,/g,
+          ""
+        );
+
+        if (!(Number(normalizedAmount) > 0)) {
+          console.error(`${normalizedAmount} not bigger than 0`);
+          return;
+        }
+
+        setLoading(true);
+
+        const amount = new BigNumber(normalizedAmount)
+          .multipliedBy(`1e${selectedToken.decimals}`)
+          .toFixed(0, BigNumber.ROUND_DOWN);
+
+        let {
+          deposit_channel_id,
+          deposit_gas,
+          deposit_gas_denom,
+          lcd: lcdSrcChain,
+        } = chains[selectedSource.source_chain_name];
+
+        deposit_channel_id = selectedSource.channel_id || deposit_channel_id;
+        deposit_gas = selectedSource.gas || deposit_gas;
+
+        const toastId = toast.loading(
+          `Sending ${normalizedAmount} ${selectedToken.name} from ${selectedSource.source_chain_name} to Secret`,
+          {
+            closeButton: true,
+          }
+        );
+
+        try {
+          let transactionHash: string = "";
+          let txResponse = null;
+
+          if (!["Evmos", "Injective"].includes(selectedSource.source_chain_name)) {
+            // Regular cosmos chain (not ethermint signing)
+            txResponse = await sourceCosmJs.sendIbcTokens(
+              sourceAddress,
+              secretAddress,
+              {
+                amount,
+                denom: selectedSource.from_denom,
+              },
+              "transfer",
+              deposit_channel_id,
+              undefined,
+              Math.floor(Date.now() / 1000) + 10 * 60, // 10 minute timeout (sec)
+              gasToFee(deposit_gas, deposit_gas_denom)
+            );
+            transactionHash = txResponse.transactionHash;
+          } else {
+            // Handle IBC transfers from Ethermint chains like Evmos & Injective
+
+            const sourceChain = chains[selectedSource.source_chain_name];
+
+            // Get Evmos/Injective account_number & sequence
+            const {
+              account: {
+                base_account: {
+                  account_number: accountNumber,
+                  sequence: accountSequence,
+                },
+              },
+            }: {
+              account: {
+                base_account: {
+                  account_number: string;
+                  sequence: string;
+                };
+              };
+            } = await(
+              await fetch(
+                `${sourceChain.lcd}/cosmos/auth/v1beta1/accounts/${sourceAddress}`
+              )
+            ).json();
+
+            // Get account pubkey
+            // Can't get it from the chain because an account without txs won't have its pubkey listed on-chain
+            const evmosProtoSigner = window.getOfflineSigner!(
+              sourceChain.chain_id
+            );
+            const [{ pubkey }] = await evmosProtoSigner.getAccounts();
+
+            // Create IBC MsgTransfer tx
+            const tx = createTxIBCMsgTransfer(
+              {
+                chainId: 9001, // Evmos EIP155, this is ignored in Injective
+                cosmosChainId: sourceChain.chain_id,
+              },
+              {
+                accountAddress: sourceAddress,
+                accountNumber: Number(accountNumber),
+                sequence: Number(accountSequence),
+                pubkey: toBase64(pubkey),
+              },
+              {
+                gas: String(deposit_gas),
+                amount: "0", // filled in by Keplr
+                denom: "aevmos", // filled in by Keplr
+              },
+              "",
+              {
+                sourcePort: "transfer",
+                sourceChannel: deposit_channel_id,
+                amount,
+                denom: selectedSource.from_denom,
+                receiver: secretAddress,
+                revisionNumber: 0,
+                revisionHeight: 0,
+                timeoutTimestamp: `${
+                  Math.floor(Date.now() / 1000) + 10 * 60
+                }000000000`, // 10 minute timeout (ns)
+              }
+            );
+
+            if (sourceChain.chain_name === "Injective") {
+              const signer_info =
+                tx.signDirect.authInfo.signer_infos[0].toObject();
+              signer_info.public_key!.type_url =
+                "/injective.crypto.v1beta1.ethsecp256k1.PubKey";
+
+              tx.signDirect.authInfo.signer_infos[0] =
+                cosmos.tx.v1beta1.SignerInfo.fromObject(signer_info);
+            }
+
+            // Sign the tx
+            const sig = await window?.keplr?.signDirect(
+              sourceChain.chain_id,
+              sourceAddress,
+              {
+                bodyBytes: tx.signDirect.body.serializeBinary(),
+                authInfoBytes: tx.signDirect.authInfo.serializeBinary(),
+                chainId: sourceChain.chain_id,
+                accountNumber: new Long(Number(accountNumber)),
+              },
+              // @ts-expect-error the types are not updated on the Keplr types package
+              { isEthereum: true }
+            );
+
+            // Encode the Evmos tx to a TxRaw protobuf binary
+            const txRaw = TxRaw.fromPartial({
+              bodyBytes: sig!.signed.bodyBytes,
+              authInfoBytes: sig!.signed.authInfoBytes,
+              signatures: [fromBase64(sig!.signature.signature)],
+            });
+            const txBytes = TxRaw.encode(txRaw).finish();
+
+            // cosmjs can broadcast to Ethermint but cannot handle the response
+
+            // Broadcast the tx to Evmos
+            sourceCosmJs.broadcastTx(txBytes);
+            transactionHash = toHex(sha256(txBytes));
+          }
+
+          // Try finding the send_packet every 5 seconds for 1 minute
+          let tries = 12;
+          while (tries > 0) {
+            const {
+              tx_response: sendTx,
+            }: {
+              tx_response?: {
+                code: number;
+                txhash: string;
+                raw_log: string;
+                logs: Array<{
+                  msg_index: number;
+                  events: Array<{
+                    type: string;
+                    attributes: Array<{
+                      key: string;
+                      value: string;
+                    }>;
+                  }>;
+                }>;
+              };
+            } = await(
+              await fetch(
+                `${lcdSrcChain}/cosmos/tx/v1beta1/txs/${transactionHash.toUpperCase()}`
+              )
+            ).json();
+
+            if (sendTx) {
+              if (sendTx.code !== 0) {
+                toast.update(toastId, {
+                  render: `Failed sending ${normalizedAmount} ${selectedToken.name} from ${selectedSource.source_chain_name} to Secret: ${sendTx.raw_log}`,
+                  type: "error",
+                  isLoading: false,
+                });
+                return;
+              } else {
+                // console.log(`Original tx: ${sendTx.txhash}`);
+
+                toast.update(toastId, {
+                  render: `Receiving ${normalizedAmount} ${selectedToken.name} from ${selectedSource.source_chain_name} on Secret`,
+                });
+
+                const packetSrcChannel = sendTx.logs[0].events
+                  .find((e) => e.type === "send_packet")
+                  ?.attributes.find((a) => a.key === "packet_src_channel")
+                  ?.value!;
+                const packetDstChannel = sendTx.logs[0].events
+                  .find((e) => e.type === "send_packet")
+                  ?.attributes.find((a) => a.key === "packet_dst_channel")
+                  ?.value!;
+                const packetSequence = sendTx.logs[0].events
+                  .find((e) => e.type === "send_packet")
+                  ?.attributes.find((a) => a.key === "packet_sequence")
+                  ?.value!;
+
+                // console.log(
+                //   packetSrcChannel,
+                //   packetDstChannel,
+                //   packetSequence
+                // );
+
+                // Try finding the recv_packet every 15 seconds for 10 minutes
+                let tries = 40;
+                while (tries > 0) {
+                  const {
+                    tx_responses,
+                  }: {
+                    tx_responses?: Array<{
+                      code: number;
+                      txhash: string;
+                    }>;
+                  } = await(
+                    await fetch(
+                      `${chains["Secret Network"].lcd}/cosmos/tx/v1beta1/txs?events=recv_packet.packet_dst_channel%3D%27${packetDstChannel}%27&events=recv_packet.packet_sequence%3D%27${packetSequence}%27`
+                    )
+                  ).json();
+
+                  if (tx_responses) {
+                    const recvTx = tx_responses.find((x) => x.code === 0);
+
+                    if (recvTx) {
+                      // console.log(`Original tx: ${sendTx.txhash}`);
+                      // console.log(
+                      //   `IBC recv_packet on other chain tx: ${recvTx.txhash}`
+                      // );
+
+                      toast.update(toastId, {
+                        render: `Received ${normalizedAmount} ${selectedToken.name} from ${selectedSource.source_chain_name} on Secret`,
+                        type: "success",
+                        isLoading: false,
+                        closeOnClick: true,
+                      });
+
+                      return;
+                    }
+                  }
+
+                  tries -= 1;
+                  await sleep(15000);
+                }
+
+                if (tries === 0) {
+                  toast.update(toastId, {
+                    render: `Timed out while waiting to receive ${normalizedAmount} ${selectedToken.name} from ${selectedSource.source_chain_name} on ${selectedToken.withdrawals[selectedChainIndex].target_chain_name}`,
+                    type: "warning",
+                    isLoading: false,
+                  });
+                }
+
+                break;
+              }
+            }
+            console.log(txResponse)
+            tries -= 1;
+            await sleep(15000);
+          }
+        } catch (e) {
+          toast.update(toastId, {
+            render: `Failed sending ${normalizedAmount} ${
+              selectedToken.name
+            } from ${
+              selectedSource.source_chain_name
+            } to Secret: ${e}`,
+            type: "error",
+            isLoading: false,
+          });
+        } finally {
+          setLoading(false);
+        }
+      }
+      if (ibcMode == IbcMode.Withdrawal) {
+        if (!secretjs) {
+          console.error("No secretjs");
+          return;
+        }
+
+        if (!amountToTransfer) {
+          console.error("Empty withdraw");
+          return;
+        }
+
+        const normalizedAmount = (amountToTransfer as string).replace(
+          /,/g,
+          ""
+        );
+
+        if (!(Number(normalizedAmount) > 0)) {
+          console.error(`${normalizedAmount} not bigger than 0`);
+          return;
+        }
+
+        setLoading(true);
+
+        const amount = new BigNumber(normalizedAmount)
+          .multipliedBy(`1e${selectedToken.decimals}`)
+          .toFixed(0, BigNumber.ROUND_DOWN);
+
+        let {
+          withdraw_channel_id,
+          withdraw_gas,
+          lcd: lcdDstChain,
+        } = chains[selectedSource.source_chain_name];
+
+        withdraw_channel_id = selectedSource.channel_id || withdraw_channel_id;
+        withdraw_gas = selectedSource.gas || withdraw_gas;
+
+        const toastId = toast.loading(
+          `Sending ${normalizedAmount} ${selectedToken.name} from Secret to ${selectedSource.source_chain_name}`,
+          {
+            closeButton: true,
+          }
+        );
+
+        try {
+
+          let tx: Tx;
+
+          if (selectedToken.is_snip20) {
+            tx = await secretjs.tx.compute.executeContract(
+              {
+                contract_address: selectedToken.address,
+                code_hash: selectedToken.code_hash,
+                sender: secretAddress,
+                msg: {
+                  send: {
+                    recipient:
+                      "secret1tqmms5awftpuhalcv5h5mg76fa0tkdz4jv9ex4", // cw20-ics20
+                    recipient_code_hash:
+                      "f85b413b547b9460162958bafd51113ac266dac96a84c33b9150f68f045f2641",
+                    amount,
+                    msg: toBase64(
+                      toUtf8(
+                        JSON.stringify({
+                          channel: withdraw_channel_id,
+                          remote_address: sourceAddress,
+                          timeout: 600, // 10 minute timeout
+                        })
+                      )
+                    ),
+                  },
+                },
+              },
+              {
+                gasLimit: withdraw_gas,
+                gasPriceInFeeDenom: 0.1,
+                feeDenom: "uscrt",
+                feeGranter: useFeegrant ? faucetAddress : "",
+              }
+            );
+          } else {
+            // console.log(selectedToken.withdrawals.filter(withdraw => withdraw.target_chain_name === selectedSource.source_chain_name)[0].from_denom)
+            tx = await secretjs.tx.ibc.transfer(
+              {
+                sender: secretAddress,
+                receiver: sourceAddress,
+                source_channel: withdraw_channel_id,
+                source_port: "transfer",
+                token: {
+                  amount,
+                  denom: selectedToken.withdrawals.filter(withdraw => withdraw.target_chain_name === selectedSource.source_chain_name)[0].from_denom,
+                },
+                timeout_timestamp: String(
+                  Math.floor(Date.now() / 1000) + 10 * 60
+                ), // 10 minute timeout
+              },
+              {
+                gasLimit: withdraw_gas,
+                gasPriceInFeeDenom: 0.1,
+                feeDenom: "uscrt",
+                feeGranter: useFeegrant ? faucetAddress : "",
+              }
+            );
+          }
+
+          if (tx.code === 0) {
+            toast.update(toastId, {
+              render: `Receiving ${normalizedAmount} ${selectedToken.name} from Secret on ${selectedSource.source_chain_name}`,
+            });
+
+            const packetSrcChannel = tx.arrayLog?.find(
+              (x) =>
+                x.type === "send_packet" && x.key === "packet_src_channel"
+            )?.value!;
+            const packetDstChannel = tx.arrayLog?.find(
+              (x) =>
+                x.type === "send_packet" && x.key === "packet_dst_channel"
+            )?.value!;
+            const packetSequence = tx.arrayLog?.find(
+              (x) => x.type === "send_packet" && x.key === "packet_sequence"
+            )?.value!;
+
+            // console.log(packetSrcChannel, packetDstChannel, packetSequence);
+
+            // Try finding the recv_packet every 15 seconds for 10 minutes
+            let tries = 40;
+            while (tries > 0) {
+              const {
+                tx_responses,
+              }: {
+                tx_responses?: Array<{ code: number; txhash: string }>;
+              } = await (
+                await fetch(
+                  `${lcdDstChain}/cosmos/tx/v1beta1/txs?events=recv_packet.packet_dst_channel%3D%27${packetDstChannel}%27&events=recv_packet.packet_sequence%3D%27${packetSequence}%27`
+                )
+              ).json();
+
+              if (tx_responses) {
+                const recvTx = tx_responses.find((x) => x.code === 0);
+
+                if (recvTx) {
+                  // console.log(`Original tx: ${tx.transactionHash}`);
+                  // console.log(
+                  //   `IBC recv_packet on other chain tx: ${recvTx.txhash}`
+                  // );
+
+                  toast.update(toastId, {
+                    render: `Received ${normalizedAmount} ${selectedToken.name} from Secret on ${token.withdrawals[selectedChainIndex].target_chain_name}`,
+                    type: "success",
+                    isLoading: false,
+                    closeOnClick: true,
+                  });
+
+                  break;
+                }
+              }
+
+              tries -= 1;
+              await sleep(15000);
+            }
+
+            if (tries === 0) {
+              toast.update(toastId, {
+                render: `Timed out while waiting to receive ${normalizedAmount} ${token.name} from Secret on ${token.withdrawals[selectedChainIndex].target_chain_name}`,
+                type: "warning",
+                isLoading: false,
+              });
+            }
+          } else {
+            toast.update(toastId, {
+              render: `Failed sending ${normalizedAmount} ${selectedToken.name} from Secret to ${selectedSource.source_chain_name}: ${tx.rawLog}`,
+              type: "error",
+              isLoading: false,
+            });
+          }
+        } catch (e) {
+          toast.update(toastId, {
+            render: `Failed sending ${normalizedAmount} ${
+              selectedToken.name
+            } from Secret to ${
+              selectedSource.source_chain_name
+            }: ${e}`,
+            type: "error",
+            isLoading: false,
+          });
+        } finally {
+          setLoading(false);
+        }
+      }
+    }
+
+    return (<>
+      <button
+        className={"flex items-center justify-center w-full py-2 rounded-lg transition-colors font-semibold border bg-emerald-700 border-emerald-500 hover:bg-emerald-600 active:bg-emerald-700 shadow-lg shadow-emerald-800/40"}
+        onClick={() => submit()}>Execute Transfer </button>
+    </>)
+  }
 
   
   return (
@@ -244,7 +756,7 @@ export default function Deposit () {
           {/* {value} */}
           {ibcMode === IbcMode.Deposit && (<ChainSelect/>)}
             {ibcMode === IbcMode.Withdrawal && (
-              <div style={{paddingTop: ".9rem", paddingBottom: ".9rem"}} className="flex items-center w-full text-sm font-semibold select-none bg-zinc-700 rounded text-zinc-200 focus:bg-zinc-700 disabled:hover:bg-zinc-800 border border-zinc-500">
+              <div style={{paddingTop: ".7rem", paddingBottom: ".7rem"}} className="flex items-center w-full text-sm font-semibold select-none bg-zinc-700 rounded text-zinc-200 focus:bg-zinc-700 disabled:hover:bg-zinc-800 border border-zinc-500">
                 <div className="flex-1 px-3">
                   <span>Secret Network</span>
                 </div>
@@ -278,7 +790,7 @@ export default function Deposit () {
           <div className="-mt-3 relative z-10 w-full">
             {ibcMode === IbcMode.Withdrawal && (<ChainSelect/>)}
             {ibcMode === IbcMode.Deposit && (
-              <div style={{paddingTop: ".9rem", paddingBottom: ".9rem"}} className="flex items-center w-full text-sm font-semibold select-none bg-zinc-700 rounded text-zinc-200 focus:bg-zinc-700 disabled:hover:bg-zinc-800 border border-zinc-500">
+              <div style={{paddingTop: ".7rem", paddingBottom: ".7rem"}} className="flex items-center w-full text-sm font-semibold select-none bg-zinc-700 rounded text-zinc-200 focus:bg-zinc-700 disabled:hover:bg-zinc-800 border border-zinc-500">
                 <div className="flex-1 px-3">
                   <span>Secret Network</span>
                 </div>
@@ -339,7 +851,7 @@ export default function Deposit () {
           </div>
         </div>
       </div>
-      <div className="flex mt-8">
+      <div className="flex mt-8" id="inputWrapper">
         <Select options={supportedTokens} value={selectedToken} onChange={setSelectedToken} isDisabled={!secretjs || !secretAddress} formatOptionLabel={token => (
                 <div className="flex items-center">
                   <img src={token.image} className="w-6 h-6 mr-2 rounded-full" />
@@ -348,7 +860,7 @@ export default function Deposit () {
                   </span>
                 </div>
               )}  className="react-select-wrap-container" classNamePrefix="react-select-wrap"/>
-        <input type="text" value={amountToTransfer} onChange={handleInputChange} className={"focus:z-10 block flex-1 min-w-0 w-full bg-zinc-900 text-white p-4 rounded-r-lg disabled:placeholder-zinc-700 transition-colors" + (false ? "  border border-red-500" : "")} name="fromValue" id="fromValue" placeholder="0" disabled={!secretAddress}/>
+        <input type="text" value={amountToTransfer} onChange={handleInputChange} className={"focus:z-10 block flex-1 min-w-0 w-full bg-zinc-900 text-white px-4 rounded-r-lg disabled:placeholder-zinc-700 transition-colors" + (false ? "  border border-red-500" : "")} name="amount" id="amount" placeholder="0" disabled={!secretAddress}/>
       </div>
 
       {/* Balance | [25%|50%|75%|Max] */}
@@ -381,508 +893,10 @@ export default function Deposit () {
           {message}
         </div>
       </div>
+
+
       
-      <div
-        style={{
-          display: "flex",
-          placeContent: "center",
-          marginBottom: "0.4em",
-        }}
-      >
-        <button
-          className="w-full py-3 px-3 bg-emerald-500/50 rounded border border-emerald-500 hover:bg-emerald-600 active:bg-emerald-700 transition-colors font-semibold"
-          onClick={async () => {
-            if (ibcMode == IbcMode.Deposit) {
-              if (!sourceCosmJs) {
-                console.error("No cosmjs");
-                return;
-              }
-
-              if (!amountToTransfer) {
-                console.error("Empty deposit");
-                return;
-              }
-
-              const normalizedAmount = (amountToTransfer as string).replace(
-                /,/g,
-                ""
-              );
-
-              if (!(Number(normalizedAmount) > 0)) {
-                console.error(`${normalizedAmount} not bigger than 0`);
-                return;
-              }
-
-              setLoading(true);
-
-              const amount = new BigNumber(normalizedAmount)
-                .multipliedBy(`1e${selectedToken.decimals}`)
-                .toFixed(0, BigNumber.ROUND_DOWN);
-
-              let {
-                deposit_channel_id,
-                deposit_gas,
-                deposit_gas_denom,
-                lcd: lcdSrcChain,
-              } = chains[selectedSource.source_chain_name];
-
-              deposit_channel_id = selectedSource.channel_id || deposit_channel_id;
-              deposit_gas = selectedSource.gas || deposit_gas;
-
-              const toastId = toast.loading(
-                `Sending ${normalizedAmount} ${selectedToken.name} from ${selectedSource.source_chain_name} to Secret`,
-                {
-                  closeButton: true,
-                }
-              );
-
-              try {
-                let transactionHash: string = "";
-                let txResponse = null;
-
-                if (!["Evmos", "Injective"].includes(selectedSource.source_chain_name)) {
-                  // Regular cosmos chain (not ethermint signing)
-                  txResponse = await sourceCosmJs.sendIbcTokens(
-                    sourceAddress,
-                    secretAddress,
-                    {
-                      amount,
-                      denom: selectedSource.from_denom,
-                    },
-                    "transfer",
-                    deposit_channel_id,
-                    undefined,
-                    Math.floor(Date.now() / 1000) + 10 * 60, // 10 minute timeout (sec)
-                    gasToFee(deposit_gas, deposit_gas_denom)
-                  );
-                  transactionHash = txResponse.transactionHash;
-                } else {
-                  // Handle IBC transfers from Ethermint chains like Evmos & Injective
-
-                  const sourceChain = chains[selectedSource.source_chain_name];
-
-                  // Get Evmos/Injective account_number & sequence
-                  const {
-                    account: {
-                      base_account: {
-                        account_number: accountNumber,
-                        sequence: accountSequence,
-                      },
-                    },
-                  }: {
-                    account: {
-                      base_account: {
-                        account_number: string;
-                        sequence: string;
-                      };
-                    };
-                  } = await(
-                    await fetch(
-                      `${sourceChain.lcd}/cosmos/auth/v1beta1/accounts/${sourceAddress}`
-                    )
-                  ).json();
-
-                  // Get account pubkey
-                  // Can't get it from the chain because an account without txs won't have its pubkey listed on-chain
-                  const evmosProtoSigner = window.getOfflineSigner!(
-                    sourceChain.chain_id
-                  );
-                  const [{ pubkey }] = await evmosProtoSigner.getAccounts();
-
-                  // Create IBC MsgTransfer tx
-                  const tx = createTxIBCMsgTransfer(
-                    {
-                      chainId: 9001, // Evmos EIP155, this is ignored in Injective
-                      cosmosChainId: sourceChain.chain_id,
-                    },
-                    {
-                      accountAddress: sourceAddress,
-                      accountNumber: Number(accountNumber),
-                      sequence: Number(accountSequence),
-                      pubkey: toBase64(pubkey),
-                    },
-                    {
-                      gas: String(deposit_gas),
-                      amount: "0", // filled in by Keplr
-                      denom: "aevmos", // filled in by Keplr
-                    },
-                    "",
-                    {
-                      sourcePort: "transfer",
-                      sourceChannel: deposit_channel_id,
-                      amount,
-                      denom: selectedSource.from_denom,
-                      receiver: secretAddress,
-                      revisionNumber: 0,
-                      revisionHeight: 0,
-                      timeoutTimestamp: `${
-                        Math.floor(Date.now() / 1000) + 10 * 60
-                      }000000000`, // 10 minute timeout (ns)
-                    }
-                  );
-
-                  if (sourceChain.chain_name === "Injective") {
-                    const signer_info =
-                      tx.signDirect.authInfo.signer_infos[0].toObject();
-                    signer_info.public_key!.type_url =
-                      "/injective.crypto.v1beta1.ethsecp256k1.PubKey";
-
-                    tx.signDirect.authInfo.signer_infos[0] =
-                      cosmos.tx.v1beta1.SignerInfo.fromObject(signer_info);
-                  }
-
-                  // Sign the tx
-                  const sig = await window?.keplr?.signDirect(
-                    sourceChain.chain_id,
-                    sourceAddress,
-                    {
-                      bodyBytes: tx.signDirect.body.serializeBinary(),
-                      authInfoBytes: tx.signDirect.authInfo.serializeBinary(),
-                      chainId: sourceChain.chain_id,
-                      accountNumber: new Long(Number(accountNumber)),
-                    },
-                    // @ts-expect-error the types are not updated on the Keplr types package
-                    { isEthereum: true }
-                  );
-
-                  // Encode the Evmos tx to a TxRaw protobuf binary
-                  const txRaw = TxRaw.fromPartial({
-                    bodyBytes: sig!.signed.bodyBytes,
-                    authInfoBytes: sig!.signed.authInfoBytes,
-                    signatures: [fromBase64(sig!.signature.signature)],
-                  });
-                  const txBytes = TxRaw.encode(txRaw).finish();
-
-                  // cosmjs can broadcast to Ethermint but cannot handle the response
-
-                  // Broadcast the tx to Evmos
-                  sourceCosmJs.broadcastTx(txBytes);
-                  transactionHash = toHex(sha256(txBytes));
-                }
-
-                // Try finding the send_packet every 5 seconds for 1 minute
-                let tries = 12;
-                while (tries > 0) {
-                  const {
-                    tx_response: sendTx,
-                  }: {
-                    tx_response?: {
-                      code: number;
-                      txhash: string;
-                      raw_log: string;
-                      logs: Array<{
-                        msg_index: number;
-                        events: Array<{
-                          type: string;
-                          attributes: Array<{
-                            key: string;
-                            value: string;
-                          }>;
-                        }>;
-                      }>;
-                    };
-                  } = await(
-                    await fetch(
-                      `${lcdSrcChain}/cosmos/tx/v1beta1/txs/${transactionHash.toUpperCase()}`
-                    )
-                  ).json();
-
-                  if (sendTx) {
-                    if (sendTx.code !== 0) {
-                      toast.update(toastId, {
-                        render: `Failed sending ${normalizedAmount} ${selectedToken.name} from ${selectedSource.source_chain_name} to Secret: ${sendTx.raw_log}`,
-                        type: "error",
-                        isLoading: false,
-                      });
-                      return;
-                    } else {
-                      // console.log(`Original tx: ${sendTx.txhash}`);
-
-                      toast.update(toastId, {
-                        render: `Receiving ${normalizedAmount} ${selectedToken.name} from ${selectedSource.source_chain_name} on Secret`,
-                      });
-
-                      const packetSrcChannel = sendTx.logs[0].events
-                        .find((e) => e.type === "send_packet")
-                        ?.attributes.find((a) => a.key === "packet_src_channel")
-                        ?.value!;
-                      const packetDstChannel = sendTx.logs[0].events
-                        .find((e) => e.type === "send_packet")
-                        ?.attributes.find((a) => a.key === "packet_dst_channel")
-                        ?.value!;
-                      const packetSequence = sendTx.logs[0].events
-                        .find((e) => e.type === "send_packet")
-                        ?.attributes.find((a) => a.key === "packet_sequence")
-                        ?.value!;
-
-                      // console.log(
-                      //   packetSrcChannel,
-                      //   packetDstChannel,
-                      //   packetSequence
-                      // );
-
-                      // Try finding the recv_packet every 15 seconds for 10 minutes
-                      let tries = 40;
-                      while (tries > 0) {
-                        const {
-                          tx_responses,
-                        }: {
-                          tx_responses?: Array<{
-                            code: number;
-                            txhash: string;
-                          }>;
-                        } = await(
-                          await fetch(
-                            `${chains["Secret Network"].lcd}/cosmos/tx/v1beta1/txs?events=recv_packet.packet_dst_channel%3D%27${packetDstChannel}%27&events=recv_packet.packet_sequence%3D%27${packetSequence}%27`
-                          )
-                        ).json();
-
-                        if (tx_responses) {
-                          const recvTx = tx_responses.find((x) => x.code === 0);
-
-                          if (recvTx) {
-                            // console.log(`Original tx: ${sendTx.txhash}`);
-                            // console.log(
-                            //   `IBC recv_packet on other chain tx: ${recvTx.txhash}`
-                            // );
-
-                            toast.update(toastId, {
-                              render: `Received ${normalizedAmount} ${selectedToken.name} from ${selectedSource.source_chain_name} on Secret`,
-                              type: "success",
-                              isLoading: false,
-                              closeOnClick: true,
-                            });
-
-                            return;
-                          }
-                        }
-
-                        tries -= 1;
-                        await sleep(15000);
-                      }
-
-                      if (tries === 0) {
-                        toast.update(toastId, {
-                          render: `Timed out while waiting to receive ${normalizedAmount} ${selectedToken.name} from ${selectedSource.source_chain_name} on ${selectedToken.withdrawals[selectedChainIndex].target_chain_name}`,
-                          type: "warning",
-                          isLoading: false,
-                        });
-                      }
-
-                      break;
-                    }
-                  }
-                  console.log(txResponse)
-                  tries -= 1;
-                  await sleep(15000);
-                }
-              } catch (e) {
-                toast.update(toastId, {
-                  render: `Failed sending ${normalizedAmount} ${
-                    selectedToken.name
-                  } from ${
-                    selectedSource.source_chain_name
-                  } to Secret: ${e}`,
-                  type: "error",
-                  isLoading: false,
-                });
-              } finally {
-                setLoading(false);
-              }
-            }
-            if (ibcMode == IbcMode.Withdrawal) {
-              if (!secretjs) {
-                console.error("No secretjs");
-                return;
-              }
-  
-              if (!amountToTransfer) {
-                console.error("Empty withdraw");
-                return;
-              }
-  
-              const normalizedAmount = (amountToTransfer as string).replace(
-                /,/g,
-                ""
-              );
-  
-              if (!(Number(normalizedAmount) > 0)) {
-                console.error(`${normalizedAmount} not bigger than 0`);
-                return;
-              }
-  
-              setLoading(true);
-  
-              const amount = new BigNumber(normalizedAmount)
-                .multipliedBy(`1e${selectedToken.decimals}`)
-                .toFixed(0, BigNumber.ROUND_DOWN);
-
-              let {
-                withdraw_channel_id,
-                withdraw_gas,
-                lcd: lcdDstChain,
-              } = chains[selectedSource.source_chain_name];
-  
-              withdraw_channel_id = selectedSource.channel_id || withdraw_channel_id;
-              withdraw_gas = selectedSource.gas || withdraw_gas;
-  
-              const toastId = toast.loading(
-                `Sending ${normalizedAmount} ${selectedToken.name} from Secret to ${selectedSource.source_chain_name}`,
-                {
-                  closeButton: true,
-                }
-              );
-  
-              try {
-  
-                let tx: Tx;
-  
-                if (selectedToken.is_snip20) {
-                  tx = await secretjs.tx.compute.executeContract(
-                    {
-                      contract_address: selectedToken.address,
-                      code_hash: selectedToken.code_hash,
-                      sender: secretAddress,
-                      msg: {
-                        send: {
-                          recipient:
-                            "secret1tqmms5awftpuhalcv5h5mg76fa0tkdz4jv9ex4", // cw20-ics20
-                          recipient_code_hash:
-                            "f85b413b547b9460162958bafd51113ac266dac96a84c33b9150f68f045f2641",
-                          amount,
-                          msg: toBase64(
-                            toUtf8(
-                              JSON.stringify({
-                                channel: withdraw_channel_id,
-                                remote_address: sourceAddress,
-                                timeout: 600, // 10 minute timeout
-                              })
-                            )
-                          ),
-                        },
-                      },
-                    },
-                    {
-                      gasLimit: withdraw_gas,
-                      gasPriceInFeeDenom: 0.1,
-                      feeDenom: "uscrt",
-                      feeGranter: useFeegrant ? faucetAddress : "",
-                    }
-                  );
-                } else {
-                  // console.log(selectedToken.withdrawals.filter(withdraw => withdraw.target_chain_name === selectedSource.source_chain_name)[0].from_denom)
-                  tx = await secretjs.tx.ibc.transfer(
-                    {
-                      sender: secretAddress,
-                      receiver: sourceAddress,
-                      source_channel: withdraw_channel_id,
-                      source_port: "transfer",
-                      token: {
-                        amount,
-                        denom: selectedToken.withdrawals.filter(withdraw => withdraw.target_chain_name === selectedSource.source_chain_name)[0].from_denom,
-                      },
-                      timeout_timestamp: String(
-                        Math.floor(Date.now() / 1000) + 10 * 60
-                      ), // 10 minute timeout
-                    },
-                    {
-                      gasLimit: withdraw_gas,
-                      gasPriceInFeeDenom: 0.1,
-                      feeDenom: "uscrt",
-                      feeGranter: useFeegrant ? faucetAddress : "",
-                    }
-                  );
-                }
-  
-                if (tx.code === 0) {
-                  toast.update(toastId, {
-                    render: `Receiving ${normalizedAmount} ${selectedToken.name} from Secret on ${selectedSource.source_chain_name}`,
-                  });
-  
-                  const packetSrcChannel = tx.arrayLog?.find(
-                    (x) =>
-                      x.type === "send_packet" && x.key === "packet_src_channel"
-                  )?.value!;
-                  const packetDstChannel = tx.arrayLog?.find(
-                    (x) =>
-                      x.type === "send_packet" && x.key === "packet_dst_channel"
-                  )?.value!;
-                  const packetSequence = tx.arrayLog?.find(
-                    (x) => x.type === "send_packet" && x.key === "packet_sequence"
-                  )?.value!;
-  
-                  // console.log(packetSrcChannel, packetDstChannel, packetSequence);
-  
-                  // Try finding the recv_packet every 15 seconds for 10 minutes
-                  let tries = 40;
-                  while (tries > 0) {
-                    const {
-                      tx_responses,
-                    }: {
-                      tx_responses?: Array<{ code: number; txhash: string }>;
-                    } = await (
-                      await fetch(
-                        `${lcdDstChain}/cosmos/tx/v1beta1/txs?events=recv_packet.packet_dst_channel%3D%27${packetDstChannel}%27&events=recv_packet.packet_sequence%3D%27${packetSequence}%27`
-                      )
-                    ).json();
-  
-                    if (tx_responses) {
-                      const recvTx = tx_responses.find((x) => x.code === 0);
-  
-                      if (recvTx) {
-                        // console.log(`Original tx: ${tx.transactionHash}`);
-                        // console.log(
-                        //   `IBC recv_packet on other chain tx: ${recvTx.txhash}`
-                        // );
-  
-                        toast.update(toastId, {
-                          render: `Received ${normalizedAmount} ${selectedToken.name} from Secret on ${token.withdrawals[selectedChainIndex].target_chain_name}`,
-                          type: "success",
-                          isLoading: false,
-                          closeOnClick: true,
-                        });
-  
-                        break;
-                      }
-                    }
-  
-                    tries -= 1;
-                    await sleep(15000);
-                  }
-  
-                  if (tries === 0) {
-                    toast.update(toastId, {
-                      render: `Timed out while waiting to receive ${normalizedAmount} ${token.name} from Secret on ${token.withdrawals[selectedChainIndex].target_chain_name}`,
-                      type: "warning",
-                      isLoading: false,
-                    });
-                  }
-                } else {
-                  toast.update(toastId, {
-                    render: `Failed sending ${normalizedAmount} ${selectedToken.name} from Secret to ${selectedSource.source_chain_name}: ${tx.rawLog}`,
-                    type: "error",
-                    isLoading: false,
-                  });
-                }
-              } catch (e) {
-                toast.update(toastId, {
-                  render: `Failed sending ${normalizedAmount} ${
-                    selectedToken.name
-                  } from Secret to ${
-                    selectedSource.source_chain_name
-                  }: ${e}`,
-                  type: "error",
-                  isLoading: false,
-                });
-              } finally {
-                setLoading(false);
-              }
-            }
-          }}
-        >
-          {loadingTx ? <CircularProgress size="0.8em"/> : "Execute Transfer"}
-        </button>
-      </div>
+        <SubmitButton/>
     </>
   );
 }
