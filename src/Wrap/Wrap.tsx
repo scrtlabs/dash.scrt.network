@@ -50,7 +50,7 @@ export function Wrap() {
 
   function validateForm() {
     
-    const availableAmount = wrappingMode === WrappingMode.Wrap ? Number(tokenNativeBalance) * (10**(-selectedToken.decimals)) : Number(tokenWrappedBalance) * (10**(-selectedToken.decimals));
+    const availableAmount = wrappingMode === WrappingMode.Wrap ? new BigNumber(tokenNativeBalance).dividedBy(`1e${selectedToken.decimals}`) : new BigNumber(tokenWrappedBalance).dividedBy(`1e${selectedToken.decimals}`);
 
     // const numberRegex = /^-?[0-9]+([.,][0-9]+)?$/;
     const numberRegex = /^(?:[1-9]\d*|0)?(?:\.\d+)?$/;
@@ -60,9 +60,6 @@ export function Wrap() {
       return match && str === match[0];
     }
 
-    console.log("amount", new BigNumber(amount))
-    console.log("availableAmount", new BigNumber(availableAmount))
-    console.log(new BigNumber(amount) > new BigNumber(availableAmount));
     if (new BigNumber(amount) > new BigNumber(availableAmount) && !(tokenWrappedBalance == viewingKeyErrorString && wrappingMode === WrappingMode.Unwrap)) {
       setValidationMessage("Not enough balance");
       setisValidAmount(false);
