@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Discord } from 'General/Components/Discord';
 import { Footer } from 'General/Components/Footer';
 import { KeplrPanel } from 'General/Components/Keplr';
-import { Navigation } from 'General/Components/navigation';
+import { Navigation } from 'General/Components/Navigation';
 import React, { useState, createContext, useEffect, Component} from 'react';
 import { SecretNetworkClient } from 'secretjs';
 import { Breakpoint } from "react-socks";

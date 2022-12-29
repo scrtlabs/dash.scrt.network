@@ -92,14 +92,14 @@ export function KeplrPanel({
           <>
             {/* Untouched */}
             <If condition={feeGrantStatus === FeeGrantStatus.Untouched}>
-              <button onClick={grantButtonAction} className="w-full p-1.5 rounded-md text-emerald-500 border border-emerald-500 hover:bg-emerald-600 hover:text-white transition-colors select-none">
+              <button onClick={grantButtonAction} className="font-semibold w-full p-1.5 rounded-md text-emerald-500 border border-emerald-500 hover:bg-emerald-600 hover:text-white transition-colors select-none">
                 Request Fee Grant
               </button>
             </If>
 
             {/* Success */}
             <If condition={feeGrantStatus === FeeGrantStatus.Success}>
-              <div className="w-full text-center p-1.5 rounded-md text-emerald-500 border border-emerald-500 select-none">
+              <div className="font-semibold w-full text-center p-1.5 rounded-md text-emerald-500 border border-emerald-500 select-none">
                 <FontAwesomeIcon icon={faCheck} className="mr-2 text-emerald-500"/>
                 Fee Granted
               </div>
@@ -107,7 +107,7 @@ export function KeplrPanel({
 
             {/* Fail */}
             <If condition={feeGrantStatus === FeeGrantStatus.Fail}>
-              <button onClick={grantButtonAction} className="group w-full p-1.5 rounded-md border border-red-500 hover:text-white transition-colors select-none">
+              <button onClick={grantButtonAction} className="font-semibold group w-full p-1.5 rounded-md border border-red-500 hover:text-white transition-colors select-none">
                 <FontAwesomeIcon icon={faX} className="mr-2 text-red-500"/>
                 Fee Grant failed
                 <FontAwesomeIcon icon={faRotateRight} className="ml-2 text-zinc-500 group-hover:text-white transition-colors" />
@@ -134,7 +134,7 @@ class KeplrMenu extends Component {
               <FeeGrantButton/>
             </div>
             <div className="text-right">
-              <button onClick={disconnectWallet} className="px-3 py-1.5 rounded-md text-zinc-300 border border-zinc-400 hover:border-red-600 hover:text-red-600 transition-colors">Disconnect Wallet</button>
+              <button onClick={disconnectWallet} className="font-semibold px-3 py-1.5 rounded-md text-zinc-300 border border-zinc-400 hover:border-red-600 hover:text-red-600 transition-colors">Disconnect Wallet</button>
             </div>
           </div>
         </div>
@@ -143,7 +143,7 @@ class KeplrMenu extends Component {
 }
 
   const content = (
-    <div className="flex items-center font-semibold">
+    <div className="flex items-center font-semibold text-sm">
       <div className="flex">
         <If condition={secretAddress.length > 0}>
           <span className="relative w-2.5 mr-3">
@@ -153,8 +153,8 @@ class KeplrMenu extends Component {
             </span>
           </span>
         </If>
-        <img src="/fina.webp" className="w-5 h-5 mr-2 inline md:hidden"/>
-        <img src="/keplr.svg" className="w-5 h-5 mr-2 hidden md:inline"/>
+        <img src="/img/assets/fina.webp" className="w-5 h-5 mr-2 inline md:hidden"/>
+        <img src="/img/assets/keplr.svg" className="w-5 h-5 mr-2 hidden md:inline"/>
       </div>
       <span>
         <If condition={secretAddress.length > 0}>

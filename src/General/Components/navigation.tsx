@@ -12,25 +12,25 @@ export function Navigation({
 }) {
   return (
     <>
-      <NavLink to="/" className="block ml-4 mb-12" style={{maxWidth: "9rem"}}><img src="https://scrt.network/assets/img/new-secret-logo.c2794f7c.svg" alt="Secret Network Logo" className="w-full inline-block" /></NavLink>
-      <ul className="space-y-4 font-bold text-neutral-400">
+      <NavLink to="/" className="block ml-4 mb-12" style={{maxWidth: "9rem"}}><img src={"/img/secret_dashboard_logo.svg"} alt="Secret Network Logo" className="w-full inline-block" /></NavLink>
+      <ul className="space-y-4 font-semibold text-neutral-400">
         <li className="lg:hidden">
           <button onClick={() => setShowMobileMenu(false)} className="hover:text-white fixed top-0 right-0 float-right px-8 py-5 rounded-full transition-colors">
           <FontAwesomeIcon icon={faClose} className="mr-2" size="lg" />
           </button>
         </li>
         <li>
-        <NavLink to="/" className={({ isActive }) => isActive ? "text-white bg-gradient-to-r from-zinc-700 via-zinc-700-700 to-zinc-700/5 block w-full px-8 py-5 rounded-full transition-colors" : "hover:text-white block w-full px-8 py-5 rounded-full transition-colors"}>
+        <NavLink to="/" className={({ isActive }) => isActive ? "text-white bg-gradient-to-r from-zinc-700 via-zinc-700-700 to-zinc-700/5 block w-full px-8 py-5 rounded-full transition-colors font-bold" : "hover:text-white block w-full px-8 py-5 rounded-full transition-colors"}>
           <FontAwesomeIcon icon={faChartLine} className="mr-2" />Dashboard
           </NavLink>
         </li>
         <li>
-        <NavLink to="/ibc" className={({ isActive }) => isActive ? "text-white bg-gradient-to-r from-zinc-700 via-zinc-700-700 to-zinc-700/5 block w-full px-8 py-5 rounded-full transition-colors" : "hover:text-white block w-full px-8 py-5 rounded-full transition-colors"}>
+        <NavLink to="/ibc" className={({ isActive }) => isActive ? "text-white bg-gradient-to-r from-zinc-700 via-zinc-700-700 to-zinc-700/5 block w-full px-8 py-5 rounded-full transition-colors font-bold" : "hover:text-white block w-full px-8 py-5 rounded-full transition-colors"}>
           <FontAwesomeIcon icon={faCircleNodes} className="mr-2" />IBC
           </NavLink>
         </li>
         <li>
-        <NavLink to="/wrap" className={({ isActive }) => isActive ? "text-white bg-gradient-to-r from-zinc-700 via-zinc-700-700 to-zinc-700/5 block w-full px-8 py-5 rounded-full transition-colors" : "hover:text-white block w-full px-8 py-5 rounded-full transition-colors"}>
+        <NavLink to="/wrap" className={({ isActive }) => isActive ? "text-white bg-gradient-to-r from-zinc-700 via-zinc-700-700 to-zinc-700/5 block w-full px-8 py-5 rounded-full transition-colors font-bold" : "hover:text-white block w-full px-8 py-5 rounded-full transition-colors"}>
           <FontAwesomeIcon icon={faShuffle} className="mr-2" />Wrap
           </NavLink>
         </li>
@@ -40,7 +40,7 @@ export function Navigation({
           </a>
         </li>
         <li>
-        <NavLink to="/apps" className={({ isActive }) => isActive ? "text-white bg-gradient-to-r from-zinc-700 via-zinc-700-700 to-zinc-700/5 block w-full px-8 py-5 rounded-full transition-colors" : "hover:text-white block w-full px-8 py-5 rounded-full transition-colors"}>
+        <NavLink to="/apps" className={({ isActive }) => isActive ? "text-white bg-gradient-to-r from-zinc-700 via-zinc-700-700 to-zinc-700/5 block w-full px-8 py-5 rounded-full transition-colors font-bold" : "hover:text-white block w-full px-8 py-5 rounded-full transition-colors"}>
           <FontAwesomeIcon icon={faBox} className="mr-2" />Apps
           </NavLink>
         </li>
