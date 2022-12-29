@@ -736,11 +736,11 @@ export default function Deposit () {
   return (
     <>
       {/* [From|To] Picker */}
-      <div className="flex mb-8">
+      <div className="flex flex-col md:flex-row mb-8">
         {/* *** From *** */}
-        <div className="flex-initial w-1/3">
+        <div className="flex-initial w-full md:w-1/3">
           {/* circle */}
-          <div className="w-full relative rounded-full overflow-hidden border-2 border-blue-500" style={{paddingTop: '100%'}}>
+          <div className="w-full relative rounded-full overflow-hidden border-2 border-blue-500 hidden md:block" style={{paddingTop: '100%'}}>
             <div className="img-wrapper absolute top-1/2 left-0 right-0 -translate-y-1/2 text-center">
               <div className="w-1/2 inline-block">
                 <div className="relative">
@@ -774,8 +774,8 @@ export default function Deposit () {
           </div>
         </div>
         {/* *** To *** */}
-        <div className="flex-initial w-1/3">
-          <div className="w-full relative rounded-full overflow-hidden border-2 border-violet-500" style={{paddingTop: '100%'}}>
+        <div className="flex-initial w-full md:w-1/3">
+          <div className="w-full relative rounded-full overflow-hidden border-2 border-violet-500 hidden md:block" style={{paddingTop: '100%'}}>
             <div className="img-wrapper absolute top-1/2 left-0 right-0 -translate-y-1/2 text-center">
               <div className="w-1/2 inline-block">
                 <div className="relative">
@@ -877,11 +877,11 @@ export default function Deposit () {
           </button>
         </div>
         <div className="sm:flex-initial text-xs">
-          <div className="inline-flex rounded-full text-xs font-bold">
-            <button onClick={() => setAmountByPercentage(25)} className="bg-zinc-900 px-2 py-1 rounded-l-lg transition-colors hover:bg-zinc-700 focus:bg-zinc-500 cursor-pointer disabled:text-zinc-500 disabled:hover:bg-zinc-900 disabled:cursor-default" disabled={!secretAddress}>25%</button>
-            <button onClick={() => setAmountByPercentage(50)} className="bg-zinc-900 px-2 py-1 border-l border-zinc-700 transition-colors hover:bg-zinc-700 focus:bg-zinc-500 cursor-pointer disabled:text-zinc-500 disabled:hover:bg-zinc-900 disabled:cursor-default" disabled={!secretAddress}>50%</button>
-            <button onClick={() => setAmountByPercentage(75)} className="bg-zinc-900 px-2 py-1 border-l border-zinc-700 transition-colors hover:bg-zinc-700 focus:bg-zinc-500 cursor-pointer disabled:text-zinc-500 disabled:hover:bg-zinc-900 disabled:cursor-default" disabled={!secretAddress}>75%</button>
-            <button onClick={() => setAmountByPercentage(100)} className="bg-zinc-900 px-2 py-1 rounded-r-lg border-l border-zinc-700 transition-colors hover:bg-zinc-700 focus:bg-zinc-500 cursor-pointer disabled:text-zinc-500 disabled:hover:bg-zinc-900 disabled:cursor-default" disabled={!secretAddress}>MAX</button>
+          <div className="inline-flex rounded-full text-xs font-semibold">
+            <button onClick={() => setAmountByPercentage(25)} className="bg-zinc-900 px-1.5 py-0.5 rounded-l-md transition-colors hover:bg-zinc-700 focus:bg-zinc-500 cursor-pointer disabled:text-zinc-500 disabled:hover:bg-zinc-900 disabled:cursor-default" disabled={!secretAddress}>25%</button>
+            <button onClick={() => setAmountByPercentage(50)} className="bg-zinc-900 px-1.5 py-0.5 border-l border-zinc-700 transition-colors hover:bg-zinc-700 focus:bg-zinc-500 cursor-pointer disabled:text-zinc-500 disabled:hover:bg-zinc-900 disabled:cursor-default" disabled={!secretAddress}>50%</button>
+            <button onClick={() => setAmountByPercentage(75)} className="bg-zinc-900 px-1.5 py-0.5 border-l border-zinc-700 transition-colors hover:bg-zinc-700 focus:bg-zinc-500 cursor-pointer disabled:text-zinc-500 disabled:hover:bg-zinc-900 disabled:cursor-default" disabled={!secretAddress}>75%</button>
+            <button onClick={() => setAmountByPercentage(100)} className="bg-zinc-900 px-1.5 py-0.5 rounded-r-md border-l border-zinc-700 transition-colors hover:bg-zinc-700 focus:bg-zinc-500 cursor-pointer disabled:text-zinc-500 disabled:hover:bg-zinc-900 disabled:cursor-default" disabled={!secretAddress}>MAX</button>
           </div>
         </div>
       </div>
@@ -889,7 +889,7 @@ export default function Deposit () {
 
       <div className="bg-zinc-900 p-4 mt-8 rounded-lg select-none flex items-center mb-8">
         <FontAwesomeIcon icon={faCircleInfo} className="flex-initial mr-4" />
-        <div className="flex-1">
+        <div className="flex-1 text-sm">
           {message}
         </div>
       </div>
