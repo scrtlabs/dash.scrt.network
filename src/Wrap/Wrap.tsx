@@ -34,7 +34,7 @@ export function Wrap() {
   const {useFeegrant, setUseFeegrant} = useContext(FeeGrantContext);
 
   const [price, setPrice] = useState <number>();
-  const [amountToWrap, setAmountToWrap] = useState<string>("");
+  const [amount, setAmount] = useState<string>("");
   const [wrappingMode, setWrappingMode] = useState<WrappingMode>(modePreselection);
   const [selectedToken, setselectedToken] = useState<Token>(tokens.filter(token => token.name === tokenPreselection)[0]);
 
@@ -61,10 +61,10 @@ export function Wrap() {
       return match && str === match[0];
     }
 
-    if (Number(amountToWrap) > Number(availableAmount) && !(tokenWrappedBalance == viewingKeyErrorString && wrappingMode === WrappingMode.Unwrap)) {
+    if (Number(amount) > Number(availableAmount) && !(tokenWrappedBalance == viewingKeyErrorString && wrappingMode === WrappingMode.Unwrap)) {
       setValidationMessage("Not enough balance");
       setisValidAmount(false);
-    } else if (!matchExact(numberRegex, amountToWrap)) {
+    } else if (!matchExact(numberRegex, amount)) {
       setValidationMessage("Please enter a valid amount");
       setisValidAmount(false);
     } else {
@@ -74,10 +74,10 @@ export function Wrap() {
 
   useEffect(() => {
     validateForm();
-}, [amountToWrap, wrappingMode]);
+}, [amount, wrappingMode]);
 
   async function handleInputChange(e: any) {
-    await setAmountToWrap(e.target.value);
+    await setAmount(e.target.value);
   }
 
   const updateFeeGrantButton = (text: string, color: string) => {
@@ -114,9 +114,9 @@ export function Wrap() {
       let availableAmount = Number(maxValue) * (10**(-selectedToken.decimals));
       let potentialInput = new BigNumber(availableAmount * (percentage * 0.01)).toFormat();
       if (Number(potentialInput) == 0) {
-        setAmountToWrap("");
+        setAmount("");
       } else {
-        setAmountToWrap(potentialInput);
+        setAmount(potentialInput);
       }
       
       validateForm();
@@ -335,7 +335,7 @@ export function Wrap() {
           );
 
           if (tx.code === 0) {
-            setAmountToWrap("");
+            setAmount("");
             toast.update(toastId, {
               render: `Wrapped ${selectedToken.name} successfully`,
               type: "success",
@@ -379,7 +379,7 @@ export function Wrap() {
             }
           );
           if (tx.code === 0) {
-            setAmountToWrap("");
+            setAmount("");
             toast.update(toastId, {
               render: `Unwrapped ${selectedToken.name} successfully`,
               type: "success",
@@ -541,7 +541,7 @@ export function Wrap() {
                   </span>
                 </div>
               )} className="react-select-wrap-container" classNamePrefix="react-select-wrap" />
-            <input value={amountToWrap} onChange={handleInputChange} type="text" className={"focus:z-10 block flex-1 min-w-0 w-full bg-zinc-900 text-white px-4 rounded-r-lg disabled:placeholder-zinc-700 transition-colors" + (!isValidAmount ? "  border border-red-500" : "")} name="fromValue" id="fromValue" placeholder="0" disabled={!secretAddress}/>
+            <input value={amount} onChange={handleInputChange} type="text" className={"focus:z-10 block flex-1 min-w-0 w-full bg-zinc-900 text-white px-4 rounded-r-lg disabled:placeholder-zinc-700 transition-colors" + (!isValidAmount ? "  border border-red-500" : "")} name="fromValue" id="fromValue" placeholder="0" disabled={!secretAddress}/>
           </div>
 
           {/* Balance | [25%|50%|75%|Max] */}
@@ -581,7 +581,7 @@ export function Wrap() {
                   </span>
                 </div>
               )} className="react-select-wrap-container" classNamePrefix="react-select-wrap" />
-              <input value={amountToWrap} onChange={handleInputChange} type="text" className={"focus:z-10 block flex-1 min-w-0 w-full bg-zinc-900 text-white px-4 rounded-r-lg disabled:placeholder-zinc-700 transition-colors"} name="wrappedValue" id="wrappedValue" placeholder="0" disabled={!selectedToken.address || !secretAddress}/>
+              <input value={amount} onChange={handleInputChange} type="text" className={"focus:z-10 block flex-1 min-w-0 w-full bg-zinc-900 text-white px-4 rounded-r-lg disabled:placeholder-zinc-700 transition-colors"} name="wrappedValue" id="wrappedValue" placeholder="0" disabled={!selectedToken.address || !secretAddress}/>
             </div>
           </div>
           <div className="flex-1 text-xs mt-3 text-center sm:text-left">
@@ -601,7 +601,7 @@ export function Wrap() {
           </div>
 
           {/* <To/> */}
-          <SubmitButton disabled={!selectedToken.address || !secretAddress || !amountToWrap || !isValidAmount || amountToWrap === "0"} amountToWrap={amountToWrap} nativeCurrency={selectedToken.name} wrappedAmount={amountToWrap} wrappedCurrency={"s" + selectedToken.name} wrappingMode={wrappingMode}/>
+          <SubmitButton disabled={!selectedToken.address || !secretAddress || !amount || !isValidAmount || amount === "0"} amountToWrap={amount} nativeCurrency={selectedToken.name} wrappedAmount={amount} wrappedCurrency={"s" + selectedToken.name} wrappingMode={wrappingMode}/>
         </div>
       </div>
     </>
