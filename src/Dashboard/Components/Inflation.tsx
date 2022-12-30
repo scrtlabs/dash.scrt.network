@@ -17,7 +17,7 @@ const Inflation = (props: IInflationProps) => {
               <FontAwesomeIcon icon={faCircle} className="fa-stack-2x text-pink-900" />
               <FontAwesomeIcon icon={faArrowTrendUp} className="fa-stack-1x fa-inverse text-pink-400" />
             </span>
-            <div className="font-semibold text-lg">{props.amount * 10e1}%</div>
+            <div className="font-semibold text-lg">{(props.amount * 100).toFixed(2)}%</div>
             <div className="text-md text-neutral-400">Current Inflation</div>
           </div>
         </div>
