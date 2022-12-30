@@ -110,7 +110,7 @@ export function KeplrPanel({
               <button onClick={grantButtonAction} className="font-semibold group w-full p-1.5 rounded-md border border-red-500 hover:text-white transition-colors select-none">
                 <FontAwesomeIcon icon={faX} className="mr-2 text-red-500"/>
                 Fee Grant failed
-                <FontAwesomeIcon icon={faRotateRight} className="ml-2 text-zinc-500 group-hover:text-white transition-colors" />
+                <FontAwesomeIcon icon={faRotateRight} className="ml-2 text-neutral-500 group-hover:text-white transition-colors" />
               </button>
             </If>
           </>
@@ -123,18 +123,18 @@ class KeplrMenu extends Component {
   render() {
     return <>
         <div className="absolute top-14 pt-2 right-4 z-50" onMouseEnter={() => setIsMenuVisible(true)} onMouseLeave={() => setIsMenuVisible(false)}>
-          <div className="bg-zinc-800 border text-xs border-zinc-500 p-4 w-auto rounded-lg">
+          <div className="bg-neutral-800 border text-xs border-neutral-500 p-4 w-auto rounded-lg">
             <CopyToClipboard text={secretAddress} onCopy={ () => {toast.success("Address copied to clipboard!")} }>
               <button className="flex gap-2 items-center group mb-2">
                 <div>{secretAddress.slice(0, 14) + "..." + secretAddress.slice(-14)}</div>
-                <div className="block text-zinc-500 group-hover:text-white transition-colors"><FontAwesomeIcon icon={faCopy}/></div>
+                <div className="block text-neutral-500 group-hover:text-white transition-colors"><FontAwesomeIcon icon={faCopy}/></div>
               </button>
             </CopyToClipboard>
             <div className="mb-4">
               <FeeGrantButton/>
             </div>
             <div className="text-right">
-              <button onClick={disconnectWallet} className="font-semibold px-3 py-1.5 rounded-md text-zinc-300 border border-zinc-400 hover:border-red-600 hover:text-red-600 transition-colors">Disconnect Wallet</button>
+              <button onClick={disconnectWallet} className="font-semibold px-3 py-1.5 rounded-md text-neutral-300 border border-neutral-400 hover:border-red-600 hover:text-red-600 transition-colors cursor-pointer">Disconnect Wallet</button>
             </div>
           </div>
         </div>

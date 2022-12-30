@@ -64,46 +64,46 @@ export default function InfoBoxes() {
     <div className="px-4 mx-auto">
       <div className="grid grid-cols-12 gap-4">
         {/* Item */}
-        <div className="col-span-12 sm:col-span-6  xl:col-span-3 bg-zinc-800 p-4 rounded-lg">
+        <div className="col-span-12 sm:col-span-6  xl:col-span-3 bg-neutral-800 p-4 rounded-lg">
           <div className="flex flex-col items-center">
             <span className="fa-stack fa-2x mb-2">
               <FontAwesomeIcon icon={faCircle} className="fa-stack-2x text-emerald-900" />
               <FontAwesomeIcon icon={faCube} className="fa-stack-1x fa-inverse text-emerald-400" />
             </span>
             <div className="font-semibold text-lg">{currentPrice ? currentPrice.toLocaleString("en-US", {style:"currency", currency:"USD"}) : ""}</div>
-            <div className="text-md text-zinc-400">Current Price</div>
+            <div className="text-md text-neutral-400">Current Price</div>
           </div>
         </div>
         {/* Item */}
-        <div className="col-span-12 sm:col-span-6  xl:col-span-3 bg-zinc-800 p-4 rounded-lg">
+        <div className="col-span-12 sm:col-span-6  xl:col-span-3 bg-neutral-800 p-4 rounded-lg">
           <div className="flex flex-col items-center">
             <span className="fa-stack fa-2x mb-2">
               <FontAwesomeIcon icon={faCircle} className="fa-stack-2x text-cyan-900" />
               <FontAwesomeIcon icon={faCube} className="fa-stack-1x fa-inverse text-cyan-400" />
             </span>
             <div className="font-semibold text-lg">{blockHeight}</div>
-            <div className="text-md text-zinc-400">Block Height</div>
+            <div className="text-md text-neutral-400">Block Height</div>
           </div>
         </div>
-        <div className="col-span-12 sm:col-span-6  xl:col-span-3 bg-zinc-800 p-4 rounded-lg">
+        <div className="col-span-12 sm:col-span-6  xl:col-span-3 bg-neutral-800 p-4 rounded-lg">
           <div className="flex flex-col items-center">
             <span className="fa-stack fa-2x mb-2">
               <FontAwesomeIcon icon={faCircle} className="fa-stack-2x text-pink-900" />
               <FontAwesomeIcon icon={faArrowTrendUp} className="fa-stack-1x fa-inverse text-pink-400" />
             </span>
             <div className="font-semibold text-lg">{inflation}%</div>
-            <div className="text-md text-zinc-400">Current Inflation</div>
+            <div className="text-md text-neutral-400">Current Inflation</div>
           </div>
         </div>
         {/* Item */}
-        <div className="col-span-12 sm:col-span-6  xl:col-span-3 bg-zinc-800 p-4 rounded-lg">
+        <div className="col-span-12 sm:col-span-6  xl:col-span-3 bg-neutral-800 p-4 rounded-lg">
           <div className="flex flex-col items-center">
             <span className="fa-stack fa-2x mb-2">
               <FontAwesomeIcon icon={faCircle} className="fa-stack-2x text-purple-900" />
               <FontAwesomeIcon icon={faAward} className="fa-stack-1x fa-inverse text-purple-400" />
             </span>
             <div className="font-semibold text-lg">{communityPool ? communityPool.toLocaleString() : ""} SCRT</div>
-            <div className="text-md text-zinc-400">Community Pool</div>
+            <div className="text-md text-neutral-400">Community Pool</div>
           </div>
         </div>
       </div>
