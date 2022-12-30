@@ -525,7 +525,7 @@ export function Wrap() {
   
   return (
     <>
-      <div className="w-full max-w-xl mx-auto px-4">
+      <div className="w-full max-w-xl mx-auto px-4 onEnter_fadeInDown">
         <div className="border rounded-2xl p-8 border-neutral-700 w-full text-neutral-200 bg-neutral-900">
 
           {/* Header */}
@@ -533,7 +533,7 @@ export function Wrap() {
             <h1 className="inline text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-500 to-purple-500">Secret {wrappingMode === WrappingMode.Wrap ? "Wrap" : "Unwrap"}</h1>
 
             <Tooltip title={message} placement="bottom">
-              <div className="ml-2 text-neutral-400 hover:text-white transition-colors cursor-pointer"><FontAwesomeIcon icon={faInfoCircle}/></div>
+              <div className="ml-2 pt-1 text-neutral-400 hover:text-white transition-colors cursor-pointer"><FontAwesomeIcon icon={faInfoCircle}/></div>
             </Tooltip>
           </div>
 

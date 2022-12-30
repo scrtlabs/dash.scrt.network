@@ -813,9 +813,9 @@ export default function Deposit () {
       
 
       <div className="bg-neutral-800 p-4 rounded-xl space-y-6 my-4">
-        <div className="flex">
+        <div className="flex items-center">
           <div className="font-semibold mr-4 w-10">From:</div>
-          <div className="flex-1 truncate font-medium">
+          <div className="flex-1 truncate font-medium text-sm">
             {(ibcMode === IbcMode.Deposit && secretjs && secretAddress) && (
               <a href={`${sourceChain.explorer_account}${sourceAddress}`} target="_blank">{sourceAddress}</a>
             )}
@@ -841,9 +841,9 @@ export default function Deposit () {
           </div>
         </div>
 
-        <div className="flex">
+        <div className="flex items-center">
           <div className="flex-initial font-semibold mr-4 w-10">To:</div>
-          <div className="flex-1 truncate font-medium">
+          <div className="flex-1 truncate font-medium text-sm">
             {ibcMode === IbcMode.Withdrawal && (
                 <a href={`${sourceChain.explorer_account}${sourceAddress}`} target="_blank">{sourceAddress}</a>
               )}
