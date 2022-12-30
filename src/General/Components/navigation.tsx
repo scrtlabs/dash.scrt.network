@@ -20,42 +20,42 @@ export function Navigation({
           </button>
         </li>
         <li>
-        <NavLink to="/" className={({ isActive }) => isActive ? "text-white bg-gradient-to-r from-neutral-700 via-neutral-700 to-neutral-700/10 block w-full px-8 py-3 rounded-xl transition-colors font-bold cursor-default" : "cursor-pointer cursor-pointer hover:text-white block w-full px-8 py-3 hover:bg-neutral-800 rounded-xl transition-colors"}>
+        <NavLink to="/" className={({ isActive }) => isActive ? "text-white bg-gradient-to-r from-neutral-700 via-neutral-700 to-neutral-700/10 block w-full px-8 py-3 rounded-xl transition-colors font-bold cursor-default" : "cursor-pointer cursor-pointer hover:text-white block w-full px-8 py-3 rounded-xl transition-colors"}>
           <FontAwesomeIcon icon={faChartLine} className="mr-2" />Dashboard
           </NavLink>
         </li>
         <li>
-        <NavLink to="/ibc" className={({ isActive }) => isActive ? "text-white bg-gradient-to-r from-neutral-700 via-neutral-700 to-neutral-700/10 block w-full px-8 py-3 rounded-xl transition-colors font-bold cursor-default" : "cursor-pointer hover:text-white block w-full px-8 py-3 hover:bg-neutral-800 rounded-xl transition-colors"}>
+        <NavLink to="/ibc" className={({ isActive }) => isActive ? "text-white bg-gradient-to-r from-neutral-700 via-neutral-700 to-neutral-700/10 block w-full px-8 py-3 rounded-xl transition-colors font-bold cursor-default" : "cursor-pointer hover:text-white block w-full px-8 py-3 rounded-xl transition-colors"}>
           <FontAwesomeIcon icon={faCircleNodes} className="mr-2" />IBC
           </NavLink>
         </li>
         <li>
-        <NavLink to="/wrap" className={({ isActive }) => isActive ? "text-white bg-gradient-to-r from-neutral-700 via-neutral-700 to-neutral-700/10 block w-full px-8 py-3 rounded-xl transition-colors font-bold cursor-default" : "cursor-pointer hover:text-white block w-full px-8 py-3 hover:bg-neutral-800 rounded-xl transition-colors"}>
+        <NavLink to="/wrap" className={({ isActive }) => isActive ? "text-white bg-gradient-to-r from-neutral-700 via-neutral-700 to-neutral-700/10 block w-full px-8 py-3 rounded-xl transition-colors font-bold cursor-default" : "cursor-pointer hover:text-white block w-full px-8 py-3 rounded-xl transition-colors"}>
           <FontAwesomeIcon icon={faShuffle} className="mr-2" />Wrap
           </NavLink>
         </li>
         <li>
-        <NavLink to="/bridge" className={({ isActive }) => isActive ? "text-white bg-gradient-to-r from-neutral-700 via-neutral-700 to-neutral-700/10 block w-full px-8 py-3 rounded-xl transition-colors font-bold cursor-default" : "cursor-pointer hover:text-white block w-full px-8 py-3 hover:bg-neutral-800 rounded-xl transition-colors"}>
+        <NavLink to="/bridge" className={({ isActive }) => isActive ? "text-white bg-gradient-to-r from-neutral-700 via-neutral-700 to-neutral-700/10 block w-full px-8 py-3 rounded-xl transition-colors font-bold cursor-default" : "cursor-pointer hover:text-white block w-full px-8 py-3 rounded-xl transition-colors"}>
           <FontAwesomeIcon icon={faEllipsis} className="mr-2" />Bridge
           </NavLink>
         </li>
         <li>
-        <NavLink to="/apps" className={({ isActive }) => isActive ? "text-white bg-gradient-to-r from-neutral-700 via-neutral-700 to-neutral-700/10 block w-full px-8 py-3 rounded-xl transition-colors font-bold cursor-default" : "cursor-pointer hover:text-white block w-full px-8 py-3 hover:bg-neutral-800 rounded-xl transition-colors"}>
+        <NavLink to="/apps" className={({ isActive }) => isActive ? "text-white bg-gradient-to-r from-neutral-700 via-neutral-700 to-neutral-700/10 block w-full px-8 py-3 rounded-xl transition-colors font-bold cursor-default" : "cursor-pointer hover:text-white block w-full px-8 py-3 rounded-xl transition-colors"}>
           <FontAwesomeIcon icon={faBox} className="mr-2" />Apps
           </NavLink>
         </li>
         <li>
-          <a href="https://wallet.keplr.app/chains/secret-network?tab=staking" target="_blank" className="cursor-pointer hover:text-white block w-full px-8 py-3 hover:bg-neutral-800 rounded-xl transition-colors">
+          <a href="https://wallet.keplr.app/chains/secret-network?tab=staking" target="_blank" className="cursor-pointer hover:text-white block w-full px-8 py-3 rounded-xl transition-colors">
           <FontAwesomeIcon icon={faCoins} className="mr-2" />Stake<FontAwesomeIcon icon={faArrowUpRightFromSquare} className="text-xs ml-2" />
           </a>
         </li>
         <li>
-          <a href="https://wallet.keplr.app/chains/secret-network?tab=governance" target="_blank" className="cursor-pointer hover:text-white block w-full px-8 py-3 hover:bg-neutral-800 rounded-xl transition-colors">
+          <a href="https://wallet.keplr.app/chains/secret-network?tab=governance" target="_blank" className="cursor-pointer hover:text-white block w-full px-8 py-3 rounded-xl transition-colors">
           <FontAwesomeIcon icon={faCheckToSlot} className="mr-2" />Governance<FontAwesomeIcon icon={faArrowUpRightFromSquare} className="text-xs ml-2" />
           </a>
         </li>
         <li>
-          <a href="https://secretnodes.com/" target="_blank" className="cursor-pointer hover:text-white block w-full px-8 py-3 hover:bg-neutral-800 rounded-xl transition-colors">
+          <a href="https://secretnodes.com/" target="_blank" className="cursor-pointer hover:text-white block w-full px-8 py-3 rounded-xl transition-colors">
           <FontAwesomeIcon icon={faChartLine} className="mr-2" />Stats<FontAwesomeIcon icon={faArrowUpRightFromSquare} className="text-xs ml-2" />
           </a>
         </li>

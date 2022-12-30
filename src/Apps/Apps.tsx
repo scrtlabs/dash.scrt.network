@@ -290,7 +290,8 @@ export function Apps() {
   return (
     <>
       <div className="max-w-screen-2xl mx-auto px-6">
-        <h1 className="text-center font-bold text-4xl mb-10">Apps</h1>
+        <h1 className="text-left sm:text-center font-bold text-4xl mb-4">Apps</h1>
+        <p className="sm:max-w-lg mx-auto mb-6 text-left sm:text-center">A curation of applications running on Secret Network Mainnet!</p>
         {/* Search and Filter */}
         <div className="relative w-full sm:w-96 mx-auto mb-4">
           <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
@@ -300,7 +301,7 @@ export function Apps() {
         </div>
 
           {/* Filter */}
-          <div className="space-x-2 text-center mb-8">
+          <div className="space-x-2 text-left sm:text-center mb-8">
             {tags.map((tag) =>
               <Tag name={tag}/>
             )}

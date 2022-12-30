@@ -1,6 +1,6 @@
 import { faBars, faCheck, faCopy, faRotateRight, faX } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Discord } from 'General/Components/Discord';
+import { FloatingCtaButton } from 'General/Components/FloatingCtaButton';
 import { Footer } from 'General/Components/Footer';
 import { KeplrPanel } from 'General/Components/Keplr';
 import { Navigation } from 'General/Components/Navigation';
@@ -42,7 +42,7 @@ export const DefaultLayout =({children}:any) =>{
 
   return (
     <>
-      {/* <Discord /> */}
+      <FloatingCtaButton />
 
       <div className="flex">
         <aside
@@ -87,7 +87,7 @@ export const DefaultLayout =({children}:any) =>{
 
 
                 {children}
-                <div className="mt-auto">
+                <div className="max-w-7xl mx-auto mt-auto">
                   <Footer />
                 </div>
               </main>
