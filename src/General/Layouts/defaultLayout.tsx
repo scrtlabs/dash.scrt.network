@@ -63,7 +63,7 @@ export const DefaultLayout =({children}:any) =>{
         </aside>
         <KeplrContext.Provider value={{ secretjs, secretAddress }}>
           <FeeGrantContext.Provider value={{ useFeegrant: isFeeGranted, setUseFeegrant: setIsFeeGranted }}>
-              <main className="flex-1 lg:ml-72">
+              <main className="flex flex-col min-h-screen flex-1 lg:ml-72">
                 {/* Keplr */}
                 <div className="flex items-center gap-4 p-4">
                   <div className="flex-initial lg:hidden">
@@ -87,7 +87,9 @@ export const DefaultLayout =({children}:any) =>{
 
 
                 {children}
-                <Footer />
+                <div className="mt-auto">
+                  <Footer />
+                </div>
               </main>
           </FeeGrantContext.Provider>
         </KeplrContext.Provider>
