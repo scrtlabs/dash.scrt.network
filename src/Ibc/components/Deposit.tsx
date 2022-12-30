@@ -882,7 +882,7 @@ export default function Deposit () {
                     </span>
                   </div>
                 )}  className="react-select-wrap-container" classNamePrefix="react-select-wrap"/>
-          <input type="text" value={amountToTransfer} onChange={handleInputChange} className={"focus:z-10 block flex-1 min-w-0 w-full bg-neutral-900 text-white px-4 rounded-r-lg disabled:placeholder-neutral-700 transition-colors font-medium" + (false ? "  border border-red-500" : "")} name="amount" id="amount" placeholder="0" disabled={!secretAddress}/>
+          <input type="text" value={amountToTransfer} onChange={handleInputChange} className={"text-right focus:z-10 block flex-1 min-w-0 w-full bg-neutral-900 text-white px-4 rounded-r-lg disabled:placeholder-neutral-700 transition-colors font-medium" + (false ? "  border border-red-500" : "")} name="amount" id="amount" placeholder="0" disabled={!secretAddress}/>
         </div>
 
         {/* Balance | [25%|50%|75%|Max] */}

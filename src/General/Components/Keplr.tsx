@@ -122,7 +122,7 @@ export function KeplrPanel({
 class KeplrMenu extends Component {
   render() {
     return <>
-        <div className="absolute top-14 pt-2 right-4 z-50" onMouseEnter={() => setIsMenuVisible(true)} onMouseLeave={() => setIsMenuVisible(false)}>
+        <div className="absolute pt-2 right-4 z-50" style={{top: "3.35rem"}} onMouseEnter={() => setIsMenuVisible(true)} onMouseLeave={() => setIsMenuVisible(false)}>
           <div className="bg-neutral-800 border text-xs border-neutral-500 p-4 w-auto rounded-lg">
             <CopyToClipboard text={secretAddress} onCopy={ () => {toast.success("Address copied to clipboard!")} }>
               <button className="flex gap-2 items-center group mb-2">
@@ -130,9 +130,9 @@ class KeplrMenu extends Component {
                 <div className="block text-neutral-500 group-hover:text-white transition-colors"><FontAwesomeIcon icon={faCopy}/></div>
               </button>
             </CopyToClipboard>
-            <div className="mb-4">
+            {/* <div className="mb-4">
               <FeeGrantButton/>
-            </div>
+            </div> */}
             <div className="text-right">
               <button onClick={disconnectWallet} className="font-semibold px-3 py-1.5 rounded-md text-neutral-300 border border-neutral-400 hover:border-red-600 hover:text-red-600 transition-colors cursor-pointer">Disconnect Wallet</button>
             </div>
@@ -168,12 +168,12 @@ class KeplrMenu extends Component {
   if (secretjs) {
     return (<>
     <If condition={isMenuVisible}>
-      <div  onMouseEnter={() => setIsMenuVisible(true)} onMouseLeave={() => setIsMenuVisible(false)}>
+      <div onMouseEnter={() => setIsMenuVisible(true)} onMouseLeave={() => setIsMenuVisible(false)}>
         <KeplrMenu/>
       </div>
     </If>
       {/* <Tooltip title={secretAddress} placement="bottom-end"> */}
-        <div className="w-full sm:w-auto rounded px-4 py-2 border border-neutral-700 bg-neutral-800 select-none" onMouseEnter={() => setIsMenuVisible(true)} onMouseLeave={() => setIsMenuVisible(false)}>
+        <div className="w-full sm:w-auto rounded px-4 py-2 border border-neutral-700 bg-neutral-800 select-none cursor-pointer" onMouseEnter={() => setIsMenuVisible(true)} onMouseLeave={() => setIsMenuVisible(false)}>
           {content}
         </div>
         {/* </Tooltip> */}
