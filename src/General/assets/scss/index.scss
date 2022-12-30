@@ -89,7 +89,7 @@ body {
 
 
 
-
+// Animations
 .fadeInAndOutLoop {
   opacity: 1;
   animation: fade 2s linear infinite;
@@ -103,4 +103,23 @@ body {
   50% {
     opacity: 1
   }
+}
+
+
+@keyframes fadeInDown2 {
+  from {
+    opacity: 0;
+    -webkit-transform: translate3d(0, -5%, 0);
+    transform: translate3d(0, -5%, 0);
+  }
+
+  to {
+    opacity: 1;
+    -webkit-transform: translate3d(0, 0, 0);
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+.onEnter_fadeInDown {
+  animation: fadeInDown2 250ms ease-in-out;
 }
