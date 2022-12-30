@@ -279,7 +279,7 @@ export function Wrap() {
     return (
       <div className="text-center my-4">
           <Tooltip title={`Switch to ${wrappingMode === WrappingMode.Wrap ? 'Unwrapping' : "Wrapping"}`} placement="right">
-            <button onClick={() => toggleWrappingMode()} disabled={disabled} className={"bg-neutral-800 px-3 py-2 text-cyan-500 transition-colors rounded-xl disabled:text-neutral-500" + (!disabled ? " hover:text-cyan-300 focus:text-cyan-600" : "")}>
+            <button onClick={() => toggleWrappingMode()} disabled={disabled} className={"bg-neutral-800 px-3 py-2 text-cyan-500 transition-colors rounded-xl disabled:text-neutral-500" + (!disabled ? " hover:text-cyan-300" : "")}>
               <FontAwesomeIcon icon={faRightLeft} className="fa-rotate-90" />
             </button>
           </Tooltip>

@@ -82,3 +82,25 @@ body {
 .react-select__value-container img {
   display: none;
 }
+
+
+
+
+
+
+
+
+.fadeInAndOutLoop {
+  opacity: 1;
+  animation: fade 2s linear infinite;
+}
+
+
+@keyframes fade {
+  0%, 100% {
+    opacity: 0.5
+  }
+  50% {
+    opacity: 1
+  }
+}
