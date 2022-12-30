@@ -96,12 +96,12 @@ export default function StakingChart(props: any) {
     datasets: [{
       data: [bondedToken, notBondedToken],
       backgroundColor: [
-        '#3b82f6',
-        '#a855f7'
+        '#06b6d4',
+        '#8b5cf6'
       ],
       hoverBackgroundColor: [
-        '#3b82f6',
-        '#a855f7'
+        '#06b6d4',
+        '#8b5cf6'
       ],
     }]
   };
