@@ -13,11 +13,11 @@ export function Ibc() {
 
   return (
     <div className="w-full max-w-xl mx-auto px-4">
-      <div className="border rounded-lg p-7 border-neutral-700 w-full bg-neutral-800 text-neutral-200">
+      <div className="border rounded-2xl p-8 border-neutral-700 w-full text-neutral-200 bg-neutral-900">
 
         {/* Header */}
         <div className="flex items-center mb-4">
-          <h1 className="inline text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-violet-500">IBC Transfer</h1>
+          <h1 className="inline text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-500 to-purple-500">IBC Transfer</h1>
           <Tooltip title={`Deposit/withdraw your SCRT via IBC transfer from any chain to/from Secret Network`} placement="bottom">
               <div className="ml-2 text-neutral-400 hover:text-white transition-colors cursor-pointer"><FontAwesomeIcon icon={faInfoCircle}/></div>
             </Tooltip>

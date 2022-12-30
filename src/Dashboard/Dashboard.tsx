@@ -21,8 +21,8 @@ export function Dashboard() {
   return (
     <>
       <DashboardContext.Provider value={{ apiData, setApiData }}>
-        <InfoBoxes/>
-        <div className="mt-4 px-4 mx-auto">
+        <div className="mt-4 px-4 mx-auto space-y-4 w-full">
+          <InfoBoxes/>
           <div className="grid grid-cols-12 gap-4">
           <div className="col-span-12 sm:col-span-6 lg:col-span-6 xl:col-span-4 2xl:col-span-3 bg-neutral-800 px-6 py-8 rounded-lg">
               <StakingChart />
