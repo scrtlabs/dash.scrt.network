@@ -9,7 +9,7 @@ import {
   PointElement,
   LineElement,
   Title,
-  Tooltip,
+  Tooltip as ChartTooltip,
   Legend,
   ArcElement
 } from 'chart.js'
@@ -17,7 +17,8 @@ import { Doughnut, Line } from "react-chartjs-2";
 import { chains } from "General/Utils/config";
 import { SecretNetworkClient } from "secretjs";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowUpRightFromSquare } from "@fortawesome/free-solid-svg-icons";
+import { faArrowUpRightFromSquare, faInfoCircle } from "@fortawesome/free-solid-svg-icons";
+import Tooltip from "@mui/material/Tooltip";
 
 ChartJS.register(
   CategoryScale,
@@ -26,7 +27,7 @@ ChartJS.register(
   ArcElement,
   LineElement,
   Title,
-  Tooltip,
+  ChartTooltip,
   Legend,
 )
 
@@ -129,10 +130,18 @@ export default function StakingChart(props: any) {
 
   return (
     <>
+      {/* Title */}
+      <div className="flex items-center mb-4">
+        <h1 className="text-2xl font-bold">Staking</h1>
+        <Tooltip title={`Earn rewards for holding SCRT (currently ~24.66% p.a.)`} placement="right">
+          <div className="ml-2 pt-1 text-neutral-400 hover:text-white transition-colors cursor-pointer"><FontAwesomeIcon icon={faInfoCircle}/></div>
+        </Tooltip>
+      </div>
+      
       {/* Chart */}
       {totalSupply && <Doughnut data={data} options={options} plugins={[centerText]}/>}
 
-      <a href="https://wallet.keplr.app/chains/secret-network" target="_blank" className="block border border-blue-500 text-blue-500 hover:text-white hover:bg-blue-500 w-full text-center transition-colors py-2 rounded-lg mt-4 font-semibold text-sm">Start Staking<FontAwesomeIcon icon={faArrowUpRightFromSquare} className="text-xs ml-2" /></a>
+      <a href="https://wallet.keplr.app/chains/secret-network" target="_blank" className="block border border-cyan-500 text-cyan-500 hover:text-white hover:bg-cyan-500 w-full text-center transition-colors py-2 rounded-lg mt-4 font-semibold text-sm">Stake SCRT<FontAwesomeIcon icon={faArrowUpRightFromSquare} className="text-xs ml-2" /></a>
     </>
   );
 }
