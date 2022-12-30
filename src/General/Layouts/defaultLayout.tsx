@@ -51,7 +51,7 @@ export const DefaultLayout =({children}:any) =>{
               ? "z-50 left-0 right-0 w-full lg:w-auto min-h-screen "
               : "hidden lg:block") +
             " " +
-            "lg:w-72 fixed left-0 top-0 h-screen p-6 overflow-x-hidden bg-zinc-900"
+            "lg:w-72 fixed left-0 top-0 h-screen p-6 overflow-x-hidden bg-neutral-900"
           }
         >
           <NavigationContext.Provider value={{ showMobileMenu }}>
@@ -69,7 +69,7 @@ export const DefaultLayout =({children}:any) =>{
                   <div className="flex-initial lg:hidden">
                     <button
                       onClick={() => setShowMobileMenu(true)}
-                      className="text-white hover:text-zinc-200 active:text-zinc-400 transition-colors"
+                      className="text-white hover:text-neutral-200 active:text-neutral-400 transition-colors"
                     >
                       <FontAwesomeIcon icon={faBars} size="lg" />
                     </button>

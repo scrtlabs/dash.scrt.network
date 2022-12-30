@@ -13,6 +13,7 @@ import { Wrap } from "Wrap/Wrap";
 import DefaultLayout from 'General/Layouts/defaultLayout';
 import { Dashboard } from 'Dashboard/Dashboard';
 import { Apps } from 'Apps/Apps';
+import { Bridge } from 'Bridge/Bridge';
 
 globalThis.Buffer = Buffer;
 declare global {
@@ -67,10 +68,11 @@ export default function App() {
 
   return (
     <Routes>
-    <Route path="/" element={<Dashboard />}/>
+      <Route path="/" element={<Dashboard />}/>
       <Route path="/ibc" element={<Ibc />}/>
       <Route path="/wrap" element={<Wrap />}/>
       <Route path="/apps" element={<Apps />}/>
+      <Route path="/bridge" element={<Bridge />}/>
     </Routes>
   );
 }

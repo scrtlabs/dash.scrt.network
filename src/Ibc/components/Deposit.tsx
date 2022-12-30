@@ -757,7 +757,7 @@ export default function Deposit () {
           {/* {value} */}
           {ibcMode === IbcMode.Deposit && (<ChainSelect/>)}
             {ibcMode === IbcMode.Withdrawal && (
-              <div style={{paddingTop: ".7rem", paddingBottom: ".7rem"}} className="flex items-center w-full text-sm font-semibold select-none bg-zinc-700 rounded text-zinc-200 focus:bg-zinc-700 disabled:hover:bg-zinc-800 border border-zinc-500">
+              <div style={{paddingTop: ".7rem", paddingBottom: ".7rem"}} className="flex items-center w-full text-sm font-semibold select-none bg-neutral-700 rounded text-neutral-200 focus:bg-neutral-700 disabled:hover:bg-neutral-800 border border-neutral-500">
                 <div className="flex-1 px-3">
                   <span>Secret Network</span>
                 </div>
@@ -767,7 +767,7 @@ export default function Deposit () {
         </div>
         {/* <div className="text-center sm:mt-6 sm:mb-2 my-6">
         <Tooltip title={`Switch to ${wrappingMode === WrappingMode.Wrap ? "Unwrapping" : "Wrapping"}`} placement="bottom">
-          <button onClick={() => toggleWrappingMode()} disabled={disabled} className={"bg-zinc-900 px-3 py-2 text-blue-600 transition-colors rounded-full" + (!disabled ? " hover:text-blue-400 focus:text-blue-600" : "")}>
+          <button onClick={() => toggleWrappingMode()} disabled={disabled} className={"bg-neutral-900 px-3 py-2 text-blue-600 transition-colors rounded-full" + (!disabled ? " hover:text-blue-400 focus:text-blue-600" : "")}>
             <FontAwesomeIcon icon={faRightLeft} className="fa-rotate-90" />
           </button>
         </Tooltip>
@@ -776,7 +776,7 @@ export default function Deposit () {
           <div className="relative" style={{paddingTop: '100%'}}>
             <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
               <Tooltip title={`Switch chains`} placement="bottom">
-                <button onClick={toggleIbcMode} className="bg-zinc-900 px-3 py-2 text-zinc-400 transition-colors rounded-full hover:text-white disabled:hover:text-zinc-400" disabled={!secretAddress}>
+                <button onClick={toggleIbcMode} className="bg-neutral-900 px-3 py-2 text-neutral-400 transition-colors rounded-full hover:text-white disabled:hover:text-neutral-400" disabled={!secretAddress}>
                   <FontAwesomeIcon icon={faRightLeft} />
                 </button>
               </Tooltip>
@@ -800,7 +800,7 @@ export default function Deposit () {
           <div className="-mt-3 relative z-10 w-full">
             {ibcMode === IbcMode.Withdrawal && (<ChainSelect/>)}
             {ibcMode === IbcMode.Deposit && (
-              <div style={{paddingTop: ".7rem", paddingBottom: ".7rem"}} className="flex items-center w-full text-sm font-semibold select-none bg-zinc-700 rounded text-zinc-200 focus:bg-zinc-700 disabled:hover:bg-zinc-800 border border-zinc-500">
+              <div style={{paddingTop: ".7rem", paddingBottom: ".7rem"}} className="flex items-center w-full text-sm font-semibold select-none bg-neutral-700 rounded text-neutral-200 focus:bg-neutral-700 disabled:hover:bg-neutral-800 border border-neutral-500">
                 <div className="flex-1 px-3">
                   <span>Secret Network</span>
                 </div>
@@ -811,7 +811,7 @@ export default function Deposit () {
       </div>
       
 
-      <div className="bg-zinc-900 p-6 rounded-lg border border-zinc-700 space-y-6">
+      <div className="bg-neutral-900 p-6 rounded-lg border border-neutral-700 space-y-6">
         <div className="flex">
           <div className="font-semibold mr-4 w-10">From:</div>
           <div className="flex-1 truncate font-medium">
@@ -831,7 +831,7 @@ export default function Deposit () {
               }}
             >
               <Tooltip title={"Copy to clipboard"} placement="bottom">
-                <button className="text-zinc-700 hover:text-white active:text-zinc-500 transition-colors">
+                <button className="text-neutral-700 hover:text-white active:text-neutral-500 transition-colors">
                   <FontAwesomeIcon icon={faPaste}/>
                 </button>
               </Tooltip>
@@ -858,7 +858,7 @@ export default function Deposit () {
                 }}
               >
                 <Tooltip title={"Copy to clipboard"} placement="bottom">
-                  <button className="text-zinc-700 hover:text-white active:text-zinc-500 transition-colors">
+                  <button className="text-neutral-700 hover:text-white active:text-neutral-500 transition-colors">
                     <FontAwesomeIcon icon={faPaste}/>
                   </button>
                 </Tooltip>
@@ -875,7 +875,7 @@ export default function Deposit () {
                   </span>
                 </div>
               )}  className="react-select-wrap-container" classNamePrefix="react-select-wrap"/>
-        <input type="text" value={amountToTransfer} onChange={handleInputChange} className={"focus:z-10 block flex-1 min-w-0 w-full bg-zinc-900 text-white px-4 rounded-r-lg disabled:placeholder-zinc-700 transition-colors" + (false ? "  border border-red-500" : "")} name="amount" id="amount" placeholder="0" disabled={!secretAddress}/>
+        <input type="text" value={amountToTransfer} onChange={handleInputChange} className={"focus:z-10 block flex-1 min-w-0 w-full bg-neutral-900 text-white px-4 rounded-r-lg disabled:placeholder-neutral-700 transition-colors font-medium" + (false ? "  border border-red-500" : "")} name="amount" id="amount" placeholder="0" disabled={!secretAddress}/>
       </div>
 
       {/* Balance | [25%|50%|75%|Max] */}
@@ -893,16 +893,16 @@ export default function Deposit () {
         </div>
         <div className="sm:flex-initial text-xs">
           <div className="inline-flex rounded-full text-xs font-semibold">
-            <button onClick={() => setAmountByPercentage(25)} className="bg-zinc-900 px-1.5 py-0.5 rounded-l-md transition-colors hover:bg-zinc-700 focus:bg-zinc-500 cursor-pointer disabled:text-zinc-500 disabled:hover:bg-zinc-900 disabled:cursor-default" disabled={!secretAddress}>25%</button>
-            <button onClick={() => setAmountByPercentage(50)} className="bg-zinc-900 px-1.5 py-0.5 border-l border-zinc-700 transition-colors hover:bg-zinc-700 focus:bg-zinc-500 cursor-pointer disabled:text-zinc-500 disabled:hover:bg-zinc-900 disabled:cursor-default" disabled={!secretAddress}>50%</button>
-            <button onClick={() => setAmountByPercentage(75)} className="bg-zinc-900 px-1.5 py-0.5 border-l border-zinc-700 transition-colors hover:bg-zinc-700 focus:bg-zinc-500 cursor-pointer disabled:text-zinc-500 disabled:hover:bg-zinc-900 disabled:cursor-default" disabled={!secretAddress}>75%</button>
-            <button onClick={() => setAmountByPercentage(100)} className="bg-zinc-900 px-1.5 py-0.5 rounded-r-md border-l border-zinc-700 transition-colors hover:bg-zinc-700 focus:bg-zinc-500 cursor-pointer disabled:text-zinc-500 disabled:hover:bg-zinc-900 disabled:cursor-default" disabled={!secretAddress}>MAX</button>
+            <button onClick={() => setAmountByPercentage(25)} className="bg-neutral-900 px-1.5 py-0.5 rounded-l-md transition-colors hover:bg-neutral-700 focus:bg-neutral-500 cursor-pointer disabled:text-neutral-500 disabled:hover:bg-neutral-900 disabled:cursor-default" disabled={!secretAddress}>25%</button>
+            <button onClick={() => setAmountByPercentage(50)} className="bg-neutral-900 px-1.5 py-0.5 border-l border-neutral-700 transition-colors hover:bg-neutral-700 focus:bg-neutral-500 cursor-pointer disabled:text-neutral-500 disabled:hover:bg-neutral-900 disabled:cursor-default" disabled={!secretAddress}>50%</button>
+            <button onClick={() => setAmountByPercentage(75)} className="bg-neutral-900 px-1.5 py-0.5 border-l border-neutral-700 transition-colors hover:bg-neutral-700 focus:bg-neutral-500 cursor-pointer disabled:text-neutral-500 disabled:hover:bg-neutral-900 disabled:cursor-default" disabled={!secretAddress}>75%</button>
+            <button onClick={() => setAmountByPercentage(100)} className="bg-neutral-900 px-1.5 py-0.5 rounded-r-md border-l border-neutral-700 transition-colors hover:bg-neutral-700 focus:bg-neutral-500 cursor-pointer disabled:text-neutral-500 disabled:hover:bg-neutral-900 disabled:cursor-default" disabled={!secretAddress}>MAX</button>
           </div>
         </div>
       </div>
 
 
-      {/* <div className="bg-zinc-900 p-4 mt-8 rounded-lg select-none flex items-center mb-8">
+      {/* <div className="bg-neutral-900 p-4 mt-8 rounded-lg select-none flex items-center mb-8">
         <FontAwesomeIcon icon={faCircleInfo} className="flex-initial mr-4" />
         <div className="flex-1 text-sm">
           {message}

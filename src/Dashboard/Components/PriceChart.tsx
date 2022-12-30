@@ -86,13 +86,13 @@ export default function PriceChart(props: any) {
       </div>
 
       <div className="flex-initial inline-flex rounded-md shadow-sm" role="group">
-        <button onClick={() => setChartRange(ChartRange.Day)} type="button" className={"py-1.5 px-3 text-xs font-semibold text-zinc-200 rounded-l-lg border border-zinc-400" + (chartRange == ChartRange.Day ? " bg-blue-500 font-bold" : "bg-zinc-700 hover:bg-zinc-500 hover:text-white focus:z-10 focus:ring-2 focus:ring-zinc-700 focus:text-white")}>
+        <button onClick={() => setChartRange(ChartRange.Day)} type="button" className={"py-1.5 px-3 text-xs font-semibold text-neutral-200 rounded-l-lg border border-neutral-400" + (chartRange == ChartRange.Day ? " bg-blue-500 font-bold" : "bg-neutral-700 hover:bg-neutral-500 hover:text-white focus:z-10 focus:ring-2 focus:ring-neutral-700 focus:text-white")}>
           Day
         </button>
-        <button onClick={() => setChartRange(ChartRange.Month)} type="button" className={"py-1.5 px-3 text-xs font-semibold text-zinc-200 border-t border-r border-b border-zinc-400" + (chartRange == ChartRange.Month ? " bg-blue-500 font-bold" : "bg-zinc-700 hover:bg-zinc-500 hover:text-white focus:z-10 focus:ring-2 focus:ring-zinc-700 focus:text-white")}>
+        <button onClick={() => setChartRange(ChartRange.Month)} type="button" className={"py-1.5 px-3 text-xs font-semibold text-neutral-200 border-t border-r border-b border-neutral-400" + (chartRange == ChartRange.Month ? " bg-blue-500 font-bold" : "bg-neutral-700 hover:bg-neutral-500 hover:text-white focus:z-10 focus:ring-2 focus:ring-neutral-700 focus:text-white")}>
           Month
         </button>
-        <button onClick={() => setChartRange(ChartRange.Year)} type="button" className={"py-1.5 px-3 text-xs font-semibold text-zinc-200 rounded-r-lg border-t border-r border-b border-zinc-400" + (chartRange == ChartRange.Year ? " bg-blue-500 font-bold" : "bg-zinc-700 hover:bg-zinc-500 hover:text-white focus:z-10 focus:ring-2 focus:ring-zinc-700 focus:text-white")}>
+        <button onClick={() => setChartRange(ChartRange.Year)} type="button" className={"py-1.5 px-3 text-xs font-semibold text-neutral-200 rounded-r-lg border-t border-r border-b border-neutral-400" + (chartRange == ChartRange.Year ? " bg-blue-500 font-bold" : "bg-neutral-700 hover:bg-neutral-500 hover:text-white focus:z-10 focus:ring-2 focus:ring-neutral-700 focus:text-white")}>
           Year
         </button>
       </div>
