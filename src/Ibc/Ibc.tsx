@@ -1,15 +1,10 @@
 import React, { useEffect, useState, useRef } from "react";
-import { chains, Token, tokens } from "General/Utils/config";
-import { toast} from "react-toastify";
 import Deposit from "./components/Deposit";
-import Withdraw from "./components/Withdraw";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCaretDown, faInfoCircle } from "@fortawesome/free-solid-svg-icons";
 import Tooltip from "@mui/material/Tooltip";
 
 export function Ibc() {
-  const [balances, setBalances] = useState<Map<string, string>>(new Map());
-  const [selectedToken, setselectedToken] = useState<Token>(tokens.filter(token => token.name === "SCRT")[0]);
 
   return (
     <div className="w-full max-w-xl mx-auto px-4 onEnter_fadeInDown">
@@ -24,15 +19,7 @@ export function Ibc() {
         </div>
 
         {/* Deposit */}
-        <Deposit
-          token={selectedToken}
-          tokens={tokens}
-          onSuccess={(txhash) => {
-            console.log("success", txhash);
-          }}
-          onFailure={(error) => console.error(error)}
-        />
-
+        <Deposit/>
       </div>
     </div>
   );

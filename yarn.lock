@@ -4122,10 +4122,10 @@ secretjs@0.17.7:
     protobufjs "6.11.3"
     secure-random "1.1.2"
 
-secretjs@^1.6.0:
-  version "1.6.0"
-  resolved "https://registry.yarnpkg.com/secretjs/-/secretjs-1.6.0.tgz#9ef605f9b59d03340ebbc9deef8e03466d0e368e"
-  integrity sha512-uhDQBZ6rLiNIhw9Cc/ZqCgMEQ4E3k3l970Qkf0b5IaYOwCTPfjB/9EAwUVbGJY1RHlPQnRoyAXUlIhbXkfZ+sQ==
+secretjs@^1.6.6:
+  version "1.6.6"
+  resolved "https://registry.yarnpkg.com/secretjs/-/secretjs-1.6.6.tgz#7369fe9d8c619f4d8f5e39c62701272b31a90a4e"
+  integrity sha512-CHS1xhdvQKpnXO0889RMDKS0jJ66pfIYj3wUGEdbcfFE2FHMHt5qIi13oFSH08AW07q+iwDVXBKeBDTq6zYwxA==
   dependencies:
     "@cosmjs/encoding" "0.27.1"
     "@cosmjs/math" "0.27.1"
