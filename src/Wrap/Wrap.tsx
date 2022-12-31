@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useContext, createContext } from "react";
-import { MsgExecuteContract, SecretNetworkClient } from "secretjs";
-import { chains, Token, tokens } from "General/Utils/config";
+import { MsgExecuteContract } from "secretjs";
+import { Token, tokens } from "General/Utils/config";
 import { sleep, faucetURL, faucetAddress, viewingKeyErrorString, usdString } from "General/Utils/commons";
 import { KeplrContext, FeeGrantContext } from "General/Layouts/defaultLayout";
 import BigNumber from "bignumber.js";

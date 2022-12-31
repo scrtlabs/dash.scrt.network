@@ -186,6 +186,47 @@ export async function suggestKujiraToKeplr(keplr: Keplr) {
   });
 }
 
+export async function suggestChihuahuaToKeplr(keplr: Keplr) {
+  await keplr.experimentalSuggestChain({
+    rpc: "https://rpc-chihuahua-ia.cosmosia.notional.ventures",
+    rest: "https://api-chihuahua-ia.cosmosia.notional.ventures",
+    chainId: "chihuahua-1",
+    chainName: "Chihuahua",
+    stakeCurrency: {
+      coinDenom: "HUAHUA",
+      coinMinimalDenom: "uhuahua",
+      coinDecimals: 6,
+      coinGeckoId: "chihuahua-chain",
+    },
+    bip44: {
+      coinType: 118,
+    },
+    bech32Config: Bech32Address.defaultBech32Config("chihuahua"),
+    currencies: [
+      {
+        coinDenom: "HUAHUA",
+        coinMinimalDenom: "uhuahua",
+        coinDecimals: 6,
+        coinGeckoId: "chihuahua-chain",
+      },
+    ],
+    feeCurrencies: [
+      {
+        coinDenom: "HUAHUA",
+        coinMinimalDenom: "uhuahua",
+        coinDecimals: 6,
+        coinGeckoId: "chihuahua-chain",
+        gasPriceStep: {
+          low: 0.025,
+          average: 0.03,
+          high: 0.035,
+        },
+      },
+    ],
+    features: ["stargate", "ibc-transfer", "no-legacy-stdTx", "ibc-go"],
+  });
+}
+
 export const usdString = new Intl.NumberFormat("en-US", {
   style: "currency",
   currency: "USD",
