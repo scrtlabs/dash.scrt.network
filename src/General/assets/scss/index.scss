@@ -24,10 +24,12 @@ body {
 
 .react-select__control {
   cursor: pointer !important;
-  background-color: #404040 !important;
-  border-color: #737373 !important;
-  color: red !important;
+  background-color: #262626 !important;
+  border-color: #525252 !important;
   @apply py-1;
+  &:hover {
+    background-color: #525252 !important;
+  }
 }
 
 .react-select__single-value {
@@ -49,13 +51,16 @@ body {
 
 
 
+
 .react-select-wrap__control {
   cursor: pointer !important;
   background-color: #262626 !important;
   border-color: #525252 !important;
-  color: red !important;
   @apply py-1;
   border-radius: 0.5rem 0 0 0.5rem !important;
+  &:hover {
+    background-color: #525252 !important;
+  }
 }
 
 .react-select-wrap__single-value {
@@ -122,4 +127,16 @@ body {
 
 .onEnter_fadeInDown {
   animation: fadeInDown2 250ms ease-in-out;
+}
+
+
+
+@media screen and (min-width: 768px){
+  #ibcSwitchButton {
+    padding-top: 100%;
+  }
+}
+
+#ibcSwitchButton {
+  @apply block
 }

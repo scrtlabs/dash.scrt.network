@@ -696,7 +696,7 @@ export default function Deposit () {
           {/* {value} */}
           {ibcMode === IbcMode.Deposit && (<ChainSelect/>)}
             {ibcMode === IbcMode.Withdrawal && (
-              <div style={{paddingTop: ".7rem", paddingBottom: ".7rem"}} className="flex items-center w-full text-sm font-semibold select-none bg-neutral-700 rounded text-neutral-200 focus:bg-neutral-700 disabled:hover:bg-neutral-800 border border-neutral-500">
+              <div style={{paddingTop: ".76rem", paddingBottom: ".76rem"}} className="flex items-center w-full text-sm font-semibold select-none bg-neutral-800 rounded text-neutral-200 focus:bg-neutral-700 disabled:hover:bg-neutral-800 border border-neutral-600">
                 <div className="flex-1 px-3">
                   <span>Secret Network</span>
                 </div>
@@ -705,18 +705,18 @@ export default function Deposit () {
           </div>
         </div>
         {/* <div className="text-center sm:mt-6 sm:mb-2 my-6">
-        <Tooltip title={`Switch to ${wrappingMode === WrappingMode.Wrap ? "Unwrapping" : "Wrapping"}`} placement="bottom">
-          <button onClick={() => toggleWrappingMode()} disabled={disabled} className={"bg-neutral-900 px-3 py-2 text-blue-600 transition-colors rounded-full" + (!disabled ? " hover:text-blue-400 focus:text-blue-600" : "")}>
-            <FontAwesomeIcon icon={faRightLeft} className="fa-rotate-90" />
-          </button>
-        </Tooltip>
-      </div> */}
-        <div className="flex-1">
-          <div className="relative" style={{paddingTop: '100%'}}>
-            <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+          <Tooltip title={`Switch to ${wrappingMode === WrappingMode.Wrap ? "Unwrapping" : "Wrapping"}`} placement="bottom">
+            <button onClick={() => toggleWrappingMode()} disabled={disabled} className={"bg-neutral-900 px-3 py-2 text-blue-600 transition-colors rounded-full" + (!disabled ? " hover:text-blue-400 focus:text-blue-600" : "")}>
+              <FontAwesomeIcon icon={faRightLeft} className="fa-rotate-90" />
+            </button>
+          </Tooltip>
+        </div> */}
+        <div className="flex-1 py-2 md:py-0">
+          <div className="md:relative" id="ibcSwitchButton">
+            <div className="md:absolute md:top-1/2 md:left-1/2 md:transform md:-translate-x-1/2 md:-translate-y-1/2 text-center md:text-left">
               <Tooltip title={`Switch chains`} placement="bottom">
-                <button onClick={toggleIbcMode} className={"bg-neutral-800 px-3 py-2 text-cyan-500 transition-colors rounded-xl disabled:text-neutral-500" + ((secretjs && secretAddress) ? " hover:text-cyan-300" : "")} disabled={!secretjs || !secretAddress}>
-                  <FontAwesomeIcon icon={faRightLeft} />
+                <button onClick={toggleIbcMode} className={"inline-block bg-neutral-800 px-3 py-2 text-cyan-500 transition-colors rounded-xl disabled:text-neutral-500" + ((secretjs && secretAddress) ? " hover:text-cyan-300" : "")} disabled={!secretjs || !secretAddress}>
+                  <FontAwesomeIcon icon={faRightLeft} className="rotate-90 md:rotate-0" />
                 </button>
               </Tooltip>
             </div>
@@ -736,10 +736,10 @@ export default function Deposit () {
             <div className="absolute left-0 right-0 text-center text-sm font-bold text-white" style={{bottom: '10%'}}>To</div>
           </div>
           {/* Chain Picker */}
-          <div className="-mt-3 relative z-10 w-full">
+          <div className="md:-mt-3 md:relative z-10 w-full">
             {ibcMode === IbcMode.Withdrawal && (<ChainSelect/>)}
             {ibcMode === IbcMode.Deposit && (
-              <div style={{paddingTop: ".7rem", paddingBottom: ".7rem"}} className="flex items-center w-full text-sm font-semibold select-none bg-neutral-700 rounded text-neutral-200 focus:bg-neutral-700 disabled:hover:bg-neutral-800 border border-neutral-500">
+              <div style={{paddingTop: ".76rem", paddingBottom: ".76rem"}} className="flex items-center w-full text-sm font-semibold select-none bg-neutral-800 rounded text-neutral-200 focus:bg-neutral-700 disabled:hover:bg-neutral-800 border border-neutral-600">
                 <div className="flex-1 px-3">
                   <span>Secret Network</span>
                 </div>
@@ -833,7 +833,7 @@ export default function Deposit () {
                 const prettyBalance = new BigNumber(availableBalance).dividedBy(`1e${selectedToken.decimals}`).toFormat();
                 if (prettyBalance === "NaN" && availableBalance === viewingKeyErrorString) {
                   return <button
-                    className="ml-2 bg-neutral-900 px-1.5 py-0.5 rounded-md border-neutral-700 transition-colors hover:bg-neutral-700 focus:bg-neutral-500 cursor-pointer disabled:text-neutral-500 disabled:hover:bg-neutral-900 disabled:cursor-default"
+                    className="ml-2 font-semibold bg-neutral-900 px-1.5 py-0.5 rounded-md border-neutral-700 transition-colors hover:bg-neutral-700 focus:bg-neutral-500 cursor-pointer disabled:text-neutral-500 disabled:hover:bg-neutral-900 disabled:cursor-default"
                     onClick={async () => {
                       await setKeplrViewingKey(selectedToken.address);
                       try {
