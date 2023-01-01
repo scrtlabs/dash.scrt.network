@@ -1,0 +1,14 @@
+version: '3.8'
+services:
+  dashboard_react_app:
+    container_name: dashboard_frontend2
+    build: ./
+    ports:
+      - '3000:3000'
+    volumes:
+      - './frontend:/app'
+      - '/app/node_modules'
+    stdin_open: true
+    tty: true
+    environment:
+      - CHOKIDAR_USEPOLLING=true

@@ -1,9 +1,9 @@
 {
   "name": "secret_dashboard",
   "description": "An entry point for new users into Secret Network",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "scripts": {
-    "start": "vite",
+    "start": "PORT=3000 vite",
     "build": "tsc && vite build",
     "preview": "yarn build && vite preview"
   },
