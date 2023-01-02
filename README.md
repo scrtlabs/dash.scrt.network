@@ -1,3 +1,6 @@
+![Secret Network Banner](banner.png)
+
+
 # Secret Dashboard
 
 Wrapping Coins as Secret Tokens immediately supercharges them with private balances and private transfers.
