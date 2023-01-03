@@ -139,7 +139,9 @@ export default function StakingChart(props: any) {
       </div> */}
       
       {/* Chart */}
-      {totalSupply && <Doughnut data={data} options={options} plugins={[centerText]}/>}
+      <div className="px-24">
+        {totalSupply && <Doughnut data={data} options={options} plugins={[centerText]}/>}
+      </div>
 
       <a href="https://wallet.keplr.app/chains/secret-network" target="_blank" className="block border border-cyan-500 text-cyan-500 hover:text-white hover:bg-cyan-500 w-full text-center transition-colors py-2 rounded-lg mt-4 font-semibold text-sm">Stake SCRT<FontAwesomeIcon icon={faArrowUpRightFromSquare} className="text-xs ml-2" /></a>
     </>

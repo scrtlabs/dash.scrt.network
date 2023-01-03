@@ -3,7 +3,7 @@ import { Window as KeplrWindow } from "@keplr-wallet/types";
 import ReactDOM from "react-dom";
 import { BreakpointProvider } from "react-socks";
 import "General/assets/scss/index.scss";
-import "animate.css"
+// import "animate.css"
 import { Buffer } from "buffer";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 
