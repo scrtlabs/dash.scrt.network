@@ -89,7 +89,7 @@ export function Apps() {
         </div>
 
         {/* Tag-Filter */}
-        <div className="space-x-2 text-left sm:text-center mb-8">
+        <div className="text-left sm:text-center mb-8 space-x-2 space-y-2">
           {tags.map((tag) =>
             <Tag name={tag}/>
           )}
