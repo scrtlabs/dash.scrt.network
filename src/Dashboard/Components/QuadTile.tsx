@@ -53,16 +53,18 @@ const QuadTile = (props: IQuadTileProps) => {
           {/* Bottom Left */}
           <div className="col-span-1 p-8 border-r border-neutral-700">
             <div className="text-neutral-500 text-sm font-semibold mb-0.5">{props.item3_key}</div>
-              <If condition={props.item3_value}>
-                <Then>
-                  {props.item3_value}
-                </Then>
-                <Else>
-                  <div className="animate-pulse">
-                    <div className="bg-neutral-700/40 rounded col-span-2 w-16 h-8 mx-auto"></div>
-                  </div>
-                </Else>
-              </If>
+              <div className="text-2xl">
+                <If condition={props.item3_value}>
+                  <Then>
+                    {props.item3_value}
+                  </Then>
+                  <Else>
+                    <div className="animate-pulse">
+                      <div className="bg-neutral-700/40 rounded col-span-2 w-16 h-8 mx-auto"></div>
+                    </div>
+                  </Else>
+                </If>
+              </div>
             </div>
           {/* Bottom Right */}
           <div className="col-span-1 p-8">
