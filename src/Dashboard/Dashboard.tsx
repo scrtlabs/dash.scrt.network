@@ -4,11 +4,13 @@ import React, { useEffect, useState, createContext, useContext } from "react";
 import { SecretNetworkClient } from "secretjs";
 import BlockHeight from "./Components/BlockHeight";
 import BlockInfo from "./Components/BlockInfo";
+import BlockInfo2 from "./Components/BlockInfo2";
 import CommunityPool from "./Components/CommunityPool";
 import CurrentPrice from "./Components/CurrentPrice";
 import Inflation from "./Components/Inflation";
 import InfoBoxes from "./Components/InfoBoxes";
 import PriceChart from "./Components/PriceChart";
+import QuadTile from "./Components/QuadTile";
 import StakingChart from "./Components/StakingChart";
 import VolumeChart from "./Components/VolumeChart";
 const SECRET_RPC = chains["Secret Network"].rpc;
@@ -36,7 +38,7 @@ export function Dashboard() {
   const [spartanApiData, setSpartanApiData] = useState();
 
 
-  const [blockHeight, setBlockHeight] = useState(0);
+  const [blockHeight, setBlockHeight] = useState(null);
   const [inflation, setInflation] = useState(0);
   const [circulatingSupply, setCirculatingSupply] = useState(0);
   const [currentPrice, setCurrentPrice] = useState(Number);
@@ -90,40 +92,49 @@ export function Dashboard() {
         <div className="mt-4 px-4 mx-auto space-y-4 w-full">
           <div className="grid grid-cols-12 gap-4">
 
+          {/* Current Price */}
+          <div className="col-span-12 sm:col-span-6 xl:col-span-3">
+            <CurrentPrice price={currentPrice}/>
+          </div>
+
+          {/* Community Pool */}
+          <div className="col-span-12 sm:col-span-6 xl:col-span-3">
+            <CommunityPool amount={communityPool}/>
+          </div>
+
+          {/* Block Height */}
+          <div className="col-span-12 sm:col-span-6 xl:col-span-3">
+            <BlockHeight blockHeight={blockHeight}/>
+          </div>
+
+          {/* Block Height */}
+          <div className="col-span-12 sm:col-span-6 xl:col-span-3">
+            <BlockHeight blockHeight={blockHeight}/>
+          </div>
+
+          {/* Inflation */}
+          {/* <div className="col-span-12 sm:col-span-6 xl:col-span-3">
+            <Inflation amount={inflation}/>
+          </div> */}
+
             {/* Block Info */}
             <div className="col-span-12 md:col-span-6 lg:col-span-6 2xl:col-span-4">
-              <BlockInfo blockHeight={blockHeight || 0} blockTime={blockTime} circulatingSupply={circulatingSupply} inflation={inflation}/>
+              {/* <BlockInfo blockHeight={blockHeight || 0} blockTime={blockTime} circulatingSupply={circulatingSupply} inflation={inflation}/> */}
+              <QuadTile item1_key="Block Height" item1_value="" item2_key="Block Time" item2_value="" item3_key="Daily Transactions" item3_value="" item4_key="???" item4_value=""/>
             </div>
 
-            <div className="col-span-12 sm:col-span-6 lg:col-span-6 xl:col-span-4 2xl:col-span-3 bg-neutral-800 px-6 py-8 rounded-lg">
+            <div className="col-span-12 sm:col-span-6 lg:col-span-6 xl:col-span-4 2xl:col-span-4 bg-neutral-800 px-6 py-8 rounded-lg">
               <StakingChart />
             </div>
 
-            {/* Current Price */}
-            <div className="col-span-12 sm:col-span-6 xl:col-span-3">
-              <CurrentPrice price={currentPrice}/>
+            {/* Block Info */}
+            <div className="col-span-12 md:col-span-6 lg:col-span-6 2xl:col-span-4">
+              <QuadTile item1_key="APR" item1_value="" item2_key="Inflation" item2_value="" item3_key="Community Tax" item3_value="" item4_key="Secret Foundation Tax" item4_value=""/>
             </div>
 
-            {/* Block Height */}
-            <div className="col-span-12 sm:col-span-6 xl:col-span-3">
-              <BlockHeight blockHeight={blockHeight}/>
-            </div>
-
-            {/* Inflation */}
-            <div className="col-span-12 sm:col-span-6 xl:col-span-3">
-              <Inflation amount={inflation}/>
-            </div>
-
-            {/* Community Pool */}
-            <div className="col-span-12 sm:col-span-6 xl:col-span-3">
-              <CommunityPool amount={communityPool}/>
-            </div>
           </div>
           
           <div className="grid grid-cols-12 gap-4">
-            <div className="col-span-12 sm:col-span-6 lg:col-span-6 xl:col-span-4 2xl:col-span-3 bg-neutral-800 px-6 py-8 rounded-lg">
-              <StakingChart />
-            </div>
             {/* Item */}
             <div className="col-span-12 xl:col-span-6 bg-neutral-800 p-4 rounded-lg">
               <PriceChart />

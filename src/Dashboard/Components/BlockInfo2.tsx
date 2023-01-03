@@ -1,7 +1,7 @@
 import React from "react";
 import { Else, If, Then } from "react-if";
 
-interface IBlockInfoProps {
+interface IBlockInfo2Props {
   blockHeight: number,
   blockTime: number,
   circulatingSupply: number,
@@ -17,7 +17,7 @@ function formatNumber(count: number, withAbbr = false, decimals = 2) {
   }
 }
 
-const BlockInfo = (props: IBlockInfoProps) => {
+const BlockInfo2 = (props: IBlockInfo2Props) => {
   const formattedInflation = props.inflation ? props.inflation * 100 + "%" : null;
   const formattedCirculatingSupply = props.circulatingSupply;
 
@@ -27,7 +27,7 @@ const BlockInfo = (props: IBlockInfoProps) => {
         <div className="grid grid-cols-2 text-center">
           {/* Top Left */}
           <div className="col-span p-8 border-b border-r border-neutral-700">
-            <div className="text-neutral-500 text-sm font-semibold mb-0.5">Block Height</div>
+            <div className="text-neutral-500 text-sm font-semibold mb-0.5">APR</div>
             <div className="text-2xl">
               <If condition={props.blockHeight}>
                 <Then>
@@ -43,7 +43,7 @@ const BlockInfo = (props: IBlockInfoProps) => {
           </div>
           {/* Top Right */}
           <div className="col-span-1 p-8 border-b border-neutral-700">
-            <div className="text-neutral-500 text-sm font-semibold mb-0.5">Block Time</div>
+            <div className="text-neutral-500 text-sm font-semibold mb-0.5">Inflation</div>
             <div className="text-2xl">
               <If condition={props.blockTime}>
                 <Then>
@@ -59,7 +59,7 @@ const BlockInfo = (props: IBlockInfoProps) => {
           </div>
           {/* Bottom Left */}
           <div className="col-span-1 p-8 border-r border-neutral-700">
-            <div className="text-neutral-500 text-sm font-semibold mb-0.5">Daily Transactions</div>
+            <div className="text-neutral-500 text-sm font-semibold mb-0.5">Community Tax</div>
               <If condition={formattedCirculatingSupply}>
                 <Then>
                   {formattedCirculatingSupply}
@@ -73,7 +73,7 @@ const BlockInfo = (props: IBlockInfoProps) => {
             </div>
           {/* Bottom Right */}
           <div className="col-span-1 p-8">
-            <div className="text-neutral-500 text-sm font-semibold mb-0.5">???</div>
+            <div className="text-neutral-500 text-sm font-semibold mb-0.5">Secret Foundation Tax</div>
             <div className="text-2xl">
               <If condition={formattedInflation}>
                 <Then>
@@ -93,4 +93,4 @@ const BlockInfo = (props: IBlockInfoProps) => {
   );
 }
 
-export default BlockInfo;
+export default BlockInfo2;
