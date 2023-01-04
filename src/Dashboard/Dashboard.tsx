@@ -46,12 +46,12 @@ export function Dashboard() {
   }, [blockHeight]);
 
   // block time
-  const [blockTime, setBlockTime] = useState(null); // in uscrt
-  const [blockTimeFormattedstring, setbBlockTimeFormattedstring] = useState("");
+  const [blockTime, setBlockTime] = useState(null); // in seconds
+  const [blockTimeFormattedString, setbBlockTimeFormattedString] = useState("");
 
   useEffect(() => {
     if (blockTime) {
-      setbBlockTimeFormattedstring(blockTime + "s");
+      setbBlockTimeFormattedString(blockTime + "s");
     }
   }, [blockTime]);
 
@@ -60,15 +60,65 @@ export function Dashboard() {
 
   // community tax
   const [communityTax, setCommunityTax] = useState("");
+  const [communityTaxFormattedString, setCommunityTaxFormattedString] = useState("");
 
-  // setSecretFoundationTax
+  useEffect(() => {
+    if (communityTax) {
+      setCommunityTaxFormattedString((parseFloat(communityTax)*100).toString() + "%");
+    }
+  }, [communityTax]);
+
+  // secretFoundationTax
   const [secretFoundationTax, setSecretFoundationTax] = useState("");
+  const [secretFoundationTaxFormattedString, setSecretFoundationTaxFormattedString] = useState("");
+
+  useEffect(() => {
+    if (secretFoundationTax) {
+      setSecretFoundationTaxFormattedString((parseFloat(secretFoundationTax)*100).toString() + "%");
+    }
+  }, [secretFoundationTax]);
+
+  // feesPaid
+  const [feesPaid, setFeesPaid] = useState("");
+
+  // inflation
+  const [inflation, setInflation] = useState(0);
+  const [inflationFormattedString, setInflationFormattedString] = useState("");
+
+  useEffect(() => {
+    if (inflation) {
+      setInflationFormattedString((inflation*100).toString() + "%");
+    }
+  }, [inflation]);
+
+  // APR
+  const [growthRate, setGrowthRate] = useState(0);
+  const [growthRateFormattedString, setGrowthRateFormattedString] = useState("");
+
+  useEffect(() => {
+    if (inflation && secretFoundationTax && communityTax) { // staking ratio missing
+      const I = inflation; // inflation
+      const F = parseFloat(secretFoundationTax); // foundation tax
+      const C = 0.05; // validator commision rate; median is 5%
+      const T = parseFloat(communityTax); // community tax
+      const R = 0.65 // TODO: staking ratio
+      setGrowthRate((I / R) * (1 - F - T) * (1 - C));
+    }
+  }, [inflation, secretFoundationTax, communityTax]);
+
+  useEffect(() => {
+    if (growthRate) {
+      setGrowthRateFormattedString(growthRate.toString());
+    }
+  }, [growthRate]);
+
+  
+
 
 
 
 
   
-  const [inflation, setInflation] = useState(0);
   const [circulatingSupply, setCirculatingSupply] = useState(0);
   const [currentPrice, setCurrentPrice] = useState(Number);
   const [communityPool, setCommunityPool] = useState(Number); // in uscrt
@@ -120,6 +170,7 @@ export function Dashboard() {
       setDailyTransactions(spartanApiData?.tx_volume);
       setCommunityTax(spartanApiData?.staking_params?.community_tax);
       setSecretFoundationTax(spartanApiData?.staking_params?.secret_foundation_tax);
+      setFeesPaid(spartanApiData?.fees_paid);
     }
     
     queryData();
@@ -161,7 +212,7 @@ export function Dashboard() {
             {/* Block Info */}
             <div className="col-span-12 md:col-span-6 lg:col-span-6 2xl:col-span-4">
               {/* <BlockInfo blockHeight={blockHeight || 0} blockTime={blockTime} circulatingSupply={circulatingSupply} inflation={inflation}/> */}
-              <QuadTile item1_key="Block Height" item1_value={blockHeightFormattedString} item2_key="Block Time" item2_value={blockTimeFormattedstring} item3_key="Daily Transactions" item3_value={dailyTransactions} item4_key="???" item4_value=""/>
+              <QuadTile item1_key="Block Height" item1_value={blockHeightFormattedString} item2_key="Block Time" item2_value={blockTimeFormattedString} item3_key="Daily Transactions" item3_value={dailyTransactions} item4_key="Fees Paid" item4_value={feesPaid}/>
             </div>
 
             <div className="col-span-12 sm:col-span-6 lg:col-span-6 xl:col-span-4 2xl:col-span-4 bg-neutral-800 px-6 py-8 rounded-lg">
@@ -170,7 +221,7 @@ export function Dashboard() {
 
             {/* Block Info */}
             <div className="col-span-12 md:col-span-6 lg:col-span-6 2xl:col-span-4">
-              <QuadTile item1_key="APR" item1_value="" item2_key="Inflation" item2_value="" item3_key="Community Tax" item3_value={communityTax} item4_key="Secret Foundation Tax" item4_value={secretFoundationTax}/>
+              <QuadTile item1_key="APR" item1_value={growthRateFormattedString} item2_key="Inflation" item2_value={inflationFormattedString} item3_key="Community Tax" item3_value={communityTaxFormattedString} item4_key="Secret Foundation Tax" item4_value={secretFoundationTaxFormattedString}/>
             </div>
 
           </div>
