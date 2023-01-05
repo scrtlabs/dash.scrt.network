@@ -95,13 +95,16 @@ export function Dashboard() {
   const [growthRate, setGrowthRate] = useState(0);
   const [growthRateFormattedString, setGrowthRateFormattedString] = useState("");
 
+  //Bonded Ratio
+  const [bondedRatio, setBondedRatio] = useState(0); 
+
   useEffect(() => {
     if (inflation && secretFoundationTax && communityTax) { // staking ratio missing
       const I = inflation; // inflation
       const F = parseFloat(secretFoundationTax); // foundation tax
       const C = 0.05; // validator commision rate; median is 5%
       const T = parseFloat(communityTax); // community tax
-      const R = 0.65 // TODO: staking ratio
+      const R = bondedRatio/100 // TODO: staking ratio
       setGrowthRate((I / R) * (1 - F - T) * (1 - C));
     }
   }, [inflation, secretFoundationTax, communityTax]);
@@ -113,11 +116,6 @@ export function Dashboard() {
   }, [growthRate]);
 
   
-
-
-
-
-
   
   const [circulatingSupply, setCirculatingSupply] = useState(0);
   const [currentPrice, setCurrentPrice] = useState(Number);
@@ -160,10 +158,6 @@ export function Dashboard() {
 
   useEffect(() => {
     const queryData = async () => {
-      const secretjsquery = new SecretNetworkClient({
-        url: SECRET_LCD,
-        chainId: "secret-4",
-      });
       setInflation(spartanApiData?.inflation);
       setCirculatingSupply(spartanApiData?.circulating_supply);
       setBlockTime(spartanApiData?.avg_block_time);
@@ -171,6 +165,7 @@ export function Dashboard() {
       setCommunityTax(spartanApiData?.staking_params?.community_tax);
       setSecretFoundationTax(spartanApiData?.staking_params?.secret_foundation_tax);
       setFeesPaid(spartanApiData?.fees_paid);
+      setBondedRatio(spartanApiData?.bond_rate)
     }
     
     queryData();
