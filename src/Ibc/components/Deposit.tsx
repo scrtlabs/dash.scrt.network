@@ -164,11 +164,11 @@ export default function Deposit () {
 
   const targetChain = chains["Secret Network"];
 
-  const fetchSourceBalance = async () => {
+  const fetchSourceBalance = async (newAddress: String | null) => {
     if (ibcMode === IbcMode.Deposit) {
       const url = `${
         chains[selectedSource.chain_name].lcd
-      }/cosmos/bank/v1beta1/balances/${sourceAddress}`;
+      }/cosmos/bank/v1beta1/balances/${newAddress ? newAddress : sourceAddress}`;
       try {
         const {
           balances,
@@ -188,6 +188,7 @@ export default function Deposit () {
     }
   };
 
+
   useEffect(() => {
     setAvailableBalance("");
 
@@ -199,16 +200,17 @@ export default function Deposit () {
       clearInterval(fetchBalanceInterval);
     }
 
-    fetchSourceBalance();
+    if (ibcMode === IbcMode.Withdrawal) {
+      fetchSourceBalance(null);
+    } 
     const interval = setInterval(
-      () => fetchSourceBalance(),
+      () => fetchSourceBalance(null),
       10_000
     );
     setFetchBalanceInterval(interval);
 
     return () => clearInterval(interval);
   }, [selectedSource, selectedToken, sourceAddress, ibcMode]);
-
 
   useEffect(() => {
     (async () => {
@@ -238,6 +240,10 @@ export default function Deposit () {
         }
       }
 
+      const possibleSnips = snips.filter(token => token.deposits.find(token => token.chain_name == chains[selectedSource.chain_name].chain_name)!);
+      const possibleTokens = tokens.filter(token => token.deposits.find(token => token.chain_name == chains[selectedSource.chain_name].chain_name)!);
+      setSupportedTokens(possibleTokens.concat(possibleSnips));
+      
       const sourceOfflineSigner = window.getOfflineSignerOnlyAmino(chain_id);
       const depositFromAccounts = await sourceOfflineSigner.getAccounts();
       setSourceAddress(depositFromAccounts[0].address);
@@ -251,13 +257,9 @@ export default function Deposit () {
 
       setSourceChainSecretjs(secretjs);
 
-      const possibleSnips = snips.filter(token => token.deposits.find(token => token.chain_name == chains[selectedSource.chain_name].chain_name)!);
-      const possibleTokens = tokens.filter(token => token.deposits.find(token => token.chain_name == chains[selectedSource.chain_name].chain_name)!);
-      setSupportedTokens(possibleTokens.concat(possibleSnips));
-
-      fetchSourceBalance();
+      fetchSourceBalance(depositFromAccounts[0].address);
     })();
-  }, [selectedSource, selectedToken, sourceAddress]);
+  }, [selectedSource, selectedToken, sourceAddress,ibcMode]);
 
   
   const [isCopied, setIsCopied] = useState<boolean>(false); 
