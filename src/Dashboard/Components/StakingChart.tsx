@@ -109,7 +109,7 @@ export default function StakingChart(props: any) {
 
   const options = {
     responsive: true,
-    cutout: "80%",
+    cutout: "90%",
     borderWidth: 0,
     plugins: {
       legend: {

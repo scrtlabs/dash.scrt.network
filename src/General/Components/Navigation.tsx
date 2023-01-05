@@ -1,3 +1,4 @@
+import { faDiscord, faTwitter } from "@fortawesome/free-brands-svg-icons";
 import { faArrowUpRightFromSquare, faBox, faChartLine, faCheckToSlot, faCircleNodes, faClose, faCoins, faEllipsis, faShuffle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React from "react";
@@ -13,6 +14,7 @@ export function Navigation({
   return (
     <>
       <NavLink to="/" className="block ml-4 mb-12" style={{maxWidth: "9rem"}}><img src={"/img/secret_dashboard_logo.svg"} alt="Secret Network Logo" className="w-full inline-block" /></NavLink>
+      
       <ul className="space-y-4 font-semibold text-neutral-400">
         <li className="lg:hidden">
           <button onClick={() => setShowMobileMenu(false)} className="hover:text-white fixed top-0 right-0 float-right px-8 py-5 rounded-full transition-colors">
@@ -20,7 +22,7 @@ export function Navigation({
           </button>
         </li>
         <li>
-        <NavLink to="/" className={({ isActive }) => isActive ? "text-white bg-gradient-to-r from-neutral-700 via-neutral-700 to-neutral-700/10 block w-full px-8 py-3 rounded-xl transition-colors font-bold cursor-default" : "cursor-pointer cursor-pointer hover:text-white block w-full px-8 py-3 rounded-xl transition-colors"}>
+        <NavLink to="/" className={({ isActive }) => isActive ? "text-white bg-gradient-to-r from-neutral-700 via-neutral-700 to-neutral-700/10 block w-full px-8 py-3 rounded-xl transition-colors font-bold cursor-default" : "cursor-pointer hover:text-white block w-full px-8 py-3 rounded-xl transition-colors"}>
           <FontAwesomeIcon icon={faChartLine} className="mr-2" />Dashboard
           </NavLink>
         </li>

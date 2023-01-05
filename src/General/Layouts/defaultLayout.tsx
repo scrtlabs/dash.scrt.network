@@ -1,22 +1,22 @@
-import { faBars, faCheck, faCopy, faRotateRight, faX } from '@fortawesome/free-solid-svg-icons';
+import { faBars } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { FloatingCtaButton } from 'General/Components/FloatingCtaButton';
 import { Footer } from 'General/Components/Footer';
 import { KeplrPanel } from 'General/Components/Keplr';
 import { Navigation } from 'General/Components/Navigation';
-import React, { useState, createContext, useEffect, Component} from 'react';
+import React, { useState, createContext, useEffect } from 'react';
 import { SecretNetworkClient } from 'secretjs';
 import { Breakpoint } from "react-socks";
 import { Flip, ToastContainer, toast} from "react-toastify";
-import { faucetURL } from "General/Utils/commons";
-import { Else, If, Then } from 'react-if';
-import Tooltip from '@mui/material/Tooltip';
+import { faDiscord, faTwitter } from '@fortawesome/free-brands-svg-icons';
 
 export const KeplrContext = createContext<{ secretjs: SecretNetworkClient | null ; secretAddress: string }| null >(null);
 export const NavigationContext = createContext<boolean | null>(null);
 export const FeeGrantContext = createContext(null);
 
 export const DefaultLayout =({children}:any) =>{
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   /**
    * Mobile Menu Handler
@@ -42,6 +42,7 @@ export const DefaultLayout =({children}:any) =>{
 
   return (
     <>
+
       <FloatingCtaButton />
 
       <div className="flex">
@@ -51,31 +52,40 @@ export const DefaultLayout =({children}:any) =>{
               ? "z-50 left-0 right-0 w-full lg:w-auto min-h-screen "
               : "hidden lg:block") +
             " " +
-            "lg:w-72 fixed left-0 top-0 h-screen p-6 overflow-x-hidden bg-neutral-900"
+            "lg:w-72 fixed left-0 top-0 h-screen p-6 overflow-x-hidden bg-neutral-900 sm:border-r border-neutral-800"
           }
         >
           <NavigationContext.Provider value={{ showMobileMenu }}>
             <Navigation
-              showMobileMenu={showMobileMenu!}
-              setShowMobileMenu={setShowMobileMenu!}
+              showMobileMenu={showMobileMenu}
+              setShowMobileMenu={setShowMobileMenu}
             />
           </NavigationContext.Provider>
         </aside>
         <KeplrContext.Provider value={{ secretjs, secretAddress }}>
           <FeeGrantContext.Provider value={{ useFeegrant: isFeeGranted, setUseFeegrant: setIsFeeGranted }}>
               <main className="flex flex-col min-h-screen flex-1 lg:ml-72">
-                {/* Keplr */}
+
+                {/* Top Bar [Burger Menu | Socials | Keplr] */}
                 <div className="flex items-center gap-4 p-4">
+
+                  {/* Burger Menu */}
                   <div className="flex-initial lg:hidden">
                     <button
                       onClick={() => setShowMobileMenu(true)}
                       className="text-white hover:text-neutral-200 active:text-neutral-400 transition-colors"
                     >
-                      <FontAwesomeIcon icon={faBars} size="lg" />
+                      <FontAwesomeIcon icon={faBars} size="xl" />
                     </button>
                   </div>
 
-                  <div className="flex-1 sm:flex sm:justify-end">
+                  <div className="hidden sm:block flex-initial sm:flex-1 text-right space-x-2">
+                    <button onClick={() => setIsModalOpen(true)} className="border px-3 py-1.5 text-white border-emerald-800 hover:text-white hover:bg-emerald-800 transition-colors rounded-md">Open Modal</button>
+                    <a href="https://twitter.com/SecretNetwork" target="_blank" className="text-neutral-200 hover:text-white transition-colors"><FontAwesomeIcon icon={faTwitter} size="lg"/></a>
+                    <a href="https://discord.com/invite/SJK32GY" target="_blank" className="text-neutral-200 hover:text-white transition-colors"><FontAwesomeIcon icon={faDiscord} size="lg"/></a>
+                  </div>
+
+                  <div className="flex-1 sm:flex-initial sm:flex sm:justify-end">
                     <KeplrPanel
                       secretjs={secretjs}
                       setSecretjs={setSecretjs}
