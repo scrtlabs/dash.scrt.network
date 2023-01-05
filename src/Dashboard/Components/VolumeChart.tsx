@@ -35,20 +35,23 @@ enum ChartRange {
 }
 
 export default function VolumeChart(props: any) {
-  const { apiData, setApiData } = useDashboardContext();
-  const [marketData, setMarketData] = useState([]);
+  const { coingeckoApiData_Day, coingeckoApiData_Month, coingeckoApiData_Year } = useDashboardContext();
 
-  console.log(apiData);
+  const [chartRange, setChartRange] = useState<ChartRange>(ChartRange.Month);
 
-  const [chartRange, setChartRange] = useState<ChartRange>(ChartRange.Day);
+  let apiDataMapping = new Map<ChartRange, Object>([
+    [ChartRange.Day, coingeckoApiData_Day],
+    [ChartRange.Month, coingeckoApiData_Month],
+    [ChartRange.Year, coingeckoApiData_Year]
+  ]);
 
   const data = {
-    labels: apiData?.total_volumes.map((x: any[]) => ({ x: x[0] }).x),
+    labels: apiDataMapping.get(chartRange)?.total_volumes.map((x: any[]) => ({ x: new Date(x[0]).toLocaleDateString() }).x),
     datasets: [{
       label: 'Prices',
-      data: apiData?.total_volumes.map((x: any[]) => ({ x: x[0], y: x[1] })),
+      data: apiDataMapping.get(chartRange)?.total_volumes.map((x: any[]) => ({ x: x[0], y: x[1] })),
       fill: false,
-      borderColor: '#3b82f6',
+      borderColor: '#06b6d4',
       tension: 0.1,
       pointHitRadius: '5',
     }]
@@ -86,13 +89,13 @@ export default function VolumeChart(props: any) {
       </div>
 
       <div className="flex-initial inline-flex rounded-md shadow-sm" role="group">
-        <button onClick={() => setChartRange(ChartRange.Day)} type="button" className={"py-1.5 px-3 text-xs font-semibold text-neutral-200 rounded-l-lg border border-neutral-400" + (chartRange == ChartRange.Day ? " bg-blue-500 font-bold" : "bg-neutral-700 hover:bg-neutral-500 hover:text-white focus:z-10 focus:ring-2 focus:ring-neutral-700 focus:text-white")}>
+        <button onClick={() => setChartRange(ChartRange.Day)} type="button" className={"py-1.5 px-3 text-xs font-semibold text-neutral-200 rounded-l-lg bg-neutral-700" + (chartRange == ChartRange.Day ? " bg-cyan-500/50 text-cyan-100 font-bold" : " hover:bg-neutral-600 focus:z-10 focus:ring-2 focus:ring-neutral-700 focus:text-white")}>
           Day
         </button>
-        <button onClick={() => setChartRange(ChartRange.Month)} type="button" className={"py-1.5 px-3 text-xs font-semibold text-neutral-200 border-t border-r border-b border-neutral-400" + (chartRange == ChartRange.Month ? " bg-blue-500 font-bold" : "bg-neutral-700 hover:bg-neutral-500 hover:text-white focus:z-10 focus:ring-2 focus:ring-neutral-700 focus:text-white")}>
+        <button onClick={() => setChartRange(ChartRange.Month)} type="button" className={"py-1.5 px-3 text-xs font-semibold text-neutral-200 bg-neutral-700" + (chartRange == ChartRange.Month ? " bg-cyan-500/50 text-cyan-100 font-bold" : " hover:bg-neutral-600 focus:z-10 focus:ring-2 focus:ring-neutral-700 focus:text-white")}>
           Month
         </button>
-        <button onClick={() => setChartRange(ChartRange.Year)} type="button" className={"py-1.5 px-3 text-xs font-semibold text-neutral-200 rounded-r-lg border-t border-r border-b border-neutral-400" + (chartRange == ChartRange.Year ? " bg-blue-500 font-bold" : "bg-neutral-700 hover:bg-neutral-500 hover:text-white focus:z-10 focus:ring-2 focus:ring-neutral-700 focus:text-white")}>
+        <button onClick={() => setChartRange(ChartRange.Year)} type="button" className={"py-1.5 px-3 text-xs font-semibold text-neutral-200 rounded-r-lg bg-neutral-700" + (chartRange == ChartRange.Year ? " bg-cyan-500/50 text-cyan-100 font-bold" : " hover:bg-neutral-600 focus:z-10 focus:ring-2 focus:ring-neutral-700 focus:text-white")}>
           Year
         </button>
       </div>

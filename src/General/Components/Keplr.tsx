@@ -147,7 +147,8 @@ class KeplrMenu extends Component {
               <FeeGrantButton/>
             </div> */}
             <div className="text-right">
-              <button onClick={disconnectWallet} className="font-semibold px-3 py-1.5 rounded-md border border-red-600 text-red-600 hover:bg-red-600 hover:text-white transition-colors cursor-pointer">Disconnect Wallet</button>
+              <button onClick={disconnectWallet} className="font-semibold px-3 py-1.5 rounded-md text-red-400 bg-red-500/30 hover:bg-red-500/50 hover:text-red-300 transition-colors cursor-pointer">Disconnect Wallet</button>
+              {/* block bg-cyan-500/30 text-cyan-400 hover:text-cyan-300 hover:bg-cyan-500/50 w-full text-center transition-colors py-2.5 rounded-xl mt-4 font-semibold text-sm */}
             </div>
           </div>
         </div>
