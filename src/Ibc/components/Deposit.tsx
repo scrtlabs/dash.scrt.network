@@ -208,7 +208,7 @@ export default function Deposit () {
     setFetchBalanceInterval(interval);
 
     return () => clearInterval(interval);
-  }, [sourceAddress, selectedToken,ibcMode]);
+  }, [sourceAddress, selectedToken, ibcMode]);
 
 
   useEffect(() => {
@@ -231,6 +231,7 @@ export default function Deposit () {
       // Initialize cosmjs on the source chain, because it has sendIbcTokens()
       const { chain_id, lcd, bech32_prefix } = chains[selectedSource.chain_name];
       await window.keplr.enable(chain_id);
+      
       window.keplr.defaultOptions = {
         sign: {
             preferNoSetFee: false,
@@ -248,10 +249,11 @@ export default function Deposit () {
         wallet: sourceOfflineSigner,
         walletAddress: depositFromAccounts[0].address,
       });
+
       setSourceChainSecretjs(secretjs);
       fetchSourceBalance();
     })();
-  }, [selectedSource, selectedToken]);
+  }, [selectedSource, selectedToken, sourceAddress]);
 
   
   const [isCopied, setIsCopied] = useState<boolean>(false); 

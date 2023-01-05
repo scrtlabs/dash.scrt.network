@@ -4,6 +4,9 @@ import React, { useContext, useState } from "react";
 import { toast } from "react-toastify";
 
 
+
+export function FeeGrant() {
+
 const [useFeegrant, setUseFeegrant] = useState<boolean>(false);
 
 const {secretjs, secretAddress} = useContext(KeplrContext);
@@ -16,7 +19,6 @@ const updateFeeGrantButton = (text: string, color: string) => {
   }
 };
 
-export function FeeGrant() {
   return (
     
     <button
