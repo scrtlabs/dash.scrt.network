@@ -19,10 +19,12 @@ function formatNumber(count: number, withAbbr = false, decimals = 2) {
   }
 }
 
-export const DashboardContext = createContext<{ apiData: undefined; setApiData: React.Dispatch<React.SetStateAction<undefined>>; }| null>(null);
+export const DashboardContext = createContext<{ coingeckoApiData_Day: any; coingeckoApiData_Month: any; coingeckoApiData_Year: any } | null>(null);
 
 export function Dashboard() {
-  const [coingeckoApiData, setCoinGeckoApiData] = useState();
+  const [coingeckoApiData_Day, setCoinGeckoApiData_Day] = useState();
+  const [coingeckoApiData_Month, setCoinGeckoApiData_Month] = useState();
+  const [coingeckoApiData_Year, setCoinGeckoApiData_Year] = useState();
   const [mintscanBlockTime, setMintscanBlockTime] = useState(Number);
   const [spartanApiData, setSpartanApiData] = useState();
 
@@ -140,12 +142,15 @@ export function Dashboard() {
   const [communityPool, setCommunityPool] = useState(Number); // in uscrt
 
   useEffect(() => {
-
     // Coingecko API
-    let coingeckoApiUrl = `https://api.coingecko.com/api/v3/coins/secret/market_chart?vs_currency=usd&days=30`;
-    fetch(coingeckoApiUrl).then(response => response.json()).then((response) => {
-        setCoinGeckoApiData(response);
-    });
+    let coingeckoApiUrl_Day = `https://api.coingecko.com/api/v3/coins/secret/market_chart?vs_currency=usd&days=1`;
+    fetch(coingeckoApiUrl_Day).then(response => response.json()).then((response) => { setCoinGeckoApiData_Day(response) });
+
+    let coingeckoApiUrl_Month = `https://api.coingecko.com/api/v3/coins/secret/market_chart?vs_currency=usd&days=30`;
+    fetch(coingeckoApiUrl_Month).then(response => response.json()).then((response) => { setCoinGeckoApiData_Month(response) });
+
+    let coingeckoApiUrl_Year = `https://api.coingecko.com/api/v3/coins/secret/market_chart?vs_currency=usd&days=365`;
+    fetch(coingeckoApiUrl_Year).then(response => response.json()).then((response) => { setCoinGeckoApiData_Year(response) });
 
     // Mintscan API
     let mintscanBlockTimeApiUrl = `https://api.mintscan.io/v1/secret/block/blocktime`;
@@ -166,14 +171,14 @@ export function Dashboard() {
         url: SECRET_LCD,
         chainId: "secret-4",
       });
-      setCurrentPrice(coingeckoApiData?.prices[coingeckoApiData?.prices?.length-1][1]);
+      setCurrentPrice(coingeckoApiData_Month?.prices[coingeckoApiData_Month?.prices?.length-1][1]);
       secretjsquery?.query?.tendermint?.getLatestBlock("")?.then(res => setBlockHeight(res.block.header.height)); // setting block height
       // secretjsquery?.query?.mint?.inflation("")?.then(res => setInflation(res.inflation));
       secretjsquery?.query?.distribution?.communityPool("")?.then(res => setCommunityPool(Math.floor((res.pool[1].amount) / 10e5)));
     }
     
     queryData();
-  }, [coingeckoApiData]);
+  }, [coingeckoApiData_Month]);
 
   useEffect(() => {
     const queryData = async () => {
@@ -203,7 +208,7 @@ export function Dashboard() {
 
   return (
     <>
-      <DashboardContext.Provider value={{ apiData: coingeckoApiData, setApiData: setCoinGeckoApiData }}>
+      <DashboardContext.Provider value={{ coingeckoApiData_Day, coingeckoApiData_Month, coingeckoApiData_Year }}>
         <div className="mt-4 px-4 mx-auto space-y-4 w-full">
           <div className="grid grid-cols-12 gap-4">
 
