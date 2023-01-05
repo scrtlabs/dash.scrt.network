@@ -35,16 +35,21 @@ enum ChartRange {
 }
 
 export default function VolumeChart(props: any) {
-  const { apiData, setApiData } = useDashboardContext();
-  const [marketData, setMarketData] = useState([]);
+  const { coingeckoApiData_Day, coingeckoApiData_Month, coingeckoApiData_Year } = useDashboardContext();
 
-  const [chartRange, setChartRange] = useState<ChartRange>(ChartRange.Day);
+  const [chartRange, setChartRange] = useState<ChartRange>(ChartRange.Month);
+
+  let apiDataMapping = new Map<ChartRange, Object>([
+    [ChartRange.Day, coingeckoApiData_Day],
+    [ChartRange.Month, coingeckoApiData_Month],
+    [ChartRange.Year, coingeckoApiData_Year]
+  ]);
 
   const data = {
-    labels: apiData?.total_volumes.map((x: any[]) => ({ x: new Date(x[0]).toLocaleDateString() }).x),
+    labels: apiDataMapping.get(chartRange)?.total_volumes.map((x: any[]) => ({ x: new Date(x[0]).toLocaleDateString() }).x),
     datasets: [{
       label: 'Prices',
-      data: apiData?.total_volumes.map((x: any[]) => ({ x: x[0], y: x[1] })),
+      data: apiDataMapping.get(chartRange)?.total_volumes.map((x: any[]) => ({ x: x[0], y: x[1] })),
       fill: false,
       borderColor: '#06b6d4',
       tension: 0.1,
