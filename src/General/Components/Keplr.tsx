@@ -8,6 +8,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheck, faCopy, faRotateRight, faX } from "@fortawesome/free-solid-svg-icons";
 import { faucetURL } from "General/Utils/commons";
 import { toast } from "react-toastify";
+import GetWalletModal from "General/Components/GetWalletModal";
 
 
 
@@ -27,10 +28,22 @@ export function KeplrPanel({
   setSecretAddress: React.Dispatch<React.SetStateAction<string>>;
 }) {
 
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  async function connectWallet(setSecretjs, setSecretAddress) {
+    if (!window.keplr) {
+      setIsModalOpen(true);
+      document.body.classList.add("overflow-hidden");
+    } else {
+      await setupKeplr(setSecretjs, setSecretAddress);
+    }
+  }
+
   // Auto Setup Keplr
-  useEffect(() => {
-    setupKeplr(setSecretjs, setSecretAddress);
-  }, []);
+  // useEffect(() => {
+  //   setupKeplr(setSecretjs, setSecretAddress);
+  // }, []);
 
   const [isFeeGranted, setIsFeeGranted] = useState<boolean>(false);
 
@@ -122,7 +135,7 @@ export function KeplrPanel({
 class KeplrMenu extends Component {
   render() {
     return <>
-        <div className="absolute pt-2 right-4 z-50" style={{top: "3.35rem"}} onMouseEnter={() => setIsMenuVisible(true)} onMouseLeave={() => setIsMenuVisible(false)}>
+        <div className="absolute pt-2 right-4 z-40" style={{top: "3.35rem"}} onMouseEnter={() => setIsMenuVisible(true)} onMouseLeave={() => setIsMenuVisible(false)}>
           <div className="bg-neutral-800 border text-xs border-neutral-500 p-4 w-auto rounded-lg">
             <CopyToClipboard text={secretAddress} onCopy={ () => {toast.success("Address copied to clipboard!")} }>
               <button className="flex gap-2 items-center group mb-2">
@@ -143,26 +156,28 @@ class KeplrMenu extends Component {
 }
 
   const content = (
-    <div className="flex items-center font-semibold text-sm">
-      <div className="flex">
-        <If condition={secretAddress.length > 0}>
-          <span className="relative w-2.5 mr-3">
-            <span className="flex absolute h-2 w-2 top-1.5 left-0.5">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-1/2"></span>
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+    <>
+      <div className="flex items-center font-semibold text-sm">
+        <div className="flex">
+          <If condition={secretAddress.length > 0}>
+            <span className="relative w-2.5 mr-3">
+              <span className="flex absolute h-2 w-2 top-1.5 left-0.5">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-1/2"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+              </span>
             </span>
-          </span>
-        </If>
-        <img src="/img/assets/fina.webp" className="w-5 h-5 mr-2 inline md:hidden"/>
-        <img src="/img/assets/keplr.svg" className="w-5 h-5 mr-2 hidden md:inline"/>
+          </If>
+          <img src="/img/assets/fina.webp" className="w-5 h-5 mr-2 inline md:hidden"/>
+          <img src="/img/assets/keplr.svg" className="w-5 h-5 mr-2 hidden md:inline"/>
+        </div>
+        <span>
+          <If condition={secretAddress.length > 0}>
+            <Then>Connected</Then>
+            <Else>Connect Wallet</Else>
+          </If>
+        </span>
       </div>
-      <span>
-        <If condition={secretAddress.length > 0}>
-          <Then>Connected</Then>
-          <Else>Connect Wallet</Else>
-        </If>
-      </span>
-    </div>
+    </>
   );
 
   if (secretjs) {
@@ -181,7 +196,9 @@ class KeplrMenu extends Component {
   } else {
     return (
       <>
-        <button id="keplr-button" onClick={() => setupKeplr(setSecretjs, setSecretAddress)}
+        <GetWalletModal open={isModalOpen} onClose={() => {setIsModalOpen(false); document.body.classList.remove("overflow-hidden")}}/>
+        {/* <button id="keplr-button" onClick={() => setupKeplr(setSecretjs, setSecretAddress)} */}
+        <button id="keplr-button" onClick={() => connectWallet(setSecretjs, setSecretAddress)}
           className="w-full sm:w-auto rounded px-4 py-2 border border-neutral-700 bg-neutral-800 hover:bg-neutral-700 active:bg-neutral-600 transition-colors select-none"
         >
           {content}

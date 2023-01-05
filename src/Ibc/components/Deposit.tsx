@@ -162,14 +162,13 @@ export default function Deposit () {
   }
 
 
-  const sourceChain = chains[selectedSource.chain_name];
   const targetChain = chains["Secret Network"];
 
-  const fetchSourceBalance = async () => {
+  const fetchSourceBalance = async (newAddress: String | null) => {
     if (ibcMode === IbcMode.Deposit) {
       const url = `${
         chains[selectedSource.chain_name].lcd
-      }/cosmos/bank/v1beta1/balances/${sourceAddress}`;
+      }/cosmos/bank/v1beta1/balances/${newAddress ? newAddress : sourceAddress}`;
       try {
         const {
           balances,
@@ -189,6 +188,7 @@ export default function Deposit () {
     }
   };
 
+
   useEffect(() => {
     setAvailableBalance("");
 
@@ -200,16 +200,17 @@ export default function Deposit () {
       clearInterval(fetchBalanceInterval);
     }
 
-    fetchSourceBalance();
+    if (ibcMode === IbcMode.Withdrawal) {
+      fetchSourceBalance(null);
+    } 
     const interval = setInterval(
-      () => fetchSourceBalance(),
+      () => fetchSourceBalance(null),
       10_000
     );
     setFetchBalanceInterval(interval);
 
     return () => clearInterval(interval);
-  }, [sourceAddress, selectedToken,ibcMode]);
-
+  }, [selectedSource, selectedToken, sourceAddress, ibcMode]);
 
   useEffect(() => {
     (async () => {
@@ -231,6 +232,7 @@ export default function Deposit () {
       // Initialize cosmjs on the source chain, because it has sendIbcTokens()
       const { chain_id, lcd, bech32_prefix } = chains[selectedSource.chain_name];
       await window.keplr.enable(chain_id);
+      
       window.keplr.defaultOptions = {
         sign: {
             preferNoSetFee: false,
@@ -238,6 +240,10 @@ export default function Deposit () {
         }
       }
 
+      const possibleSnips = snips.filter(token => token.deposits.find(token => token.chain_name == chains[selectedSource.chain_name].chain_name)!);
+      const possibleTokens = tokens.filter(token => token.deposits.find(token => token.chain_name == chains[selectedSource.chain_name].chain_name)!);
+      setSupportedTokens(possibleTokens.concat(possibleSnips));
+      
       const sourceOfflineSigner = window.getOfflineSignerOnlyAmino(chain_id);
       const depositFromAccounts = await sourceOfflineSigner.getAccounts();
       setSourceAddress(depositFromAccounts[0].address);
@@ -248,22 +254,17 @@ export default function Deposit () {
         wallet: sourceOfflineSigner,
         walletAddress: depositFromAccounts[0].address,
       });
+
       setSourceChainSecretjs(secretjs);
-      fetchSourceBalance();
+
+      fetchSourceBalance(depositFromAccounts[0].address);
     })();
-  }, [selectedSource, selectedToken]);
+  }, [selectedSource, selectedToken, sourceAddress,ibcMode]);
 
   
   const [isCopied, setIsCopied] = useState<boolean>(false); 
 
   const [supportedTokens, setSupportedTokens] = useState<Token[]>([]);
-
-  useEffect(() => {
-    const possibleSnips = snips.filter(token => token.deposits.find(token => token.chain_name == sourceChain.chain_name)!);
-    const possibleTokens = tokens.filter(token => token.deposits.find(token => token.chain_name == sourceChain.chain_name)!);
-    setSupportedTokens(possibleTokens.concat(possibleSnips));
-    //setSelectedToken(possibleTokens.concat(possibleSnips)[0]);
-  }, [sourceChain]);
     
   function uiFocusInput() {
     document.getElementById("inputWrapper")?.classList.add("animate__animated");
@@ -356,7 +357,6 @@ export default function Deposit () {
           } else {
             // Handle IBC transfers from Ethermint chains like Evmos & Injective
 
-            const sourceChain = chains[selectedSource.chain_name];
 
             // Get Evmos/Injective account_number & sequence
             const {
@@ -375,14 +375,14 @@ export default function Deposit () {
               };
             } = await (
               await fetch(
-                `${sourceChain.lcd}/cosmos/auth/v1beta1/accounts/${sourceAddress}`
+                `${chains[selectedSource.chain_name].lcd}/cosmos/auth/v1beta1/accounts/${sourceAddress}`
               )
             ).json();
 
             // Get account pubkey
             // Can't get it from the chain because an account without txs won't have its pubkey listed on-chain
             const evmosProtoSigner = window.getOfflineSigner!(
-              sourceChain.chain_id
+              chains[selectedSource.chain_name].chain_id
             );
             const [{ pubkey }] = await evmosProtoSigner.getAccounts();
 
@@ -390,7 +390,7 @@ export default function Deposit () {
             const txIbcMsgTransfer = createTxIBCMsgTransfer(
               {
                 chainId: 9001, // Evmos EIP155, this is ignored in Injective
-                cosmosChainId: sourceChain.chain_id,
+                cosmosChainId: chains[selectedSource.chain_name].chain_id,
               },
               {
                 accountAddress: sourceAddress,
@@ -418,7 +418,7 @@ export default function Deposit () {
               }
             );
 
-            if (sourceChain.chain_name === "Injective") {
+            if (chains[selectedSource.chain_name].chain_name === "Injective") {
               const signer_info =
                 txIbcMsgTransfer.signDirect.authInfo.signer_infos[0].toObject();
               signer_info.public_key!.type_url =
@@ -430,14 +430,14 @@ export default function Deposit () {
 
             // Sign the tx
             const sig = await window?.keplr?.signDirect(
-              sourceChain.chain_id,
+              chains[selectedSource.chain_name].chain_id,
               sourceAddress,
               {
                 bodyBytes:
                   txIbcMsgTransfer.signDirect.body.serializeBinary(),
                 authInfoBytes:
                   txIbcMsgTransfer.signDirect.authInfo.serializeBinary(),
-                chainId: sourceChain.chain_id,
+                chainId: chains[selectedSource.chain_name].chain_id,
                 accountNumber: new Long(Number(accountNumber)),
               },
               // @ts-expect-error the types are not updated on the Keplr types package
@@ -755,10 +755,10 @@ export default function Deposit () {
           <div className="font-semibold mr-4 w-10">From:</div>
           <div className="flex-1 truncate font-medium text-sm">
             {(ibcMode === IbcMode.Deposit && secretjs && secretAddress) && (
-              <a href={`${sourceChain.explorer_account}${sourceAddress}`} target="_blank">{sourceAddress}</a>
+              <a href={`${chains[selectedSource.chain_name].explorer_account}${sourceAddress}`} target="_blank">{sourceAddress}</a>
             )}
             {(ibcMode === IbcMode.Withdrawal && secretjs && secretAddress) && (
-              <a href={`${targetChain.explorer_account}${secretAddress}`} target="_blank">{secretAddress}</a>
+              <a href={`${chains[selectedSource.chain_name].explorer_account}${secretAddress}`} target="_blank">{secretAddress}</a>
             )}
           </div>
           <div className="flex-initial ml-4">
@@ -783,7 +783,7 @@ export default function Deposit () {
           <div className="flex-initial font-semibold mr-4 w-10">To:</div>
           <div className="flex-1 truncate font-medium text-sm">
             {ibcMode === IbcMode.Withdrawal && (
-                <a href={`${sourceChain.explorer_account}${sourceAddress}`} target="_blank">{sourceAddress}</a>
+                <a href={`${chains[selectedSource.chain_name].explorer_account}${sourceAddress}`} target="_blank">{sourceAddress}</a>
               )}
               {ibcMode === IbcMode.Deposit && (
                 <a href={`${targetChain.explorer_account}${secretAddress}`} target="_blank">{secretAddress}</a>

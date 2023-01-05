@@ -1,4 +1,4 @@
-import { faCircle, faCube } from "@fortawesome/free-solid-svg-icons";
+import { faArrowUpRightFromSquare, faCircle, faCube } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React from "react";
 
@@ -19,6 +19,7 @@ const CurrentPrice = (props: ICurrentPriceProps) => {
             </span>
             <div className="font-semibold text-lg">{props.price.toLocaleString("en-US", {style:"currency", currency:"USD"})}</div>
             <div className="text-md text-neutral-400">Current Price</div>
+            <a href="https://scrt.network/about/get-scrt#buy-scrt" target="_blank" className="block border border-cyan-500 text-cyan-500 hover:text-white hover:bg-cyan-500 w-full text-center transition-colors py-2 rounded-lg mt-4 font-semibold text-sm">Get SCRT<FontAwesomeIcon icon={faArrowUpRightFromSquare} className="text-xs ml-2" /></a>
           </div>
         </div>
       )}

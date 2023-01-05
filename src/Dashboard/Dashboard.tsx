@@ -1,23 +1,14 @@
-import { KeplrContext } from "General/Layouts/defaultLayout";
 import { chains } from "General/Utils/config";
 import React, { useEffect, useState, createContext, useContext } from "react";
 import { SecretNetworkClient } from "secretjs";
 import BlockHeight from "./Components/BlockHeight";
-import BlockInfo from "./Components/BlockInfo";
-import BlockInfo2 from "./Components/BlockInfo2";
 import CommunityPool from "./Components/CommunityPool";
 import CurrentPrice from "./Components/CurrentPrice";
-import Inflation from "./Components/Inflation";
-import InfoBoxes from "./Components/InfoBoxes";
 import PriceChart from "./Components/PriceChart";
 import QuadTile from "./Components/QuadTile";
 import StakingChart from "./Components/StakingChart";
 import VolumeChart from "./Components/VolumeChart";
-const SECRET_RPC = chains["Secret Network"].rpc;
 const SECRET_LCD = chains["Secret Network"].lcd;
-const SECRET_CHAIN_ID = chains["Secret Network"].chain_id;
-
-
 
 const COUNT_ABBRS = ['', 'K', 'M', 'B', 't', 'q', 's', 'S', 'o', 'n', 'd', 'U', 'D', 'T', 'Qt', 'Qd', 'Sd', 'St'];
 
@@ -28,8 +19,6 @@ function formatNumber(count: number, withAbbr = false, decimals = 2) {
   }
 }
 
-
-
 export const DashboardContext = createContext<{ apiData: undefined; setApiData: React.Dispatch<React.SetStateAction<undefined>>; }| null>(null);
 
 export function Dashboard() {
@@ -37,15 +26,121 @@ export function Dashboard() {
   const [mintscanBlockTime, setMintscanBlockTime] = useState(Number);
   const [spartanApiData, setSpartanApiData] = useState();
 
+  // block height
+  const [blockHeight, setBlockHeight] = useState(null); // by Coingecko API
+  const [blockHeightFormattedString, setblockHeightFormattedString] = useState("");
 
-  const [blockHeight, setBlockHeight] = useState(null);
+  useEffect(() => {
+    if (blockHeight) {
+      setblockHeightFormattedString(parseInt(blockHeight).toLocaleString());
+    }
+  }, [blockHeight]);
+
+  // block time
+  const [blockTime, setBlockTime] = useState(null); // in seconds
+  const [blockTimeFormattedString, setbBlockTimeFormattedString] = useState("");
+
+  useEffect(() => {
+    if (blockTime) {
+      setbBlockTimeFormattedString(blockTime + "s");
+    }
+  }, [blockTime]);
+
+  // daily transactions
+  const [dailyTransactions, setDailyTransactions] = useState("");
+  const [dailyTransactionsFormattedString, setDailyTransactionsFormattedString] = useState("");
+
+  useEffect(() => {
+    if (dailyTransactions) {
+      setDailyTransactionsFormattedString((parseInt(dailyTransactions).toLocaleString()));
+    }
+  }, [dailyTransactions]);
+
+  // community tax
+  const [communityTax, setCommunityTax] = useState("");
+  const [communityTaxFormattedString, setCommunityTaxFormattedString] = useState("");
+
+  useEffect(() => {
+    if (communityTax) {
+      setCommunityTaxFormattedString((parseFloat(communityTax)*100).toString() + "%");
+    }
+  }, [communityTax]);
+
+  // secretFoundationTax
+  const [secretFoundationTax, setSecretFoundationTax] = useState("");
+  const [secretFoundationTaxFormattedString, setSecretFoundationTaxFormattedString] = useState("");
+
+  useEffect(() => {
+    if (secretFoundationTax) {
+      setSecretFoundationTaxFormattedString((parseFloat(secretFoundationTax)*100).toString() + "%");
+    }
+  }, [secretFoundationTax]);
+
+  // feesPaid
+  const [feesPaid, setFeesPaid] = useState("");
+  const [feesPaidFormattedString, setFeesPaidFormattedString] = useState("");
+
+  useEffect(() => {
+    if (feesPaid) {
+      setFeesPaidFormattedString(parseInt(feesPaid).toLocaleString());
+    }
+  }, [feesPaid]);
+
+  // inflation
   const [inflation, setInflation] = useState(0);
+  const [inflationFormattedString, setInflationFormattedString] = useState("");
+
+  useEffect(() => {
+    if (inflation) {
+      setInflationFormattedString((inflation*100).toString() + "%");
+    }
+  }, [inflation]);
+
+  // APR
+  const [growthRate, setGrowthRate] = useState(0);
+  const [growthRateFormattedString, setGrowthRateFormattedString] = useState("");
+
+  useEffect(() => {
+    if (growthRate) {
+      const percentage = growthRate*100;
+      setGrowthRateFormattedString((percentage.toFixed(2)) + "%");
+    }
+  }, [growthRate]);
+
+  //Bonded Ratio
+  const [bondedRatio, setBondedRatio] = useState(0); 
+
+  // totalSupply, bonded, notBonded
+  const [totalSupply, setTotalSupply] = useState(Number);
+  const [bondedToken, setBondedToken] = useState(Number);
+  const [notBondedToken, setNotBondedToken] = useState(Number);
+
+  useEffect(() => {
+    const queryData = async () => {
+      const secretjsquery = new SecretNetworkClient({
+        url: SECRET_LCD,
+        chainId: "secret-4",
+      });
+      secretjsquery?.query?.bank?.supplyOf({denom:"uscrt"})?.then(res => setTotalSupply(res.amount.amount/1e6));
+      secretjsquery?.query?.staking?.pool("")?.then(res => setBondedToken(parseInt(res.pool.bonded_tokens) / 10e5));
+      secretjsquery?.query?.staking?.pool("")?.then(res => setNotBondedToken(parseInt(res.pool.not_bonded_tokens) / 10e4));
+    }
+    
+    queryData();
+  }, []);
+
+  useEffect(() => {
+    console.log("totalSupply: " + totalSupply);
+    console.log("staked: " + bondedToken);
+    console.log("Unstaked: " + notBondedToken);
+  }, [totalSupply, bondedToken, notBondedToken]);
+
   const [circulatingSupply, setCirculatingSupply] = useState(0);
   const [currentPrice, setCurrentPrice] = useState(Number);
   const [communityPool, setCommunityPool] = useState(Number); // in uscrt
-  const [blockTime, setBlockTime] = useState(Number); // in uscrt
 
   useEffect(() => {
+
     // Coingecko API
     let coingeckoApiUrl = `https://api.coingecko.com/api/v3/coins/secret/market_chart?vs_currency=usd&days=30`;
     fetch(coingeckoApiUrl).then(response => response.json()).then((response) => {
@@ -64,7 +159,6 @@ export function Dashboard() {
       setSpartanApiData(response);
     });
   }, []);
-  
 
   useEffect(() => {
     const queryData = async () => {
@@ -73,18 +167,39 @@ export function Dashboard() {
         chainId: "secret-4",
       });
       setCurrentPrice(coingeckoApiData?.prices[coingeckoApiData?.prices?.length-1][1]);
-      secretjsquery?.query?.tendermint?.getLatestBlock("")?.then(res => setBlockHeight(res.block.header.height));
-      setInflation(spartanApiData?.inflation);
-      setCirculatingSupply(spartanApiData?.circulating_supply);
-      setBlockTime(spartanApiData?.avg_block_time);
+      secretjsquery?.query?.tendermint?.getLatestBlock("")?.then(res => setBlockHeight(res.block.header.height)); // setting block height
       // secretjsquery?.query?.mint?.inflation("")?.then(res => setInflation(res.inflation));
       secretjsquery?.query?.distribution?.communityPool("")?.then(res => setCommunityPool(Math.floor((res.pool[1].amount) / 10e5)));
     }
     
     queryData();
-  }, [coingeckoApiData, spartanApiData]);
+  }, [coingeckoApiData]);
 
+  useEffect(() => {
+    const queryData = async () => {
+      setInflation(spartanApiData?.inflation);
+      setCirculatingSupply(spartanApiData?.circulating_supply);
+      setBlockTime(spartanApiData?.avg_block_time);
+      setDailyTransactions(spartanApiData?.tx_volume);
+      setCommunityTax(spartanApiData?.staking_params?.community_tax);
+      setSecretFoundationTax(spartanApiData?.staking_params?.secret_foundation_tax);
+      setFeesPaid(spartanApiData?.fees_paid);
+      setBondedRatio(spartanApiData?.bond_rate)
+    }
+    
+    queryData();
+  }, [spartanApiData]);
 
+  useEffect(() => {
+    if (inflation && secretFoundationTax && communityTax) { // staking ratio missing
+      const I = inflation; // inflation
+      const F = parseFloat(secretFoundationTax); // foundation tax
+      const C = 0.05; // validator commision rate; median is 5%
+      const T = parseFloat(communityTax); // community tax
+      const R = bondedRatio / 100; // bonded ratio
+      setGrowthRate((I / R) * (1 - F - T) * (1 - C));
+    }
+  }, [inflation, secretFoundationTax, communityTax, bondedRatio]);
 
   return (
     <>
@@ -120,7 +235,7 @@ export function Dashboard() {
             {/* Block Info */}
             <div className="col-span-12 md:col-span-6 lg:col-span-6 2xl:col-span-4">
               {/* <BlockInfo blockHeight={blockHeight || 0} blockTime={blockTime} circulatingSupply={circulatingSupply} inflation={inflation}/> */}
-              <QuadTile item1_key="Block Height" item1_value="" item2_key="Block Time" item2_value="" item3_key="Daily Transactions" item3_value="" item4_key="???" item4_value=""/>
+              <QuadTile item1_key="Block Height" item1_value={blockHeightFormattedString} item2_key="Block Time" item2_value={blockTimeFormattedString} item3_key="Daily Transactions" item3_value={dailyTransactionsFormattedString} item4_key="Fees Paid" item4_value={feesPaidFormattedString}/>
             </div>
 
             <div className="col-span-12 sm:col-span-6 lg:col-span-6 xl:col-span-4 2xl:col-span-4 bg-neutral-800 px-6 py-8 rounded-lg">
@@ -129,7 +244,7 @@ export function Dashboard() {
 
             {/* Block Info */}
             <div className="col-span-12 md:col-span-6 lg:col-span-6 2xl:col-span-4">
-              <QuadTile item1_key="APR" item1_value="" item2_key="Inflation" item2_value="" item3_key="Community Tax" item3_value="" item4_key="Secret Foundation Tax" item4_value=""/>
+              <QuadTile item1_key="APR" item1_value={growthRateFormattedString} item2_key="Inflation" item2_value={inflationFormattedString} item3_key="Community Tax" item3_value={communityTaxFormattedString} item4_key="Secret Foundation Tax" item4_value={secretFoundationTaxFormattedString}/>
             </div>
 
           </div>
