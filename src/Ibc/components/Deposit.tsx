@@ -188,7 +188,27 @@ export default function Deposit () {
     }
   };
 
-  
+  useEffect(() => {
+    setAvailableBalance("");
+
+    if (!sourceAddress) {
+      return;
+    }
+
+    if (fetchBalanceInterval) {
+      clearInterval(fetchBalanceInterval);
+    }
+
+    fetchSourceBalance();
+    const interval = setInterval(
+      () => fetchSourceBalance(),
+      10_000
+    );
+    setFetchBalanceInterval(interval);
+
+    return () => clearInterval(interval);
+  }, [selectedSource, selectedToken, sourceAddress, ibcMode]);
+
 
   useEffect(() => {
     (async () => {
