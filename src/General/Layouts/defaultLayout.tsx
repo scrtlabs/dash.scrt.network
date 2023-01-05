@@ -80,7 +80,6 @@ export const DefaultLayout =({children}:any) =>{
                   </div>
 
                   <div className="hidden sm:block flex-initial sm:flex-1 text-right space-x-2">
-                    <button onClick={() => setIsModalOpen(true)} className="border px-3 py-1.5 text-white border-emerald-800 hover:text-white hover:bg-emerald-800 transition-colors rounded-md">Open Modal</button>
                     <a href="https://twitter.com/SecretNetwork" target="_blank" className="text-neutral-200 hover:text-white transition-colors"><FontAwesomeIcon icon={faTwitter} size="lg"/></a>
                     <a href="https://discord.com/invite/SJK32GY" target="_blank" className="text-neutral-200 hover:text-white transition-colors"><FontAwesomeIcon icon={faDiscord} size="lg"/></a>
                   </div>
