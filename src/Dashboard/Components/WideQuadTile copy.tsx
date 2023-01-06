@@ -1,7 +1,7 @@
 import React from "react";
 import { Else, If, Then } from "react-if";
 
-interface IQuadTileProps {
+interface IWideQuadTileProps {
   item1_key?: string,
   item1_value?: string,
   item2_key?: string,
@@ -12,12 +12,12 @@ interface IQuadTileProps {
   item4_value?: string
 }
 
-const QuadTile = (props: IQuadTileProps) => {
+const WideQuadTile = (props: IWideQuadTileProps) => {
 
   return (
     <>
-      <div className="bg-neutral-800 p-8 rounded-xl h-full">
-        <div className="flex flex-col h-full">
+      {/* <div className="bg-neutral-800 p-8 rounded-xl h-full">
+        <div className="flex flex-col flex-1 h-full">
           {/* First Row */}
           <div className="flex-1 flex text-center items-center">
             {/* First Item */}
@@ -105,9 +105,9 @@ const QuadTile = (props: IQuadTileProps) => {
             </div>
           </div>
         </div>
-      </div>
+      </div> */}
     </>
   );
 }
 
-export default QuadTile;
+export default WideQuadTile;
