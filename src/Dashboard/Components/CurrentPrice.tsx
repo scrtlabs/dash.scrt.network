@@ -1,28 +1,39 @@
 import { faArrowUpRightFromSquare, faCircle, faCube } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React from "react";
+import { Else, If, Then } from "react-if";
 
 interface ICurrentPriceProps {
-  price: number
+  price?: number
 }
 
 const CurrentPrice = (props: ICurrentPriceProps) => {
   return (
     <>
-      {/* Title */}
-      {props.price && (
-        <div className="bg-neutral-800 p-4 rounded-lg">
-          <div className="flex flex-col items-center">
-            <span className="fa-stack fa-2x mb-2">
-              <FontAwesomeIcon icon={faCircle} className="fa-stack-2x text-emerald-900" />
-              <FontAwesomeIcon icon={faCube} className="fa-stack-1x fa-inverse text-emerald-400" />
-            </span>
-            <div className="font-semibold text-lg">{props.price.toLocaleString("en-US", {style:"currency", currency:"USD"})}</div>
-            <div className="text-md text-neutral-400">Current Price</div>
-            <a href="https://scrt.network/about/get-scrt#buy-scrt" target="_blank" className="block bg-cyan-500/30 text-cyan-400 hover:text-cyan-300 hover:bg-cyan-500/50 w-full text-center transition-colors py-2.5 rounded-xl mt-4 font-semibold text-sm">Get SCRT<FontAwesomeIcon icon={faArrowUpRightFromSquare} className="text-xs ml-2" /></a>
+      <div className="bg-neutral-800 rounded-xl h-full flex items-center px-8 py-4">
+        <div className="flex-1">
+          <div className="text-center inline-block">
+            <div className="text-neutral-500 text-sm font-semibold mb-0.5">
+              Current Price
+            </div>
+            <div className="text-2xl">
+              <If condition={props.price}>
+                <Then>
+                  {props.price?.toLocaleString("en-US", {style:"currency", currency:"USD"})}
+                </Then>
+                <Else>
+                  <div className="animate-pulse">
+                    <div className="bg-neutral-700/40 rounded col-span-2 w-20 h-8 mx-auto"></div>
+                  </div>
+                </Else>
+              </If>
+            </div>
           </div>
         </div>
-      )}
+        <div className="flex-1 text-right">
+          <a href="https://scrt.network/about/get-scrt#buy-scrt" target="_blank" className="w-full md:w-auto md:px-4 inline-block bg-cyan-500/20 text-cyan-200 hover:text-cyan-100 hover:bg-cyan-500/50 text-center transition-colors py-2.5 rounded-xl font-semibold text-sm">Get SCRT<FontAwesomeIcon icon={faArrowUpRightFromSquare} className="text-xs ml-2" /></a>
+        </div>
+      </div>
     </>
   );
 }

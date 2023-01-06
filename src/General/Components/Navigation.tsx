@@ -1,4 +1,3 @@
-import { faDiscord, faTwitter } from "@fortawesome/free-brands-svg-icons";
 import { faArrowUpRightFromSquare, faBox, faChartLine, faCheckToSlot, faCircleNodes, faClose, faCoins, faEllipsis, faShuffle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React from "react";
