@@ -219,7 +219,7 @@ export function Wrap() {
           </span>
 
           <Tooltip title={`IBC Transfer`} placement="bottom">
-            <Link to={'/ibc'} className="ml-2 hover:text-white transition-colors hover:bg-neutral-900 px-1.5 py-0.5 rounded">
+            <Link to="/ibc" className="ml-2 hover:text-white transition-colors hover:bg-neutral-900 px-1.5 py-0.5 rounded">
               <FontAwesomeIcon icon={faArrowRightArrowLeft} />
             </Link>
           </Tooltip>
@@ -522,7 +522,7 @@ export function Wrap() {
         setPrice(result[selectedToken.coingecko_id].usd);
       });
   }, []);
-  
+
   return (
     <>
       <div className="w-full max-w-xl mx-auto px-4 onEnter_fadeInDown">

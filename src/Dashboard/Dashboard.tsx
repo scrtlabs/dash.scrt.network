@@ -4,6 +4,7 @@ import { SecretNetworkClient } from "secretjs";
 import CurrentPrice from "./Components/CurrentPrice";
 import MarketCap from "./Components/MarketCap";
 import PriceChart from "./Components/PriceChart";
+import PriceVolumeHistory from "./Components/PriceVolumeHistory";
 import QuadTile from "./Components/QuadTile";
 import SocialMedia from "./Components/SocialMedia";
 import StakingChart from "./Components/StakingChart";
@@ -11,18 +12,10 @@ import Volume from "./Components/Volume";
 import VolumeChart from "./Components/VolumeChart";
 const SECRET_LCD = chains["Secret Network"].lcd;
 
-const COUNT_ABBRS = ['', 'K', 'M', 'B', 't', 'q', 's', 'S', 'o', 'n', 'd', 'U', 'D', 'T', 'Qt', 'Qd', 'Sd', 'St'];
-
-function formatNumber(count: number, withAbbr = false, decimals = 2) {
-  const i = count === 0 ? count : Math.floor(Math.log(count) / Math.log(1000));
-  if (withAbbr && COUNT_ABBRS[i]) {
-    return parseFloat((count / (1000 ** i)).toFixed(decimals)).toString() + COUNT_ABBRS[i];
-  }
-}
-
 export const DashboardContext = createContext<{ coingeckoApiData_Day: any; coingeckoApiData_Month: any; coingeckoApiData_Year: any } | null>(null);
 
 export function Dashboard() {
+
   const [coingeckoApiData_Day, setCoinGeckoApiData_Day] = useState();
   const [coingeckoApiData_Month, setCoinGeckoApiData_Month] = useState();
   const [coingeckoApiData_Year, setCoinGeckoApiData_Year] = useState();
@@ -132,7 +125,6 @@ export function Dashboard() {
     queryData();
   }, []);
 
-
   // volume & market cap
   const [volume, setVolume] = useState(Number);
   const [volumeFormattedString, setVolumeFormattedString] = useState("");
@@ -141,10 +133,10 @@ export function Dashboard() {
 
   useEffect(() => {
     if (volume) {
-      setVolumeFormattedString(parseInt(volume.toFixed(0).toString()).toLocaleString());
+      setVolumeFormattedString("$" + parseInt(volume.toFixed(0).toString()).toLocaleString());
     }
     if (marketCap) {
-      setMarketCapFormattedString(parseInt(marketCap.toFixed(0).toString()).toLocaleString());
+      setMarketCapFormattedString("$" + parseInt(marketCap.toFixed(0).toString()).toLocaleString());
     }
   }, [volume, marketCap]);
 
@@ -268,12 +260,14 @@ export function Dashboard() {
               <QuadTile item1_key="Block Height" item1_value={blockHeightFormattedString} item2_key="Block Time" item2_value={blockTimeFormattedString} item3_key="Daily Transactions" item3_value={dailyTransactionsFormattedString} item4_key="Fees Paid [SCRT]" item4_value={feesPaidFormattedString}/>
             </div>
 
-            <div className="col-span-12 sm:col-span-6 lg:col-span-6 xl:col-span-4 2xl:col-span-4 bg-neutral-800 px-6 py-8 rounded-lg">
-              <StakingChart />
+            <div className="col-span-12 md:col-span-6 lg:col-span-6 2xl:col-span-4">
+              <div className="bg-neutral-800 px-6 py-8 rounded-xl">
+                <StakingChart />
+              </div>
             </div>
 
             {/* Block Info */}
-            <div className="col-span-12 md:col-span-6 lg:col-span-6 2xl:col-span-4">
+            <div className="col-span-12 md:col-span-12 2xl:col-span-4">
               <QuadTile item1_key="Staking Rewards [p.a.]" item1_value={growthRateFormattedString} item2_key="Inflation" item2_value={inflationFormattedString} item3_key="Community Tax" item3_value={communityTaxFormattedString} item4_key="Secret Foundation Tax" item4_value={secretFoundationTaxFormattedString}/>
             </div>
 
@@ -281,13 +275,17 @@ export function Dashboard() {
           
           <div className="grid grid-cols-12 gap-4">
             {/* Item */}
-            <div className="col-span-12 xl:col-span-6 bg-neutral-800 p-4 rounded-lg">
-              <PriceChart />
+            <div className="col-span-12 bg-neutral-800 p-4 rounded-xl">
+              <PriceVolumeHistory />
             </div>
             {/* Item */}
-            <div className="col-span-12 xl:col-span-6 bg-neutral-800 p-4 rounded-lg">
+            {/* <div className="col-span-12 xl:col-span-6 bg-neutral-800 p-4 rounded-xl">
+              <PriceChart />
+            </div> */}
+            {/* Item */}
+            {/* <div className="col-span-12 xl:col-span-6 bg-neutral-800 p-4 rounded-xl">
               <VolumeChart />
-            </div>
+            </div> */}
             
           </div>
         </div>
