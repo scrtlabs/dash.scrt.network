@@ -209,7 +209,7 @@ export function Dashboard() {
   return (
     <>
       <DashboardContext.Provider value={{ coingeckoApiData_Day, coingeckoApiData_Month, coingeckoApiData_Year }}>
-        <div className="mt-4 px-4 mx-auto space-y-4 w-full">
+        <div className="px-4 mx-auto space-y-4 w-full">
           <div className="grid grid-cols-12 gap-4">
 
           {/* Current Price */}
