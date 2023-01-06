@@ -109,6 +109,7 @@ export default function StakingChart(props: any) {
 
   const options = {
     responsive: true,
+    maintainAspectRatio: false,
     cutout: "90%",
     borderWidth: 0,
     plugins: {
@@ -130,20 +131,22 @@ export default function StakingChart(props: any) {
 
   return (
     <>
-      {/* Title */}
-      {/* <div className="flex items-center mb-4">
-        <h1 className="text-2xl font-bold">Staking</h1>
-        <Tooltip title={`Earn rewards for holding SCRT (currently ~24.66% p.a.)`} placement="right">
-          <div className="ml-2 pt-1 text-neutral-400 hover:text-white transition-colors cursor-pointer"><FontAwesomeIcon icon={faInfoCircle}/></div>
-        </Tooltip>
-      </div> */}
-      
-      {/* Chart */}
-      <div className="px-24">
-        {totalSupply && <Doughnut data={data} options={options} plugins={[centerText]}/>}
-      </div>
+      <div className="">
+        {/* Title */}
+        {/* <div className="flex items-center mb-4">
+          <h1 className="text-2xl font-bold">Staking</h1>
+          <Tooltip title={`Earn rewards for holding SCRT (currently ~24.66% p.a.)`} placement="right">
+            <div className="ml-2 pt-1 text-neutral-400 hover:text-white transition-colors cursor-pointer"><FontAwesomeIcon icon={faInfoCircle}/></div>
+          </Tooltip>
+        </div> */}
+        
+        {/* Chart */}
+        <div className="w-full h-[250px] xl:h-[300px]">
+          {totalSupply && <Doughnut data={data} options={options} plugins={[centerText]}/>}
+        </div>
 
-      <a href="https://wallet.keplr.app/chains/secret-network" target="_blank" className="block bg-cyan-500/20 text-cyan-200 hover:text-cyan-100 hover:bg-cyan-500/50 w-full text-center transition-colors py-2.5 rounded-xl mt-4 font-semibold text-sm">Stake SCRT<FontAwesomeIcon icon={faArrowUpRightFromSquare} className="text-xs ml-2" /></a>
+        <a href="https://wallet.keplr.app/chains/secret-network" target="_blank" className="block bg-cyan-500/20 text-cyan-200 hover:text-cyan-100 hover:bg-cyan-500/50 w-full text-center transition-colors py-2.5 rounded-xl mt-4 font-semibold text-sm">Stake SCRT<FontAwesomeIcon icon={faArrowUpRightFromSquare} className="text-xs ml-2" /></a>
+      </div>
     </>
   );
 }
