@@ -1,12 +1,13 @@
 import { chains } from "General/Utils/config";
 import React, { useEffect, useState, createContext, useContext } from "react";
 import { SecretNetworkClient } from "secretjs";
-import BlockHeight from "./Components/BlockHeight";
-import CommunityPool from "./Components/CommunityPool";
 import CurrentPrice from "./Components/CurrentPrice";
+import MarketCap from "./Components/MarketCap";
 import PriceChart from "./Components/PriceChart";
 import QuadTile from "./Components/QuadTile";
+import SocialMedia from "./Components/SocialMedia";
 import StakingChart from "./Components/StakingChart";
+import Volume from "./Components/Volume";
 import VolumeChart from "./Components/VolumeChart";
 const SECRET_LCD = chains["Secret Network"].lcd;
 
@@ -110,7 +111,7 @@ export function Dashboard() {
   }, [growthRate]);
 
   //Bonded Ratio
-  const [bondedRatio, setBondedRatio] = useState(0); 
+  const [bondedRatio, setBondedRatio] = useState(0);
 
   // totalSupply, bonded, notBonded
   const [totalSupply, setTotalSupply] = useState(Number);
@@ -131,11 +132,25 @@ export function Dashboard() {
     queryData();
   }, []);
 
+
+  // volume & market cap
+  const [volume, setVolume] = useState(Number);
+  const [volumeFormattedString, setVolumeFormattedString] = useState("");
+  const [marketCap, setMarketCap] = useState(Number);
+  const [marketCapFormattedString, setMarketCapFormattedString] = useState("");
+
   useEffect(() => {
-    console.log("totalSupply: " + totalSupply);
-    console.log("staked: " + bondedToken);
-    console.log("Unstaked: " + notBondedToken);
-  }, [totalSupply, bondedToken, notBondedToken]);
+    if (volume) {
+      setVolumeFormattedString(parseInt(volume.toFixed(0).toString()).toLocaleString());
+    }
+    if (marketCap) {
+      setMarketCapFormattedString(parseInt(marketCap.toFixed(0).toString()).toLocaleString());
+    }
+  }, [volume, marketCap]);
+
+
+
+
 
   const [circulatingSupply, setCirculatingSupply] = useState(0);
   const [currentPrice, setCurrentPrice] = useState(Number);
@@ -163,6 +178,14 @@ export function Dashboard() {
     fetch(spartanApiUrl).then(response => response.json()).then((response) => {
       setSpartanApiData(response);
     });
+
+    // Coingecko Market Cap & Volume
+    let coingeckoMarketCapVolumeUrl = `https://api.coingecko.com/api/v3/simple/price?ids=secret&vs_currencies=USD&include_market_cap=true&include_24hr_vol=true&include_24hr_change=true`;
+    fetch(coingeckoMarketCapVolumeUrl).then(response => response.json()).then((response) => {
+      setMarketCap(response.secret.usd_market_cap);
+      setVolume(response.secret.usd_24h_vol);
+    });
+
   }, []);
 
   useEffect(() => {
@@ -179,6 +202,8 @@ export function Dashboard() {
     
     queryData();
   }, [coingeckoApiData_Month]);
+
+
 
   useEffect(() => {
     const queryData = async () => {
@@ -212,35 +237,35 @@ export function Dashboard() {
         <div className="px-4 mx-auto space-y-4 w-full">
           <div className="grid grid-cols-12 gap-4">
 
-          {/* Current Price */}
-          <div className="col-span-12 sm:col-span-6 xl:col-span-3">
-            <CurrentPrice price={currentPrice}/>
-          </div>
+            {/* WideQuadTile */}
+            {/* <div className="col-span-12">
+              <WideQuadTile item1_key="Block Height" item1_value={blockHeightFormattedString} item2_key="Block Time" item2_value={blockTimeFormattedString} item3_key="Daily Transactions" item3_value={dailyTransactionsFormattedString} item4_key="Fees Paid" item4_value={feesPaidFormattedString}/>
+            </div> */}
 
-          {/* Community Pool */}
-          <div className="col-span-12 sm:col-span-6 xl:col-span-3">
-            <CommunityPool amount={communityPool}/>
-          </div>
+            {/* Price */}
+            <div className="col-span-12 md:col-span-6 2xl:col-span-3">
+              <CurrentPrice price={currentPrice}/>
+            </div>
 
-          {/* Block Height */}
-          <div className="col-span-12 sm:col-span-6 xl:col-span-3">
-            <BlockHeight blockHeight={blockHeight}/>
-          </div>
+            {/* Volume */}
+            <div className="col-span-12 md:col-span-6 2xl:col-span-3">
+              <Volume volume={volumeFormattedString}/>
+            </div>
 
-          {/* Block Height */}
-          <div className="col-span-12 sm:col-span-6 xl:col-span-3">
-            <BlockHeight blockHeight={blockHeight}/>
-          </div>
+            {/* Market Cap */}
+            <div className="col-span-12 md:col-span-6 2xl:col-span-3">
+              <MarketCap marketCap={marketCapFormattedString}/>
+            </div>
 
-          {/* Inflation */}
-          {/* <div className="col-span-12 sm:col-span-6 xl:col-span-3">
-            <Inflation amount={inflation}/>
-          </div> */}
+            {/* Social Media */}
+            <div className="col-span-12 md:col-span-6 2xl:col-span-3">
+              <SocialMedia/>
+            </div>
 
             {/* Block Info */}
             <div className="col-span-12 md:col-span-6 lg:col-span-6 2xl:col-span-4">
               {/* <BlockInfo blockHeight={blockHeight || 0} blockTime={blockTime} circulatingSupply={circulatingSupply} inflation={inflation}/> */}
-              <QuadTile item1_key="Block Height" item1_value={blockHeightFormattedString} item2_key="Block Time" item2_value={blockTimeFormattedString} item3_key="Daily Transactions" item3_value={dailyTransactionsFormattedString} item4_key="Fees Paid" item4_value={feesPaidFormattedString}/>
+              <QuadTile item1_key="Block Height" item1_value={blockHeightFormattedString} item2_key="Block Time" item2_value={blockTimeFormattedString} item3_key="Daily Transactions" item3_value={dailyTransactionsFormattedString} item4_key="Fees Paid [SCRT]" item4_value={feesPaidFormattedString}/>
             </div>
 
             <div className="col-span-12 sm:col-span-6 lg:col-span-6 xl:col-span-4 2xl:col-span-4 bg-neutral-800 px-6 py-8 rounded-lg">
@@ -249,7 +274,7 @@ export function Dashboard() {
 
             {/* Block Info */}
             <div className="col-span-12 md:col-span-6 lg:col-span-6 2xl:col-span-4">
-              <QuadTile item1_key="APR" item1_value={growthRateFormattedString} item2_key="Inflation" item2_value={inflationFormattedString} item3_key="Community Tax" item3_value={communityTaxFormattedString} item4_key="Secret Foundation Tax" item4_value={secretFoundationTaxFormattedString}/>
+              <QuadTile item1_key="Staking Rewards [p.a.]" item1_value={growthRateFormattedString} item2_key="Inflation" item2_value={inflationFormattedString} item3_key="Community Tax" item3_value={communityTaxFormattedString} item4_key="Secret Foundation Tax" item4_value={secretFoundationTaxFormattedString}/>
             </div>
 
           </div>

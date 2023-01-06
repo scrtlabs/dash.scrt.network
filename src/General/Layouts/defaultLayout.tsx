@@ -79,12 +79,12 @@ export const DefaultLayout =({children}:any) =>{
                     </button>
                   </div>
 
-                  <div className="hidden sm:block flex-initial sm:flex-1 text-right space-x-2">
+                  {/* <div className="hidden sm:block flex-initial sm:flex-1 text-right space-x-2">
                     <a href="https://twitter.com/SecretNetwork" target="_blank" className="text-neutral-200 hover:text-white transition-colors"><FontAwesomeIcon icon={faTwitter} size="lg"/></a>
                     <a href="https://discord.com/invite/SJK32GY" target="_blank" className="text-neutral-200 hover:text-white transition-colors"><FontAwesomeIcon icon={faDiscord} size="lg"/></a>
-                  </div>
+                  </div> */}
 
-                  <div className="flex-1 sm:flex-initial sm:flex sm:justify-end">
+                  <div className="flex-1 sm:flex sm:justify-end">
                     <KeplrPanel
                       secretjs={secretjs}
                       setSecretjs={setSecretjs}
