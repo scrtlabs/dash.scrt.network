@@ -11,18 +11,10 @@ import Volume from "./Components/Volume";
 import VolumeChart from "./Components/VolumeChart";
 const SECRET_LCD = chains["Secret Network"].lcd;
 
-const COUNT_ABBRS = ['', 'K', 'M', 'B', 't', 'q', 's', 'S', 'o', 'n', 'd', 'U', 'D', 'T', 'Qt', 'Qd', 'Sd', 'St'];
-
-function formatNumber(count: number, withAbbr = false, decimals = 2) {
-  const i = count === 0 ? count : Math.floor(Math.log(count) / Math.log(1000));
-  if (withAbbr && COUNT_ABBRS[i]) {
-    return parseFloat((count / (1000 ** i)).toFixed(decimals)).toString() + COUNT_ABBRS[i];
-  }
-}
-
 export const DashboardContext = createContext<{ coingeckoApiData_Day: any; coingeckoApiData_Month: any; coingeckoApiData_Year: any } | null>(null);
 
 export function Dashboard() {
+
   const [coingeckoApiData_Day, setCoinGeckoApiData_Day] = useState();
   const [coingeckoApiData_Month, setCoinGeckoApiData_Month] = useState();
   const [coingeckoApiData_Year, setCoinGeckoApiData_Year] = useState();
@@ -132,7 +124,6 @@ export function Dashboard() {
     queryData();
   }, []);
 
-
   // volume & market cap
   const [volume, setVolume] = useState(Number);
   const [volumeFormattedString, setVolumeFormattedString] = useState("");
@@ -141,10 +132,10 @@ export function Dashboard() {
 
   useEffect(() => {
     if (volume) {
-      setVolumeFormattedString(parseInt(volume.toFixed(0).toString()).toLocaleString());
+      setVolumeFormattedString("$" + parseInt(volume.toFixed(0).toString()).toLocaleString());
     }
     if (marketCap) {
-      setMarketCapFormattedString(parseInt(marketCap.toFixed(0).toString()).toLocaleString());
+      setMarketCapFormattedString("$" + parseInt(marketCap.toFixed(0).toString()).toLocaleString());
     }
   }, [volume, marketCap]);
 
