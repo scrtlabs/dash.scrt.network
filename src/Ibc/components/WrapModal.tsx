@@ -1,10 +1,13 @@
 import { faCircleCheck, faDesktop, faMobileScreen, faShuffle, faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import React from "react";
+import { IbcContext } from "Ibc/Ibc";
+import React, { useContext, useState } from "react";
 import { Link } from "react-router-dom";
 
 const WrapModal = (props) => {
   if (!props.open) return null;
+
+  const {selectedTokenName} = useContext(IbcContext);
   
   return (
     <>
@@ -12,7 +15,7 @@ const WrapModal = (props) => {
       <div className="fixed top-0 left-0 right-0 bottom-0 bg-black/80 z-50" onClick={props.onClose}>
 
         {/* Inner */}
-        <div className="absolute top-[15%] w-full">
+        <div className="absolute top-[15%] w-full onEnter_fadeInDown">
           <div className="mx-auto max-w-xl px-4">
             <div className="bg-neutral-900 p-8 rounded-2xl" onClick={(e) => {e.stopPropagation()}}>
 
@@ -26,8 +29,8 @@ const WrapModal = (props) => {
               {/* Header */}
               <div className="mb-4 text-center">
                 <h2 className="text-2xl font-medium mb-4"><FontAwesomeIcon icon={faCircleCheck} className="mr-2 text-emerald-500" />Transaction Successful</h2>
-                <p className="text-neutral-400 max-w-sm mx-auto mb-6">Now that you have (publicly visible) SCRT in Secret Network, make sure to wrap your assets into the privacy-preserving equivalent sSCRT.</p>
-                <Link to="/wrap" className="sm:max-w-[200px] w-full md:px-4 inline-block bg-cyan-600 text-cyan-00 hover:text-cyan-100 hover:bg-cyan-500 text-center transition-colors py-2.5 rounded-xl font-semibold text-sm"><FontAwesomeIcon icon={faShuffle} className="mr-2"/>Secret Wrap</Link>
+                <p className="text-neutral-400 max-w-sm mx-auto mb-6">Now that you have (publicly visible) {selectedTokenName || "SCRT"} in Secret Network, make sure to wrap your assets into the privacy-preserving equivalent s{selectedTokenName || "SCRT"}.</p>
+                <Link to={"/wrap?token=" + selectedTokenName} className="sm:max-w-[200px] w-full md:px-4 inline-block bg-cyan-600 text-cyan-00 hover:text-cyan-100 hover:bg-cyan-500 text-center transition-colors py-2.5 rounded-xl font-semibold text-sm"><FontAwesomeIcon icon={faShuffle} className="mr-2"/>Secret Wrap</Link>
               </div>
 
               {/* Body */}
