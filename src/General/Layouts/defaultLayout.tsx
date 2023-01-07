@@ -9,6 +9,7 @@ import { SecretNetworkClient } from 'secretjs';
 import { Breakpoint } from "react-socks";
 import { Flip, ToastContainer, toast} from "react-toastify";
 import { faDiscord, faTwitter } from '@fortawesome/free-brands-svg-icons';
+import { useLocation } from 'react-router-dom';
 
 export const KeplrContext = createContext<{ secretjs: SecretNetworkClient | null ; secretAddress: string }| null >(null);
 export const NavigationContext = createContext<boolean | null>(null);
@@ -22,6 +23,15 @@ export const DefaultLayout =({children}:any) =>{
    * Mobile Menu Handler
    */
   const [showMobileMenu, setShowMobileMenu] = useState<boolean>(false);
+
+  // auto close menu
+  const location = useLocation();
+  useEffect(() => {
+    if(showMobileMenu) {
+      setShowMobileMenu(false);
+    }
+  }, [location]);
+  
 
   useEffect(() => {
     function handleResize() {
