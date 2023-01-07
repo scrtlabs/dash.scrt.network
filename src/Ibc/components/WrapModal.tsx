@@ -1,6 +1,7 @@
-import { faDesktop, faMobileScreen, faWallet, faX, faXmark } from "@fortawesome/free-solid-svg-icons";
+import { faCircleCheck, faDesktop, faMobileScreen, faShuffle, faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React from "react";
+import { Link } from "react-router-dom";
 
 const WrapModal = (props) => {
   if (!props.open) return null;
@@ -23,29 +24,14 @@ const WrapModal = (props) => {
 
 
               {/* Header */}
-              <div className="mb-8 text-center">
-                <h2 className="text-2xl font-medium mb-2"><FontAwesomeIcon icon={faWallet} className="mr-2"/>Wrap / Unwrap</h2>
-                <p className="text-neutral-400 max-w-sm mx-auto">Please install a wallet to access all applications</p>
+              <div className="mb-4 text-center">
+                <h2 className="text-2xl font-medium mb-4"><FontAwesomeIcon icon={faCircleCheck} className="mr-2 text-emerald-500" />Transaction Successful</h2>
+                <p className="text-neutral-400 max-w-sm mx-auto mb-6">Now that you have (publicly visible) SCRT in Secret Network, make sure to wrap your assets into the privacy-preserving equivalent sSCRT.</p>
+                <Link to="/wrap" className="sm:max-w-[200px] w-full md:px-4 inline-block bg-cyan-600 text-cyan-00 hover:text-cyan-100 hover:bg-cyan-500 text-center transition-colors py-2.5 rounded-xl font-semibold text-sm"><FontAwesomeIcon icon={faShuffle} className="mr-2"/>Secret Wrap</Link>
               </div>
 
               {/* Body */}
-              <div className="flex flex-col bg-neutral-800 rounded-xl overflow-hidden">
-                <a href="https://chrome.google.com/webstore/detail/keplr/dmkamcknogkgcdfhhbddcghachkejeap?hl=en" target="_blank" className="group p-5 flex items-center gap-2.5 hover:bg-neutral-700 transition-colors">
-                  <img src="/img/assets/keplr.svg" className="flex-initial w-7 h-7"/>
-                  <span className="flex-1 font-medium">Keplr Wallet</span>
-                  <span className="bg-blue-500 group-hover:bg-blue-400 transition-colors px-3 py-1.5 rounded text-xs font-semibold">
-                    <FontAwesomeIcon icon={faDesktop} className="mr-2"/>
-                    Desktop
-                  </span>
-                </a>
-                <a href="https://fina.cash/wallet" target="_blank" className="group p-5 flex items-center gap-2.5 hover:bg-neutral-700 transition-colors">
-                  <img src="/img/assets/fina.webp" className="flex-initial w-7 h-7"/>
-                  <span className="flex-1 font-medium">Fina Wallet</span>
-                  <span className="bg-blue-500 group-hover:bg-blue-400 transition-colors px-3 py-1.5 rounded text-xs font-semibold">
-                    <FontAwesomeIcon icon={faMobileScreen} className="mr-2"/>
-                    Mobile
-                  </span>
-                </a>
+              <div className="text-center">
               </div>
 
             </div>
