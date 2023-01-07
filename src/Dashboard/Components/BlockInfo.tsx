@@ -1,20 +1,12 @@
 import React from "react";
 import { Else, If, Then } from "react-if";
+import { formatNumber } from "General/Utils/commons";
 
 interface IBlockInfoProps {
   blockHeight: number,
   blockTime: number,
   circulatingSupply: number,
   inflation: number
-}
-
-const COUNT_ABBRS = ['', 'K', 'M', 'B', 't', 'q', 's', 'S', 'o', 'n', 'd', 'U', 'D', 'T', 'Qt', 'Qd', 'Sd', 'St'];
-
-function formatNumber(count: number, withAbbr = false, decimals = 2) {
-  const i = count === 0 ? count : Math.floor(Math.log(count) / Math.log(1000));
-  if (withAbbr && COUNT_ABBRS[i]) {
-    return parseFloat((count / (1000 ** i)).toFixed(decimals)).toString() + COUNT_ABBRS[i];
-  }
 }
 
 const BlockInfo = (props: IBlockInfoProps) => {

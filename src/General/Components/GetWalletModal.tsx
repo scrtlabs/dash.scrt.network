@@ -11,7 +11,7 @@ const GetWalletModal = (props) => {
       <div className="fixed top-0 left-0 right-0 bottom-0 bg-black/80 z-50" onClick={props.onClose}>
 
         {/* Inner */}
-        <div className="absolute top-[15%] w-full">
+        <div className="absolute top-[15%] w-full onEnter_fadeInDown">
           <div className="mx-auto max-w-xl px-4">
             <div className="bg-neutral-900 p-8 rounded-2xl" onClick={(e) => {e.stopPropagation()}}>
 
