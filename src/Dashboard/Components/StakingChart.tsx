@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { DashboardContext, useDashboardContext } from "../Dashboard";
+import { formatNumber } from "General/Utils/commons";
 
 
 import {
@@ -55,18 +56,9 @@ export default function StakingChart(props: any) {
     queryData();
   }, []);
 
-  const COUNT_ABBRS = ['', 'K', 'M', 'B', 't', 'q', 's', 'S', 'o', 'n', 'd', 'U', 'D', 'T', 'Qt', 'Qd', 'Sd', 'St'];
-
-  function formatNumber(count: number, withAbbr = false, decimals = 2) {
-    const i = count === 0 ? count : Math.floor(Math.log(count) / Math.log(1000));
-    if (withAbbr && COUNT_ABBRS[i]) {
-      return parseFloat((count / (1000 ** i)).toFixed(decimals)).toString() + COUNT_ABBRS[i];
-    }
-  }
-
-
   const bondedToken = parseInt(pool?.bonded_tokens) / 10e5;
-  const notBondedToken = parseInt(pool?.not_bonded_tokens) / 10e4;
+  const notBondedToken = totalSupply - bondedToken;
+  const operationalToken = notBondedToken-parseInt(pool?.not_bonded_tokens) / 10e4;
 
   const centerText = {
     id: "centerText",
@@ -91,18 +83,24 @@ export default function StakingChart(props: any) {
 
   const data = {
     labels: [
-      'Staked',
-      'Unstaked'
+      `Staked:${formatNumber(bondedToken, true, 2)}`,
+      `Unstaked ${formatNumber(notBondedToken, true, 2)}`,
+      `Community Pool: ${formatNumber(communityPool, true, 2)}`,
+      `Operational: ${formatNumber(operationalToken, true, 2)}`
     ],
     datasets: [{
-      data: [bondedToken, notBondedToken],
+      data: [bondedToken, notBondedToken-communityPool, communityPool, operationalToken],
       backgroundColor: [
         '#06b6d4',
-        '#8b5cf6'
+        '#8b5cf6',
+        '#ff8800',
+        '#008000'
       ],
       hoverBackgroundColor: [
         '#06b6d4',
-        '#8b5cf6'
+        '#8b5cf6',
+        '#ff8800',
+        '#008000'
       ],
     }]
   };
