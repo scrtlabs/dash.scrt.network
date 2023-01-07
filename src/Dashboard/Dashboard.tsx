@@ -10,9 +10,12 @@ import SocialMedia from "./Components/SocialMedia";
 import StakingChart from "./Components/StakingChart";
 import Volume from "./Components/Volume";
 import VolumeChart from "./Components/VolumeChart";
+import { formatNumber } from "General/Utils/commons";
 const SECRET_LCD = chains["Secret Network"].lcd;
 
 export const DashboardContext = createContext<{ coingeckoApiData_Day: any; coingeckoApiData_Month: any; coingeckoApiData_Year: any } | null>(null);
+
+
 
 export function Dashboard() {
 
@@ -78,7 +81,7 @@ export function Dashboard() {
 
   useEffect(() => {
     if (feesPaid) {
-      setFeesPaidFormattedString(parseInt(feesPaid).toLocaleString());
+      setFeesPaidFormattedString((parseFloat(feesPaid)/1e6).toFixed(2).toString()+ " ");
     }
   }, [feesPaid]);
 
@@ -268,7 +271,7 @@ export function Dashboard() {
 
             {/* Block Info */}
             <div className="col-span-12 md:col-span-12 2xl:col-span-4">
-              <QuadTile item1_key="Staking Rewards [p.a.]" item1_value={growthRateFormattedString} item2_key="Inflation" item2_value={inflationFormattedString} item3_key="Community Tax" item3_value={communityTaxFormattedString} item4_key="Secret Foundation Tax" item4_value={secretFoundationTaxFormattedString}/>
+              <QuadTile item1_key="Staking Rewards [APR]" item1_value={growthRateFormattedString} item2_key="Inflation" item2_value={inflationFormattedString} item3_key="Community Tax" item3_value={communityTaxFormattedString} item4_key="Secret Foundation Tax" item4_value={secretFoundationTaxFormattedString}/>
             </div>
 
           </div>

@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { DashboardContext, useDashboardContext } from "../Dashboard";
+import { formatNumber } from "General/Utils/commons";
 
 import {
   Chart as ChartJS,
@@ -68,6 +69,15 @@ export default function PriceVolumeHistory(props: any) {
       legend: {
         display: false
       },
+    },
+    scales: {
+        y: {
+          ticks: {
+            callback: function(value, index, ticks) {
+              return '$' + value;
+          }
+          }
+        }
     },
     pointStyle: false,
     fill: {
