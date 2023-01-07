@@ -34,8 +34,11 @@ import "react-toastify/dist/ReactToastify.css";
 import CopyToClipboard from "react-copy-to-clipboard";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleInfo, faCopy, faPaste, faRightLeft ,faKey} from "@fortawesome/free-solid-svg-icons";
+import { IbcContext } from "Ibc/Ibc";
 
 export default function Deposit () {
+  const {isWrapModalOpen, setIsWrapModalOpen, selectedTokenName, setSelectedTokenName} = useContext(IbcContext);
+
   const [sourceAddress, setSourceAddress] = useState<string>("");
   const [availableBalance, setAvailableBalance] = useState<string>("");
   const [loadingTx, setLoading] = useState<boolean>(false);
@@ -43,8 +46,6 @@ export default function Deposit () {
   const [fetchBalanceInterval, setFetchBalanceInterval] = useState<any>(null);
   const [amountToTransfer, setAmountToTransfer] = useState<string>("");
   const {secretjs, secretAddress} = useContext(KeplrContext);
-
-  const {useFeegrant, setUseFeegrant} = useContext(FeeGrantContext);
 
   const queryParams = new URLSearchParams(window.location.search);
   const tokenByQueryParam = queryParams.get("token"); // "scrt", "akash", etc.
@@ -54,6 +55,10 @@ export default function Deposit () {
   const [selectedSource, setSelectedSource] = useState<any>(selectedToken.deposits.filter(deposit => deposit.chain_name.toLowerCase() === sourcePreselection)[0]);
 
   const tokenPreselection = tokens.filter(token => token.name === tokenByQueryParam?.toUpperCase())[0] ? tokenByQueryParam?.toUpperCase() : "INJ";
+
+  useEffect(() => {
+    setSelectedTokenName(selectedToken.name);
+  }, [selectedToken]);
 
   enum IbcMode {
     Deposit,
@@ -662,6 +667,9 @@ export default function Deposit () {
           setLoading(false);
         }
       }
+
+      
+      setIsWrapModalOpen(true);
     }
 
     return (<>
