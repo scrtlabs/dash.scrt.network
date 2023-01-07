@@ -1,4 +1,4 @@
-import { faArrowUpRightFromSquare, faBox, faChartLine, faCheckToSlot, faCircleNodes, faClose, faCoins, faEllipsis, faShuffle } from "@fortawesome/free-solid-svg-icons";
+import { faArrowUpRightFromSquare, faBox, faChartLine, faCheckToSlot, faCircleNodes, faClose, faCoins, faCube, faEllipsis, faShuffle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React from "react";
 import { NavLink } from "react-router-dom";
@@ -58,6 +58,11 @@ export function Navigation({
         <li>
           <a href="https://secretnodes.com/" target="_blank" className="cursor-pointer hover:text-white block w-full px-8 py-3 rounded-xl transition-colors">
           <FontAwesomeIcon icon={faChartLine} className="mr-2" />Stats<FontAwesomeIcon icon={faArrowUpRightFromSquare} className="text-xs ml-2" />
+          </a>
+        </li>
+        <li>
+          <a href="https://secretnodes.com/" target="_blank" className="cursor-pointer hover:text-white block w-full px-8 py-3 rounded-xl transition-colors">
+          <FontAwesomeIcon icon={faCube} className="mr-2" />Block Explorer<FontAwesomeIcon icon={faArrowUpRightFromSquare} className="text-xs ml-2" />
           </a>
         </li>
       </ul>
