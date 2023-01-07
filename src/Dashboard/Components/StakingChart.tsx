@@ -57,8 +57,9 @@ export default function StakingChart(props: any) {
   }, []);
 
   const bondedToken = parseInt(pool?.bonded_tokens) / 10e5;
-  const notBondedToken = totalSupply - bondedToken;
+  let notBondedToken = totalSupply - bondedToken - communityPool;
   const operationalToken = notBondedToken-parseInt(pool?.not_bonded_tokens) / 10e4;
+  notBondedToken = notBondedToken - operationalToken
 
   const centerText = {
     id: "centerText",
@@ -89,7 +90,7 @@ export default function StakingChart(props: any) {
       `Operational: ${formatNumber(operationalToken, true, 2)}`
     ],
     datasets: [{
-      data: [bondedToken, notBondedToken-communityPool, communityPool, operationalToken],
+      data: [bondedToken, notBondedToken, communityPool, operationalToken],
       backgroundColor: [
         '#06b6d4',
         '#8b5cf6',
