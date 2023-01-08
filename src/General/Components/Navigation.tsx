@@ -56,7 +56,7 @@ export function Navigation({
           </a>
         </li>
         <li>
-          <a href="https://secretnodes.com/" target="_blank" className="cursor-pointer hover:text-white block w-full px-8 py-3 rounded-xl transition-colors">
+          <a href="https://secretanalytics.xyz" target="_blank" className="cursor-pointer hover:text-white block w-full px-8 py-3 rounded-xl transition-colors">
           <FontAwesomeIcon icon={faChartLine} className="mr-2" />Stats<FontAwesomeIcon icon={faArrowUpRightFromSquare} className="text-xs ml-2" />
           </a>
         </li>
