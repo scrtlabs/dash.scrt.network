@@ -119,7 +119,7 @@ export function Wrap() {
 
     if (maxValue) {
       let availableAmount = new BigNumber(maxValue).dividedBy(`1e${selectedToken.decimals}`);
-      let potentialInput = availableAmount * (percentage * 0.01);
+      let potentialInput = availableAmount.toNumber() * (percentage * 0.01);
       console.log("availableAmount", availableAmount);
       console.log("potentialInput", potentialInput);
       if (Number(potentialInput) == 0) {

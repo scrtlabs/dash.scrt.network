@@ -63,11 +63,11 @@ export function Apps() {
   function filteredDappsData() {
     var items = dappsDataShuffled;
     if (searchText !== "") {
-      items = dappsDataShuffled.filter(app => app.name.toLowerCase().includes(searchText.toLowerCase()));
+      items = dappsDataShuffled.filter((app) => (app as any).name.toLowerCase().includes(searchText.toLowerCase()));
     }
 
     if (tagsToBeFilteredBy.length > 0) {
-      items = items.filter(item => item.tags?.find(tag => tagsToBeFilteredBy.includes(tag)));
+      items = items.filter(item => (item as any).tags.find(tag => tagsToBeFilteredBy.includes(tag)));
     }
 
     return items;
@@ -98,7 +98,7 @@ export function Apps() {
         {/* App-Items */}
         <div className="grid grid-cols-12 gap-4 auto-rows-auto">
           {filteredDappsData().map((dapp) =>
-            <AppItem name={dapp.name} description={dapp.description} tags={dapp.tags} image={dapp.image} url={dapp.url}/>
+            <AppItem name={(dapp as any).name as any} description={(dapp as any).description} tags={(dapp as any).tags} image={(dapp as any).image} url={(dapp as any).url}/>
           )}
         </div>
       </div>
