@@ -51,10 +51,10 @@ export default function PriceVolumeHistory(props: any) {
   ]);
 
   const data = {
-    labels: chartType == ChartType.Price ? (apiDataMapping.get(chartRange) as any).prices.map((x: any[]) => ({ x: new Date(x[0]).toLocaleDateString() }).x) : (apiDataMapping.get(chartRange) as any).total_volumes.map((x: any[]) => ({ x: new Date(x[0]).toLocaleDateString() }).x),
+    labels: chartType == ChartType.Price ? (apiDataMapping.get(chartRange) as any)?.prices.map((x: any[]) => ({ x: new Date(x[0]).toLocaleDateString() }).x) : (apiDataMapping.get(chartRange) as any).total_volumes.map((x: any[]) => ({ x: new Date(x[0]).toLocaleDateString() }).x),
     datasets: [{
       label: 'Price',
-      data: chartType == ChartType.Price ? (apiDataMapping.get(chartRange) as any).prices.map((x: any[]) => ({ x: x[0], y: x[1] })) : (apiDataMapping.get(chartRange) as any).total_volumes.map((x: any[]) => ({ x: x[0], y: x[1] })),
+      data: chartType == ChartType.Price ? (apiDataMapping.get(chartRange) as any)?.prices.map((x: any[]) => ({ x: x[0], y: x[1] })) : (apiDataMapping.get(chartRange) as any).total_volumes.map((x: any[]) => ({ x: x[0], y: x[1] })),
       fill: false,
       borderColor: '#06b6d4',
       tension: 0.1,

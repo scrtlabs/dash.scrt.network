@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { DashboardContext, useDashboardContext } from "../Dashboard";
-import { formatNumber , SECRET_LCD, SECRET_CHAIN_ID } from "General/Utils/commons";
+import { formatNumber } from "General/Utils/commons";
+import { SECRET_LCD, SECRET_CHAIN_ID } from "General/Utils/config";
 
 
 import {

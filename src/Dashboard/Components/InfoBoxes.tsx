@@ -6,7 +6,7 @@ import { faArrowTrendUp, faAward, faCircle, faCopy, faCube, faDollar, faPercenta
 import { useDashboardContext } from "Dashboard/Dashboard";
 import { chains } from "General/Utils/config";
 import { SecretNetworkClient } from "secretjs";
-import { formatNumber, SECRET_LCD, SECRET_CHAIN_ID} from "General/Utils/commons";
+import { SECRET_LCD, SECRET_CHAIN_ID} from "General/Utils/config";
 
 
 export default function InfoBoxes() {

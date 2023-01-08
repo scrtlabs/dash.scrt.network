@@ -9,7 +9,7 @@ import { faCheck, faCopy, faRotateRight, faX } from "@fortawesome/free-solid-svg
 import { faucetURL } from "General/Utils/commons";
 import { toast } from "react-toastify";
 import GetWalletModal from "General/Components/GetWalletModal";
-import { SECRET_LCD, SECRET_CHAIN_ID, SECRET_RPC} from "General/Utils/commons";
+import { SECRET_LCD, SECRET_CHAIN_ID, SECRET_RPC} from "General/Utils/config";
 
 
 export function KeplrPanel({
