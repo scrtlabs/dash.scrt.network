@@ -9,12 +9,8 @@ import { faCheck, faCopy, faRotateRight, faX } from "@fortawesome/free-solid-svg
 import { faucetURL } from "General/Utils/commons";
 import { toast } from "react-toastify";
 import GetWalletModal from "General/Components/GetWalletModal";
+import { SECRET_LCD, SECRET_CHAIN_ID, SECRET_RPC} from "General/Utils/commons";
 
-
-
-const SECRET_CHAIN_ID = chains["Secret Network"].chain_id;
-const SECRET_LCD = chains["Secret Network"].lcd;
-const SECRET_RPC = chains["Secret Network"].rpc;
 
 export function KeplrPanel({
   secretjs,

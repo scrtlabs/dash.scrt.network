@@ -46,6 +46,7 @@ export default function Deposit () {
   const [fetchBalanceInterval, setFetchBalanceInterval] = useState<any>(null);
   const [amountToTransfer, setAmountToTransfer] = useState<string>("");
   const {secretjs, secretAddress} = useContext(KeplrContext);
+  const {useFeegrant, setUseFeegrant} = useContext(FeeGrantContext);
 
   const queryParams = new URLSearchParams(window.location.search);
   const tokenByQueryParam = queryParams.get("token"); // "scrt", "akash", etc.
@@ -559,7 +560,7 @@ export default function Deposit () {
 
         try {
 
-          let tx: Tx;
+          let tx: TxResponse;
 
           if (selectedToken.is_snip20) {
             tx = await secretjs.tx.compute.executeContract(

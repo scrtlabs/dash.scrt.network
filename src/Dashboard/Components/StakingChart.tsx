@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { DashboardContext, useDashboardContext } from "../Dashboard";
-import { formatNumber } from "General/Utils/commons";
+import { formatNumber , SECRET_LCD, SECRET_CHAIN_ID } from "General/Utils/commons";
 
 
 import {
@@ -32,11 +32,9 @@ ChartJS.register(
   Legend,
 )
 
-const SECRET_LCD = chains["Secret Network"].lcd;
 
 
 export default function StakingChart(props: any) {
-  const { apiData, setApiData } = useDashboardContext();
   const [marketData, setMarketData] = useState([]);
   const [communityPool, setCommunityPool] = useState(Number); // in uscrt
   const [totalSupply, setTotalSupply] = useState(Number);
@@ -46,10 +44,10 @@ export default function StakingChart(props: any) {
     const queryData = async () => {
       const secretjsquery = new SecretNetworkClient({
         url: SECRET_LCD,
-        chainId: "secret-4",
+        chainId: SECRET_CHAIN_ID,
       });
-      secretjsquery?.query?.distribution?.communityPool("")?.then(res => setCommunityPool(Math.floor((res.pool[1].amount) / 10e5)));
-      secretjsquery?.query?.bank?.supplyOf({denom:"uscrt"})?.then(res => setTotalSupply(res.amount.amount/1e6));
+      secretjsquery?.query?.distribution?.communityPool("")?.then(res => setCommunityPool(Math.floor((res.pool[1]as any).amount/ 10e5)));
+      secretjsquery?.query?.bank?.supplyOf({denom:"uscrt"})?.then(res => setTotalSupply((res.amount.amount as any)/1e6));
       secretjsquery?.query?.staking?.pool("")?.then(res => setPool(res.pool));
     }
     
@@ -141,7 +139,7 @@ export default function StakingChart(props: any) {
         
         {/* Chart */}
         <div className="w-full h-[250px] xl:h-[300px]">
-          {totalSupply && <Doughnut data={data} options={options} plugins={[centerText]}/>}
+          {totalSupply && <Doughnut data={data} options={options as any} plugins={[centerText]}/>}
         </div>
 
         <a href="https://wallet.keplr.app/chains/secret-network" target="_blank" className="block bg-cyan-500/20 text-cyan-200 hover:text-cyan-100 hover:bg-cyan-500/50 w-full text-center transition-colors py-2.5 rounded-xl mt-4 font-semibold text-sm">Stake SCRT<FontAwesomeIcon icon={faArrowUpRightFromSquare} className="text-xs ml-2" /></a>

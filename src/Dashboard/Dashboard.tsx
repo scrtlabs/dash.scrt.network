@@ -3,15 +3,12 @@ import React, { useEffect, useState, createContext, useContext } from "react";
 import { SecretNetworkClient } from "secretjs";
 import CurrentPrice from "./Components/CurrentPrice";
 import MarketCap from "./Components/MarketCap";
-import PriceChart from "./Components/PriceChart";
 import PriceVolumeHistory from "./Components/PriceVolumeHistory";
 import QuadTile from "./Components/QuadTile";
 import SocialMedia from "./Components/SocialMedia";
 import StakingChart from "./Components/StakingChart";
 import Volume from "./Components/Volume";
-import VolumeChart from "./Components/VolumeChart";
-import { formatNumber } from "General/Utils/commons";
-const SECRET_LCD = chains["Secret Network"].lcd;
+import { formatNumber, SECRET_LCD, SECRET_CHAIN_ID} from "General/Utils/commons";
 
 export const DashboardContext = createContext<{ coingeckoApiData_Day: any; coingeckoApiData_Month: any; coingeckoApiData_Year: any } | null>(null);
 
@@ -118,9 +115,9 @@ export function Dashboard() {
     const queryData = async () => {
       const secretjsquery = new SecretNetworkClient({
         url: SECRET_LCD,
-        chainId: "secret-4",
+        chainId: SECRET_CHAIN_ID,
       });
-      secretjsquery?.query?.bank?.supplyOf({denom:"uscrt"})?.then(res => setTotalSupply(res.amount.amount/1e6));
+      secretjsquery?.query?.bank?.supplyOf({denom:"uscrt"})?.then(res => setTotalSupply((res.amount.amount as any)/1e6));
       secretjsquery?.query?.staking?.pool("")?.then(res => setBondedToken(parseInt(res.pool.bonded_tokens) / 10e5));
       secretjsquery?.query?.staking?.pool("")?.then(res => setNotBondedToken(parseInt(res.pool.not_bonded_tokens) / 10e4));
     }
@@ -187,12 +184,12 @@ export function Dashboard() {
     const queryData = async () => {
       const secretjsquery = new SecretNetworkClient({
         url: SECRET_LCD,
-        chainId: "secret-4",
+        chainId: SECRET_CHAIN_ID,
       });
-      setCurrentPrice(coingeckoApiData_Month?.prices[coingeckoApiData_Month?.prices?.length-1][1]);
+      setCurrentPrice((coingeckoApiData_Month as any).prices[(coingeckoApiData_Month as any).prices.length-1][1]);
       secretjsquery?.query?.tendermint?.getLatestBlock("")?.then(res => setBlockHeight(res.block.header.height)); // setting block height
       // secretjsquery?.query?.mint?.inflation("")?.then(res => setInflation(res.inflation));
-      secretjsquery?.query?.distribution?.communityPool("")?.then(res => setCommunityPool(Math.floor((res.pool[1].amount) / 10e5)));
+      secretjsquery?.query?.distribution?.communityPool("")?.then(res => setCommunityPool(Math.floor(((res.pool[1] as any).amount) / 10e5)));
     }
     
     queryData();
@@ -202,14 +199,14 @@ export function Dashboard() {
 
   useEffect(() => {
     const queryData = async () => {
-      setInflation(spartanApiData?.inflation);
-      setCirculatingSupply(spartanApiData?.circulating_supply);
-      setBlockTime(spartanApiData?.avg_block_time);
-      setDailyTransactions(spartanApiData?.tx_volume);
-      setCommunityTax(spartanApiData?.staking_params?.community_tax);
-      setSecretFoundationTax(spartanApiData?.staking_params?.secret_foundation_tax);
-      setFeesPaid(spartanApiData?.fees_paid);
-      setBondedRatio(spartanApiData?.bond_rate)
+      setInflation((spartanApiData as any).inflation);
+      setCirculatingSupply((spartanApiData as any).circulating_supply);
+      setBlockTime((spartanApiData as any).avg_block_time);
+      setDailyTransactions((spartanApiData as any).tx_volume);
+      setCommunityTax((spartanApiData as any).staking_params?.community_tax);
+      setSecretFoundationTax((spartanApiData as any).staking_params?.secret_foundation_tax);
+      setFeesPaid((spartanApiData as any).fees_paid);
+      setBondedRatio((spartanApiData as any).bond_rate)
     }
     
     queryData();
