@@ -233,6 +233,15 @@ export default function Deposit () {
   }, [selectedSource, selectedToken, sourceAddress, ibcMode, secretAddress, secretjs]);
 
   useEffect(() => {
+    const possibleSnips = snips.filter(token => token.deposits.find(token => token.chain_name == selectedSource.chain_name)!);
+    const possibleTokens = tokens.filter(token => token.deposits.find(token => token.chain_name == selectedSource.chain_name)!);
+    const supportedTokens = possibleTokens.concat(possibleSnips);
+    
+    setSupportedTokens(supportedTokens);
+
+    if (!supportedTokens.includes(selectedToken)) {
+      setSelectedToken(supportedTokens[0]);
+    }
     (async () => {
       while (!window.keplr || !window.getOfflineSignerOnlyAmino) {
         await sleep(100);
@@ -260,27 +269,23 @@ export default function Deposit () {
         }
       }
 
-      const possibleSnips = snips.filter(token => token.deposits.find(token => token.chain_name == chains[selectedSource.chain_name].chain_name)!);
-      const possibleTokens = tokens.filter(token => token.deposits.find(token => token.chain_name == chains[selectedSource.chain_name].chain_name)!);
-      setSupportedTokens(possibleTokens.concat(possibleSnips));
-      
       const sourceOfflineSigner = window.getOfflineSignerOnlyAmino(chain_id);
       const depositFromAccounts = await sourceOfflineSigner.getAccounts();
       setSourceAddress(depositFromAccounts[0].address);
 
       
-      const secretjsTmp = new SecretNetworkClient({
+      const secretjs = new SecretNetworkClient({
         url: lcd,
         chainId: chain_id,
         wallet: sourceOfflineSigner,
         walletAddress: depositFromAccounts[0].address,
       });
 
-      console.log(secretjsTmp);
-      setSourceChainSecretjs(secretjsTmp);
+      setSourceChainSecretjs(secretjs);
 
       fetchSourceBalance(depositFromAccounts[0].address);
-    })();
+
+    })()
   }, [selectedSource, selectedToken, sourceAddress, ibcMode, secretAddress, secretjs]);
 
   
