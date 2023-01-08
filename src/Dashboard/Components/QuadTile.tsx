@@ -16,7 +16,7 @@ const QuadTile = (props: IQuadTileProps) => {
 
   return (
     <>
-      <div className="bg-neutral-800 p-8 rounded-xl h-full">
+      <div className="bg-neutral-800 p-8 rounded-xl h-full border-solid border-2 border-neutral-700">
         <div className="flex flex-col h-full">
           {/* First Row */}
           <div className="flex-1 flex text-center items-center">
@@ -105,6 +105,7 @@ const QuadTile = (props: IQuadTileProps) => {
             </div>
           </div>
         </div>
+        <div className="text-neutral-500 text-sm text-left font-semibold mb-0.5">Data provided by Blizzard.finance❄️</div>
       </div>
     </>
   );

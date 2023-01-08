@@ -147,13 +147,13 @@ export const dappsData: IDappData[] = [
     "image": "secretdao.webp",
     "tags": ["Communications", "Social"]
   },
-  {
-    "name": "SecretSwap 2.0",
-    "description": "A liquidity hub DEX with sustainable and efficient liquidity",
-    "url": "https://arufaresearch.com/",
-    "image": "secretswap2_0.png",
-    "tags": ["Defi", "AMM"]
-  },
+  // {
+  //   "name": "SecretSwap 2.0",
+  //   "description": "A liquidity hub DEX with sustainable and efficient liquidity",
+  //   "url": "https://arufaresearch.com/",
+  //   "image": "secretswap2_0.png",
+  //   "tags": ["Defi", "AMM"]
+  // },
   {
     "name": "Selenian",
     "description": "Selenian Protocol helps users maximize returns on digital assets through unlocking capital efficiency across IBC.",

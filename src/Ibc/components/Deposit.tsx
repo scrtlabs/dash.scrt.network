@@ -46,6 +46,7 @@ export default function Deposit () {
   const [fetchBalanceInterval, setFetchBalanceInterval] = useState<any>(null);
   const [amountToTransfer, setAmountToTransfer] = useState<string>("");
   const {secretjs, secretAddress} = useContext(KeplrContext);
+  const {useFeegrant, setUseFeegrant} = useContext(FeeGrantContext);
 
   const queryParams = new URLSearchParams(window.location.search);
   const tokenByQueryParam = queryParams.get("token"); // "scrt", "akash", etc.
@@ -166,30 +167,40 @@ export default function Deposit () {
     }
   }
 
-
   const targetChain = chains["Secret Network"];
 
   const fetchSourceBalance = async (newAddress: String | null) => {
-    if (ibcMode === IbcMode.Deposit) {
-      const url = `${
-        chains[selectedSource.chain_name].lcd
-      }/cosmos/bank/v1beta1/balances/${newAddress ? newAddress : sourceAddress}`;
-      try {
-        const {
-          balances,
-        }: {
-          balances: Array<{ denom: string; amount: string }>;
-        } = await(await fetch(url)).json();
+    if (secretjs && secretAddress) {
+      if (ibcMode === IbcMode.Deposit) {
+        const url = `${
+          chains[selectedSource.chain_name].lcd
+        }/cosmos/bank/v1beta1/balances/${
+          newAddress ? newAddress : sourceAddress
+        }`;
+        try {
+          const {
+            balances,
+          }: {
+            balances: Array<{ denom: string; amount: string }>;
+          } = await(await fetch(url)).json();
 
-        const balance = balances.find((c) => c.denom === selectedToken.deposits.filter(deposit => deposit.chain_name === selectedSource.chain_name)[0].from_denom)?.amount || "0";
-        setAvailableBalance(balance);
-      } catch (e) {
-        console.error(`Error while trying to query ${url}:`, e);
-        setAvailableBalance("Error");
+          const balance =
+            balances.find(
+              (c) =>
+                c.denom ===
+                selectedToken.deposits.filter(
+                  (deposit) => deposit.chain_name === selectedSource.chain_name
+                )[0].from_denom
+            )?.amount || "0";
+          setAvailableBalance(balance);
+        } catch (e) {
+          console.error(`Error while trying to query ${url}:`, e);
+          setAvailableBalance("Error");
+        }
       }
-    }
-    if (ibcMode === IbcMode.Withdrawal) {
-      updateCoinBalance();
+      else if (ibcMode === IbcMode.Withdrawal) {
+        updateCoinBalance();
+      }
     }
   };
 
@@ -200,6 +211,9 @@ export default function Deposit () {
     if (!sourceAddress) {
       return;
     }
+    if (!(secretjs && secretAddress)) {
+      return;
+    }
 
     if (fetchBalanceInterval) {
       clearInterval(fetchBalanceInterval);
@@ -208,6 +222,7 @@ export default function Deposit () {
     if (ibcMode === IbcMode.Withdrawal) {
       fetchSourceBalance(null);
     } 
+    
     const interval = setInterval(
       () => fetchSourceBalance(null),
       10_000
@@ -215,9 +230,18 @@ export default function Deposit () {
     setFetchBalanceInterval(interval);
 
     return () => clearInterval(interval);
-  }, [selectedSource, selectedToken, sourceAddress, ibcMode]);
+  }, [selectedSource, selectedToken, sourceAddress, ibcMode, secretAddress, secretjs]);
 
   useEffect(() => {
+    const possibleSnips = snips.filter(token => token.deposits.find(token => token.chain_name == selectedSource.chain_name)!);
+    const possibleTokens = tokens.filter(token => token.deposits.find(token => token.chain_name == selectedSource.chain_name)!);
+    const supportedTokens = possibleTokens.concat(possibleSnips);
+    
+    setSupportedTokens(supportedTokens);
+
+    if (!supportedTokens.includes(selectedToken)) {
+      setSelectedToken(supportedTokens[0]);
+    }
     (async () => {
       while (!window.keplr || !window.getOfflineSignerOnlyAmino) {
         await sleep(100);
@@ -245,14 +269,11 @@ export default function Deposit () {
         }
       }
 
-      const possibleSnips = snips.filter(token => token.deposits.find(token => token.chain_name == chains[selectedSource.chain_name].chain_name)!);
-      const possibleTokens = tokens.filter(token => token.deposits.find(token => token.chain_name == chains[selectedSource.chain_name].chain_name)!);
-      setSupportedTokens(possibleTokens.concat(possibleSnips));
-      
       const sourceOfflineSigner = window.getOfflineSignerOnlyAmino(chain_id);
       const depositFromAccounts = await sourceOfflineSigner.getAccounts();
       setSourceAddress(depositFromAccounts[0].address);
 
+      
       const secretjs = new SecretNetworkClient({
         url: lcd,
         chainId: chain_id,
@@ -263,8 +284,9 @@ export default function Deposit () {
       setSourceChainSecretjs(secretjs);
 
       fetchSourceBalance(depositFromAccounts[0].address);
-    })();
-  }, [selectedSource, selectedToken, sourceAddress,ibcMode]);
+
+    })()
+  }, [selectedSource, selectedToken, sourceAddress, ibcMode, secretAddress, secretjs]);
 
   
   const [isCopied, setIsCopied] = useState<boolean>(false); 
@@ -559,7 +581,7 @@ export default function Deposit () {
 
         try {
 
-          let tx: Tx;
+          let tx: TxResponse;
 
           if (selectedToken.is_snip20) {
             tx = await secretjs.tx.compute.executeContract(
@@ -837,7 +859,7 @@ export default function Deposit () {
             <span className="font-semibold">Available: </span>
             <span className="font-medium">
               {(() => {
-                if (availableBalance === "") {return <CircularProgress size="0.6em" />;}
+                if (availableBalance === "" && sourceAddress && secretjs) {return <CircularProgress size="0.6em" />;}
                 const prettyBalance = new BigNumber(availableBalance).dividedBy(`1e${selectedToken.decimals}`).toFormat();
                 if (prettyBalance === "NaN" && availableBalance === viewingKeyErrorString) {
                   return <button
@@ -858,6 +880,7 @@ export default function Deposit () {
                     Set Viewing Key
                   </button>;
                 }
+                if (!secretAddress && !secretjs) {return "";}
                 if (prettyBalance === "NaN") {return "Error";}
                 return `${prettyBalance} ${selectedToken.name}`;
               })()}
