@@ -65,7 +65,7 @@ export const DefaultLayout =({children}:any) =>{
             "lg:w-72 fixed left-0 top-0 h-screen p-6 overflow-x-hidden bg-neutral-900 sm:border-r border-neutral-800"
           }
         >
-          <NavigationContext.Provider value={{ showMobileMenu }}>
+          <NavigationContext.Provider value={showMobileMenu}>
             <Navigation
               showMobileMenu={showMobileMenu}
               setShowMobileMenu={setShowMobileMenu}

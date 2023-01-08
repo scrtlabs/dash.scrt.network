@@ -6,12 +6,11 @@ import { faArrowTrendUp, faAward, faCircle, faCopy, faCube, faDollar, faPercenta
 import { useDashboardContext } from "Dashboard/Dashboard";
 import { chains } from "General/Utils/config";
 import { SecretNetworkClient } from "secretjs";
-const SECRET_RPC = chains["Secret Network"].rpc;
-const SECRET_LCD = chains["Secret Network"].lcd;
-const SECRET_CHAIN_ID = chains["Secret Network"].chain_id;
+import { SECRET_LCD, SECRET_CHAIN_ID} from "General/Utils/config";
+
 
 export default function InfoBoxes() {
-  const { apiData, setApiData} = useDashboardContext();
+  const { apiData, setApiData} = useDashboardContext() as any;
 
 
   const [communityPool, setCommunityPool] = useState(Number); // in uscrt
@@ -21,26 +20,17 @@ export default function InfoBoxes() {
   const [pool, setPool] = useState(null);
   const [totalSupply, setTotalSupply] = useState(null);
 
-  const COUNT_ABBRS = ['', 'K', 'M', 'B', 't', 'q', 's', 'S', 'o', 'n', 'd', 'U', 'D', 'T', 'Qt', 'Qd', 'Sd', 'St'];
-
-  function formatNumber(count: number, withAbbr = false, decimals = 2) {
-    const i = count === 0 ? count : Math.floor(Math.log(count) / Math.log(1000));
-    if (withAbbr && COUNT_ABBRS[i]) {
-      return parseFloat((count / (1000 ** i)).toFixed(decimals)).toString() + COUNT_ABBRS[i];
-    }
-  }
-
   useEffect(() => {
     const queryData = async () => {
       const secretjsquery = new SecretNetworkClient({
         url: SECRET_LCD,
-        chainId: "secret-4",
+        chainId: SECRET_CHAIN_ID,
       });
-      secretjsquery?.query?.distribution?.communityPool("")?.then(res => setCommunityPool(Math.floor((res.pool[1].amount) / 10e5)));
+      secretjsquery?.query?.distribution?.communityPool("")?.then(res => setCommunityPool(Math.floor((res.pool[1] as any).amount / 10e5)));
       secretjsquery?.query?.tendermint?.getLatestBlock("")?.then(res => setBlockHeight(res.block.header.height));
-      secretjsquery?.query?.mint?.inflation("")?.then(res => setInflation((res.inflation*100).toFixed(2)));
+      secretjsquery?.query?.mint?.inflation("")?.then(res => setInflation(((res.inflation as any)*100).toFixed(2) as any));
       secretjsquery?.query?.staking?.pool("")?.then(res => setPool(res.pool));
-      secretjsquery?.query?.bank?.supplyOf({denom:"uscrt"})?.then(res => setTotalSupply(res.amount.amount/1e6));
+      secretjsquery?.query?.bank?.supplyOf({denom:"uscrt"})?.then(res => setTotalSupply((res.amount.amount as any)/1e6));
       setCurrentPrice(apiData?.prices[apiData?.prices?.length-1][1]);
     }
     
