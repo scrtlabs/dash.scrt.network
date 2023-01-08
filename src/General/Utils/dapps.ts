@@ -1,4 +1,4 @@
-export interface IDappData {
+interface IDappData {
   name: string,
   description?: string,
   url?: string,

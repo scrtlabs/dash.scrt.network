@@ -1438,3 +1438,7 @@ export const snips: Token[] = [
     ],
   },
 ];
+
+export const SECRET_CHAIN_ID = chains["Secret Network"].chain_id;
+export const SECRET_LCD = chains["Secret Network"].lcd;
+export const SECRET_RPC = chains["Secret Network"].rpc;

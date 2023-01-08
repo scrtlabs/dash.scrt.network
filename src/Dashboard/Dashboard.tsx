@@ -8,7 +8,7 @@ import QuadTile from "./Components/QuadTile";
 import SocialMedia from "./Components/SocialMedia";
 import StakingChart from "./Components/StakingChart";
 import Volume from "./Components/Volume";
-import { formatNumber, SECRET_LCD, SECRET_CHAIN_ID} from "General/Utils/commons";
+import { SECRET_LCD, SECRET_CHAIN_ID} from "General/Utils/config";
 
 export const DashboardContext = createContext<{ coingeckoApiData_Day: any; coingeckoApiData_Month: any; coingeckoApiData_Year: any } | null>(null);
 

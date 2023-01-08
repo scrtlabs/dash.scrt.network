@@ -3,16 +3,11 @@ import { Bech32Address } from "@keplr-wallet/cosmos";
 import { Keplr } from "@keplr-wallet/types";
 import { sha256 } from "@noble/hashes/sha256";
 import { toHex, toUtf8 } from "secretjs";
-import { chains } from "General/Utils/config" 
 
 export const viewingKeyErrorString = "🧐";
 
 export const faucetURL = "https://faucet.secretsaturn.net/claim";
 export const faucetAddress = "secret1tq6y8waegggp4fv2fcxk3zmpsmlfadyc7lsd69";
-
-export const SECRET_CHAIN_ID = chains["Secret Network"].chain_id;
-export const SECRET_LCD = chains["Secret Network"].lcd;
-export const SECRET_RPC = chains["Secret Network"].rpc;
 
 export const sleep = (ms: number) =>
   new Promise((resolve) => setTimeout(resolve, ms));
