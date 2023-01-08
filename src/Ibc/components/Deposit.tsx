@@ -167,30 +167,40 @@ export default function Deposit () {
     }
   }
 
-
   const targetChain = chains["Secret Network"];
 
   const fetchSourceBalance = async (newAddress: String | null) => {
-    if (ibcMode === IbcMode.Deposit) {
-      const url = `${
-        chains[selectedSource.chain_name].lcd
-      }/cosmos/bank/v1beta1/balances/${newAddress ? newAddress : sourceAddress}`;
-      try {
-        const {
-          balances,
-        }: {
-          balances: Array<{ denom: string; amount: string }>;
-        } = await(await fetch(url)).json();
+    if (secretjs && secretAddress) {
+      if (ibcMode === IbcMode.Deposit) {
+        const url = `${
+          chains[selectedSource.chain_name].lcd
+        }/cosmos/bank/v1beta1/balances/${
+          newAddress ? newAddress : sourceAddress
+        }`;
+        try {
+          const {
+            balances,
+          }: {
+            balances: Array<{ denom: string; amount: string }>;
+          } = await(await fetch(url)).json();
 
-        const balance = balances.find((c) => c.denom === selectedToken.deposits.filter(deposit => deposit.chain_name === selectedSource.chain_name)[0].from_denom)?.amount || "0";
-        setAvailableBalance(balance);
-      } catch (e) {
-        console.error(`Error while trying to query ${url}:`, e);
-        setAvailableBalance("Error");
+          const balance =
+            balances.find(
+              (c) =>
+                c.denom ===
+                selectedToken.deposits.filter(
+                  (deposit) => deposit.chain_name === selectedSource.chain_name
+                )[0].from_denom
+            )?.amount || "0";
+          setAvailableBalance(balance);
+        } catch (e) {
+          console.error(`Error while trying to query ${url}:`, e);
+          setAvailableBalance("Error");
+        }
       }
-    }
-    if (ibcMode === IbcMode.Withdrawal) {
-      updateCoinBalance();
+      else if (ibcMode === IbcMode.Withdrawal) {
+        updateCoinBalance();
+      }
     }
   };
 
@@ -201,6 +211,9 @@ export default function Deposit () {
     if (!sourceAddress) {
       return;
     }
+    if (!(secretjs && secretAddress)) {
+      return;
+    }
 
     if (fetchBalanceInterval) {
       clearInterval(fetchBalanceInterval);
@@ -209,6 +222,7 @@ export default function Deposit () {
     if (ibcMode === IbcMode.Withdrawal) {
       fetchSourceBalance(null);
     } 
+    
     const interval = setInterval(
       () => fetchSourceBalance(null),
       10_000
@@ -216,7 +230,7 @@ export default function Deposit () {
     setFetchBalanceInterval(interval);
 
     return () => clearInterval(interval);
-  }, [selectedSource, selectedToken, sourceAddress, ibcMode]);
+  }, [selectedSource, selectedToken, sourceAddress, ibcMode, secretAddress, secretjs]);
 
   useEffect(() => {
     (async () => {
@@ -254,18 +268,20 @@ export default function Deposit () {
       const depositFromAccounts = await sourceOfflineSigner.getAccounts();
       setSourceAddress(depositFromAccounts[0].address);
 
-      const secretjs = new SecretNetworkClient({
+      
+      const secretjsTmp = new SecretNetworkClient({
         url: lcd,
         chainId: chain_id,
         wallet: sourceOfflineSigner,
         walletAddress: depositFromAccounts[0].address,
       });
 
-      setSourceChainSecretjs(secretjs);
+      console.log(secretjsTmp);
+      setSourceChainSecretjs(secretjsTmp);
 
       fetchSourceBalance(depositFromAccounts[0].address);
     })();
-  }, [selectedSource, selectedToken, sourceAddress,ibcMode]);
+  }, [selectedSource, selectedToken, sourceAddress, ibcMode, secretAddress, secretjs]);
 
   
   const [isCopied, setIsCopied] = useState<boolean>(false); 
@@ -838,7 +854,7 @@ export default function Deposit () {
             <span className="font-semibold">Available: </span>
             <span className="font-medium">
               {(() => {
-                if (availableBalance === "") {return <CircularProgress size="0.6em" />;}
+                if (availableBalance === "" && sourceAddress && secretjs) {return <CircularProgress size="0.6em" />;}
                 const prettyBalance = new BigNumber(availableBalance).dividedBy(`1e${selectedToken.decimals}`).toFormat();
                 if (prettyBalance === "NaN" && availableBalance === viewingKeyErrorString) {
                   return <button
@@ -859,6 +875,7 @@ export default function Deposit () {
                     Set Viewing Key
                   </button>;
                 }
+                if (!secretAddress && !secretjs) {return "";}
                 if (prettyBalance === "NaN") {return "Error";}
                 return `${prettyBalance} ${selectedToken.name}`;
               })()}
