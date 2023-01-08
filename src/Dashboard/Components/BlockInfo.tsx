@@ -80,6 +80,9 @@ const BlockInfo = (props: IBlockInfoProps) => {
             </div>
           </div>
         </div>
+        <div> 
+          Data provioded
+        </div>
       </div>
     </>
   );
