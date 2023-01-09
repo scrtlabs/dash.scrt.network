@@ -2,11 +2,16 @@ import { faArrowUpRightFromSquare, faMagnifyingGlass } from "@fortawesome/free-s
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { Component, useState } from "react";
 import { Link } from "react-router-dom";
+import {Helmet} from "react-helmet";
+import { websiteName } from "App";
 
 
 export function Bridge() {
   return (
     <>
+      <Helmet>
+        <title>{websiteName} | Bridge</title>
+      </Helmet>
       <div className="max-w-2xl mx-auto px-6">
         <h1 className="text-center font-bold text-4xl mb-10">Bridge</h1>
         <p className="text-neutral-400">Lorem, ipsum dolor sit amet consectetur adipisicing elit. Modi, libero! Ipsum similique a laudantium repellat amet modi harum quos! Reiciendis dolore doloribus aspernatur odit ratione vero corrupti deserunt modi tempore.</p>
