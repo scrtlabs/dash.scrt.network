@@ -105,7 +105,7 @@ const QuadTile = (props: IQuadTileProps) => {
             </div>
           </div>
         </div>
-        <div className="text-neutral-500 text-sm text-left font-semibold mb-0.5">Data provided by Blizzard.finance❄️</div>
+        {/* <div className="text-neutral-500 text-xs text-left mb-0.5">Data provided by Blizzard.finance ❄️</div> */}
       </div>
     </>
   );
