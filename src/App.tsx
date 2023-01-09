@@ -3,9 +3,13 @@ import { Window as KeplrWindow } from "@keplr-wallet/types";
 import ReactDOM from "react-dom";
 import { BreakpointProvider } from "react-socks";
 import "General/assets/scss/index.scss";
-import "animate.css"
+// import "animate.css"
 import { Buffer } from "buffer";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
+import {Helmet} from "react-helmet";
+
+// for html-head
+export const websiteName = "Secret Dashboard";
 
 // Pages
 import { Ibc } from "Ibc/Ibc";
@@ -67,12 +71,17 @@ ReactDOM.render(
 export default function App() {
 
   return (
-    <Routes>
-      <Route path="/" element={<Dashboard />}/>
-      <Route path="/ibc" element={<Ibc />}/>
-      <Route path="/wrap" element={<Wrap />}/>
-      <Route path="/apps" element={<Apps />}/>
-      <Route path="/bridge" element={<Bridge />}/>
-    </Routes>
+    <>
+      <Helmet>
+        <title>{websiteName}</title>
+      </Helmet>
+      <Routes>
+        <Route path="/" element={<Dashboard />} />
+        <Route path="/ibc" element={<Ibc />} />
+        <Route path="/wrap" element={<Wrap />} />
+        <Route path="/apps" element={<Apps />} />
+        <Route path="/bridge" element={<Bridge />} />
+      </Routes>
+    </>
   );
 }

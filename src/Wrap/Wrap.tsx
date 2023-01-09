@@ -11,6 +11,8 @@ import { getKeplrViewingKey, setKeplrViewingKey } from "General/Components/Keplr
 import { Link } from "react-router-dom";
 import Select from "react-select";
 import Tooltip from "@mui/material/Tooltip";
+import {Helmet} from "react-helmet";
+import { websiteName } from "App";
 
 export const WrapContext = createContext(null);
 
@@ -525,6 +527,9 @@ export function Wrap() {
 
   return (
     <>
+      <Helmet>
+        <title>{websiteName} | Wrap</title>
+      </Helmet>
       <div className="w-full max-w-xl mx-auto px-4 onEnter_fadeInDown">
         <div className="border rounded-2xl p-8 border-neutral-700 w-full text-neutral-200 bg-neutral-900">
 

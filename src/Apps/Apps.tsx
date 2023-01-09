@@ -4,6 +4,8 @@ import { dappsData } from "General/Utils/dapps";
 import React, { useState } from "react";
 import AppItem from "./components/AppItem";
 import Header from "./components/Header";
+import {Helmet} from "react-helmet";
+import { websiteName } from "App";
 
 function shuffleArray(array: object[]) {
   let currentIndex = array.length,  randomIndex;
@@ -75,6 +77,9 @@ export function Apps() {
 
   return (
     <>
+      <Helmet>
+        <title>{websiteName} | Apps</title>
+      </Helmet>
       <div className="max-w-screen-2xl mx-auto px-6">
 
         {/* Header */}
