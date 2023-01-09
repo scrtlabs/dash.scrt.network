@@ -4,6 +4,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCaretDown, faInfoCircle } from "@fortawesome/free-solid-svg-icons";
 import Tooltip from "@mui/material/Tooltip";
 import WrapModal from "./components/WrapModal";
+import {Helmet} from "react-helmet";
+import { websiteName } from "App";
 
 export const IbcContext = createContext(null);
 
@@ -15,6 +17,9 @@ export function Ibc() {
 
   return (
     <>
+      <Helmet>
+        <title>{websiteName} | IBC</title>
+      </Helmet>
       <IbcContext.Provider value={{ isWrapModalOpen, setIsWrapModalOpen, selectedTokenName, setSelectedTokenName }}>
         <WrapModal open={isWrapModalOpen} onClose={() => {setIsWrapModalOpen(false); document.body.classList.remove("overflow-hidden")}}/>
         <div className="w-full max-w-xl mx-auto px-4 onEnter_fadeInDown">

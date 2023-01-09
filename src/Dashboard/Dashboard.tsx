@@ -9,6 +9,8 @@ import SocialMedia from "./Components/SocialMedia";
 import StakingChart from "./Components/StakingChart";
 import Volume from "./Components/Volume";
 import { SECRET_LCD, SECRET_CHAIN_ID} from "General/Utils/config";
+import {Helmet} from "react-helmet";
+import { websiteName } from "App";
 
 export const DashboardContext = createContext<{ coingeckoApiData_Day: any; coingeckoApiData_Month: any; coingeckoApiData_Year: any } | null>(null);
 
