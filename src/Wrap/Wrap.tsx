@@ -36,14 +36,14 @@ export function Wrap() {
   const {secretjs, secretAddress} = useContext(KeplrContext);
   const {useFeegrant, setUseFeegrant} = useContext(FeeGrantContext);
 
-  const [price, setPrice] = useState <number>();
   const [amountToWrap, setAmountToWrap] = useState<string>("");
   const [wrappingMode, setWrappingMode] = useState<WrappingMode>(modePreselection);
   const [selectedToken, setselectedToken] = useState<Token>(tokens.filter(token => token.name === tokenPreselection)[0]);
 
   // UI
+  const [price, setPrice] = useState <number>();
+  const [isValidAmount, setisValidAmount] = useState<boolean>(false);
   const [validationMessage, setValidationMessage] = useState<string>("");
-  const [isValidAmount, setisValidAmount] = useState<boolean>(true);
   const [isValidationActive, setIsValidationActive] = useState<boolean>(false);
 
   const [loadingWrapOrUnwrap, setLoadingWrapOrUnwrap] = useState<boolean>(false);
@@ -54,9 +54,8 @@ export function Wrap() {
   const [tokenWrappedBalance, setTokenWrappedBalance] = useState<string>("");
 
   function validateForm() {
-    const availableAmount = wrappingMode === WrappingMode.Wrap ? new BigNumber(tokenNativeBalance).dividedBy(`1e${selectedToken.decimals}`) : new BigNumber(tokenWrappedBalance).dividedBy(`1e${selectedToken.decimals}`);
+    const availableAmount = new BigNumber(wrappingMode === WrappingMode.Wrap ? tokenNativeBalance : tokenWrappedBalance).dividedBy(`1e${selectedToken.decimals}`);
 
-    // const numberRegex = /^-?[0-9]+([.,][0-9]+)?$/;
     const numberRegex = /^(?:[1-9]\d*|0)?(?:\.\d+)?$/;
 
     function matchExact(r, str) {
@@ -64,7 +63,10 @@ export function Wrap() {
       return match && str === match[0];
     }
 
-    if (!matchExact(numberRegex, amountToWrap) || amountToWrap === "") {
+    if (new BigNumber(amountToWrap).isGreaterThan(new BigNumber(availableAmount)) && !(tokenWrappedBalance == viewingKeyErrorString && wrappingMode === WrappingMode.Unwrap) && amountToWrap !== "") {
+      setValidationMessage("Not enough balance");
+      setisValidAmount(false);
+    } else if (!matchExact(numberRegex, amountToWrap) || amountToWrap === "") {
       setValidationMessage("Please enter a valid amount");
       setisValidAmount(false);
     } else {
@@ -75,7 +77,7 @@ export function Wrap() {
   useEffect(() => {
     // setting amountToWrap to max. value, if entered value is > available
     const availableAmount = wrappingMode === WrappingMode.Wrap ? new BigNumber(tokenNativeBalance).dividedBy(`1e${selectedToken.decimals}`) : new BigNumber(tokenWrappedBalance).dividedBy(`1e${selectedToken.decimals}`);
-    if (new BigNumber(amountToWrap) > new BigNumber(availableAmount) && !(tokenWrappedBalance == viewingKeyErrorString && wrappingMode === WrappingMode.Unwrap) && amountToWrap !== "") {
+    if (!(new BigNumber(amountToWrap).isNaN()) && availableAmount.isGreaterThan(new BigNumber(0)) && new BigNumber(amountToWrap).isGreaterThan(new BigNumber(availableAmount)) && !(tokenWrappedBalance == viewingKeyErrorString && wrappingMode === WrappingMode.Unwrap) && amountToWrap !== "") {
       setAmountToWrap(availableAmount.toString());
     }
 
@@ -84,8 +86,16 @@ export function Wrap() {
     }
 }, [amountToWrap, wrappingMode, isValidationActive]);
 
+// reset amountToWrap on selectedToken change
+useEffect(() => {
+  setAmountToWrap("");
+}, [selectedToken])
+
   async function handleInputChange(e: any) {
-    await setAmountToWrap(e.target.value);
+    const newValue = e.target.value.replace(
+      /[^0-9.]+/g, ""
+    );
+    await setAmountToWrap(newValue);
   }
 
   const updateFeeGrantButton = (text: string, color: string) => {
@@ -556,7 +566,7 @@ export function Wrap() {
             {/* Title Bar */}
             <div className="flex flex-col sm:flex-row">
               <div className="flex-1 font-semibold mb-2 text-center sm:text-left">From</div>
-              {!isValidAmount && (
+              {!isValidAmount && isValidationActive && (
                 <div className="flex-initial">
                   <div className="text-red-500 text-xs text-center sm:text-right mb-2">{validationMessage}</div>
                 </div>
@@ -576,7 +586,7 @@ export function Wrap() {
                     </span>
                   </div>
                 )} className="react-select-wrap-container" classNamePrefix="react-select-wrap" />
-              <input value={amountToWrap} onChange={handleInputChange} type="text" className={"text-right focus:z-10 block flex-1 min-w-0 w-full bg-neutral-900 text-white px-4 rounded-r-lg disabled:placeholder-neutral-700 transition-colors font-medium" + (!isValidAmount ? "  border border-red-500" : "")} name="fromValue" id="fromValue" placeholder="0" disabled={!secretAddress}/>
+              <input value={amountToWrap} onChange={handleInputChange} type="text" className={"text-right focus:z-10 block flex-1 min-w-0 w-full bg-neutral-900 text-white px-4 rounded-r-lg disabled:placeholder-neutral-700 transition-colors font-medium" + (!isValidAmount && isValidationActive ? "  border border-red-500" : "")} name="fromValue" id="fromValue" placeholder="0" disabled={!secretAddress}/>
             </div>
 
             {/* Balance | [25%|50%|75%|Max] */}
