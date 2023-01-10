@@ -28,7 +28,7 @@ export function Ibc() {
             {/* Header */}
             <div className="flex items-center mb-4">
               <h1 className="inline text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-500 to-purple-500">IBC Transfer</h1>
-              <Tooltip title={`Deposit/withdraw your SCRT via IBC transfer from any chain to/from Secret Network`} placement="bottom">
+              <Tooltip title={`Deposit/withdraw your SCRT via IBC transfer from any chain to/from Secret Network`} placement="right" arrow>
                 <div className="ml-2 pt-1 text-neutral-400 hover:text-white transition-colors cursor-pointer"><FontAwesomeIcon icon={faInfoCircle}/></div>
               </Tooltip>
             </div>
