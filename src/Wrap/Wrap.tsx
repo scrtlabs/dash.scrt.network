@@ -6,17 +6,22 @@ import { KeplrContext, FeeGrantContext } from "General/Layouts/defaultLayout";
 import BigNumber from "bignumber.js";
 import { toast} from "react-toastify";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faKey, faArrowRightArrowLeft, faRightLeft, faCircleInfo, faInfoCircle } from '@fortawesome/free-solid-svg-icons'
+import { faKey, faArrowRightArrowLeft, faRightLeft, faCircleInfo, faInfoCircle, faCaretDown, faCog } from '@fortawesome/free-solid-svg-icons'
 import { getKeplrViewingKey, setKeplrViewingKey } from "General/Components/Keplr";
 import { Link } from "react-router-dom";
 import Select from "react-select";
 import Tooltip from "@mui/material/Tooltip";
 import {Helmet} from "react-helmet";
 import { websiteName } from "App";
+import UnknownBalanceModal from "./Components/UnknownBalanceModal";
+import FeeGrantInfoModal from "./Components/FeeGrantInfoModal";
 
 export const WrapContext = createContext(null);
 
 export function Wrap() {
+
+  const [isUnknownBalanceModalOpen, setIsUnknownBalanceModalOpen] = useState(false);
+  const [isFeeGrantInfoModalOpen, setIsFeeGrantInfoModalOpen] = useState(false);
   
   enum WrappingMode {
     Wrap,
@@ -91,11 +96,16 @@ useEffect(() => {
   setAmountToWrap("");
 }, [selectedToken])
 
-  async function handleInputChange(e: any) {
-    const newValue = e.target.value.replace(
+  function handleInputChange(e: any) {
+    const filteredValue = e.target.value.replace(
       /[^0-9.]+/g, ""
     );
-    await setAmountToWrap(newValue);
+    setAmountToWrap(filteredValue);
+  }
+
+  function showModal() {
+    setIsUnknownBalanceModalOpen(true);
+    document.body.classList.add("overflow-hidden");
   }
 
   const updateFeeGrantButton = (text: string, color: string) => {
@@ -206,13 +216,23 @@ useEffect(() => {
     }
   };
 
+  function SubmitMenu() {
+    return (
+      <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-neutral-700 rounded-lg w-60 overflow-hidden">
+        <button className="w-full hover:bg-neutral-600 p-2 text-sm font-medium">Request Fee Grant</button>
+        <button onClick={() => {setIsFeeGrantInfoModalOpen(true); document.body.classList.remove("overflow-hidden")} } className="w-full hover:bg-neutral-600 p-2 text-sm font-medium"><FontAwesomeIcon icon={faInfoCircle} className="mr-2"/>Fee Grant</button>
+      </div>
+    )
+  }
+
+
   function PercentagePicker() {
     return (
       <div className="inline-flex rounded-full text-xs font-bold">
-        <button onClick={() => setAmountByPercentage(25)} className="bg-neutral-900 px-1.5 py-0.5 rounded-l-md transition-colors hover:bg-neutral-700 focus:bg-neutral-500 cursor-pointer disabled:text-neutral-500 disabled:hover:bg-neutral-900 disabled:cursor-default" disabled={!secretAddress}>25%</button>
-        <button onClick={() => setAmountByPercentage(50)} className="bg-neutral-900 px-1.5 py-0.5 border-l border-neutral-700 transition-colors hover:bg-neutral-700 focus:bg-neutral-500 cursor-pointer disabled:text-neutral-500 disabled:hover:bg-neutral-900 disabled:cursor-default" disabled={!secretAddress}>50%</button>
-        <button onClick={() => setAmountByPercentage(75)} className="bg-neutral-900 px-1.5 py-0.5 border-l border-neutral-700 transition-colors hover:bg-neutral-700 focus:bg-neutral-500 cursor-pointer disabled:text-neutral-500 disabled:hover:bg-neutral-900 disabled:cursor-default" disabled={!secretAddress}>75%</button>
-        <button onClick={() => setAmountByPercentage(100)} className="bg-neutral-900 px-1.5 py-0.5 rounded-r-md border-l border-neutral-700 transition-colors hover:bg-neutral-700 focus:bg-neutral-500 cursor-pointer disabled:text-neutral-500 disabled:hover:bg-neutral-900 disabled:cursor-default" disabled={!secretAddress}>MAX</button>
+        <button onClick={() => setAmountByPercentage(25)} className="bg-neutral-900 px-1.5 py-0.5 rounded-l-md transition-colors hover:bg-neutral-700 focus:bg-neutral-500 cursor-pointer disabled:text-neutral-500 disabled:hover:bg-neutral-900 disabled:cursor-default" disabled={!secretjs || !secretAddress || (wrappingMode === WrappingMode.Unwrap && tokenWrappedBalance == viewingKeyErrorString)}>25%</button>
+        <button onClick={() => setAmountByPercentage(50)} className="bg-neutral-900 px-1.5 py-0.5 border-l border-neutral-700 transition-colors hover:bg-neutral-700 focus:bg-neutral-500 cursor-pointer disabled:text-neutral-500 disabled:hover:bg-neutral-900 disabled:cursor-default" disabled={!secretjs || !secretAddress || (wrappingMode === WrappingMode.Unwrap && tokenWrappedBalance == viewingKeyErrorString)}>50%</button>
+        <button onClick={() => setAmountByPercentage(75)} className="bg-neutral-900 px-1.5 py-0.5 border-l border-neutral-700 transition-colors hover:bg-neutral-700 focus:bg-neutral-500 cursor-pointer disabled:text-neutral-500 disabled:hover:bg-neutral-900 disabled:cursor-default" disabled={!secretjs || !secretAddress || (wrappingMode === WrappingMode.Unwrap && tokenWrappedBalance == viewingKeyErrorString)}>75%</button>
+        <button onClick={() => setAmountByPercentage(100)} className="bg-neutral-900 px-1.5 py-0.5 rounded-r-md border-l border-neutral-700 transition-colors hover:bg-neutral-700 focus:bg-neutral-500 cursor-pointer disabled:text-neutral-500 disabled:hover:bg-neutral-900 disabled:cursor-default" disabled={!secretjs || !secretAddress || (wrappingMode === WrappingMode.Unwrap && tokenWrappedBalance == viewingKeyErrorString)}>MAX</button>
       </div>
     )
   }
@@ -441,25 +461,35 @@ useEffect(() => {
     }
 
     return (
-      <button
-        className={"flex items-center justify-center w-full py-2 rounded-lg transition-colors font-semibold bg-cyan-600 hover:bg-cyan-500 active:bg-cyan-700 disabled:bg-neutral-500"}
-        disabled={disabled}
-        onClick={() => submit()}>
-        {/* {wrappingMode === WrappingMode.Wrap ? "Wrap" : "Unwrap"} */}
-        {/* text for wrapping with value */}
-        {(secretAddress && secretjs && wrappingMode === WrappingMode.Wrap && amount) && (
-        <>
-          {`Wrap ${amount} ${nativeCurrency} into ${amount} ${wrappedCurrency}`}
-        </>)}
+      <>
+        <SubmitMenu/>
+        <div className="flex items-center">
+          <button
+            className={"bg-cyan-600 hover:bg-cyan-500  active:bg-cyan-700 transition-colors text-white font-semibold py-2 w-full rounded-l disabled:bg-neutral-500"}
+            disabled={disabled}
+            onClick={() => submit()}>
+            {/* {wrappingMode === WrappingMode.Wrap ? "Wrap" : "Unwrap"} */}
+            {/* text for wrapping with value */}
+            {(secretAddress && secretjs && wrappingMode === WrappingMode.Wrap && amount) && (
+            <>
+              {`Wrap ${amount} ${nativeCurrency} into ${amount} ${wrappedCurrency}`}
+            </>)}
 
-        {/* text for unwrapping with value */}
-        {(secretAddress && secretjs && wrappingMode === WrappingMode.Unwrap && amount) && (<>
-          {`Unwrap ${amount} ${wrappedCurrency} into ${amount} ${nativeCurrency}`}
-        </>)}
+            {/* text for unwrapping with value */}
+            {(secretAddress && secretjs && wrappingMode === WrappingMode.Unwrap && amount) && (<>
+              {`Unwrap ${amount} ${wrappedCurrency} into ${amount} ${nativeCurrency}`}
+            </>)}
 
-        {/* general text without value */}
-        {(!amount || !secretAddress || !secretAddress) && (wrappingMode === WrappingMode.Wrap ? "Wrap" : "Unwrap")}
-      </button>
+            {/* general text without value */}
+            {(!amount || !secretAddress || !secretAddress) && (wrappingMode === WrappingMode.Wrap ? "Wrap" : "Unwrap")}
+          </button>
+          <button
+            className="bg-cyan-600 hover:bg-cyan-500 transition-colors text-white font-semibold py-2 px-2.5 rounded-r disabled:bg-neutral-500"
+            disabled={disabled}>
+              <FontAwesomeIcon icon={faCaretDown} />
+          </button>
+        </div>
+      </>
     )
   }
 
@@ -543,115 +573,122 @@ useEffect(() => {
       <Helmet>
         <title>{websiteName} | Wrap</title>
       </Helmet>
-      <div className="w-full max-w-xl mx-auto px-4 onEnter_fadeInDown">
-        <div className="border rounded-2xl p-8 border-neutral-700 w-full text-neutral-200 bg-neutral-900">
 
-          {/* Header */}
-          <div className="flex items-center mb-4">
-            <h1 className="inline text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-500 to-purple-500">
-              Secret {wrappingMode === WrappingMode.Wrap ? "Wrap" : "Unwrap"}
-            </h1>
+      <WrapContext.Provider value={{ isUnknownBalanceModalOpen, setIsUnknownBalanceModalOpen, selectedTokenName: selectedToken.name, amountToWrap }}>
 
-            <Tooltip title={message} placement="right" arrow>
-              <div className="ml-2 pt-1 text-neutral-400 hover:text-white transition-colors cursor-pointer"><FontAwesomeIcon icon={faInfoCircle}/></div>
-            </Tooltip>
-          </div>
+        <FeeGrantInfoModal open={isFeeGrantInfoModalOpen} onClose={() => {setIsFeeGrantInfoModalOpen(false); document.body.classList.remove("overflow-hidden")}}/>
+        <UnknownBalanceModal open={isUnknownBalanceModalOpen} onClose={() => {setIsUnknownBalanceModalOpen(false); document.body.classList.remove("overflow-hidden")}}/>
+        <div className="w-full max-w-xl mx-auto px-4 onEnter_fadeInDown">
+          <div className="border rounded-2xl p-8 border-neutral-700 w-full text-neutral-200 bg-neutral-900">
 
+            {/* Header */}
+            <div className="flex items-center mb-4">
+              <h1 className="inline text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-500 to-purple-500">
+                Secret {wrappingMode === WrappingMode.Wrap ? "Wrap" : "Unwrap"}
+              </h1>
 
-
-
-
-          {/* *** From *** */}
-          <div className="bg-neutral-800 p-4 rounded-xl">
-            {/* Title Bar */}
-            <div className="flex flex-col sm:flex-row">
-              <div className="flex-1 font-semibold mb-2 text-center sm:text-left">From</div>
-              {!isValidAmount && isValidationActive && (
-                <div className="flex-initial">
-                  <div className="text-red-500 text-xs text-center sm:text-right mb-2">{validationMessage}</div>
-                </div>
-              )}
+              <Tooltip title={message} placement="right" arrow>
+                <div className="ml-2 pt-1 text-neutral-400 hover:text-white transition-colors cursor-pointer"><FontAwesomeIcon icon={faInfoCircle}/></div>
+              </Tooltip>
             </div>
 
 
-            {/* Input Field */}
-            <div className="flex" id="fromInputWrapper">
-              <Select isDisabled={!selectedToken.address || !secretAddress} options={tokens.sort((a, b) => a.name.localeCompare(b.name))} value={selectedToken} onChange={setselectedToken} isSearchable={false}
-                formatOptionLabel={token => (
+
+
+
+            {/* *** From *** */}
+            <div className="bg-neutral-800 p-4 rounded-xl">
+              {/* Title Bar */}
+              <div className="flex flex-col sm:flex-row">
+                <div className="flex-1 font-semibold mb-2 text-center sm:text-left">From</div>
+                {!isValidAmount && isValidationActive && (
+                  <div className="flex-initial">
+                    <div className="text-red-500 text-xs text-center sm:text-right mb-2">{validationMessage}</div>
+                  </div>
+                )}
+              </div>
+
+
+              {/* Input Field */}
+              <div className="flex" id="fromInputWrapper">
+                <Select isDisabled={!selectedToken.address || !secretAddress} options={tokens.sort((a, b) => a.name.localeCompare(b.name))} value={selectedToken} onChange={setselectedToken} isSearchable={false}
+                  formatOptionLabel={token => (
+                    <div className="flex items-center">
+                      <img src={`/img/assets/${token.image}`} className="w-5 h-5 mr-2 rounded-full" />
+                      <span className="font-semibold text-sm">
+                        {wrappingMode == WrappingMode.Unwrap && 's'}
+                        {token.name}
+                      </span>
+                    </div>
+                  )} className="react-select-wrap-container" classNamePrefix="react-select-wrap" />
+                <input value={amountToWrap} onChange={handleInputChange} type="text" className={"text-right focus:z-10 block flex-1 min-w-0 w-full bg-neutral-900 text-white px-4 rounded-r-lg disabled:placeholder-neutral-700 transition-colors font-medium" + (!isValidAmount && isValidationActive ? "  border border-red-500" : "")} name="fromValue" id="fromValue" placeholder="0" disabled={!secretjs || !secretAddress}/>
+              </div>
+
+              {/* Balance | [25%|50%|75%|Max] */}
+              <div className="flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 mt-2">
+                <div className="flex-1 text-xs">
+                  {wrappingMode === WrappingMode.Wrap && (
+                    <NativeTokenBalanceUi/>
+                  )}
+                  {wrappingMode === WrappingMode.Unwrap && <WrappedTokenBalanceUi/>}
+                </div>
+                <div className="sm:flex-initial text-xs">
+                  <PercentagePicker/>
+                </div>
+              </div>
+            </div>
+
+
+
+
+
+
+
+
+            {/* Wrapping Mode Switch */}
+            <WrappingModeSwitch wrappingMode={wrappingMode} disabled={!secretAddress || !secretjs}/>
+
+
+            <div className="bg-neutral-800 p-4 rounded-xl mb-5">
+              <div className="flex">
+                <div className="flex-1 font-semibold mb-2 text-center sm:text-left">To</div>
+              </div>
+
+              <div className="flex">
+                <Select isDisabled={!selectedToken.address || !secretAddress} options={tokens.sort((a, b) => a.name.localeCompare(b.name))} value={selectedToken} onChange={setselectedToken} isSearchable={false} formatOptionLabel={token => (
                   <div className="flex items-center">
-                    <img src={`/img/assets/${token.image}`} className="w-5 h-5 mr-2 rounded-full" />
+                    <img src={`/img/assets/${token.image}`} className="w-6 h-6 mr-2 rounded-full" />
                     <span className="font-semibold text-sm">
-                      {wrappingMode == WrappingMode.Unwrap && 's'}
+                      {wrappingMode == WrappingMode.Wrap && 's'}
                       {token.name}
                     </span>
                   </div>
                 )} className="react-select-wrap-container" classNamePrefix="react-select-wrap" />
-              <input value={amountToWrap} onChange={handleInputChange} type="text" className={"text-right focus:z-10 block flex-1 min-w-0 w-full bg-neutral-900 text-white px-4 rounded-r-lg disabled:placeholder-neutral-700 transition-colors font-medium" + (!isValidAmount && isValidationActive ? "  border border-red-500" : "")} name="fromValue" id="fromValue" placeholder="0" disabled={!secretAddress}/>
-            </div>
-
-            {/* Balance | [25%|50%|75%|Max] */}
-            <div className="flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 mt-2">
-              <div className="flex-1 text-xs">
+                <input value={amountToWrap} onChange={handleInputChange} type="text" className={"text-right focus:z-10 block flex-1 min-w-0 w-full bg-neutral-900 text-white px-4 rounded-r-lg disabled:placeholder-neutral-700 transition-colors font-medium"} name="toValue" id="toValue" placeholder="0" disabled={!selectedToken.address || !secretjs || !secretAddress || (wrappingMode === WrappingMode.Unwrap && tokenWrappedBalance == viewingKeyErrorString)}/>
+              </div>
+              <div className="flex-1 text-xs mt-3 text-center sm:text-left">
                 {wrappingMode === WrappingMode.Wrap && (
+                  <WrappedTokenBalanceUi/>
+                )}
+                {wrappingMode === WrappingMode.Unwrap && (
                   <NativeTokenBalanceUi/>
                 )}
-                {wrappingMode === WrappingMode.Unwrap && <WrappedTokenBalanceUi/>}
-              </div>
-              <div className="sm:flex-initial text-xs">
-                <PercentagePicker/>
               </div>
             </div>
+
+            {/* <div className="bg-neutral-900 p-4 rounded-lg select-none flex items-center my-4">
+              <FontAwesomeIcon icon={faCircleInfo} className="flex-initial mr-4" />
+              <div className="flex-1 text-sm">
+                {message}
+              </div>
+            </div> */}
+
+            {/* Submit Button */}
+            <SubmitButton disabled={!secretjs || !selectedToken.address || !secretAddress} amount={amountToWrap} nativeCurrency={selectedToken.name} wrappedAmount={amountToWrap} wrappedCurrency={"s" + selectedToken.name} wrappingMode={wrappingMode}/>
+
           </div>
-
-
-
-
-
-
-
-
-          {/* Wrapping Mode Switch */}
-          <WrappingModeSwitch wrappingMode={wrappingMode} disabled={!secretAddress || !secretjs}/>
-
-
-          <div className="bg-neutral-800 p-4 rounded-xl mb-5">
-            <div className="flex">
-              <div className="flex-1 font-semibold mb-2 text-center sm:text-left">To</div>
-            </div>
-
-            <div className="flex">
-              <Select isDisabled={!selectedToken.address || !secretAddress} options={tokens.sort((a, b) => a.name.localeCompare(b.name))} value={selectedToken} onChange={setselectedToken} isSearchable={false} formatOptionLabel={token => (
-                <div className="flex items-center">
-                  <img src={`/img/assets/${token.image}`} className="w-6 h-6 mr-2 rounded-full" />
-                  <span className="font-semibold text-sm">
-                    {wrappingMode == WrappingMode.Wrap && 's'}
-                    {token.name}
-                  </span>
-                </div>
-              )} className="react-select-wrap-container" classNamePrefix="react-select-wrap" />
-              <input value={amountToWrap} onChange={handleInputChange} type="text" className={"text-right focus:z-10 block flex-1 min-w-0 w-full bg-neutral-900 text-white px-4 rounded-r-lg disabled:placeholder-neutral-700 transition-colors font-medium"} name="toValue" id="toValue" placeholder="0" disabled={!selectedToken.address || !secretAddress}/>
-            </div>
-            <div className="flex-1 text-xs mt-3 text-center sm:text-left">
-              {wrappingMode === WrappingMode.Wrap && (
-                <WrappedTokenBalanceUi/>
-              )}
-              {wrappingMode === WrappingMode.Unwrap && (
-                <NativeTokenBalanceUi/>
-              )}
-            </div>
-          </div>
-
-          {/* <div className="bg-neutral-900 p-4 rounded-lg select-none flex items-center my-4">
-            <FontAwesomeIcon icon={faCircleInfo} className="flex-initial mr-4" />
-            <div className="flex-1 text-sm">
-              {message}
-            </div>
-          </div> */}
-
-          {/* Submit Button */}
-          <SubmitButton disabled={!secretjs || !selectedToken.address || !secretAddress} amount={amountToWrap} nativeCurrency={selectedToken.name} wrappedAmount={amountToWrap} wrappedCurrency={"s" + selectedToken.name} wrappingMode={wrappingMode}/>
         </div>
-      </div>
+      </WrapContext.Provider>
     </>
   )
 }
