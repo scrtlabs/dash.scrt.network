@@ -744,7 +744,7 @@ export default function Deposit () {
         <div className="flex-1 py-2 md:py-0">
           <div className="md:relative" id="ibcSwitchButton">
             <div className="md:absolute md:top-1/2 md:left-1/2 md:transform md:-translate-x-1/2 md:-translate-y-1/2 text-center md:text-left">
-              <Tooltip title={`Switch chains`} placement="bottom">
+              <Tooltip title={`Switch chains`} placement="bottom" disableHoverListener={!secretjs && !secretAddress} arrow>
                 <button onClick={toggleIbcMode} className={"inline-block bg-neutral-800 px-3 py-2 text-cyan-500 transition-colors rounded-xl disabled:text-neutral-500" + ((secretjs && secretAddress) ? " hover:text-cyan-300" : "")} disabled={!secretjs || !secretAddress}>
                   <FontAwesomeIcon icon={faRightLeft} className="rotate-90 md:rotate-0" />
                 </button>
@@ -800,8 +800,8 @@ export default function Deposit () {
                 toast.success("Address copied to clipboard!");
               }}
             >
-              <Tooltip title={"Copy to clipboard"} placement="bottom">
-                <button className="text-neutral-500 hover:text-white active:text-neutral-500 transition-colors">
+              <Tooltip title={"Copy to clipboard"} placement="bottom" disableHoverListener={!secretjs && !secretAddress} arrow>
+                  <button className="text-neutral-500 enabled:hover:text-white enabled:active:text-neutral-500 transition-colors" disabled={!secretjs && !secretAddress}>
                   <FontAwesomeIcon icon={faCopy}/>
                 </button>
               </Tooltip>
@@ -828,8 +828,8 @@ export default function Deposit () {
                   toast.success("Address copied to clipboard!");
                 }}
               >
-                <Tooltip title={"Copy to clipboard"} placement="bottom">
-                  <button className="text-neutral-500 hover:text-white active:text-neutral-500 transition-colors">
+                <Tooltip title={"Copy to clipboard"} placement="bottom" disableHoverListener={!secretjs && !secretAddress} arrow>
+                  <button className="text-neutral-500 enabled:hover:text-white enabled:active:text-neutral-500 transition-colors" disabled={!secretjs && !secretAddress}>
                     <FontAwesomeIcon icon={faCopy}/>
                   </button>
                 </Tooltip>
