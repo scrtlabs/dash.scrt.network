@@ -37,7 +37,7 @@ export function Wrap() {
   const {useFeegrant, setUseFeegrant} = useContext(FeeGrantContext);
 
   const [price, setPrice] = useState <number>();
-  const [amountToWrap, setAmount] = useState<string>("");
+  const [amountToWrap, setAmountToWrap] = useState<string>("");
   const [wrappingMode, setWrappingMode] = useState<WrappingMode>(modePreselection);
   const [selectedToken, setselectedToken] = useState<Token>(tokens.filter(token => token.name === tokenPreselection)[0]);
 
@@ -64,10 +64,7 @@ export function Wrap() {
       return match && str === match[0];
     }
 
-    if (isValidationActive && new BigNumber(amountToWrap) > new BigNumber(availableAmount) && !(tokenWrappedBalance == viewingKeyErrorString && wrappingMode === WrappingMode.Unwrap) && amountToWrap !== "") {
-      setValidationMessage("Not enough balance");
-      setisValidAmount(false);
-    } else if (!matchExact(numberRegex, amountToWrap) || amountToWrap === "") {
+    if (!matchExact(numberRegex, amountToWrap) || amountToWrap === "") {
       setValidationMessage("Please enter a valid amount");
       setisValidAmount(false);
     } else {
@@ -76,13 +73,19 @@ export function Wrap() {
   }
 
   useEffect(() => {
+    // setting amountToWrap to max. value, if entered value is > available
+    const availableAmount = wrappingMode === WrappingMode.Wrap ? new BigNumber(tokenNativeBalance).dividedBy(`1e${selectedToken.decimals}`) : new BigNumber(tokenWrappedBalance).dividedBy(`1e${selectedToken.decimals}`);
+    if (new BigNumber(amountToWrap) > new BigNumber(availableAmount) && !(tokenWrappedBalance == viewingKeyErrorString && wrappingMode === WrappingMode.Unwrap) && amountToWrap !== "") {
+      setAmountToWrap(availableAmount.toString());
+    }
+
     if (isValidationActive) {
       validateForm();
     }
 }, [amountToWrap, wrappingMode, isValidationActive]);
 
   async function handleInputChange(e: any) {
-    await setAmount(e.target.value);
+    await setAmountToWrap(e.target.value);
   }
 
   const updateFeeGrantButton = (text: string, color: string) => {
@@ -125,9 +128,9 @@ export function Wrap() {
       console.log("availableAmount", availableAmount);
       console.log("potentialInput", potentialInput);
       if (Number(potentialInput) == 0) {
-        setAmount("");
+        setAmountToWrap("");
       } else {
-        setAmount(potentialInput.toString());
+        setAmountToWrap(potentialInput.toString());
       }
       
       validateForm();
@@ -220,7 +223,7 @@ export function Wrap() {
             )})
           </span>
 
-          <Tooltip title={`IBC Transfer`} placement="bottom">
+          <Tooltip title={`IBC Transfer`} placement="bottom" arrow>
             <Link to="/ibc" className="ml-2 hover:text-white transition-colors hover:bg-neutral-900 px-1.5 py-0.5 rounded">
               <FontAwesomeIcon icon={faArrowRightArrowLeft} />
             </Link>
@@ -280,7 +283,7 @@ export function Wrap() {
 
     return (
       <div className="text-center my-4">
-          <Tooltip title={`Switch to ${wrappingMode === WrappingMode.Wrap ? 'Unwrapping' : "Wrapping"}`} placement="right">
+          <Tooltip disableHoverListener={!secretjs && !secretAddress} title={`Switch to ${wrappingMode === WrappingMode.Wrap ? 'Unwrapping' : "Wrapping"}`} placement="right" arrow>
             <button onClick={() => toggleWrappingMode()} disabled={disabled} className={"bg-neutral-800 px-3 py-2 text-cyan-500 transition-colors rounded-xl disabled:text-neutral-500" + (!disabled ? " hover:text-cyan-300" : "")}>
               <FontAwesomeIcon icon={faRightLeft} className="fa-rotate-90" />
             </button>
@@ -353,7 +356,7 @@ export function Wrap() {
           );
 
           if (tx.code === 0) {
-            setAmount("");
+            setAmountToWrap("");
             toast.update(toastId, {
               render: `Wrapped ${selectedToken.name} successfully`,
               type: "success",
@@ -397,7 +400,7 @@ export function Wrap() {
             }
           );
           if (tx.code === 0) {
-            setAmount("");
+            setAmountToWrap("");
             toast.update(toastId, {
               render: `Unwrapped ${selectedToken.name} successfully`,
               type: "success",
@@ -535,9 +538,11 @@ export function Wrap() {
 
           {/* Header */}
           <div className="flex items-center mb-4">
-            <h1 className="inline text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-500 to-purple-500">Secret {wrappingMode === WrappingMode.Wrap ? "Wrap" : "Unwrap"}</h1>
+            <h1 className="inline text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-500 to-purple-500">
+              Secret {wrappingMode === WrappingMode.Wrap ? "Wrap" : "Unwrap"}
+            </h1>
 
-            <Tooltip title={message} placement="bottom">
+            <Tooltip title={message} placement="right" arrow>
               <div className="ml-2 pt-1 text-neutral-400 hover:text-white transition-colors cursor-pointer"><FontAwesomeIcon icon={faInfoCircle}/></div>
             </Tooltip>
           </div>
