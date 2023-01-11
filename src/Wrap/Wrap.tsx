@@ -335,7 +335,9 @@ useEffect(() => {
       setIsValidationActive(true);
       validateForm();
 
-      if (!secretjs || !secretAddress) { return; }
+      if (!secretjs || !secretAddress) {
+        return;
+      }
 
       if (!isValidAmount || amountToWrap === "") {
         uiFocusInput();
@@ -397,6 +399,10 @@ useEffect(() => {
             console.error(`Tx failed: ${tx.rawLog}`);
           }
         } else {
+          if (tokenWrappedBalance === viewingKeyErrorString) {
+            setIsUnknownBalanceModalOpen(true);
+            return;
+          }
           const tx = await secretjs.tx.broadcast(
             [
               new MsgExecuteContract({
@@ -567,7 +573,7 @@ useEffect(() => {
         <title>{websiteName} | Wrap</title>
       </Helmet>
 
-      <WrapContext.Provider value={{ isUnknownBalanceModalOpen, setIsUnknownBalanceModalOpen, selectedTokenName: selectedToken.name, amountToWrap }}>
+      <WrapContext.Provider value={{ isUnknownBalanceModalOpen, setIsUnknownBalanceModalOpen, selectedTokenName: selectedToken.name, amountToWrap, hasEnoughBalanceForUnwrapping: false }}>
 
         <FeeGrantInfoModal open={isFeeGrantInfoModalOpen} onClose={() => {setIsFeeGrantInfoModalOpen(false); document.body.classList.remove("overflow-hidden")}}/>
         <UnknownBalanceModal open={isUnknownBalanceModalOpen} onClose={() => {setIsUnknownBalanceModalOpen(false); document.body.classList.remove("overflow-hidden")}}/>
