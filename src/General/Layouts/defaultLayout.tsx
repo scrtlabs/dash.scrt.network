@@ -10,6 +10,7 @@ import { Breakpoint } from "react-socks";
 import { Flip, ToastContainer, toast} from "react-toastify";
 import { faDiscord, faTwitter } from '@fortawesome/free-brands-svg-icons';
 import { useLocation } from 'react-router-dom';
+import { FeeGrantStatus } from 'General/Utils/types';
 
 export const KeplrContext = createContext<{ secretjs: SecretNetworkClient | null ; secretAddress: string }| null >(null);
 export const NavigationContext = createContext<boolean | null>(null);
@@ -49,10 +50,11 @@ export const DefaultLayout =({children}:any) =>{
 // Fee Grant
   const [isFeeGranted, setIsFeeGranted] = useState<boolean>(false);
 
+  const [feeGrantStatus, setFeeGrantStatus] = useState<FeeGrantStatus>('Untouched');
+
 
   return (
     <>
-
       <FloatingCtaButton />
 
       <div className="flex">
@@ -73,7 +75,7 @@ export const DefaultLayout =({children}:any) =>{
           </NavigationContext.Provider>
         </aside>
         <KeplrContext.Provider value={{ secretjs, secretAddress }}>
-          <FeeGrantContext.Provider value={{ useFeegrant: isFeeGranted, setUseFeegrant: setIsFeeGranted }}>
+          <FeeGrantContext.Provider value={{ feeGrantStatus, setFeeGrantStatus }}>
               <main className="flex flex-col min-h-screen flex-1 lg:ml-72">
 
                 {/* Top Bar [Burger Menu | Socials | Keplr] */}

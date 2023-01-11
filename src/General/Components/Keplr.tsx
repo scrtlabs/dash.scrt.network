@@ -1,4 +1,4 @@
-import React, { Component, useEffect, useState } from "react";
+import React, { Component, useContext, useEffect, useState } from "react";
 import CopyToClipboard from "react-copy-to-clipboard";
 import { Else, If, Then } from "react-if";
 import { SecretNetworkClient} from "secretjs";
@@ -10,6 +10,7 @@ import { faucetURL } from "General/Utils/commons";
 import { toast } from "react-toastify";
 import GetWalletModal from "General/Components/GetWalletModal";
 import { SECRET_LCD, SECRET_CHAIN_ID, SECRET_RPC} from "General/Utils/config";
+import { FeeGrantContext } from "General/Layouts/defaultLayout";
 
 
 export function KeplrPanel({
@@ -24,6 +25,7 @@ export function KeplrPanel({
   setSecretAddress: React.Dispatch<React.SetStateAction<string>>;
 }) {
 
+  const {feeGrantStatus, setFeeGrantStatus} = useContext(FeeGrantContext);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -58,73 +60,6 @@ export function KeplrPanel({
     toast.success("Wallet disconnected!");
   }
 
-  type FeeGrantStatus = 'Success' | 'Fail' | 'Untouched';
-
-  const [feeGrantStatus, setFeeGrantStatus] = useState<FeeGrantStatus>('Untouched');
-
-  async function grantButtonAction() {
-    fetch(faucetURL, {
-      method: "POST",
-      body: JSON.stringify({ Address: secretAddress }),
-      headers: { "Content-Type": "application/json" },
-    })
-      .then(async (result) => {
-        const textBody = await result.text();
-        console.log(textBody);
-        if (result.ok == true) {
-          setFeeGrantStatus('Success');
-          toast.success(`Successfully sent new Fee Grant!`);
-        } else if (
-          textBody == "Existing Fee Grant did not expire\n"
-        ) {
-          setFeeGrantStatus('Success');
-          toast.success(`Using existing fee grant!`);
-        } else {
-          setFeeGrantStatus('Fail');
-          toast.error(`Fee Grant failed: ${result.status}`);
-        }
-        setIsFeeGranted(true);
-      })
-      .catch((error) => {
-        toast.error(`Fee Grant failed with error: ${error}`);
-      });
-  }
-
-  class FeeGrantButton extends Component {
-    render() {
-      return <>
-        {/* <FeeGrant */}
-        {secretAddress && (
-          <>
-            {/* Untouched */}
-            <If condition={feeGrantStatus === 'Untouched'}>
-              <button onClick={grantButtonAction} className="font-semibold w-full p-1.5 rounded-md text-emerald-500 border border-emerald-500 hover:bg-emerald-600 hover:text-white transition-colors select-none">
-                Request Fee Grant
-              </button>
-            </If>
-
-            {/* Success */}
-            <If condition={feeGrantStatus === 'Success'}>
-              <div className="font-semibold w-full text-center p-1.5 rounded-md text-emerald-500 border border-emerald-500 select-none">
-                <FontAwesomeIcon icon={faCheck} className="mr-2 text-emerald-500"/>
-                Fee Granted
-              </div>
-            </If>
-
-            {/* Fail */}
-            <If condition={feeGrantStatus === 'Fail'}>
-              <button onClick={grantButtonAction} className="font-semibold group w-full p-1.5 rounded-md border border-red-500 hover:text-white transition-colors select-none">
-                <FontAwesomeIcon icon={faX} className="mr-2 text-red-500"/>
-                Fee Grant failed
-                <FontAwesomeIcon icon={faRotateRight} className="ml-2 text-neutral-500 group-hover:text-white transition-colors" />
-              </button>
-            </If>
-          </>
-        )}
-      </>
-    }
-  }
-
 class KeplrMenu extends Component {
   render() {
     return <>
@@ -136,9 +71,6 @@ class KeplrMenu extends Component {
                 <div className="block text-neutral-500 group-hover:text-white transition-colors"><FontAwesomeIcon icon={faCopy}/></div>
               </button>
             </CopyToClipboard>
-            {/* <div className="mb-4">
-              <FeeGrantButton/>
-            </div> */}
             <div className="text-right">
               <button onClick={disconnectWallet} className="font-semibold px-3 py-1.5 rounded-md text-red-400 bg-red-500/30 hover:bg-red-500/50 hover:text-red-300 transition-colors cursor-pointer">Disconnect Wallet</button>
               {/* block bg-cyan-500/30 text-cyan-400 hover:text-cyan-300 hover:bg-cyan-500/50 w-full text-center transition-colors py-2.5 rounded-xl mt-4 font-semibold text-sm */}
