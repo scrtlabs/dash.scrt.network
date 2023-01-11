@@ -1,8 +1,18 @@
 import { faInfoCircle, faTriangleExclamation, faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import React from "react";
+import React, { useEffect } from "react";
 
 const FeeGrantInfoModal = (props) => {
+
+  // disable body scroll on open
+  useEffect(() => {
+    if (props.open) {
+      document.body.classList.add("overflow-hidden");
+    } else {
+      document.body.classList.remove("overflow-hidden");
+    }
+  }, [props.open]);
+  
   if (!props.open) return null;
   
   return (
