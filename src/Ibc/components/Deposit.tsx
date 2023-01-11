@@ -33,11 +33,13 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import CopyToClipboard from "react-copy-to-clipboard";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCircleInfo, faCopy, faPaste, faRightLeft ,faKey} from "@fortawesome/free-solid-svg-icons";
+import { faCircleInfo, faCopy, faPaste, faRightLeft ,faKey, faXmarkCircle, faCheckCircle, faInfoCircle} from "@fortawesome/free-solid-svg-icons";
 import { IbcContext } from "Ibc/Ibc";
+import { FeeGrant } from "General/Components/FeeGrant";
 
 export default function Deposit () {
   const {isWrapModalOpen, setIsWrapModalOpen, selectedTokenName, setSelectedTokenName} = useContext(IbcContext);
+  const {feeGrantStatus, setFeeGrantStatus} = useContext(FeeGrantContext);
 
   const [sourceAddress, setSourceAddress] = useState<string>("");
   const [availableBalance, setAvailableBalance] = useState<string>("");
@@ -895,14 +897,36 @@ export default function Deposit () {
 
       </div>
 
-
-      {/* <div className="bg-neutral-900 p-4 mt-8 rounded-lg select-none flex items-center mb-8">
-        <FontAwesomeIcon icon={faCircleInfo} className="flex-initial mr-4" />
-        <div className="flex-1 text-sm">
-          {message}
+      {/* Fee Grant */}
+      <div className="bg-neutral-800 p-4 rounded-lg select-none flex items-center my-4">
+        <div className="flex-1 flex items-center">
+          <span className="font-semibold text-sm">Fee Grant</span>
+          <Tooltip title={`IBC Transfer`} placement="bottom" arrow>
+            <FontAwesomeIcon icon={faInfoCircle} className="ml-2" />
+          </Tooltip>
         </div>
-      </div> */}
-
+        <div className="flex-initial">
+          {/* Untouched */}
+          {feeGrantStatus === 'Untouched' && (
+            // <FeeGrant/>
+            <></>
+          )}
+          {/* Success */}
+          {feeGrantStatus === 'Success' && (
+            <div className='font-semibold text-sm'>
+              <FontAwesomeIcon icon={faCheckCircle} className="text-green-500 mr-1.5"/>
+              Fee Granted
+            </div>
+          )}
+          {/* Fail */}
+          {feeGrantStatus === 'Fail' && (
+            <div className='font-semibold text-sm'>
+              <FontAwesomeIcon icon={faXmarkCircle} className="text-red-500 mr-1.5"/>
+              Request failed
+            </div>
+          )}
+        </div>
+      </div>
 
         <div className="mt-4">
           <SubmitButton/>
