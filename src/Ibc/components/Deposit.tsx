@@ -61,18 +61,15 @@ export default function Deposit () {
     setSelectedTokenName(selectedToken.name);
   }, [selectedToken]);
 
-  enum IbcMode {
-    Deposit,
-    Withdrawal
-  }
+  type IbcMode = 'Deposit' | 'Withdrawal';
 
-  const [ibcMode, setIbcMode] = useState<IbcMode>(IbcMode.Deposit);
+  const [ibcMode, setIbcMode] = useState<IbcMode>('Deposit');
 
   function toggleIbcMode() {
-    if (ibcMode === IbcMode.Deposit) {
-      setIbcMode(IbcMode.Withdrawal);
+    if (ibcMode === 'Deposit') {
+      setIbcMode('Withdrawal');
     } else {
-      setIbcMode(IbcMode.Deposit);
+      setIbcMode('Deposit');
     }
   }
 
@@ -80,7 +77,7 @@ export default function Deposit () {
     setAmountToTransfer(e.target.value);
   }
 
-  const message = (ibcMode === IbcMode.Deposit) ?
+  const message = (ibcMode === 'Deposit') ?
   `Deposit your SCRT via IBC transfer from ${selectedSource.chain_name} to Secret Network` :
   `Withdraw your SCRT via IBC transfer from Secret Network to ${selectedSource.chain_name}`
 
@@ -171,7 +168,7 @@ export default function Deposit () {
 
   const fetchSourceBalance = async (newAddress: String | null) => {
     if (secretjs && secretAddress) {
-      if (ibcMode === IbcMode.Deposit) {
+      if (ibcMode === 'Deposit') {
         const url = `${
           chains[selectedSource.chain_name].lcd
         }/cosmos/bank/v1beta1/balances/${
@@ -198,7 +195,7 @@ export default function Deposit () {
           setAvailableBalance("Error");
         }
       }
-      else if (ibcMode === IbcMode.Withdrawal) {
+      else if (ibcMode === 'Withdrawal') {
         updateCoinBalance();
       }
     }
@@ -219,7 +216,7 @@ export default function Deposit () {
       clearInterval(fetchBalanceInterval);
     }
 
-    if (ibcMode === IbcMode.Withdrawal) {
+    if (ibcMode === 'Withdrawal') {
       fetchSourceBalance(null);
     } 
     
@@ -310,7 +307,7 @@ export default function Deposit () {
       //   return;
       // }
 
-      if (ibcMode == IbcMode.Deposit) {
+      if (ibcMode == 'Deposit') {
         if (!sourceChainSecretjs) {
           console.error("No cosmjs");
           return;
@@ -536,7 +533,7 @@ export default function Deposit () {
           setLoading(false);
         }
       }
-      if (ibcMode == IbcMode.Withdrawal) {
+      if (ibcMode == 'Withdrawal') {
         if (!secretjs) {
           console.error("No secretjs");
           return;
@@ -715,7 +712,7 @@ export default function Deposit () {
               <div className="w-1/2 inline-block">
                 <div className="relative">
                   <div className={`absolute inset-0 bg-cyan-500 blur-md rounded-full overflow-hidden ${(secretjs && secretAddress) ? "fadeInAndOutLoop" : "opacity-40"}`}></div>
-                  <img src={"/img/assets/" + (ibcMode === IbcMode.Deposit ? chains[selectedSource.chain_name].chain_image : "scrt.svg")} className="w-full relative inline-block rounded-full overflow-hiden" />
+                  <img src={"/img/assets/" + (ibcMode === 'Deposit' ? chains[selectedSource.chain_name].chain_image : "scrt.svg")} className="w-full relative inline-block rounded-full overflow-hiden" />
                 </div>
               </div>
             </div>
@@ -724,8 +721,8 @@ export default function Deposit () {
           {/* Chain Picker */}
           <div className="-mt-3 relative z-10 w-full">
           {/* {value} */}
-          {ibcMode === IbcMode.Deposit && (<ChainSelect/>)}
-            {ibcMode === IbcMode.Withdrawal && (
+          {ibcMode === 'Deposit' && (<ChainSelect/>)}
+            {ibcMode === 'Withdrawal' && (
               <div style={{paddingTop: ".76rem", paddingBottom: ".76rem"}} className="flex items-center w-full text-sm font-semibold select-none bg-neutral-800 rounded text-neutral-200 focus:bg-neutral-700 disabled:hover:bg-neutral-800 border border-neutral-600">
                 <div className="flex-1 px-3">
                   <span>Secret Network</span>
@@ -759,7 +756,7 @@ export default function Deposit () {
               <div className="w-1/2 inline-block">
                 <div className="relative">
                 <div className={`absolute inset-0 bg-violet-500 blur-md rounded-full overflow-hidden ${(secretjs && secretAddress) ? "fadeInAndOutLoop" : "opacity-40"}`}></div>
-                  <img src={"/img/assets/" + (ibcMode === IbcMode.Withdrawal ? chains[selectedSource.chain_name].chain_image : "scrt.svg")} className="w-full relative inline-block rounded-full overflow-hiden" />
+                  <img src={"/img/assets/" + (ibcMode === 'Withdrawal' ? chains[selectedSource.chain_name].chain_image : "scrt.svg")} className="w-full relative inline-block rounded-full overflow-hiden" />
                 </div>
               </div>
             </div>
@@ -767,8 +764,8 @@ export default function Deposit () {
           </div>
           {/* Chain Picker */}
           <div className="md:-mt-3 md:relative z-10 w-full">
-            {ibcMode === IbcMode.Withdrawal && (<ChainSelect/>)}
-            {ibcMode === IbcMode.Deposit && (
+            {ibcMode === 'Withdrawal' && (<ChainSelect/>)}
+            {ibcMode === 'Deposit' && (
               <div style={{paddingTop: ".76rem", paddingBottom: ".76rem"}} className="flex items-center w-full text-sm font-semibold select-none bg-neutral-800 rounded text-neutral-200 focus:bg-neutral-700 disabled:hover:bg-neutral-800 border border-neutral-600">
                 <div className="flex-1 px-3">
                   <span>Secret Network</span>
@@ -784,16 +781,16 @@ export default function Deposit () {
         <div className="flex items-center">
           <div className="font-semibold mr-4 w-10">From:</div>
           <div className="flex-1 truncate font-medium text-sm">
-            {(ibcMode === IbcMode.Deposit && secretjs && secretAddress) && (
+            {(ibcMode === 'Deposit' && secretjs && secretAddress) && (
               <a href={`${chains[selectedSource.chain_name].explorer_account}${sourceAddress}`} target="_blank">{sourceAddress}</a>
             )}
-            {(ibcMode === IbcMode.Withdrawal && secretjs && secretAddress) && (
+            {(ibcMode === 'Withdrawal' && secretjs && secretAddress) && (
               <a href={`${chains[selectedSource.chain_name].explorer_account}${secretAddress}`} target="_blank">{secretAddress}</a>
             )}
           </div>
           <div className="flex-initial ml-4">
             <CopyToClipboard
-              text={ibcMode === IbcMode.Deposit ? sourceAddress : secretAddress}
+              text={ibcMode === 'Deposit' ? sourceAddress : secretAddress}
               onCopy={() => {
                 setIsCopied(true);
                 setTimeout(() => setIsCopied(false), 3000);
@@ -812,16 +809,16 @@ export default function Deposit () {
         <div className="flex items-center">
           <div className="flex-initial font-semibold mr-4 w-10">To:</div>
           <div className="flex-1 truncate font-medium text-sm">
-            {ibcMode === IbcMode.Withdrawal && (
+            {ibcMode === 'Withdrawal' && (
                 <a href={`${chains[selectedSource.chain_name].explorer_account}${sourceAddress}`} target="_blank">{sourceAddress}</a>
               )}
-              {ibcMode === IbcMode.Deposit && (
+              {ibcMode === 'Deposit' && (
                 <a href={`${targetChain.explorer_account}${secretAddress}`} target="_blank">{secretAddress}</a>
               )}
           </div>
           <div className="flex-initial ml-4">
               <CopyToClipboard
-                text={ibcMode === IbcMode.Withdrawal ? sourceAddress : secretAddress}
+                text={ibcMode === 'Withdrawal' ? sourceAddress : secretAddress}
                 onCopy={() => {
                   setIsCopied(true);
                   setTimeout(() => setIsCopied(false), 3000);
