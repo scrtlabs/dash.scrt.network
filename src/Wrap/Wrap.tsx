@@ -23,20 +23,13 @@ export function Wrap() {
   const [isUnknownBalanceModalOpen, setIsUnknownBalanceModalOpen] = useState(false);
   const [isFeeGrantInfoModalOpen, setIsFeeGrantInfoModalOpen] = useState(false);
   
-  enum WrappingMode {
-    Wrap,
-    Unwrap
-  }
+  type WrappingMode = 'Wrap' | 'Unwrap';
 
   const queryParams = new URLSearchParams(window.location.search);
   const tokenByQueryParam = queryParams.get("token"); // "scrt", "akash", etc.
   const modeByQueryParam = queryParams.get("mode"); // "wrap" or "unwrap"
-  const tokenPreselection = 
-    tokens.filter(token => token.name === tokenByQueryParam?.toUpperCase())[0]
-    ? tokenByQueryParam?.toUpperCase() : "SCRT";
-  const modePreselection = 
-    modeByQueryParam?.toLowerCase() === "unwrap"
-    ? WrappingMode.Unwrap : WrappingMode.Wrap;
+  const tokenPreselection = tokens.filter(token => token.name === tokenByQueryParam?.toUpperCase())[0] ? tokenByQueryParam?.toUpperCase() : "SCRT";
+  const modePreselection = modeByQueryParam?.toLowerCase() === "unwrap" ? 'Unwrap' : 'Wrap';
 
   const {secretjs, secretAddress} = useContext(KeplrContext);
   const {useFeegrant, setUseFeegrant} = useContext(FeeGrantContext);
@@ -59,7 +52,7 @@ export function Wrap() {
   const [tokenWrappedBalance, setTokenWrappedBalance] = useState<string>("");
 
   function validateForm() {
-    const availableAmount = new BigNumber(wrappingMode === WrappingMode.Wrap ? tokenNativeBalance : tokenWrappedBalance).dividedBy(`1e${selectedToken.decimals}`);
+    const availableAmount = new BigNumber(wrappingMode === 'Wrap' ? tokenNativeBalance : tokenWrappedBalance).dividedBy(`1e${selectedToken.decimals}`);
 
     const numberRegex = /^(?:[1-9]\d*|0)?(?:\.\d+)?$/;
 
@@ -68,7 +61,7 @@ export function Wrap() {
       return match && str === match[0];
     }
 
-    if (new BigNumber(amountToWrap).isGreaterThan(new BigNumber(availableAmount)) && !(tokenWrappedBalance == viewingKeyErrorString && wrappingMode === WrappingMode.Unwrap) && amountToWrap !== "") {
+    if (new BigNumber(amountToWrap).isGreaterThan(new BigNumber(availableAmount)) && !(tokenWrappedBalance == viewingKeyErrorString && wrappingMode === 'Unwrap') && amountToWrap !== "") {
       setValidationMessage("Not enough balance");
       setisValidAmount(false);
     } else if (!matchExact(numberRegex, amountToWrap) || amountToWrap === "") {
@@ -81,8 +74,8 @@ export function Wrap() {
 
   useEffect(() => {
     // setting amountToWrap to max. value, if entered value is > available
-    const availableAmount = wrappingMode === WrappingMode.Wrap ? new BigNumber(tokenNativeBalance).dividedBy(`1e${selectedToken.decimals}`) : new BigNumber(tokenWrappedBalance).dividedBy(`1e${selectedToken.decimals}`);
-    if (!(new BigNumber(amountToWrap).isNaN()) && availableAmount.isGreaterThan(new BigNumber(0)) && new BigNumber(amountToWrap).isGreaterThan(new BigNumber(availableAmount)) && !(tokenWrappedBalance == viewingKeyErrorString && wrappingMode === WrappingMode.Unwrap) && amountToWrap !== "") {
+    const availableAmount = wrappingMode === 'Wrap' ? new BigNumber(tokenNativeBalance).dividedBy(`1e${selectedToken.decimals}`) : new BigNumber(tokenWrappedBalance).dividedBy(`1e${selectedToken.decimals}`);
+    if (!(new BigNumber(amountToWrap).isNaN()) && availableAmount.isGreaterThan(new BigNumber(0)) && new BigNumber(amountToWrap).isGreaterThan(new BigNumber(availableAmount)) && !(tokenWrappedBalance == viewingKeyErrorString && wrappingMode === 'Unwrap') && amountToWrap !== "") {
       setAmountToWrap(availableAmount.toString());
     }
 
@@ -117,15 +110,15 @@ useEffect(() => {
   }
 
   function toggleWrappingMode() {
-    if (wrappingMode === WrappingMode.Wrap) {
-      setWrappingMode(WrappingMode.Unwrap);
+    if (wrappingMode === 'Wrap') {
+      setWrappingMode('Unwrap');
     } else {
-      setWrappingMode(WrappingMode.Wrap);
+      setWrappingMode('Wrap');
     }
   }
 
 
-  const message = (wrappingMode === WrappingMode.Wrap) ?
+  const message = (wrappingMode === 'Wrap') ?
   `Converting publicly visible ${selectedToken.name} into its privacy-preserving equivalent s${selectedToken.name}. These tokens are not publicly visible and require a viewing key!` :
   `Convert privacy-preserving s${selectedToken.name} into its publicly visible equivalent ${selectedToken.name}!`;
 
@@ -136,7 +129,7 @@ useEffect(() => {
   // handles [25% | 50% | 75% | Max] Button-Group
   function setAmountByPercentage(percentage: number) {
     let maxValue = "0";
-    if (wrappingMode === WrappingMode.Wrap) {
+    if (wrappingMode === 'Wrap') {
       maxValue = tokenNativeBalance;
     } else {
       maxValue = tokenWrappedBalance;
@@ -229,10 +222,10 @@ useEffect(() => {
   function PercentagePicker() {
     return (
       <div className="inline-flex rounded-full text-xs font-bold">
-        <button onClick={() => setAmountByPercentage(25)} className="bg-neutral-900 px-1.5 py-0.5 rounded-l-md transition-colors hover:bg-neutral-700 focus:bg-neutral-500 cursor-pointer disabled:text-neutral-500 disabled:hover:bg-neutral-900 disabled:cursor-default" disabled={!secretjs || !secretAddress || (wrappingMode === WrappingMode.Unwrap && tokenWrappedBalance == viewingKeyErrorString)}>25%</button>
-        <button onClick={() => setAmountByPercentage(50)} className="bg-neutral-900 px-1.5 py-0.5 border-l border-neutral-700 transition-colors hover:bg-neutral-700 focus:bg-neutral-500 cursor-pointer disabled:text-neutral-500 disabled:hover:bg-neutral-900 disabled:cursor-default" disabled={!secretjs || !secretAddress || (wrappingMode === WrappingMode.Unwrap && tokenWrappedBalance == viewingKeyErrorString)}>50%</button>
-        <button onClick={() => setAmountByPercentage(75)} className="bg-neutral-900 px-1.5 py-0.5 border-l border-neutral-700 transition-colors hover:bg-neutral-700 focus:bg-neutral-500 cursor-pointer disabled:text-neutral-500 disabled:hover:bg-neutral-900 disabled:cursor-default" disabled={!secretjs || !secretAddress || (wrappingMode === WrappingMode.Unwrap && tokenWrappedBalance == viewingKeyErrorString)}>75%</button>
-        <button onClick={() => setAmountByPercentage(100)} className="bg-neutral-900 px-1.5 py-0.5 rounded-r-md border-l border-neutral-700 transition-colors hover:bg-neutral-700 focus:bg-neutral-500 cursor-pointer disabled:text-neutral-500 disabled:hover:bg-neutral-900 disabled:cursor-default" disabled={!secretjs || !secretAddress || (wrappingMode === WrappingMode.Unwrap && tokenWrappedBalance == viewingKeyErrorString)}>MAX</button>
+        <button onClick={() => setAmountByPercentage(25)} className="bg-neutral-900 px-1.5 py-0.5 rounded-l-md transition-colors hover:bg-neutral-700 focus:bg-neutral-500 cursor-pointer disabled:text-neutral-500 disabled:hover:bg-neutral-900 disabled:cursor-default" disabled={!secretjs || !secretAddress || (wrappingMode === 'Unwrap' && tokenWrappedBalance == viewingKeyErrorString)}>25%</button>
+        <button onClick={() => setAmountByPercentage(50)} className="bg-neutral-900 px-1.5 py-0.5 border-l border-neutral-700 transition-colors hover:bg-neutral-700 focus:bg-neutral-500 cursor-pointer disabled:text-neutral-500 disabled:hover:bg-neutral-900 disabled:cursor-default" disabled={!secretjs || !secretAddress || (wrappingMode === 'Unwrap' && tokenWrappedBalance == viewingKeyErrorString)}>50%</button>
+        <button onClick={() => setAmountByPercentage(75)} className="bg-neutral-900 px-1.5 py-0.5 border-l border-neutral-700 transition-colors hover:bg-neutral-700 focus:bg-neutral-500 cursor-pointer disabled:text-neutral-500 disabled:hover:bg-neutral-900 disabled:cursor-default" disabled={!secretjs || !secretAddress || (wrappingMode === 'Unwrap' && tokenWrappedBalance == viewingKeyErrorString)}>75%</button>
+        <button onClick={() => setAmountByPercentage(100)} className="bg-neutral-900 px-1.5 py-0.5 rounded-r-md border-l border-neutral-700 transition-colors hover:bg-neutral-700 focus:bg-neutral-500 cursor-pointer disabled:text-neutral-500 disabled:hover:bg-neutral-900 disabled:cursor-default" disabled={!secretjs || !secretAddress || (wrappingMode === 'Unwrap' && tokenWrappedBalance == viewingKeyErrorString)}>MAX</button>
       </div>
     )
   }
@@ -313,7 +306,7 @@ useEffect(() => {
 
     return (
       <div className="text-center my-4">
-          <Tooltip disableHoverListener={!secretjs && !secretAddress} title={`Switch to ${wrappingMode === WrappingMode.Wrap ? 'Unwrapping' : "Wrapping"}`} placement="right" arrow>
+          <Tooltip disableHoverListener={!secretjs && !secretAddress} title={`Switch to ${wrappingMode === 'Wrap' ? 'Unwrapping' : "Wrapping"}`} placement="right" arrow>
             <button onClick={() => toggleWrappingMode()} disabled={disabled} className={"bg-neutral-800 px-3 py-2 text-cyan-500 transition-colors rounded-xl disabled:text-neutral-500" + (!disabled ? " hover:text-cyan-300" : "")}>
               <FontAwesomeIcon icon={faRightLeft} className="fa-rotate-90" />
             </button>
@@ -362,9 +355,9 @@ useEffect(() => {
       try {
         setLoadingWrapOrUnwrap(true);
         const toastId = toast.loading(
-          wrappingMode === WrappingMode.Wrap ? `Wrapping ${selectedToken.name}` : `Unwrapping ${selectedToken.name}`, { closeButton: true }
+          wrappingMode === 'Wrap' ? `Wrapping ${selectedToken.name}` : `Unwrapping ${selectedToken.name}`, { closeButton: true }
         );
-        if (wrappingMode === WrappingMode.Wrap) {
+        if (wrappingMode === 'Wrap') {
           const tx = await secretjs.tx.broadcast(
             [
               new MsgExecuteContract({
@@ -468,20 +461,20 @@ useEffect(() => {
             className={"bg-cyan-600 hover:bg-cyan-500  active:bg-cyan-700 transition-colors text-white font-semibold py-2 w-full rounded-l disabled:bg-neutral-500"}
             disabled={disabled}
             onClick={() => submit()}>
-            {/* {wrappingMode === WrappingMode.Wrap ? "Wrap" : "Unwrap"} */}
+            {/* {wrappingMode === 'Wrap' ? "Wrap" : "Unwrap"} */}
             {/* text for wrapping with value */}
-            {(secretAddress && secretjs && wrappingMode === WrappingMode.Wrap && amount) && (
+            {(secretAddress && secretjs && wrappingMode === 'Wrap' && amount) && (
             <>
               {`Wrap ${amount} ${nativeCurrency} into ${amount} ${wrappedCurrency}`}
             </>)}
 
             {/* text for unwrapping with value */}
-            {(secretAddress && secretjs && wrappingMode === WrappingMode.Unwrap && amount) && (<>
+            {(secretAddress && secretjs && wrappingMode === 'Unwrap' && amount) && (<>
               {`Unwrap ${amount} ${wrappedCurrency} into ${amount} ${nativeCurrency}`}
             </>)}
 
             {/* general text without value */}
-            {(!amount || !secretAddress || !secretAddress) && (wrappingMode === WrappingMode.Wrap ? "Wrap" : "Unwrap")}
+            {(!amount || !secretAddress || !secretAddress) && (wrappingMode === 'Wrap' ? "Wrap" : "Unwrap")}
           </button>
           <button
             className="bg-cyan-600 hover:bg-cyan-500 transition-colors text-white font-semibold py-2 px-2.5 rounded-r disabled:bg-neutral-500"
@@ -584,7 +577,7 @@ useEffect(() => {
             {/* Header */}
             <div className="flex items-center mb-4">
               <h1 className="inline text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-500 to-purple-500">
-                Secret {wrappingMode === WrappingMode.Wrap ? "Wrap" : "Unwrap"}
+                Secret {wrappingMode === 'Wrap' ? "Wrap" : "Unwrap"}
               </h1>
 
               <Tooltip title={message} placement="right" arrow>
@@ -616,7 +609,7 @@ useEffect(() => {
                     <div className="flex items-center">
                       <img src={`/img/assets/${token.image}`} className="w-5 h-5 mr-2 rounded-full" />
                       <span className="font-semibold text-sm">
-                        {wrappingMode == WrappingMode.Unwrap && 's'}
+                        {wrappingMode == 'Unwrap' && 's'}
                         {token.name}
                       </span>
                     </div>
@@ -627,10 +620,10 @@ useEffect(() => {
               {/* Balance | [25%|50%|75%|Max] */}
               <div className="flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 mt-2">
                 <div className="flex-1 text-xs">
-                  {wrappingMode === WrappingMode.Wrap && (
+                  {wrappingMode === 'Wrap' && (
                     <NativeTokenBalanceUi/>
                   )}
-                  {wrappingMode === WrappingMode.Unwrap && <WrappedTokenBalanceUi/>}
+                  {wrappingMode === 'Unwrap' && <WrappedTokenBalanceUi/>}
                 </div>
                 <div className="sm:flex-initial text-xs">
                   <PercentagePicker/>
@@ -659,18 +652,18 @@ useEffect(() => {
                   <div className="flex items-center">
                     <img src={`/img/assets/${token.image}`} className="w-6 h-6 mr-2 rounded-full" />
                     <span className="font-semibold text-sm">
-                      {wrappingMode == WrappingMode.Wrap && 's'}
+                      {wrappingMode == 'Wrap' && 's'}
                       {token.name}
                     </span>
                   </div>
                 )} className="react-select-wrap-container" classNamePrefix="react-select-wrap" />
-                <input value={amountToWrap} onChange={handleInputChange} type="text" className={"text-right focus:z-10 block flex-1 min-w-0 w-full bg-neutral-900 text-white px-4 rounded-r-lg disabled:placeholder-neutral-700 transition-colors font-medium"} name="toValue" id="toValue" placeholder="0" disabled={!selectedToken.address || !secretjs || !secretAddress || (wrappingMode === WrappingMode.Unwrap && tokenWrappedBalance == viewingKeyErrorString)}/>
+                <input value={amountToWrap} onChange={handleInputChange} type="text" className={"text-right focus:z-10 block flex-1 min-w-0 w-full bg-neutral-900 text-white px-4 rounded-r-lg disabled:placeholder-neutral-700 transition-colors font-medium"} name="toValue" id="toValue" placeholder="0" disabled={!selectedToken.address || !secretjs || !secretAddress || (wrappingMode === 'Unwrap' && tokenWrappedBalance == viewingKeyErrorString)}/>
               </div>
               <div className="flex-1 text-xs mt-3 text-center sm:text-left">
-                {wrappingMode === WrappingMode.Wrap && (
+                {wrappingMode === 'Wrap' && (
                   <WrappedTokenBalanceUi/>
                 )}
-                {wrappingMode === WrappingMode.Unwrap && (
+                {wrappingMode === 'Unwrap' && (
                   <NativeTokenBalanceUi/>
                 )}
               </div>
