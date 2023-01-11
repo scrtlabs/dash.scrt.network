@@ -52,18 +52,15 @@ export function KeplrPanel({
 
     // reset fee grant
     setIsFeeGranted(false);
-    setFeeGrantStatus(FeeGrantStatus.Untouched);
+    setFeeGrantStatus('Untouched');
 
     // Toast for success
     toast.success("Wallet disconnected!");
   }
 
-  enum FeeGrantStatus {
-    Success,
-    Fail,
-    Untouched
-  }
-  const [feeGrantStatus, setFeeGrantStatus] = useState<FeeGrantStatus>(FeeGrantStatus.Untouched);
+  type FeeGrantStatus = 'Success' | 'Fail' | 'Untouched';
+
+  const [feeGrantStatus, setFeeGrantStatus] = useState<FeeGrantStatus>('Untouched');
 
   async function grantButtonAction() {
     fetch(faucetURL, {
@@ -75,15 +72,15 @@ export function KeplrPanel({
         const textBody = await result.text();
         console.log(textBody);
         if (result.ok == true) {
-          setFeeGrantStatus(FeeGrantStatus.Success);
+          setFeeGrantStatus('Success');
           toast.success(`Successfully sent new Fee Grant!`);
         } else if (
           textBody == "Existing Fee Grant did not expire\n"
         ) {
-          setFeeGrantStatus(FeeGrantStatus.Success);
+          setFeeGrantStatus('Success');
           toast.success(`Using existing fee grant!`);
         } else {
-          setFeeGrantStatus(FeeGrantStatus.Fail);
+          setFeeGrantStatus('Fail');
           toast.error(`Fee Grant failed: ${result.status}`);
         }
         setIsFeeGranted(true);
@@ -100,14 +97,14 @@ export function KeplrPanel({
         {secretAddress && (
           <>
             {/* Untouched */}
-            <If condition={feeGrantStatus === FeeGrantStatus.Untouched}>
+            <If condition={feeGrantStatus === 'Untouched'}>
               <button onClick={grantButtonAction} className="font-semibold w-full p-1.5 rounded-md text-emerald-500 border border-emerald-500 hover:bg-emerald-600 hover:text-white transition-colors select-none">
                 Request Fee Grant
               </button>
             </If>
 
             {/* Success */}
-            <If condition={feeGrantStatus === FeeGrantStatus.Success}>
+            <If condition={feeGrantStatus === 'Success'}>
               <div className="font-semibold w-full text-center p-1.5 rounded-md text-emerald-500 border border-emerald-500 select-none">
                 <FontAwesomeIcon icon={faCheck} className="mr-2 text-emerald-500"/>
                 Fee Granted
@@ -115,7 +112,7 @@ export function KeplrPanel({
             </If>
 
             {/* Fail */}
-            <If condition={feeGrantStatus === FeeGrantStatus.Fail}>
+            <If condition={feeGrantStatus === 'Fail'}>
               <button onClick={grantButtonAction} className="font-semibold group w-full p-1.5 rounded-md border border-red-500 hover:text-white transition-colors select-none">
                 <FontAwesomeIcon icon={faX} className="mr-2 text-red-500"/>
                 Fee Grant failed

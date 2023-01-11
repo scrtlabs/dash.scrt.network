@@ -138,5 +138,21 @@ body {
 }
 
 #ibcSwitchButton {
-  @apply block
+  @apply block;
+}
+
+
+
+
+.isInactiveNavLink {
+  svg {
+    @apply fill-neutral-400;
+  }
+  &:hover svg {
+    @apply fill-white;
+  }
+}
+
+.isActiveNavLink svg {
+  @apply fill-white;
 }
