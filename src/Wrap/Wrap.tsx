@@ -15,7 +15,7 @@ import {Helmet} from 'react-helmet';
 import { websiteName } from 'App';
 import UnknownBalanceModal from './Components/UnknownBalanceModal';
 import FeeGrantInfoModal from './Components/FeeGrantInfoModal';
-import { FeeGrant, requestFeeGrant } from 'General/Components/FeeGrant';
+import { FeeGrant } from 'General/Components/FeeGrant';
 
 export const WrapContext = createContext(null);
 
@@ -300,10 +300,12 @@ useEffect(() => {
 
     return (
       <div className='text-center my-4'>
-          <Tooltip disableHoverListener={!secretjs && !secretAddress} title={`Switch to ${wrappingMode === 'Wrap' ? 'Unwrapping' : 'Wrapping'}`} placement='right' arrow>
-            <button onClick={() => toggleWrappingMode()} disabled={disabled} className={'bg-neutral-800 px-3 py-2 text-cyan-500 transition-colors rounded-xl disabled:text-neutral-500' + (!disabled ? ' hover:text-cyan-300' : '')}>
-              <FontAwesomeIcon icon={faRightLeft} className='fa-rotate-90' />
-            </button>
+          <Tooltip disableHoverListener={disabled} title={`Switch to ${wrappingMode === 'Wrap' ? 'Unwrapping' : 'Wrapping'}`} placement='right' arrow>
+            <>
+              <button onClick={() => toggleWrappingMode()} disabled={disabled} className={'bg-neutral-800 px-3 py-2 text-cyan-500 transition-colors rounded-xl disabled:text-neutral-500' + (!disabled ? ' hover:text-cyan-300' : '')}>
+                <FontAwesomeIcon icon={faRightLeft} className='fa-rotate-90' />
+              </button>
+            </>
           </Tooltip>
       </div>
     )
@@ -648,7 +650,7 @@ useEffect(() => {
                 )} className='react-select-wrap-container' classNamePrefix='react-select-wrap' />
                 <input value={amountToWrap} onChange={handleInputChange} type='text' className={'text-right focus:z-10 block flex-1 min-w-0 w-full bg-neutral-900 text-white px-4 rounded-r-lg disabled:placeholder-neutral-700 transition-colors font-medium'} name='toValue' id='toValue' placeholder='0' disabled={!selectedToken.address || !secretjs || !secretAddress || (wrappingMode === 'Unwrap' && tokenWrappedBalance == viewingKeyErrorString)}/>
               </div>
-              <div className='flex-1 text-xs mt-3 text-center sm:text-left'>
+              <div className='flex-1 text-xs mt-3 text-center sm:text-left h-[1rem]'>
                 {wrappingMode === 'Wrap' && (
                   <WrappedTokenBalanceUi/>
                 )}
@@ -673,14 +675,14 @@ useEffect(() => {
                 )}
                 {/* Success */}
                 {feeGrantStatus === 'Success' && (
-                  <div className='font-semibold text-sm'>
+                  <div className='font-semibold text-sm flex items-center h-[1.6rem]'>
                     <FontAwesomeIcon icon={faCheckCircle} className='text-green-500 mr-1.5'/>
                     Fee Granted
                   </div>
                 )}
                 {/* Fail */}
                 {feeGrantStatus === 'Fail' && (
-                  <div className='font-semibold text-sm'>
+                  <div className='font-semibold text-sm h-[1.6rem]'>
                     <FontAwesomeIcon icon={faXmarkCircle} className='text-red-500 mr-1.5'/>
                     Request failed
                   </div>

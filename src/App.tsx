@@ -1,15 +1,12 @@
 import React from 'react';
 import { Window as KeplrWindow } from "@keplr-wallet/types";
-import ReactDOM from "react-dom";
 import { BreakpointProvider } from "react-socks";
 import "General/assets/scss/index.scss";
 import "animate.css"
 import { Buffer } from "buffer";
-import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Route, Routes, redirect } from "react-router-dom";
+import ReactDOM from 'react-dom/client';
 import {Helmet} from "react-helmet";
-
-// for html-head
-export const websiteName = "Secret Dashboard";
 
 // Pages
 import { Ibc } from "Ibc/Ibc";
@@ -18,6 +15,9 @@ import DefaultLayout from 'General/Layouts/defaultLayout';
 import { Dashboard } from 'Dashboard/Dashboard';
 import { Apps } from 'Apps/Apps';
 import { Bridge } from 'Bridge/Bridge';
+
+// for html-head
+export const websiteName = "Secret Dashboard";
 
 globalThis.Buffer = Buffer;
 declare global {
@@ -55,7 +55,8 @@ class ErrorBoundary extends React.Component<{}, { hasError: boolean }> {
   }
 }
 
-ReactDOM.render(
+const root = ReactDOM.createRoot(document.getElementById("root") as HTMLElement);
+root.render(
   <BreakpointProvider>
     <React.StrictMode>
       <BrowserRouter>
@@ -64,8 +65,7 @@ ReactDOM.render(
         </DefaultLayout>
       </BrowserRouter>
     </React.StrictMode>
-  </BreakpointProvider>,
-  document.getElementById("root")
+  </BreakpointProvider>
 );
 
 export default function App() {
