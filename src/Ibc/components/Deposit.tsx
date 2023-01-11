@@ -733,20 +733,15 @@ export default function Deposit () {
             )}
           </div>
         </div>
-        {/* <div className="text-center sm:mt-6 sm:mb-2 my-6">
-          <Tooltip title={`Switch to ${wrappingMode === WrappingMode.Wrap ? "Unwrapping" : "Wrapping"}`} placement="bottom">
-            <button onClick={() => toggleWrappingMode()} disabled={disabled} className={"bg-neutral-900 px-3 py-2 text-blue-600 transition-colors rounded-full" + (!disabled ? " hover:text-blue-400 focus:text-blue-600" : "")}>
-              <FontAwesomeIcon icon={faRightLeft} className="fa-rotate-90" />
-            </button>
-          </Tooltip>
-        </div> */}
         <div className="flex-1 py-2 md:py-0">
           <div className="md:relative" id="ibcSwitchButton">
             <div className="md:absolute md:top-1/2 md:left-1/2 md:transform md:-translate-x-1/2 md:-translate-y-1/2 text-center md:text-left">
               <Tooltip title={`Switch chains`} placement="bottom" disableHoverListener={!secretjs && !secretAddress} arrow>
-                <button onClick={toggleIbcMode} className={"inline-block bg-neutral-800 px-3 py-2 text-cyan-500 transition-colors rounded-xl disabled:text-neutral-500" + ((secretjs && secretAddress) ? " hover:text-cyan-300" : "")} disabled={!secretjs || !secretAddress}>
-                  <FontAwesomeIcon icon={faRightLeft} className="rotate-90 md:rotate-0" />
-                </button>
+                <>
+                  <button onClick={toggleIbcMode} className={"inline-block bg-neutral-800 px-3 py-2 text-cyan-500 transition-colors rounded-xl disabled:text-neutral-500" + ((secretjs && secretAddress) ? " hover:text-cyan-300" : "")} disabled={!secretjs || !secretAddress}>
+                    <FontAwesomeIcon icon={faRightLeft} className="rotate-90 md:rotate-0" />
+                  </button>
+                </>
               </Tooltip>
             </div>
           </div>
@@ -800,9 +795,11 @@ export default function Deposit () {
               }}
             >
               <Tooltip title={"Copy to clipboard"} placement="bottom" disableHoverListener={!secretjs && !secretAddress} arrow>
+                <>
                   <button className="text-neutral-500 enabled:hover:text-white enabled:active:text-neutral-500 transition-colors" disabled={!secretjs && !secretAddress}>
-                  <FontAwesomeIcon icon={faCopy}/>
-                </button>
+                    <FontAwesomeIcon icon={faCopy}/>
+                  </button>
+                </>
               </Tooltip>
             </CopyToClipboard>
           </div>
@@ -828,9 +825,11 @@ export default function Deposit () {
                 }}
               >
                 <Tooltip title={"Copy to clipboard"} placement="bottom" disableHoverListener={!secretjs && !secretAddress} arrow>
-                  <button className="text-neutral-500 enabled:hover:text-white enabled:active:text-neutral-500 transition-colors" disabled={!secretjs && !secretAddress}>
-                    <FontAwesomeIcon icon={faCopy}/>
-                  </button>
+                  <>
+                    <button className="text-neutral-500 enabled:hover:text-white enabled:active:text-neutral-500 transition-colors" disabled={!secretjs && !secretAddress}>
+                      <FontAwesomeIcon icon={faCopy}/>
+                    </button>
+                  </>
                 </Tooltip>
               </CopyToClipboard>
           </div>
@@ -897,31 +896,32 @@ export default function Deposit () {
 
       </div>
 
+
+
       {/* Fee Grant */}
-      <div className="bg-neutral-800 p-4 rounded-lg select-none flex items-center my-4">
-        <div className="flex-1 flex items-center">
-          <span className="font-semibold text-sm">Fee Grant</span>
-          <Tooltip title={`IBC Transfer`} placement="bottom" arrow>
-            <FontAwesomeIcon icon={faInfoCircle} className="ml-2" />
+      <div className='bg-neutral-800 p-4 rounded-lg select-none flex items-center my-4'>
+        <div className='flex-1 flex items-center'>
+          <span className='font-semibold text-sm'>Fee Grant</span>
+          <Tooltip title={`Lorem Ipsum`} placement='right' arrow>
+            <FontAwesomeIcon icon={faInfoCircle} className='ml-2' />
           </Tooltip>
         </div>
-        <div className="flex-initial">
+        <div className='flex-initial'>
           {/* Untouched */}
           {feeGrantStatus === 'Untouched' && (
-            // <FeeGrant/>
-            <></>
+            <FeeGrant/>
           )}
           {/* Success */}
           {feeGrantStatus === 'Success' && (
-            <div className='font-semibold text-sm'>
-              <FontAwesomeIcon icon={faCheckCircle} className="text-green-500 mr-1.5"/>
+            <div className='font-semibold text-sm flex items-center h-[1.6rem]'>
+              <FontAwesomeIcon icon={faCheckCircle} className='text-green-500 mr-1.5'/>
               Fee Granted
             </div>
           )}
           {/* Fail */}
           {feeGrantStatus === 'Fail' && (
-            <div className='font-semibold text-sm'>
-              <FontAwesomeIcon icon={faXmarkCircle} className="text-red-500 mr-1.5"/>
+            <div className='font-semibold text-sm h-[1.6rem]'>
+              <FontAwesomeIcon icon={faXmarkCircle} className='text-red-500 mr-1.5'/>
               Request failed
             </div>
           )}
