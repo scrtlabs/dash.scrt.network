@@ -1,3 +1,5 @@
+import { faSnowflake } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React from "react";
 import { Else, If, Then } from "react-if";
 
@@ -16,7 +18,7 @@ class QuadTile extends React.Component<IQuadTileProps> {
   render() {
     return (
       <>
-        <div className='bg-neutral-800 p-8 rounded-xl h-full border-solid border-2 border-neutral-700'>
+        <div className='bg-neutral-800 p-8 rounded-xl h-full border-solid'>
           <div className='flex flex-col h-full'>
             <div className='flex-1 flex text-center items-center'>
               {/* First Item */}
@@ -94,8 +96,14 @@ class QuadTile extends React.Component<IQuadTileProps> {
                 </div>
               </div>
             </div>
+            <div className='text-neutral-500 text-xs -mb-4 mt-4 text-center'>
+              Data provided by{" "}
+              <a href='https://blizzard.finance/' target='_blank'>
+                Blizzard.finance
+                <FontAwesomeIcon icon={faSnowflake} className='ml-1' />
+              </a>
+            </div>
           </div>
-          {/* <div className="text-neutral-500 text-xs text-left mb-0.5">Data provided by Blizzard.finance ❄️</div> */}
         </div>
       </>
     );
