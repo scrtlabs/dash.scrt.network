@@ -1,0 +1,75 @@
+@-webkit-keyframes textFadeIn {
+  from {
+    opacity: 0;
+    -webkit-transform: translate3d(-100%, 0, 0);
+    transform: translate3d(-100%, 0, 0);
+  }
+
+  to {
+    opacity: 1;
+    -webkit-transform: translate3d(0, 0, 0);
+    transform: translate3d(0, 0, 0);
+  }
+}
+@keyframes textFadeIn {
+  from {
+    opacity: 0;
+    -webkit-transform: translate3d(-100%, 0, 0);
+    transform: translate3d(-100%, 0, 0);
+  }
+
+  to {
+    opacity: 1;
+    -webkit-transform: translate3d(0, 0, 0);
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+.floatingCTAButton {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 40;
+  overflow: hidden;
+  color: #fff;
+  border-radius: 9999px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 0.5rem;
+
+  .icon-circle {
+    width: 1.75rem;
+    height: 1.75rem;
+    font-size: 1.5rem;
+    margin: 0.5rem;
+    display: inline-block;
+    z-index: 5000 !important;
+    transition: padding-right 350ms ease;
+    flex: 0 1 auto;
+  }
+
+  .cta-text {
+    flex: 0 1 auto;
+    visibility: hidden;
+    padding: 0;
+    width: 0;
+    height: 0;
+    z-index: 1;
+    transition: padding 350ms ease-in-out;
+  }
+
+  &:hover {
+    .icon-circle {
+    }
+    .cta-text {
+      visibility: visible;
+      padding: 0 1.25rem 0 0.25rem;
+      width: inherit;
+      height: inherit;
+
+      animation: textFadeIn;
+      animation-duration: 350ms;
+    }
+  }
+}

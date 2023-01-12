@@ -1,26 +1,21 @@
-@use './components/fonts';
-@use './components/discord';
+@use "./components/fonts";
 
 // Tailwind
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-html, body {
+html,
+body {
   height: 100%;
   margin: 0;
 }
 
-// General
 body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   @apply bg-neutral-900 text-white;
 }
-
-// .react-select-container {
-//   background-color: red;
-// }
 
 .react-select__control {
   cursor: pointer !important;
@@ -36,21 +31,14 @@ body {
   color: white !important;
 }
 
-.react-select__menu, .react-select__option {
+.react-select__menu,
+.react-select__option {
   background-color: #404040 !important;
 }
 
 .react-select__option:hover {
   background-color: #525252 !important;
 }
-
-
-
-
-
-
-
-
 
 .react-select-wrap__control {
   cursor: pointer !important;
@@ -67,7 +55,8 @@ body {
   color: white !important;
 }
 
-.react-select-wrap__menu, .react-select-wrap__option {
+.react-select-wrap__menu,
+.react-select-wrap__option {
   background-color: #404040 !important;
 }
 
@@ -79,7 +68,6 @@ body {
   display: none;
 }
 
-
 .react-select__indicator-separator {
   display: none;
 }
@@ -88,28 +76,21 @@ body {
   display: none;
 }
 
-
-
-
-
-
-
 // Animations
 .fadeInAndOutLoop {
   opacity: 1;
   animation: fade 2s linear infinite;
 }
 
-
 @keyframes fade {
-  0%, 100% {
-    opacity: 0.5
+  0%,
+  100% {
+    opacity: 0.5;
   }
   50% {
-    opacity: 1
+    opacity: 1;
   }
 }
-
 
 @keyframes fadeInDown2 {
   from {
@@ -129,9 +110,7 @@ body {
   animation: fadeInDown2 250ms ease-in-out;
 }
 
-
-
-@media screen and (min-width: 768px){
+@media screen and (min-width: 768px) {
   #ibcSwitchButton {
     padding-top: 100%;
   }
@@ -140,9 +119,6 @@ body {
 #ibcSwitchButton {
   @apply block;
 }
-
-
-
 
 .isInactiveNavLink {
   svg {
