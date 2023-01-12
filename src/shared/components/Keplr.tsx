@@ -43,9 +43,9 @@ export function KeplrPanel({
   }
 
   // Auto Setup Keplr
-  // useEffect(() => {
-  //   setupKeplr(setSecretjs, setSecretAddress);
-  // }, []);
+  useEffect(() => {
+    setupKeplr(setSecretjs, setSecretAddress);
+  }, []);
 
   const [isFeeGranted, setIsFeeGranted] = useState<boolean>(false);
 

@@ -439,6 +439,18 @@ export function Wrap() {
     );
   }
 
+  useEffect(() => {
+    // setPosts Here
+  }, [isValidationActive]);
+
+  function test() {
+    setIsValidationActive(true);
+
+    if (isValidationActive === true) {
+      alert("worksss");
+    }
+  }
+
   function SubmitButton(props: {
     disabled: boolean;
     amount: string | undefined;
@@ -474,9 +486,11 @@ export function Wrap() {
       setIsValidationActive(true);
       validateForm();
 
-      if (!secretjs || !secretAddress) {
-        return;
-      }
+      // if (isValidationActive === true) {
+      //   alert("worksss");
+      // }
+
+      if (!secretjs || !secretAddress) return;
 
       if (!isValidAmount || amountToWrap === "") {
         uiFocusInput();
@@ -686,9 +700,7 @@ export function Wrap() {
   };
 
   useEffect(() => {
-    if (!secretjs || !secretAddress) {
-      return;
-    }
+    if (!secretjs || !secretAddress) return;
 
     const interval = setInterval(updateBalance, 10000, selectedToken);
 
@@ -887,7 +899,11 @@ export function Wrap() {
             <div className='bg-neutral-800 p-4 rounded-lg select-none flex items-center my-4'>
               <div className='flex-1 flex items-center'>
                 <span className='font-semibold text-sm'>Fee Grant</span>
-                <Tooltip title={`Lorem Ipsum`} placement='right' arrow>
+                <Tooltip
+                  title={`Request Fee Grant so that you don't have to pay gas fees (up to 0.1 SCRT)`}
+                  placement='right'
+                  arrow
+                >
                   <FontAwesomeIcon icon={faInfoCircle} className='ml-2' />
                 </Tooltip>
               </div>
@@ -926,6 +942,8 @@ export function Wrap() {
               wrappedCurrency={"s" + selectedToken.name}
               wrappingMode={wrappingMode}
             />
+
+            <button onClick={() => test()}>Test</button>
           </div>
         </div>
       </WrapContext.Provider>
