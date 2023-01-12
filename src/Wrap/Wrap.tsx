@@ -424,7 +424,7 @@ export function Wrap() {
           placement='right'
           arrow
         >
-          <>
+          <span>
             <button
               onClick={() => toggleWrappingMode()}
               disabled={disabled}
@@ -435,7 +435,7 @@ export function Wrap() {
             >
               <FontAwesomeIcon icon={faRightLeft} className='fa-rotate-90' />
             </button>
-          </>
+          </span>
         </Tooltip>
       </div>
     );

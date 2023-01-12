@@ -47,9 +47,6 @@ export const DefaultLayout = ({ children }: any) => {
   const [secretjs, setSecretjs] = useState<SecretNetworkClient | null>(null);
   const [secretAddress, setSecretAddress] = useState<string>("");
 
-  // Fee Grant
-  const [isFeeGranted, setIsFeeGranted] = useState<boolean>(false);
-
   const [feeGrantStatus, setFeeGrantStatus] =
     useState<FeeGrantStatus>("Untouched");
 

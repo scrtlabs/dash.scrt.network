@@ -70,7 +70,6 @@ function Deposit() {
   const [fetchBalanceInterval, setFetchBalanceInterval] = useState<any>(null);
   const [amountToTransfer, setAmountToTransfer] = useState<string>("");
   const { secretjs, secretAddress } = useContext(KeplrContext);
-  const { useFeegrant, setUseFeegrant } = useContext(FeeGrantContext);
 
   const queryParams = new URLSearchParams(window.location.search);
   const tokenByQueryParam = queryParams.get("token"); // "scrt", "akash", etc.
@@ -588,6 +587,9 @@ function Deposit() {
                 isLoading: false,
                 closeOnClick: true,
               });
+              if (ibcMode === "Deposit") {
+                setIsWrapModalOpen(true);
+              }
             } else {
               toast.update(toastId, {
                 render: `Timed out while waiting to receive ${normalizedAmount} ${selectedToken.name} on Secret from ${selectedSource.chain_name}`,
@@ -677,7 +679,7 @@ function Deposit() {
                 gasLimit: withdraw_gas,
                 gasPriceInFeeDenom: 0.1,
                 feeDenom: "uscrt",
-                feeGranter: useFeegrant ? faucetAddress : "",
+                feeGranter: feeGrantStatus === "Success" ? faucetAddress : "",
                 ibcTxsOptions: {
                   resolveResponsesCheckIntervalMs: 10_000,
                   resolveResponsesTimeoutMs: 10.25 * 60 * 1000,
@@ -706,7 +708,7 @@ function Deposit() {
                 gasLimit: withdraw_gas,
                 gasPriceInFeeDenom: 0.1,
                 feeDenom: "uscrt",
-                feeGranter: useFeegrant ? faucetAddress : "",
+                feeGranter: feeGrantStatus === "Success" ? faucetAddress : "",
                 ibcTxsOptions: {
                   resolveResponsesCheckIntervalMs: 10_000,
                   resolveResponsesTimeoutMs: 10.25 * 60 * 1000,
@@ -753,8 +755,6 @@ function Deposit() {
           setLoading(false);
         }
       }
-
-      setIsWrapModalOpen(true);
     }
 
     return (
@@ -766,7 +766,7 @@ function Deposit() {
           disabled={!secretjs || !secretAddress}
           onClick={() => submit()}
         >
-          Execute Transfer{" "}
+          Execute Transfer
         </button>
       </>
     );
@@ -837,7 +837,7 @@ function Deposit() {
                 disableHoverListener={!secretjs && !secretAddress}
                 arrow
               >
-                <>
+                <span>
                   <button
                     onClick={toggleIbcMode}
                     className={
@@ -851,7 +851,7 @@ function Deposit() {
                       className='rotate-90 md:rotate-0'
                     />
                   </button>
-                </>
+                </span>
               </Tooltip>
             </div>
           </div>
@@ -948,14 +948,14 @@ function Deposit() {
                 disableHoverListener={!secretjs && !secretAddress}
                 arrow
               >
-                <>
+                <span>
                   <button
                     className='text-neutral-500 enabled:hover:text-white enabled:active:text-neutral-500 transition-colors'
                     disabled={!secretjs && !secretAddress}
                   >
                     <FontAwesomeIcon icon={faCopy} />
                   </button>
-                </>
+                </span>
               </Tooltip>
             </CopyToClipboard>
           </div>
@@ -1136,10 +1136,21 @@ function Deposit() {
           </Tooltip>
         </div>
         <div className='flex-initial'>
+          {/* Deposit => no fee grant */}
+          {ibcMode === "Deposit" && (
+            <>
+              <div className='text-xs font-semibold text-neutral-400 flex items-center h-[1.6rem]'>
+                <span>Unavailable</span>
+              </div>
+            </>
+          )}
+
           {/* Untouched */}
-          {feeGrantStatus === "Untouched" && <FeeGrant />}
+          {ibcMode === "Withdrawal" && feeGrantStatus === "Untouched" && (
+            <FeeGrant />
+          )}
           {/* Success */}
-          {feeGrantStatus === "Success" && (
+          {ibcMode === "Withdrawal" && feeGrantStatus === "Success" && (
             <div className='font-semibold text-sm flex items-center h-[1.6rem]'>
               <FontAwesomeIcon
                 icon={faCheckCircle}
@@ -1149,7 +1160,7 @@ function Deposit() {
             </div>
           )}
           {/* Fail */}
-          {feeGrantStatus === "Fail" && (
+          {ibcMode === "Withdrawal" && feeGrantStatus === "Fail" && (
             <div className='font-semibold text-sm h-[1.6rem]'>
               <FontAwesomeIcon
                 icon={faXmarkCircle}
