@@ -56,7 +56,6 @@ export function Wrap() {
     modeByQueryParam?.toLowerCase() === "unwrap" ? "Unwrap" : "Wrap";
 
   const { secretjs, secretAddress } = useContext(KeplrContext);
-  const { useFeegrant, setUseFeegrant } = useContext(FeeGrantContext);
 
   const [amountToWrap, setAmountToWrap] = useState<string>("");
   const [wrappingMode, setWrappingMode] =
@@ -81,6 +80,7 @@ export function Wrap() {
   const [tokenWrappedBalance, setTokenWrappedBalance] = useState<string>("");
 
   function validateForm() {
+    let isValid = false;
     const availableAmount = new BigNumber(
       wrappingMode === "Wrap" ? tokenNativeBalance : tokenWrappedBalance
     ).dividedBy(`1e${selectedToken.decimals}`);
@@ -109,7 +109,9 @@ export function Wrap() {
       setisValidAmount(false);
     } else {
       setisValidAmount(true);
+      isValid = true;
     }
+    return isValid;
   }
 
   useEffect(() => {
@@ -439,18 +441,6 @@ export function Wrap() {
     );
   }
 
-  useEffect(() => {
-    // setPosts Here
-  }, [isValidationActive]);
-
-  function test() {
-    setIsValidationActive(true);
-
-    if (isValidationActive === true) {
-      alert("worksss");
-    }
-  }
-
   function SubmitButton(props: {
     disabled: boolean;
     amount: string | undefined;
@@ -484,15 +474,11 @@ export function Wrap() {
 
     async function submit() {
       setIsValidationActive(true);
-      validateForm();
-
-      // if (isValidationActive === true) {
-      //   alert("worksss");
-      // }
+      let isValidForm = validateForm();
 
       if (!secretjs || !secretAddress) return;
 
-      if (!isValidAmount || amountToWrap === "") {
+      if (!isValidForm || amountToWrap === "") {
         uiFocusInput();
         return;
       }
@@ -532,7 +518,7 @@ export function Wrap() {
               gasLimit: 150_000,
               gasPriceInFeeDenom: 0.25,
               feeDenom: "uscrt",
-              feeGranter: useFeegrant ? faucetAddress : "",
+              feeGranter: feeGrantStatus === "Success" ? faucetAddress : "",
             }
           );
 
@@ -577,7 +563,7 @@ export function Wrap() {
               gasLimit: 150_000,
               gasPriceInFeeDenom: 0.25,
               feeDenom: "uscrt",
-              feeGranter: useFeegrant ? faucetAddress : "",
+              feeGranter: feeGrantStatus === "Success" ? faucetAddress : "",
             }
           );
           if (tx.code === 0) {
@@ -660,7 +646,7 @@ export function Wrap() {
       if (
         selectedToken.withdrawals[0]?.from_denom == "uscrt" &&
         amount == "0" &&
-        useFeegrant == false
+        feeGrantStatus === "Untouched"
       ) {
         try {
           const response = await fetch(faucetURL, {
@@ -686,7 +672,7 @@ export function Wrap() {
               `Fee Grant for address ${secretAddress} failed with status code: ${result.status}`
             );
           }
-          setUseFeegrant(true);
+          setFeeGrantStatus("Fail");
         } catch (e) {
           updateFeeGrantButton("Fee Grant failed", "red");
           toast.error(
@@ -711,7 +697,7 @@ export function Wrap() {
     return () => {
       clearInterval(interval);
     };
-  }, [secretAddress, secretjs, selectedToken, useFeegrant]);
+  }, [secretAddress, secretjs, selectedToken, feeGrantStatus]);
 
   useEffect(() => {
     fetch(
@@ -880,13 +866,7 @@ export function Wrap() {
                   name='toValue'
                   id='toValue'
                   placeholder='0'
-                  disabled={
-                    !selectedToken.address ||
-                    !secretjs ||
-                    !secretAddress ||
-                    (wrappingMode === "Unwrap" &&
-                      tokenWrappedBalance == viewingKeyErrorString)
-                  }
+                  disabled={!secretjs || !secretAddress}
                 />
               </div>
               <div className='flex-1 text-xs mt-3 text-center sm:text-left h-[1rem]'>
@@ -942,8 +922,6 @@ export function Wrap() {
               wrappedCurrency={"s" + selectedToken.name}
               wrappingMode={wrappingMode}
             />
-
-            <button onClick={() => test()}>Test</button>
           </div>
         </div>
       </WrapContext.Provider>
