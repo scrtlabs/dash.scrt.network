@@ -1,20 +1,20 @@
-import React from 'react';
+import React from "react";
 import { Window as KeplrWindow } from "@keplr-wallet/types";
 import { BreakpointProvider } from "react-socks";
-import "General/assets/scss/index.scss";
-import "animate.css"
+import "shared/assets/scss/index.scss";
+import "animate.css";
 import { Buffer } from "buffer";
 import { BrowserRouter, Route, Routes, redirect } from "react-router-dom";
-import ReactDOM from 'react-dom/client';
-import {Helmet} from "react-helmet";
+import ReactDOM from "react-dom/client";
+import { Helmet, HelmetProvider } from "react-helmet-async";
 
 // Pages
-import { Ibc } from "Ibc/Ibc";
-import { Wrap } from "Wrap/Wrap";
-import DefaultLayout from 'General/Layouts/defaultLayout';
-import { Dashboard } from 'Dashboard/Dashboard';
-import { Apps } from 'Apps/Apps';
-import { Bridge } from 'Bridge/Bridge';
+import { Ibc } from "ibc/Ibc";
+import { Wrap } from "wrap/Wrap";
+import DefaultLayout from "shared/Layouts/defaultLayout";
+import { Dashboard } from "dashboard/Dashboard";
+import Bridge from "bridge/Bridge";
+import Apps from "apps/Apps";
 
 // for html-head
 export const websiteName = "Secret Dashboard";
@@ -55,32 +55,35 @@ class ErrorBoundary extends React.Component<{}, { hasError: boolean }> {
   }
 }
 
-const root = ReactDOM.createRoot(document.getElementById("root") as HTMLElement);
+const root = ReactDOM.createRoot(
+  document.getElementById("root") as HTMLElement
+);
 root.render(
   <BreakpointProvider>
-    <React.StrictMode>
-      <BrowserRouter>
-        <DefaultLayout>
+    <HelmetProvider>
+      <React.StrictMode>
+        <BrowserRouter>
+          <DefaultLayout>
             <App />
-        </DefaultLayout>
-      </BrowserRouter>
-    </React.StrictMode>
+          </DefaultLayout>
+        </BrowserRouter>
+      </React.StrictMode>
+    </HelmetProvider>
   </BreakpointProvider>
 );
 
 export default function App() {
-
   return (
     <>
       <Helmet>
         <title>{websiteName}</title>
       </Helmet>
       <Routes>
-        <Route path="/" element={<Dashboard />} />
-        <Route path="/ibc" element={<Ibc />} />
-        <Route path="/wrap" element={<Wrap />} />
-        <Route path="/apps" element={<Apps />} />
-        <Route path="/bridge" element={<Bridge />} />
+        <Route path='/' element={<Dashboard />} />
+        <Route path='/ibc' element={<Ibc />} />
+        <Route path='/wrap' element={<Wrap />} />
+        <Route path='/apps' element={<Apps />} />
+        <Route path='/bridge' element={<Bridge />} />
       </Routes>
     </>
   );
