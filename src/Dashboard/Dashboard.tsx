@@ -1,32 +1,31 @@
-import { chains } from "General/Utils/config";
+import { chains } from "shared/Utils/config";
 import React, { useEffect, useState, createContext, useContext } from "react";
 import { SecretNetworkClient } from "secretjs";
-import CurrentPrice from "./Components/CurrentPrice";
-import MarketCap from "./Components/MarketCap";
-import PriceVolumeHistory from "./Components/PriceVolumeHistory";
-import QuadTile from "./Components/QuadTile";
-import SocialMedia from "./Components/SocialMedia";
-import StakingChart from "./Components/StakingChart";
-import Volume from "./Components/Volume";
-import { SECRET_LCD, SECRET_CHAIN_ID} from "General/Utils/config";
-import {Helmet} from "react-helmet";
-import { websiteName } from "App";
+import CurrentPrice from "./components/CurrentPrice";
+import MiniTile from "./components/MiniTile";
+import PriceVolumeHistory from "./components/PriceVolumeHistory";
+import QuadTile from "./components/QuadTile";
+import SocialMedia from "./components/SocialMedia";
+import StakingChart from "./components/StakingChart";
+import { SECRET_LCD, SECRET_CHAIN_ID } from "shared/Utils/config";
+import { Helmet } from "react-helmet-async";
 
-export const DashboardContext = createContext<{ coingeckoApiData_Day: any; coingeckoApiData_Month: any; coingeckoApiData_Year: any } | null>(null);
-
-
+export const DashboardContext = createContext<{
+  coingeckoApiData_Day: any;
+  coingeckoApiData_Month: any;
+  coingeckoApiData_Year: any;
+} | null>(null);
 
 export function Dashboard() {
-
   const [coingeckoApiData_Day, setCoinGeckoApiData_Day] = useState();
   const [coingeckoApiData_Month, setCoinGeckoApiData_Month] = useState();
   const [coingeckoApiData_Year, setCoinGeckoApiData_Year] = useState();
-  const [mintscanBlockTime, setMintscanBlockTime] = useState(Number);
   const [spartanApiData, setSpartanApiData] = useState();
 
   // block height
   const [blockHeight, setBlockHeight] = useState(null); // by Coingecko API
-  const [blockHeightFormattedString, setblockHeightFormattedString] = useState("");
+  const [blockHeightFormattedString, setblockHeightFormattedString] =
+    useState("");
 
   useEffect(() => {
     if (blockHeight) {
@@ -46,31 +45,44 @@ export function Dashboard() {
 
   // daily transactions
   const [dailyTransactions, setDailyTransactions] = useState("");
-  const [dailyTransactionsFormattedString, setDailyTransactionsFormattedString] = useState("");
+  const [
+    dailyTransactionsFormattedString,
+    setDailyTransactionsFormattedString,
+  ] = useState("");
 
   useEffect(() => {
     if (dailyTransactions) {
-      setDailyTransactionsFormattedString((parseInt(dailyTransactions).toLocaleString()));
+      setDailyTransactionsFormattedString(
+        parseInt(dailyTransactions).toLocaleString()
+      );
     }
   }, [dailyTransactions]);
 
   // community tax
   const [communityTax, setCommunityTax] = useState("");
-  const [communityTaxFormattedString, setCommunityTaxFormattedString] = useState("");
+  const [communityTaxFormattedString, setCommunityTaxFormattedString] =
+    useState("");
 
   useEffect(() => {
     if (communityTax) {
-      setCommunityTaxFormattedString((parseFloat(communityTax)*100).toString() + "%");
+      setCommunityTaxFormattedString(
+        (parseFloat(communityTax) * 100).toString() + "%"
+      );
     }
   }, [communityTax]);
 
   // secretFoundationTax
   const [secretFoundationTax, setSecretFoundationTax] = useState("");
-  const [secretFoundationTaxFormattedString, setSecretFoundationTaxFormattedString] = useState("");
+  const [
+    secretFoundationTaxFormattedString,
+    setSecretFoundationTaxFormattedString,
+  ] = useState("");
 
   useEffect(() => {
     if (secretFoundationTax) {
-      setSecretFoundationTaxFormattedString((parseFloat(secretFoundationTax)*100).toString() + "%");
+      setSecretFoundationTaxFormattedString(
+        (parseFloat(secretFoundationTax) * 100).toString() + "%"
+      );
     }
   }, [secretFoundationTax]);
 
@@ -80,7 +92,9 @@ export function Dashboard() {
 
   useEffect(() => {
     if (feesPaid) {
-      setFeesPaidFormattedString((parseFloat(feesPaid)/1e6).toFixed(2).toString()+ " ");
+      setFeesPaidFormattedString(
+        (parseFloat(feesPaid) / 1e6).toFixed(2).toString() + " "
+      );
     }
   }, [feesPaid]);
 
@@ -90,18 +104,19 @@ export function Dashboard() {
 
   useEffect(() => {
     if (inflation) {
-      setInflationFormattedString((inflation*100).toString() + "%");
+      setInflationFormattedString((inflation * 100).toString() + "%");
     }
   }, [inflation]);
 
   // APR
   const [growthRate, setGrowthRate] = useState(0);
-  const [growthRateFormattedString, setGrowthRateFormattedString] = useState("");
+  const [growthRateFormattedString, setGrowthRateFormattedString] =
+    useState("");
 
   useEffect(() => {
     if (growthRate) {
-      const percentage = growthRate*100;
-      setGrowthRateFormattedString((percentage.toFixed(2)) + "%");
+      const percentage = growthRate * 100;
+      setGrowthRateFormattedString(percentage.toFixed(2) + "%");
     }
   }, [growthRate]);
 
@@ -119,11 +134,21 @@ export function Dashboard() {
         url: SECRET_LCD,
         chainId: SECRET_CHAIN_ID,
       });
-      secretjsquery?.query?.bank?.supplyOf({denom:"uscrt"})?.then(res => setTotalSupply((res.amount.amount as any)/1e6));
-      secretjsquery?.query?.staking?.pool("")?.then(res => setBondedToken(parseInt(res.pool.bonded_tokens) / 10e5));
-      secretjsquery?.query?.staking?.pool("")?.then(res => setNotBondedToken(parseInt(res.pool.not_bonded_tokens) / 10e4));
-    }
-    
+      secretjsquery?.query?.bank
+        ?.supplyOf({ denom: "uscrt" })
+        ?.then((res) => setTotalSupply((res.amount.amount as any) / 1e6));
+      secretjsquery?.query?.staking
+        ?.pool("")
+        ?.then((res) =>
+          setBondedToken(parseInt(res.pool.bonded_tokens) / 10e5)
+        );
+      secretjsquery?.query?.staking
+        ?.pool("")
+        ?.then((res) =>
+          setNotBondedToken(parseInt(res.pool.not_bonded_tokens) / 10e4)
+        );
+    };
+
     queryData();
   }, []);
 
@@ -135,16 +160,16 @@ export function Dashboard() {
 
   useEffect(() => {
     if (volume) {
-      setVolumeFormattedString("$" + parseInt(volume.toFixed(0).toString()).toLocaleString());
+      setVolumeFormattedString(
+        "$" + parseInt(volume.toFixed(0).toString()).toLocaleString()
+      );
     }
     if (marketCap) {
-      setMarketCapFormattedString("$" + parseInt(marketCap.toFixed(0).toString()).toLocaleString());
+      setMarketCapFormattedString(
+        "$" + parseInt(marketCap.toFixed(0).toString()).toLocaleString()
+      );
     }
   }, [volume, marketCap]);
-
-
-
-
 
   const [circulatingSupply, setCirculatingSupply] = useState(0);
   const [currentPrice, setCurrentPrice] = useState(Number);
@@ -153,69 +178,93 @@ export function Dashboard() {
   useEffect(() => {
     // Coingecko API
     let coingeckoApiUrl_Day = `https://api.coingecko.com/api/v3/coins/secret/market_chart?vs_currency=usd&days=1`;
-    fetch(coingeckoApiUrl_Day).then(response => response.json()).then((response) => { setCoinGeckoApiData_Day(response) });
+    fetch(coingeckoApiUrl_Day)
+      .then((response) => response.json())
+      .then((response) => {
+        setCoinGeckoApiData_Day(response);
+      });
 
     let coingeckoApiUrl_Month = `https://api.coingecko.com/api/v3/coins/secret/market_chart?vs_currency=usd&days=30`;
-    fetch(coingeckoApiUrl_Month).then(response => response.json()).then((response) => { setCoinGeckoApiData_Month(response) });
+    fetch(coingeckoApiUrl_Month)
+      .then((response) => response.json())
+      .then((response) => {
+        setCoinGeckoApiData_Month(response);
+      });
 
     let coingeckoApiUrl_Year = `https://api.coingecko.com/api/v3/coins/secret/market_chart?vs_currency=usd&days=365`;
-    fetch(coingeckoApiUrl_Year).then(response => response.json()).then((response) => { setCoinGeckoApiData_Year(response) });
-
-    // Mintscan API
-    let mintscanBlockTimeApiUrl = `https://api.mintscan.io/v1/secret/block/blocktime`;
-    fetch(mintscanBlockTimeApiUrl).then(response => response.json()).then((response) => {
-      setMintscanBlockTime(response.block_time);
-    });
+    fetch(coingeckoApiUrl_Year)
+      .then((response) => response.json())
+      .then((response) => {
+        setCoinGeckoApiData_Year(response);
+      });
 
     //  API
     let spartanApiUrl = `https://core.spartanapi.dev/secret/chains/secret-4/chain_info`;
-    fetch(spartanApiUrl).then(response => response.json()).then((response) => {
-      setSpartanApiData(response);
-    });
+    fetch(spartanApiUrl)
+      .then((response) => response.json())
+      .then((response) => {
+        setSpartanApiData(response);
+      });
 
     // Coingecko Market Cap & Volume
     let coingeckoMarketCapVolumeUrl = `https://api.coingecko.com/api/v3/simple/price?ids=secret&vs_currencies=USD&include_market_cap=true&include_24hr_vol=true&include_24hr_change=true`;
-    fetch(coingeckoMarketCapVolumeUrl).then(response => response.json()).then((response) => {
-      setMarketCap(response.secret.usd_market_cap);
-      setVolume(response.secret.usd_24h_vol);
-    });
-
+    fetch(coingeckoMarketCapVolumeUrl)
+      .then((response) => response.json())
+      .then((response) => {
+        setMarketCap(response.secret.usd_market_cap);
+        setVolume(response.secret.usd_24h_vol);
+      });
   }, []);
 
   useEffect(() => {
-    const queryData = async () => {
-      const secretjsquery = new SecretNetworkClient({
-        url: SECRET_LCD,
-        chainId: SECRET_CHAIN_ID,
-      });
-      setCurrentPrice((coingeckoApiData_Month as any).prices[(coingeckoApiData_Month as any).prices.length-1][1]);
-      secretjsquery?.query?.tendermint?.getLatestBlock("")?.then(res => setBlockHeight(res.block.header.height)); // setting block height
-      // secretjsquery?.query?.mint?.inflation("")?.then(res => setInflation(res.inflation));
-      secretjsquery?.query?.distribution?.communityPool("")?.then(res => setCommunityPool(Math.floor(((res.pool[1] as any).amount) / 10e5)));
+    if (coingeckoApiData_Month) {
+      const queryData = async () => {
+        const secretjsquery = new SecretNetworkClient({
+          url: SECRET_LCD,
+          chainId: SECRET_CHAIN_ID,
+        });
+        setCurrentPrice(
+          (coingeckoApiData_Month as any).prices[
+            (coingeckoApiData_Month as any).prices.length - 1
+          ][1]
+        );
+        secretjsquery?.query?.tendermint
+          ?.getLatestBlock("")
+          ?.then((res) => setBlockHeight(res.block.header.height)); // setting block height
+        // secretjsquery?.query?.mint?.inflation("")?.then(res => setInflation(res.inflation));
+        secretjsquery?.query?.distribution
+          ?.communityPool("")
+          ?.then((res) =>
+            setCommunityPool(Math.floor((res.pool[1] as any).amount / 10e5))
+          );
+      };
+
+      queryData();
     }
-    
-    queryData();
   }, [coingeckoApiData_Month]);
 
-
-
   useEffect(() => {
-    const queryData = async () => {
-      setInflation((spartanApiData as any).inflation);
-      setCirculatingSupply((spartanApiData as any).circulating_supply);
-      setBlockTime((spartanApiData as any).avg_block_time);
-      setDailyTransactions((spartanApiData as any).tx_volume);
-      setCommunityTax((spartanApiData as any).staking_params?.community_tax);
-      setSecretFoundationTax((spartanApiData as any).staking_params?.secret_foundation_tax);
-      setFeesPaid((spartanApiData as any).fees_paid);
-      setBondedRatio((spartanApiData as any).bond_rate)
+    if (spartanApiData) {
+      const queryData = async () => {
+        setInflation((spartanApiData as any).inflation);
+        setCirculatingSupply((spartanApiData as any).circulating_supply);
+        setBlockTime((spartanApiData as any).avg_block_time);
+        setDailyTransactions((spartanApiData as any).tx_volume);
+        setCommunityTax((spartanApiData as any).staking_params?.community_tax);
+        setSecretFoundationTax(
+          (spartanApiData as any).staking_params?.secret_foundation_tax
+        );
+        setFeesPaid((spartanApiData as any).fees_paid);
+        setBondedRatio((spartanApiData as any).bond_rate);
+      };
+
+      queryData();
     }
-    
-    queryData();
   }, [spartanApiData]);
 
   useEffect(() => {
-    if (inflation && secretFoundationTax && communityTax) { // staking ratio missing
+    if (inflation && secretFoundationTax && communityTax) {
+      // staking ratio missing
       const I = inflation; // inflation
       const F = parseFloat(secretFoundationTax); // foundation tax
       const C = 0.05; // validator commision rate; median is 5%
@@ -227,57 +276,79 @@ export function Dashboard() {
 
   return (
     <>
-      <DashboardContext.Provider value={{ coingeckoApiData_Day, coingeckoApiData_Month, coingeckoApiData_Year }}>
-        <div className="px-4 mx-auto space-y-4 w-full">
-          <div className="grid grid-cols-12 gap-4">
-
+      <DashboardContext.Provider
+        value={{
+          coingeckoApiData_Day,
+          coingeckoApiData_Month,
+          coingeckoApiData_Year,
+        }}
+      >
+        <div className='px-4 mx-auto space-y-4 w-full'>
+          <div className='grid grid-cols-12 gap-4'>
             {/* WideQuadTile */}
             {/* <div className="col-span-12">
               <WideQuadTile item1_key="Block Height" item1_value={blockHeightFormattedString} item2_key="Block Time" item2_value={blockTimeFormattedString} item3_key="Daily Transactions" item3_value={dailyTransactionsFormattedString} item4_key="Fees Paid" item4_value={feesPaidFormattedString}/>
             </div> */}
 
             {/* Price */}
-            <div className="col-span-12 md:col-span-6 2xl:col-span-3">
-              <CurrentPrice price={currentPrice}/>
+            <div className='col-span-12 md:col-span-6 2xl:col-span-3'>
+              <CurrentPrice price={currentPrice} />
             </div>
 
             {/* Volume */}
-            <div className="col-span-12 md:col-span-6 2xl:col-span-3">
-              <Volume volume={volumeFormattedString}/>
+            <div className='col-span-12 md:col-span-6 2xl:col-span-3'>
+              <MiniTile name='Volume' value={volumeFormattedString} />
             </div>
 
             {/* Market Cap */}
-            <div className="col-span-12 md:col-span-6 2xl:col-span-3">
-              <MarketCap marketCap={marketCapFormattedString}/>
+            <div className='col-span-12 md:col-span-6 2xl:col-span-3'>
+              <MiniTile name='Market Cap' value={marketCapFormattedString} />
             </div>
 
             {/* Social Media */}
-            <div className="col-span-12 md:col-span-6 2xl:col-span-3">
-              <SocialMedia/>
+            <div className='col-span-12 md:col-span-6 2xl:col-span-3'>
+              <SocialMedia />
             </div>
 
             {/* Block Info */}
-            <div className="col-span-12 md:col-span-6 lg:col-span-6 2xl:col-span-4">
+            <div className='col-span-12 md:col-span-6 lg:col-span-6 2xl:col-span-4'>
               {/* <BlockInfo blockHeight={blockHeight || 0} blockTime={blockTime} circulatingSupply={circulatingSupply} inflation={inflation}/> */}
-              <QuadTile item1_key="Block Height" item1_value={blockHeightFormattedString} item2_key="Block Time" item2_value={blockTimeFormattedString} item3_key="Daily Transactions" item3_value={dailyTransactionsFormattedString} item4_key="Fees Paid [SCRT]" item4_value={feesPaidFormattedString}/>
+              <QuadTile
+                item1_key='Block Height'
+                item1_value={blockHeightFormattedString}
+                item2_key='Block Time'
+                item2_value={blockTimeFormattedString}
+                item3_key='# Transactions (24h)'
+                item3_value={dailyTransactionsFormattedString}
+                item4_key='Fees Paid (24h)[SCRT]'
+                item4_value={feesPaidFormattedString}
+              />
             </div>
 
-            <div className="col-span-12 md:col-span-6 lg:col-span-6 2xl:col-span-4">
-              <div className="bg-neutral-800 px-6 py-8 rounded-xl">
+            <div className='col-span-12 md:col-span-6 lg:col-span-6 2xl:col-span-4'>
+              <div className='bg-neutral-800 px-6 py-8 rounded-xl'>
                 <StakingChart />
               </div>
             </div>
 
             {/* Block Info */}
-            <div className="col-span-12 md:col-span-12 2xl:col-span-4">
-              <QuadTile item1_key="Staking Rewards [APR]" item1_value={growthRateFormattedString} item2_key="Inflation" item2_value={inflationFormattedString} item3_key="Community Tax" item3_value={communityTaxFormattedString} item4_key="Secret Foundation Tax" item4_value={secretFoundationTaxFormattedString}/>
+            <div className='col-span-12 md:col-span-12 2xl:col-span-4'>
+              <QuadTile
+                item1_key='Staking yield [APR]'
+                item1_value={growthRateFormattedString}
+                item2_key='Inflation'
+                item2_value={inflationFormattedString}
+                item3_key='Community Tax'
+                item3_value={communityTaxFormattedString}
+                item4_key='Secret Foundation Tax'
+                item4_value={secretFoundationTaxFormattedString}
+              />
             </div>
-
           </div>
-          
-          <div className="grid grid-cols-12 gap-4">
+
+          <div className='grid grid-cols-12 gap-4'>
             {/* Item */}
-            <div className="col-span-12 bg-neutral-800 p-4 rounded-xl">
+            <div className='col-span-12 bg-neutral-800 p-4 rounded-xl'>
               <PriceVolumeHistory />
             </div>
             {/* Item */}
@@ -288,12 +359,11 @@ export function Dashboard() {
             {/* <div className="col-span-12 xl:col-span-6 bg-neutral-800 p-4 rounded-xl">
               <VolumeChart />
             </div> */}
-            
           </div>
         </div>
       </DashboardContext.Provider>
     </>
-  )
+  );
 }
 
 export function useDashboardContext() {
