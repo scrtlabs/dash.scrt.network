@@ -94,7 +94,7 @@ function Apps() {
       <Helmet>
         <title>{websiteName} | Apps</title>
       </Helmet>
-      <div className='max-w-screen-2xl mx-auto px-6'>
+      <div className='max-w-screen-2xl mx-auto px-6 pt-6 sm:pt-0'>
         <Header
           title='Apps'
           description='A curation of applications running on Secret Network Mainnet!'
@@ -116,7 +116,7 @@ function Apps() {
         </div>
 
         {/* Tag-Filter */}
-        <div className='text-left sm:text-center mb-8 space-x-2 space-y-2'>
+        <div className='mb-4 sm:mb-8 flex gap-2 flex-wrap justify-center'>
           {tags.map((tag) => (
             <Tag name={tag} />
           ))}

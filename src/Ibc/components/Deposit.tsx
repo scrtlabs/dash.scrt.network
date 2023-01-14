@@ -761,7 +761,7 @@ function Deposit() {
       <>
         <button
           className={
-            "flex items-center justify-center w-full py-2 rounded-lg transition-colors font-semibold bg-cyan-600 hover:bg-cyan-500 active:bg-cyan-700 disabled:bg-neutral-500"
+            "enabled:bg-gradient-to-r enabled:from-cyan-600 enabled:to-purple-600 enabled:hover:from-cyan-500 enabled:hover:to-purple-500 transition-colors text-white font-semibold py-2 w-full rounded-lg disabled:bg-neutral-500"
           }
           disabled={!secretjs || !secretAddress}
           onClick={() => submit()}
