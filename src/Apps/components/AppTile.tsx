@@ -17,13 +17,13 @@ class AppTile extends React.Component<IAppItemProps> {
         target={this.props.url ? "_blank" : "_self"}
         className='col-span-12 sm:col-span-6 md:col-span-4 xl:col-span-3'
       >
-        <div className='bg-neutral-800 hover:bg-neutral-700 transition-colors p-4 flex flex-col h-full rounded-xl overflow-hidden'>
+        <div className='bg-neutral-800 hover:bg-neutral-700 transition-colors p-4 flex flex-col h-full rounded-xl overflow-hidden text-center sm:text-left'>
           {/* Image */}
           {this.props.image && (
             <img
               src={"/img/dapps/" + this.props.image}
               alt={`${this.props.name} logo`}
-              className='w-16 h-16 rounded-xl block mb-4 bg-neutral-900 flex-initial'
+              className='w-16 h-16 rounded-xl block mb-4 bg-neutral-900 flex-initial mx-auto sm:mx-0'
             />
           )}
 
