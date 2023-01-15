@@ -1,4 +1,4 @@
-import { chains } from "shared/Utils/config";
+import { chains } from "shared/utils/config";
 import React, { useEffect, useState, createContext, useContext } from "react";
 import { SecretNetworkClient } from "secretjs";
 import CurrentPrice from "./components/CurrentPrice";
@@ -7,7 +7,7 @@ import PriceVolumeHistory from "./components/PriceVolumeHistory";
 import QuadTile from "./components/QuadTile";
 import SocialMedia from "./components/SocialMedia";
 import StakingChart from "./components/StakingChart";
-import { SECRET_LCD, SECRET_CHAIN_ID } from "shared/Utils/config";
+import { SECRET_LCD, SECRET_CHAIN_ID } from "shared/utils/config";
 import { Helmet } from "react-helmet-async";
 
 export const DashboardContext = createContext<{

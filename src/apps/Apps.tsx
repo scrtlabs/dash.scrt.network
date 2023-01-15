@@ -1,12 +1,12 @@
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { dappsData } from "shared/Utils/dapps";
+import { dappsData } from "shared/utils/dapps";
 import React, { useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { websiteName } from "App";
 import Header from "./components/Header";
 import AppTile from "./components/AppTile";
-import { shuffleArray } from "shared/Utils/helpers";
+import { shuffleArray } from "shared/utils/helpers";
 
 export interface IDappData {
   id: number;

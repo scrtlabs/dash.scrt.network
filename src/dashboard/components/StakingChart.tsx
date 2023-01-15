@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { formatNumber } from "shared/Utils/commons";
-import { SECRET_LCD, SECRET_CHAIN_ID } from "shared/Utils/config";
+import { formatNumber } from "shared/utils/commons";
+import { SECRET_LCD, SECRET_CHAIN_ID } from "shared/utils/config";
 
 import {
   Chart as ChartJS,
