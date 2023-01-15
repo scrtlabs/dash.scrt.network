@@ -3,7 +3,7 @@
   "description": "An entry point for new users into Secret Network",
   "version": "0.0.1",
   "scripts": {
-    "start": "PORT=3000 vite",
+    "start": "vite",
     "build": "tsc && vite build",
     "preview": "yarn build && vite preview"
   },
