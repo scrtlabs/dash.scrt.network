@@ -11,7 +11,7 @@ class TagFilterItem extends React.Component<ITagProps> {
         className={
           "inline-block text-sm px-1.5 py-0.5 rounded-md overflow-hidden transition-colors" +
           (false
-            ? " bg-neutral-500 hover:bg-neutral-600 font-semibold"
+            ? " bg-white-500 hover:bg-neutral-600 font-semibold"
             : " bg-neutral-800 hover:bg-neutral-700 font-medium")
         }
       >

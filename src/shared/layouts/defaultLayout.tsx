@@ -1,4 +1,4 @@
-import { faBars } from "@fortawesome/free-solid-svg-icons";
+import { faBars, faSun } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Footer from "shared/components/Footer";
 import { KeplrPanel } from "shared/components/Keplr";
@@ -21,6 +21,25 @@ export const FeeGrantContext = createContext(null);
 
 export const DefaultLayout = ({ children }: any) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  /**
+   * Dark Mode Switch
+   */
+  type Theme = 'light' | 'dark';
+  const [theme, setTheme] = useState<Theme>('light');
+
+  const toggleTheme = () => {
+    (theme === 'light') ? setTheme('dark') : setTheme('light');
+  }
+  useEffect(() => {
+    if (theme === 'light') {
+      document.body.classList.remove('dark');
+    } else {
+      document.body.classList.add('dark');
+    }
+  }, [theme]);
+
+
 
   /**
    * Mobile Menu Handler
@@ -64,7 +83,7 @@ export const DefaultLayout = ({ children }: any) => {
               ? "z-50 left-0 right-0 w-full lg:w-auto min-h-screen "
               : "hidden lg:block") +
             " " +
-            "lg:w-72 fixed left-0 top-0 h-screen p-6 overflow-x-hidden bg-neutral-100 dark:bg-neutral-900"
+            "lg:w-72 fixed left-0 top-0 h-screen p-6 overflow-x-hidden bg-neutral-200 dark:bg-neutral-900"
           }
         >
           <NavigationContext.Provider value={showMobileMenu}>
@@ -106,6 +125,12 @@ export const DefaultLayout = ({ children }: any) => {
                   >
                     <FontAwesomeIcon icon={faDiscord} size='lg' />
                   </a>
+                  {/* DarkMode / LightMode Switch */}
+                  <button onClick={toggleTheme}
+                    className='text-neutral-800 dark:text-neutral-200 hover:text-black dark:hover:text-white transition-colors'
+                  >
+                    <FontAwesomeIcon icon={faSun} />
+                  </button>
                 </div>
 
                 <div className='flex-1 sm:flex-initial sm:flex sm:justify-end'>

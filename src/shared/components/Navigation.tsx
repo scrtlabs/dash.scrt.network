@@ -92,8 +92,8 @@ export function Navigation({
             to='/bridge'
             className={({ isActive }) =>
               isActive
-                ? "text-black dark:text-white bg-gradient-to-r from-neutral-300 via-neutral-300 to-neutral-300/10 dark:from-neutral-700 dark:via-neutral-700 dark:to-neutral-700/10 block w-full px-8 py-3 rounded-xl transition-colors font-bold cursor-default"
-                : "text-neutral-700 cursor-pointer hover:text-black dark:hover:text-white block w-full px-8 py-3 rounded-xl transition-colors"
+                ? "isActiveNavLink text-black dark:text-white bg-gradient-to-r from-neutral-300 via-neutral-300 to-neutral-300/10 dark:from-neutral-700 dark:via-neutral-700 dark:to-neutral-700/10 block w-full px-8 py-3 rounded-xl transition-colors font-bold cursor-default"
+                : "isInactiveNavLink text-neutral-700 cursor-pointer hover:text-black dark:hover:text-white block w-full px-8 py-3 rounded-xl transition-colors"
             }
           >
             <svg
@@ -127,7 +127,7 @@ export function Navigation({
       <div className='mt-12'>
         <button
           onClick={() => toggleIsExtendedMenuOpen()}
-          className='px-8 py-3 w-full text-left font-semibold text-neutral-400 hover:text-white transition-colors mb-4 flex items-center'
+          className='px-8 py-3 w-full text-left font-semibold text-neutral-600 dark:text-neutral-400 hover:text-black dark:hover:text-white transition-colors mb-4 flex items-center'
         >
           <span className='flex-intial'>More</span>
           <FontAwesomeIcon
@@ -147,13 +147,13 @@ export function Navigation({
               <a
                 href='https://wallet.keplr.app/chains/secret-network?tab=staking'
                 target='_blank'
-                className='cursor-pointer hover:text-white block w-full mx-8 rounded-xl transition-colors'
+                className='cursor-pointer dark:hover:text-white block w-full mx-8 rounded-xl transition-colors text-neutral-600 dark:text-neutral-300 hover:text-black'
               >
                 <FontAwesomeIcon icon={faCoins} className='mr-2' />
                 Stake
                 <FontAwesomeIcon
                   icon={faArrowUpRightFromSquare}
-                  className='text-xs ml-2'
+                  className='text-xs ml-2' size={"xs"}
                 />
               </a>
             </li>
@@ -161,13 +161,13 @@ export function Navigation({
               <a
                 href='https://wallet.keplr.app/chains/secret-network?tab=governance'
                 target='_blank'
-                className='cursor-pointer hover:text-white block w-full mx-8 rounded-xl transition-colors'
+                className='cursor-pointer dark:hover:text-white block w-full mx-8 rounded-xl transition-colors text-neutral-600 dark:text-neutral-300 hover:text-black'
               >
                 <FontAwesomeIcon icon={faCheckToSlot} className='mr-2' />
                 Governance
                 <FontAwesomeIcon
                   icon={faArrowUpRightFromSquare}
-                  className='text-xs ml-2'
+                  className='text-xs ml-2' size={"xs"}
                 />
               </a>
             </li>
@@ -175,13 +175,13 @@ export function Navigation({
               <a
                 href='https://secretanalytics.xyz'
                 target='_blank'
-                className='cursor-pointer hover:text-white block w-full mx-8 rounded-xl transition-colors'
+                className='cursor-pointer dark:hover:text-white block w-full mx-8 rounded-xl transition-colors text-neutral-600 dark:text-neutral-300 hover:text-black'
               >
                 <FontAwesomeIcon icon={faChartLine} className='mr-2' />
                 Stats
                 <FontAwesomeIcon
                   icon={faArrowUpRightFromSquare}
-                  className='text-xs ml-2'
+                  className='text-xs ml-2' size={"xs"}
                 />
               </a>
             </li>
@@ -189,45 +189,19 @@ export function Navigation({
               <a
                 href='https://secretnodes.com/'
                 target='_blank'
-                className='cursor-pointer hover:text-white block w-full mx-8 rounded-xl transition-colors'
+                className='cursor-pointer dark:hover:text-white block w-full mx-8 rounded-xl transition-colors text-neutral-600 dark:text-neutral-300 hover:text-black'
               >
                 <FontAwesomeIcon icon={faCube} className='mr-2' />
                 Block Explorer
                 <FontAwesomeIcon
                   icon={faArrowUpRightFromSquare}
-                  className='text-xs ml-2'
+                  className='text-xs ml-2' size={"xs"}
                 />
               </a>
             </li>
           </ul>
         </div>
       </div>
-
-      {/* <div className='mt-12'>
-        <div className='mx-4 mb-6 font-semibold text-neutral-600'>More</div>
-        <ul className='space-y-6 font-medium text-neutral-400'>
-          <li>
-              <a href='https://wallet.keplr.app/chains/secret-network?tab=staking' target='_blank' className='cursor-pointer hover:text-white block w-full mx-8 rounded-xl transition-colors'>
-              <FontAwesomeIcon icon={faCoins} className='mr-2' />Stake<FontAwesomeIcon icon={faArrowUpRightFromSquare} className='text-xs ml-2' />
-              </a>
-            </li>
-            <li>
-              <a href='https://wallet.keplr.app/chains/secret-network?tab=governance' target='_blank' className='cursor-pointer hover:text-white block w-full mx-8 rounded-xl transition-colors'>
-              <FontAwesomeIcon icon={faCheckToSlot} className='mr-2' />Governance<FontAwesomeIcon icon={faArrowUpRightFromSquare} className='text-xs ml-2' />
-              </a>
-            </li>
-            <li>
-              <a href='https://secretanalytics.xyz' target='_blank' className='cursor-pointer hover:text-white block w-full mx-8 rounded-xl transition-colors'>
-              <FontAwesomeIcon icon={faChartLine} className='mr-2' />Stats<FontAwesomeIcon icon={faArrowUpRightFromSquare} className='text-xs ml-2' />
-              </a>
-            </li>
-            <li>
-              <a href='https://secretnodes.com/' target='_blank' className='cursor-pointer hover:text-white block w-full mx-8 rounded-xl transition-colors'>
-              <FontAwesomeIcon icon={faCube} className='mr-2' />Block Explorer<FontAwesomeIcon icon={faArrowUpRightFromSquare} className='text-xs ml-2' />
-              </a>
-            </li>
-        </ul>
-      </div> */}
     </>
   );
 }
