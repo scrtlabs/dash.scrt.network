@@ -3,8 +3,8 @@ import {
   faXmarkCircle,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { FeeGrantContext, KeplrContext } from "shared/Layouts/defaultLayout";
-import { faucetURL } from "shared/Utils/commons";
+import { FeeGrantContext, KeplrContext } from "shared/layouts/defaultLayout";
+import { faucetURL } from "shared/utils/commons";
 import React, { useContext, useState } from "react";
 import { toast } from "react-toastify";
 

@@ -2,7 +2,7 @@ import React, { Component, useContext, useEffect, useState } from "react";
 import CopyToClipboard from "react-copy-to-clipboard";
 import { Else, If, Then } from "react-if";
 import { SecretNetworkClient } from "secretjs";
-import { chains } from "shared/Utils/config";
+import { chains } from "shared/utils/config";
 import Tooltip from "@mui/material/Tooltip";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -11,11 +11,11 @@ import {
   faRotateRight,
   faX,
 } from "@fortawesome/free-solid-svg-icons";
-import { faucetURL } from "shared/Utils/commons";
+import { faucetURL } from "shared/utils/commons";
 import { toast } from "react-toastify";
 import GetWalletModal from "shared/components/GetWalletModal";
-import { SECRET_LCD, SECRET_CHAIN_ID, SECRET_RPC } from "shared/Utils/config";
-import { FeeGrantContext } from "shared/Layouts/defaultLayout";
+import { SECRET_LCD, SECRET_CHAIN_ID, SECRET_RPC } from "shared/utils/config";
+import { FeeGrantContext } from "shared/layouts/defaultLayout";
 import Modal from "./Modal";
 
 export function KeplrPanel({
