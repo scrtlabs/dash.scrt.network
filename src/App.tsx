@@ -28,7 +28,7 @@ window.addEventListener("keplr_keystorechange", () => {
   location.reload();
 });
 
-class ErrorBoundary extends React.Component<{}, { hasError: boolean }> {
+class ErrorBoundary extends React.Component<{children: any}, { hasError: boolean }> {
   constructor(props: any) {
     super(props);
     this.state = { hasError: false };
