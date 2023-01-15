@@ -9,7 +9,7 @@ import { Breakpoint } from "react-socks";
 import { Flip, ToastContainer, toast } from "react-toastify";
 import { faDiscord, faTwitter } from "@fortawesome/free-brands-svg-icons";
 import { useLocation } from "react-router-dom";
-import { FeeGrantStatus } from "shared/Utils/types";
+import { FeeGrantStatus } from "shared/utils/types";
 import FloatingCTAButton from "shared/components/FloatingCTAButton";
 
 export const KeplrContext = createContext<{

@@ -12,9 +12,9 @@ import {
   faPercentage,
 } from "@fortawesome/free-solid-svg-icons";
 import { useDashboardContext } from "dashboard/Dashboard";
-import { chains } from "shared/Utils/config";
+import { chains } from "shared/utils/config";
 import { SecretNetworkClient } from "secretjs";
-import { SECRET_LCD, SECRET_CHAIN_ID } from "shared/Utils/config";
+import { SECRET_LCD, SECRET_CHAIN_ID } from "shared/utils/config";
 
 export default function InfoBoxes() {
   const { apiData, setApiData } = useDashboardContext() as any;

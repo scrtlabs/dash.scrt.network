@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { DashboardContext, useDashboardContext } from "../Dashboard";
-import { formatNumber } from "shared/Utils/commons";
+import { formatNumber } from "shared/utils/commons";
 
 import {
   Chart as ChartJS,

@@ -1,4 +1,4 @@
-import { ibcDenom } from "shared/Utils/commons";
+import { ibcDenom } from "shared/utils/commons";
 
 export type Chain = {
   /** display name of the chain */

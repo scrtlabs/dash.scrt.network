@@ -12,7 +12,7 @@ import React, {
   useContext,
   Component,
 } from "react";
-import { KeplrContext, FeeGrantContext } from "shared/Layouts/defaultLayout";
+import { KeplrContext, FeeGrantContext } from "shared/layouts/defaultLayout";
 import {
   getKeplrViewingKey,
   setKeplrViewingKey,
@@ -26,7 +26,7 @@ import {
   suggestTerraToKeplr,
   faucetAddress,
   viewingKeyErrorString,
-} from "shared/Utils/commons";
+} from "shared/utils/commons";
 import {
   fromBase64,
   SecretNetworkClient,
@@ -34,7 +34,7 @@ import {
   TxResponse,
   toUtf8,
 } from "secretjs";
-import { chains, Token, tokens, snips } from "shared/Utils/config";
+import { chains, Token, tokens, snips } from "shared/utils/config";
 import { TxRaw } from "secretjs/dist/protobuf/cosmos/tx/v1beta1/tx";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";

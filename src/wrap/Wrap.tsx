@@ -1,14 +1,14 @@
 import React, { useEffect, useState, useContext, createContext } from "react";
 import { MsgExecuteContract } from "secretjs";
-import { Token, tokens } from "shared/Utils/config";
+import { Token, tokens } from "shared/utils/config";
 import {
   sleep,
   faucetURL,
   faucetAddress,
   viewingKeyErrorString,
   usdString,
-} from "shared/Utils/commons";
-import { KeplrContext, FeeGrantContext } from "shared/Layouts/defaultLayout";
+} from "shared/utils/commons";
+import { KeplrContext, FeeGrantContext } from "shared/layouts/defaultLayout";
 import BigNumber from "bignumber.js";
 import { toast } from "react-toastify";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
