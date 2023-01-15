@@ -18,6 +18,7 @@ export const KeplrContext = createContext<{
 } | null>(null);
 export const NavigationContext = createContext<boolean | null>(null);
 export const FeeGrantContext = createContext(null);
+export const ThemeContext = createContext(null);
 
 export const DefaultLayout = ({ children }: any) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -71,111 +72,113 @@ export const DefaultLayout = ({ children }: any) => {
 
   return (
     <>
-      <FloatingCTAButton
-        url='https://linktr.ee/SCRTSupport'
-        text='Need Help?'
-      />
+      <ThemeContext.Provider value={theme}>
+        <FloatingCTAButton
+          url='https://linktr.ee/SCRTSupport'
+          text='Need Help?'
+        />
 
-      <div className='flex'>
-        <aside
-          className={
-            (showMobileMenu
-              ? "z-50 left-0 right-0 w-full lg:w-auto min-h-screen "
-              : "hidden lg:block") +
-            " " +
-            "lg:w-72 fixed left-0 top-0 h-screen p-6 overflow-x-hidden bg-neutral-200 dark:bg-neutral-900"
-          }
-        >
-          <NavigationContext.Provider value={showMobileMenu}>
-            <Navigation
-              showMobileMenu={showMobileMenu}
-              setShowMobileMenu={setShowMobileMenu}
-            />
-          </NavigationContext.Provider>
-        </aside>
-        <KeplrContext.Provider value={{ secretjs, secretAddress }}>
-          <FeeGrantContext.Provider
-            value={{ feeGrantStatus, setFeeGrantStatus }}
+        <div className='flex'>
+          <aside
+            className={
+              (showMobileMenu
+                ? "z-50 left-0 right-0 w-full lg:w-auto min-h-screen "
+                : "hidden lg:block") +
+              " " +
+              "lg:w-72 fixed left-0 top-0 h-screen p-6 overflow-x-hidden bg-neutral-200 dark:bg-neutral-900"
+            }
           >
-            <main className='flex flex-col min-h-screen flex-1 lg:ml-72'>
-              {/* Top Bar [Burger Menu | Socials | Keplr] */}
-              <div className='flex items-center gap-4 p-4'>
-                {/* Burger Menu */}
-                <div className='flex-initial lg:hidden'>
-                  <button
-                    onClick={() => setShowMobileMenu(true)}
-                    className='text-white hover:text-neutral-200 active:text-neutral-400 transition-colors'
-                  >
-                    <FontAwesomeIcon icon={faBars} size='xl' />
-                  </button>
+            <NavigationContext.Provider value={showMobileMenu}>
+              <Navigation
+                showMobileMenu={showMobileMenu}
+                setShowMobileMenu={setShowMobileMenu}
+              />
+            </NavigationContext.Provider>
+          </aside>
+          <KeplrContext.Provider value={{ secretjs, secretAddress }}>
+            <FeeGrantContext.Provider
+              value={{ feeGrantStatus, setFeeGrantStatus }}
+            >
+              <main className='flex flex-col min-h-screen flex-1 lg:ml-72'>
+                {/* Top Bar [Burger Menu | Socials | Keplr] */}
+                <div className='flex items-center gap-4 p-4'>
+                  {/* Burger Menu */}
+                  <div className='flex-initial lg:hidden'>
+                    <button
+                      onClick={() => setShowMobileMenu(true)}
+                      className='text-white hover:text-neutral-200 active:text-neutral-400 transition-colors'
+                    >
+                      <FontAwesomeIcon icon={faBars} size='xl' />
+                    </button>
+                  </div>
+
+                  <div className='flex-initial sm:flex-1 text-right space-x-2'>
+                    <a
+                      href='https://twitter.com/SecretNetwork'
+                      target='_blank'
+                      className='text-neutral-200 hover:text-white transition-colors'
+                    >
+                      <FontAwesomeIcon icon={faTwitter} size='lg' />
+                    </a>
+                    <a
+                      href='https://discord.com/invite/SJK32GY'
+                      target='_blank'
+                      className='text-neutral-200 hover:text-white transition-colors'
+                    >
+                      <FontAwesomeIcon icon={faDiscord} size='lg' />
+                    </a>
+                    {/* DarkMode / LightMode Switch */}
+                    <button onClick={toggleTheme}
+                      className='text-neutral-800 dark:text-neutral-200 hover:text-black dark:hover:text-white transition-colors'
+                    >
+                      <FontAwesomeIcon icon={faSun} />
+                    </button>
+                  </div>
+
+                  <div className='flex-1 sm:flex-initial sm:flex sm:justify-end'>
+                    <KeplrPanel
+                      secretjs={secretjs}
+                      setSecretjs={setSecretjs}
+                      secretAddress={secretAddress}
+                      setSecretAddress={setSecretAddress}
+                    />
+                  </div>
                 </div>
 
-                <div className='flex-initial sm:flex-1 text-right space-x-2'>
-                  <a
-                    href='https://twitter.com/SecretNetwork'
-                    target='_blank'
-                    className='text-neutral-200 hover:text-white transition-colors'
-                  >
-                    <FontAwesomeIcon icon={faTwitter} size='lg' />
-                  </a>
-                  <a
-                    href='https://discord.com/invite/SJK32GY'
-                    target='_blank'
-                    className='text-neutral-200 hover:text-white transition-colors'
-                  >
-                    <FontAwesomeIcon icon={faDiscord} size='lg' />
-                  </a>
-                  {/* DarkMode / LightMode Switch */}
-                  <button onClick={toggleTheme}
-                    className='text-neutral-800 dark:text-neutral-200 hover:text-black dark:hover:text-white transition-colors'
-                  >
-                    <FontAwesomeIcon icon={faSun} />
-                  </button>
+                {children}
+                <div className='max-w-7xl mx-auto mt-auto'>
+                  <Footer />
                 </div>
-
-                <div className='flex-1 sm:flex-initial sm:flex sm:justify-end'>
-                  <KeplrPanel
-                    secretjs={secretjs}
-                    setSecretjs={setSecretjs}
-                    secretAddress={secretAddress}
-                    setSecretAddress={setSecretAddress}
-                  />
-                </div>
-              </div>
-
-              {children}
-              <div className='max-w-7xl mx-auto mt-auto'>
-                <Footer />
-              </div>
-            </main>
-          </FeeGrantContext.Provider>
-        </KeplrContext.Provider>
-      </div>
-      <Breakpoint medium up>
-        <ToastContainer
-          position='bottom-left'
-          autoClose={5000}
-          hideProgressBar
-          newestOnTop={true}
-          closeOnClick={true}
-          rtl={false}
-          pauseOnFocusLoss
-          draggable={false}
-          pauseOnHover={true}
-          theme='dark'
-        />
-      </Breakpoint>
-      <Breakpoint small down>
-        <ToastContainer
-          position={"bottom-left"}
-          autoClose={false}
-          hideProgressBar={true}
-          closeOnClick={true}
-          draggable={false}
-          theme={"dark"}
-          transition={Flip}
-        />
-      </Breakpoint>
+              </main>
+            </FeeGrantContext.Provider>
+          </KeplrContext.Provider>
+        </div>
+        <Breakpoint medium up>
+          <ToastContainer
+            position='bottom-left'
+            autoClose={5000}
+            hideProgressBar
+            newestOnTop={true}
+            closeOnClick={true}
+            rtl={false}
+            pauseOnFocusLoss
+            draggable={false}
+            pauseOnHover={true}
+            theme='dark'
+          />
+        </Breakpoint>
+        <Breakpoint small down>
+          <ToastContainer
+            position={"bottom-left"}
+            autoClose={false}
+            hideProgressBar={true}
+            closeOnClick={true}
+            draggable={false}
+            theme={"dark"}
+            transition={Flip}
+          />
+        </Breakpoint>
+      </ThemeContext.Provider>
     </>
   );
 };
