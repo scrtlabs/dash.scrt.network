@@ -121,7 +121,7 @@ body {
 
 .isInactiveNavLink {
   svg {
-    @apply fill-neutral-400;
+    @apply dark:fill-neutral-400 fill-neutral-600;
   }
   &:hover svg {
     @apply fill-white;
