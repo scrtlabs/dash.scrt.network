@@ -7,7 +7,6 @@ import BigNumber from "bignumber.js";
 import Long from "long";
 import React, {
   useEffect,
-  useRef,
   useState,
   useContext,
   Component,
@@ -41,9 +40,7 @@ import "react-toastify/dist/ReactToastify.css";
 import CopyToClipboard from "react-copy-to-clipboard";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  faCircleInfo,
   faCopy,
-  faPaste,
   faRightLeft,
   faKey,
   faXmarkCircle,
@@ -59,6 +56,8 @@ function Deposit() {
     setIsWrapModalOpen,
     selectedTokenName,
     setSelectedTokenName,
+    ibcMode,
+    setIbcMode
   } = useContext(IbcContext);
   const { feeGrantStatus, setFeeGrantStatus } = useContext(FeeGrantContext);
 
@@ -70,7 +69,6 @@ function Deposit() {
   const [fetchBalanceInterval, setFetchBalanceInterval] = useState<any>(null);
   const [amountToTransfer, setAmountToTransfer] = useState<string>("");
   const { secretjs, secretAddress } = useContext(KeplrContext);
-
   const queryParams = new URLSearchParams(window.location.search);
   const tokenByQueryParam = queryParams.get("token"); // "scrt", "akash", etc.
   const chainByQueryParam = queryParams.get("chain"); // "scrt", "akash", etc.
@@ -89,19 +87,11 @@ function Deposit() {
     )[0]
   );
 
-  const tokenPreselection = tokens.filter(
-    (token) => token.name === tokenByQueryParam?.toUpperCase()
-  )[0]
-    ? tokenByQueryParam?.toUpperCase()
-    : "INJ";
-
   useEffect(() => {
     setSelectedTokenName(selectedToken.name);
   }, [selectedToken]);
 
-  type IbcMode = "Deposit" | "Withdrawal";
-
-  const [ibcMode, setIbcMode] = useState<IbcMode>("Deposit");
+  // const [ibcMode, setIbcMode] = useState<IbcMode>("Deposit");
 
   function toggleIbcMode() {
     if (ibcMode === "Deposit") {
