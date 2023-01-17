@@ -121,13 +121,18 @@ body {
 
 .isInactiveNavLink {
   svg {
-    @apply dark:fill-neutral-400 fill-neutral-600;
+    @apply dark:fill-neutral-300 fill-neutral-700;
   }
   &:hover svg {
-    @apply fill-white;
+    @apply fill-black dark:fill-white;
   }
 }
 
-.isActiveNavLink svg {
-  @apply fill-white;
+.isActiveNavLink {
+  svg {
+    @apply dark:fill-white fill-black;
+  }
+  &:hover svg {
+    @apply fill-black dark:fill-white;
+  }
 }
