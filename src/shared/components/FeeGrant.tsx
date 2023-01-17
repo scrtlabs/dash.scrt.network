@@ -59,7 +59,7 @@ export function FeeGrant() {
         <button
           id='feeGrantButton'
           onClick={() => requestFeeGrant()}
-          className='font-semibold text-xs bg-neutral-900 px-1.5 py-1 rounded-md transition-colors hover:bg-neutral-700 focus:bg-neutral-500 cursor-pointer disabled:text-neutral-500 disabled:hover:bg-neutral-900 disabled:cursor-default'
+          className='font-semibold text-xs bg-neutral-100 dark:bg-neutral-900 px-1.5 py-1 rounded-md transition-colors hover:bg-neutral-300 dark:hover:bg-neutral-700 focus:bg-neutral-500 dark:focus:bg-neutral-500 cursor-pointer disabled:text-neutral-500 dark:disabled:text-neutral-500 disabled:hover:bg-neutral-100 dark:disabled:hover:bg-neutral-900 disabled:cursor-default'
           disabled={!secretjs || !secretAddress}
         >
           Request Fee Grant
