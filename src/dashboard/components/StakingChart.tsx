@@ -17,7 +17,7 @@ import { Doughnut } from "react-chartjs-2";
 import { SecretNetworkClient } from "secretjs";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowUpRightFromSquare } from "@fortawesome/free-solid-svg-icons";
-import { ThemeContext } from "shared/layouts/defaultLayout";
+import { ThemeContext } from "App";
 
 ChartJS.register(
   CategoryScale,
@@ -41,7 +41,7 @@ class StakingChart extends React.Component {
       if (theme) {
         alert(theme);
       }
-    }, [theme])
+    }, [theme]);
 
     useEffect(() => {
       const queryData = async () => {
@@ -57,7 +57,9 @@ class StakingChart extends React.Component {
         secretjsquery?.query?.bank
           ?.supplyOf({ denom: "uscrt" })
           ?.then((res) => setTotalSupply((res.amount.amount as any) / 1e6));
-        secretjsquery?.query?.staking?.pool("")?.then((res) => setPool(res.pool));
+        secretjsquery?.query?.staking
+          ?.pool("")
+          ?.then((res) => setPool(res.pool));
       };
 
       queryData();
