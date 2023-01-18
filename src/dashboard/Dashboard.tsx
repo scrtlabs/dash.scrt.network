@@ -93,7 +93,7 @@ export function Dashboard() {
   useEffect(() => {
     if (feesPaid) {
       setFeesPaidFormattedString(
-        (parseFloat(feesPaid) / 1e6).toFixed(2).toString() + " "
+        (parseFloat(feesPaid) / 1e6).toFixed(2).toString()
       );
     }
   }, [feesPaid]);
@@ -320,7 +320,7 @@ export function Dashboard() {
                 item2_value={blockTimeFormattedString}
                 item3_key='# Transactions (24h)'
                 item3_value={dailyTransactionsFormattedString}
-                item4_key='Fees Paid (24h)[SCRT]'
+                item4_key='Fees Paid (24h) [SCRT]'
                 item4_value={feesPaidFormattedString}
               />
             </div>
@@ -334,7 +334,7 @@ export function Dashboard() {
             {/* Block Info */}
             <div className='col-span-12 md:col-span-12 2xl:col-span-4'>
               <QuadTile
-                item1_key='Staking yield [APR]'
+                item1_key='Staking Yield [APR]'
                 item1_value={growthRateFormattedString}
                 item2_key='Inflation'
                 item2_value={inflationFormattedString}

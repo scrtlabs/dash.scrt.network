@@ -7,12 +7,23 @@ import { websiteName } from "App";
 import WrapModal from "./components/WrapModal";
 import Deposit from "./components/Deposit";
 
+
 export const IbcContext = createContext(null);
 
 export function Ibc() {
+  type IbcMode = "Deposit" | "Withdrawal";
+
   const [isWrapModalOpen, setIsWrapModalOpen] = useState(false);
 
   const [selectedTokenName, setSelectedTokenName] = useState("");
+
+  const [ibcMode, setIbcMode] = useState<IbcMode>("Deposit");
+
+
+
+
+
+
 
   return (
     <>
@@ -25,6 +36,8 @@ export function Ibc() {
           setIsWrapModalOpen,
           selectedTokenName,
           setSelectedTokenName,
+          ibcMode,
+          setIbcMode
         }}
       >
         <WrapModal
