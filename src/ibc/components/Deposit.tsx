@@ -7,7 +7,6 @@ import BigNumber from "bignumber.js";
 import Long from "long";
 import React, {
   useEffect,
-  useRef,
   useState,
   useContext,
   Component,
@@ -41,9 +40,7 @@ import "react-toastify/dist/ReactToastify.css";
 import CopyToClipboard from "react-copy-to-clipboard";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  faCircleInfo,
   faCopy,
-  faPaste,
   faRightLeft,
   faKey,
   faXmarkCircle,
@@ -59,6 +56,8 @@ function Deposit() {
     setIsWrapModalOpen,
     selectedTokenName,
     setSelectedTokenName,
+    ibcMode,
+    setIbcMode
   } = useContext(IbcContext);
   const { feeGrantStatus, setFeeGrantStatus } = useContext(FeeGrantContext);
 
@@ -70,7 +69,6 @@ function Deposit() {
   const [fetchBalanceInterval, setFetchBalanceInterval] = useState<any>(null);
   const [amountToTransfer, setAmountToTransfer] = useState<string>("");
   const { secretjs, secretAddress } = useContext(KeplrContext);
-
   const queryParams = new URLSearchParams(window.location.search);
   const tokenByQueryParam = queryParams.get("token"); // "scrt", "akash", etc.
   const chainByQueryParam = queryParams.get("chain"); // "scrt", "akash", etc.
@@ -89,19 +87,11 @@ function Deposit() {
     )[0]
   );
 
-  const tokenPreselection = tokens.filter(
-    (token) => token.name === tokenByQueryParam?.toUpperCase()
-  )[0]
-    ? tokenByQueryParam?.toUpperCase()
-    : "INJ";
-
   useEffect(() => {
     setSelectedTokenName(selectedToken.name);
   }, [selectedToken]);
 
-  type IbcMode = "Deposit" | "Withdrawal";
-
-  const [ibcMode, setIbcMode] = useState<IbcMode>("Deposit");
+  // const [ibcMode, setIbcMode] = useState<IbcMode>("Deposit");
 
   function toggleIbcMode() {
     if (ibcMode === "Deposit") {
@@ -421,7 +411,7 @@ function Deposit() {
         deposit_gas = selectedSource.gas || deposit_gas;
 
         const toastId = toast.loading(
-          `Sending ${normalizedAmount} ${selectedToken.name} from ${selectedSource.chain_name} to Secret`,
+          `Sending ${normalizedAmount} ${selectedToken.name} from ${selectedSource.chain_name} to Secret Network`,
           {
             closeButton: true,
           }
@@ -568,21 +558,21 @@ function Deposit() {
 
           if (tx.code !== 0) {
             toast.update(toastId, {
-              render: `Failed sending ${normalizedAmount} ${selectedToken.name} from ${selectedSource.chain_name} to Secret: ${tx.rawLog}`,
+              render: `Failed sending ${normalizedAmount} ${selectedToken.name} from ${selectedSource.chain_name} to Secret Network: ${tx.rawLog}`,
               type: "error",
               isLoading: false,
             });
             return;
           } else {
             toast.update(toastId, {
-              render: `Receiving ${normalizedAmount} ${selectedToken.name} on Secret from ${selectedSource.chain_name}`,
+              render: `Receiving ${normalizedAmount} ${selectedToken.name} on Secret Network from ${selectedSource.chain_name}`,
             });
 
             const ibcResp = await tx.ibcResponses[0];
 
             if (ibcResp.type === "ack") {
               toast.update(toastId, {
-                render: `Received ${normalizedAmount} ${selectedToken.name} on Secret from ${selectedSource.chain_name}`,
+                render: `Received ${normalizedAmount} ${selectedToken.name} on Secret Network from ${selectedSource.chain_name}`,
                 type: "success",
                 isLoading: false,
                 closeOnClick: true,
@@ -592,7 +582,7 @@ function Deposit() {
               }
             } else {
               toast.update(toastId, {
-                render: `Timed out while waiting to receive ${normalizedAmount} ${selectedToken.name} on Secret from ${selectedSource.chain_name}`,
+                render: `Timed out while waiting to receive ${normalizedAmount} ${selectedToken.name} on Secret Network from ${selectedSource.chain_name}`,
                 type: "warning",
                 isLoading: false,
               });
@@ -600,7 +590,7 @@ function Deposit() {
           }
         } catch (e) {
           toast.update(toastId, {
-            render: `Failed sending ${normalizedAmount} ${selectedToken.name} from ${selectedSource.chain_name} to Secret: ${e}`,
+            render: `Failed sending ${normalizedAmount} ${selectedToken.name} from ${selectedSource.chain_name} to Secret Network: ${e}`,
             type: "error",
             isLoading: false,
           });
@@ -642,7 +632,7 @@ function Deposit() {
         withdraw_gas = selectedSource.gas || withdraw_gas;
 
         const toastId = toast.loading(
-          `Sending ${normalizedAmount} ${selectedToken.name} from Secret to ${selectedSource.chain_name}`,
+          `Sending ${normalizedAmount} ${selectedToken.name} from Secret Network to ${selectedSource.chain_name}`,
           {
             closeButton: true,
           }
@@ -719,7 +709,7 @@ function Deposit() {
 
           if (tx.code !== 0) {
             toast.update(toastId, {
-              render: `Failed sending ${normalizedAmount} ${selectedToken.name} from Secret to ${selectedSource.chain_name}: ${tx.rawLog}`,
+              render: `Failed sending ${normalizedAmount} ${selectedToken.name} from Secret Network to ${selectedSource.chain_name}: ${tx.rawLog}`,
               type: "error",
               isLoading: false,
             });
@@ -739,7 +729,7 @@ function Deposit() {
               });
             } else {
               toast.update(toastId, {
-                render: `Timed out while waiting to receive ${normalizedAmount} ${selectedToken.name} on ${selectedSource.chain_name} from Secret`,
+                render: `Timed out while waiting to receive ${normalizedAmount} ${selectedToken.name} on ${selectedSource.chain_name} from Secret Network`,
                 type: "warning",
                 isLoading: false,
               });
@@ -747,7 +737,7 @@ function Deposit() {
           }
         } catch (e) {
           toast.update(toastId, {
-            render: `Failed sending ${normalizedAmount} ${selectedToken.name} from Secret to ${selectedSource.chain_name}: ${e}`,
+            render: `Failed sending ${normalizedAmount} ${selectedToken.name} from Secret Network to ${selectedSource.chain_name}: ${e}`,
             type: "error",
             isLoading: false,
           });

@@ -530,7 +530,7 @@ export function Wrap() {
               isLoading: false,
               closeOnClick: true,
             });
-            console.log(`Wrapped successfully`);
+            setIsValidationActive(false);
           } else {
             toast.update(toastId, {
               render: `Wrapping of ${selectedToken.name} failed: ${tx.rawLog}`,
@@ -574,7 +574,7 @@ export function Wrap() {
               isLoading: false,
               closeOnClick: true,
             });
-            console.log(`Unwrapped successfully`);
+            setIsValidationActive(false);
           } else {
             toast.update(toastId, {
               render: `Unwrapping of ${selectedToken.name} failed: ${tx.rawLog}`,

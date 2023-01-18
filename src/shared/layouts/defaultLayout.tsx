@@ -11,6 +11,7 @@ import { faDiscord, faTwitter } from "@fortawesome/free-brands-svg-icons";
 import { useLocation } from "react-router-dom";
 import { FeeGrantStatus } from "shared/utils/types";
 import FloatingCTAButton from "shared/components/FloatingCTAButton";
+import FeedbackButton from "shared/components/FeedbackButton";
 
 export const KeplrContext = createContext<{
   secretjs: SecretNetworkClient | null;
@@ -27,6 +28,8 @@ export const DefaultLayout = ({ children }: any) => {
    */
   const [showMobileMenu, setShowMobileMenu] = useState<boolean>(false);
 
+  
+
   // auto close menu
   const location = useLocation();
   useEffect(() => {
@@ -42,7 +45,7 @@ export const DefaultLayout = ({ children }: any) => {
       }
     }
     window.addEventListener("resize", handleResize);
-  });
+  }, []);
 
   const [secretjs, setSecretjs] = useState<SecretNetworkClient | null>(null);
   const [secretAddress, setSecretAddress] = useState<string>("");
@@ -50,21 +53,40 @@ export const DefaultLayout = ({ children }: any) => {
   const [feeGrantStatus, setFeeGrantStatus] =
     useState<FeeGrantStatus>("Untouched");
 
+  useEffect(() => {
+    function handleResize2() {
+      if (window.innerWidth >= 1024) {
+        const asideWidth = document.getElementById('navAside').clientWidth;
+        console.log(asideWidth + "+s");
+        document.getElementById('mainWrapper').style.marginRight = asideWidth.toString() + "px";
+      } else {
+        document.getElementById('mainWrapper').style.marginRight = "0px";
+      }
+    }
+    
+    // initial run
+    handleResize2();
+
+    // event listener
+    window.addEventListener("resize", handleResize2);
+  }, []);
+
   return (
     <>
+      <FeedbackButton url={'https://forms.gle/gxCqYzHwv7N4gx3G8'}/>
       <FloatingCTAButton
         url='https://linktr.ee/SCRTSupport'
         text='Need Help?'
       />
 
       <div className='flex'>
-        <aside
+        <aside id='navAside'
           className={
             (showMobileMenu
               ? "z-50 left-0 right-0 w-full lg:w-auto min-h-screen "
               : "hidden lg:block") +
             " " +
-            "lg:w-72 fixed left-0 top-0 h-screen p-6 overflow-x-hidden bg-neutral-900 sm:border-r border-neutral-800"
+            "lg:w-72 fixed left-0 top-0 h-screen p-6 overflow-x-hidden bg-neutral-900"
           }
         >
           <NavigationContext.Provider value={showMobileMenu}>
@@ -118,9 +140,11 @@ export const DefaultLayout = ({ children }: any) => {
                 </div>
               </div>
 
-              {children}
-              <div className='max-w-7xl mx-auto mt-auto'>
-                <Footer />
+              <div id='mainWrapper' className="overflow-hidden">
+                {children}
+                <div className='max-w-7xl mx-auto mt-auto'>
+                  <Footer />
+                </div>
               </div>
             </main>
           </FeeGrantContext.Provider>
