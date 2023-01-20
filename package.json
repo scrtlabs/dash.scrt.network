@@ -47,7 +47,7 @@
     "react-toastify": "9.1.1",
     "react-tooltip": "^5.3.1",
     "sass": "^1.56.1",
-    "secretjs": "^1.6.6",
+    "secretjs": "^1.6.9",
     "tailwind": "^4.0.0",
     "tailwindcss": "^3.2.4",
     "vite": "^4.0.0",

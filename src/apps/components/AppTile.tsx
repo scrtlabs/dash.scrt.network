@@ -21,7 +21,7 @@ class AppTile extends React.Component<IAppItemProps> {
           {/* Image */}
           {this.props.image && (
             <img
-              src={"/img/dapps/" + this.props.image}
+              src={this.props.image}
               alt={`${this.props.name} logo`}
               className='w-16 h-16 rounded-xl block mb-4 bg-neutral-900 flex-initial mx-auto sm:mx-0'
             />

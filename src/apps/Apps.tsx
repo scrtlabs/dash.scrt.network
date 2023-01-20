@@ -1,28 +1,41 @@
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { dappsData } from "shared/utils/dapps";
 import React, { useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { websiteName } from "App";
 import Header from "./components/Header";
 import AppTile from "./components/AppTile";
-import { shuffleArray } from "shared/utils/helpers";
+import { shuffleArray, dAppsURL } from "shared/utils/commons";
 
-export interface IDappData {
-  id: number;
-  name: string;
-  description?: string;
-  url?: string;
-  image?: string;
-  tags?: string[];
-}
 
 function Apps() {
-  const [dappsDataShuffled, setDappsDataShuffled] = useState<IDappData[]>([]);
+  const [dappsDataShuffled, setDappsDataShuffled] = useState<any[]>([]);
+  const [dappsData, setDappsData] = useState<any[]>([]);
+  const [tags,setTags] = useState<string[]>([]);
+
+  useEffect(() => {
+    fetch(dAppsURL)
+      .then(response => response.json())
+      .then(jsonData => setDappsData(jsonData.data))
+      .catch(error => console.error(error));
+    setDappsData(dappsData);
+  }, []);
+
 
   useEffect(() => {
     setDappsDataShuffled(shuffleArray(dappsData));
-  }, []);
+    // Tag-Filter
+    let allTags: string[] = [];
+
+    dappsData.forEach((dapp) => {
+      dapp.attributes.type.map((item) => item.name).forEach((tag) => {
+        if (!allTags.find((tagItem) => tagItem === tag)) {
+          allTags.push(tag);
+        }
+      });
+    });
+    setTags(allTags.sort())
+  }, [dappsData]);
 
   // Filter + Search
   const [tagsToBeFilteredBy, setTagsToBeFilteredBy] = useState<string[]>([]);
@@ -59,30 +72,18 @@ function Apps() {
   // Search
   const [searchText, setSearchText] = useState<string>("");
 
-  // Tag-Filter
-  let tags: string[] = [];
-
-  dappsData.forEach((app) => {
-    app.tags?.forEach((tag) => {
-      if (!tags.find((tagItem) => tagItem === tag)) {
-        tags.push(tag);
-      }
-    });
-  });
-  tags = tags.sort();
-
   // results apps that match on the search input and chosen tags
   function filteredDappsData() {
     let items = dappsDataShuffled;
     if (searchText !== "") {
       items = dappsDataShuffled.filter((app) =>
-        (app as any).name.toLowerCase().includes(searchText.toLowerCase())
+        app.attributes.name.toLowerCase().includes(searchText.toLowerCase())
       );
     }
 
     if (tagsToBeFilteredBy.length > 0) {
       items = items.filter((item) =>
-        (item as any).tags.find((tag) => tagsToBeFilteredBy.includes(tag))
+        item.attributes.type.map((item) => item.name).find((tag) => tagsToBeFilteredBy.includes(tag))
       );
     }
 
@@ -126,11 +127,11 @@ function Apps() {
         <div className='grid grid-cols-12 gap-4 auto-rows-auto'>
           {filteredDappsData().map((dapp) => (
             <AppTile
-              name={(dapp as any).name as any}
-              description={(dapp as any).description}
-              tags={(dapp as any).tags}
-              image={(dapp as any).image}
-              url={(dapp as any).url}
+              name={dapp.attributes.name}
+              description={dapp.attributes.description}
+              tags={dapp.attributes.type.map((item) => item.name)}
+              image={dapp.attributes.logo.data.attributes.url}
+              url={dapp.attributes.link}
             />
           ))}
         </div>
