@@ -18,23 +18,26 @@ function Apps() {
       .then(response => response.json())
       .then(jsonData => setDappsData(jsonData.data))
       .catch(error => console.error(error));
-    setDappsData(dappsData);
   }, []);
 
 
   useEffect(() => {
-    setDappsDataShuffled(shuffleArray(dappsData));
-    // Tag-Filter
-    let allTags: string[] = [];
+    if (dappsDataShuffled.length == 0 && dappsData.length != 0) {
+      setDappsDataShuffled(shuffleArray(dappsData));
+      // Tag-Filter
+      let allTags: string[] = [];
 
-    dappsData.forEach((dapp) => {
-      dapp.attributes.type.map((item) => item.name).forEach((tag) => {
-        if (!allTags.find((tagItem) => tagItem === tag)) {
-          allTags.push(tag);
-        }
+      dappsData.forEach((dapp) => {
+        dapp.attributes.type
+          .map((item) => item.name)
+          .forEach((tag) => {
+            if (!allTags.find((tagItem) => tagItem === tag)) {
+              allTags.push(tag);
+            }
+          });
       });
-    });
-    setTags(allTags.sort())
+      setTags(allTags.sort());
+    }
   }, [dappsData]);
 
   // Filter + Search
