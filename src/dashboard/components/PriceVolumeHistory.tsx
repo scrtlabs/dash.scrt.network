@@ -12,7 +12,7 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
-import { Chart, Line } from "react-chartjs-2";
+import { Line } from "react-chartjs-2";
 
 ChartJS.register(
   CategoryScale,
@@ -25,7 +25,6 @@ ChartJS.register(
 );
 
 type ChartType = "Price" | "Volume";
-
 type ChartRange = "Day" | "Month" | "Year";
 
 export default function PriceVolumeHistory(props: any) {
@@ -122,10 +121,10 @@ export default function PriceVolumeHistory(props: any) {
               onClick={() => setChartType("Price")}
               type='button'
               className={
-                "py-1.5 px-3 text-xs font-semibold text-neutral-200 rounded-l-lg bg-neutral-700" +
+                "py-1.5 px-3 text-xs font-semibold rounded-l-lg bg-neutral-100 dark:bg-neutral-900" +
                 (chartType === "Price"
-                  ? " bg-cyan-500/50 text-cyan-100 font-bold"
-                  : " hover:bg-neutral-600 focus:z-10 focus:ring-2 focus:ring-neutral-700 focus:text-white")
+                  ? " cursor-default bg-cyan-500 dark:bg-cyan-500/20 text-white dark:text-cyan-200 font-bold"
+                  : " text-neutral-800 dark:text-neutral-200 hover:bg-neutral-300 dark:hover:bg-neutral-700 focus:bg-neutral-500 dark:focus:bg-neutral-500")
               }
             >
               Price
@@ -134,10 +133,10 @@ export default function PriceVolumeHistory(props: any) {
               onClick={() => setChartType("Volume")}
               type='button'
               className={
-                "py-1.5 px-3 text-xs font-semibold text-neutral-200 rounded-r-lg bg-neutral-700" +
+                "py-1.5 px-3 text-xs font-semibold rounded-r-lg bg-neutral-100 dark:bg-neutral-900" +
                 (chartType === "Volume"
-                  ? " bg-cyan-500/50 text-cyan-100 font-bold"
-                  : " hover:bg-neutral-600 focus:z-10 focus:ring-2 focus:ring-neutral-700 focus:text-white")
+                  ? " cursor-default bg-cyan-500 dark:bg-cyan-500/20 text-white dark:text-cyan-200 font-bold"
+                  : " text-neutral-800 dark:text-neutral-200 hover:bg-neutral-300 dark:hover:bg-neutral-700 focus:bg-neutral-500 dark:focus:bg-neutral-500")
               }
             >
               Volume
@@ -154,10 +153,10 @@ export default function PriceVolumeHistory(props: any) {
             onClick={() => setChartRange("Day")}
             type='button'
             className={
-              "py-1.5 px-3 text-xs font-semibold text-neutral-200 rounded-l-lg bg-neutral-700" +
+              "py-1.5 px-3 text-xs font-semibold rounded-l-lg bg-neutral-100 dark:bg-neutral-900" +
               (chartRange === "Day"
-                ? " bg-cyan-500/50 text-cyan-100 font-bold"
-                : " hover:bg-neutral-600 focus:z-10 focus:ring-2 focus:ring-neutral-700 focus:text-white")
+                ? " cursor-default bg-cyan-500 dark:bg-cyan-500/20 text-white dark:text-cyan-200 font-bold"
+                : " text-neutral-800 dark:text-neutral-200 hover:bg-neutral-300 dark:hover:bg-neutral-700 focus:bg-neutral-500 dark:focus:bg-neutral-500")
             }
           >
             Day
@@ -166,10 +165,10 @@ export default function PriceVolumeHistory(props: any) {
             onClick={() => setChartRange("Month")}
             type='button'
             className={
-              "py-1.5 px-3 text-xs font-semibold text-neutral-200 bg-neutral-700" +
+              "py-1.5 px-3 text-xs font-semibold bg-neutral-100 dark:bg-neutral-900" +
               (chartRange === "Month"
-                ? " bg-cyan-500/50 text-cyan-100 font-bold"
-                : " hover:bg-neutral-600 focus:z-10 focus:ring-2 focus:ring-neutral-700 focus:text-white")
+                ? " cursor-default bg-cyan-500 dark:bg-cyan-500/20 text-white dark:text-cyan-200 font-bold"
+                : " text-neutral-800 dark:text-neutral-200 hover:bg-neutral-300 dark:hover:bg-neutral-700 focus:bg-neutral-500 dark:focus:bg-neutral-500")
             }
           >
             Month
@@ -178,10 +177,10 @@ export default function PriceVolumeHistory(props: any) {
             onClick={() => setChartRange("Year")}
             type='button'
             className={
-              "py-1.5 px-3 text-xs font-semibold text-neutral-200 rounded-r-lg bg-neutral-700" +
+              "py-1.5 px-3 text-xs font-semibold rounded-r-lg bg-neutral-100 dark:bg-neutral-900" +
               (chartRange === "Year"
-                ? " bg-cyan-500/50 text-cyan-100 font-bold"
-                : " hover:bg-neutral-600 focus:z-10 focus:ring-2 focus:ring-neutral-700 focus:text-white")
+                ? " cursor-default bg-cyan-500 dark:bg-cyan-500/20 text-white dark:text-cyan-200 font-bold"
+                : " text-neutral-800 dark:text-neutral-200 hover:bg-neutral-300 dark:hover:bg-neutral-700 focus:bg-neutral-500 dark:focus:bg-neutral-500")
             }
           >
             Year

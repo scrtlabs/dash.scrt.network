@@ -348,7 +348,7 @@ export function Dashboard() {
 
           <div className='grid grid-cols-12 gap-4'>
             {/* Item */}
-            <div className='col-span-12 bg-neutral-800 p-4 rounded-xl'>
+            <div className='col-span-12 bg-white dark:bg-neutral-800 p-4 rounded-xl'>
               <PriceVolumeHistory />
             </div>
             {/* Item */}
