@@ -5,13 +5,7 @@ import { createTxIBCMsgTransfer } from "@tharsis/transactions";
 import { cosmos } from "@tharsis/proto/dist/proto/cosmos/tx/v1beta1/tx";
 import BigNumber from "bignumber.js";
 import Long from "long";
-import React, {
-  useEffect,
-  useState,
-  useContext,
-  Component,
-} from "react";
-import { KeplrContext, FeeGrantContext } from "shared/layouts/defaultLayout";
+import { useEffect, useState, useContext, Component } from "react";
 import {
   getKeplrViewingKey,
   setKeplrViewingKey,
@@ -48,18 +42,21 @@ import {
   faInfoCircle,
 } from "@fortawesome/free-solid-svg-icons";
 import { IbcContext } from "ibc/Ibc";
-import { FeeGrant } from "shared/components/FeeGrant";
+import { SecretjsContext } from "shared/components/SecretjsContext";
+import { FeeGrantContext } from "shared/components/FeeGrantContext";
 
 function Deposit() {
+  const { feeGrantStatus, setFeeGrantStatus, requestFeeGrant } =
+    useContext(FeeGrantContext);
+
   const {
     isWrapModalOpen,
     setIsWrapModalOpen,
     selectedTokenName,
     setSelectedTokenName,
     ibcMode,
-    setIbcMode
+    setIbcMode,
   } = useContext(IbcContext);
-  const { feeGrantStatus, setFeeGrantStatus } = useContext(FeeGrantContext);
 
   const [sourceAddress, setSourceAddress] = useState<string>("");
   const [availableBalance, setAvailableBalance] = useState<string>("");
@@ -68,7 +65,7 @@ function Deposit() {
     useState<SecretNetworkClient | null>(null);
   const [fetchBalanceInterval, setFetchBalanceInterval] = useState<any>(null);
   const [amountToTransfer, setAmountToTransfer] = useState<string>("");
-  const { secretjs, secretAddress } = useContext(KeplrContext);
+  const { secretjs, secretAddress } = useContext(SecretjsContext);
   const queryParams = new URLSearchParams(window.location.search);
   const tokenByQueryParam = queryParams.get("token"); // "scrt", "akash", etc.
   const chainByQueryParam = queryParams.get("chain"); // "scrt", "akash", etc.
@@ -831,7 +828,7 @@ function Deposit() {
                   <button
                     onClick={toggleIbcMode}
                     className={
-                      "inline-block bg-neutral-800 px-3 py-2 text-cyan-500 transition-colors rounded-xl disabled:text-neutral-500" +
+                      "inline-block bg-neutral-800 px-3 py-2.5 text-cyan-500 transition-colors rounded-xl disabled:text-neutral-500" +
                       (secretjs && secretAddress ? " hover:text-cyan-300" : "")
                     }
                     disabled={!secretjs || !secretAddress}
@@ -1137,7 +1134,16 @@ function Deposit() {
 
           {/* Untouched */}
           {ibcMode === "Withdrawal" && feeGrantStatus === "Untouched" && (
-            <FeeGrant />
+            <>
+              <button
+                id='feeGrantButton'
+                onClick={requestFeeGrant}
+                className='font-semibold text-xs bg-neutral-100 dark:bg-neutral-900 px-1.5 py-1 rounded-md transition-colors hover:bg-neutral-300 dark:hover:bg-neutral-700 focus:bg-neutral-500 dark:focus:bg-neutral-500 cursor-pointer disabled:text-neutral-500 dark:disabled:text-neutral-500 disabled:hover:bg-neutral-100 dark:disabled:hover:bg-neutral-900 disabled:cursor-default'
+                disabled={!secretjs || !secretAddress}
+              >
+                Request Fee Grant
+              </button>
+            </>
           )}
           {/* Success */}
           {ibcMode === "Withdrawal" && feeGrantStatus === "Success" && (

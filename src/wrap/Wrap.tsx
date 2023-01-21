@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext, createContext } from "react";
+import { useEffect, useState, useContext, createContext } from "react";
 import { MsgExecuteContract } from "secretjs";
 import { Token, tokens } from "shared/utils/config";
 import {
@@ -8,7 +8,6 @@ import {
   viewingKeyErrorString,
   usdString,
 } from "shared/utils/commons";
-import { KeplrContext, FeeGrantContext } from "shared/layouts/defaultLayout";
 import BigNumber from "bignumber.js";
 import { toast } from "react-toastify";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -31,12 +30,14 @@ import { Helmet } from "react-helmet-async";
 import { websiteName } from "App";
 import UnknownBalanceModal from "./components/UnknownBalanceModal";
 import FeeGrantInfoModal from "./components/FeeGrantInfoModal";
-import { FeeGrant } from "shared/components/FeeGrant";
+import { SecretjsContext } from "shared/components/SecretjsContext";
+import { FeeGrantContext } from "shared/components/FeeGrantContext";
 
 export const WrapContext = createContext(null);
 
 export function Wrap() {
-  const { feeGrantStatus, setFeeGrantStatus } = useContext(FeeGrantContext);
+  const { feeGrantStatus, setFeeGrantStatus, requestFeeGrant } =
+    useContext(FeeGrantContext);
 
   const [isUnknownBalanceModalOpen, setIsUnknownBalanceModalOpen] =
     useState(false);
@@ -55,7 +56,7 @@ export function Wrap() {
   const modePreselection =
     modeByQueryParam?.toLowerCase() === "unwrap" ? "Unwrap" : "Wrap";
 
-  const { secretjs, secretAddress } = useContext(KeplrContext);
+  const { secretjs, secretAddress } = useContext(SecretjsContext);
 
   const [amountToWrap, setAmountToWrap] = useState<string>("");
   const [wrappingMode, setWrappingMode] =
@@ -276,7 +277,7 @@ export function Wrap() {
       <div className='inline-flex rounded-full text-xs font-bold'>
         <button
           onClick={() => setAmountByPercentage(25)}
-          className='bg-neutral-900 px-1.5 py-0.5 rounded-l-md transition-colors hover:bg-neutral-700 focus:bg-neutral-500 cursor-pointer disabled:text-neutral-500 disabled:hover:bg-neutral-900 disabled:cursor-default'
+          className='bg-neutral-100 dark:bg-neutral-900 px-1.5 py-0.5 rounded-l-md transition-colors hover:bg-neutral-300 dark:hover:bg-neutral-700 focus:bg-neutral-500 dark:focus:bg-neutral-500 cursor-pointer disabled:text-neutral-500 dark:disabled:text-neutral-500 disabled:hover:bg-neutral-900 dark:disabled:hover:bg-neutral-900 disabled:cursor-default'
           disabled={
             !secretjs ||
             !secretAddress ||
@@ -288,7 +289,7 @@ export function Wrap() {
         </button>
         <button
           onClick={() => setAmountByPercentage(50)}
-          className='bg-neutral-900 px-1.5 py-0.5 border-l border-neutral-700 transition-colors hover:bg-neutral-700 focus:bg-neutral-500 cursor-pointer disabled:text-neutral-500 disabled:hover:bg-neutral-900 disabled:cursor-default'
+          className='bg-neutral-100 dark:bg-neutral-900 px-1.5 py-0.5 border-l border-neutral-300 dark:border-neutral-700 transition-colors hover:bg-neutral-300 dark:hover:bg-neutral-700 focus:bg-neutral-500 dark:focus:bg-neutral-500 cursor-pointer disabled:text-neutral-500 dark:disabled:text-neutral-500 disabled:hover:bg-neutral-900 dark:disabled:hover:bg-neutral-900 disabled:cursor-default'
           disabled={
             !secretjs ||
             !secretAddress ||
@@ -300,7 +301,7 @@ export function Wrap() {
         </button>
         <button
           onClick={() => setAmountByPercentage(75)}
-          className='bg-neutral-900 px-1.5 py-0.5 border-l border-neutral-700 transition-colors hover:bg-neutral-700 focus:bg-neutral-500 cursor-pointer disabled:text-neutral-500 disabled:hover:bg-neutral-900 disabled:cursor-default'
+          className='bg-neutral-100 dark:bg-neutral-900 px-1.5 py-0.5 border-l border-neutral-300 dark:border-neutral-700 transition-colors hover:bg-neutral-300 dark:hover:bg-neutral-700 focus:bg-neutral-500 dark:focus:bg-neutral-500 cursor-pointer disabled:text-neutral-500 dark:disabled:text-neutral-500 disabled:hover:bg-neutral-900 dark:disabled:hover:bg-neutral-900 disabled:cursor-default'
           disabled={
             !secretjs ||
             !secretAddress ||
@@ -312,7 +313,7 @@ export function Wrap() {
         </button>
         <button
           onClick={() => setAmountByPercentage(100)}
-          className='bg-neutral-900 px-1.5 py-0.5 rounded-r-md border-l border-neutral-700 transition-colors hover:bg-neutral-700 focus:bg-neutral-500 cursor-pointer disabled:text-neutral-500 disabled:hover:bg-neutral-900 disabled:cursor-default'
+          className='bg-neutral-100 dark:bg-neutral-900 px-1.5 py-0.5 rounded-r-md border-l border-neutral-300 dark:border-neutral-700 transition-colors hover:bg-neutral-300 dark:hover:bg-neutral-700 focus:bg-neutral-500 dark:focus:bg-neutral-500 cursor-pointer disabled:text-neutral-500 dark:disabled:text-neutral-500 disabled:hover:bg-neutral-900 dark:disabled:hover:bg-neutral-900 disabled:cursor-default'
           disabled={
             !secretjs ||
             !secretAddress ||
@@ -349,7 +350,7 @@ export function Wrap() {
           <Tooltip title={`IBC Transfer`} placement='bottom' arrow>
             <Link
               to='/ibc'
-              className='ml-2 hover:text-white transition-colors hover:bg-neutral-900 px-1.5 py-0.5 rounded'
+              className='ml-2 hover:text-w dark:hover:text-white transition-colors hover:bg-neutral-100 dark:hover:bg-neutral-900 px-1.5 py-0.5 rounded'
             >
               <FontAwesomeIcon icon={faArrowRightArrowLeft} />
             </Link>
@@ -369,7 +370,7 @@ export function Wrap() {
         <>
           <span className='font-semibold'>Available:</span>
           <button
-            className='ml-2 font-semibold bg-neutral-900 px-1.5 py-0.5 rounded-md border-neutral-700 transition-colors hover:bg-neutral-700 focus:bg-neutral-500 cursor-pointer disabled:text-neutral-500 disabled:hover:bg-neutral-900 disabled:cursor-default'
+            className='ml-2 font-semibold bg-neutral-100 dark:bg-neutral-900 px-1.5 py-0.5 rounded-md border-neutral-300 dark:border-neutral-700 transition-colors hover:bg-neutral-300 dark:hover:bg-neutral-700 focus:bg-neutral-500 dark:focus:bg-neutral-500 cursor-pointer disabled:text-neutral-500 dark:disabled:text-neutral-500 disabled:hover:bg-neutral-100 dark:disabled:hover:bg-neutral-900 disabled:cursor-default'
             onClick={async () => {
               await setKeplrViewingKey(selectedToken.address);
               try {
@@ -429,8 +430,10 @@ export function Wrap() {
               onClick={() => toggleWrappingMode()}
               disabled={disabled}
               className={
-                "bg-neutral-800 px-3 py-2 text-cyan-500 transition-colors rounded-xl disabled:text-neutral-500" +
-                (!disabled ? " hover:text-cyan-300" : "")
+                "bg-neutral-200 dark:bg-neutral-800 px-3 py-2 text-cyan-500 dark:text-cyan-500 transition-colors rounded-xl disabled:text-neutral-500 black:disabled:text-neutral-500" +
+                (!disabled
+                  ? " hover:text-cyan-600 dark:hover:text-cyan-300"
+                  : "")
               }
             >
               <FontAwesomeIcon icon={faRightLeft} className='fa-rotate-90' />
@@ -602,7 +605,7 @@ export function Wrap() {
         <div className='flex items-center'>
           <button
             className={
-              "enabled:bg-gradient-to-r enabled:from-cyan-600 enabled:to-purple-600 enabled:hover:from-cyan-500 enabled:hover:to-purple-500 transition-colors text-white font-semibold py-2 w-full rounded-lg disabled:bg-neutral-500"
+              "enabled:bg-gradient-to-r enabled:from-cyan-600 enabled:to-purple-600 enabled:hover:from-cyan-500 enabled:hover:to-purple-500 transition-colors text-white font-semibold py-2.5 w-full rounded-lg disabled:bg-neutral-500"
             }
             disabled={disabled}
             onClick={() => submit()}
@@ -739,7 +742,7 @@ export function Wrap() {
           }}
         />
         <div className='w-full max-w-xl mx-auto px-4 onEnter_fadeInDown'>
-          <div className='border rounded-2xl p-8 border-neutral-700 w-full text-neutral-200 bg-neutral-900'>
+          <div className='border rounded-2xl p-8 border-neutral-300 dark:border-neutral-700 w-full  text-neutral-800 dark:text-neutral-200 bg-white dark:bg-neutral-900'>
             {/* Header */}
             <div className='flex items-center mb-4'>
               <h1 className='inline text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-500 to-purple-500'>
@@ -754,7 +757,7 @@ export function Wrap() {
             </div>
 
             {/* *** From *** */}
-            <div className='bg-neutral-800 p-4 rounded-xl'>
+            <div className='bg-neutral-200 dark:bg-neutral-800 p-4 rounded-xl'>
               {/* Title Bar */}
               <div className='flex flex-col sm:flex-row'>
                 <div className='flex-1 font-semibold mb-2 text-center sm:text-left'>
@@ -762,7 +765,7 @@ export function Wrap() {
                 </div>
                 {!isValidAmount && isValidationActive && (
                   <div className='flex-initial'>
-                    <div className='text-red-500 text-xs text-center sm:text-right mb-2'>
+                    <div className='text-red-500 dark:text-red-500 text-xs text-center sm:text-right mb-2'>
                       {validationMessage}
                     </div>
                   </div>
@@ -797,9 +800,9 @@ export function Wrap() {
                   onChange={handleInputChange}
                   type='text'
                   className={
-                    "text-right focus:z-10 block flex-1 min-w-0 w-full bg-neutral-900 text-white px-4 rounded-r-lg disabled:placeholder-neutral-700 transition-colors font-medium" +
+                    "text-right focus:z-10 block flex-1 min-w-0 w-full bg-neutral-100 dark:bg-neutral-900 text-black dark:text-white px-4 rounded-r-lg disabled:placeholder-neutral-300 dark:disabled:placeholder-neutral-700 transition-colors font-medium" +
                     (!isValidAmount && isValidationActive
-                      ? "  border border-red-500"
+                      ? "  border border-red-500 dark:border-red-500"
                       : "")
                   }
                   name='fromValue'
@@ -827,7 +830,7 @@ export function Wrap() {
               disabled={!secretAddress || !secretjs}
             />
 
-            <div className='bg-neutral-800 p-4 rounded-xl mb-5'>
+            <div className='bg-neutral-200 dark:bg-neutral-800 p-4 rounded-xl mb-5'>
               <div className='flex'>
                 <div className='flex-1 font-semibold mb-2 text-center sm:text-left'>
                   To
@@ -861,7 +864,7 @@ export function Wrap() {
                   onChange={handleInputChange}
                   type='text'
                   className={
-                    "text-right focus:z-10 block flex-1 min-w-0 w-full bg-neutral-900 text-white px-4 rounded-r-lg disabled:placeholder-neutral-700 transition-colors font-medium"
+                    "text-right focus:z-10 block flex-1 min-w-0 w-full bg-neutral-100 dark:bg-neutral-900 text-black dark:text-white px-4 rounded-r-lg disabled:placeholder-neutral-300 dark:disabled:placeholder-neutral-700 transition-colors font-medium"
                   }
                   name='toValue'
                   id='toValue'
@@ -876,7 +879,7 @@ export function Wrap() {
             </div>
 
             {/* Fee Grant */}
-            <div className='bg-neutral-800 p-4 rounded-lg select-none flex items-center my-4'>
+            <div className='bg-neutral-200 dark:bg-neutral-800 p-4 rounded-lg select-none flex items-center my-4'>
               <div className='flex-1 flex items-center'>
                 <span className='font-semibold text-sm'>Fee Grant</span>
                 <Tooltip
@@ -889,13 +892,24 @@ export function Wrap() {
               </div>
               <div className='flex-initial'>
                 {/* Untouched */}
-                {feeGrantStatus === "Untouched" && <FeeGrant />}
+                {feeGrantStatus === "Untouched" && (
+                  <>
+                    <button
+                      id='feeGrantButton'
+                      onClick={requestFeeGrant}
+                      className='font-semibold text-xs bg-neutral-100 dark:bg-neutral-900 px-1.5 py-1 rounded-md transition-colors hover:bg-neutral-300 dark:hover:bg-neutral-700 focus:bg-neutral-500 dark:focus:bg-neutral-500 cursor-pointer disabled:text-neutral-500 dark:disabled:text-neutral-500 disabled:hover:bg-neutral-100 dark:disabled:hover:bg-neutral-900 disabled:cursor-default'
+                      disabled={!secretjs || !secretAddress}
+                    >
+                      Request Fee Grant
+                    </button>
+                  </>
+                )}
                 {/* Success */}
                 {feeGrantStatus === "Success" && (
                   <div className='font-semibold text-sm flex items-center h-[1.6rem]'>
                     <FontAwesomeIcon
                       icon={faCheckCircle}
-                      className='text-green-500 mr-1.5'
+                      className='text-green-500 dark:text-green-500 mr-1.5'
                     />
                     Fee Granted
                   </div>
@@ -905,7 +919,7 @@ export function Wrap() {
                   <div className='font-semibold text-sm h-[1.6rem]'>
                     <FontAwesomeIcon
                       icon={faXmarkCircle}
-                      className='text-red-500 mr-1.5'
+                      className='text-red-500 dark:text-red-500 mr-1.5'
                     />
                     Request failed
                   </div>

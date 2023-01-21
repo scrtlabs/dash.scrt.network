@@ -1,4 +1,4 @@
-import React, { useState, createContext } from "react";
+import { useState, createContext } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faInfoCircle } from "@fortawesome/free-solid-svg-icons";
 import Tooltip from "@mui/material/Tooltip";
@@ -6,7 +6,6 @@ import { Helmet } from "react-helmet-async";
 import { websiteName } from "App";
 import WrapModal from "./components/WrapModal";
 import Deposit from "./components/Deposit";
-
 
 export const IbcContext = createContext(null);
 
@@ -18,12 +17,6 @@ export function Ibc() {
   const [selectedTokenName, setSelectedTokenName] = useState("");
 
   const [ibcMode, setIbcMode] = useState<IbcMode>("Deposit");
-
-
-
-
-
-
 
   return (
     <>
@@ -37,7 +30,7 @@ export function Ibc() {
           selectedTokenName,
           setSelectedTokenName,
           ibcMode,
-          setIbcMode
+          setIbcMode,
         }}
       >
         <WrapModal

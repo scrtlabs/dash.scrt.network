@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { formatNumber } from "shared/utils/commons";
 import { SECRET_LCD, SECRET_CHAIN_ID } from "shared/utils/config";
 
@@ -29,7 +29,7 @@ ChartJS.register(
   Legend
 );
 
-export default function StakingChart(props: any) {
+export default function StakingChart() {
   const [communityPool, setCommunityPool] = useState(Number); // in uscrt
   const [totalSupply, setTotalSupply] = useState(Number);
   const [pool, setPool] = useState(null);
@@ -48,7 +48,9 @@ export default function StakingChart(props: any) {
       secretjsquery?.query?.bank
         ?.supplyOf({ denom: "uscrt" })
         ?.then((res) => setTotalSupply((res.amount.amount as any) / 1e6));
-      secretjsquery?.query?.staking?.pool("")?.then((res) => setPool(res.pool));
+      secretjsquery?.query?.staking
+        ?.pool("")
+        ?.then((res) => setPool(res.pool));
     };
 
     queryData();
@@ -128,7 +130,7 @@ export default function StakingChart(props: any) {
 
   return (
     <>
-      <div className=''>
+      <div>
         {/* Title */}
         {/* <div className="flex items-center mb-4">
           <h1 className="text-2xl font-bold">Staking</h1>
@@ -151,7 +153,7 @@ export default function StakingChart(props: any) {
         <a
           href='https://wallet.keplr.app/chains/secret-network'
           target='_blank'
-          className='block bg-cyan-500/20 text-cyan-200 hover:text-cyan-100 hover:bg-cyan-500/50 w-full text-center transition-colors py-2.5 rounded-xl mt-4 font-semibold text-sm'
+          className='block bg-cyan-500 dark:bg-cyan-500/20 text-white dark:text-cyan-200 dark:hover:text-cyan-100 hover:bg-cyan-400 dark:hover:bg-cyan-500/50 w-full text-center transition-colors py-2.5 rounded-xl mt-4 font-semibold text-sm'
         >
           Stake SCRT
           <FontAwesomeIcon

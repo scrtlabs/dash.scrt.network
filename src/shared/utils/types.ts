@@ -1,1 +1,0 @@
-export type FeeGrantStatus = 'Success' | 'Fail' | 'Untouched';
