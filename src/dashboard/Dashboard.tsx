@@ -326,7 +326,7 @@ export function Dashboard() {
             </div>
 
             <div className='col-span-12 md:col-span-6 lg:col-span-6 2xl:col-span-4'>
-              <div className='bg-neutral-800 px-6 py-8 rounded-xl'>
+              <div className='bg-white dark:bg-neutral-800 px-6 py-8 rounded-xl'>
                 <StakingChart />
               </div>
             </div>
