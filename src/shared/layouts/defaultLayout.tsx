@@ -1,9 +1,9 @@
-import { faBars } from "@fortawesome/free-solid-svg-icons";
+import { faBars, faSun } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Footer from "shared/components/Footer";
 import { KeplrPanel } from "shared/components/Keplr";
 import { Navigation } from "shared/components/Navigation";
-import React, { useState, createContext, useEffect } from "react";
+import React, { useState, createContext, useEffect, useContext } from "react";
 import { SecretNetworkClient } from "secretjs";
 import { Breakpoint } from "react-socks";
 import { Flip, ToastContainer, toast } from "react-toastify";
@@ -12,6 +12,7 @@ import { useLocation } from "react-router-dom";
 import { FeeGrantStatus } from "shared/utils/types";
 import FloatingCTAButton from "shared/components/FloatingCTAButton";
 import FeedbackButton from "shared/components/FeedbackButton";
+import { ThemeContext, ThemeContextProvider } from "shared/components/ThemeContext";
 
 export const KeplrContext = createContext<{
   secretjs: SecretNetworkClient | null;
@@ -21,6 +22,8 @@ export const NavigationContext = createContext<boolean | null>(null);
 export const FeeGrantContext = createContext(null);
 
 export const DefaultLayout = ({ children }: any) => {
+  const { toggleTheme } = useContext(ThemeContext);
+
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   /**
@@ -50,8 +53,7 @@ export const DefaultLayout = ({ children }: any) => {
   const [secretjs, setSecretjs] = useState<SecretNetworkClient | null>(null);
   const [secretAddress, setSecretAddress] = useState<string>("");
 
-  const [feeGrantStatus, setFeeGrantStatus] =
-    useState<FeeGrantStatus>("Untouched");
+  const [feeGrantStatus, setFeeGrantStatus] = useState<FeeGrantStatus>("Untouched");
 
   useEffect(() => {
     function handleResize2() {
@@ -86,7 +88,7 @@ export const DefaultLayout = ({ children }: any) => {
               ? "z-50 left-0 right-0 w-full lg:w-auto min-h-screen "
               : "hidden lg:block") +
             " " +
-            "lg:w-72 fixed left-0 top-0 h-screen p-6 overflow-x-hidden bg-neutral-900"
+            "lg:w-72 fixed left-0 top-0 h-screen p-6 overflow-x-hidden bg-neutral-200 dark:bg-neutral-900"
           }
         >
           <NavigationContext.Provider value={showMobileMenu}>
@@ -128,6 +130,10 @@ export const DefaultLayout = ({ children }: any) => {
                   >
                     <FontAwesomeIcon icon={faDiscord} size='lg' />
                   </a>
+                  {/* DarkMode / LightMode Switch */}
+                  <button onClick={toggleTheme} className='text-neutral-800 dark:text-neutral-200 hover:text-black dark:hover:text-white transition-colors'>
+                    <FontAwesomeIcon icon={faSun} />
+                  </button>
                 </div>
 
                 <div className='flex-1 sm:flex-initial sm:flex sm:justify-end'>
