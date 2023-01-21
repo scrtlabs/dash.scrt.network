@@ -7,19 +7,17 @@ import Header from "./components/Header";
 import AppTile from "./components/AppTile";
 import { shuffleArray, dAppsURL } from "shared/utils/commons";
 
-
 function Apps() {
   const [dappsDataShuffled, setDappsDataShuffled] = useState<any[]>([]);
   const [dappsData, setDappsData] = useState<any[]>([]);
-  const [tags,setTags] = useState<string[]>([]);
+  const [tags, setTags] = useState<string[]>([]);
 
   useEffect(() => {
     fetch(dAppsURL)
-      .then(response => response.json())
-      .then(jsonData => setDappsData(jsonData.data))
-      .catch(error => console.error(error));
+      .then((response) => response.json())
+      .then((jsonData) => setDappsData(jsonData.data))
+      .catch((error) => console.error(error));
   }, []);
-
 
   useEffect(() => {
     if (dappsDataShuffled.length == 0 && dappsData.length != 0) {
@@ -86,7 +84,9 @@ function Apps() {
 
     if (tagsToBeFilteredBy.length > 0) {
       items = items.filter((item) =>
-        item.attributes.type.map((item) => item.name).find((tag) => tagsToBeFilteredBy.includes(tag))
+        item.attributes.type
+          .map((item) => item.name)
+          .find((tag) => tagsToBeFilteredBy.includes(tag))
       );
     }
 
@@ -121,22 +121,78 @@ function Apps() {
 
         {/* Tag-Filter */}
         <div className='mb-4 sm:mb-8 flex gap-2 flex-wrap justify-center'>
-          {tags.map((tag) => (
-            <Tag name={tag} />
-          ))}
+          {tags.length > 0 && tags.map((tag) => <Tag name={tag} />)}
+          {tags.length == 0 && <div className='h-6'></div>}
         </div>
 
         {/* App-Items */}
         <div className='grid grid-cols-12 gap-4 auto-rows-auto'>
-          {filteredDappsData().map((dapp) => (
-            <AppTile
-              name={dapp.attributes.name}
-              description={dapp.attributes.description}
-              tags={dapp.attributes.type.map((item) => item.name)}
-              image={dapp.attributes.logo.data.attributes.url}
-              url={dapp.attributes.link}
-            />
-          ))}
+          {dappsData.length > 0 && (
+            <>
+              {filteredDappsData().map((dapp) => (
+                <AppTile
+                  name={dapp.attributes.name}
+                  description={dapp.attributes.description}
+                  tags={dapp.attributes.type.map((item) => item.name)}
+                  image={dapp.attributes.logo.data.attributes.url}
+                  url={dapp.attributes.link}
+                />
+              ))}
+            </>
+          )}
+
+          {dappsData.length <= 0 && (
+            <>
+              {/* Skeleton Loader Item */}
+              <div className='animate-pulse col-span-12 sm:col-span-6 md:col-span-4 xl:col-span-3'>
+                <div className='h-72 bg-white dark:bg-neutral-800 rounded-xl'></div>
+              </div>
+              {/* Skeleton Loader Item */}
+              <div className='animate-pulse col-span-12 sm:col-span-6 md:col-span-4 xl:col-span-3'>
+                <div className='h-72 bg-white dark:bg-neutral-800 rounded-xl'></div>
+              </div>
+              {/* Skeleton Loader Item */}
+              <div className='animate-pulse col-span-12 sm:col-span-6 md:col-span-4 xl:col-span-3'>
+                <div className='h-72 bg-white dark:bg-neutral-800 rounded-xl'></div>
+              </div>
+              {/* Skeleton Loader Item */}
+              <div className='animate-pulse col-span-12 sm:col-span-6 md:col-span-4 xl:col-span-3'>
+                <div className='h-72 bg-white dark:bg-neutral-800 rounded-xl'></div>
+              </div>
+              {/* Skeleton Loader Item */}
+              <div className='animate-pulse col-span-12 sm:col-span-6 md:col-span-4 xl:col-span-3'>
+                <div className='h-72 bg-white dark:bg-neutral-800 rounded-xl'></div>
+              </div>
+              {/* Skeleton Loader Item */}
+              <div className='animate-pulse col-span-12 sm:col-span-6 md:col-span-4 xl:col-span-3'>
+                <div className='h-72 bg-white dark:bg-neutral-800 rounded-xl'></div>
+              </div>
+              {/* Skeleton Loader Item */}
+              <div className='animate-pulse col-span-12 sm:col-span-6 md:col-span-4 xl:col-span-3'>
+                <div className='h-72 bg-white dark:bg-neutral-800 rounded-xl'></div>
+              </div>
+              {/* Skeleton Loader Item */}
+              <div className='animate-pulse col-span-12 sm:col-span-6 md:col-span-4 xl:col-span-3'>
+                <div className='h-72 bg-white dark:bg-neutral-800 rounded-xl'></div>
+              </div>
+              {/* Skeleton Loader Item */}
+              <div className='animate-pulse col-span-12 sm:col-span-6 md:col-span-4 xl:col-span-3'>
+                <div className='h-72 bg-white dark:bg-neutral-800 rounded-xl'></div>
+              </div>
+              {/* Skeleton Loader Item */}
+              <div className='animate-pulse col-span-12 sm:col-span-6 md:col-span-4 xl:col-span-3'>
+                <div className='h-72 bg-white dark:bg-neutral-800 rounded-xl'></div>
+              </div>
+              {/* Skeleton Loader Item */}
+              <div className='animate-pulse col-span-12 sm:col-span-6 md:col-span-4 xl:col-span-3'>
+                <div className='h-72 bg-white dark:bg-neutral-800 rounded-xl'></div>
+              </div>
+              {/* Skeleton Loader Item */}
+              <div className='animate-pulse col-span-12 sm:col-span-6 md:col-span-4 xl:col-span-3'>
+                <div className='h-72 bg-white dark:bg-neutral-800 rounded-xl'></div>
+              </div>
+            </>
+          )}
         </div>
       </div>
     </>

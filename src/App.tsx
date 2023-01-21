@@ -2,7 +2,7 @@ import React, { createContext, useEffect, useState } from "react";
 import { Window as KeplrWindow } from "@keplr-wallet/types";
 import { BreakpointProvider } from "react-socks";
 import "shared/assets/scss/index.scss";
-import "animate.css";
+// import "animate.css";
 import { Buffer } from "buffer";
 import { BrowserRouter, Route, Routes, redirect } from "react-router-dom";
 import ReactDOM from "react-dom/client";
@@ -86,7 +86,6 @@ root.render(
 );
 
 export default function App() {
-
   return (
     <>
       <Helmet>
