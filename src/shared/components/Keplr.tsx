@@ -28,11 +28,6 @@ export function KeplrPanel() {
     }
   }
 
-  // Auto Setup Keplr
-  // useEffect(() => {
-  //   setupKeplr(setSecretjs, setSecretAddress);
-  // }, []);
-
   const [isFeeGranted, setIsFeeGranted] = useState<boolean>(false);
 
   const [isMenuVisible, setIsMenuVisible] = useState<boolean>(false);
@@ -99,12 +94,14 @@ export function KeplrPanel() {
       <div className='flex items-center font-semibold text-sm'>
         <div className='flex'>
           <If condition={secretAddress.length > 0}>
-            <span className='relative w-2.5 mr-3'>
-              <span className='flex absolute h-2 w-2 top-1.5 left-0.5'>
-                <span className='animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-1/2'></span>
-                <span className='relative inline-flex rounded-full h-2 w-2 bg-emerald-500'></span>
+            <Then>
+              <span className='relative w-2.5 mr-3'>
+                <span className='flex absolute h-2 w-2 top-1.5 left-0.5'>
+                  <span className='animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-1/2'></span>
+                  <span className='relative inline-flex rounded-full h-2 w-2 bg-emerald-500'></span>
+                </span>
               </span>
-            </span>
+            </Then>
           </If>
           <img
             src='/img/assets/fina.webp'
