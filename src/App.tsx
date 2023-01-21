@@ -16,6 +16,8 @@ import { Dashboard } from "dashboard/Dashboard";
 import Bridge from "bridge/Bridge";
 import Apps from "apps/Apps";
 import { ThemeContextProvider } from "shared/components/ThemeContext";
+import { SecretjsContextProvider } from "shared/components/SecretjsContext";
+import { FeeGrantContextProvider } from "shared/components/FeeGrantContext";
 
 // for html-head
 export const websiteName = "Secret Dashboard";
@@ -68,13 +70,15 @@ root.render(
     <HelmetProvider>
       <React.StrictMode>
         <BrowserRouter>
-
           <ThemeContextProvider>
-            <DefaultLayout>
-              <App />
-            </DefaultLayout>
-
-      </ThemeContextProvider>
+            <SecretjsContextProvider>
+              <FeeGrantContextProvider>
+                <DefaultLayout>
+                  <App />
+                </DefaultLayout>
+              </FeeGrantContextProvider>
+            </SecretjsContextProvider>
+          </ThemeContextProvider>
         </BrowserRouter>
       </React.StrictMode>
     </HelmetProvider>

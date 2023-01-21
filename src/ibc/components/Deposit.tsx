@@ -11,7 +11,6 @@ import React, {
   useContext,
   Component,
 } from "react";
-import { KeplrContext, FeeGrantContext } from "shared/layouts/defaultLayout";
 import {
   getKeplrViewingKey,
   setKeplrViewingKey,
@@ -49,6 +48,8 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { IbcContext } from "ibc/Ibc";
 import { FeeGrant } from "shared/components/FeeGrant";
+import { SecretjsContext } from "shared/components/SecretjsContext";
+import { FeeGrantContext } from "shared/components/FeeGrantContext";
 
 function Deposit() {
   const {
@@ -68,7 +69,7 @@ function Deposit() {
     useState<SecretNetworkClient | null>(null);
   const [fetchBalanceInterval, setFetchBalanceInterval] = useState<any>(null);
   const [amountToTransfer, setAmountToTransfer] = useState<string>("");
-  const { secretjs, secretAddress } = useContext(KeplrContext);
+  const { secretjs, secretAddress } = useContext(SecretjsContext);
   const queryParams = new URLSearchParams(window.location.search);
   const tokenByQueryParam = queryParams.get("token"); // "scrt", "akash", etc.
   const chainByQueryParam = queryParams.get("chain"); // "scrt", "akash", etc.

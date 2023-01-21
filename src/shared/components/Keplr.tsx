@@ -11,19 +11,11 @@ import {
 import { toast } from "react-toastify";
 import GetWalletModal from "shared/components/GetWalletModal";
 import { SECRET_LCD, SECRET_CHAIN_ID, SECRET_RPC } from "shared/utils/config";
-import { FeeGrantContext } from "shared/layouts/defaultLayout";
+import { SecretjsContext } from "./SecretjsContext";
+import { FeeGrantContext } from "./FeeGrantContext";
 
-export function KeplrPanel({
-  secretjs,
-  setSecretjs,
-  secretAddress,
-  setSecretAddress,
-}: {
-  secretjs: SecretNetworkClient | null;
-  setSecretjs: React.Dispatch<React.SetStateAction<SecretNetworkClient | null>>;
-  secretAddress: string;
-  setSecretAddress: React.Dispatch<React.SetStateAction<string>>;
-}) {
+export function KeplrPanel() {
+  const { secretjs, setSecretjs, secretAddress, setSecretAddress } = useContext(SecretjsContext)
   const { feeGrantStatus, setFeeGrantStatus } = useContext(FeeGrantContext);
 
   const [isModalOpen, setIsModalOpen] = useState(false);

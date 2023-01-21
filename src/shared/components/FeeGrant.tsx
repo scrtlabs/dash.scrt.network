@@ -3,17 +3,18 @@ import {
   faXmarkCircle,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { FeeGrantContext, KeplrContext } from "shared/layouts/defaultLayout";
 import { faucetURL } from "shared/utils/commons";
 import React, { useContext, useState } from "react";
 import { toast } from "react-toastify";
+import { SecretjsContext } from "./SecretjsContext";
+import { FeeGrantContext } from "./FeeGrantContext";
 
 export function FeeGrant() {
   const { feeGrantStatus, setFeeGrantStatus } = useContext(FeeGrantContext);
 
   const [useFeegrant, setUseFeegrant] = useState<boolean>(false);
 
-  const { secretjs, secretAddress } = useContext(KeplrContext);
+  const { secretjs, secretAddress } = useContext(SecretjsContext);
 
   async function requestFeeGrant() {
     if (feeGrantStatus !== "Success") {

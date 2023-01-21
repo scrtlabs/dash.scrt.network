@@ -8,7 +8,6 @@ import {
   viewingKeyErrorString,
   usdString,
 } from "shared/utils/commons";
-import { KeplrContext, FeeGrantContext } from "shared/layouts/defaultLayout";
 import BigNumber from "bignumber.js";
 import { toast } from "react-toastify";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -32,6 +31,8 @@ import { websiteName } from "App";
 import UnknownBalanceModal from "./components/UnknownBalanceModal";
 import FeeGrantInfoModal from "./components/FeeGrantInfoModal";
 import { FeeGrant } from "shared/components/FeeGrant";
+import { SecretjsContext } from "shared/components/SecretjsContext";
+import { FeeGrantContext } from "shared/components/FeeGrantContext";
 
 export const WrapContext = createContext(null);
 
@@ -55,7 +56,7 @@ export function Wrap() {
   const modePreselection =
     modeByQueryParam?.toLowerCase() === "unwrap" ? "Unwrap" : "Wrap";
 
-  const { secretjs, secretAddress } = useContext(KeplrContext);
+  const { secretjs, secretAddress } = useContext(SecretjsContext);
 
   const [amountToWrap, setAmountToWrap] = useState<string>("");
   const [wrappingMode, setWrappingMode] =
