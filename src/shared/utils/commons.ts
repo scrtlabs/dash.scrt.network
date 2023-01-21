@@ -9,6 +9,8 @@ export const viewingKeyErrorString = "🧐";
 export const faucetURL = "https://faucet.secretsaturn.net/claim";
 export const faucetAddress = "secret1tq6y8waegggp4fv2fcxk3zmpsmlfadyc7lsd69";
 
+export const dAppsURL = "https://secretadmin.scrt.network/api/ecosystem-dapps?populate=deep&pagination[pageSize]=1000"
+
 export const sleep = (ms: number) =>
   new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -259,4 +261,20 @@ export const ibcDenom = (
   const denom = `${prefix}/${coinMinimalDenom}`;
 
   return "ibc/" + toHex(sha256(toUtf8(denom))).toUpperCase();
+};
+
+export const shuffleArray = (array: any[]) => {
+  let currentIndex = array.length,
+    randomIndex;
+
+  while (currentIndex != 0) {
+    randomIndex = Math.floor(Math.random() * currentIndex);
+    currentIndex--;
+
+    [array[currentIndex], array[randomIndex]] = [
+      array[randomIndex],
+      array[currentIndex],
+    ];
+  }
+  return array;
 };

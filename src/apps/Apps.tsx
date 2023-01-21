@@ -1,28 +1,42 @@
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { dappsData } from "shared/utils/dapps";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { websiteName } from "App";
 import Header from "./components/Header";
 import AppTile from "./components/AppTile";
-import { shuffleArray } from "shared/utils/helpers";
-
-export interface IDappData {
-  id: number;
-  name: string;
-  description?: string;
-  url?: string;
-  image?: string;
-  tags?: string[];
-}
+import { shuffleArray, dAppsURL } from "shared/utils/commons";
 
 function Apps() {
-  const [dappsDataShuffled, setDappsDataShuffled] = useState<IDappData[]>([]);
+  const [dappsDataShuffled, setDappsDataShuffled] = useState<any[]>([]);
+  const [dappsData, setDappsData] = useState<any[]>([]);
+  const [tags, setTags] = useState<string[]>([]);
 
   useEffect(() => {
-    setDappsDataShuffled(shuffleArray(dappsData));
+    fetch(dAppsURL)
+      .then((response) => response.json())
+      .then((jsonData) => setDappsData(jsonData.data))
+      .catch((error) => console.error(error));
   }, []);
+
+  useEffect(() => {
+    if (dappsDataShuffled.length == 0 && dappsData.length != 0) {
+      setDappsDataShuffled(shuffleArray(dappsData));
+      // Tag-Filter
+      let allTags: string[] = [];
+
+      dappsData.forEach((dapp) => {
+        dapp.attributes.type
+          .map((item) => item.name)
+          .forEach((tag) => {
+            if (!allTags.find((tagItem) => tagItem === tag)) {
+              allTags.push(tag);
+            }
+          });
+      });
+      setTags(allTags.sort());
+    }
+  }, [dappsData]);
 
   // Filter + Search
   const [tagsToBeFilteredBy, setTagsToBeFilteredBy] = useState<string[]>([]);
@@ -47,8 +61,8 @@ function Apps() {
         className={
           "inline-block text-sm px-1.5 py-0.5 rounded-md overflow-hidden transition-colors" +
           (isTagInFilterList(props.name)
-            ? " bg-neutral-500 hover:bg-neutral-600 font-semibold"
-            : " bg-neutral-800 hover:bg-neutral-700 font-medium")
+            ? " bg-neutral-500 dark:bg-neutral-500 text-white dark:text-white hover:bg-neutral-400 dark:hover:bg-neutral-600 font-semibold"
+            : " bg-white dark:bg-neutral-800 hover:bg-neutral-300 dark:hover:bg-neutral-700 font-medium")
         }
       >
         {props.name}
@@ -59,30 +73,20 @@ function Apps() {
   // Search
   const [searchText, setSearchText] = useState<string>("");
 
-  // Tag-Filter
-  let tags: string[] = [];
-
-  dappsData.forEach((app) => {
-    app.tags?.forEach((tag) => {
-      if (!tags.find((tagItem) => tagItem === tag)) {
-        tags.push(tag);
-      }
-    });
-  });
-  tags = tags.sort();
-
   // results apps that match on the search input and chosen tags
   function filteredDappsData() {
     let items = dappsDataShuffled;
     if (searchText !== "") {
       items = dappsDataShuffled.filter((app) =>
-        (app as any).name.toLowerCase().includes(searchText.toLowerCase())
+        app.attributes.name.toLowerCase().includes(searchText.toLowerCase())
       );
     }
 
     if (tagsToBeFilteredBy.length > 0) {
       items = items.filter((item) =>
-        (item as any).tags.find((tag) => tagsToBeFilteredBy.includes(tag))
+        item.attributes.type
+          .map((item) => item.name)
+          .find((tag) => tagsToBeFilteredBy.includes(tag))
       );
     }
 
@@ -110,29 +114,85 @@ function Apps() {
             onChange={(e) => setSearchText(e.target.value)}
             type='text'
             id='search'
-            className='block w-full p-4 pl-10 text-sm rounded-lg bg-neutral-800 text-white'
+            className='block w-full p-4 pl-10 text-sm rounded-lg bg-white placeholder-neutral-400 text-neutral-800 dark:bg-neutral-800 dark:text-white'
             placeholder='Search'
           />
         </div>
 
         {/* Tag-Filter */}
         <div className='mb-4 sm:mb-8 flex gap-2 flex-wrap justify-center'>
-          {tags.map((tag) => (
-            <Tag name={tag} />
-          ))}
+          {tags.length > 0 && tags.map((tag) => <Tag name={tag} />)}
+          {tags.length == 0 && <div className='h-6'></div>}
         </div>
 
         {/* App-Items */}
         <div className='grid grid-cols-12 gap-4 auto-rows-auto'>
-          {filteredDappsData().map((dapp) => (
-            <AppTile
-              name={(dapp as any).name as any}
-              description={(dapp as any).description}
-              tags={(dapp as any).tags}
-              image={(dapp as any).image}
-              url={(dapp as any).url}
-            />
-          ))}
+          {dappsData.length > 0 && (
+            <>
+              {filteredDappsData().map((dapp) => (
+                <AppTile
+                  name={dapp.attributes.name}
+                  description={dapp.attributes.description}
+                  tags={dapp.attributes.type.map((item) => item.name)}
+                  image={dapp.attributes.logo.data.attributes.url}
+                  url={dapp.attributes.link}
+                />
+              ))}
+            </>
+          )}
+
+          {dappsData.length <= 0 && (
+            <>
+              {/* Skeleton Loader Item */}
+              <div className='animate-pulse col-span-12 sm:col-span-6 md:col-span-4 xl:col-span-3'>
+                <div className='h-72 bg-white dark:bg-neutral-800 rounded-xl'></div>
+              </div>
+              {/* Skeleton Loader Item */}
+              <div className='animate-pulse col-span-12 sm:col-span-6 md:col-span-4 xl:col-span-3'>
+                <div className='h-72 bg-white dark:bg-neutral-800 rounded-xl'></div>
+              </div>
+              {/* Skeleton Loader Item */}
+              <div className='animate-pulse col-span-12 sm:col-span-6 md:col-span-4 xl:col-span-3'>
+                <div className='h-72 bg-white dark:bg-neutral-800 rounded-xl'></div>
+              </div>
+              {/* Skeleton Loader Item */}
+              <div className='animate-pulse col-span-12 sm:col-span-6 md:col-span-4 xl:col-span-3'>
+                <div className='h-72 bg-white dark:bg-neutral-800 rounded-xl'></div>
+              </div>
+              {/* Skeleton Loader Item */}
+              <div className='animate-pulse col-span-12 sm:col-span-6 md:col-span-4 xl:col-span-3'>
+                <div className='h-72 bg-white dark:bg-neutral-800 rounded-xl'></div>
+              </div>
+              {/* Skeleton Loader Item */}
+              <div className='animate-pulse col-span-12 sm:col-span-6 md:col-span-4 xl:col-span-3'>
+                <div className='h-72 bg-white dark:bg-neutral-800 rounded-xl'></div>
+              </div>
+              {/* Skeleton Loader Item */}
+              <div className='animate-pulse col-span-12 sm:col-span-6 md:col-span-4 xl:col-span-3'>
+                <div className='h-72 bg-white dark:bg-neutral-800 rounded-xl'></div>
+              </div>
+              {/* Skeleton Loader Item */}
+              <div className='animate-pulse col-span-12 sm:col-span-6 md:col-span-4 xl:col-span-3'>
+                <div className='h-72 bg-white dark:bg-neutral-800 rounded-xl'></div>
+              </div>
+              {/* Skeleton Loader Item */}
+              <div className='animate-pulse col-span-12 sm:col-span-6 md:col-span-4 xl:col-span-3'>
+                <div className='h-72 bg-white dark:bg-neutral-800 rounded-xl'></div>
+              </div>
+              {/* Skeleton Loader Item */}
+              <div className='animate-pulse col-span-12 sm:col-span-6 md:col-span-4 xl:col-span-3'>
+                <div className='h-72 bg-white dark:bg-neutral-800 rounded-xl'></div>
+              </div>
+              {/* Skeleton Loader Item */}
+              <div className='animate-pulse col-span-12 sm:col-span-6 md:col-span-4 xl:col-span-3'>
+                <div className='h-72 bg-white dark:bg-neutral-800 rounded-xl'></div>
+              </div>
+              {/* Skeleton Loader Item */}
+              <div className='animate-pulse col-span-12 sm:col-span-6 md:col-span-4 xl:col-span-3'>
+                <div className='h-72 bg-white dark:bg-neutral-800 rounded-xl'></div>
+              </div>
+            </>
+          )}
         </div>
       </div>
     </>

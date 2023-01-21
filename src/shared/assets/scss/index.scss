@@ -14,7 +14,6 @@ body {
 body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  @apply bg-neutral-900 text-white;
 }
 
 .react-select__control {
@@ -122,13 +121,18 @@ body {
 
 .isInactiveNavLink {
   svg {
-    @apply fill-neutral-400;
+    @apply dark:fill-neutral-300 fill-neutral-700;
   }
   &:hover svg {
-    @apply fill-white;
+    @apply fill-black dark:fill-white;
   }
 }
 
-.isActiveNavLink svg {
-  @apply fill-white;
+.isActiveNavLink {
+  svg {
+    @apply dark:fill-white fill-black;
+  }
+  &:hover svg {
+    @apply fill-black dark:fill-white;
+  }
 }

@@ -6,9 +6,9 @@ import MiniTile from "./components/MiniTile";
 import PriceVolumeHistory from "./components/PriceVolumeHistory";
 import QuadTile from "./components/QuadTile";
 import SocialMedia from "./components/SocialMedia";
-import StakingChart from "./components/StakingChart";
 import { SECRET_LCD, SECRET_CHAIN_ID } from "shared/utils/config";
 import { Helmet } from "react-helmet-async";
+import StakingChart from "./components/StakingChart";
 
 export const DashboardContext = createContext<{
   coingeckoApiData_Day: any;
@@ -326,7 +326,7 @@ export function Dashboard() {
             </div>
 
             <div className='col-span-12 md:col-span-6 lg:col-span-6 2xl:col-span-4'>
-              <div className='bg-neutral-800 px-6 py-8 rounded-xl'>
+              <div className='bg-white dark:bg-neutral-800 px-6 py-8 rounded-xl'>
                 <StakingChart />
               </div>
             </div>

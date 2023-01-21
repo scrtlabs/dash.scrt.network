@@ -1,8 +1,8 @@
-import React from "react";
+import React, { createContext, useEffect, useState } from "react";
 import { Window as KeplrWindow } from "@keplr-wallet/types";
 import { BreakpointProvider } from "react-socks";
 import "shared/assets/scss/index.scss";
-import "animate.css";
+// import "animate.css";
 import { Buffer } from "buffer";
 import { BrowserRouter, Route, Routes, redirect } from "react-router-dom";
 import ReactDOM from "react-dom/client";
@@ -15,6 +15,9 @@ import DefaultLayout from "shared/layouts/defaultLayout";
 import { Dashboard } from "dashboard/Dashboard";
 import Bridge from "bridge/Bridge";
 import Apps from "apps/Apps";
+import { ThemeContextProvider } from "shared/components/ThemeContext";
+import { SecretjsContextProvider } from "shared/components/SecretjsContext";
+import { FeeGrantContextProvider } from "shared/components/FeeGrantContext";
 
 // for html-head
 export const websiteName = "Secret Dashboard";
@@ -28,7 +31,10 @@ window.addEventListener("keplr_keystorechange", () => {
   location.reload();
 });
 
-class ErrorBoundary extends React.Component<{children: any}, { hasError: boolean }> {
+class ErrorBoundary extends React.Component<
+  { children: any },
+  { hasError: boolean }
+> {
   constructor(props: any) {
     super(props);
     this.state = { hasError: false };
@@ -58,14 +64,21 @@ class ErrorBoundary extends React.Component<{children: any}, { hasError: boolean
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
 );
+
 root.render(
   <BreakpointProvider>
     <HelmetProvider>
       <React.StrictMode>
         <BrowserRouter>
-          <DefaultLayout>
-            <App />
-          </DefaultLayout>
+          <ThemeContextProvider>
+            <SecretjsContextProvider>
+              <FeeGrantContextProvider>
+                <DefaultLayout>
+                  <App />
+                </DefaultLayout>
+              </FeeGrantContextProvider>
+            </SecretjsContextProvider>
+          </ThemeContextProvider>
         </BrowserRouter>
       </React.StrictMode>
     </HelmetProvider>

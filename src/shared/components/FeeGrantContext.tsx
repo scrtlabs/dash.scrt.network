@@ -1,19 +1,17 @@
-import {
-  faCheckCircle,
-  faXmarkCircle,
-} from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { FeeGrantContext, KeplrContext } from "shared/layouts/defaultLayout";
-import { faucetURL } from "shared/utils/commons";
-import React, { useContext, useState } from "react";
+import { createContext, useContext, useState } from "react";
 import { toast } from "react-toastify";
+import { faucetURL } from "shared/utils/commons";
+import { SecretjsContext } from "./SecretjsContext";
 
-export function FeeGrant() {
-  const { feeGrantStatus, setFeeGrantStatus } = useContext(FeeGrantContext);
+const FeeGrantContext = createContext(null);
 
-  const [useFeegrant, setUseFeegrant] = useState<boolean>(false);
+export type FeeGrantStatus = "Success" | "Fail" | "Untouched";
 
-  const { secretjs, secretAddress } = useContext(KeplrContext);
+const FeeGrantContextProvider = ({ children }) => {
+  const [feeGrantStatus, setFeeGrantStatus] =
+    useState<FeeGrantStatus>("Untouched");
+
+  const { secretjs, secretAddress } = useContext(SecretjsContext);
 
   async function requestFeeGrant() {
     if (feeGrantStatus !== "Success") {
@@ -41,7 +39,6 @@ export function FeeGrant() {
               `Fee Grant for address ${secretAddress} failed with status code: ${result.status}`
             );
           }
-          setUseFeegrant(true);
         })
         .catch((error) => {
           setFeeGrantStatus("Fail");
@@ -53,18 +50,12 @@ export function FeeGrant() {
   }
 
   return (
-    <>
-      {/* Untouched */}
-      {feeGrantStatus === "Untouched" && (
-        <button
-          id='feeGrantButton'
-          onClick={() => requestFeeGrant()}
-          className='font-semibold text-xs bg-neutral-900 px-1.5 py-1 rounded-md transition-colors hover:bg-neutral-700 focus:bg-neutral-500 cursor-pointer disabled:text-neutral-500 disabled:hover:bg-neutral-900 disabled:cursor-default'
-          disabled={!secretjs || !secretAddress}
-        >
-          Request Fee Grant
-        </button>
-      )}
-    </>
+    <FeeGrantContext.Provider
+      value={{ feeGrantStatus, setFeeGrantStatus, requestFeeGrant }}
+    >
+      {children}
+    </FeeGrantContext.Provider>
   );
-}
+};
+
+export { FeeGrantContext, FeeGrantContextProvider };
