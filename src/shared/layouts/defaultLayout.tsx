@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Footer from "shared/components/Footer";
 import { KeplrPanel } from "shared/components/Keplr";
 import { Navigation } from "shared/components/Navigation";
-import React, { useState, createContext, useEffect } from "react";
+import React, { useState, createContext, useEffect, useContext } from "react";
 import { SecretNetworkClient } from "secretjs";
 import { Breakpoint } from "react-socks";
 import { Flip, ToastContainer, toast } from "react-toastify";
@@ -11,6 +11,10 @@ import { faDiscord, faTwitter } from "@fortawesome/free-brands-svg-icons";
 import { useLocation } from "react-router-dom";
 import { FeeGrantStatus } from "shared/utils/types";
 import FloatingCTAButton from "shared/components/FloatingCTAButton";
+import { ThemeContext, ThemeContextProvider } from "shared/components/ThemeContext";
+
+// type Theme = 'light' | 'dark';
+// export const ThemeContext = createContext(null);
 
 export const KeplrContext = createContext<{
   secretjs: SecretNetworkClient | null;
@@ -20,6 +24,8 @@ export const NavigationContext = createContext<boolean | null>(null);
 export const FeeGrantContext = createContext(null);
 
 export const DefaultLayout = ({ children }: any) => {
+  const { toggleTheme } = useContext(ThemeContext);
+
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   /**
@@ -47,8 +53,7 @@ export const DefaultLayout = ({ children }: any) => {
   const [secretjs, setSecretjs] = useState<SecretNetworkClient | null>(null);
   const [secretAddress, setSecretAddress] = useState<string>("");
 
-  const [feeGrantStatus, setFeeGrantStatus] =
-    useState<FeeGrantStatus>("Untouched");
+  const [feeGrantStatus, setFeeGrantStatus] = useState<FeeGrantStatus>("Untouched");
 
   return (
     <>
@@ -107,7 +112,7 @@ export const DefaultLayout = ({ children }: any) => {
                     <FontAwesomeIcon icon={faDiscord} size='lg' />
                   </a>
                   {/* DarkMode / LightMode Switch */}
-                  <button className='text-neutral-800 dark:text-neutral-200 hover:text-black dark:hover:text-white transition-colors'>
+                  <button onClick={toggleTheme} className='text-neutral-800 dark:text-neutral-200 hover:text-black dark:hover:text-white transition-colors'>
                     <FontAwesomeIcon icon={faSun} />
                   </button>
                 </div>

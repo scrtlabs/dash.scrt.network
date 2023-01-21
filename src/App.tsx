@@ -15,6 +15,7 @@ import DefaultLayout from "shared/layouts/defaultLayout";
 import { Dashboard } from "dashboard/Dashboard";
 import Bridge from "bridge/Bridge";
 import Apps from "apps/Apps";
+import { ThemeContextProvider } from "shared/components/ThemeContext";
 
 // for html-head
 export const websiteName = "Secret Dashboard";
@@ -58,8 +59,6 @@ class ErrorBoundary extends React.Component<
   }
 }
 
-export const ThemeContext = createContext(null);
-
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
 );
@@ -69,9 +68,13 @@ root.render(
     <HelmetProvider>
       <React.StrictMode>
         <BrowserRouter>
-          <DefaultLayout>
-            <App />
-          </DefaultLayout>
+
+          <ThemeContextProvider>
+            <DefaultLayout>
+              <App />
+            </DefaultLayout>
+
+      </ThemeContextProvider>
         </BrowserRouter>
       </React.StrictMode>
     </HelmetProvider>
@@ -79,37 +82,19 @@ root.render(
 );
 
 export default function App() {
-  /**
-   * Dark Mode Switch
-   */
-  type Theme = "light" | "dark";
-  const [theme, setTheme] = useState<Theme>("light");
-
-  const toggleTheme = () => {
-    theme === "light" ? setTheme("dark") : setTheme("light");
-  };
-  useEffect(() => {
-    if (theme === "light") {
-      document.body.classList.remove("dark");
-    } else {
-      document.body.classList.add("dark");
-    }
-  }, [theme]);
 
   return (
     <>
-      <ThemeContext.Provider value={theme}>
-        <Helmet>
-          <title>{websiteName}</title>
-        </Helmet>
-        <Routes>
-          <Route path='/' element={<Dashboard />} />
-          <Route path='/ibc' element={<Ibc />} />
-          <Route path='/wrap' element={<Wrap />} />
-          <Route path='/apps' element={<Apps />} />
-          <Route path='/bridge' element={<Bridge />} />
-        </Routes>
-      </ThemeContext.Provider>
+      <Helmet>
+        <title>{websiteName}</title>
+      </Helmet>
+      <Routes>
+        <Route path='/' element={<Dashboard />} />
+        <Route path='/ibc' element={<Ibc />} />
+        <Route path='/wrap' element={<Wrap />} />
+        <Route path='/apps' element={<Apps />} />
+        <Route path='/bridge' element={<Bridge />} />
+      </Routes>
     </>
   );
 }

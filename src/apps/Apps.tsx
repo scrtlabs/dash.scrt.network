@@ -1,7 +1,7 @@
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { dappsData } from "shared/utils/dapps";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { websiteName } from "App";
 import Header from "./components/Header";
@@ -18,6 +18,7 @@ export interface IDappData {
 }
 
 function Apps() {
+  // const { theme, setTheme, toggleTheme } = useContext(ThemeContext);
   const [dappsDataShuffled, setDappsDataShuffled] = useState<IDappData[]>([]);
 
   useEffect(() => {
