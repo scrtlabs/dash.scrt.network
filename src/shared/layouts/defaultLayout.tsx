@@ -10,11 +10,12 @@ import { useLocation } from "react-router-dom";
 import FloatingCTAButton from "shared/components/FloatingCTAButton";
 import FeedbackButton from "shared/components/FeedbackButton";
 import { ThemeContext } from "shared/components/ThemeContext";
+import Tooltip from "@mui/material/Tooltip";
 
 export const NavigationContext = createContext<boolean | null>(null);
 
 export const DefaultLayout = ({ children }: any) => {
-  const { toggleTheme } = useContext(ThemeContext);
+  const { theme, toggleTheme } = useContext(ThemeContext);
 
   /**
    * Mobile Menu Handler
@@ -82,12 +83,20 @@ export const DefaultLayout = ({ children }: any) => {
 
             <div className='flex-initial sm:flex-1 text-right space-x-2'>
               {/* DarkMode / LightMode Switch */}
-              <button
-                onClick={toggleTheme}
-                className='text-black dark:text-white hover:text-neutral-600 dark:hover:text-neutral-400 transition-colors'
+              <Tooltip
+                title={`Switch to ${
+                  theme === "dark" ? "Light Mode" : "Dark Mode"
+                }`}
+                placement='bottom'
+                arrow
               >
-                <FontAwesomeIcon icon={faSun} />
-              </button>
+                <button
+                  onClick={toggleTheme}
+                  className='text-black dark:text-white hover:text-neutral-600 dark:hover:text-neutral-400 transition-colors'
+                >
+                  <FontAwesomeIcon icon={faSun} />
+                </button>
+              </Tooltip>
             </div>
 
             <div className='flex-1 sm:flex-initial sm:flex sm:justify-end'>
