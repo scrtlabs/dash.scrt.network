@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext, createContext } from "react";
+import { useEffect, useState, useContext, createContext } from "react";
 import { MsgExecuteContract } from "secretjs";
 import { Token, tokens } from "shared/utils/config";
 import {
@@ -30,14 +30,14 @@ import { Helmet } from "react-helmet-async";
 import { websiteName } from "App";
 import UnknownBalanceModal from "./components/UnknownBalanceModal";
 import FeeGrantInfoModal from "./components/FeeGrantInfoModal";
-import { FeeGrant } from "shared/components/FeeGrant";
 import { SecretjsContext } from "shared/components/SecretjsContext";
 import { FeeGrantContext } from "shared/components/FeeGrantContext";
 
 export const WrapContext = createContext(null);
 
 export function Wrap() {
-  const { feeGrantStatus, setFeeGrantStatus } = useContext(FeeGrantContext);
+  const { feeGrantStatus, setFeeGrantStatus, requestFeeGrant } =
+    useContext(FeeGrantContext);
 
   const [isUnknownBalanceModalOpen, setIsUnknownBalanceModalOpen] =
     useState(false);
@@ -431,7 +431,9 @@ export function Wrap() {
               disabled={disabled}
               className={
                 "bg-neutral-200 dark:bg-neutral-800 px-3 py-2 text-cyan-500 dark:text-cyan-500 transition-colors rounded-xl disabled:text-neutral-500 black:disabled:text-neutral-500" +
-                (!disabled ? " hover:text-cyan-600 dark:hover:text-cyan-300" : "")
+                (!disabled
+                  ? " hover:text-cyan-600 dark:hover:text-cyan-300"
+                  : "")
               }
             >
               <FontAwesomeIcon icon={faRightLeft} className='fa-rotate-90' />
@@ -603,7 +605,7 @@ export function Wrap() {
         <div className='flex items-center'>
           <button
             className={
-              "enabled:bg-gradient-to-r enabled:from-cyan-600 enabled:to-purple-600 enabled:hover:from-cyan-500 enabled:hover:to-purple-500 transition-colors text-white font-semibold py-2 w-full rounded-lg disabled:bg-neutral-500"
+              "enabled:bg-gradient-to-r enabled:from-cyan-600 enabled:to-purple-600 enabled:hover:from-cyan-500 enabled:hover:to-purple-500 transition-colors text-white font-semibold py-2.5 w-full rounded-lg disabled:bg-neutral-500"
             }
             disabled={disabled}
             onClick={() => submit()}
@@ -890,7 +892,18 @@ export function Wrap() {
               </div>
               <div className='flex-initial'>
                 {/* Untouched */}
-                {feeGrantStatus === "Untouched" && <FeeGrant />}
+                {feeGrantStatus === "Untouched" && (
+                  <>
+                    <button
+                      id='feeGrantButton'
+                      onClick={requestFeeGrant}
+                      className='font-semibold text-xs bg-neutral-100 dark:bg-neutral-900 px-1.5 py-1 rounded-md transition-colors hover:bg-neutral-300 dark:hover:bg-neutral-700 focus:bg-neutral-500 dark:focus:bg-neutral-500 cursor-pointer disabled:text-neutral-500 dark:disabled:text-neutral-500 disabled:hover:bg-neutral-100 dark:disabled:hover:bg-neutral-900 disabled:cursor-default'
+                      disabled={!secretjs || !secretAddress}
+                    >
+                      Request Fee Grant
+                    </button>
+                  </>
+                )}
                 {/* Success */}
                 {feeGrantStatus === "Success" && (
                   <div className='font-semibold text-sm flex items-center h-[1.6rem]'>
