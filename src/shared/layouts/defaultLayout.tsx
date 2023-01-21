@@ -5,7 +5,7 @@ import { KeplrPanel } from "shared/components/Keplr";
 import { Navigation } from "shared/components/Navigation";
 import { useState, createContext, useEffect, useContext } from "react";
 import { Breakpoint } from "react-socks";
-import { Flip, ToastContainer, toast } from "react-toastify";
+import { Flip, ToastContainer } from "react-toastify";
 import { useLocation } from "react-router-dom";
 import FloatingCTAButton from "shared/components/FloatingCTAButton";
 import FeedbackButton from "shared/components/FeedbackButton";
@@ -41,7 +41,7 @@ export const DefaultLayout = ({ children }: any) => {
   return (
     <>
       {/* Fixed Feedback Button */}
-      <FeedbackButton url={'https://forms.gle/gxCqYzHwv7N4gx3G8'}/>
+      <FeedbackButton url={"https://forms.gle/gxCqYzHwv7N4gx3G8"} />
 
       {/* Fixed Help Button */}
       <FloatingCTAButton
@@ -57,7 +57,7 @@ export const DefaultLayout = ({ children }: any) => {
               ? "z-50 left-0 right-0 w-full lg:w-auto min-h-screen "
               : "hidden lg:block") +
             " " +
-            "lg:w-72 fixed left-0 top-0 h-screen p-6 overflow-x-hidden bg-neutral-200 dark:bg-neutral-900"
+            "lg:w-[17rem] fixed left-0 top-0 h-screen p-6 overflow-x-hidden bg-white dark:bg-neutral-800"
           }
         >
           <NavigationContext.Provider value={showMobileMenu}>
@@ -67,14 +67,14 @@ export const DefaultLayout = ({ children }: any) => {
             />
           </NavigationContext.Provider>
         </aside>
-        <main className='flex flex-col min-h-screen flex-1 lg:ml-72'>
+        <main className='flex flex-col min-h-screen flex-1 lg:ml-[17rem]'>
           {/* Top Bar [Burger Menu | Socials | Keplr] */}
           <div className='flex items-center gap-4 p-4'>
             {/* Burger Menu */}
             <div className='flex-initial lg:hidden'>
               <button
                 onClick={() => setShowMobileMenu(true)}
-                className='text-white hover:text-neutral-200 active:text-neutral-400 transition-colors'
+                className='text-black dark:text-white hover:text-neutral-600 dark:hover:text-neutral-400 transition-colors'
               >
                 <FontAwesomeIcon icon={faBars} size='xl' />
               </button>
@@ -82,17 +82,20 @@ export const DefaultLayout = ({ children }: any) => {
 
             <div className='flex-initial sm:flex-1 text-right space-x-2'>
               {/* DarkMode / LightMode Switch */}
-              <button onClick={toggleTheme} className='text-neutral-800 dark:text-neutral-200 hover:text-black dark:hover:text-white transition-colors'>
+              <button
+                onClick={toggleTheme}
+                className='text-black dark:text-white hover:text-neutral-600 dark:hover:text-neutral-400 transition-colors'
+              >
                 <FontAwesomeIcon icon={faSun} />
               </button>
             </div>
 
             <div className='flex-1 sm:flex-initial sm:flex sm:justify-end'>
-              <KeplrPanel/>
+              <KeplrPanel />
             </div>
           </div>
 
-          <div className="overflow-hidden">
+          <div className='overflow-hidden'>
             {children}
             <div className='max-w-7xl mx-auto mt-auto'>
               <Footer />
