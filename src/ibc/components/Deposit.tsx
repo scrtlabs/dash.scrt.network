@@ -5,7 +5,7 @@ import { createTxIBCMsgTransfer } from "@tharsis/transactions";
 import { cosmos } from "@tharsis/proto/dist/proto/cosmos/tx/v1beta1/tx";
 import BigNumber from "bignumber.js";
 import Long from "long";
-import React, { useEffect, useState, useContext, Component } from "react";
+import { useEffect, useState, useContext, Component } from "react";
 import {
   getKeplrViewingKey,
   setKeplrViewingKey,

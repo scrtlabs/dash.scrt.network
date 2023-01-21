@@ -5,9 +5,7 @@ import { SecretNetworkClient } from "secretjs";
 import { chains } from "shared/utils/config";
 import Tooltip from "@mui/material/Tooltip";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faCopy,
-} from "@fortawesome/free-solid-svg-icons";
+import { faCopy } from "@fortawesome/free-solid-svg-icons";
 import { toast } from "react-toastify";
 import GetWalletModal from "shared/components/GetWalletModal";
 import { SECRET_LCD, SECRET_CHAIN_ID, SECRET_RPC } from "shared/utils/config";
@@ -15,7 +13,8 @@ import { SecretjsContext } from "./SecretjsContext";
 import { FeeGrantContext } from "./FeeGrantContext";
 
 export function KeplrPanel() {
-  const { secretjs, setSecretjs, secretAddress, setSecretAddress } = useContext(SecretjsContext)
+  const { secretjs, setSecretjs, secretAddress, setSecretAddress } =
+    useContext(SecretjsContext);
   const { feeGrantStatus, setFeeGrantStatus } = useContext(FeeGrantContext);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -30,9 +29,9 @@ export function KeplrPanel() {
   }
 
   // Auto Setup Keplr
-  useEffect(() => {
-    setupKeplr(setSecretjs, setSecretAddress);
-  }, []);
+  // useEffect(() => {
+  //   setupKeplr(setSecretjs, setSecretAddress);
+  // }, []);
 
   const [isFeeGranted, setIsFeeGranted] = useState<boolean>(false);
 
