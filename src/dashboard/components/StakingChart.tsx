@@ -17,7 +17,6 @@ import { Doughnut } from "react-chartjs-2";
 import { SecretNetworkClient } from "secretjs";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowUpRightFromSquare } from "@fortawesome/free-solid-svg-icons";
-import { ThemeContext } from "App";
 
 ChartJS.register(
   CategoryScale,
@@ -35,13 +34,6 @@ class StakingChart extends React.Component {
     const [communityPool, setCommunityPool] = useState(Number); // in uscrt
     const [totalSupply, setTotalSupply] = useState(Number);
     const [pool, setPool] = useState(null);
-
-    const { theme } = useContext(ThemeContext);
-    useEffect(() => {
-      if (theme) {
-        alert(theme);
-      }
-    }, [theme]);
 
     useEffect(() => {
       const queryData = async () => {
