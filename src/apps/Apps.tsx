@@ -125,7 +125,7 @@ function Apps() {
         </div>
         {/* App-Items */}
         <div className='grid grid-cols-12 gap-4 auto-rows-auto'>
-          {dappsData.length > 0 && (
+          {dappsData?.length > 0 && (
             <>
               {filteredDappsData().map((dapp) => (
                 <AppTile
@@ -139,7 +139,7 @@ function Apps() {
             </>
           )}
 
-          {dappsData.length <= 0 && (
+          {dappsData?.length <= 0 && (
             <>
               {/* Skeleton Loader Item */}
               <div className='animate-pulse col-span-12 sm:col-span-6 md:col-span-4 xl:col-span-3'>
