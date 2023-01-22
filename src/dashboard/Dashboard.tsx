@@ -9,6 +9,7 @@ import SocialMedia from "./components/SocialMedia";
 import { SECRET_LCD, SECRET_CHAIN_ID } from "shared/utils/config";
 import { Helmet } from "react-helmet-async";
 import StakingChart from "./components/StakingChart";
+import { formatNumber } from "shared/utils/commons";
 
 export const DashboardContext = createContext<{
   coingeckoApiData_Day: any;
@@ -93,7 +94,7 @@ export function Dashboard() {
   useEffect(() => {
     if (feesPaid) {
       setFeesPaidFormattedString(
-        (parseFloat(feesPaid) / 1e6).toFixed(2).toString()
+        (parseFloat(feesPaid) / 1e6).toFixed(2).toString() + " SCRT"
       );
     }
   }, [feesPaid]);
@@ -161,12 +162,12 @@ export function Dashboard() {
   useEffect(() => {
     if (volume) {
       setVolumeFormattedString(
-        "$" + parseInt(volume.toFixed(0).toString()).toLocaleString()
+        "$" + formatNumber(parseInt(volume.toFixed(0).toString()), true, 2)
       );
     }
     if (marketCap) {
       setMarketCapFormattedString(
-        "$" + parseInt(marketCap.toFixed(0).toString()).toLocaleString()
+        "$" + formatNumber(parseInt(marketCap.toFixed(0).toString()), true, 2)
       );
     }
   }, [volume, marketCap]);
@@ -320,7 +321,7 @@ export function Dashboard() {
                 item2_value={blockTimeFormattedString}
                 item3_key='# Transactions (24h)'
                 item3_value={dailyTransactionsFormattedString}
-                item4_key='Fees Paid (24h) [SCRT]'
+                item4_key='Fees Paid (24h)'
                 item4_value={feesPaidFormattedString}
               />
             </div>
