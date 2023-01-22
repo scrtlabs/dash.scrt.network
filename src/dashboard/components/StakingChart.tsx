@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { formatNumber } from "shared/utils/commons";
 import { SECRET_LCD, SECRET_CHAIN_ID } from "shared/utils/config";
 
@@ -17,6 +17,7 @@ import { Doughnut } from "react-chartjs-2";
 import { SecretNetworkClient } from "secretjs";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowUpRightFromSquare } from "@fortawesome/free-solid-svg-icons";
+import { ThemeContext } from "shared/components/ThemeContext";
 
 ChartJS.register(
   CategoryScale,
@@ -34,6 +35,8 @@ export default function StakingChart() {
   const [totalSupply, setTotalSupply] = useState(Number);
   const [pool, setPool] = useState(null);
 
+  const { theme } = useContext(ThemeContext);
+
   useEffect(() => {
     const queryData = async () => {
       const secretjsquery = new SecretNetworkClient({
@@ -48,9 +51,7 @@ export default function StakingChart() {
       secretjsquery?.query?.bank
         ?.supplyOf({ denom: "uscrt" })
         ?.then((res) => setTotalSupply((res.amount.amount as any) / 1e6));
-      secretjsquery?.query?.staking
-        ?.pool("")
-        ?.then((res) => setPool(res.pool));
+      secretjsquery?.query?.staking?.pool("")?.then((res) => setPool(res.pool));
     };
 
     queryData();
@@ -73,13 +74,13 @@ export default function StakingChart() {
       ctx.save();
 
       ctx.font = "bold 0.9rem sans-serif";
-      ctx.fillStyle = "#fff";
+      ctx.fillStyle = theme === "dark" ? "#fff" : "#000";
       ctx.textAlign = "center";
       ctx.fillText(`Total Supply`, width / 2, height / 2.25 + top);
       ctx.restore();
 
       ctx.font = "400 2rem sans-serif";
-      ctx.fillStyle = "#fff";
+      ctx.fillStyle = theme === "dark" ? "#fff" : "#000";
       ctx.textAlign = "center";
       ctx.fillText(
         `${formatNumber(totalSupply, true, 2)}`,
@@ -132,10 +133,15 @@ export default function StakingChart() {
     <>
       <div>
         {/* Title */}
-        {/* <div className="flex items-center mb-4">
-          <h1 className="text-2xl font-bold">Staking</h1>
-          <Tooltip title={`Earn rewards for holding SCRT (currently ~24.66% p.a.)`} placement="right">
-            <div className="ml-2 pt-1 text-neutral-400 hover:text-white transition-colors cursor-pointer"><FontAwesomeIcon icon={faInfoCircle}/></div>
+        {/* <div className='flex items-center mb-4'>
+          <h1 className='text-2xl font-bold'>Staking</h1>
+          <Tooltip
+            title={`Earn rewards for holding SCRT (currently ~24.66% p.a.)`}
+            placement='right'
+          >
+            <div className='ml-2 pt-1 text-neutral-400 hover:text-white transition-colors cursor-pointer'>
+              <FontAwesomeIcon icon={faInfoCircle} />
+            </div>
           </Tooltip>
         </div> */}
 

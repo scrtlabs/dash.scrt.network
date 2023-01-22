@@ -1,6 +1,6 @@
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { websiteName } from "App";
 import Header from "./components/Header";
@@ -114,17 +114,15 @@ function Apps() {
             onChange={(e) => setSearchText(e.target.value)}
             type='text'
             id='search'
-            className='block w-full p-4 pl-10 text-sm rounded-lg bg-white placeholder-neutral-400 text-neutral-800 dark:bg-neutral-800 dark:text-white'
+            className='block w-full p-4 pl-10 text-sm rounded-lg text-neutral-800 dark:text-white bg-white dark:bg-neutral-800 placeholder-neutral-600 dark:placeholder-neutral-400 border border-neutra-300 dark:border-neutral-700'
             placeholder='Search'
           />
         </div>
-
         {/* Tag-Filter */}
         <div className='mb-4 sm:mb-8 flex gap-2 flex-wrap justify-center'>
-          {tags.length > 0 && tags.map((tag) => <Tag name={tag} />)}
-          {tags.length == 0 && <div className='h-6'></div>}
+          {tags?.length > 0 && tags.map((tag) => <Tag name={tag} />)}
+          {tags?.length == 0 && <div className='h-6'></div>}
         </div>
-
         {/* App-Items */}
         <div className='grid grid-cols-12 gap-4 auto-rows-auto'>
           {dappsData.length > 0 && (

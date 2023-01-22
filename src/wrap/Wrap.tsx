@@ -430,7 +430,7 @@ export function Wrap() {
               onClick={() => toggleWrappingMode()}
               disabled={disabled}
               className={
-                "bg-neutral-200 dark:bg-neutral-800 px-3 py-2 text-cyan-500 dark:text-cyan-500 transition-colors rounded-xl disabled:text-neutral-500 black:disabled:text-neutral-500" +
+                "inline-block bg-neutral-200 dark:bg-neutral-800 px-3 py-2 text-cyan-500 dark:text-cyan-500 transition-colors rounded-xl disabled:text-neutral-500 dark:disabled:text-neutral-500" +
                 (!disabled
                   ? " hover:text-cyan-600 dark:hover:text-cyan-300"
                   : "")
@@ -750,9 +750,9 @@ export function Wrap() {
               </h1>
 
               <Tooltip title={message} placement='right' arrow>
-                <div className='ml-2 pt-1 text-neutral-400 hover:text-white transition-colors cursor-pointer'>
+                <span className='ml-2 mt-1 text-neutral-600 dark:text-neutral-400 hover:text-black dark:hover:text-white transition-colors cursor-pointer'>
                   <FontAwesomeIcon icon={faInfoCircle} />
-                </div>
+                </span>
               </Tooltip>
             </div>
 
