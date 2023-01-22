@@ -118,13 +118,11 @@ function Apps() {
             placeholder='Search'
           />
         </div>
-
         {/* Tag-Filter */}
         <div className='mb-4 sm:mb-8 flex gap-2 flex-wrap justify-center'>
           {tags?.length > 0 && tags.map((tag) => <Tag name={tag} />)}
           {tags?.length == 0 && <div className='h-6'></div>}
         </div>
-
         {/* App-Items */}
         <div className='grid grid-cols-12 gap-4 auto-rows-auto'>
           {dappsData.length > 0 && (
