@@ -58,7 +58,7 @@ export const DefaultLayout = ({ children }: any) => {
               ? "z-50 left-0 right-0 w-full lg:w-auto min-h-screen "
               : "hidden lg:block") +
             " " +
-            "lg:w-[17rem] fixed left-0 top-0 h-screen p-6 overflow-x-hidden bg-white dark:bg-neutral-800"
+            "lg:w-[17rem] fixed left-0 top-0 h-screen p-6 overflow-x-hidden"
           }
         >
           <NavigationContext.Provider value={showMobileMenu}>
@@ -105,10 +105,12 @@ export const DefaultLayout = ({ children }: any) => {
               </div>
             </div>
 
-            {children}
+            <div className='lg:mr-[17rem]'>{children}</div>
           </div>
-          <div className='max-w-7xl mx-auto mt-auto'>
-            <Footer />
+          <div className='lg:mr-[17rem]'>
+            <div className='max-w-7xl mx-auto mt-auto'>
+              <Footer />
+            </div>
           </div>
         </main>
       </div>
