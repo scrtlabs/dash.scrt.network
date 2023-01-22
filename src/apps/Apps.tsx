@@ -6,6 +6,7 @@ import { websiteName } from "App";
 import Header from "./components/Header";
 import AppTile from "./components/AppTile";
 import { shuffleArray, dAppsURL } from "shared/utils/commons";
+import React from "react";
 
 function Apps() {
   const [dappsDataShuffled, setDappsDataShuffled] = useState<any[]>([]);
@@ -20,7 +21,7 @@ function Apps() {
   }, []);
 
   useEffect(() => {
-    if (dappsDataShuffled.length == 0 && dappsData.length != 0) {
+    if (dappsDataShuffled?.length == 0 && dappsData?.length != 0) {
       setDappsDataShuffled(shuffleArray(dappsData));
       // Tag-Filter
       let allTags: string[] = [];
@@ -54,20 +55,22 @@ function Apps() {
     }
   }
 
-  function Tag(props: { name: string }) {
-    return (
-      <button
-        onClick={() => toggleTagFilter(props.name)}
-        className={
-          "inline-block text-sm px-1.5 py-0.5 rounded-md overflow-hidden transition-colors" +
-          (isTagInFilterList(props.name)
-            ? " bg-neutral-500 dark:bg-neutral-500 text-white dark:text-white hover:bg-neutral-400 dark:hover:bg-neutral-600 font-semibold"
-            : " bg-white dark:bg-neutral-800 hover:bg-neutral-300 dark:hover:bg-neutral-700 font-medium")
-        }
-      >
-        {props.name}
-      </button>
-    );
+  class Tag extends React.Component<{name: string}> {
+    render() {
+      return (
+        <button
+          onClick={() => toggleTagFilter(this.props.name)}
+          className={
+            "inline-block text-sm px-1.5 py-0.5 rounded-md overflow-hidden transition-colors" +
+            (isTagInFilterList(this.props.name)
+              ? " bg-neutral-500 dark:bg-neutral-500 text-white dark:text-white hover:bg-neutral-400 dark:hover:bg-neutral-600 font-semibold"
+              : " bg-white dark:bg-neutral-800 hover:bg-neutral-300 dark:hover:bg-neutral-700 font-medium")
+          }
+        >
+          {this.props.name}
+        </button>
+      );
+    }
   }
 
   // Search
@@ -82,7 +85,7 @@ function Apps() {
       );
     }
 
-    if (tagsToBeFilteredBy.length > 0) {
+    if (tagsToBeFilteredBy?.length > 0) {
       items = items.filter((item) =>
         item.attributes.type
           .map((item) => item.name)
