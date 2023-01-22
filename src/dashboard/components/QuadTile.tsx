@@ -18,7 +18,7 @@ class QuadTile extends React.Component<IQuadTileProps> {
   render() {
     return (
       <>
-        <div className='bg-white dark:bg-neutral-800 p-8 rounded-xl h-full'>
+        <div className='bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 p-8 rounded-xl h-full'>
           <div className='flex flex-col h-full'>
             <div className='flex-1 flex text-center items-center'>
               {/* First Item */}

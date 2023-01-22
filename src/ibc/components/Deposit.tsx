@@ -31,7 +31,6 @@ import { chains, Token, tokens, snips } from "shared/utils/config";
 import { TxRaw } from "secretjs/dist/protobuf/cosmos/tx/v1beta1/tx";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import CopyToClipboard from "react-copy-to-clipboard";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faCopy,
@@ -44,19 +43,14 @@ import {
 import { IbcContext } from "ibc/Ibc";
 import { SecretjsContext } from "shared/components/SecretjsContext";
 import { FeeGrantContext } from "shared/components/FeeGrantContext";
+import CopyToClipboard from "react-copy-to-clipboard";
 
 function Deposit() {
   const { feeGrantStatus, setFeeGrantStatus, requestFeeGrant } =
     useContext(FeeGrantContext);
 
-  const {
-    isWrapModalOpen,
-    setIsWrapModalOpen,
-    selectedTokenName,
-    setSelectedTokenName,
-    ibcMode,
-    setIbcMode,
-  } = useContext(IbcContext);
+  const { setIsWrapModalOpen, setSelectedTokenName, ibcMode, toggleIbcMode } =
+    useContext(IbcContext);
 
   const [sourceAddress, setSourceAddress] = useState<string>("");
   const [availableBalance, setAvailableBalance] = useState<string>("");
@@ -88,22 +82,12 @@ function Deposit() {
     setSelectedTokenName(selectedToken.name);
   }, [selectedToken]);
 
-  // const [ibcMode, setIbcMode] = useState<IbcMode>("Deposit");
-
-  function toggleIbcMode() {
-    if (ibcMode === "Deposit") {
-      setIbcMode("Withdrawal");
-    } else {
-      setIbcMode("Deposit");
-    }
-  }
-
   function handleInputChange(e: any) {
     setAmountToTransfer(e.target.value);
   }
 
   const message =
-    ibcMode === "Deposit"
+    ibcMode === "deposit"
       ? `Deposit your SCRT via IBC transfer from ${selectedSource.chain_name} to Secret Network`
       : `Withdraw your SCRT via IBC transfer from Secret Network to ${selectedSource.chain_name}`;
 
@@ -211,7 +195,7 @@ function Deposit() {
 
   const fetchSourceBalance = async (newAddress: String | null) => {
     if (secretjs && secretAddress) {
-      if (ibcMode === "Deposit") {
+      if (ibcMode === "deposit") {
         const url = `${
           chains[selectedSource.chain_name].lcd
         }/cosmos/bank/v1beta1/balances/${
@@ -237,7 +221,7 @@ function Deposit() {
           console.error(`Error while trying to query ${url}:`, e);
           setAvailableBalance("Error");
         }
-      } else if (ibcMode === "Withdrawal") {
+      } else if (ibcMode === "withdrawal") {
         updateCoinBalance();
       }
     }
@@ -257,7 +241,7 @@ function Deposit() {
       clearInterval(fetchBalanceInterval);
     }
 
-    if (ibcMode === "Withdrawal") {
+    if (ibcMode === "withdrawal") {
       fetchSourceBalance(null);
     }
 
@@ -373,7 +357,7 @@ function Deposit() {
       //   return;
       // }
 
-      if (ibcMode == "Deposit") {
+      if (ibcMode === "deposit") {
         if (!sourceChainSecretjs) {
           console.error("No cosmjs");
           return;
@@ -574,7 +558,7 @@ function Deposit() {
                 isLoading: false,
                 closeOnClick: true,
               });
-              if (ibcMode === "Deposit") {
+              if (ibcMode === "deposit") {
                 setIsWrapModalOpen(true);
               }
             } else {
@@ -595,7 +579,7 @@ function Deposit() {
           setLoading(false);
         }
       }
-      if (ibcMode == "Withdrawal") {
+      if (ibcMode === "withdrawal") {
         if (!secretjs) {
           console.error("No secretjs");
           return;
@@ -748,7 +732,7 @@ function Deposit() {
       <>
         <button
           className={
-            "enabled:bg-gradient-to-r enabled:from-cyan-600 enabled:to-purple-600 enabled:hover:from-cyan-500 enabled:hover:to-purple-500 transition-colors text-white font-semibold py-2 w-full rounded-lg disabled:bg-neutral-500"
+            "enabled:bg-gradient-to-r enabled:from-cyan-600 enabled:to-purple-600 enabled:hover:from-cyan-500 enabled:hover:to-purple-500 transition-colors text-white font-semibold py-2.5 w-full rounded-lg disabled:bg-neutral-500"
           }
           disabled={!secretjs || !secretAddress}
           onClick={() => submit()}
@@ -783,7 +767,7 @@ function Deposit() {
                   <img
                     src={
                       "/img/assets/" +
-                      (ibcMode === "Deposit"
+                      (ibcMode === "deposit"
                         ? chains[selectedSource.chain_name].chain_image
                         : "scrt.svg")
                     }
@@ -802,8 +786,8 @@ function Deposit() {
           {/* Chain Picker */}
           <div className='-mt-3 relative z-10 w-full'>
             {/* {value} */}
-            {ibcMode === "Deposit" && <ChainSelect />}
-            {ibcMode === "Withdrawal" && (
+            {ibcMode === "deposit" && <ChainSelect />}
+            {ibcMode === "withdrawal" && (
               <div
                 style={{ paddingTop: ".76rem", paddingBottom: ".76rem" }}
                 className='flex items-center w-full text-sm font-semibold select-none bg-neutral-800 rounded text-neutral-200 focus:bg-neutral-700 disabled:hover:bg-neutral-800 border border-neutral-600'
@@ -828,8 +812,10 @@ function Deposit() {
                   <button
                     onClick={toggleIbcMode}
                     className={
-                      "inline-block bg-neutral-800 px-3 py-2.5 text-cyan-500 transition-colors rounded-xl disabled:text-neutral-500" +
-                      (secretjs && secretAddress ? " hover:text-cyan-300" : "")
+                      "inline-block bg-neutral-200 dark:bg-neutral-800 px-3 py-2 text-cyan-500 dark:text-cyan-500 transition-colors rounded-xl disabled:text-neutral-500 dark:disabled:text-neutral-500" +
+                      (secretjs && secretAddress
+                        ? " hover:text-cyan-700 dark:hover:text-cyan-300"
+                        : "")
                     }
                     disabled={!secretjs || !secretAddress}
                   >
@@ -862,7 +848,7 @@ function Deposit() {
                   <img
                     src={
                       "/img/assets/" +
-                      (ibcMode === "Withdrawal"
+                      (ibcMode === "withdrawal"
                         ? chains[selectedSource.chain_name].chain_image
                         : "scrt.svg")
                     }
@@ -872,7 +858,7 @@ function Deposit() {
               </div>
             </div>
             <div
-              className='absolute left-0 right-0 text-center text-sm font-bold text-white'
+              className='absolute left-0 right-0 text-center text-sm font-bold text-black dark:text-white'
               style={{ bottom: "10%" }}
             >
               To
@@ -880,11 +866,11 @@ function Deposit() {
           </div>
           {/* Chain Picker */}
           <div className='md:-mt-3 md:relative z-10 w-full'>
-            {ibcMode === "Withdrawal" && <ChainSelect />}
-            {ibcMode === "Deposit" && (
+            {ibcMode === "withdrawal" && <ChainSelect />}
+            {ibcMode === "deposit" && (
               <div
                 style={{ paddingTop: ".76rem", paddingBottom: ".76rem" }}
-                className='flex items-center w-full text-sm font-semibold select-none bg-neutral-800 rounded text-neutral-200 focus:bg-neutral-700 disabled:hover:bg-neutral-800 border border-neutral-600'
+                className='flex items-center w-full text-sm font-semibold select-none bg-neutral-200 dark:bg-neutral-800 rounded text-neutral-800 dark:text-neutral-200 focus:bg-neutral-300 dark:focus:bg-neutral-700 disabled:hover:bg-neutral-200 dark:disabled:hover:bg-neutral-800 border border-neutral-400 dark:border-neutral-600'
               >
                 <div className='flex-1 px-3'>
                   <span>Secret Network</span>
@@ -895,11 +881,11 @@ function Deposit() {
         </div>
       </div>
 
-      <div className='bg-neutral-800 p-4 rounded-xl space-y-6 my-4'>
+      <div className='bg-neutral-200 dark:bg-neutral-800 p-4 rounded-xl space-y-6 my-4'>
         <div className='flex items-center'>
           <div className='font-semibold mr-4 w-10'>From:</div>
           <div className='flex-1 truncate font-medium text-sm'>
-            {ibcMode === "Deposit" && secretjs && secretAddress && (
+            {ibcMode === "deposit" && secretjs && secretAddress && (
               <a
                 href={`${
                   chains[selectedSource.chain_name].explorer_account
@@ -909,7 +895,7 @@ function Deposit() {
                 {sourceAddress}
               </a>
             )}
-            {ibcMode === "Withdrawal" && secretjs && secretAddress && (
+            {ibcMode === "withdrawal" && secretjs && secretAddress && (
               <a
                 href={`${
                   chains[selectedSource.chain_name].explorer_account
@@ -922,7 +908,7 @@ function Deposit() {
           </div>
           <div className='flex-initial ml-4'>
             <CopyToClipboard
-              text={ibcMode === "Deposit" ? sourceAddress : secretAddress}
+              text={ibcMode === "deposit" ? sourceAddress : secretAddress}
               onCopy={() => {
                 setIsCopied(true);
                 setTimeout(() => setIsCopied(false), 3000);
@@ -951,7 +937,7 @@ function Deposit() {
         <div className='flex items-center'>
           <div className='flex-initial font-semibold mr-4 w-10'>To:</div>
           <div className='flex-1 truncate font-medium text-sm'>
-            {ibcMode === "Withdrawal" && (
+            {ibcMode === "withdrawal" && (
               <a
                 href={`${
                   chains[selectedSource.chain_name].explorer_account
@@ -961,7 +947,7 @@ function Deposit() {
                 {sourceAddress}
               </a>
             )}
-            {ibcMode === "Deposit" && (
+            {ibcMode === "deposit" && (
               <a
                 href={`${targetChain.explorer_account}${secretAddress}`}
                 target='_blank'
@@ -972,7 +958,7 @@ function Deposit() {
           </div>
           <div className='flex-initial ml-4'>
             <CopyToClipboard
-              text={ibcMode === "Withdrawal" ? sourceAddress : secretAddress}
+              text={ibcMode === "withdrawal" ? sourceAddress : secretAddress}
               onCopy={() => {
                 setIsCopied(true);
                 setTimeout(() => setIsCopied(false), 3000);
@@ -999,7 +985,7 @@ function Deposit() {
         </div>
       </div>
 
-      <div className='bg-neutral-800 p-4 rounded-xl'>
+      <div className='bg-neutral-200 dark:bg-neutral-800 p-4 rounded-xl'>
         <div className='flex' id='inputWrapper'>
           <Select
             options={supportedTokens}
@@ -1023,8 +1009,8 @@ function Deposit() {
             value={amountToTransfer}
             onChange={handleInputChange}
             className={
-              "text-right focus:z-10 block flex-1 min-w-0 w-full bg-neutral-900 text-white px-4 rounded-r-lg disabled:placeholder-neutral-700 transition-colors font-medium" +
-              (false ? "  border border-red-500" : "")
+              "text-right focus:z-10 block flex-1 min-w-0 w-full bg-neutral-100 dark:bg-neutral-900 text-black dark:text-white px-4 rounded-r-lg disabled:placeholder-neutral-300 dark:disabled:placeholder-neutral-700 transition-colors font-medium" +
+              (false ? "  border border-red-500 dark:border-red-500" : "")
             }
             name='amount'
             id='amount'
@@ -1051,7 +1037,7 @@ function Deposit() {
                 ) {
                   return (
                     <button
-                      className='ml-2 font-semibold bg-neutral-900 px-1.5 py-0.5 rounded-md border-neutral-700 transition-colors hover:bg-neutral-700 focus:bg-neutral-500 cursor-pointer disabled:text-neutral-500 disabled:hover:bg-neutral-900 disabled:cursor-default'
+                      className='ml-2 font-semibold bg-neutral-100 dark:bg-neutral-900 px-1.5 py-0.5 rounded-md border-neutral-300 dark:border-neutral-700 transition-colors hover:bg-neutral-300 dark:hover:bg-neutral-700 focus:bg-neutral-500 dark:focus:bg-neutral-500 cursor-pointer disabled:text-neutral-500 dark:disabled:text-neutral-500 disabled:hover:bg-neutral-100 dark:disabled:hover:bg-neutral-900 disabled:cursor-default'
                       onClick={async () => {
                         await setKeplrViewingKey(selectedToken.address);
                         try {
@@ -1083,28 +1069,28 @@ function Deposit() {
             <div className='inline-flex rounded-full text-xs font-semibold'>
               <button
                 onClick={() => setAmountByPercentage(25)}
-                className='bg-neutral-900 px-1.5 py-0.5 rounded-l-md transition-colors hover:bg-neutral-700 focus:bg-neutral-500 cursor-pointer disabled:text-neutral-500 disabled:hover:bg-neutral-900 disabled:cursor-default'
+                className='bg-neutral-100 dark:bg-neutral-900 px-1.5 py-0.5 rounded-l-md transition-colors hover:bg-neutral-300 dark:hover:bg-neutral-700 focus:bg-neutral-500 dark:focus:bg-neutral-500 cursor-pointer disabled:text-neutral-500 dark:disabled:text-neutral-500 disabled:hover:bg-neutral-900 dark:disabled:hover:bg-neutral-900 disabled:cursor-default'
                 disabled={!secretAddress}
               >
                 25%
               </button>
               <button
                 onClick={() => setAmountByPercentage(50)}
-                className='bg-neutral-900 px-1.5 py-0.5 border-l border-neutral-700 transition-colors hover:bg-neutral-700 focus:bg-neutral-500 cursor-pointer disabled:text-neutral-500 disabled:hover:bg-neutral-900 disabled:cursor-default'
+                className='bg-neutral-100 dark:bg-neutral-900 px-1.5 py-0.5 transition-colors hover:bg-neutral-300 dark:hover:bg-neutral-700 focus:bg-neutral-500 dark:focus:bg-neutral-500 cursor-pointer disabled:text-neutral-500 dark:disabled:text-neutral-500 disabled:hover:bg-neutral-900 dark:disabled:hover:bg-neutral-900 disabled:cursor-default'
                 disabled={!secretAddress}
               >
                 50%
               </button>
               <button
                 onClick={() => setAmountByPercentage(75)}
-                className='bg-neutral-900 px-1.5 py-0.5 border-l border-neutral-700 transition-colors hover:bg-neutral-700 focus:bg-neutral-500 cursor-pointer disabled:text-neutral-500 disabled:hover:bg-neutral-900 disabled:cursor-default'
+                className='bg-neutral-100 dark:bg-neutral-900 px-1.5 py-0.5 transition-colors hover:bg-neutral-300 dark:hover:bg-neutral-700 focus:bg-neutral-500 dark:focus:bg-neutral-500 cursor-pointer disabled:text-neutral-500 dark:disabled:text-neutral-500 disabled:hover:bg-neutral-900 dark:disabled:hover:bg-neutral-900 disabled:cursor-default'
                 disabled={!secretAddress}
               >
                 75%
               </button>
               <button
                 onClick={() => setAmountByPercentage(100)}
-                className='bg-neutral-900 px-1.5 py-0.5 rounded-r-md border-l border-neutral-700 transition-colors hover:bg-neutral-700 focus:bg-neutral-500 cursor-pointer disabled:text-neutral-500 disabled:hover:bg-neutral-900 disabled:cursor-default'
+                className='bg-neutral-100 dark:bg-neutral-900 px-1.5 py-0.5 rounded-r-md transition-colors hover:bg-neutral-300 dark:hover:bg-neutral-700 focus:bg-neutral-500 dark:focus:bg-neutral-500 cursor-pointer disabled:text-neutral-500 dark:disabled:text-neutral-500 disabled:hover:bg-neutral-900 dark:disabled:hover:bg-neutral-900 disabled:cursor-default'
                 disabled={!secretAddress}
               >
                 MAX
@@ -1115,25 +1101,31 @@ function Deposit() {
       </div>
 
       {/* Fee Grant */}
-      <div className='bg-neutral-800 p-4 rounded-lg select-none flex items-center my-4'>
+      <div className='bg-neutral-200 dark:bg-neutral-800 p-4 rounded-lg select-none flex items-center my-4'>
         <div className='flex-1 flex items-center'>
           <span className='font-semibold text-sm'>Fee Grant</span>
-          <Tooltip title={`Lorem Ipsum`} placement='right' arrow>
-            <FontAwesomeIcon icon={faInfoCircle} className='ml-2' />
+          <Tooltip
+            title={`Request Fee Grant so that you don't have to pay gas fees (up to 0.1 SCRT)`}
+            placement='right'
+            arrow
+          >
+            <span className='ml-2 mt-1 text-neutral-600 dark:text-neutral-400 hover:text-black dark:hover:text-white transition-colors cursor-pointer'>
+              <FontAwesomeIcon icon={faInfoCircle} />
+            </span>
           </Tooltip>
         </div>
         <div className='flex-initial'>
           {/* Deposit => no fee grant */}
-          {ibcMode === "Deposit" && (
+          {ibcMode === "deposit" && (
             <>
-              <div className='text-xs font-semibold text-neutral-400 flex items-center h-[1.6rem]'>
+              <div className='text-xs font-semibold text-neutral-600 dark:text-neutral-400 flex items-center h-[1.6rem]'>
                 <span>Unavailable</span>
               </div>
             </>
           )}
 
           {/* Untouched */}
-          {ibcMode === "Withdrawal" && feeGrantStatus === "Untouched" && (
+          {ibcMode === "withdrawal" && feeGrantStatus === "Untouched" && (
             <>
               <button
                 id='feeGrantButton'
@@ -1146,7 +1138,7 @@ function Deposit() {
             </>
           )}
           {/* Success */}
-          {ibcMode === "Withdrawal" && feeGrantStatus === "Success" && (
+          {ibcMode === "withdrawal" && feeGrantStatus === "Success" && (
             <div className='font-semibold text-sm flex items-center h-[1.6rem]'>
               <FontAwesomeIcon
                 icon={faCheckCircle}
@@ -1156,7 +1148,7 @@ function Deposit() {
             </div>
           )}
           {/* Fail */}
-          {ibcMode === "Withdrawal" && feeGrantStatus === "Fail" && (
+          {ibcMode === "withdrawal" && feeGrantStatus === "Fail" && (
             <div className='font-semibold text-sm h-[1.6rem]'>
               <FontAwesomeIcon
                 icon={faXmarkCircle}
