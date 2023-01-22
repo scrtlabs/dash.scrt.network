@@ -10,7 +10,7 @@ interface ICurrentPriceProps {
 class CurrentPrice extends React.Component<ICurrentPriceProps> {
   render() {
     return (
-      <div className='bg-white dark:bg-neutral-800 rounded-xl h-full flex items-center px-8 py-4'>
+      <div className='bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-xl h-full flex items-center px-8 py-4'>
         <div className='flex-1'>
           <div className='text-center inline-block'>
             <div className='text-neutral-400 dark:text-neutral-500 text-sm font-semibold mb-0.5'>

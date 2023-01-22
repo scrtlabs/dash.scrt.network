@@ -69,46 +69,46 @@ export const DefaultLayout = ({ children }: any) => {
           </NavigationContext.Provider>
         </aside>
         <main className='flex flex-col min-h-screen flex-1 lg:ml-[17rem]'>
-          {/* Top Bar [Burger Menu | Socials | Keplr] */}
-          <div className='flex items-center gap-4 p-4'>
-            {/* Burger Menu */}
-            <div className='flex-initial lg:hidden'>
-              <button
-                onClick={() => setShowMobileMenu(true)}
-                className='text-black dark:text-white hover:text-neutral-600 dark:hover:text-neutral-400 transition-colors'
-              >
-                <FontAwesomeIcon icon={faBars} size='xl' />
-              </button>
-            </div>
-
-            <div className='flex-initial sm:flex-1 text-right space-x-2'>
-              {/* DarkMode / LightMode Switch */}
-              <Tooltip
-                title={`Switch to ${
-                  theme === "dark" ? "Light Mode" : "Dark Mode"
-                }`}
-                placement='bottom'
-                arrow
-              >
+          <div className='flex-1'>
+            {/* Top Bar [Burger Menu | Socials | Keplr] */}
+            <div className='flex items-center gap-4 p-4'>
+              {/* Burger Menu */}
+              <div className='flex-initial lg:hidden'>
                 <button
-                  onClick={toggleTheme}
+                  onClick={() => setShowMobileMenu(true)}
                   className='text-black dark:text-white hover:text-neutral-600 dark:hover:text-neutral-400 transition-colors'
                 >
-                  <FontAwesomeIcon icon={faSun} />
+                  <FontAwesomeIcon icon={faBars} size='xl' />
                 </button>
-              </Tooltip>
+              </div>
+
+              <div className='flex-initial sm:flex-1 text-right space-x-2'>
+                {/* DarkMode / LightMode Switch */}
+                <Tooltip
+                  title={`Switch to ${
+                    theme === "dark" ? "Light Mode" : "Dark Mode"
+                  }`}
+                  placement='bottom'
+                  arrow
+                >
+                  <button
+                    onClick={toggleTheme}
+                    className='text-black dark:text-white hover:text-neutral-600 dark:hover:text-neutral-400 transition-colors'
+                  >
+                    <FontAwesomeIcon icon={faSun} />
+                  </button>
+                </Tooltip>
+              </div>
+
+              <div className='flex-1 sm:flex-initial sm:flex sm:justify-end'>
+                <KeplrPanel />
+              </div>
             </div>
 
-            <div className='flex-1 sm:flex-initial sm:flex sm:justify-end'>
-              <KeplrPanel />
-            </div>
-          </div>
-
-          <div className='overflow-hidden'>
             {children}
-            <div className='max-w-7xl mx-auto mt-auto'>
-              <Footer />
-            </div>
+          </div>
+          <div className='max-w-7xl mx-auto mt-auto'>
+            <Footer />
           </div>
         </main>
       </div>

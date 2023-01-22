@@ -6,7 +6,7 @@ class SocialMedia extends React.Component {
   render() {
     return (
       <>
-        <div className='bg-white dark:bg-neutral-800 rounded-xl h-full flex items-center px-8 py-4'>
+        <div className='bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-xl h-full flex items-center px-8 py-4'>
           <div className='flex-1 text-right pr-4 border-r border-neutral-300 dark:border-neutral-700'>
             <a
               href='https://twitter.com/SecretNetwork'
