@@ -742,7 +742,7 @@ export function Wrap() {
           }}
         />
         <div className='w-full max-w-xl mx-auto px-4 onEnter_fadeInDown'>
-          <div className='border rounded-2xl p-8 border-neutral-300 dark:border-neutral-700 w-full  text-neutral-800 dark:text-neutral-200 bg-white dark:bg-neutral-900'>
+          <div className='border border-neutral-200 dark:border-neutral-700 rounded-2xl p-8 w-full text-neutral-800 dark:text-neutral-200 bg-white dark:bg-neutral-900'>
             {/* Header */}
             <div className='flex items-center mb-4'>
               <h1 className='inline text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-500 to-purple-500'>
