@@ -1,10 +1,10 @@
-import React, { createContext, useEffect, useState } from "react";
+import React from "react";
 import { Window as KeplrWindow } from "@keplr-wallet/types";
 import { BreakpointProvider } from "react-socks";
 import "shared/assets/scss/index.scss";
 // import "animate.css";
 import { Buffer } from "buffer";
-import { BrowserRouter, Route, Routes, redirect } from "react-router-dom";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 import ReactDOM from "react-dom/client";
 import { Helmet, HelmetProvider } from "react-helmet-async";
 
