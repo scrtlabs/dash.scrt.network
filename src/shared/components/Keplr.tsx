@@ -5,7 +5,7 @@ import { SecretNetworkClient } from "secretjs";
 import { chains } from "shared/utils/config";
 import Tooltip from "@mui/material/Tooltip";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCopy } from "@fortawesome/free-solid-svg-icons";
+import { faCopy, faWallet } from "@fortawesome/free-solid-svg-icons";
 import { toast } from "react-toastify";
 import GetWalletModal from "shared/components/GetWalletModal";
 import { SECRET_LCD, SECRET_CHAIN_ID, SECRET_RPC } from "shared/utils/config";
@@ -135,7 +135,7 @@ export function KeplrPanel() {
         </If>
         {/* <Tooltip title={secretAddress} placement="bottom-end"> */}
         <div
-          className='w-full sm:w-auto rounded px-4 py-3 bg-neutral-300 dark:bg-neutral-800 select-none cursor-pointer'
+          className='w-full sm:w-auto rounded px-4 py-3 bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 select-none cursor-pointer'
           onMouseEnter={() => setIsMenuVisible(true)}
           onMouseLeave={() => setIsMenuVisible(false)}
         >
@@ -157,7 +157,7 @@ export function KeplrPanel() {
         <button
           id='keplr-button'
           onClick={() => connectWallet(setSecretjs, setSecretAddress)}
-          className='w-full sm:w-auto rounded px-4 py-3 bg-neutral-300 dark:bg-neutral-800 hover:bg-neutral-400 dark:hover:bg-neutral-700 active:bg-neutral-500 dark:active:bg-neutral-600 transition-colors select-none'
+          className='w-full sm:w-auto rounded px-4 py-3 bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 hover:bg-neutral-300 dark:hover:bg-neutral-700 active:bg-neutral-500 dark:active:bg-neutral-600 transition-colors select-none'
         >
           {content}
         </button>

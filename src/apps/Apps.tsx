@@ -114,7 +114,7 @@ function Apps() {
             onChange={(e) => setSearchText(e.target.value)}
             type='text'
             id='search'
-            className='block w-full p-4 pl-10 text-sm rounded-lg bg-white placeholder-neutral-400 text-neutral-800 dark:bg-neutral-800 dark:text-white'
+            className='block w-full p-4 pl-10 text-sm rounded-lg text-neutral-800 dark:text-white bg-white dark:bg-neutral-800 placeholder-neutral-600 dark:placeholder-neutral-400 border border-neutra-300 dark:border-neutral-700'
             placeholder='Search'
           />
         </div>
