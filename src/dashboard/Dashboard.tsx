@@ -9,7 +9,6 @@ import SocialMedia from "./components/SocialMedia";
 import { SECRET_LCD, SECRET_CHAIN_ID } from "shared/utils/config";
 import { Helmet } from "react-helmet-async";
 import StakingChart from "./components/StakingChart";
-import StakingChart2 from "./components/StakingChart2";
 import { formatNumber } from "shared/utils/commons";
 
 export const DashboardContext = createContext<{
