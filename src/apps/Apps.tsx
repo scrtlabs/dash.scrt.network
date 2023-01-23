@@ -1,6 +1,6 @@
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { websiteName } from "App";
 import Header from "./components/Header";
@@ -21,7 +21,11 @@ function Apps() {
   }, []);
 
   useEffect(() => {
-    if (dappsDataShuffled?.length == 0 && dappsData?.length != 0) {
+    if (
+      dappsData &&
+      dappsDataShuffled.length === 0 &&
+      dappsData?.length !== 0
+    ) {
       setDappsDataShuffled(shuffleArray(dappsData));
       // Tag-Filter
       let allTags: string[] = [];
