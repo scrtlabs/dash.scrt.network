@@ -42,11 +42,11 @@ export function Navigation({
         </svg>
       </NavLink>
 
-      <ul className='space-y-4 font-semibold dark:text-neutral-400'>
+      <ul className='space-y-4 font-semibold text-neutral-600 dark:text-neutral-400'>
         <li className='lg:hidden'>
           <button
             onClick={() => setShowMobileMenu(false)}
-            className='hover:text-white fixed top-0 right-0 float-right px-8 py-5 rounded-full transition-colors'
+            className='hover:text-black dark:hover:text-white fixed top-0 right-0 float-right px-8 py-5 rounded-full transition-colors'
           >
             <FontAwesomeIcon icon={faClose} className='mr-2' size='lg' />
           </button>

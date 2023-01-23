@@ -15,9 +15,11 @@ import DefaultLayout from "shared/layouts/defaultLayout";
 import { Dashboard } from "dashboard/Dashboard";
 import Bridge from "bridge/Bridge";
 import Apps from "apps/Apps";
+// Contexts
 import { ThemeContextProvider } from "shared/components/ThemeContext";
 import { SecretjsContextProvider } from "shared/components/SecretjsContext";
 import { FeeGrantContextProvider } from "shared/components/FeeGrantContext";
+import { APIContextProvider } from "shared/components/APIContext";
 
 // for html-head
 export const websiteName = "Secret Dashboard";
@@ -68,19 +70,19 @@ const root = ReactDOM.createRoot(
 root.render(
   <BreakpointProvider>
     <HelmetProvider>
-      <React.StrictMode>
-        <BrowserRouter>
-          <ThemeContextProvider>
-            <SecretjsContextProvider>
-              <FeeGrantContextProvider>
+      <BrowserRouter>
+        <ThemeContextProvider>
+          <SecretjsContextProvider>
+            <FeeGrantContextProvider>
+              <APIContextProvider>
                 <DefaultLayout>
                   <App />
                 </DefaultLayout>
-              </FeeGrantContextProvider>
-            </SecretjsContextProvider>
-          </ThemeContextProvider>
-        </BrowserRouter>
-      </React.StrictMode>
+              </APIContextProvider>
+            </FeeGrantContextProvider>
+          </SecretjsContextProvider>
+        </ThemeContextProvider>
+      </BrowserRouter>
     </HelmetProvider>
   </BreakpointProvider>
 );
