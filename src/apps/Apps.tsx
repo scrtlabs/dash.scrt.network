@@ -103,19 +103,20 @@ function Apps() {
         </div>
         {/* Tag-Filter */}
         <div className='mb-4 sm:mb-8 flex gap-2 flex-wrap justify-center'>
-          {tags?.length > 0 && tags.map((tag) => <Tag key={tag} name={tag} />)}
+          {tags?.length > 0 &&
+            tags.map((tag: any) => <Tag key={tag} name={tag} />)}
           {tags?.length == 0 && <div className='h-6'></div>}
         </div>
         {/* App-Items */}
         <div className='grid grid-cols-12 gap-4 auto-rows-auto'>
           {dappsData?.length > 0 && (
             <>
-              {filteredDappsData().map((dapp) => (
+              {filteredDappsData().map((dapp: any) => (
                 <AppTile
                   key={dapp.attributes.name}
                   name={dapp.attributes.name}
                   description={dapp.attributes.description}
-                  tags={dapp.attributes.type.map((item) => item.name)}
+                  tags={dapp.attributes.type.map((item: any) => item.name)}
                   image={dapp.attributes.logo.data.attributes.url}
                   url={dapp.attributes.link}
                 />
