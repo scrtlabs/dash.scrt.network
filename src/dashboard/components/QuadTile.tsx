@@ -27,12 +27,12 @@ class QuadTile extends React.Component<IQuadTileProps> {
                   <div className='text-neutral-400 dark:text-neutral-500 text-sm font-semibold mb-0.5'>
                     {this.props.item1_key}
                   </div>
-                  <div className='text-2xl'>
+                  <div className='text-xl'>
                     <If condition={this.props.item1_value}>
                       <Then>{this.props.item1_value}</Then>
                       <Else>
                         <div className='animate-pulse'>
-                          <div className='bg-neutral-300/40 dark:bg-neutral-700/40 rounded col-span-2 w-16 h-8 mx-auto'></div>
+                          <div className='bg-neutral-300/40 dark:bg-neutral-700/40 rounded col-span-2 w-16 h-7 mx-auto'></div>
                         </div>
                       </Else>
                     </If>
@@ -45,12 +45,12 @@ class QuadTile extends React.Component<IQuadTileProps> {
                   <div className='text-neutral-400 dark:text-neutral-500 text-sm font-semibold mb-0.5'>
                     {this.props.item2_key}
                   </div>
-                  <div className='text-2xl'>
+                  <div className='text-xl'>
                     <If condition={this.props.item2_value}>
                       <Then>{this.props.item2_value}</Then>
                       <Else>
                         <div className='animate-pulse'>
-                          <div className='bg-neutral-300/40 dark:bg-neutral-700/40 rounded col-span-2 w-16 h-8 mx-auto'></div>
+                          <div className='bg-neutral-300/40 dark:bg-neutral-700/40 rounded col-span-2 w-16 h-7 mx-auto'></div>
                         </div>
                       </Else>
                     </If>
@@ -65,12 +65,12 @@ class QuadTile extends React.Component<IQuadTileProps> {
                   <div className='text-neutral-400 dark:text-neutral-500 text-sm font-semibold mb-0.5'>
                     {this.props.item3_key}
                   </div>
-                  <div className='text-2xl'>
+                  <div className='text-xl'>
                     <If condition={this.props.item3_value}>
                       <Then>{this.props.item3_value}</Then>
                       <Else>
                         <div className='animate-pulse'>
-                          <div className='bg-neutral-300/40 dark:bg-neutral-700/40 rounded col-span-2 w-16 h-8 mx-auto'></div>
+                          <div className='bg-neutral-300/40 dark:bg-neutral-700/40 rounded col-span-2 w-16 h-7 mx-auto'></div>
                         </div>
                       </Else>
                     </If>
@@ -83,12 +83,12 @@ class QuadTile extends React.Component<IQuadTileProps> {
                   <div className='text-neutral-400 dark:text-neutral-500 text-sm font-semibold mb-0.5'>
                     {this.props.item4_key}
                   </div>
-                  <div className='text-2xl'>
+                  <div className='text-xl'>
                     <If condition={this.props.item4_value}>
                       <Then>{this.props.item4_value}</Then>
                       <Else>
                         <div className='animate-pulse'>
-                          <div className='bg-neutral-300/40 dark:bg-neutral-700/40 rounded col-span-2 w-16 h-8 mx-auto'></div>
+                          <div className='bg-neutral-300/40 dark:bg-neutral-700/40 rounded col-span-2 w-16 h-7 mx-auto'></div>
                         </div>
                       </Else>
                     </If>

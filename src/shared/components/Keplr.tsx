@@ -1,9 +1,7 @@
-import React, { Component, useContext, useEffect, useState } from "react";
+import React, { Component, useContext, useState } from "react";
 import CopyToClipboard from "react-copy-to-clipboard";
 import { Else, If, Then } from "react-if";
 import { SecretNetworkClient } from "secretjs";
-import { chains } from "shared/utils/config";
-import Tooltip from "@mui/material/Tooltip";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCopy, faWallet } from "@fortawesome/free-solid-svg-icons";
 import { toast } from "react-toastify";
@@ -45,7 +43,7 @@ export function KeplrPanel() {
     toast.success("Wallet disconnected!");
   }
 
-  class KeplrMenu extends Component {
+  class KeplrMenu extends React.Component {
     render() {
       return (
         <>
@@ -55,20 +53,20 @@ export function KeplrPanel() {
             onMouseEnter={() => setIsMenuVisible(true)}
             onMouseLeave={() => setIsMenuVisible(false)}
           >
-            <div className='bg-neutral-300 dark:bg-neutral-900 border text-xs border-neutral-400 dark:border-neutral-700 p-4 w-auto rounded-lg'>
+            <div className='bg-white dark:bg-neutral-800 border text-xs border-neutral-200 dark:border-neutral-700 p-4 w-auto rounded-lg'>
               <CopyToClipboard
                 text={secretAddress}
                 onCopy={() => {
                   toast.success("Address copied to clipboard!");
                 }}
               >
-                <button className='flex gap-2 items-center group mb-2'>
+                <button className='px-2 py-1 mb-2 rounded-lg flex gap-2 items-center group bg-neutral-100 dark:bg-neutral-900 hover:bg-neutral-200 dark:hover:bg-black transition-colors'>
                   <div>
                     {secretAddress.slice(0, 14) +
                       "..." +
                       secretAddress.slice(-14)}
                   </div>
-                  <div className='block text-neutral-500 group-hover:text-white transition-colors'>
+                  <div className='block text-neutral-500 dark:text-neutral-500 transition-colors'>
                     <FontAwesomeIcon icon={faCopy} />
                   </div>
                 </button>
@@ -135,7 +133,7 @@ export function KeplrPanel() {
         </If>
         {/* <Tooltip title={secretAddress} placement="bottom-end"> */}
         <div
-          className='w-full sm:w-auto rounded px-4 py-3 bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 select-none cursor-pointer'
+          className='w-full sm:w-auto rounded-lg px-4 py-3 bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700  select-none cursor-pointer'
           onMouseEnter={() => setIsMenuVisible(true)}
           onMouseLeave={() => setIsMenuVisible(false)}
         >
@@ -157,7 +155,7 @@ export function KeplrPanel() {
         <button
           id='keplr-button'
           onClick={() => connectWallet(setSecretjs, setSecretAddress)}
-          className='w-full sm:w-auto rounded px-4 py-3 bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 hover:bg-neutral-300 dark:hover:bg-neutral-700 active:bg-neutral-500 dark:active:bg-neutral-600 transition-colors select-none'
+          className='w-full sm:w-auto rounded-lg px-4 py-3 bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 hover:bg-neutral-100 dark:hover:bg-neutral-700 active:bg-neutral-500 dark:active:bg-neutral-600 transition-colors select-none'
         >
           {content}
         </button>

@@ -10,6 +10,7 @@ import { SECRET_LCD, SECRET_CHAIN_ID } from "shared/utils/config";
 import { Helmet } from "react-helmet-async";
 import StakingChart from "./components/StakingChart";
 import { formatNumber } from "shared/utils/commons";
+import { APIContext } from "shared/components/APIContext";
 
 export const DashboardContext = createContext<{
   coingeckoApiData_Day: any;
@@ -18,10 +19,20 @@ export const DashboardContext = createContext<{
 } | null>(null);
 
 export function Dashboard() {
-  const [coingeckoApiData_Day, setCoinGeckoApiData_Day] = useState();
-  const [coingeckoApiData_Month, setCoinGeckoApiData_Month] = useState();
-  const [coingeckoApiData_Year, setCoinGeckoApiData_Year] = useState();
-  const [spartanApiData, setSpartanApiData] = useState();
+  const {
+    coingeckoApiData_Day,
+    setCoinGeckoApiData_Day,
+    coingeckoApiData_Month,
+    setCoinGeckoApiData_Month,
+    coingeckoApiData_Year,
+    setCoinGeckoApiData_Year,
+    spartanApiData,
+    setSpartanApiData,
+    volume,
+    setVolume,
+    marketCap,
+    setMarketCap,
+  } = useContext(APIContext);
 
   // block height
   const [blockHeight, setBlockHeight] = useState(null); // by Coingecko API
@@ -154,9 +165,7 @@ export function Dashboard() {
   }, []);
 
   // volume & market cap
-  const [volume, setVolume] = useState(Number);
   const [volumeFormattedString, setVolumeFormattedString] = useState("");
-  const [marketCap, setMarketCap] = useState(Number);
   const [marketCapFormattedString, setMarketCapFormattedString] = useState("");
 
   useEffect(() => {
@@ -175,47 +184,6 @@ export function Dashboard() {
   const [circulatingSupply, setCirculatingSupply] = useState(0);
   const [currentPrice, setCurrentPrice] = useState(Number);
   const [communityPool, setCommunityPool] = useState(Number); // in uscrt
-
-  useEffect(() => {
-    // Coingecko API
-    let coingeckoApiUrl_Day = `https://api.coingecko.com/api/v3/coins/secret/market_chart?vs_currency=usd&days=1`;
-    fetch(coingeckoApiUrl_Day)
-      .then((response) => response.json())
-      .then((response) => {
-        setCoinGeckoApiData_Day(response);
-      });
-
-    let coingeckoApiUrl_Month = `https://api.coingecko.com/api/v3/coins/secret/market_chart?vs_currency=usd&days=30`;
-    fetch(coingeckoApiUrl_Month)
-      .then((response) => response.json())
-      .then((response) => {
-        setCoinGeckoApiData_Month(response);
-      });
-
-    let coingeckoApiUrl_Year = `https://api.coingecko.com/api/v3/coins/secret/market_chart?vs_currency=usd&days=365`;
-    fetch(coingeckoApiUrl_Year)
-      .then((response) => response.json())
-      .then((response) => {
-        setCoinGeckoApiData_Year(response);
-      });
-
-    //  API
-    let spartanApiUrl = `https://core.spartanapi.dev/secret/chains/secret-4/chain_info`;
-    fetch(spartanApiUrl)
-      .then((response) => response.json())
-      .then((response) => {
-        setSpartanApiData(response);
-      });
-
-    // Coingecko Market Cap & Volume
-    let coingeckoMarketCapVolumeUrl = `https://api.coingecko.com/api/v3/simple/price?ids=secret&vs_currencies=USD&include_market_cap=true&include_24hr_vol=true&include_24hr_change=true`;
-    fetch(coingeckoMarketCapVolumeUrl)
-      .then((response) => response.json())
-      .then((response) => {
-        setMarketCap(response.secret.usd_market_cap);
-        setVolume(response.secret.usd_24h_vol);
-      });
-  }, []);
 
   useEffect(() => {
     if (coingeckoApiData_Month) {
@@ -292,27 +260,27 @@ export function Dashboard() {
             </div> */}
 
             {/* Price */}
-            <div className='col-span-12 md:col-span-6 2xl:col-span-3'>
+            <div className='col-span-12 sm:col-span-6 lg:col-span-12 xl:col-span-6 2xl:col-span-4'>
               <CurrentPrice price={currentPrice} />
             </div>
 
             {/* Volume */}
-            <div className='col-span-12 md:col-span-6 2xl:col-span-3'>
+            <div className='col-span-12 sm:col-span-6 lg:col-span-12 xl:col-span-6 2xl:col-span-2'>
               <MiniTile name='Volume' value={volumeFormattedString} />
             </div>
 
             {/* Market Cap */}
-            <div className='col-span-12 md:col-span-6 2xl:col-span-3'>
+            <div className='col-span-12 sm:col-span-6 lg:col-span-12 xl:col-span-6 2xl:col-span-2'>
               <MiniTile name='Market Cap' value={marketCapFormattedString} />
             </div>
 
             {/* Social Media */}
-            <div className='col-span-12 md:col-span-6 2xl:col-span-3'>
+            <div className='col-span-12 sm:col-span-6 lg:col-span-12 xl:col-span-6 2xl:col-span-4'>
               <SocialMedia />
             </div>
 
             {/* Block Info */}
-            <div className='col-span-12 md:col-span-6 lg:col-span-6 2xl:col-span-4'>
+            <div className='col-span-12 md:col-span-6 lg:col-span-12 xl:col-span-6 2xl:col-span-4'>
               {/* <BlockInfo blockHeight={blockHeight || 0} blockTime={blockTime} circulatingSupply={circulatingSupply} inflation={inflation}/> */}
               <QuadTile
                 item1_key='Block Height'
@@ -326,14 +294,14 @@ export function Dashboard() {
               />
             </div>
 
-            <div className='col-span-12 md:col-span-6 lg:col-span-6 2xl:col-span-4'>
+            <div className='col-span-12 md:col-span-6 lg:col-span-12 xl:col-span-6 2xl:col-span-4'>
               <div className='bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 px-6 py-8 rounded-xl'>
                 <StakingChart />
               </div>
             </div>
 
             {/* Block Info */}
-            <div className='col-span-12 md:col-span-12 2xl:col-span-4'>
+            <div className='col-span-12 md:col-span-12 lg:col-span-12 xl:col-span-12 2xl:col-span-4'>
               <QuadTile
                 item1_key='Staking Yield [APR]'
                 item1_value={growthRateFormattedString}
