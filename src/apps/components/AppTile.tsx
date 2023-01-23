@@ -1,5 +1,5 @@
 import React from "react";
-import AppItemTag from "./AppItemTag";
+import AppTileTag from "./AppItemTag";
 
 interface IAppItemProps {
   name: string;
@@ -42,7 +42,7 @@ class AppTile extends React.Component<IAppItemProps> {
             // <div className='space-x-2 mt-4 flex-initial'>{tagsHtml}</div>
             <div className='space-x-2 mt-4 flex-initial'>
               {this.props.tags?.map((tag) => (
-                <AppItemTag name={tag} />
+                <AppTileTag key={tag} name={tag} />
               ))}
             </div>
           )}

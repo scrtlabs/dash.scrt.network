@@ -55,7 +55,7 @@ function Apps() {
     }
   }
 
-  class Tag extends React.Component<{name: string}> {
+  class Tag extends React.Component<{ name: string }> {
     render() {
       return (
         <button
@@ -123,11 +123,7 @@ function Apps() {
         </div>
         {/* Tag-Filter */}
         <div className='mb-4 sm:mb-8 flex gap-2 flex-wrap justify-center'>
-          {tags?.length > 0 && tags.map((tag) => (
-            <>
-              <Tag name={tag} />
-            </>
-          ))}
+          {tags?.length > 0 && tags.map((tag) => <Tag key={tag} name={tag} />)}
           {tags?.length == 0 && <div className='h-6'></div>}
         </div>
         {/* App-Items */}
@@ -136,6 +132,7 @@ function Apps() {
             <>
               {filteredDappsData().map((dapp) => (
                 <AppTile
+                  key={dapp.attributes.name}
                   name={dapp.attributes.name}
                   description={dapp.attributes.description}
                   tags={dapp.attributes.type.map((item) => item.name)}
