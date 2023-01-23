@@ -1,47 +1,23 @@
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { websiteName } from "App";
 import Header from "./components/Header";
 import AppTile from "./components/AppTile";
 import { shuffleArray, dAppsURL } from "shared/utils/commons";
 import React from "react";
+import { APIContext } from "shared/components/APIContext";
 
 function Apps() {
-  const [dappsDataShuffled, setDappsDataShuffled] = useState<any[]>([]);
-  const [dappsData, setDappsData] = useState<any[]>([]);
-  const [tags, setTags] = useState<string[]>([]);
-
-  useEffect(() => {
-    fetch(dAppsURL)
-      .then((response) => response.json())
-      .then((jsonData) => setDappsData(jsonData.data))
-      .catch((error) => console.error(error));
-  }, []);
-
-  useEffect(() => {
-    if (
-      dappsData &&
-      dappsDataShuffled.length === 0 &&
-      dappsData?.length !== 0
-    ) {
-      setDappsDataShuffled(shuffleArray(dappsData));
-      // Tag-Filter
-      let allTags: string[] = [];
-
-      dappsData.forEach((dapp) => {
-        dapp.attributes.type
-          .map((item) => item.name)
-          .forEach((tag) => {
-            if (!allTags.find((tagItem) => tagItem === tag)) {
-              allTags.push(tag);
-            }
-          });
-      });
-      setTags(allTags.sort());
-    }
-  }, [dappsData]);
+  const {
+    dappsData,
+    setDappsData,
+    dappsDataShuffled,
+    setDappsDataShuffled,
+    tags,
+    setTags,
+  } = useContext(APIContext);
 
   // Filter + Search
   const [tagsToBeFilteredBy, setTagsToBeFilteredBy] = useState<string[]>([]);
