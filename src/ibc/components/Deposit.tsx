@@ -229,14 +229,12 @@ function Deposit() {
 
   useEffect(() => {
     setAvailableBalance("");
-
-    if (!sourceAddress) {
-      return;
-    }
     if (!(secretjs && secretAddress)) {
       return;
     }
-
+    if (!sourceAddress) {
+      return;
+    }
     if (fetchBalanceInterval) {
       clearInterval(fetchBalanceInterval);
     }
@@ -259,6 +257,9 @@ function Deposit() {
   ]);
 
   useEffect(() => {
+    if (!(secretjs && secretAddress)) {
+      return;
+    }
     const possibleSnips = snips.filter(
       (token) =>
         token.deposits.find(
