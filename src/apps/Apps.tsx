@@ -60,16 +60,16 @@ function Apps() {
   function filteredDappsData() {
     let items = dappsDataShuffled;
     if (searchText !== "") {
-      items = dappsDataShuffled.filter((app) =>
+      items = dappsDataShuffled.filter((app: any) =>
         app.attributes.name.toLowerCase().includes(searchText.toLowerCase())
       );
     }
 
     if (tagsToBeFilteredBy?.length > 0) {
-      items = items.filter((item) =>
+      items = items.filter((item: any) =>
         item.attributes.type
-          .map((item) => item.name)
-          .find((tag) => tagsToBeFilteredBy.includes(tag))
+          .map((item: any) => item.name)
+          .find((tag: any) => tagsToBeFilteredBy.includes(tag))
       );
     }
 
@@ -127,51 +127,51 @@ function Apps() {
           {dappsData?.length <= 0 && (
             <>
               {/* Skeleton Loader Item */}
-              <div className='animate-pulse col-span-12 sm:col-span-6 md:col-span-4 xl:col-span-3'>
+              <div className='animate-pulse col-span-12 sm:col-span-6 lg:col-span-6 xl:col-span-4 2xl:col-span-3'>
                 <div className='h-72 bg-white dark:bg-neutral-800 rounded-xl'></div>
               </div>
               {/* Skeleton Loader Item */}
-              <div className='animate-pulse col-span-12 sm:col-span-6 md:col-span-4 xl:col-span-3'>
+              <div className='animate-pulse col-span-12 sm:col-span-6 lg:col-span-6 xl:col-span-4 2xl:col-span-3'>
                 <div className='h-72 bg-white dark:bg-neutral-800 rounded-xl'></div>
               </div>
               {/* Skeleton Loader Item */}
-              <div className='animate-pulse col-span-12 sm:col-span-6 md:col-span-4 xl:col-span-3'>
+              <div className='animate-pulse col-span-12 sm:col-span-6 lg:col-span-6 xl:col-span-4 2xl:col-span-3'>
                 <div className='h-72 bg-white dark:bg-neutral-800 rounded-xl'></div>
               </div>
               {/* Skeleton Loader Item */}
-              <div className='animate-pulse col-span-12 sm:col-span-6 md:col-span-4 xl:col-span-3'>
+              <div className='animate-pulse col-span-12 sm:col-span-6 lg:col-span-6 xl:col-span-4 2xl:col-span-3'>
                 <div className='h-72 bg-white dark:bg-neutral-800 rounded-xl'></div>
               </div>
               {/* Skeleton Loader Item */}
-              <div className='animate-pulse col-span-12 sm:col-span-6 md:col-span-4 xl:col-span-3'>
+              <div className='animate-pulse col-span-12 sm:col-span-6 lg:col-span-6 xl:col-span-4 2xl:col-span-3'>
                 <div className='h-72 bg-white dark:bg-neutral-800 rounded-xl'></div>
               </div>
               {/* Skeleton Loader Item */}
-              <div className='animate-pulse col-span-12 sm:col-span-6 md:col-span-4 xl:col-span-3'>
+              <div className='animate-pulse col-span-12 sm:col-span-6 lg:col-span-6 xl:col-span-4 2xl:col-span-3'>
                 <div className='h-72 bg-white dark:bg-neutral-800 rounded-xl'></div>
               </div>
               {/* Skeleton Loader Item */}
-              <div className='animate-pulse col-span-12 sm:col-span-6 md:col-span-4 xl:col-span-3'>
+              <div className='animate-pulse col-span-12 sm:col-span-6 lg:col-span-6 xl:col-span-4 2xl:col-span-3'>
                 <div className='h-72 bg-white dark:bg-neutral-800 rounded-xl'></div>
               </div>
               {/* Skeleton Loader Item */}
-              <div className='animate-pulse col-span-12 sm:col-span-6 md:col-span-4 xl:col-span-3'>
+              <div className='animate-pulse col-span-12 sm:col-span-6 lg:col-span-6 xl:col-span-4 2xl:col-span-3'>
                 <div className='h-72 bg-white dark:bg-neutral-800 rounded-xl'></div>
               </div>
               {/* Skeleton Loader Item */}
-              <div className='animate-pulse col-span-12 sm:col-span-6 md:col-span-4 xl:col-span-3'>
+              <div className='animate-pulse col-span-12 sm:col-span-6 lg:col-span-6 xl:col-span-4 2xl:col-span-3'>
                 <div className='h-72 bg-white dark:bg-neutral-800 rounded-xl'></div>
               </div>
               {/* Skeleton Loader Item */}
-              <div className='animate-pulse col-span-12 sm:col-span-6 md:col-span-4 xl:col-span-3'>
+              <div className='animate-pulse col-span-12 sm:col-span-6 lg:col-span-6 xl:col-span-4 2xl:col-span-3'>
                 <div className='h-72 bg-white dark:bg-neutral-800 rounded-xl'></div>
               </div>
               {/* Skeleton Loader Item */}
-              <div className='animate-pulse col-span-12 sm:col-span-6 md:col-span-4 xl:col-span-3'>
+              <div className='animate-pulse col-span-12 sm:col-span-6 lg:col-span-6 xl:col-span-4 2xl:col-span-3'>
                 <div className='h-72 bg-white dark:bg-neutral-800 rounded-xl'></div>
               </div>
               {/* Skeleton Loader Item */}
-              <div className='animate-pulse col-span-12 sm:col-span-6 md:col-span-4 xl:col-span-3'>
+              <div className='animate-pulse col-span-12 sm:col-span-6 lg:col-span-6 xl:col-span-4 2xl:col-span-3'>
                 <div className='h-72 bg-white dark:bg-neutral-800 rounded-xl'></div>
               </div>
             </>

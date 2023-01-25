@@ -9,11 +9,19 @@ const APIContextProvider = ({ children }) => {
   const [dappsDataShuffled, setDappsDataShuffled] = useState<any[]>([]);
   const [tags, setTags] = useState<string[]>([]);
 
-  useEffect(() => {
+  const fetchDappsURL = () => {
     fetch(dAppsURL)
       .then((response) => response.json())
       .then((jsonData) => setDappsData(jsonData.data))
-      .catch((error) => console.error(error));
+      .catch((error) => {
+        console.error(error);
+
+        setTimeout(() => fetchDappsURL(), 3000);
+      });
+  };
+
+  useEffect(() => {
+    fetchDappsURL();
   }, []);
 
   useEffect(() => {
