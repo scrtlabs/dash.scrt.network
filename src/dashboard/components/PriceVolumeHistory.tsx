@@ -49,14 +49,14 @@ export default function PriceVolumeHistory(props: any) {
     labels:
       chartType === "Price"
         ? (apiDataMapping.get(chartRange) as any)?.prices.map(
-            (x: any[]) => ({ x: new Date(x[0]).toLocaleDateString() }.x)
+            (x: any[]) => ({ x: (chartRange === "Day" ? new Date(x[0]).toLocaleTimeString() : new Date(x[0]).toLocaleDateString()) }.x)
           )
         : (apiDataMapping.get(chartRange) as any).total_volumes.map(
-            (x: any[]) => ({ x: new Date(x[0]).toLocaleDateString() }.x)
+            (x: any[]) => ({ x: (chartRange === "Day" ? new Date(x[0]).toLocaleTimeString() : new Date(x[0]).toLocaleDateString()) }.x)
           ),
     datasets: [
       {
-        label: "Price",
+        label: chartType,
         data:
           chartType === "Price"
             ? (apiDataMapping.get(chartRange) as any)?.prices.map(
