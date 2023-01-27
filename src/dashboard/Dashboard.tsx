@@ -15,6 +15,7 @@ export const DashboardContext = createContext<{
   coingeckoApiData_Day: any;
   coingeckoApiData_Month: any;
   coingeckoApiData_Year: any;
+  defiLamaApiData_Year: any;
 } | null>(null);
 
 export function Dashboard() {
@@ -25,6 +26,8 @@ export function Dashboard() {
     setCoinGeckoApiData_Month,
     coingeckoApiData_Year,
     setCoinGeckoApiData_Year,
+    defiLamaApiData_Year,
+    setDefiLamaApiData_Year,
     spartanApiData,
     setSpartanApiData,
     volume,
@@ -170,12 +173,12 @@ export function Dashboard() {
   useEffect(() => {
     if (volume) {
       setVolumeFormattedString(
-        "$" + formatNumber(parseInt(volume.toFixed(0).toString()), true, 2)
+        "$" + formatNumber(parseInt(volume.toFixed(0).toString()), 2)
       );
     }
     if (marketCap) {
       setMarketCapFormattedString(
-        "$" + formatNumber(parseInt(marketCap.toFixed(0).toString()), true, 2)
+        "$" + formatNumber(parseInt(marketCap.toFixed(0).toString()), 2)
       );
     }
   }, [volume, marketCap]);
@@ -249,6 +252,7 @@ export function Dashboard() {
           coingeckoApiData_Day,
           coingeckoApiData_Month,
           coingeckoApiData_Year,
+          defiLamaApiData_Year,
         }}
       >
         <div className='px-4 mx-auto space-y-4 w-full'>

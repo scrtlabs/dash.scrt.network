@@ -63,9 +63,30 @@ export default function StakingChart() {
     notBondedToken - parseInt(pool?.not_bonded_tokens) / 10e4;
   notBondedToken = notBondedToken - operationalToken;
 
+  useEffect(() => {
+    console.log(document.getElementById('sdfgsdgfdgsfg'))
+    if (document.getElementById('stakingChartDoughnut')) { }
+    if (!bondedToken || !communityPool || !operationalToken) {
+      return
+    }
+    const {
+      chartArea: { left, right, top, bottom, width, height },
+    } = ChartJS.getChart('stakingChartDoughnut');
+    const ctx = ChartJS.getChart('stakingChartDoughnut').canvas.getContext("2d");
+    ctx.save();
+
+    ctx.font = "bold 0.9rem sans-serif";
+    ctx.fillStyle = "#324454";
+    ctx.textAlign = "center";
+    ctx.fillRect(1000,1000, 1000, 1000)
+    ctx.fillText(`Total Supply`, width / 2, height / 2.25 + top);
+    ctx.restore();
+    },[theme]);
+
   const centerText = {
     id: "centerText",
     afterDatasetsDraw(chart, args, options) {
+      console.log(theme)
       const {
         ctx,
         chartArea: { left, right, top, bottom, width, height },
@@ -83,7 +104,7 @@ export default function StakingChart() {
       ctx.fillStyle = theme === "dark" ? "#fff" : "#000";
       ctx.textAlign = "center";
       ctx.fillText(
-        `${formatNumber(totalSupply, true, 2)}`,
+        `${formatNumber(totalSupply, 2)}`,
         width / 2,
         height / 1.75 + top
       );
@@ -93,10 +114,10 @@ export default function StakingChart() {
 
   const data = {
     labels: [
-      `Staked:${formatNumber(bondedToken, true, 2)}`,
-      `Unstaked ${formatNumber(notBondedToken, true, 2)}`,
-      `Community Pool: ${formatNumber(communityPool, true, 2)}`,
-      `Operational: ${formatNumber(operationalToken, true, 2)}`,
+      `Staked:${formatNumber(bondedToken, 2)}`,
+      `Unstaked ${formatNumber(notBondedToken, 2)}`,
+      `Community Pool: ${formatNumber(communityPool, 2)}`,
+      `Operational: ${formatNumber(operationalToken, 2)}`,
     ],
     datasets: [
       {
@@ -149,6 +170,7 @@ export default function StakingChart() {
         <div className='w-full h-[250px] xl:h-[300px]'>
           {totalSupply && (
             <Doughnut
+              id="stakingChartDoughnut"
               data={data}
               options={options as any}
               plugins={[centerText]}

@@ -50,6 +50,7 @@ const APIContextProvider = ({ children }) => {
   const [coingeckoApiData_Day, setCoinGeckoApiData_Day] = useState();
   const [coingeckoApiData_Month, setCoinGeckoApiData_Month] = useState();
   const [coingeckoApiData_Year, setCoinGeckoApiData_Year] = useState();
+  const [defiLamaApiData_Year, setDefiLamaApiData_Year] = useState();
   const [spartanApiData, setSpartanApiData] = useState();
   const [volume, setVolume] = useState(Number);
   const [marketCap, setMarketCap] = useState(Number);
@@ -75,6 +76,13 @@ const APIContextProvider = ({ children }) => {
       .then((response) => response.json())
       .then((response) => {
         setCoinGeckoApiData_Year(response);
+      });
+
+    let defiLamaApiUrl_Year = `https://api.llama.fi/charts/secret`;
+    fetch(defiLamaApiUrl_Year)
+      .then((response) => response.json())
+       .then((response) => {
+        setDefiLamaApiData_Year(response.map((x: any[]) => ([parseInt((x as any).date)*1000,(x as any).totalLiquidityUSD])));
       });
 
     //  API
@@ -108,6 +116,8 @@ const APIContextProvider = ({ children }) => {
     setCoinGeckoApiData_Month,
     coingeckoApiData_Year,
     setCoinGeckoApiData_Year,
+    defiLamaApiData_Year,
+    setDefiLamaApiData_Year,
     spartanApiData,
     setSpartanApiData,
     volume,

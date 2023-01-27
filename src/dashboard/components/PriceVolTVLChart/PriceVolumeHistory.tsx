@@ -35,12 +35,14 @@ export default function PriceVolumeHistory(props: any) {
     coingeckoApiData_Day,
     coingeckoApiData_Month,
     coingeckoApiData_Year,
+    defiLamaApiData_Year
   } = useDashboardContext();
 
   const [marketData, setMarketData] = useState([]);
 
   const [chartType, setChartType] = useState<ChartType>("Price");
   const [chartRange, setChartRange] = useState<ChartRange>("Month");
+  const [chartData, setChartData] = useState<any>([]);
 
   let apiDataMapping = new Map<ChartRange, Object>([
     ["Day", coingeckoApiData_Day],
@@ -48,38 +50,38 @@ export default function PriceVolumeHistory(props: any) {
     ["Year", coingeckoApiData_Year],
   ]);
 
+  useEffect(() => {
+    if (!coingeckoApiData_Day || !coingeckoApiData_Month || !coingeckoApiData_Year || !defiLamaApiData_Year){
+      return;
+    }
+    if (chartType === "Price") {
+      setChartData((apiDataMapping.get(chartRange) as any).prices)
+    }
+    else if (chartType === "Volume") {
+      setChartData((apiDataMapping.get(chartRange) as any).total_volumes)
+    }
+    else if (chartType === "TVL") {
+      setChartData(defiLamaApiData_Year)
+      setChartRange("Year")
+    }
+
+  }, [chartType, chartRange, coingeckoApiData_Day, coingeckoApiData_Month, coingeckoApiData_Year, defiLamaApiData_Year]);
+
+
   const data = {
-    labels:
-      chartType === "Price"
-        ? (apiDataMapping.get(chartRange) as any)?.prices.map(
-            (x: any[]) =>
-              ({
-                x:
-                  chartRange === "Day"
-                    ? new Date(x[0]).toLocaleTimeString()
-                    : new Date(x[0]).toLocaleDateString(),
-              }.x)
-          )
-        : (apiDataMapping.get(chartRange) as any).total_volumes.map(
-            (x: any[]) =>
-              ({
-                x:
-                  chartRange === "Day"
-                    ? new Date(x[0]).toLocaleTimeString()
-                    : new Date(x[0]).toLocaleDateString(),
-              }.x)
-          ),
+    labels: chartData.map(
+      (x: any[]) =>
+        ({
+          x:
+            chartRange === "Day"
+              ? new Date(x[0]).toLocaleTimeString()
+              : new Date(x[0]).toLocaleDateString(),
+        }.x)
+    ),
     datasets: [
       {
         label: chartType,
-        data:
-          chartType === "Price"
-            ? (apiDataMapping.get(chartRange) as any)?.prices.map(
-                (x: any[]) => ({ x: x[0], y: x[1] })
-              )
-            : (apiDataMapping.get(chartRange) as any).total_volumes.map(
-                (x: any[]) => ({ x: x[0], y: x[1] })
-              ),
+        data: chartData.map((x: any[]) => ({ x: x[0], y: x[1] })),
         fill: false,
         borderColor: "#06b6d4",
         tension: 0.1,
@@ -100,7 +102,7 @@ export default function PriceVolumeHistory(props: any) {
       y: {
         ticks: {
           callback: function (value, index, ticks) {
-            return "$" + value;
+            return "$" + formatNumber(value, 2);
           },
         },
       },
@@ -142,6 +144,7 @@ export default function PriceVolumeHistory(props: any) {
             <button
               onClick={() => setChartRange("Day")}
               type='button'
+              disabled={chartType === "TVL"}
               className={
                 "py-1.5 px-3 text-xs font-semibold rounded-l-lg bg-neutral-100 dark:bg-neutral-900 " +
                 (chartRange === "Day"
@@ -154,6 +157,7 @@ export default function PriceVolumeHistory(props: any) {
             <button
               onClick={() => setChartRange("Month")}
               type='button'
+              disabled={chartType === "TVL"}
               className={
                 "py-1.5 px-3 text-xs font-semibold bg-neutral-100 dark:bg-neutral-900" +
                 (chartRange === "Month"
