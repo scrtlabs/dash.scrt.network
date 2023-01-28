@@ -791,7 +791,7 @@ function Deposit() {
             {ibcMode === "withdrawal" && (
               <div
                 style={{ paddingTop: ".76rem", paddingBottom: ".76rem" }}
-                className='flex items-center w-full text-sm font-semibold select-none bg-neutral-800 rounded text-neutral-200 focus:bg-neutral-700 disabled:hover:bg-neutral-800 border border-neutral-600'
+                className='flex items-center w-full text-sm font-semibold select-none bg-white dark:bg-neutral-800 rounded text-neutral-800 dark:text-neutral-200 focus:bg-neutral-300 dark:focus:bg-neutral-700 disabled:hover:bg-neutral-200 dark:disabled:hover:bg-neutral-800 border border-neutral-300 dark:border-neutral-600'
               >
                 <div className='flex-1 px-3'>
                   <span>Secret Network</span>
@@ -871,7 +871,7 @@ function Deposit() {
             {ibcMode === "deposit" && (
               <div
                 style={{ paddingTop: ".76rem", paddingBottom: ".76rem" }}
-                className='flex items-center w-full text-sm font-semibold select-none bg-neutral-200 dark:bg-neutral-800 rounded text-neutral-800 dark:text-neutral-200 focus:bg-neutral-300 dark:focus:bg-neutral-700 disabled:hover:bg-neutral-200 dark:disabled:hover:bg-neutral-800 border border-neutral-400 dark:border-neutral-600'
+                className='flex items-center w-full text-sm font-semibold select-none bg-neutral-200 dark:bg-neutral-800 rounded text-neutral-800 dark:text-neutral-200 focus:bg-neutral-300 dark:focus:bg-neutral-700 disabled:hover:bg-neutral-200 dark:disabled:hover:bg-neutral-800 border border-neutral-300 dark:border-neutral-600'
               >
                 <div className='flex-1 px-3'>
                   <span>Secret Network</span>
