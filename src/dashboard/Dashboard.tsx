@@ -3,7 +3,7 @@ import { useEffect, useState, createContext, useContext } from "react";
 import { SecretNetworkClient } from "secretjs";
 import CurrentPrice from "./components/CurrentPrice";
 import MiniTile from "./components/MiniTile";
-import PriceVolumeHistory from "./components/PriceVolTVLChart/PriceVolumeHistory";
+import PriceVolumeTVL from "./components/PriceVolTVLChart/PriceVolumeTVL";
 import QuadTile from "./components/QuadTile";
 import SocialMedia from "./components/SocialMedia";
 import { SECRET_LCD, SECRET_CHAIN_ID } from "shared/utils/config";
@@ -321,7 +321,7 @@ export function Dashboard() {
           <div className='grid grid-cols-12 gap-4'>
             {/* Item */}
             <div className='col-span-12 bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 p-4 rounded-xl'>
-              <PriceVolumeHistory />
+              <PriceVolumeTVL />
             </div>
             {/* Item */}
             {/* <div className="col-span-12 xl:col-span-6 bg-neutral-800 p-4 rounded-xl">
