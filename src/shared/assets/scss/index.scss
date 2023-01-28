@@ -18,32 +18,25 @@ body {
 
 .react-select__control {
   cursor: pointer !important;
-  background-color: #262626 !important;
-  border-color: #525252 !important;
-  @apply py-1;
-  &:hover {
-    background-color: #525252 !important;
-  }
+  @apply py-1 bg-neutral-200 dark:bg-neutral-800 border-neutral-400 dark:border-neutral-600 text-black dark:text-white hover:bg-neutral-400 dark:hover:bg-neutral-600;
 }
 
 .react-select__single-value {
-  color: white !important;
+  @apply text-black dark:text-white;
 }
 
 .react-select__menu,
 .react-select__option {
-  background-color: #404040 !important;
+  background-color: #737373 !important;
 }
 
 .react-select__option:hover {
-  background-color: #525252 !important;
+  background-color: #a3a3a3 !important;
 }
 
 .react-select-wrap__control {
   cursor: pointer !important;
-  background-color: #262626 !important;
-  border-color: #525252 !important;
-  @apply py-1;
+  @apply py-1 bg-neutral-200 dark:bg-neutral-800 border-gray-500 dark:border-gray-500;
   border-radius: 0.5rem 0 0 0.5rem !important;
   &:hover {
     background-color: #525252 !important;
@@ -51,16 +44,16 @@ body {
 }
 
 .react-select-wrap__single-value {
-  color: white !important;
+  @apply text-black dark:text-white;
 }
 
 .react-select-wrap__menu,
 .react-select-wrap__option {
-  background-color: #404040 !important;
+  background-color: #737373 !important;
 }
 
 .react-select-wrap__option:hover {
-  background-color: #525252 !important;
+  background-color: #a3a3a3 !important;
 }
 
 .react-select-wrap__indicator-separator {
