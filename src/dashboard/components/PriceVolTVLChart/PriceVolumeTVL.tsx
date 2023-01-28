@@ -14,6 +14,7 @@ import {
 } from "chart.js";
 import { Line } from "react-chartjs-2";
 import TypeSwitch from "./components/TypeSwitch";
+import RangeSwitch from "./components/RangeSwitch";
 
 ChartJS.register(
   CategoryScale,
@@ -30,12 +31,12 @@ type ChartRange = "Day" | "Month" | "Year";
 
 export const PriceVolumeHistoryContext = createContext(null);
 
-export default function PriceVolumeHistory(props: any) {
+export default function PriceVolumeTVL(props: any) {
   const {
     coingeckoApiData_Day,
     coingeckoApiData_Month,
     coingeckoApiData_Year,
-    defiLamaApiData_Year
+    defiLamaApiData_Year,
   } = useDashboardContext();
 
   const [marketData, setMarketData] = useState([]);
@@ -51,22 +52,30 @@ export default function PriceVolumeHistory(props: any) {
   ]);
 
   useEffect(() => {
-    if (!coingeckoApiData_Day || !coingeckoApiData_Month || !coingeckoApiData_Year || !defiLamaApiData_Year){
+    if (
+      !coingeckoApiData_Day ||
+      !coingeckoApiData_Month ||
+      !coingeckoApiData_Year ||
+      !defiLamaApiData_Year
+    ) {
       return;
     }
     if (chartType === "Price") {
-      setChartData((apiDataMapping.get(chartRange) as any).prices)
+      setChartData((apiDataMapping.get(chartRange) as any).prices);
+    } else if (chartType === "Volume") {
+      setChartData((apiDataMapping.get(chartRange) as any).total_volumes);
+    } else if (chartType === "TVL") {
+      setChartData(defiLamaApiData_Year);
+      setChartRange("Year");
     }
-    else if (chartType === "Volume") {
-      setChartData((apiDataMapping.get(chartRange) as any).total_volumes)
-    }
-    else if (chartType === "TVL") {
-      setChartData(defiLamaApiData_Year)
-      setChartRange("Year")
-    }
-
-  }, [chartType, chartRange, coingeckoApiData_Day, coingeckoApiData_Month, coingeckoApiData_Year, defiLamaApiData_Year]);
-
+  }, [
+    chartType,
+    chartRange,
+    coingeckoApiData_Day,
+    coingeckoApiData_Month,
+    coingeckoApiData_Year,
+    defiLamaApiData_Year,
+  ]);
 
   const data = {
     labels: chartData.map(
@@ -126,59 +135,27 @@ export default function PriceVolumeHistory(props: any) {
   const providerValue = {
     chartType,
     setChartType,
+    chartRange,
+    setChartRange,
   };
 
   return (
     <>
       <PriceVolumeHistoryContext.Provider value={providerValue}>
-        <div className='flex items-center mb-4'>
-          <div className='flex-1'>
+        <div className='flex flex-col gap-4 xs:gap-2 xs:flex-row items-center mb-4'>
+          {/* [Price|Volume|TVL] */}
+          <div className='flex-1 flex items-center'>
+            <div className='block xs:hidden mr-2 text-sm font-semibold dark:text-neutral-400'>
+              Mode:
+            </div>
             <TypeSwitch />
           </div>
-
           {/* [Day|Month|Year] */}
-          <div
-            className='flex-initial inline-flex rounded-md shadow-sm'
-            role='group'
-          >
-            <button
-              onClick={() => setChartRange("Day")}
-              type='button'
-              disabled={chartType === "TVL"}
-              className={
-                "py-1.5 px-3 text-xs font-semibold rounded-l-lg bg-neutral-100 dark:bg-neutral-900 " +
-                (chartRange === "Day"
-                  ? " cursor-default bg-cyan-500 dark:bg-cyan-500/20 text-white dark:text-cyan-200 font-bold"
-                  : " text-neutral-800 dark:text-neutral-200 hover:bg-neutral-300 dark:hover:bg-neutral-700 focus:bg-neutral-500 dark:focus:bg-neutral-500")
-              }
-            >
-              Day
-            </button>
-            <button
-              onClick={() => setChartRange("Month")}
-              type='button'
-              disabled={chartType === "TVL"}
-              className={
-                "py-1.5 px-3 text-xs font-semibold bg-neutral-100 dark:bg-neutral-900" +
-                (chartRange === "Month"
-                  ? " cursor-default bg-cyan-500 dark:bg-cyan-500/20 text-white dark:text-cyan-200 font-bold"
-                  : " text-neutral-800 dark:text-neutral-200 hover:bg-neutral-300 dark:hover:bg-neutral-700 focus:bg-neutral-500 dark:focus:bg-neutral-500")
-              }
-            >
-              Month
-            </button>
-            <button
-              onClick={() => setChartRange("Year")}
-              type='button'
-              className={
-                "py-1.5 px-3 text-xs font-semibold rounded-r-lg bg-neutral-100 dark:bg-neutral-900" +
-                (chartRange === "Year"
-                  ? " cursor-default bg-cyan-500 dark:bg-cyan-500/20 text-white dark:text-cyan-200 font-bold"
-                  : " text-neutral-800 dark:text-neutral-200 hover:bg-neutral-300 dark:hover:bg-neutral-700 focus:bg-neutral-500 dark:focus:bg-neutral-500")
-              }
-            >
-              Year
-            </button>
+          <div className='flex-initial flex items-center'>
+            <div className='block xs:hidden mr-2 text-sm font-semibold text-neutral-600 dark:text-neutral-400'>
+              Range:
+            </div>
+            <RangeSwitch />
           </div>
         </div>
         <div className='w-full h-[300px] xl:h-[400px]'>

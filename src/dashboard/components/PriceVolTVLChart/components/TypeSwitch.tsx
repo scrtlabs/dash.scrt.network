@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { PriceVolumeHistoryContext } from "../PriceVolumeHistory";
+import { PriceVolumeHistoryContext } from "../PriceVolumeTVL";
 
 function TypeSwitch() {
   const { chartType, setChartType } = useContext(PriceVolumeHistoryContext);
