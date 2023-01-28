@@ -156,7 +156,7 @@ export default function StakingChart() {
               options={options as any}
               plugins={[centerText]}
               ref={chartRef}
-              redraw={true}
+              redraw
             />
           )}
         </div>
