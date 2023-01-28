@@ -94,21 +94,14 @@ export function KeplrPanel() {
           <If condition={secretAddress.length > 0}>
             <Then>
               <span className='relative w-2.5 mr-3'>
-                <span className='flex absolute h-2 w-2 top-1.5 left-0.5'>
+                <span className='flex absolute h-2 w-2 top-[0.175rem] left-0.5'>
                   <span className='animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-1/2'></span>
                   <span className='relative inline-flex rounded-full h-2 w-2 bg-emerald-500'></span>
                 </span>
               </span>
             </Then>
           </If>
-          <img
-            src='/img/assets/fina.webp'
-            className='w-5 h-5 mr-2 inline md:hidden'
-          />
-          <img
-            src='/img/assets/keplr.svg'
-            className='w-5 h-5 mr-2 hidden md:inline'
-          />
+          <FontAwesomeIcon icon={faWallet} className='mr-2' />
         </div>
         <span>
           <If condition={secretAddress.length > 0}>

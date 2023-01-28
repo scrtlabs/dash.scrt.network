@@ -1,13 +1,12 @@
 import { chains } from "shared/utils/config";
-import React, { useEffect, useState, createContext, useContext } from "react";
+import { useEffect, useState, createContext, useContext } from "react";
 import { SecretNetworkClient } from "secretjs";
 import CurrentPrice from "./components/CurrentPrice";
 import MiniTile from "./components/MiniTile";
-import PriceVolumeHistory from "./components/PriceVolumeHistory";
+import PriceVolumeTVL from "./components/PriceVolTVLChart/PriceVolumeTVL";
 import QuadTile from "./components/QuadTile";
 import SocialMedia from "./components/SocialMedia";
 import { SECRET_LCD, SECRET_CHAIN_ID } from "shared/utils/config";
-import { Helmet } from "react-helmet-async";
 import StakingChart from "./components/StakingChart";
 import { formatNumber } from "shared/utils/commons";
 import { APIContext } from "shared/components/APIContext";
@@ -16,6 +15,7 @@ export const DashboardContext = createContext<{
   coingeckoApiData_Day: any;
   coingeckoApiData_Month: any;
   coingeckoApiData_Year: any;
+  defiLamaApiData_Year: any;
 } | null>(null);
 
 export function Dashboard() {
@@ -26,6 +26,8 @@ export function Dashboard() {
     setCoinGeckoApiData_Month,
     coingeckoApiData_Year,
     setCoinGeckoApiData_Year,
+    defiLamaApiData_Year,
+    setDefiLamaApiData_Year,
     spartanApiData,
     setSpartanApiData,
     volume,
@@ -171,12 +173,12 @@ export function Dashboard() {
   useEffect(() => {
     if (volume) {
       setVolumeFormattedString(
-        "$" + formatNumber(parseInt(volume.toFixed(0).toString()), true, 2)
+        "$" + formatNumber(parseInt(volume.toFixed(0).toString()), 2)
       );
     }
     if (marketCap) {
       setMarketCapFormattedString(
-        "$" + formatNumber(parseInt(marketCap.toFixed(0).toString()), true, 2)
+        "$" + formatNumber(parseInt(marketCap.toFixed(0).toString()), 2)
       );
     }
   }, [volume, marketCap]);
@@ -250,6 +252,7 @@ export function Dashboard() {
           coingeckoApiData_Day,
           coingeckoApiData_Month,
           coingeckoApiData_Year,
+          defiLamaApiData_Year,
         }}
       >
         <div className='px-4 mx-auto space-y-4 w-full'>
@@ -318,7 +321,7 @@ export function Dashboard() {
           <div className='grid grid-cols-12 gap-4'>
             {/* Item */}
             <div className='col-span-12 bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 p-4 rounded-xl'>
-              <PriceVolumeHistory />
+              <PriceVolumeTVL />
             </div>
             {/* Item */}
             {/* <div className="col-span-12 xl:col-span-6 bg-neutral-800 p-4 rounded-xl">
