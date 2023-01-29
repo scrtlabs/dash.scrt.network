@@ -78,7 +78,6 @@ export function KeplrPanel() {
                 >
                   Disconnect Wallet
                 </button>
-                {/* block bg-cyan-500/30 text-cyan-400 hover:text-cyan-300 hover:bg-cyan-500/50 w-full text-center transition-colors py-2.5 rounded-xl mt-4 font-semibold text-sm */}
               </div>
             </div>
           </div>
@@ -124,7 +123,6 @@ export function KeplrPanel() {
             <KeplrMenu />
           </div>
         </If>
-        {/* <Tooltip title={secretAddress} placement="bottom-end"> */}
         <div
           className='w-full sm:w-auto rounded-lg px-4 py-3 bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700  select-none cursor-pointer'
           onMouseEnter={() => setIsMenuVisible(true)}
@@ -132,7 +130,6 @@ export function KeplrPanel() {
         >
           {content}
         </div>
-        {/* </Tooltip> */}
       </>
     );
   } else {
