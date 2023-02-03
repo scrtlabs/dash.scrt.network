@@ -4,15 +4,20 @@ import { dAppsURL, shuffleArray } from "shared/utils/commons";
 
 const APIContext = createContext(null);
 
-const APIContextProvider = ({ children }) => {
+const APIContextProvider = ({ children }: any) => {
   const [dappsData, setDappsData] = useState<any[]>([]);
   const [dappsDataShuffled, setDappsDataShuffled] = useState<any[]>([]);
   const [tags, setTags] = useState<string[]>([]);
 
   const fetchDappsURL = () => {
     fetch(dAppsURL)
-      .then((response) => response.json())
-      .then((jsonData) => setDappsData(jsonData.data))
+      .then((response) => {
+        if (!response.ok) throw new Error();
+        else return response.json();
+      })
+      .then((jsonData) => {
+        setDappsData(jsonData.data);
+      })
       .catch((error) => {
         console.error(error);
 
@@ -81,8 +86,13 @@ const APIContextProvider = ({ children }) => {
     let defiLamaApiUrl_Year = `https://api.llama.fi/charts/secret`;
     fetch(defiLamaApiUrl_Year)
       .then((response) => response.json())
-       .then((response) => {
-        setDefiLamaApiData_Year(response.map((x: any[]) => ([parseInt((x as any).date)*1000,(x as any).totalLiquidityUSD])));
+      .then((response) => {
+        setDefiLamaApiData_Year(
+          response.map((x: any[]) => [
+            parseInt((x as any).date) * 1000,
+            (x as any).totalLiquidityUSD,
+          ])
+        );
       });
 
     //  API
