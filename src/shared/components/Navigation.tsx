@@ -43,7 +43,7 @@ export function Navigation({
         </svg>
       </NavLink>
 
-      <ul className='space-y-4 font-semibold text-neutral-600 dark:text-neutral-400'>
+      <ul className='space-y-4 font-semibold text-neutral-600 dark:text-neutral-400 text-center lg:text-left'>
         <li className='lg:hidden'>
           <button
             onClick={() => setShowMobileMenu(false)}
@@ -128,18 +128,21 @@ export function Navigation({
         </li>
       </ul>
 
-      <div className='mt-12'>
+      <div className='mt-12 text-center lg:text-left'>
         <button
           onClick={() => toggleIsExtendedMenuOpen()}
-          className='px-8 py-3 w-full text-left font-semibold text-neutral-700 dark:text-neutral-300 hover:text-black dark:hover:text-white transition-colors mb-4 flex items-center'
+          className='px-8 py-3 w-full font-semibold text-neutral-700 dark:text-neutral-300 hover:text-black dark:hover:text-white transition-colors mb-4 flex items-center'
         >
-          <span className='flex-intial'>More</span>
-          <FontAwesomeIcon
-            icon={faChevronDown}
-            className={
-              "flex-initial ml-4" + (isExtendedMenuOpen ? " fa-rotate-180" : "")
-            }
-          />
+          <div className='flex-1 lg:flex-initial'>
+            <span>More</span>
+            <FontAwesomeIcon
+              icon={faChevronDown}
+              className={
+                "flex-initial ml-4" +
+                (isExtendedMenuOpen ? " fa-rotate-180" : "")
+              }
+            />
+          </div>
         </button>
 
         <div
@@ -151,7 +154,7 @@ export function Navigation({
               <a
                 href='https://wallet.keplr.app/chains/secret-network?tab=staking'
                 target='_blank'
-                className='cursor-pointer dark:hover:text-white block w-full mx-8 rounded-xl transition-colors text-neutral-600 dark:text-neutral-300 hover:text-black'
+                className='cursor-pointer dark:hover:text-white block w-full lg:mx-8 rounded-xl transition-colors text-neutral-600 dark:text-neutral-300 hover:text-black'
               >
                 <FontAwesomeIcon icon={faCoins} className='mr-2' />
                 Stake
@@ -166,7 +169,7 @@ export function Navigation({
               <a
                 href='https://wallet.keplr.app/chains/secret-network?tab=governance'
                 target='_blank'
-                className='cursor-pointer dark:hover:text-white block w-full mx-8 rounded-xl transition-colors text-neutral-600 dark:text-neutral-300 hover:text-black'
+                className='cursor-pointer dark:hover:text-white block w-full lg:mx-8 rounded-xl transition-colors text-neutral-600 dark:text-neutral-300 hover:text-black'
               >
                 <FontAwesomeIcon icon={faCheckToSlot} className='mr-2' />
                 Governance
@@ -181,7 +184,7 @@ export function Navigation({
               <a
                 href='https://secretanalytics.xyz'
                 target='_blank'
-                className='cursor-pointer dark:hover:text-white block w-full mx-8 rounded-xl transition-colors text-neutral-600 dark:text-neutral-300 hover:text-black'
+                className='cursor-pointer dark:hover:text-white block w-full lg:mx-8 rounded-xl transition-colors text-neutral-600 dark:text-neutral-300 hover:text-black'
               >
                 <FontAwesomeIcon icon={faChartLine} className='mr-2' />
                 Stats
@@ -196,7 +199,7 @@ export function Navigation({
               <a
                 href='https://secretnodes.com/'
                 target='_blank'
-                className='cursor-pointer dark:hover:text-white block w-full mx-8 rounded-xl transition-colors text-neutral-600 dark:text-neutral-300 hover:text-black'
+                className='cursor-pointer dark:hover:text-white block w-full lg:mx-8 rounded-xl transition-colors text-neutral-600 dark:text-neutral-300 hover:text-black'
               >
                 <FontAwesomeIcon icon={faCube} className='mr-2' />
                 Block Explorer
@@ -211,7 +214,7 @@ export function Navigation({
               <a
                 href='https://docs.scrt.network/'
                 target='_blank'
-                className='cursor-pointer dark:hover:text-white block w-full mx-8 rounded-xl transition-colors text-neutral-600 dark:text-neutral-300 hover:text-black'
+                className='cursor-pointer dark:hover:text-white block w-full lg:mx-8 rounded-xl transition-colors text-neutral-600 dark:text-neutral-300 hover:text-black'
               >
                 <FontAwesomeIcon icon={faBook} className='mr-2' />
                 Documentation
