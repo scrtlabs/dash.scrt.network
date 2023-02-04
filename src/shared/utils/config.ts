@@ -61,7 +61,7 @@ export const chains: { [chain_name: string]: Chain } = {
   Akash: {
     chain_name: "Akash",
     deposit_channel_id: "channel-43",
-    deposit_gas: 110_000,
+    deposit_gas: 150_000,
     deposit_gas_denom: "uakt",
     withdraw_channel_id: "channel-21",
     withdraw_gas: 30_000,
@@ -89,7 +89,7 @@ export const chains: { [chain_name: string]: Chain } = {
   "Cosmos Hub": {
     chain_name: "Cosmos Hub",
     deposit_channel_id: "channel-235",
-    deposit_gas: 110_000,
+    deposit_gas: 150_000,
     deposit_gas_denom: "uatom",
     withdraw_channel_id: "channel-0",
     withdraw_gas: 30_000,
@@ -103,7 +103,7 @@ export const chains: { [chain_name: string]: Chain } = {
   Crescent: {
     chain_name: "Crescent",
     deposit_channel_id: "channel-10",
-    deposit_gas: 110_000,
+    deposit_gas: 150_000,
     deposit_gas_denom: "ucre",
     withdraw_channel_id: "channel-24",
     withdraw_gas: 30_000,
@@ -131,7 +131,7 @@ export const chains: { [chain_name: string]: Chain } = {
   "Gravity Bridge": {
     chain_name: "Gravity Bridge",
     deposit_channel_id: "channel-79",
-    deposit_gas: 110_000,
+    deposit_gas: 150_000,
     deposit_gas_denom: "ugraviton",
     withdraw_channel_id: "channel-17",
     withdraw_gas: 30_000,
@@ -159,7 +159,7 @@ export const chains: { [chain_name: string]: Chain } = {
   Juno: {
     chain_name: "Juno",
     deposit_channel_id: "channel-48",
-    deposit_gas: 110_000,
+    deposit_gas: 150_000,
     deposit_gas_denom: "ujuno",
     withdraw_channel_id: "channel-8",
     withdraw_gas: 30_000,
@@ -173,7 +173,7 @@ export const chains: { [chain_name: string]: Chain } = {
   Kujira: {
     chain_name: "Kujira",
     deposit_channel_id: "channel-10",
-    deposit_gas: 110_000,
+    deposit_gas: 150_000,
     deposit_gas_denom: "ukuji",
     withdraw_channel_id: "channel-22",
     withdraw_gas: 30_000,
@@ -187,7 +187,7 @@ export const chains: { [chain_name: string]: Chain } = {
   Osmosis: {
     chain_name: "Osmosis",
     deposit_channel_id: "channel-88",
-    deposit_gas: 1_500_000,
+    deposit_gas: 300_000,
     deposit_gas_denom: "uosmo",
     withdraw_channel_id: "channel-1",
     withdraw_gas: 30_000,
@@ -201,7 +201,7 @@ export const chains: { [chain_name: string]: Chain } = {
   Sentinel: {
     chain_name: "Sentinel",
     deposit_channel_id: "channel-50",
-    deposit_gas: 110_000,
+    deposit_gas: 150_000,
     deposit_gas_denom: "udvpn",
     withdraw_channel_id: "channel-3",
     withdraw_gas: 30_000,
@@ -229,7 +229,7 @@ export const chains: { [chain_name: string]: Chain } = {
   Stargaze: {
     chain_name: "Stargaze",
     deposit_channel_id: "channel-48",
-    deposit_gas: 110_000,
+    deposit_gas: 150_000,
     deposit_gas_denom: "ustars",
     withdraw_channel_id: "channel-19",
     withdraw_gas: 30_000,
@@ -257,7 +257,7 @@ export const chains: { [chain_name: string]: Chain } = {
   Terra: {
     chain_name: "Terra",
     deposit_channel_id: "channel-3",
-    deposit_gas: 110_000,
+    deposit_gas: 150_000,
     deposit_gas_denom: "uluna",
     withdraw_channel_id: "channel-16",
     withdraw_gas: 30_000,
