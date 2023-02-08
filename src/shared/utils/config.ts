@@ -1051,6 +1051,93 @@ export const tokens: Token[] = [
     ],
   },
   {
+    name: "stATOM",
+    address: "secret1gedmwfcjfykl9ljt5u50ecfzp8pwwsvgjgq8vc",
+    code_hash:
+      "0e6b2ae7575d5b91ea534933ad9df0ffb6c33e77819876a2e68b0e5dcd2539a8",
+    image: "/statom.svg",
+    decimals: 6,
+    coingecko_id: "stride-staked-atom",
+    deposits: [
+      {
+        chain_name: "Stride",
+        from_denom: "stuatom",
+      },
+    ],
+    withdrawals: [
+      {
+        chain_name: "Stride",
+        from_denom: ibcDenom(
+          [
+            {
+              incomingChannelId: chains["Stride"].withdraw_channel_id,
+              incomingPortId: "transfer",
+            },
+          ],
+          "stuatom"
+        ),
+      },
+    ],
+  },
+  {
+    name: "stOSMO",
+    address: "secret1ffrjnxpvrc0cv0s7rmtgc2a29cy7acnxxu6jtf",
+    code_hash:
+      "0e6b2ae7575d5b91ea534933ad9df0ffb6c33e77819876a2e68b0e5dcd2539a8",
+    image: "/stosmo.svg",
+    decimals: 6,
+    coingecko_id: "stride-staked-osmo",
+    deposits: [
+      {
+        chain_name: "Stride",
+        from_denom: "stuosmo",
+      },
+    ],
+    withdrawals: [
+      {
+        chain_name: "Stride",
+        from_denom: ibcDenom(
+          [
+            {
+              incomingChannelId: chains["Stride"].withdraw_channel_id,
+              incomingPortId: "transfer",
+            },
+          ],
+          "stuosmo"
+        ),
+      },
+    ],
+  },
+  {
+    name: "stJUNO",
+    address: "secret1uhmquwlra5efgrsp5srwlsaqz5mtfcsvlrxrkv",
+    code_hash:
+      "0e6b2ae7575d5b91ea534933ad9df0ffb6c33e77819876a2e68b0e5dcd2539a8",
+    image: "/stjuno.svg",
+    decimals: 6,
+    coingecko_id: "stride-staked-juno",
+    deposits: [
+      {
+        chain_name: "Stride",
+        from_denom: "stujuno",
+      },
+    ],
+    withdrawals: [
+      {
+        chain_name: "Stride",
+        from_denom: ibcDenom(
+          [
+            {
+              incomingChannelId: chains["Stride"].withdraw_channel_id,
+              incomingPortId: "transfer",
+            },
+          ],
+          "stujuno"
+        ),
+      },
+    ],
+  },
+  {
     name: "STRD",
     address: "secret17gg8xcx04ldqkvkrd7r9w60rdae4ck8aslt9cf",
     code_hash:
