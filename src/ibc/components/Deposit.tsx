@@ -688,7 +688,6 @@ function Deposit() {
               }
             );
           }
-
           if (tx.code !== 0) {
             toast.update(toastId, {
               render: `Failed sending ${normalizedAmount} ${selectedToken.name} from Secret Network to ${selectedSource.chain_name}: ${tx.rawLog}`,
@@ -778,7 +777,7 @@ function Deposit() {
               </div>
             </div>
             <div
-              className='absolute left-1/2 -translate-x-1/2 text-center text-sm font-bold text-white'
+              className='absolute left-1/2 -translate-x-1/2 text-center text-sm font-bold text-black dark:text-white'
               style={{ bottom: "10%" }}
             >
               From
@@ -793,7 +792,7 @@ function Deposit() {
                 style={{ paddingTop: ".76rem", paddingBottom: ".76rem" }}
                 className='flex items-center w-full text-sm font-semibold select-none bg-white dark:bg-neutral-800 rounded text-neutral-800 dark:text-neutral-200 focus:bg-neutral-300 dark:focus:bg-neutral-700 disabled:hover:bg-neutral-200 dark:disabled:hover:bg-neutral-800 border border-neutral-300 dark:border-neutral-600'
               >
-                <div className='flex-1 px-3'>
+                <div className='flex-1 px-3 text-center'>
                   <span>Secret Network</span>
                 </div>
               </div>
@@ -873,7 +872,7 @@ function Deposit() {
                 style={{ paddingTop: ".76rem", paddingBottom: ".76rem" }}
                 className='flex items-center w-full text-sm font-semibold select-none bg-neutral-200 dark:bg-neutral-800 rounded text-neutral-800 dark:text-neutral-200 focus:bg-neutral-300 dark:focus:bg-neutral-700 disabled:hover:bg-neutral-200 dark:disabled:hover:bg-neutral-800 border border-neutral-300 dark:border-neutral-600'
               >
-                <div className='flex-1 px-3'>
+                <div className='flex-1 px-3 text-center'>
                   <span>Secret Network</span>
                 </div>
               </div>
