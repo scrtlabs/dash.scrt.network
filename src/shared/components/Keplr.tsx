@@ -1,4 +1,4 @@
-import React, { Component, useContext, useState } from "react";
+import React, { Component, useContext, useEffect, useState } from "react";
 import CopyToClipboard from "react-copy-to-clipboard";
 import { Else, If, Then } from "react-if";
 import { SecretNetworkClient } from "secretjs";
@@ -23,6 +23,7 @@ export function KeplrPanel() {
       document.body.classList.add("overflow-hidden");
     } else {
       await setupKeplr(setSecretjs, setSecretAddress);
+      localStorage.setItem("keplrAutoConnect", "true");
     }
   }
 
@@ -39,9 +40,24 @@ export function KeplrPanel() {
     setIsFeeGranted(false);
     setFeeGrantStatus("Untouched");
 
+    // disable auto connect
+    localStorage.setItem("keplrAutoConnect", "false");
+
     // Toast for success
     toast.success("Wallet disconnected!");
   }
+
+  useEffect(() => {
+    // Local Storage
+    let localStorageKeplrAutoConnect = false;
+    if (localStorage.getItem("keplrAutoConnect") === "true") {
+      localStorageKeplrAutoConnect = true;
+    }
+
+    if (localStorageKeplrAutoConnect) {
+      connectWallet(setSecretjs, setSecretAddress);
+    }
+  }, []);
 
   class KeplrMenu extends React.Component {
     render() {
