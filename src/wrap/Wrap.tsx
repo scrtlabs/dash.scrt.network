@@ -74,8 +74,8 @@ export function Wrap() {
   const [loadingWrapOrUnwrap, setLoadingWrapOrUnwrap] =
     useState<boolean>(false);
   const [loadingTokenBalance, setLoadingTokenBalance] =
-    useState<boolean>(false);
-  const [loadingCoinBalance, setLoadingCoinBalance] = useState<boolean>(false);
+    useState<boolean>(true);
+  const [loadingCoinBalance, setLoadingCoinBalance] = useState<boolean>(true);
 
   const [tokenNativeBalance, setTokenNativeBalance] = useState<string>("");
   const [tokenWrappedBalance, setTokenWrappedBalance] = useState<string>("");
@@ -328,7 +328,7 @@ export function Wrap() {
   }
 
   function NativeTokenBalanceUi() {
-    if (!loadingCoinBalance && secretjs && secretAddress) {
+    if (!loadingCoinBalance && secretjs && secretAddress && tokenNativeBalance) {
       return (
         <>
           <span className='font-semibold'>Available:</span>
@@ -363,7 +363,7 @@ export function Wrap() {
   }
 
   function WrappedTokenBalanceUi() {
-    if (!secretjs || loadingTokenBalance) {
+    if (loadingTokenBalance || !secretjs || !secretAddress || !tokenWrappedBalance) {
       return <></>;
     } else if (tokenWrappedBalance == viewingKeyErrorString) {
       return (
@@ -733,12 +733,11 @@ export function Wrap() {
   useEffect(() => {
     if (!secretjs || !secretAddress) return;
 
-    const interval = setInterval(updateBalance, 10000, selectedToken);
-
     (async () => {
       setBalance();
     })();
-
+    
+    const interval = setInterval(updateBalance, 10000);
     return () => {
       clearInterval(interval);
     };
