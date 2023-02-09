@@ -501,50 +501,71 @@ export function Wrap() {
         const toastId = toast.loading(
           wrappingMode === "Wrap"
             ? `Wrapping ${selectedToken.name}`
-            : `Unwrapping ${selectedToken.name}`,
+            : `Unwrapping s${selectedToken.name}`,
           { closeButton: true }
         );
         if (wrappingMode === "Wrap") {
-          const tx = await secretjs.tx.broadcast(
-            [
-              new MsgExecuteContract({
-                sender: secretAddress,
-                contract_address: selectedToken.address,
-                code_hash: selectedToken.code_hash,
-                sent_funds: [
-                  { denom: selectedToken.withdrawals[0].from_denom, amount },
-                ],
-                msg: { deposit: {} },
-              } as any),
-            ],
-            {
-              gasLimit: 150_000,
-              gasPriceInFeeDenom: 0.25,
-              feeDenom: "uscrt",
-              feeGranter: feeGrantStatus === "Success" ? faucetAddress : "",
+          await secretjs.tx.broadcast(
+              [
+                new MsgExecuteContract({
+                  sender: secretAddress,
+                  contract_address: selectedToken.address,
+                  code_hash: selectedToken.code_hash,
+                  sent_funds: [
+                    { denom: selectedToken.withdrawals[0].from_denom, amount },
+                  ],
+                  msg: { deposit: {} },
+                } as any),
+              ],
+              {
+                gasLimit: 150_000,
+                gasPriceInFeeDenom: 0.25,
+                feeDenom: "uscrt",
+                feeGranter: feeGrantStatus === "Success" ? faucetAddress : "",
+              }
+            )
+            .catch((error) => {
+              console.error(error);
+              if (error?.tx?.rawLog) {
+                toast.update(toastId, {
+                  render: `Wrapping of ${selectedToken.name} failed: ${error.tx.rawLog}`,
+                  type: "error",
+                  isLoading: false,
+                  closeOnClick: true,
+                });
+              }
+              else { toast.update(toastId, {
+                render: `Wrapping of ${selectedToken.name} failed: ${error.message}`,
+                type: "error",
+                isLoading: false,
+                closeOnClick: true,
+              });
             }
-          );
-
-          if (tx.code === 0) {
-            setAmountToWrap("");
-            toast.update(toastId, {
-              render: `Wrapped ${selectedToken.name} successfully`,
-              type: "success",
-              isLoading: false,
-              closeOnClick: true,
+            })
+            .then((tx) => {
+              console.log(tx)
+              if (tx) {
+                if (tx.code === 0) {
+                  setAmountToWrap("");
+                  toast.update(toastId, {
+                    render: `Wrapped ${selectedToken.name} successfully`,
+                    type: "success",
+                    isLoading: false,
+                    closeOnClick: true,
+                  });
+                  setIsValidationActive(false);
+                }
+                else { toast.update(toastId, {
+                  render: `Wrapping of ${selectedToken.name} failed: ${tx.rawLog}`,
+                  type: "error",
+                  isLoading: false,
+                  closeOnClick: true,
+                });
+              }
+              }
             });
-            setIsValidationActive(false);
-          } else {
-            toast.update(toastId, {
-              render: `Wrapping of ${selectedToken.name} failed: ${tx.rawLog}`,
-              type: "error",
-              isLoading: false,
-              closeOnClick: true,
-            });
-            console.error(`Tx failed: ${tx.rawLog}`);
-          }
         } else {
-          const tx = await secretjs.tx.broadcast(
+          await secretjs.tx.broadcast(
             [
               new MsgExecuteContract({
                 sender: secretAddress,
@@ -568,25 +589,46 @@ export function Wrap() {
               feeDenom: "uscrt",
               feeGranter: feeGrantStatus === "Success" ? faucetAddress : "",
             }
-          );
-          if (tx.code === 0) {
-            setAmountToWrap("");
-            toast.update(toastId, {
-              render: `Unwrapped ${selectedToken.name} successfully`,
-              type: "success",
-              isLoading: false,
-              closeOnClick: true,
-            });
-            setIsValidationActive(false);
-          } else {
-            toast.update(toastId, {
-              render: `Unwrapping of ${selectedToken.name} failed: ${tx.rawLog}`,
+          ).catch((error) => {
+            console.error(error);
+            if (error?.tx?.rawLog) {
+              toast.update(toastId, {
+                render: `Unwrapping of s${selectedToken.name} failed: ${error.tx.rawLog}`,
+                type: "error",
+                isLoading: false,
+                closeOnClick: true,
+              });
+            }
+            else { toast.update(toastId, {
+              render: `Unwrapping of s${selectedToken.name} failed: ${error.message}`,
               type: "error",
               isLoading: false,
               closeOnClick: true,
             });
-            console.error(`Tx failed: ${tx.rawLog}`);
           }
+          })
+          .then((tx) => {
+            console.log(tx)
+            if (tx) {
+              if (tx.code === 0) {
+                setAmountToWrap("");
+                toast.update(toastId, {
+                  render: `Unwrapped s${selectedToken.name} successfully`,
+                  type: "success",
+                  isLoading: false,
+                  closeOnClick: true,
+                });
+                setIsValidationActive(false);
+              } else {
+                toast.update(toastId, {
+                  render: `Unwrapping of s${selectedToken.name} failed: ${tx.rawLog}`,
+                  type: "error",
+                  isLoading: false,
+                  closeOnClick: true,
+                });
+              }
+            }
+          });
         }
       } finally {
         setLoadingWrapOrUnwrap(false);
