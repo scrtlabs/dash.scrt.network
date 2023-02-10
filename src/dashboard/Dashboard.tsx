@@ -72,33 +72,28 @@ export function Dashboard() {
     }
   }, [dailyTransactions]);
 
-  // community tax
+  // taxes
   const [communityTax, setCommunityTax] = useState("");
-  const [communityTaxFormattedString, setCommunityTaxFormattedString] =
+  const [secretFoundationTax, setSecretFoundationTax] = useState("");
+  const [taxFormattedString, setTaxFormattedString] =
     useState("");
 
   useEffect(() => {
     if (communityTax) {
-      setCommunityTaxFormattedString(
-        (parseFloat(communityTax) * 100).toString() + "%"
+      setTaxFormattedString(
+        (parseFloat(communityTax) * 100).toString() + "%" + " / " + (parseFloat(secretFoundationTax) * 100).toString() + "%"
       );
     }
-  }, [communityTax]);
-
-  // secretFoundationTax
-  const [secretFoundationTax, setSecretFoundationTax] = useState("");
-  const [
-    secretFoundationTaxFormattedString,
-    setSecretFoundationTaxFormattedString,
-  ] = useState("");
+  }, [communityTax,secretFoundationTax]);
 
   useEffect(() => {
-    if (secretFoundationTax) {
-      setSecretFoundationTaxFormattedString(
-        (parseFloat(secretFoundationTax) * 100).toString() + "%"
+    if (communityTax) {
+      setTaxFormattedString(
+        (parseFloat(communityTax) * 100).toString() + "%" + " / " + (parseFloat(secretFoundationTax) * 100).toString() + "%"
       );
     }
-  }, [secretFoundationTax]);
+  }, [communityTax,secretFoundationTax]);
+
 
   // feesPaid
   const [feesPaid, setFeesPaid] = useState("");
@@ -123,48 +118,40 @@ export function Dashboard() {
   }, [inflation]);
 
   // APR
-  const [growthRate, setGrowthRate] = useState(0);
-  const [growthRateFormattedString, setGrowthRateFormattedString] =
-    useState("");
-
-  useEffect(() => {
-    if (growthRate) {
-      const percentage = growthRate * 100;
-      setGrowthRateFormattedString(percentage.toFixed(2) + "%");
-    }
-  }, [growthRate]);
+  const [growthRateFormattedString, setGrowthRateFormattedString] = useState("");
 
   //Bonded Ratio
   const [bondedRatio, setBondedRatio] = useState(0);
+  const [bondedRatioFormattedString, setBondedRatioFormattedString] = useState("");
 
-  // totalSupply, bonded, notBonded
-  const [totalSupply, setTotalSupply] = useState(Number);
-  const [bondedToken, setBondedToken] = useState(Number);
-  const [notBondedToken, setNotBondedToken] = useState(Number);
+  // // totalSupply, bonded, notBonded
+  // const [totalSupply, setTotalSupply] = useState(Number);
+  // const [bondedToken, setBondedToken] = useState(Number);
+  // const [notBondedToken, setNotBondedToken] = useState(Number);
 
-  useEffect(() => {
-    const queryData = async () => {
-      const secretjsquery = new SecretNetworkClient({
-        url: SECRET_LCD,
-        chainId: SECRET_CHAIN_ID,
-      });
-      secretjsquery?.query?.bank
-        ?.supplyOf({ denom: "uscrt" })
-        ?.then((res) => setTotalSupply((res.amount.amount as any) / 1e6));
-      secretjsquery?.query?.staking
-        ?.pool("")
-        ?.then((res) =>
-          setBondedToken(parseInt(res.pool.bonded_tokens) / 10e5)
-        );
-      secretjsquery?.query?.staking
-        ?.pool("")
-        ?.then((res) =>
-          setNotBondedToken(parseInt(res.pool.not_bonded_tokens) / 10e4)
-        );
-    };
+  // useEffect(() => {
+  //   const queryData = async () => {
+  //     const secretjsquery = new SecretNetworkClient({
+  //       url: SECRET_LCD,
+  //       chainId: SECRET_CHAIN_ID,
+  //     });
+  //     secretjsquery?.query?.bank
+  //       ?.supplyOf({ denom: "uscrt" })
+  //       ?.then((res) => setTotalSupply((res.amount.amount as any) / 1e6));
+  //     secretjsquery?.query?.staking
+  //       ?.pool("")
+  //       ?.then((res) =>
+  //         setBondedToken(parseInt(res.pool.bonded_tokens) / 10e5)
+  //       );
+  //     secretjsquery?.query?.staking
+  //       ?.pool("")
+  //       ?.then((res) =>
+  //         setNotBondedToken(parseInt(res.pool.not_bonded_tokens) / 10e4)
+  //       );
+  //   };
 
-    queryData();
-  }, []);
+  //   queryData();
+  // }, []);
 
   // volume & market cap
   const [volumeFormattedString, setVolumeFormattedString] = useState("");
@@ -234,14 +221,17 @@ export function Dashboard() {
   }, [spartanApiData]);
 
   useEffect(() => {
-    if (inflation && secretFoundationTax && communityTax) {
+    if (inflation && secretFoundationTax && communityTax && bondedRatio) {
       // staking ratio missing
       const I = inflation; // inflation
       const F = parseFloat(secretFoundationTax); // foundation tax
-      const C = 0.05; // validator commision rate; median is 5%
+      const C = 0.00; // validator commision rate; median is 5%
       const T = parseFloat(communityTax); // community tax
       const R = bondedRatio / 100; // bonded ratio
-      setGrowthRate((I / R) * (1 - F - T) * (1 - C));
+      const APR = ((I / R))*100;
+      const realYield = ((I / R) * (1 - F - T) * (1 - C))*100;
+      setGrowthRateFormattedString(APR.toFixed(2) + "%"+" / "+ realYield.toFixed(2)+"%");
+      setBondedRatioFormattedString(bondedRatio.toFixed(2)+"%");
     }
   }, [inflation, secretFoundationTax, communityTax, bondedRatio]);
 
@@ -306,14 +296,14 @@ export function Dashboard() {
             {/* Block Info */}
             <div className='col-span-12 md:col-span-12 lg:col-span-12 xl:col-span-12 2xl:col-span-4'>
               <QuadTile
-                item1_key='Staking Yield [APR]'
+                item1_key='APR/Staking Yield'
                 item1_value={growthRateFormattedString}
                 item2_key='Inflation'
                 item2_value={inflationFormattedString}
-                item3_key='Community Tax'
-                item3_value={communityTaxFormattedString}
-                item4_key='Secret Foundation Tax'
-                item4_value={secretFoundationTaxFormattedString}
+                item3_key='Community Tax/Secret Foundation Tax'
+                item3_value={taxFormattedString}
+                item4_key='Bonded Ratio'
+                item4_value={bondedRatioFormattedString}
               />
             </div>
           </div>
