@@ -276,3 +276,8 @@ export const shuffleArray = (array: any[]) => {
   }
   return array;
 };
+
+export const sortDAppsArray = (array: any[]) => {
+  const sortedArray = [...array].sort((a, b) => a.attributes.name.localeCompare(b.attributes.name));
+  return sortedArray;
+};
