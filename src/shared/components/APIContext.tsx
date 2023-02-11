@@ -1,12 +1,12 @@
 import { createContext, useEffect, useRef, useState } from "react";
 import { SecretNetworkClient } from "secretjs";
-import { dAppsURL, shuffleArray } from "shared/utils/commons";
+import { dAppsURL, shuffleArray, sortDAppsArray} from "shared/utils/commons";
 
 const APIContext = createContext(null);
 
 const APIContextProvider = ({ children }: any) => {
   const [dappsData, setDappsData] = useState<any[]>([]);
-  const [dappsDataShuffled, setDappsDataShuffled] = useState<any[]>([]);
+  const [dappsDataSorted, setDappsDataSorted] = useState<any[]>([]);
   const [tags, setTags] = useState<string[]>([]);
 
   const fetchDappsURL = () => {
@@ -32,10 +32,10 @@ const APIContextProvider = ({ children }: any) => {
   useEffect(() => {
     if (
       dappsData &&
-      dappsDataShuffled.length === 0 &&
+      dappsDataSorted.length === 0 &&
       dappsData?.length !== 0
     ) {
-      setDappsDataShuffled(shuffleArray(dappsData));
+      setDappsDataSorted(sortDAppsArray(dappsData));
       // Tag-Filter
       let allTags: string[] = [];
 
@@ -116,8 +116,8 @@ const APIContextProvider = ({ children }: any) => {
   const providerValue = {
     dappsData,
     setDappsData,
-    dappsDataShuffled,
-    setDappsDataShuffled,
+    dappsDataSorted,
+    setDappsDataSorted,
     tags,
     setTags,
     coingeckoApiData_Day,

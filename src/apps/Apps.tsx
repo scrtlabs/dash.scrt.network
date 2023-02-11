@@ -5,7 +5,7 @@ import { Helmet } from "react-helmet-async";
 import { websiteName } from "App";
 import Header from "./components/Header";
 import AppTile from "./components/AppTile";
-import { shuffleArray, dAppsURL } from "shared/utils/commons";
+import { sortDAppsArray, dAppsURL } from "shared/utils/commons";
 import React from "react";
 import { APIContext } from "shared/components/APIContext";
 
@@ -13,8 +13,8 @@ function Apps() {
   const {
     dappsData,
     setDappsData,
-    dappsDataShuffled,
-    setDappsDataShuffled,
+    dappsDataSorted,
+    setDappsDataSorted,
     tags,
     setTags,
   } = useContext(APIContext);
@@ -58,9 +58,9 @@ function Apps() {
 
   // results apps that match on the search input and chosen tags
   function filteredDappsData() {
-    let items = dappsDataShuffled;
+    let items = dappsDataSorted;
     if (searchText !== "") {
-      items = dappsDataShuffled.filter((app: any) =>
+      items = items.filter((app: any) =>
         app.attributes.name.toLowerCase().includes(searchText.toLowerCase())
       );
     }
@@ -72,7 +72,7 @@ function Apps() {
           .find((tag: any) => tagsToBeFilteredBy.includes(tag))
       );
     }
-
+    
     return items;
   }
 
