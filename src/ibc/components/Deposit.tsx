@@ -401,7 +401,6 @@ function Deposit() {
 
         try {
           let tx: TxResponse;
-
           if (!["Evmos", "Injective"].includes(selectedSource.chain_name)) {
             // Regular cosmos chain (not ethermint signing)
             tx = await sourceChainSecretjs.tx.ibc.transfer(
@@ -412,7 +411,7 @@ function Deposit() {
                 source_port: "transfer",
                 token: {
                   amount,
-                  denom: selectedSource.from_denom,
+                  denom: selectedToken.deposits.filter(deposit => deposit.chain_name === selectedSource.chain_name)[0].from_denom,
                 },
                 timeout_timestamp: String(
                   Math.floor(Date.now() / 1000) + 10 * 60
@@ -481,7 +480,7 @@ function Deposit() {
                 sourcePort: "transfer",
                 sourceChannel: deposit_channel_id,
                 amount,
-                denom: selectedSource.from_denom,
+                denom: selectedToken.deposits.filter(deposit => deposit.chain_name === selectedSource.chain_name)[0].from_denom,
                 receiver: secretAddress,
                 revisionNumber: 0,
                 revisionHeight: 0,
