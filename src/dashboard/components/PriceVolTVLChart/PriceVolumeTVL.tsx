@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { DashboardContext, useDashboardContext } from "../../Dashboard";
 import { formatNumber } from "shared/utils/commons";
+import { ThemeContext } from "shared/components/ThemeContext";
 
 import {
   Chart as ChartJS,
@@ -38,6 +39,8 @@ export default function PriceVolumeTVL(props: any) {
     coingeckoApiData_Year,
     defiLamaApiData_Year,
   } = useDashboardContext();
+
+  const { theme, setTheme } = useContext(ThemeContext);
 
   const [marketData, setMarketData] = useState([]);
 
@@ -92,7 +95,7 @@ export default function PriceVolumeTVL(props: any) {
         label: chartType,
         data: chartData.map((x: any[]) => ({ x: x[0], y: x[1] })),
         fill: false,
-        borderColor: "#06b6d4",
+        borderColor: theme === "dark" ? "#fff" : "#06b6d4",
         tension: 0.1,
         pointHitRadius: "5",
       },
@@ -101,19 +104,59 @@ export default function PriceVolumeTVL(props: any) {
 
   const options = {
     responsive: true,
+    animation: true,
     maintainAspectRatio: false,
     plugins: {
       legend: {
         display: false,
       },
+      tooltip: {
+        xAlign: true,
+        callbacks: {
+            label: function(context) {
+                let label = context.dataset.label || '';
+
+                if (label) {
+                    label += ': ';
+                }
+                if (context.parsed.y !== null) {
+                    label += new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(context.parsed.y);
+                }
+                return label;
+            }
+        }
+    },
     },
     scales: {
+      x: {
+        grid: {
+          color: theme === "dark" ? "#fff" : "#000",
+          alpha: 0.5,
+          display: false,
+          drawOnChartArea: true,
+          drawTicks: true,
+          tickLength: 0,
+        },
+        border: {
+          color: theme === "dark" ? "#fff" : "#000",
+        }
+      },
       y: {
         ticks: {
           callback: function (value, index, ticks) {
             return "$" + formatNumber(value, 2);
           },
         },
+        border: {
+          color: theme === "dark" ? "#fff" : "#000",
+        },
+        grid: {
+          color: theme === "dark" ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0, 0, 0, 0.2)',
+          display: true,
+          drawOnChartArea: true,
+          drawTicks: true,
+          tickLength: 0,
+        }
       },
     },
     pointStyle: false,
