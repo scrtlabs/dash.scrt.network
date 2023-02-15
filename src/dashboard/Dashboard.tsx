@@ -278,7 +278,7 @@ export function Dashboard() {
               <QuadTile
                 item1_key='Block Height'
                 item1_value={blockHeightFormattedString}
-                item2_key='Block Time'
+                item2_key='Block Time (100 blocks)'
                 item2_value={blockTimeFormattedString}
                 item3_key='# Transactions (24h)'
                 item3_value={dailyTransactionsFormattedString}

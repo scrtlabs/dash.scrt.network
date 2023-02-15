@@ -95,10 +95,10 @@ export default function StakingChart() {
 
   const data = {
     labels: [
-      `Staked: ${formatNumber(bondedToken, 2)}`,
-      `Unstaked: ${formatNumber(notBondedToken, 2)}`,
-      `Community Pool: ${formatNumber(communityPool, 2)}`,
-      `Operational: ${formatNumber(operationalToken, 2)}`,
+      `Staked: ${formatNumber(bondedToken, 2)} (${((bondedToken/totalSupply)*100).toFixed(2)}%)`,
+      `Unstaked: ${formatNumber(notBondedToken, 2)} (${((notBondedToken/totalSupply)*100).toFixed(2)}%)`,
+      `Community Pool: ${formatNumber(communityPool, 2)} (${((communityPool/totalSupply)*100).toFixed(2)}%)`,
+      `Operational (SCRT Labs): ${formatNumber(operationalToken, 2)} (${((operationalToken/totalSupply)*100).toFixed(2)}%)`,
     ],
     datasets: [
       {
@@ -120,13 +120,26 @@ export default function StakingChart() {
         position: "bottom",
         onClick: null,
         labels: {
+          color: theme === "dark" ? "#fff" : "#000",
           usePointStyle: true,
           pointStyle: "circle",
-          padding: 20,
+          padding: 10,
         },
       },
       tooltip: {
-        enabled: false,
+        enabled: true,
+        callbacks: {
+          label: function(context) {
+              let label = context.dataset.label || '';
+              if (label) {
+                  label += ': ';
+              }
+              if (context.parsed !== null) {
+                  label += `${formatNumber(context.parsed, 2)} SCRT`
+              }
+              return label;
+          }
+      }
       },
     },
   };
