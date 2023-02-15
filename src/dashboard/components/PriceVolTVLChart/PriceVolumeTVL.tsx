@@ -129,6 +129,9 @@ export default function PriceVolumeTVL(props: any) {
     },
     scales: {
       x: {
+        ticks: {
+          color: theme === "dark" ? "#fff" : "#000",
+        },
         grid: {
           color: theme === "dark" ? "#fff" : "#000",
           alpha: 0.5,
@@ -143,6 +146,7 @@ export default function PriceVolumeTVL(props: any) {
       },
       y: {
         ticks: {
+          color: theme === "dark" ? "#fff" : "#000",
           callback: function (value, index, ticks) {
             return "$" + formatNumber(value, 2);
           },
