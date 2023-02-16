@@ -88,7 +88,7 @@ export function Wrap() {
 
     const numberRegex = /^(?:[1-9]\d*|0)?(?:\.\d+)?$/;
 
-    function matchExact(r, str) {
+    function matchExact(r: any, str: any) {
       const match = str.match(r);
       return match && str === match[0];
     }
@@ -524,7 +524,7 @@ export function Wrap() {
                 feeGranter: feeGrantStatus === "Success" ? faucetAddress : "",
               }
             )
-            .catch((error) => {
+            .catch((error : any) => {
               console.error(error);
               if (error?.tx?.rawLog) {
                 toast.update(toastId, {
@@ -542,7 +542,7 @@ export function Wrap() {
               });
             }
             })
-            .then((tx) => {
+            .then((tx : any) => {
               console.log(tx)
               if (tx) {
                 if (tx.code === 0) {
@@ -589,7 +589,7 @@ export function Wrap() {
               feeDenom: "uscrt",
               feeGranter: feeGrantStatus === "Success" ? faucetAddress : "",
             }
-          ).catch((error) => {
+          ).catch((error: any) => {
             console.error(error);
             if (error?.tx?.rawLog) {
               toast.update(toastId, {
@@ -607,7 +607,7 @@ export function Wrap() {
             });
           }
           })
-          .then((tx) => {
+          .then((tx : any) => {
             console.log(tx)
             if (tx) {
               if (tx.code === 0) {
@@ -704,25 +704,28 @@ export function Wrap() {
           if (result.ok == true) {
             updateFeeGrantButton("Fee Granted", "green");
             toast.success(
-              `Your wallet does not have any SCRT to pay for transaction costs. Successfully sent new fee grant (0.1 SCRT) to address ${secretAddress}`
+              `Your wallet does not have any SCRT to pay for transaction costs. Successfully sent new fee grant (0.1 SCRT) to address ${secretAddress}.`
             );
+            setFeeGrantStatus("Success");
           } else if (textBody == "Existing Fee Grant did not expire\n") {
             updateFeeGrantButton("Fee Granted", "green");
             toast.success(
-              `Your wallet does not have any SCRT to pay for transaction costs. Your address ${secretAddress} however does already have an existing fee grant`
+              `Your wallet does not have any SCRT to pay for transaction costs. Your address ${secretAddress} however does already have an existing fee grant.`
             );
+            setFeeGrantStatus("Success");
           } else {
             updateFeeGrantButton("Fee Grant failed", "red");
             toast.error(
               `Fee Grant for address ${secretAddress} failed with status code: ${result.status}`
             );
+            setFeeGrantStatus("Fail");
           }
-          setFeeGrantStatus("Fail");
         } catch (e) {
           updateFeeGrantButton("Fee Grant failed", "red");
           toast.error(
             `Fee Grant for address ${secretAddress} failed with error: ${e}`
           );
+          setFeeGrantStatus("Fail");
         }
       }
     } catch (e) {
