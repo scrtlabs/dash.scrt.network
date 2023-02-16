@@ -88,7 +88,7 @@ export function Wrap() {
 
     const numberRegex = /^(?:[1-9]\d*|0)?(?:\.\d+)?$/;
 
-    function matchExact(r, str) {
+    function matchExact(r: any, str: any) {
       const match = str.match(r);
       return match && str === match[0];
     }
@@ -524,7 +524,7 @@ export function Wrap() {
                 feeGranter: feeGrantStatus === "Success" ? faucetAddress : "",
               }
             )
-            .catch((error) => {
+            .catch((error : any) => {
               console.error(error);
               if (error?.tx?.rawLog) {
                 toast.update(toastId, {
@@ -542,7 +542,7 @@ export function Wrap() {
               });
             }
             })
-            .then((tx) => {
+            .then((tx : any) => {
               console.log(tx)
               if (tx) {
                 if (tx.code === 0) {
@@ -589,7 +589,7 @@ export function Wrap() {
               feeDenom: "uscrt",
               feeGranter: feeGrantStatus === "Success" ? faucetAddress : "",
             }
-          ).catch((error) => {
+          ).catch((error: any) => {
             console.error(error);
             if (error?.tx?.rawLog) {
               toast.update(toastId, {
@@ -607,7 +607,7 @@ export function Wrap() {
             });
           }
           })
-          .then((tx) => {
+          .then((tx : any) => {
             console.log(tx)
             if (tx) {
               if (tx.code === 0) {
