@@ -113,7 +113,7 @@ export default function PriceVolumeTVL(props: any) {
       tooltip: {
         xAlign: true,
         callbacks: {
-            label: function(context: any) {
+            label: function(context) {
                 let label = context.dataset.label || '';
 
                 if (label) {
@@ -147,7 +147,7 @@ export default function PriceVolumeTVL(props: any) {
       y: {
         ticks: {
           color: theme === "dark" ? "#fff" : "#000",
-          callback: function (value: any, index: any, ticks: any) {
+          callback: function (value, index, ticks) {
             return "$" + formatNumber(value, 2);
           },
         },
@@ -206,7 +206,7 @@ export default function PriceVolumeTVL(props: any) {
           </div>
         </div>
         <div className='w-full h-[300px] xl:h-[400px]'>
-          <Line data={data as any} options={options as any} />
+          <Line data={data as any} options={options} />
         </div>
       </PriceVolumeHistoryContext.Provider>
     </>

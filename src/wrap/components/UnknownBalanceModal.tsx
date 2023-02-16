@@ -13,7 +13,7 @@ import { If } from "react-if";
 import { Link } from "react-router-dom";
 import { WrapContext } from "wrap/Wrap";
 
-const UnknownBalanceModal = (props: any) => {
+const UnknownBalanceModal = (props) => {
   // disable body scroll on open
   useEffect(() => {
     if (props.open) {

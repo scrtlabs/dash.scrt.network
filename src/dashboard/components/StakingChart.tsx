@@ -67,7 +67,7 @@ export default function StakingChart() {
 
   const centerText = {
     id: "centerText",
-    afterDatasetsDraw(chart: any, args: any, options: any) {
+    afterDatasetsDraw(chart, args, options) {
       const {
         ctx,
         chartArea: { left, right, top, bottom, width, height },
@@ -118,7 +118,7 @@ export default function StakingChart() {
       legend: {
         display: true,
         position: "bottom",
-        onClick: null as any,
+        onClick: null,
         labels: {
           color: theme === "dark" ? "#fff" : "#000",
           usePointStyle: true,
@@ -129,7 +129,7 @@ export default function StakingChart() {
       tooltip: {
         enabled: true,
         callbacks: {
-          label: function(context: any) {
+          label: function(context) {
               let label = context.dataset.label || '';
               if (label) {
                   label += ': ';
