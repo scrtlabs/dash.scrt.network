@@ -6,7 +6,7 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useEffect } from "react";
 
-const FeeGrantInfoModal = (props) => {
+const FeeGrantInfoModal = (props: any) => {
   // disable body scroll on open
   useEffect(() => {
     if (props.open) {

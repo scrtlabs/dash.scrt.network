@@ -17,7 +17,7 @@ export function KeplrPanel() {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  async function connectWallet(setSecretjs, setSecretAddress) {
+  async function connectWallet(setSecretjs: any, setSecretAddress: any) {
     if (!window.keplr) {
       setIsModalOpen(true);
       document.body.classList.add("overflow-hidden");
