@@ -2,6 +2,7 @@ import {
   faArrowUpRightFromSquare,
   faBook,
   faBox,
+  faBriefcase,
   faChartLine,
   faCheckToSlot,
   faChevronDown,
@@ -218,6 +219,21 @@ export function Navigation({
               >
                 <FontAwesomeIcon icon={faBook} className='mr-2' />
                 Documentation
+                <FontAwesomeIcon
+                  icon={faArrowUpRightFromSquare}
+                  className='text-xs ml-2'
+                  size={"xs"}
+                />
+              </a>
+            </li>
+            <li>
+              <a
+                href='https://cryptoclerk.xyz/'
+                target='_blank'
+                className='cursor-pointer dark:hover:text-white block w-full lg:mx-8 rounded-xl transition-colors text-neutral-600 dark:text-neutral-300 hover:text-black'
+              >
+                <FontAwesomeIcon icon={faBriefcase} className='mr-2' />
+                Crypto Clerk
                 <FontAwesomeIcon
                   icon={faArrowUpRightFromSquare}
                   className='text-xs ml-2'

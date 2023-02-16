@@ -3,7 +3,7 @@ import { SecretNetworkClient } from "secretjs";
 
 const SecretjsContext = createContext(null);
 
-const SecretjsContextProvider = ({children}) => {
+const SecretjsContextProvider = ({children}: any) => {
   const [secretjs, setSecretjs] = useState<SecretNetworkClient | null>(null);
   const [secretAddress, setSecretAddress] = useState<string>("");
 
