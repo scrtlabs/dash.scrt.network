@@ -61,7 +61,7 @@ function Deposit() {
   const [amountToTransfer, setAmountToTransfer] = useState<string>("");
   const { secretjs, secretAddress } = useContext(SecretjsContext);
   const queryParams = new URLSearchParams(window.location.search);
-  const tokenByQueryParam = queryParams.get("token"); // "scrt", "akash", etc.
+  
   const chainByQueryParam = queryParams.get("chain"); // "scrt", "akash", etc.
   const [selectedToken, setSelectedToken] = useState<Token>(
     tokens.filter((token) => token.name === "SCRT")[0]
