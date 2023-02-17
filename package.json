@@ -1,7 +1,7 @@
 {
   "name": "secret_dashboard",
   "description": "An entry point for new users into Secret Network",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "scripts": {
     "start": "vite --host",
     "build": "tsc && vite build",
