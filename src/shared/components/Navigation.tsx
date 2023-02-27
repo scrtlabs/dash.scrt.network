@@ -147,7 +147,9 @@ export function Navigation({
         </button>
 
         <div
-          className={isExtendedMenuOpen ? "block" : "hidden"}
+          className={`text-sm font-semibold ${
+            isExtendedMenuOpen ? "block" : "hidden"
+          }`}
           id='extended-menu'
         >
           <ul className='space-y-6 font-medium'>
@@ -155,10 +157,10 @@ export function Navigation({
               <a
                 href='https://wallet.keplr.app/chains/secret-network?tab=staking'
                 target='_blank'
-                className='cursor-pointer dark:hover:text-white block w-full lg:mx-8 rounded-xl transition-colors text-neutral-600 dark:text-neutral-300 hover:text-black'
+                className='cursor-pointer dark:hover:text-white w-full lg:mx-8 rounded-xl transition-colors text-neutral-600 dark:text-neutral-300 hover:text-black block lg:flex lg:items-center'
               >
                 <FontAwesomeIcon icon={faCoins} className='mr-2' />
-                Stake
+                <span>Stake</span>
                 <FontAwesomeIcon
                   icon={faArrowUpRightFromSquare}
                   className='text-xs ml-2'
@@ -170,10 +172,10 @@ export function Navigation({
               <a
                 href='https://wallet.keplr.app/chains/secret-network?tab=governance'
                 target='_blank'
-                className='cursor-pointer dark:hover:text-white block w-full lg:mx-8 rounded-xl transition-colors text-neutral-600 dark:text-neutral-300 hover:text-black'
+                className='cursor-pointer dark:hover:text-white w-full lg:mx-8 rounded-xl transition-colors text-neutral-600 dark:text-neutral-300 hover:text-black block lg:flex lg:items-center'
               >
                 <FontAwesomeIcon icon={faCheckToSlot} className='mr-2' />
-                Governance
+                <span>Governance</span>
                 <FontAwesomeIcon
                   icon={faArrowUpRightFromSquare}
                   className='text-xs ml-2'
@@ -185,10 +187,10 @@ export function Navigation({
               <a
                 href='https://secretanalytics.xyz'
                 target='_blank'
-                className='cursor-pointer dark:hover:text-white block w-full lg:mx-8 rounded-xl transition-colors text-neutral-600 dark:text-neutral-300 hover:text-black'
+                className='cursor-pointer dark:hover:text-white w-full lg:mx-8 rounded-xl transition-colors text-neutral-600 dark:text-neutral-300 hover:text-black block lg:flex lg:items-center'
               >
                 <FontAwesomeIcon icon={faChartLine} className='mr-2' />
-                Stats
+                <span>Stats</span>
                 <FontAwesomeIcon
                   icon={faArrowUpRightFromSquare}
                   className='text-xs ml-2'
@@ -200,10 +202,10 @@ export function Navigation({
               <a
                 href='https://secretnodes.com/'
                 target='_blank'
-                className='cursor-pointer dark:hover:text-white block w-full lg:mx-8 rounded-xl transition-colors text-neutral-600 dark:text-neutral-300 hover:text-black'
+                className='cursor-pointer dark:hover:text-white w-full lg:mx-8 rounded-xl transition-colors text-neutral-600 dark:text-neutral-300 hover:text-black block lg:flex lg:items-center'
               >
                 <FontAwesomeIcon icon={faCube} className='mr-2' />
-                Block Explorer
+                <span>Block Explorer</span>
                 <FontAwesomeIcon
                   icon={faArrowUpRightFromSquare}
                   className='text-xs ml-2'
@@ -215,10 +217,10 @@ export function Navigation({
               <a
                 href='https://docs.scrt.network/'
                 target='_blank'
-                className='cursor-pointer dark:hover:text-white block w-full lg:mx-8 rounded-xl transition-colors text-neutral-600 dark:text-neutral-300 hover:text-black'
+                className='cursor-pointer dark:hover:text-white w-full lg:mx-8 rounded-xl transition-colors text-neutral-600 dark:text-neutral-300 hover:text-black block lg:flex lg:items-center'
               >
                 <FontAwesomeIcon icon={faBook} className='mr-2' />
-                Documentation
+                <span>Documentation</span>
                 <FontAwesomeIcon
                   icon={faArrowUpRightFromSquare}
                   className='text-xs ml-2'
@@ -230,7 +232,7 @@ export function Navigation({
               <a
                 href='https://cryptoclerk.xyz/'
                 target='_blank'
-                className='cursor-pointer dark:hover:text-white block w-full lg:mx-8 rounded-xl transition-colors text-neutral-600 dark:text-neutral-300 hover:text-black'
+                className='cursor-pointer dark:hover:text-white w-full lg:mx-8 rounded-xl transition-colors text-neutral-600 dark:text-neutral-300 hover:text-black block lg:flex lg:items-center'
               >
                 <FontAwesomeIcon icon={faBriefcase} className='mr-2' />
                 Crypto Clerk
