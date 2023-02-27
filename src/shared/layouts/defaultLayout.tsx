@@ -40,7 +40,9 @@ export const DefaultLayout = ({ children }: any) => {
   return (
     <>
       {/* Fixed Feedback Button */}
-      <FeedbackButton url={"https://forms.gle/gxCqYzHwv7N4gx3G8"} />
+      <FeedbackButton
+        url={"https://github.com/scrtlabs/dash.scrt.network/issues"}
+      />
 
       {/* Fixed Help Button */}
       <FloatingCTAButton
