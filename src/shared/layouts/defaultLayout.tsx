@@ -41,16 +41,16 @@ export const DefaultLayout = ({ children }: any) => {
     <>
       {/* Fixed Feedback Button */}
       <FeedbackButton
-        url={"https://github.com/scrtlabs/dash.scrt.network/issues"}
+        url={"https://github.com/scrtlabs/dash.scrt.network/issues/new"}
       />
 
       {/* Fixed Help Button */}
       <FloatingCTAButton
-        url='https://linktr.ee/SCRTSupport'
-        text='Need Help?'
+        url="https://linktr.ee/SCRTSupport"
+        text="Need Help?"
       />
 
-      <div className='flex'>
+      <div className="flex">
         {/* Menu */}
         <aside
           className={
@@ -68,33 +68,33 @@ export const DefaultLayout = ({ children }: any) => {
             />
           </NavigationContext.Provider>
         </aside>
-        <main className='flex flex-col min-h-screen flex-1 lg:ml-[17rem]'>
-          <div className='flex-1'>
+        <main className="flex flex-col min-h-screen flex-1 lg:ml-[17rem]">
+          <div className="flex-1">
             {/* Top Bar [Burger Menu | Socials | Keplr] */}
-            <div className='flex items-center gap-4 p-4'>
+            <div className="flex items-center gap-4 p-4">
               {/* Burger Menu */}
-              <div className='flex-initial lg:hidden'>
+              <div className="flex-initial lg:hidden">
                 <button
                   onClick={() => setShowMobileMenu(true)}
-                  className='text-black dark:text-white hover:text-neutral-600 dark:hover:text-neutral-400 transition-colors'
+                  className="text-black dark:text-white hover:text-neutral-600 dark:hover:text-neutral-400 transition-colors"
                 >
-                  <FontAwesomeIcon icon={faBars} size='xl' />
+                  <FontAwesomeIcon icon={faBars} size="xl" />
                 </button>
               </div>
 
-              <div className='flex-initial sm:flex-1 text-right space-x-2'>
+              <div className="flex-initial sm:flex-1 text-right space-x-2">
                 <ThemeSwitch />
               </div>
 
-              <div className='flex-1 sm:flex-initial sm:flex sm:justify-end'>
+              <div className="flex-1 sm:flex-initial sm:flex sm:justify-end">
                 <KeplrPanel />
               </div>
             </div>
 
-            <div className='lg:mr-[17rem]'>{children}</div>
+            <div className="lg:mr-[17rem]">{children}</div>
           </div>
-          <div className='lg:mr-[17rem]'>
-            <div className='max-w-7xl mx-auto mt-auto'>
+          <div className="lg:mr-[17rem]">
+            <div className="max-w-7xl mx-auto mt-auto">
               <Footer />
             </div>
           </div>
@@ -102,7 +102,7 @@ export const DefaultLayout = ({ children }: any) => {
       </div>
       <Breakpoint medium up>
         <ToastContainer
-          position='bottom-left'
+          position="bottom-left"
           autoClose={5000}
           hideProgressBar
           newestOnTop={true}
@@ -111,7 +111,7 @@ export const DefaultLayout = ({ children }: any) => {
           pauseOnFocusLoss
           draggable={false}
           pauseOnHover={true}
-          theme='dark'
+          theme="dark"
         />
       </Breakpoint>
       <Breakpoint small down>
