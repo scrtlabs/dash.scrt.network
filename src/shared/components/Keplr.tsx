@@ -64,33 +64,33 @@ export function KeplrPanel() {
       return (
         <>
           <div
-            className='absolute pt-2 right-4 z-40'
+            className="absolute pt-2 right-4 z-40"
             style={{ top: "3.35rem" }}
             onMouseEnter={() => setIsMenuVisible(true)}
             onMouseLeave={() => setIsMenuVisible(false)}
           >
-            <div className='bg-white dark:bg-neutral-800 border text-xs border-neutral-200 dark:border-neutral-700 p-4 w-auto rounded-lg'>
+            <div className="bg-white dark:bg-neutral-800 border text-xs border-neutral-200 dark:border-neutral-700 p-4 w-auto rounded-lg">
               <CopyToClipboard
                 text={secretAddress}
                 onCopy={() => {
                   toast.success("Address copied to clipboard!");
                 }}
               >
-                <button className='px-2 py-1 mb-2 rounded-lg flex gap-2 items-center group bg-neutral-100 dark:bg-neutral-900 hover:bg-neutral-200 dark:hover:bg-black transition-colors'>
+                <button className="px-2 py-1 mb-2 rounded-lg flex gap-2 items-center group bg-neutral-100 dark:bg-neutral-900 hover:bg-neutral-200 dark:hover:bg-black transition-colors">
                   <div>
                     {secretAddress.slice(0, 14) +
                       "..." +
                       secretAddress.slice(-14)}
                   </div>
-                  <div className='block text-neutral-500 dark:text-neutral-500 transition-colors'>
+                  <div className="block text-neutral-500 dark:text-neutral-500 transition-colors">
                     <FontAwesomeIcon icon={faCopy} />
                   </div>
                 </button>
               </CopyToClipboard>
-              <div className='text-right'>
+              <div className="text-right">
                 <button
                   onClick={disconnectWallet}
-                  className='font-semibold px-3 py-1.5 rounded-md text-red-400 bg-red-500/30 hover:bg-red-500/50 hover:text-red-300 transition-colors cursor-pointer'
+                  className="font-semibold px-3 py-1.5 rounded-md text-red-400 bg-red-500/30 hover:bg-red-500/50 hover:text-red-300 transition-colors cursor-pointer"
                 >
                   Disconnect Wallet
                 </button>
@@ -104,19 +104,19 @@ export function KeplrPanel() {
 
   const content = (
     <>
-      <div className='flex items-center font-semibold text-sm'>
-        <div className='flex'>
+      <div className="flex items-center font-semibold text-sm">
+        <div className="flex">
           <If condition={secretAddress.length > 0}>
             <Then>
-              <span className='relative w-2.5 mr-3'>
-                <span className='flex absolute h-2 w-2 top-[0.175rem] left-0.5'>
-                  <span className='animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-1/2'></span>
-                  <span className='relative inline-flex rounded-full h-2 w-2 bg-emerald-500'></span>
+              <span className="relative w-2.5 mr-3">
+                <span className="flex absolute h-2 w-2 top-[0.175rem] left-0.5">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-1/2"></span>
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
                 </span>
               </span>
             </Then>
           </If>
-          <FontAwesomeIcon icon={faWallet} className='mr-2' />
+          <FontAwesomeIcon icon={faWallet} className="mr-2" />
         </div>
         <span>
           <If condition={secretAddress.length > 0}>
@@ -140,7 +140,7 @@ export function KeplrPanel() {
           </div>
         </If>
         <div
-          className='w-full sm:w-auto rounded-lg px-4 py-3 bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700  select-none cursor-pointer'
+          className="w-full sm:w-auto rounded-lg px-4 py-3 bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700  select-none cursor-pointer"
           onMouseEnter={() => setIsMenuVisible(true)}
           onMouseLeave={() => setIsMenuVisible(false)}
         >
@@ -159,9 +159,9 @@ export function KeplrPanel() {
           }}
         />
         <button
-          id='keplr-button'
+          id="keplr-button"
           onClick={() => connectWallet(setSecretjs, setSecretAddress)}
-          className='w-full sm:w-auto rounded-lg px-4 py-3 bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 hover:bg-neutral-100 dark:hover:bg-neutral-700 active:bg-neutral-500 dark:active:bg-neutral-600 transition-colors select-none'
+          className="w-full sm:w-auto rounded-lg px-4 py-3 bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 hover:bg-neutral-100 dark:hover:bg-neutral-700 active:bg-neutral-500 dark:active:bg-neutral-600 transition-colors select-none"
         >
           {content}
         </button>

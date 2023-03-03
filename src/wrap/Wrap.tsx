@@ -73,8 +73,7 @@ export function Wrap() {
 
   const [loadingWrapOrUnwrap, setLoadingWrapOrUnwrap] =
     useState<boolean>(false);
-  const [loadingTokenBalance, setLoadingTokenBalance] =
-    useState<boolean>(true);
+  const [loadingTokenBalance, setLoadingTokenBalance] = useState<boolean>(true);
   const [loadingCoinBalance, setLoadingCoinBalance] = useState<boolean>(true);
 
   const [tokenNativeBalance, setTokenNativeBalance] = useState<string>("");
@@ -274,10 +273,10 @@ export function Wrap() {
 
   function PercentagePicker() {
     return (
-      <div className='inline-flex rounded-full text-xs font-bold'>
+      <div className="inline-flex rounded-full text-xs font-bold">
         <button
           onClick={() => setAmountByPercentage(25)}
-          className='bg-neutral-100 dark:bg-neutral-900 px-1.5 py-0.5 rounded-l-md transition-colors hover:bg-neutral-300 dark:hover:bg-neutral-700 focus:bg-neutral-500 dark:focus:bg-neutral-500 cursor-pointer disabled:text-neutral-500 dark:disabled:text-neutral-500 disabled:hover:bg-neutral-900 dark:disabled:hover:bg-neutral-900 disabled:cursor-default'
+          className="bg-neutral-100 dark:bg-neutral-900 px-1.5 py-0.5 rounded-l-md transition-colors hover:bg-neutral-300 dark:hover:bg-neutral-700 focus:bg-neutral-500 dark:focus:bg-neutral-500 cursor-pointer disabled:text-neutral-500 dark:disabled:text-neutral-500 disabled:hover:bg-neutral-900 dark:disabled:hover:bg-neutral-900 disabled:cursor-default"
           disabled={
             !secretjs ||
             !secretAddress ||
@@ -289,7 +288,7 @@ export function Wrap() {
         </button>
         <button
           onClick={() => setAmountByPercentage(50)}
-          className='bg-neutral-100 dark:bg-neutral-900 px-1.5 py-0.5 border-l border-neutral-300 dark:border-neutral-700 transition-colors hover:bg-neutral-300 dark:hover:bg-neutral-700 focus:bg-neutral-500 dark:focus:bg-neutral-500 cursor-pointer disabled:text-neutral-500 dark:disabled:text-neutral-500 disabled:hover:bg-neutral-900 dark:disabled:hover:bg-neutral-900 disabled:cursor-default'
+          className="bg-neutral-100 dark:bg-neutral-900 px-1.5 py-0.5 border-l border-neutral-300 dark:border-neutral-700 transition-colors hover:bg-neutral-300 dark:hover:bg-neutral-700 focus:bg-neutral-500 dark:focus:bg-neutral-500 cursor-pointer disabled:text-neutral-500 dark:disabled:text-neutral-500 disabled:hover:bg-neutral-900 dark:disabled:hover:bg-neutral-900 disabled:cursor-default"
           disabled={
             !secretjs ||
             !secretAddress ||
@@ -301,7 +300,7 @@ export function Wrap() {
         </button>
         <button
           onClick={() => setAmountByPercentage(75)}
-          className='bg-neutral-100 dark:bg-neutral-900 px-1.5 py-0.5 border-l border-neutral-300 dark:border-neutral-700 transition-colors hover:bg-neutral-300 dark:hover:bg-neutral-700 focus:bg-neutral-500 dark:focus:bg-neutral-500 cursor-pointer disabled:text-neutral-500 dark:disabled:text-neutral-500 disabled:hover:bg-neutral-900 dark:disabled:hover:bg-neutral-900 disabled:cursor-default'
+          className="bg-neutral-100 dark:bg-neutral-900 px-1.5 py-0.5 border-l border-neutral-300 dark:border-neutral-700 transition-colors hover:bg-neutral-300 dark:hover:bg-neutral-700 focus:bg-neutral-500 dark:focus:bg-neutral-500 cursor-pointer disabled:text-neutral-500 dark:disabled:text-neutral-500 disabled:hover:bg-neutral-900 dark:disabled:hover:bg-neutral-900 disabled:cursor-default"
           disabled={
             !secretjs ||
             !secretAddress ||
@@ -313,7 +312,7 @@ export function Wrap() {
         </button>
         <button
           onClick={() => setAmountByPercentage(100)}
-          className='bg-neutral-100 dark:bg-neutral-900 px-1.5 py-0.5 rounded-r-md border-l border-neutral-300 dark:border-neutral-700 transition-colors hover:bg-neutral-300 dark:hover:bg-neutral-700 focus:bg-neutral-500 dark:focus:bg-neutral-500 cursor-pointer disabled:text-neutral-500 dark:disabled:text-neutral-500 disabled:hover:bg-neutral-900 dark:disabled:hover:bg-neutral-900 disabled:cursor-default'
+          className="bg-neutral-100 dark:bg-neutral-900 px-1.5 py-0.5 rounded-r-md border-l border-neutral-300 dark:border-neutral-700 transition-colors hover:bg-neutral-300 dark:hover:bg-neutral-700 focus:bg-neutral-500 dark:focus:bg-neutral-500 cursor-pointer disabled:text-neutral-500 dark:disabled:text-neutral-500 disabled:hover:bg-neutral-900 dark:disabled:hover:bg-neutral-900 disabled:cursor-default"
           disabled={
             !secretjs ||
             !secretAddress ||
@@ -328,11 +327,16 @@ export function Wrap() {
   }
 
   function NativeTokenBalanceUi() {
-    if (!loadingCoinBalance && secretjs && secretAddress && tokenNativeBalance) {
+    if (
+      !loadingCoinBalance &&
+      secretjs &&
+      secretAddress &&
+      tokenNativeBalance
+    ) {
       return (
         <>
-          <span className='font-semibold'>Available:</span>
-          <span className='font-medium'>
+          <span className="font-semibold">Available:</span>
+          <span className="font-medium">
             {" " +
               new BigNumber(tokenNativeBalance!)
                 .dividedBy(`1e${selectedToken.decimals}`)
@@ -347,10 +351,10 @@ export function Wrap() {
             )
           </span>
 
-          <Tooltip title={`IBC Transfer`} placement='bottom' arrow>
+          <Tooltip title={`IBC Transfer`} placement="bottom" arrow>
             <Link
-              to='/ibc'
-              className='ml-2 hover:text-w dark:hover:text-white transition-colors hover:bg-neutral-100 dark:hover:bg-neutral-900 px-1.5 py-0.5 rounded'
+              to="/ibc"
+              className="ml-2 hover:text-w dark:hover:text-white transition-colors hover:bg-neutral-100 dark:hover:bg-neutral-900 px-1.5 py-0.5 rounded"
             >
               <FontAwesomeIcon icon={faArrowRightArrowLeft} />
             </Link>
@@ -363,14 +367,19 @@ export function Wrap() {
   }
 
   function WrappedTokenBalanceUi() {
-    if (loadingTokenBalance || !secretjs || !secretAddress || !tokenWrappedBalance) {
+    if (
+      loadingTokenBalance ||
+      !secretjs ||
+      !secretAddress ||
+      !tokenWrappedBalance
+    ) {
       return <></>;
     } else if (tokenWrappedBalance == viewingKeyErrorString) {
       return (
         <>
-          <span className='font-semibold'>Available:</span>
+          <span className="font-semibold">Available:</span>
           <button
-            className='ml-2 font-semibold bg-neutral-100 dark:bg-neutral-900 px-1.5 py-0.5 rounded-md border-neutral-300 dark:border-neutral-700 transition-colors hover:bg-neutral-300 dark:hover:bg-neutral-700 focus:bg-neutral-500 dark:focus:bg-neutral-500 cursor-pointer disabled:text-neutral-500 dark:disabled:text-neutral-500 disabled:hover:bg-neutral-100 dark:disabled:hover:bg-neutral-900 disabled:cursor-default'
+            className="ml-2 font-semibold bg-neutral-100 dark:bg-neutral-900 px-1.5 py-0.5 rounded-md border-neutral-300 dark:border-neutral-700 transition-colors hover:bg-neutral-300 dark:hover:bg-neutral-700 focus:bg-neutral-500 dark:focus:bg-neutral-500 cursor-pointer disabled:text-neutral-500 dark:disabled:text-neutral-500 disabled:hover:bg-neutral-100 dark:disabled:hover:bg-neutral-900 disabled:cursor-default"
             onClick={async () => {
               await setKeplrViewingKey(selectedToken.address);
               try {
@@ -382,7 +391,7 @@ export function Wrap() {
               }
             }}
           >
-            <FontAwesomeIcon icon={faKey} className='mr-2' />
+            <FontAwesomeIcon icon={faKey} className="mr-2" />
             Set Viewing Key
           </button>
         </>
@@ -391,8 +400,8 @@ export function Wrap() {
       return (
         <>
           {/* Available: 0.123456 sSCRT () */}
-          <span className='font-bold'>Available:</span>
-          <span className='font-medium'>
+          <span className="font-bold">Available:</span>
+          <span className="font-medium">
             {` ${new BigNumber(tokenWrappedBalance!)
               .dividedBy(`1e${selectedToken.decimals}`)
               .toFormat()} s` +
@@ -416,13 +425,13 @@ export function Wrap() {
     const disabled = props.disabled;
 
     return (
-      <div className='text-center my-4'>
+      <div className="text-center my-4">
         <Tooltip
           disableHoverListener={disabled}
           title={`Switch to ${
             wrappingMode === "Wrap" ? "Unwrapping" : "Wrapping"
           }`}
-          placement='right'
+          placement="right"
           arrow
         >
           <span>
@@ -436,7 +445,7 @@ export function Wrap() {
                   : "")
               }
             >
-              <FontAwesomeIcon icon={faRightLeft} className='fa-rotate-90' />
+              <FontAwesomeIcon icon={faRightLeft} className="fa-rotate-90" />
             </button>
           </span>
         </Tooltip>
@@ -505,7 +514,8 @@ export function Wrap() {
           { closeButton: true }
         );
         if (wrappingMode === "Wrap") {
-          await secretjs.tx.broadcast(
+          await secretjs.tx
+            .broadcast(
               [
                 new MsgExecuteContract({
                   sender: secretAddress,
@@ -524,7 +534,7 @@ export function Wrap() {
                 feeGranter: feeGrantStatus === "Success" ? faucetAddress : "",
               }
             )
-            .catch((error : any) => {
+            .catch((error: any) => {
               console.error(error);
               if (error?.tx?.rawLog) {
                 toast.update(toastId, {
@@ -533,17 +543,17 @@ export function Wrap() {
                   isLoading: false,
                   closeOnClick: true,
                 });
+              } else {
+                toast.update(toastId, {
+                  render: `Wrapping of ${selectedToken.name} failed: ${error.message}`,
+                  type: "error",
+                  isLoading: false,
+                  closeOnClick: true,
+                });
               }
-              else { toast.update(toastId, {
-                render: `Wrapping of ${selectedToken.name} failed: ${error.message}`,
-                type: "error",
-                isLoading: false,
-                closeOnClick: true,
-              });
-            }
             })
-            .then((tx : any) => {
-              console.log(tx)
+            .then((tx: any) => {
+              console.log(tx);
               if (tx) {
                 if (tx.code === 0) {
                   setAmountToWrap("");
@@ -554,81 +564,83 @@ export function Wrap() {
                     closeOnClick: true,
                   });
                   setIsValidationActive(false);
+                } else {
+                  toast.update(toastId, {
+                    render: `Wrapping of ${selectedToken.name} failed: ${tx.rawLog}`,
+                    type: "error",
+                    isLoading: false,
+                    closeOnClick: true,
+                  });
                 }
-                else { toast.update(toastId, {
-                  render: `Wrapping of ${selectedToken.name} failed: ${tx.rawLog}`,
-                  type: "error",
-                  isLoading: false,
-                  closeOnClick: true,
-                });
-              }
               }
             });
         } else {
-          await secretjs.tx.broadcast(
-            [
-              new MsgExecuteContract({
-                sender: secretAddress,
-                contract_address: selectedToken.address,
-                code_hash: selectedToken.code_hash,
-                sent_funds: [],
-                msg: {
-                  redeem: {
-                    amount,
-                    denom:
-                      selectedToken.name === "SCRT"
-                        ? undefined
-                        : selectedToken.withdrawals[0].from_denom,
+          await secretjs.tx
+            .broadcast(
+              [
+                new MsgExecuteContract({
+                  sender: secretAddress,
+                  contract_address: selectedToken.address,
+                  code_hash: selectedToken.code_hash,
+                  sent_funds: [],
+                  msg: {
+                    redeem: {
+                      amount,
+                      denom:
+                        selectedToken.name === "SCRT"
+                          ? undefined
+                          : selectedToken.withdrawals[0].from_denom,
+                    },
                   },
-                },
-              } as any),
-            ],
-            {
-              gasLimit: 150_000,
-              gasPriceInFeeDenom: 0.25,
-              feeDenom: "uscrt",
-              feeGranter: feeGrantStatus === "Success" ? faucetAddress : "",
-            }
-          ).catch((error: any) => {
-            console.error(error);
-            if (error?.tx?.rawLog) {
-              toast.update(toastId, {
-                render: `Unwrapping of s${selectedToken.name} failed: ${error.tx.rawLog}`,
-                type: "error",
-                isLoading: false,
-                closeOnClick: true,
-              });
-            }
-            else { toast.update(toastId, {
-              render: `Unwrapping of s${selectedToken.name} failed: ${error.message}`,
-              type: "error",
-              isLoading: false,
-              closeOnClick: true,
-            });
-          }
-          })
-          .then((tx : any) => {
-            console.log(tx)
-            if (tx) {
-              if (tx.code === 0) {
-                setAmountToWrap("");
+                } as any),
+              ],
+              {
+                gasLimit: 150_000,
+                gasPriceInFeeDenom: 0.25,
+                feeDenom: "uscrt",
+                feeGranter: feeGrantStatus === "Success" ? faucetAddress : "",
+              }
+            )
+            .catch((error: any) => {
+              console.error(error);
+              if (error?.tx?.rawLog) {
                 toast.update(toastId, {
-                  render: `Unwrapped s${selectedToken.name} successfully`,
-                  type: "success",
+                  render: `Unwrapping of s${selectedToken.name} failed: ${error.tx.rawLog}`,
+                  type: "error",
                   isLoading: false,
                   closeOnClick: true,
                 });
-                setIsValidationActive(false);
               } else {
                 toast.update(toastId, {
-                  render: `Unwrapping of s${selectedToken.name} failed: ${tx.rawLog}`,
+                  render: `Unwrapping of s${selectedToken.name} failed: ${error.message}`,
                   type: "error",
                   isLoading: false,
                   closeOnClick: true,
                 });
               }
-            }
-          });
+            })
+            .then((tx: any) => {
+              console.log(tx);
+              if (tx) {
+                if (tx.code === 0) {
+                  setAmountToWrap("");
+                  toast.update(toastId, {
+                    render: `Unwrapped s${selectedToken.name} successfully`,
+                    type: "success",
+                    isLoading: false,
+                    closeOnClick: true,
+                  });
+                  setIsValidationActive(false);
+                } else {
+                  toast.update(toastId, {
+                    render: `Unwrapping of s${selectedToken.name} failed: ${tx.rawLog}`,
+                    type: "error",
+                    isLoading: false,
+                    closeOnClick: true,
+                  });
+                }
+              }
+            });
         }
       } finally {
         setLoadingWrapOrUnwrap(false);
@@ -644,7 +656,7 @@ export function Wrap() {
 
     return (
       <>
-        <div className='flex items-center'>
+        <div className="flex items-center">
           <button
             className={
               "enabled:bg-gradient-to-r enabled:from-cyan-600 enabled:to-purple-600 enabled:hover:from-cyan-500 enabled:hover:to-purple-500 transition-colors text-white font-semibold py-2.5 w-full rounded-lg disabled:bg-neutral-500"
@@ -739,7 +751,7 @@ export function Wrap() {
     (async () => {
       setBalance();
     })();
-    
+
     const interval = setInterval(updateBalance, 10000);
     return () => {
       clearInterval(interval);
@@ -785,31 +797,31 @@ export function Wrap() {
             document.body.classList.remove("overflow-hidden");
           }}
         />
-        <div className='w-full max-w-xl mx-auto px-4 onEnter_fadeInDown'>
-          <div className='border border-neutral-200 dark:border-neutral-700 rounded-2xl p-8 w-full text-neutral-800 dark:text-neutral-200 bg-white dark:bg-neutral-900'>
+        <div className="w-full max-w-xl mx-auto px-4 onEnter_fadeInDown">
+          <div className="border border-neutral-200 dark:border-neutral-700 rounded-2xl p-8 w-full text-neutral-800 dark:text-neutral-200 bg-white dark:bg-neutral-900">
             {/* Header */}
-            <div className='flex items-center mb-4'>
-              <h1 className='inline text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-500 to-purple-500'>
+            <div className="flex items-center mb-4">
+              <h1 className="inline text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-500 to-purple-500">
                 Secret {wrappingMode === "Wrap" ? "Wrap" : "Unwrap"}
               </h1>
 
-              <Tooltip title={message} placement='right' arrow>
-                <span className='ml-2 mt-1 text-neutral-600 dark:text-neutral-400 hover:text-black dark:hover:text-white transition-colors cursor-pointer'>
+              <Tooltip title={message} placement="right" arrow>
+                <span className="ml-2 mt-1 text-neutral-600 dark:text-neutral-400 hover:text-black dark:hover:text-white transition-colors cursor-pointer">
                   <FontAwesomeIcon icon={faInfoCircle} />
                 </span>
               </Tooltip>
             </div>
 
             {/* *** From *** */}
-            <div className='bg-neutral-200 dark:bg-neutral-800 p-4 rounded-xl'>
+            <div className="bg-neutral-200 dark:bg-neutral-800 p-4 rounded-xl">
               {/* Title Bar */}
-              <div className='flex flex-col sm:flex-row'>
-                <div className='flex-1 font-semibold mb-2 text-center sm:text-left'>
+              <div className="flex flex-col sm:flex-row">
+                <div className="flex-1 font-semibold mb-2 text-center sm:text-left">
                   From
                 </div>
                 {!isValidAmount && isValidationActive && (
-                  <div className='flex-initial'>
-                    <div className='text-red-500 dark:text-red-500 text-xs text-center sm:text-right mb-2'>
+                  <div className="flex-initial">
+                    <div className="text-red-500 dark:text-red-500 text-xs text-center sm:text-right mb-2">
                       {validationMessage}
                     </div>
                   </div>
@@ -817,7 +829,7 @@ export function Wrap() {
               </div>
 
               {/* Input Field */}
-              <div className='flex' id='fromInputWrapper'>
+              <div className="flex" id="fromInputWrapper">
                 <Select
                   isDisabled={!selectedToken.address || !secretAddress}
                   options={tokens.sort((a, b) => a.name.localeCompare(b.name))}
@@ -825,44 +837,44 @@ export function Wrap() {
                   onChange={setselectedToken}
                   isSearchable={false}
                   formatOptionLabel={(token) => (
-                    <div className='flex items-center'>
+                    <div className="flex items-center">
                       <img
                         src={`/img/assets/${token.image}`}
-                        className='w-5 h-5 mr-2 rounded-full'
+                        className="w-5 h-5 mr-2 rounded-full"
                       />
-                      <span className='font-semibold text-sm'>
+                      <span className="font-semibold text-sm">
                         {wrappingMode == "Unwrap" && "s"}
                         {token.name}
                       </span>
                     </div>
                   )}
-                  className='react-select-wrap-container'
-                  classNamePrefix='react-select-wrap'
+                  className="react-select-wrap-container"
+                  classNamePrefix="react-select-wrap"
                 />
                 <input
                   value={amountToWrap}
                   onChange={handleInputChange}
-                  type='text'
+                  type="text"
                   className={
                     "text-right focus:z-10 block flex-1 min-w-0 w-full bg-neutral-100 dark:bg-neutral-900 text-black dark:text-white px-4 rounded-r-lg disabled:placeholder-neutral-300 dark:disabled:placeholder-neutral-700 transition-colors font-medium" +
                     (!isValidAmount && isValidationActive
                       ? "  border border-red-500 dark:border-red-500"
                       : "")
                   }
-                  name='fromValue'
-                  id='fromValue'
-                  placeholder='0'
+                  name="fromValue"
+                  id="fromValue"
+                  placeholder="0"
                   disabled={!secretjs || !secretAddress}
                 />
               </div>
 
               {/* Balance | [25%|50%|75%|Max] */}
-              <div className='flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 mt-2'>
-                <div className='flex-1 text-xs'>
+              <div className="flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 mt-2">
+                <div className="flex-1 text-xs">
                   {wrappingMode === "Wrap" && <NativeTokenBalanceUi />}
                   {wrappingMode === "Unwrap" && <WrappedTokenBalanceUi />}
                 </div>
-                <div className='sm:flex-initial text-xs'>
+                <div className="sm:flex-initial text-xs">
                   <PercentagePicker />
                 </div>
               </div>
@@ -874,14 +886,14 @@ export function Wrap() {
               disabled={!secretAddress || !secretjs}
             />
 
-            <div className='bg-neutral-200 dark:bg-neutral-800 p-4 rounded-xl mb-5'>
-              <div className='flex'>
-                <div className='flex-1 font-semibold mb-2 text-center sm:text-left'>
+            <div className="bg-neutral-200 dark:bg-neutral-800 p-4 rounded-xl mb-5">
+              <div className="flex">
+                <div className="flex-1 font-semibold mb-2 text-center sm:text-left">
                   To
                 </div>
               </div>
 
-              <div className='flex'>
+              <div className="flex">
                 <Select
                   isDisabled={!selectedToken.address || !secretAddress}
                   options={tokens.sort((a, b) => a.name.localeCompare(b.name))}
@@ -889,59 +901,59 @@ export function Wrap() {
                   onChange={setselectedToken}
                   isSearchable={false}
                   formatOptionLabel={(token) => (
-                    <div className='flex items-center'>
+                    <div className="flex items-center">
                       <img
                         src={`/img/assets/${token.image}`}
-                        className='w-6 h-6 mr-2 rounded-full'
+                        className="w-6 h-6 mr-2 rounded-full"
                       />
-                      <span className='font-semibold text-sm'>
+                      <span className="font-semibold text-sm">
                         {wrappingMode == "Wrap" && "s"}
                         {token.name}
                       </span>
                     </div>
                   )}
-                  className='react-select-wrap-container'
-                  classNamePrefix='react-select-wrap'
+                  className="react-select-wrap-container"
+                  classNamePrefix="react-select-wrap"
                 />
                 <input
                   value={amountToWrap}
                   onChange={handleInputChange}
-                  type='text'
+                  type="text"
                   className={
                     "text-right focus:z-10 block flex-1 min-w-0 w-full bg-neutral-100 dark:bg-neutral-900 text-black dark:text-white px-4 rounded-r-lg disabled:placeholder-neutral-300 dark:disabled:placeholder-neutral-700 transition-colors font-medium"
                   }
-                  name='toValue'
-                  id='toValue'
-                  placeholder='0'
+                  name="toValue"
+                  id="toValue"
+                  placeholder="0"
                   disabled={!secretjs || !secretAddress}
                 />
               </div>
-              <div className='flex-1 text-xs mt-3 text-center sm:text-left h-[1rem]'>
+              <div className="flex-1 text-xs mt-3 text-center sm:text-left h-[1rem]">
                 {wrappingMode === "Wrap" && <WrappedTokenBalanceUi />}
                 {wrappingMode === "Unwrap" && <NativeTokenBalanceUi />}
               </div>
             </div>
 
             {/* Fee Grant */}
-            <div className='bg-neutral-200 dark:bg-neutral-800 p-4 rounded-lg select-none flex items-center my-4'>
-              <div className='flex-1 flex items-center'>
-                <span className='font-semibold text-sm'>Fee Grant</span>
+            <div className="bg-neutral-200 dark:bg-neutral-800 p-4 rounded-lg select-none flex items-center my-4">
+              <div className="flex-1 flex items-center">
+                <span className="font-semibold text-sm">Fee Grant</span>
                 <Tooltip
                   title={`Request Fee Grant so that you don't have to pay gas fees (up to 0.1 SCRT)`}
-                  placement='right'
+                  placement="right"
                   arrow
                 >
-                  <FontAwesomeIcon icon={faInfoCircle} className='ml-2' />
+                  <FontAwesomeIcon icon={faInfoCircle} className="ml-2" />
                 </Tooltip>
               </div>
-              <div className='flex-initial'>
+              <div className="flex-initial">
                 {/* Untouched */}
                 {feeGrantStatus === "Untouched" && (
                   <>
                     <button
-                      id='feeGrantButton'
+                      id="feeGrantButton"
                       onClick={requestFeeGrant}
-                      className='font-semibold text-xs bg-neutral-100 dark:bg-neutral-900 px-1.5 py-1 rounded-md transition-colors hover:bg-neutral-300 dark:hover:bg-neutral-700 focus:bg-neutral-500 dark:focus:bg-neutral-500 cursor-pointer disabled:text-neutral-500 dark:disabled:text-neutral-500 disabled:hover:bg-neutral-100 dark:disabled:hover:bg-neutral-900 disabled:cursor-default'
+                      className="font-semibold text-xs bg-neutral-100 dark:bg-neutral-900 px-1.5 py-1 rounded-md transition-colors hover:bg-neutral-300 dark:hover:bg-neutral-700 focus:bg-neutral-500 dark:focus:bg-neutral-500 cursor-pointer disabled:text-neutral-500 dark:disabled:text-neutral-500 disabled:hover:bg-neutral-100 dark:disabled:hover:bg-neutral-900 disabled:cursor-default"
                       disabled={!secretjs || !secretAddress}
                     >
                       Request Fee Grant
@@ -950,20 +962,20 @@ export function Wrap() {
                 )}
                 {/* Success */}
                 {feeGrantStatus === "Success" && (
-                  <div className='font-semibold text-sm flex items-center h-[1.6rem]'>
+                  <div className="font-semibold text-sm flex items-center h-[1.6rem]">
                     <FontAwesomeIcon
                       icon={faCheckCircle}
-                      className='text-green-500 dark:text-green-500 mr-1.5'
+                      className="text-green-500 dark:text-green-500 mr-1.5"
                     />
                     Fee Granted
                   </div>
                 )}
                 {/* Fail */}
                 {feeGrantStatus === "Fail" && (
-                  <div className='font-semibold text-sm h-[1.6rem]'>
+                  <div className="font-semibold text-sm h-[1.6rem]">
                     <FontAwesomeIcon
                       icon={faXmarkCircle}
-                      className='text-red-500 dark:text-red-500 mr-1.5'
+                      className="text-red-500 dark:text-red-500 mr-1.5"
                     />
                     Request failed
                   </div>

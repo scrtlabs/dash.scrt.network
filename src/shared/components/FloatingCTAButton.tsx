@@ -11,13 +11,13 @@ interface IFloatingCTAButtonProps {
 class FloatingCTAButton extends React.Component<IFloatingCTAButtonProps> {
   render() {
     return (
-      <a href={this.props.url} target='_blank' className='hidden md:block'>
-        <div className='floatingCTAButton bg-violet-600 select-none text-white'>
+      <a href={this.props.url} target="_blank" className="hidden md:block">
+        <div className="floatingCTAButton bg-violet-600 select-none text-white">
           <FontAwesomeIcon
             icon={faComment}
-            className='icon-circle bg-violet-600'
+            className="icon-circle bg-violet-600"
           />
-          <span className='cta-text text-xs font-light'>{this.props.text}</span>
+          <span className="cta-text text-xs font-light">{this.props.text}</span>
         </div>
       </a>
     );
