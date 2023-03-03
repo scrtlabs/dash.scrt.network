@@ -12,7 +12,7 @@ function RangeSwitch() {
         <>
           <button
             onClick={() => setChartRange("Day")}
-            type='button'
+            type="button"
             className={
               "py-1.5 px-3 text-xs font-semibold rounded-l-lg bg-neutral-100 dark:bg-neutral-900 " +
               (chartRange === "Day"
@@ -24,7 +24,7 @@ function RangeSwitch() {
           </button>
           <button
             onClick={() => setChartRange("Month")}
-            type='button'
+            type="button"
             className={
               "py-1.5 px-3 text-xs font-semibold bg-neutral-100 dark:bg-neutral-900" +
               (chartRange === "Month"
@@ -36,7 +36,7 @@ function RangeSwitch() {
           </button>
           <button
             onClick={() => setChartRange("Year")}
-            type='button'
+            type="button"
             className={
               "py-1.5 px-3 text-xs font-semibold rounded-r-lg bg-neutral-100 dark:bg-neutral-900" +
               (chartRange === "Year"
@@ -53,7 +53,7 @@ function RangeSwitch() {
         <>
           <button
             onClick={() => setChartRange("Year")}
-            type='button'
+            type="button"
             className={
               "py-1.5 px-3 text-xs font-semibold rounded-lg bg-neutral-100 dark:bg-neutral-900" +
               (chartRange === "Year"

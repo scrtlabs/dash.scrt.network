@@ -4,7 +4,7 @@ export type Theme = "light" | "dark";
 
 const ThemeContext = createContext(null);
 
-const ThemeContextProvider = ({children}: any) => {
+const ThemeContextProvider = ({ children }: any) => {
   // the value that will be given to the context
   const [theme, setTheme] = useState<Theme>(null);
 
