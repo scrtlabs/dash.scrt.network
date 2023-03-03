@@ -12,12 +12,12 @@ export function ThemeSwitch() {
     <>
       <Tooltip
         title={`Switch to ${theme === "dark" ? "Light Mode" : "Dark Mode"}`}
-        placement='bottom'
+        placement="bottom"
         arrow
       >
         <button
           onClick={toggleTheme}
-          className='text-black dark:text-white hover:text-neutral-600 dark:hover:text-neutral-400 transition-colors'
+          className="text-black dark:text-white hover:text-neutral-600 dark:hover:text-neutral-400 transition-colors"
         >
           {theme === "light" && (
             <>
