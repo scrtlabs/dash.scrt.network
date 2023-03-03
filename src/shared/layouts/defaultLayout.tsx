@@ -41,7 +41,7 @@ export const DefaultLayout = ({ children }: any) => {
     <>
       {/* Fixed Feedback Button */}
       <FeedbackButton
-        url={"https://github.com/scrtlabs/dash.scrt.network/issues"}
+        url={"https://github.com/scrtlabs/dash.scrt.network/issues/new"}
       />
 
       {/* Fixed Help Button */}
