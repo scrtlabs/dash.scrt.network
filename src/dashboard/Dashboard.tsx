@@ -75,25 +75,31 @@ export function Dashboard() {
   // taxes
   const [communityTax, setCommunityTax] = useState("");
   const [secretFoundationTax, setSecretFoundationTax] = useState("");
-  const [taxFormattedString, setTaxFormattedString] =
-    useState("");
+  const [taxFormattedString, setTaxFormattedString] = useState("");
 
   useEffect(() => {
     if (communityTax) {
       setTaxFormattedString(
-        (parseFloat(communityTax) * 100).toString() + "%" + " / " + (parseFloat(secretFoundationTax) * 100).toString() + "%"
+        (parseFloat(communityTax) * 100).toString() +
+          "%" +
+          " / " +
+          (parseFloat(secretFoundationTax) * 100).toString() +
+          "%"
       );
     }
-  }, [communityTax,secretFoundationTax]);
+  }, [communityTax, secretFoundationTax]);
 
   useEffect(() => {
     if (communityTax) {
       setTaxFormattedString(
-        (parseFloat(communityTax) * 100).toString() + "%" + " / " + (parseFloat(secretFoundationTax) * 100).toString() + "%"
+        (parseFloat(communityTax) * 100).toString() +
+          "%" +
+          " / " +
+          (parseFloat(secretFoundationTax) * 100).toString() +
+          "%"
       );
     }
-  }, [communityTax,secretFoundationTax]);
-
+  }, [communityTax, secretFoundationTax]);
 
   // feesPaid
   const [feesPaid, setFeesPaid] = useState("");
@@ -118,11 +124,13 @@ export function Dashboard() {
   }, [inflation]);
 
   // APR
-  const [growthRateFormattedString, setGrowthRateFormattedString] = useState("");
+  const [growthRateFormattedString, setGrowthRateFormattedString] =
+    useState("");
 
   //Bonded Ratio
   const [bondedRatio, setBondedRatio] = useState(0);
-  const [bondedRatioFormattedString, setBondedRatioFormattedString] = useState("");
+  const [bondedRatioFormattedString, setBondedRatioFormattedString] =
+    useState("");
 
   // // totalSupply, bonded, notBonded
   // const [totalSupply, setTotalSupply] = useState(Number);
@@ -225,13 +233,15 @@ export function Dashboard() {
       // staking ratio missing
       const I = inflation; // inflation
       const F = parseFloat(secretFoundationTax); // foundation tax
-      const C = 0.00; // validator commision rate; median is 5%
+      const C = 0.0; // validator commision rate; median is 5%
       const T = parseFloat(communityTax); // community tax
       const R = bondedRatio / 100; // bonded ratio
-      const APR = ((I / R))*100;
-      const realYield = ((I / R) * (1 - F - T) * (1 - C))*100;
-      setGrowthRateFormattedString(APR.toFixed(2) + "%"+" / "+ realYield.toFixed(2)+"%");
-      setBondedRatioFormattedString(bondedRatio.toFixed(2)+"%");
+      const APR = (I / R) * 100;
+      const realYield = (I / R) * (1 - F - T) * (1 - C) * 100;
+      setGrowthRateFormattedString(
+        APR.toFixed(2) + "%" + " / " + realYield.toFixed(2) + "%"
+      );
+      setBondedRatioFormattedString(bondedRatio.toFixed(2) + "%");
     }
   }, [inflation, secretFoundationTax, communityTax, bondedRatio]);
 
@@ -245,72 +255,72 @@ export function Dashboard() {
           defiLamaApiData_Year,
         }}
       >
-        <div className='px-4 mx-auto space-y-4 w-full'>
-          <div className='grid grid-cols-12 gap-4'>
+        <div className="px-4 mx-auto space-y-4 w-full">
+          <div className="grid grid-cols-12 gap-4">
             {/* WideQuadTile */}
             {/* <div className="col-span-12">
               <WideQuadTile item1_key="Block Height" item1_value={blockHeightFormattedString} item2_key="Block Time" item2_value={blockTimeFormattedString} item3_key="Daily Transactions" item3_value={dailyTransactionsFormattedString} item4_key="Fees Paid" item4_value={feesPaidFormattedString}/>
             </div> */}
 
             {/* Price */}
-            <div className='col-span-12 sm:col-span-6 lg:col-span-12 xl:col-span-6 2xl:col-span-4'>
+            <div className="col-span-12 sm:col-span-6 lg:col-span-12 xl:col-span-6 2xl:col-span-4">
               <CurrentPrice price={currentPrice} />
             </div>
 
             {/* Volume */}
-            <div className='col-span-12 sm:col-span-6 lg:col-span-12 xl:col-span-6 2xl:col-span-2'>
-              <MiniTile name='Volume' value={volumeFormattedString} />
+            <div className="col-span-12 sm:col-span-6 lg:col-span-12 xl:col-span-6 2xl:col-span-2">
+              <MiniTile name="Volume" value={volumeFormattedString} />
             </div>
 
             {/* Market Cap */}
-            <div className='col-span-12 sm:col-span-6 lg:col-span-12 xl:col-span-6 2xl:col-span-2'>
-              <MiniTile name='Market Cap' value={marketCapFormattedString} />
+            <div className="col-span-12 sm:col-span-6 lg:col-span-12 xl:col-span-6 2xl:col-span-2">
+              <MiniTile name="Market Cap" value={marketCapFormattedString} />
             </div>
 
             {/* Social Media */}
-            <div className='col-span-12 sm:col-span-6 lg:col-span-12 xl:col-span-6 2xl:col-span-4'>
+            <div className="col-span-12 sm:col-span-6 lg:col-span-12 xl:col-span-6 2xl:col-span-4">
               <SocialMedia />
             </div>
 
             {/* Block Info */}
-            <div className='col-span-12 md:col-span-6 lg:col-span-12 xl:col-span-6 2xl:col-span-4'>
+            <div className="col-span-12 md:col-span-6 lg:col-span-12 xl:col-span-6 2xl:col-span-4">
               {/* <BlockInfo blockHeight={blockHeight || 0} blockTime={blockTime} circulatingSupply={circulatingSupply} inflation={inflation}/> */}
               <QuadTile
-                item1_key='Block Height'
+                item1_key="Block Height"
                 item1_value={blockHeightFormattedString}
-                item2_key='Block Time (100 blocks)'
+                item2_key="Block Time (100 blocks)"
                 item2_value={blockTimeFormattedString}
-                item3_key='# Transactions (24h)'
+                item3_key="# Transactions (24h)"
                 item3_value={dailyTransactionsFormattedString}
-                item4_key='Fees Paid (24h)'
+                item4_key="Fees Paid (24h)"
                 item4_value={feesPaidFormattedString}
               />
             </div>
 
-            <div className='col-span-12 md:col-span-6 lg:col-span-12 xl:col-span-6 2xl:col-span-4'>
-              <div className='bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 px-6 py-8 rounded-xl'>
+            <div className="col-span-12 md:col-span-6 lg:col-span-12 xl:col-span-6 2xl:col-span-4">
+              <div className="bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 px-6 py-8 rounded-xl">
                 <StakingChart />
               </div>
             </div>
 
             {/* Block Info */}
-            <div className='col-span-12 md:col-span-12 lg:col-span-12 xl:col-span-12 2xl:col-span-4'>
+            <div className="col-span-12 md:col-span-12 lg:col-span-12 xl:col-span-12 2xl:col-span-4">
               <QuadTile
-                item1_key='APR/Staking Yield'
+                item1_key="APR/Staking Yield"
                 item1_value={growthRateFormattedString}
-                item2_key='Inflation'
+                item2_key="Inflation"
                 item2_value={inflationFormattedString}
-                item3_key='Community Tax/Secret Foundation Tax'
+                item3_key="Community Tax/Secret Foundation Tax"
                 item3_value={taxFormattedString}
-                item4_key='Bonded Ratio'
+                item4_key="Bonded Ratio"
                 item4_value={bondedRatioFormattedString}
               />
             </div>
           </div>
 
-          <div className='grid grid-cols-12 gap-4'>
+          <div className="grid grid-cols-12 gap-4">
             {/* Item */}
-            <div className='col-span-12 bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 p-4 rounded-xl'>
+            <div className="col-span-12 bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 p-4 rounded-xl">
               <PriceVolumeTVL />
             </div>
             {/* Item */}

@@ -61,7 +61,7 @@ function Deposit() {
   const [amountToTransfer, setAmountToTransfer] = useState<string>("");
   const { secretjs, secretAddress } = useContext(SecretjsContext);
   const queryParams = new URLSearchParams(window.location.search);
-  
+
   const chainByQueryParam = queryParams.get("chain"); // "scrt", "akash", etc.
   const [selectedToken, setSelectedToken] = useState<Token>(
     tokens.filter((token) => token.name === "SCRT")[0]
@@ -104,18 +104,18 @@ function Deposit() {
             isSearchable={false}
             isDisabled={!secretjs || !secretAddress}
             formatOptionLabel={(option) => (
-              <div className='flex items-center'>
+              <div className="flex items-center">
                 <img
                   src={`/img/assets/${chains[option.chain_name].chain_image}`}
-                  className='w-6 h-6 mr-2 rounded-full'
+                  className="w-6 h-6 mr-2 rounded-full"
                 />
-                <span className='font-semibold text-sm'>
+                <span className="font-semibold text-sm">
                   {option.chain_name}
                 </span>
               </div>
             )}
-            className='react-select-container'
-            classNamePrefix='react-select'
+            className="react-select-container"
+            classNamePrefix="react-select"
           />
         </>
       );
@@ -411,7 +411,10 @@ function Deposit() {
                 source_port: "transfer",
                 token: {
                   amount,
-                  denom: selectedToken.deposits.filter(deposit => deposit.chain_name === selectedSource.chain_name)[0].from_denom,
+                  denom: selectedToken.deposits.filter(
+                    (deposit) =>
+                      deposit.chain_name === selectedSource.chain_name
+                  )[0].from_denom,
                 },
                 timeout_timestamp: String(
                   Math.floor(Date.now() / 1000) + 10 * 60
@@ -480,7 +483,9 @@ function Deposit() {
                 sourcePort: "transfer",
                 sourceChannel: deposit_channel_id,
                 amount,
-                denom: selectedToken.deposits.filter(deposit => deposit.chain_name === selectedSource.chain_name)[0].from_denom,
+                denom: selectedToken.deposits.filter(
+                  (deposit) => deposit.chain_name === selectedSource.chain_name
+                )[0].from_denom,
                 receiver: secretAddress,
                 revisionNumber: 0,
                 revisionHeight: 0,
@@ -745,17 +750,17 @@ function Deposit() {
   return (
     <>
       {/* [From|To] Picker */}
-      <div className='flex flex-col md:flex-row mb-8'>
+      <div className="flex flex-col md:flex-row mb-8">
         {/* *** From *** */}
-        <div className='flex-initial w-full md:w-1/3'>
+        <div className="flex-initial w-full md:w-1/3">
           {/* circle */}
           <div
-            className='w-full relative rounded-full overflow-hidden border-2 border-cyan-500 hidden md:block'
+            className="w-full relative rounded-full overflow-hidden border-2 border-cyan-500 hidden md:block"
             style={{ paddingTop: "100%" }}
           >
-            <div className='img-wrapper absolute top-1/2 left-0 right-0 -translate-y-1/2 text-center'>
-              <div className='w-1/2 inline-block'>
-                <div className='relative'>
+            <div className="img-wrapper absolute top-1/2 left-0 right-0 -translate-y-1/2 text-center">
+              <div className="w-1/2 inline-block">
+                <div className="relative">
                   <div
                     className={`absolute inset-0 bg-cyan-500 blur-md rounded-full overflow-hidden ${
                       secretjs && secretAddress
@@ -770,40 +775,40 @@ function Deposit() {
                         ? chains[selectedSource.chain_name].chain_image
                         : "scrt.svg")
                     }
-                    className='w-full relative inline-block rounded-full overflow-hiden'
+                    className="w-full relative inline-block rounded-full overflow-hiden"
                   />
                 </div>
               </div>
             </div>
             <div
-              className='absolute left-1/2 -translate-x-1/2 text-center text-sm font-bold text-black dark:text-white'
+              className="absolute left-1/2 -translate-x-1/2 text-center text-sm font-bold text-black dark:text-white"
               style={{ bottom: "10%" }}
             >
               From
             </div>
           </div>
           {/* Chain Picker */}
-          <div className='-mt-3 relative z-10 w-full'>
+          <div className="-mt-3 relative z-10 w-full">
             {/* {value} */}
             {ibcMode === "deposit" && <ChainSelect />}
             {ibcMode === "withdrawal" && (
               <div
                 style={{ paddingTop: ".76rem", paddingBottom: ".76rem" }}
-                className='flex items-center w-full text-sm font-semibold select-none bg-white dark:bg-neutral-800 rounded text-neutral-800 dark:text-neutral-200 focus:bg-neutral-300 dark:focus:bg-neutral-700 disabled:hover:bg-neutral-200 dark:disabled:hover:bg-neutral-800 border border-neutral-300 dark:border-neutral-600'
+                className="flex items-center w-full text-sm font-semibold select-none bg-white dark:bg-neutral-800 rounded text-neutral-800 dark:text-neutral-200 focus:bg-neutral-300 dark:focus:bg-neutral-700 disabled:hover:bg-neutral-200 dark:disabled:hover:bg-neutral-800 border border-neutral-300 dark:border-neutral-600"
               >
-                <div className='flex-1 px-3 text-center'>
+                <div className="flex-1 px-3 text-center">
                   <span>Secret Network</span>
                 </div>
               </div>
             )}
           </div>
         </div>
-        <div className='flex-1 py-2 md:py-0'>
-          <div className='md:relative' id='ibcSwitchButton'>
-            <div className='md:absolute md:top-1/2 md:left-1/2 md:transform md:-translate-x-1/2 md:-translate-y-1/2 text-center md:text-left'>
+        <div className="flex-1 py-2 md:py-0">
+          <div className="md:relative" id="ibcSwitchButton">
+            <div className="md:absolute md:top-1/2 md:left-1/2 md:transform md:-translate-x-1/2 md:-translate-y-1/2 text-center md:text-left">
               <Tooltip
                 title={`Switch chains`}
-                placement='bottom'
+                placement="bottom"
                 disableHoverListener={!secretjs && !secretAddress}
                 arrow
               >
@@ -820,7 +825,7 @@ function Deposit() {
                   >
                     <FontAwesomeIcon
                       icon={faRightLeft}
-                      className='rotate-90 md:rotate-0'
+                      className="rotate-90 md:rotate-0"
                     />
                   </button>
                 </span>
@@ -829,14 +834,14 @@ function Deposit() {
           </div>
         </div>
         {/* *** To *** */}
-        <div className='flex-initial w-full md:w-1/3'>
+        <div className="flex-initial w-full md:w-1/3">
           <div
-            className='w-full relative rounded-full overflow-hidden border-2 border-violet-500 hidden md:block'
+            className="w-full relative rounded-full overflow-hidden border-2 border-violet-500 hidden md:block"
             style={{ paddingTop: "100%" }}
           >
-            <div className='img-wrapper absolute top-1/2 left-0 right-0 -translate-y-1/2 text-center'>
-              <div className='w-1/2 inline-block'>
-                <div className='relative'>
+            <div className="img-wrapper absolute top-1/2 left-0 right-0 -translate-y-1/2 text-center">
+              <div className="w-1/2 inline-block">
+                <div className="relative">
                   <div
                     className={`absolute inset-0 bg-violet-500 blur-md rounded-full overflow-hidden ${
                       secretjs && secretAddress
@@ -851,27 +856,27 @@ function Deposit() {
                         ? chains[selectedSource.chain_name].chain_image
                         : "scrt.svg")
                     }
-                    className='w-full relative inline-block rounded-full overflow-hiden'
+                    className="w-full relative inline-block rounded-full overflow-hiden"
                   />
                 </div>
               </div>
             </div>
             <div
-              className='absolute left-0 right-0 text-center text-sm font-bold text-black dark:text-white'
+              className="absolute left-0 right-0 text-center text-sm font-bold text-black dark:text-white"
               style={{ bottom: "10%" }}
             >
               To
             </div>
           </div>
           {/* Chain Picker */}
-          <div className='md:-mt-3 md:relative z-10 w-full'>
+          <div className="md:-mt-3 md:relative z-10 w-full">
             {ibcMode === "withdrawal" && <ChainSelect />}
             {ibcMode === "deposit" && (
               <div
                 style={{ paddingTop: ".76rem", paddingBottom: ".76rem" }}
-                className='flex items-center w-full text-sm font-semibold select-none bg-neutral-200 dark:bg-neutral-800 rounded text-neutral-800 dark:text-neutral-200 focus:bg-neutral-300 dark:focus:bg-neutral-700 disabled:hover:bg-neutral-200 dark:disabled:hover:bg-neutral-800 border border-neutral-300 dark:border-neutral-600'
+                className="flex items-center w-full text-sm font-semibold select-none bg-neutral-200 dark:bg-neutral-800 rounded text-neutral-800 dark:text-neutral-200 focus:bg-neutral-300 dark:focus:bg-neutral-700 disabled:hover:bg-neutral-200 dark:disabled:hover:bg-neutral-800 border border-neutral-300 dark:border-neutral-600"
               >
-                <div className='flex-1 px-3 text-center'>
+                <div className="flex-1 px-3 text-center">
                   <span>Secret Network</span>
                 </div>
               </div>
@@ -880,16 +885,16 @@ function Deposit() {
         </div>
       </div>
 
-      <div className='bg-neutral-200 dark:bg-neutral-800 p-4 rounded-xl space-y-6 my-4'>
-        <div className='flex items-center'>
-          <div className='font-semibold mr-4 w-10'>From:</div>
-          <div className='flex-1 truncate font-medium text-sm'>
+      <div className="bg-neutral-200 dark:bg-neutral-800 p-4 rounded-xl space-y-6 my-4">
+        <div className="flex items-center">
+          <div className="font-semibold mr-4 w-10">From:</div>
+          <div className="flex-1 truncate font-medium text-sm">
             {ibcMode === "deposit" && secretjs && secretAddress && (
               <a
                 href={`${
                   chains[selectedSource.chain_name].explorer_account
                 }${sourceAddress}`}
-                target='_blank'
+                target="_blank"
               >
                 {sourceAddress}
               </a>
@@ -899,13 +904,13 @@ function Deposit() {
                 href={`${
                   chains[selectedSource.chain_name].explorer_account
                 }${secretAddress}`}
-                target='_blank'
+                target="_blank"
               >
                 {secretAddress}
               </a>
             )}
           </div>
-          <div className='flex-initial ml-4'>
+          <div className="flex-initial ml-4">
             <CopyToClipboard
               text={ibcMode === "deposit" ? sourceAddress : secretAddress}
               onCopy={() => {
@@ -916,13 +921,13 @@ function Deposit() {
             >
               <Tooltip
                 title={"Copy to clipboard"}
-                placement='bottom'
+                placement="bottom"
                 disableHoverListener={!secretjs && !secretAddress}
                 arrow
               >
                 <span>
                   <button
-                    className='text-neutral-500 enabled:hover:text-white enabled:active:text-neutral-500 transition-colors'
+                    className="text-neutral-500 enabled:hover:text-white enabled:active:text-neutral-500 transition-colors"
                     disabled={!secretjs && !secretAddress}
                   >
                     <FontAwesomeIcon icon={faCopy} />
@@ -933,15 +938,15 @@ function Deposit() {
           </div>
         </div>
 
-        <div className='flex items-center'>
-          <div className='flex-initial font-semibold mr-4 w-10'>To:</div>
-          <div className='flex-1 truncate font-medium text-sm'>
+        <div className="flex items-center">
+          <div className="flex-initial font-semibold mr-4 w-10">To:</div>
+          <div className="flex-1 truncate font-medium text-sm">
             {ibcMode === "withdrawal" && (
               <a
                 href={`${
                   chains[selectedSource.chain_name].explorer_account
                 }${sourceAddress}`}
-                target='_blank'
+                target="_blank"
               >
                 {sourceAddress}
               </a>
@@ -949,13 +954,13 @@ function Deposit() {
             {ibcMode === "deposit" && (
               <a
                 href={`${targetChain.explorer_account}${secretAddress}`}
-                target='_blank'
+                target="_blank"
               >
                 {secretAddress}
               </a>
             )}
           </div>
-          <div className='flex-initial ml-4'>
+          <div className="flex-initial ml-4">
             <CopyToClipboard
               text={ibcMode === "withdrawal" ? sourceAddress : secretAddress}
               onCopy={() => {
@@ -966,13 +971,13 @@ function Deposit() {
             >
               <Tooltip
                 title={"Copy to clipboard"}
-                placement='bottom'
+                placement="bottom"
                 disableHoverListener={!secretjs && !secretAddress}
                 arrow
               >
                 <>
                   <button
-                    className='text-neutral-500 enabled:hover:text-white enabled:active:text-neutral-500 transition-colors'
+                    className="text-neutral-500 enabled:hover:text-white enabled:active:text-neutral-500 transition-colors"
                     disabled={!secretjs && !secretAddress}
                   >
                     <FontAwesomeIcon icon={faCopy} />
@@ -984,48 +989,48 @@ function Deposit() {
         </div>
       </div>
 
-      <div className='bg-neutral-200 dark:bg-neutral-800 p-4 rounded-xl'>
-        <div className='flex' id='inputWrapper'>
+      <div className="bg-neutral-200 dark:bg-neutral-800 p-4 rounded-xl">
+        <div className="flex" id="inputWrapper">
           <Select
             options={supportedTokens}
             value={selectedToken}
             onChange={setSelectedToken}
             isDisabled={!secretjs || !secretAddress}
             formatOptionLabel={(token) => (
-              <div className='flex items-center'>
+              <div className="flex items-center">
                 <img
                   src={`/img/assets/${token.image}`}
-                  className='w-6 h-6 mr-2 rounded-full'
+                  className="w-6 h-6 mr-2 rounded-full"
                 />
-                <span className='font-semibold text-sm'>{token.name}</span>
+                <span className="font-semibold text-sm">{token.name}</span>
               </div>
             )}
-            className='react-select-wrap-container'
-            classNamePrefix='react-select-wrap'
+            className="react-select-wrap-container"
+            classNamePrefix="react-select-wrap"
           />
           <input
-            type='text'
+            type="text"
             value={amountToTransfer}
             onChange={handleInputChange}
             className={
               "text-right focus:z-10 block flex-1 min-w-0 w-full bg-neutral-100 dark:bg-neutral-900 text-black dark:text-white px-4 rounded-r-lg disabled:placeholder-neutral-300 dark:disabled:placeholder-neutral-700 transition-colors font-medium" +
               (false ? "  border border-red-500 dark:border-red-500" : "")
             }
-            name='amount'
-            id='amount'
-            placeholder='0'
+            name="amount"
+            id="amount"
+            placeholder="0"
             disabled={!secretAddress}
           />
         </div>
 
         {/* Balance | [25%|50%|75%|Max] */}
-        <div className='flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 mt-3'>
-          <div className='flex-1 text-xs'>
-            <span className='font-semibold'>Available: </span>
-            <span className='font-medium'>
+        <div className="flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 mt-3">
+          <div className="flex-1 text-xs">
+            <span className="font-semibold">Available: </span>
+            <span className="font-medium">
               {(() => {
                 if (availableBalance === "" && sourceAddress && secretjs) {
-                  return <CircularProgress size='0.6em' />;
+                  return <CircularProgress size="0.6em" />;
                 }
                 const prettyBalance = new BigNumber(availableBalance)
                   .dividedBy(`1e${selectedToken.decimals}`)
@@ -1036,7 +1041,7 @@ function Deposit() {
                 ) {
                   return (
                     <button
-                      className='ml-2 font-semibold bg-neutral-100 dark:bg-neutral-900 px-1.5 py-0.5 rounded-md border-neutral-300 dark:border-neutral-700 transition-colors hover:bg-neutral-300 dark:hover:bg-neutral-700 focus:bg-neutral-500 dark:focus:bg-neutral-500 cursor-pointer disabled:text-neutral-500 dark:disabled:text-neutral-500 disabled:hover:bg-neutral-100 dark:disabled:hover:bg-neutral-900 disabled:cursor-default'
+                      className="ml-2 font-semibold bg-neutral-100 dark:bg-neutral-900 px-1.5 py-0.5 rounded-md border-neutral-300 dark:border-neutral-700 transition-colors hover:bg-neutral-300 dark:hover:bg-neutral-700 focus:bg-neutral-500 dark:focus:bg-neutral-500 cursor-pointer disabled:text-neutral-500 dark:disabled:text-neutral-500 disabled:hover:bg-neutral-100 dark:disabled:hover:bg-neutral-900 disabled:cursor-default"
                       onClick={async () => {
                         await setKeplrViewingKey(selectedToken.address);
                         try {
@@ -1049,7 +1054,7 @@ function Deposit() {
                         }
                       }}
                     >
-                      <FontAwesomeIcon icon={faKey} className='mr-2' />
+                      <FontAwesomeIcon icon={faKey} className="mr-2" />
                       Set Viewing Key
                     </button>
                   );
@@ -1064,32 +1069,32 @@ function Deposit() {
               })()}
             </span>
           </div>
-          <div className='sm:flex-initial text-xs'>
-            <div className='inline-flex rounded-full text-xs font-semibold'>
+          <div className="sm:flex-initial text-xs">
+            <div className="inline-flex rounded-full text-xs font-semibold">
               <button
                 onClick={() => setAmountByPercentage(25)}
-                className='bg-neutral-100 dark:bg-neutral-900 px-1.5 py-0.5 rounded-l-md transition-colors hover:bg-neutral-300 dark:hover:bg-neutral-700 focus:bg-neutral-500 dark:focus:bg-neutral-500 cursor-pointer disabled:text-neutral-500 dark:disabled:text-neutral-500 disabled:hover:bg-neutral-900 dark:disabled:hover:bg-neutral-900 disabled:cursor-default'
+                className="bg-neutral-100 dark:bg-neutral-900 px-1.5 py-0.5 rounded-l-md transition-colors hover:bg-neutral-300 dark:hover:bg-neutral-700 focus:bg-neutral-500 dark:focus:bg-neutral-500 cursor-pointer disabled:text-neutral-500 dark:disabled:text-neutral-500 disabled:hover:bg-neutral-900 dark:disabled:hover:bg-neutral-900 disabled:cursor-default"
                 disabled={!secretAddress}
               >
                 25%
               </button>
               <button
                 onClick={() => setAmountByPercentage(50)}
-                className='bg-neutral-100 dark:bg-neutral-900 px-1.5 py-0.5 transition-colors hover:bg-neutral-300 dark:hover:bg-neutral-700 focus:bg-neutral-500 dark:focus:bg-neutral-500 cursor-pointer disabled:text-neutral-500 dark:disabled:text-neutral-500 disabled:hover:bg-neutral-900 dark:disabled:hover:bg-neutral-900 disabled:cursor-default'
+                className="bg-neutral-100 dark:bg-neutral-900 px-1.5 py-0.5 transition-colors hover:bg-neutral-300 dark:hover:bg-neutral-700 focus:bg-neutral-500 dark:focus:bg-neutral-500 cursor-pointer disabled:text-neutral-500 dark:disabled:text-neutral-500 disabled:hover:bg-neutral-900 dark:disabled:hover:bg-neutral-900 disabled:cursor-default"
                 disabled={!secretAddress}
               >
                 50%
               </button>
               <button
                 onClick={() => setAmountByPercentage(75)}
-                className='bg-neutral-100 dark:bg-neutral-900 px-1.5 py-0.5 transition-colors hover:bg-neutral-300 dark:hover:bg-neutral-700 focus:bg-neutral-500 dark:focus:bg-neutral-500 cursor-pointer disabled:text-neutral-500 dark:disabled:text-neutral-500 disabled:hover:bg-neutral-900 dark:disabled:hover:bg-neutral-900 disabled:cursor-default'
+                className="bg-neutral-100 dark:bg-neutral-900 px-1.5 py-0.5 transition-colors hover:bg-neutral-300 dark:hover:bg-neutral-700 focus:bg-neutral-500 dark:focus:bg-neutral-500 cursor-pointer disabled:text-neutral-500 dark:disabled:text-neutral-500 disabled:hover:bg-neutral-900 dark:disabled:hover:bg-neutral-900 disabled:cursor-default"
                 disabled={!secretAddress}
               >
                 75%
               </button>
               <button
                 onClick={() => setAmountByPercentage(100)}
-                className='bg-neutral-100 dark:bg-neutral-900 px-1.5 py-0.5 rounded-r-md transition-colors hover:bg-neutral-300 dark:hover:bg-neutral-700 focus:bg-neutral-500 dark:focus:bg-neutral-500 cursor-pointer disabled:text-neutral-500 dark:disabled:text-neutral-500 disabled:hover:bg-neutral-900 dark:disabled:hover:bg-neutral-900 disabled:cursor-default'
+                className="bg-neutral-100 dark:bg-neutral-900 px-1.5 py-0.5 rounded-r-md transition-colors hover:bg-neutral-300 dark:hover:bg-neutral-700 focus:bg-neutral-500 dark:focus:bg-neutral-500 cursor-pointer disabled:text-neutral-500 dark:disabled:text-neutral-500 disabled:hover:bg-neutral-900 dark:disabled:hover:bg-neutral-900 disabled:cursor-default"
                 disabled={!secretAddress}
               >
                 MAX
@@ -1100,24 +1105,24 @@ function Deposit() {
       </div>
 
       {/* Fee Grant */}
-      <div className='bg-neutral-200 dark:bg-neutral-800 p-4 rounded-lg select-none flex items-center my-4'>
-        <div className='flex-1 flex items-center'>
-          <span className='font-semibold text-sm'>Fee Grant</span>
+      <div className="bg-neutral-200 dark:bg-neutral-800 p-4 rounded-lg select-none flex items-center my-4">
+        <div className="flex-1 flex items-center">
+          <span className="font-semibold text-sm">Fee Grant</span>
           <Tooltip
             title={`Request Fee Grant so that you don't have to pay gas fees (up to 0.1 SCRT)`}
-            placement='right'
+            placement="right"
             arrow
           >
-            <span className='ml-2 mt-1 text-neutral-600 dark:text-neutral-400 hover:text-black dark:hover:text-white transition-colors cursor-pointer'>
+            <span className="ml-2 mt-1 text-neutral-600 dark:text-neutral-400 hover:text-black dark:hover:text-white transition-colors cursor-pointer">
               <FontAwesomeIcon icon={faInfoCircle} />
             </span>
           </Tooltip>
         </div>
-        <div className='flex-initial'>
+        <div className="flex-initial">
           {/* Deposit => no fee grant */}
           {ibcMode === "deposit" && (
             <>
-              <div className='text-xs font-semibold text-neutral-600 dark:text-neutral-400 flex items-center h-[1.6rem]'>
+              <div className="text-xs font-semibold text-neutral-600 dark:text-neutral-400 flex items-center h-[1.6rem]">
                 <span>Unavailable</span>
               </div>
             </>
@@ -1127,9 +1132,9 @@ function Deposit() {
           {ibcMode === "withdrawal" && feeGrantStatus === "Untouched" && (
             <>
               <button
-                id='feeGrantButton'
+                id="feeGrantButton"
                 onClick={requestFeeGrant}
-                className='font-semibold text-xs bg-neutral-100 dark:bg-neutral-900 px-1.5 py-1 rounded-md transition-colors hover:bg-neutral-300 dark:hover:bg-neutral-700 focus:bg-neutral-500 dark:focus:bg-neutral-500 cursor-pointer disabled:text-neutral-500 dark:disabled:text-neutral-500 disabled:hover:bg-neutral-100 dark:disabled:hover:bg-neutral-900 disabled:cursor-default'
+                className="font-semibold text-xs bg-neutral-100 dark:bg-neutral-900 px-1.5 py-1 rounded-md transition-colors hover:bg-neutral-300 dark:hover:bg-neutral-700 focus:bg-neutral-500 dark:focus:bg-neutral-500 cursor-pointer disabled:text-neutral-500 dark:disabled:text-neutral-500 disabled:hover:bg-neutral-100 dark:disabled:hover:bg-neutral-900 disabled:cursor-default"
                 disabled={!secretjs || !secretAddress}
               >
                 Request Fee Grant
@@ -1138,20 +1143,20 @@ function Deposit() {
           )}
           {/* Success */}
           {ibcMode === "withdrawal" && feeGrantStatus === "Success" && (
-            <div className='font-semibold text-sm flex items-center h-[1.6rem]'>
+            <div className="font-semibold text-sm flex items-center h-[1.6rem]">
               <FontAwesomeIcon
                 icon={faCheckCircle}
-                className='text-green-500 mr-1.5'
+                className="text-green-500 mr-1.5"
               />
               Fee Granted
             </div>
           )}
           {/* Fail */}
           {ibcMode === "withdrawal" && feeGrantStatus === "Fail" && (
-            <div className='font-semibold text-sm h-[1.6rem]'>
+            <div className="font-semibold text-sm h-[1.6rem]">
               <FontAwesomeIcon
                 icon={faXmarkCircle}
-                className='text-red-500 mr-1.5'
+                className="text-red-500 mr-1.5"
               />
               Request failed
             </div>
@@ -1159,7 +1164,7 @@ function Deposit() {
         </div>
       </div>
 
-      <div className='mt-4'>
+      <div className="mt-4">
         <SubmitButton />
       </div>
     </>

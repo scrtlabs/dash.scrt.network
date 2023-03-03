@@ -9,7 +9,8 @@ export const viewingKeyErrorString = "🧐";
 export const faucetURL = "https://faucet.secretsaturn.net/claim";
 export const faucetAddress = "secret1tq6y8waegggp4fv2fcxk3zmpsmlfadyc7lsd69";
 
-export const dAppsURL = "https://secretadmin.scrt.network/api/ecosystem-dapps?populate=deep&pagination[pageSize]=1000"
+export const dAppsURL =
+  "https://secretadmin.scrt.network/api/ecosystem-dapps?populate=deep&pagination[pageSize]=1000";
 
 export const sleep = (ms: number) =>
   new Promise((resolve) => setTimeout(resolve, ms));
@@ -18,7 +19,10 @@ export const gasPriceUscrt = 0.25;
 export function gasToFee(gas: number, denom: string): StdFee {
   return {
     amount: [
-      { amount: String(Math.floor(gas * gasPriceUscrt) + 1), denom: denom ? denom : "uscrt" },
+      {
+        amount: String(Math.floor(gas * gasPriceUscrt) + 1),
+        denom: denom ? denom : "uscrt",
+      },
     ],
     gas: String(gas),
   };
@@ -236,11 +240,33 @@ export const usdString = new Intl.NumberFormat("en-US", {
   maximumFractionDigits: 2,
 });
 
-const COUNT_ABBRS = ['', 'K', 'M', 'B', 't', 'q', 's', 'S', 'o', 'n', 'd', 'U', 'D', 'T', 'Qt', 'Qd', 'Sd', 'St'];
+const COUNT_ABBRS = [
+  "",
+  "K",
+  "M",
+  "B",
+  "t",
+  "q",
+  "s",
+  "S",
+  "o",
+  "n",
+  "d",
+  "U",
+  "D",
+  "T",
+  "Qt",
+  "Qd",
+  "Sd",
+  "St",
+];
 
 export function formatNumber(count: number, decimals = 2) {
   const i = count < 1 ? 0 : Math.floor(Math.log(count) / Math.log(1000));
-  return parseFloat((count / (1000 ** i)).toFixed(decimals)).toString() + COUNT_ABBRS[i];
+  return (
+    parseFloat((count / 1000 ** i).toFixed(decimals)).toString() +
+    COUNT_ABBRS[i]
+  );
 }
 
 export const ibcDenom = (
@@ -278,6 +304,8 @@ export const shuffleArray = (array: any[]) => {
 };
 
 export const sortDAppsArray = (array: any[]) => {
-  const sortedArray = [...array].sort((a, b) => a.attributes.name.localeCompare(b.attributes.name));
+  const sortedArray = [...array].sort((a, b) =>
+    a.attributes.name.localeCompare(b.attributes.name)
+  );
   return sortedArray;
 };
