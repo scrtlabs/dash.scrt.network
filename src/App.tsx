@@ -94,11 +94,11 @@ export default function App() {
         <title>{websiteName}</title>
       </Helmet>
       <Routes>
-        <Route path='/' element={<Dashboard />} />
-        <Route path='/ibc' element={<Ibc />} />
-        <Route path='/wrap' element={<Wrap />} />
-        <Route path='/apps' element={<Apps />} />
-        <Route path='/bridge' element={<Bridge />} />
+        <Route path="/" element={<Dashboard />} />
+        <Route path="/ibc" element={<Ibc />} />
+        <Route path="/wrap" element={<Wrap />} />
+        <Route path="/apps" element={<Apps />} />
+        <Route path="/bridge" element={<Bridge />} />
       </Routes>
     </>
   );

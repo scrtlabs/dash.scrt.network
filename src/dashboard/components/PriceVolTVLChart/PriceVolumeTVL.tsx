@@ -113,19 +113,22 @@ export default function PriceVolumeTVL(props: any) {
       tooltip: {
         xAlign: true,
         callbacks: {
-            label: function(context: any) {
-                let label = context.dataset.label || '';
+          label: function (context: any) {
+            let label = context.dataset.label || "";
 
-                if (label) {
-                    label += ': ';
-                }
-                if (context.parsed.y !== null) {
-                    label += new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(context.parsed.y);
-                }
-                return label;
+            if (label) {
+              label += ": ";
             }
-        }
-    },
+            if (context.parsed.y !== null) {
+              label += new Intl.NumberFormat("en-US", {
+                style: "currency",
+                currency: "USD",
+              }).format(context.parsed.y);
+            }
+            return label;
+          },
+        },
+      },
     },
     scales: {
       x: {
@@ -142,7 +145,7 @@ export default function PriceVolumeTVL(props: any) {
         },
         border: {
           color: theme === "dark" ? "#fff" : "#000",
-        }
+        },
       },
       y: {
         ticks: {
@@ -155,12 +158,15 @@ export default function PriceVolumeTVL(props: any) {
           color: theme === "dark" ? "#fff" : "#000",
         },
         grid: {
-          color: theme === "dark" ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0, 0, 0, 0.2)',
+          color:
+            theme === "dark"
+              ? "rgba(255, 255, 255, 0.2)"
+              : "rgba(0, 0, 0, 0.2)",
           display: true,
           drawOnChartArea: true,
           drawTicks: true,
           tickLength: 0,
-        }
+        },
       },
     },
     pointStyle: false,
@@ -189,23 +195,23 @@ export default function PriceVolumeTVL(props: any) {
   return (
     <>
       <PriceVolumeHistoryContext.Provider value={providerValue}>
-        <div className='flex flex-col gap-4 xs:gap-2 xs:flex-row items-center mb-4'>
+        <div className="flex flex-col gap-4 xs:gap-2 xs:flex-row items-center mb-4">
           {/* [Price|Volume|TVL] */}
-          <div className='flex-1 flex items-center'>
-            <div className='block xs:hidden mr-2 text-sm font-semibold dark:text-neutral-400'>
+          <div className="flex-1 flex items-center">
+            <div className="block xs:hidden mr-2 text-sm font-semibold dark:text-neutral-400">
               Mode:
             </div>
             <TypeSwitch />
           </div>
           {/* [Day|Month|Year] */}
-          <div className='flex-initial flex items-center'>
-            <div className='block xs:hidden mr-2 text-sm font-semibold text-neutral-600 dark:text-neutral-400'>
+          <div className="flex-initial flex items-center">
+            <div className="block xs:hidden mr-2 text-sm font-semibold text-neutral-600 dark:text-neutral-400">
               Range:
             </div>
             <RangeSwitch />
           </div>
         </div>
-        <div className='w-full h-[300px] xl:h-[400px]'>
+        <div className="w-full h-[300px] xl:h-[400px]">
           <Line data={data as any} options={options as any} />
         </div>
       </PriceVolumeHistoryContext.Provider>

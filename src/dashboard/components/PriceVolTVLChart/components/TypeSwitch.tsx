@@ -7,12 +7,12 @@ function TypeSwitch() {
   return (
     <>
       <div
-        className='flex-initial inline-flex rounded-md shadow-sm'
-        role='group'
+        className="flex-initial inline-flex rounded-md shadow-sm"
+        role="group"
       >
         <button
           onClick={() => setChartType("Price")}
-          type='button'
+          type="button"
           className={
             "py-1.5 px-3 text-xs font-semibold rounded-l-lg bg-neutral-100 dark:bg-neutral-900" +
             (chartType === "Price"
@@ -24,7 +24,7 @@ function TypeSwitch() {
         </button>
         <button
           onClick={() => setChartType("Volume")}
-          type='button'
+          type="button"
           className={
             "py-1.5 px-3 text-xs font-semibold bg-neutral-100 dark:bg-neutral-900" +
             (chartType === "Volume"
@@ -36,7 +36,7 @@ function TypeSwitch() {
         </button>
         <button
           onClick={() => setChartType("TVL")}
-          type='button'
+          type="button"
           className={
             "py-1.5 px-3 text-xs font-semibold rounded-r-lg bg-neutral-100 dark:bg-neutral-900" +
             (chartType === "TVL"

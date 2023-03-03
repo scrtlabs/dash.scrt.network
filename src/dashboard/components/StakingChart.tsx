@@ -61,9 +61,9 @@ export default function StakingChart() {
 
   const bondedToken = parseInt(pool?.bonded_tokens) / 10e5;
   let notBondedToken = totalSupply - bondedToken - communityPool;
-  const operationalToken =
-    notBondedToken - parseInt(pool?.not_bonded_tokens) / 10e4;
-  notBondedToken = notBondedToken - operationalToken;
+  //const operationalToken = notBondedToken - parseInt(pool?.not_bonded_tokens) / 10e4;
+
+  //notBondedToken = notBondedToken - operationalToken;
 
   const centerText = {
     id: "centerText",
@@ -95,16 +95,25 @@ export default function StakingChart() {
 
   const data = {
     labels: [
-      `Staked: ${formatNumber(bondedToken, 2)} (${((bondedToken/totalSupply)*100).toFixed(2)}%)`,
-      `Unstaked: ${formatNumber(notBondedToken, 2)} (${((notBondedToken/totalSupply)*100).toFixed(2)}%)`,
-      `Community Pool: ${formatNumber(communityPool, 2)} (${((communityPool/totalSupply)*100).toFixed(2)}%)`,
-      `Operational (SCRT Labs): ${formatNumber(operationalToken, 2)} (${((operationalToken/totalSupply)*100).toFixed(2)}%)`,
+      `Staked: ${formatNumber(bondedToken, 2)} (${(
+        (bondedToken / totalSupply) *
+        100
+      ).toFixed(2)}%)`,
+      `Unstaked: ${formatNumber(notBondedToken, 2)} (${(
+        (notBondedToken / totalSupply) *
+        100
+      ).toFixed(2)}%)`,
+      `Community Pool: ${formatNumber(communityPool, 2)} (${(
+        (communityPool / totalSupply) *
+        100
+      ).toFixed(2)}%)`,
+      //`Operational (SCRT Labs): ${formatNumber(operationalToken, 2)} (${((operationalToken/totalSupply)*100).toFixed(2)}%)`,
     ],
     datasets: [
       {
-        data: [bondedToken, notBondedToken, communityPool, operationalToken],
-        backgroundColor: ["#06b6d4", "#8b5cf6", "#ff8800", "#008000"],
-        hoverBackgroundColor: ["#06b6d4", "#8b5cf6", "#ff8800", "#008000"],
+        data: [bondedToken, notBondedToken, communityPool],
+        backgroundColor: ["#06b6d4", "#8b5cf6", "#ff8800"],
+        hoverBackgroundColor: ["#06b6d4", "#8b5cf6", "#ff8800"],
       },
     ],
   };
@@ -129,17 +138,17 @@ export default function StakingChart() {
       tooltip: {
         enabled: true,
         callbacks: {
-          label: function(context: any) {
-              let label = context.dataset.label || '';
-              if (label) {
-                  label += ': ';
-              }
-              if (context.parsed !== null) {
-                  label += `${formatNumber(context.parsed, 2)} SCRT`
-              }
-              return label;
-          }
-      }
+          label: function (context: any) {
+            let label = context.dataset.label || "";
+            if (label) {
+              label += ": ";
+            }
+            if (context.parsed !== null) {
+              label += `${formatNumber(context.parsed, 2)} SCRT`;
+            }
+            return label;
+          },
+        },
       },
     },
   };
@@ -161,10 +170,10 @@ export default function StakingChart() {
         </div> */}
 
         {/* Chart */}
-        <div className='w-full h-[250px] xl:h-[300px]'>
+        <div className="w-full h-[250px] xl:h-[300px]">
           {totalSupply && (
             <Doughnut
-              id='stakingChartDoughnut'
+              id="stakingChartDoughnut"
               data={data}
               options={options as any}
               plugins={[centerText]}
@@ -175,14 +184,14 @@ export default function StakingChart() {
         </div>
 
         <a
-          href='https://wallet.keplr.app/chains/secret-network'
-          target='_blank'
-          className='block bg-cyan-500 dark:bg-cyan-500/20 text-white dark:text-cyan-200 dark:hover:text-cyan-100 hover:bg-cyan-400 dark:hover:bg-cyan-500/50 w-full text-center transition-colors py-2.5 rounded-xl mt-4 font-semibold text-sm'
+          href="https://wallet.keplr.app/chains/secret-network"
+          target="_blank"
+          className="block bg-cyan-500 dark:bg-cyan-500/20 text-white dark:text-cyan-200 dark:hover:text-cyan-100 hover:bg-cyan-400 dark:hover:bg-cyan-500/50 w-full text-center transition-colors py-2.5 rounded-xl mt-4 font-semibold text-sm"
         >
           Stake SCRT
           <FontAwesomeIcon
             icon={faArrowUpRightFromSquare}
-            className='text-xs ml-2'
+            className="text-xs ml-2"
           />
         </a>
       </div>
