@@ -1,6 +1,6 @@
 import { createContext, useEffect, useRef, useState } from "react";
 import { SecretNetworkClient } from "secretjs";
-import { dAppsURL, shuffleArray, sortDAppsArray} from "shared/utils/commons";
+import { dAppsURL, shuffleArray, sortDAppsArray } from "shared/utils/commons";
 
 const APIContext = createContext(null);
 
@@ -30,11 +30,7 @@ const APIContextProvider = ({ children }: any) => {
   }, []);
 
   useEffect(() => {
-    if (
-      dappsData &&
-      dappsDataSorted.length === 0 &&
-      dappsData?.length !== 0
-    ) {
+    if (dappsData && dappsDataSorted.length === 0 && dappsData?.length !== 0) {
       setDappsDataSorted(sortDAppsArray(dappsData));
       // Tag-Filter
       let allTags: string[] = [];

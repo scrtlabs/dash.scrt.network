@@ -7,7 +7,7 @@ const FeeGrantContext = createContext(null);
 
 export type FeeGrantStatus = "Success" | "Fail" | "Untouched";
 
-const FeeGrantContextProvider = ({children}: any) => {
+const FeeGrantContextProvider = ({ children }: any) => {
   const [feeGrantStatus, setFeeGrantStatus] =
     useState<FeeGrantStatus>("Untouched");
 
