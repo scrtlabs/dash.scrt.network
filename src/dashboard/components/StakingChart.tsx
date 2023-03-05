@@ -62,7 +62,6 @@ export default function StakingChart() {
   const bondedToken = parseInt(pool?.bonded_tokens) / 10e5;
   let notBondedToken = totalSupply - bondedToken - communityPool;
   //const operationalToken = notBondedToken - parseInt(pool?.not_bonded_tokens) / 10e4;
-
   //notBondedToken = notBondedToken - operationalToken;
 
   const centerText = {
