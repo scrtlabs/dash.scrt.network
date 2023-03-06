@@ -30,7 +30,7 @@ import {
   getKeplrViewingKey,
   SecretjsContext,
   setKeplrViewingKey,
-} from "shared/components/SecretjsContext";
+} from "shared/context/SecretjsContext";
 
 export const WrapContext = createContext(null);
 

@@ -9,7 +9,7 @@ import { Flip, ToastContainer } from "react-toastify";
 import { useLocation } from "react-router-dom";
 import FloatingCTAButton from "shared/components/FloatingCTAButton";
 import FeedbackButton from "shared/components/FeedbackButton";
-import { ThemeContext } from "shared/components/ThemeContext";
+import { ThemeContext } from "shared/context/ThemeContext";
 import { ThemeSwitch } from "shared/components/ThemeSwitch";
 
 export const NavigationContext = createContext<boolean | null>(null);

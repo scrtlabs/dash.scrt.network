@@ -41,7 +41,7 @@ import {
   getKeplrViewingKey,
   SecretjsContext,
   setKeplrViewingKey,
-} from "shared/components/SecretjsContext";
+} from "shared/context/SecretjsContext";
 import CopyToClipboard from "react-copy-to-clipboard";
 
 function Deposit() {

@@ -6,7 +6,7 @@ import { Helmet } from "react-helmet-async";
 import { websiteName } from "App";
 import WrapModal from "./components/WrapModal";
 import Deposit from "./components/Deposit";
-import { SecretjsContext } from "shared/components/SecretjsContext";
+import { SecretjsContext } from "shared/context/SecretjsContext";
 
 export const IbcContext = createContext(null);
 

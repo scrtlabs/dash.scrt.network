@@ -7,7 +7,7 @@ import Header from "./components/Header";
 import AppTile from "./components/AppTile";
 import { sortDAppsArray, dAppsURL } from "shared/utils/commons";
 import React from "react";
-import { APIContext } from "shared/components/APIContext";
+import { APIContext } from "shared/context/APIContext";
 
 function Apps() {
   const {
