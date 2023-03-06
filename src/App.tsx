@@ -11,7 +11,7 @@ import { Helmet, HelmetProvider } from "react-helmet-async";
 // Pages
 import { Ibc } from "ibc/Ibc";
 import { Wrap } from "wrap/Wrap";
-import DefaultLayout from "shared/layouts/defaultLayout";
+import DefaultLayout from "shared/layouts/DefaultLayout";
 import { Dashboard } from "dashboard/Dashboard";
 import Bridge from "bridge/Bridge";
 import Apps from "apps/Apps";
