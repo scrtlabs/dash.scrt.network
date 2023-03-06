@@ -9,10 +9,10 @@ export function useHoverOutside(ref, handler) {
       handler(event);
     };
     document.addEventListener("mouseover", listener);
-    // document.addEventListener("touchstart", listener);
+    document.addEventListener("touchstart", listener);
     return () => {
       document.removeEventListener("mouseover", listener);
-      // document.removeEventListener("touchstart", listener);
+      document.removeEventListener("touchstart", listener);
     };
   }, [ref, handler]);
 }

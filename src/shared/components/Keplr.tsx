@@ -13,7 +13,7 @@ import { toast } from "react-toastify";
 import GetWalletModal from "shared/components/GetWalletModal";
 import { SECRET_LCD, SECRET_CHAIN_ID, SECRET_RPC } from "shared/utils/config";
 import { SecretjsContext } from "./SecretjsContext";
-import { useHoverOutside } from "shared/utils/useOutsideClick";
+import { useHoverOutside } from "shared/utils/useHoverOutside";
 
 export function KeplrPanel() {
   const {
