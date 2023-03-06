@@ -11,15 +11,14 @@ import { Helmet, HelmetProvider } from "react-helmet-async";
 // Pages
 import { Ibc } from "ibc/Ibc";
 import { Wrap } from "wrap/Wrap";
-import DefaultLayout from "shared/layouts/defaultLayout";
+import DefaultLayout from "shared/layouts/DefaultLayout";
 import { Dashboard } from "dashboard/Dashboard";
 import Bridge from "bridge/Bridge";
 import Apps from "apps/Apps";
 // Contexts
-import { ThemeContextProvider } from "shared/components/ThemeContext";
-import { SecretjsContextProvider } from "shared/components/SecretjsContext";
-import { FeeGrantContextProvider } from "shared/components/FeeGrantContext";
-import { APIContextProvider } from "shared/components/APIContext";
+import { ThemeContextProvider } from "shared/context/ThemeContext";
+import { SecretjsContextProvider } from "shared/context/SecretjsContext";
+import { APIContextProvider } from "shared/context/APIContext";
 
 // for html-head
 export const websiteName = "Secret Dashboard";
@@ -73,13 +72,11 @@ root.render(
       <BrowserRouter>
         <ThemeContextProvider>
           <SecretjsContextProvider>
-            <FeeGrantContextProvider>
-              <APIContextProvider>
-                <DefaultLayout>
-                  <App />
-                </DefaultLayout>
-              </APIContextProvider>
-            </FeeGrantContextProvider>
+            <APIContextProvider>
+              <DefaultLayout>
+                <App />
+              </DefaultLayout>
+            </APIContextProvider>
           </SecretjsContextProvider>
         </ThemeContextProvider>
       </BrowserRouter>

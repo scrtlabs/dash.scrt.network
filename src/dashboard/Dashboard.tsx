@@ -9,7 +9,7 @@ import SocialMedia from "./components/SocialMedia";
 import { SECRET_LCD, SECRET_CHAIN_ID } from "shared/utils/config";
 import StakingChart from "./components/StakingChart";
 import { formatNumber } from "shared/utils/commons";
-import { APIContext } from "shared/components/APIContext";
+import { APIContext } from "shared/context/APIContext";
 
 export const DashboardContext = createContext<{
   coingeckoApiData_Day: any;

@@ -17,7 +17,7 @@ import { Chart, Doughnut } from "react-chartjs-2";
 import { SecretNetworkClient } from "secretjs";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowUpRightFromSquare } from "@fortawesome/free-solid-svg-icons";
-import { ThemeContext } from "shared/components/ThemeContext";
+import { ThemeContext } from "shared/context/ThemeContext";
 
 ChartJS.register(
   CategoryScale,
