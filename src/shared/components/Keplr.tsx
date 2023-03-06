@@ -90,7 +90,7 @@ export function KeplrPanel() {
               <div className="text-right">
                 <button
                   onClick={disconnectWallet}
-                  className="font-semibold px-3 py-1.5 rounded-md text-red-400 bg-red-500/30 hover:bg-red-500/50 hover:text-red-300 transition-colors cursor-pointer"
+                  className="font-semibold px-3 py-1.5 rounded-md text-white dark:text-red-400 bg-red-500 dark:bg-red-500/30 hover:bg-red-400 dark:hover:bg-red-500/50 hover:text-white transition-colors cursor-pointer"
                 >
                   Disconnect Wallet
                 </button>
