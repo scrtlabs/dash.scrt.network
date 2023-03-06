@@ -3,7 +3,6 @@ import { faMoon } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Tooltip from "@mui/material/Tooltip";
 import { useContext } from "react";
-import { If, Then } from "react-if";
 import { ThemeContext } from "../context/ThemeContext";
 
 export function ThemeSwitch() {
