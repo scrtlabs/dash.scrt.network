@@ -7,10 +7,6 @@ import BigNumber from "bignumber.js";
 import Long from "long";
 import { useEffect, useState, useContext, Component } from "react";
 import {
-  getKeplrViewingKey,
-  setKeplrViewingKey,
-} from "shared/components/Keplr";
-import {
   sleep,
   suggestCrescentToKeplr,
   suggestChihuahuaToKeplr,
@@ -41,13 +37,16 @@ import {
   faInfoCircle,
 } from "@fortawesome/free-solid-svg-icons";
 import { IbcContext } from "ibc/Ibc";
-import { SecretjsContext } from "shared/components/SecretjsContext";
-import { FeeGrantContext } from "shared/components/FeeGrantContext";
+import {
+  getKeplrViewingKey,
+  SecretjsContext,
+  setKeplrViewingKey,
+} from "shared/context/SecretjsContext";
 import CopyToClipboard from "react-copy-to-clipboard";
 
 function Deposit() {
   const { feeGrantStatus, setFeeGrantStatus, requestFeeGrant } =
-    useContext(FeeGrantContext);
+    useContext(SecretjsContext);
 
   const { setIsWrapModalOpen, setSelectedTokenName, ibcMode, toggleIbcMode } =
     useContext(IbcContext);

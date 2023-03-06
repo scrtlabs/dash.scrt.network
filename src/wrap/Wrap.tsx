@@ -19,10 +19,6 @@ import {
   faCheckCircle,
   faXmarkCircle,
 } from "@fortawesome/free-solid-svg-icons";
-import {
-  getKeplrViewingKey,
-  setKeplrViewingKey,
-} from "shared/components/Keplr";
 import { Link } from "react-router-dom";
 import Select from "react-select";
 import Tooltip from "@mui/material/Tooltip";
@@ -30,14 +26,17 @@ import { Helmet } from "react-helmet-async";
 import { websiteName } from "App";
 import UnknownBalanceModal from "./components/UnknownBalanceModal";
 import FeeGrantInfoModal from "./components/FeeGrantInfoModal";
-import { SecretjsContext } from "shared/components/SecretjsContext";
-import { FeeGrantContext } from "shared/components/FeeGrantContext";
+import {
+  getKeplrViewingKey,
+  SecretjsContext,
+  setKeplrViewingKey,
+} from "shared/context/SecretjsContext";
 
 export const WrapContext = createContext(null);
 
 export function Wrap() {
   const { feeGrantStatus, setFeeGrantStatus, requestFeeGrant } =
-    useContext(FeeGrantContext);
+    useContext(SecretjsContext);
 
   const [isUnknownBalanceModalOpen, setIsUnknownBalanceModalOpen] =
     useState(false);
@@ -56,7 +55,8 @@ export function Wrap() {
   const modePreselection =
     modeByQueryParam?.toLowerCase() === "unwrap" ? "Unwrap" : "Wrap";
 
-  const { secretjs, secretAddress } = useContext(SecretjsContext);
+  const { secretjs, secretAddress, connectWallet } =
+    useContext(SecretjsContext);
 
   const [amountToWrap, setAmountToWrap] = useState<string>("");
   const [wrappingMode, setWrappingMode] =
@@ -768,6 +768,12 @@ export function Wrap() {
       });
   }, []);
 
+  const handleClick = () => {
+    if (!secretAddress || !secretjs) {
+      connectWallet();
+    }
+  };
+
   return (
     <>
       <Helmet>
@@ -797,7 +803,15 @@ export function Wrap() {
             document.body.classList.remove("overflow-hidden");
           }}
         />
-        <div className="w-full max-w-xl mx-auto px-4 onEnter_fadeInDown">
+        <div className="w-full max-w-xl mx-auto px-4 onEnter_fadeInDown relative">
+          {!secretjs && !secretAddress ? (
+            // Overlay to connect on click
+            <div
+              className="absolute block top-0 left-0 right-0 bottom-0 z-10"
+              onClick={handleClick}
+            ></div>
+          ) : null}
+          {/* Content */}
           <div className="border border-neutral-200 dark:border-neutral-700 rounded-2xl p-8 w-full text-neutral-800 dark:text-neutral-200 bg-white dark:bg-neutral-900">
             {/* Header */}
             <div className="flex items-center mb-4">
