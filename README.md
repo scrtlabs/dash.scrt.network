@@ -16,8 +16,8 @@ Wrapping Coins as Secret Tokens immediately supercharges them with private balan
 After verifying the system requirements you should be able to run a few commands to get everything set up:
 
 ```
-git clone https://github.com/SecretSaturn/wrap.scrt.network.git
-cd wrap.scrt.network
+git clone https://github.com/scrtlabs/dash.scrt.network.git
+cd dash.scrt.network
 yarn install
 ```
 
