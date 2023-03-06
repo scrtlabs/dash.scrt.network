@@ -6,12 +6,10 @@ import React, {
   useState,
 } from "react";
 import CopyToClipboard from "react-copy-to-clipboard";
-import { SecretNetworkClient } from "secretjs";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCopy, faWallet } from "@fortawesome/free-solid-svg-icons";
 import { toast } from "react-toastify";
 import GetWalletModal from "shared/context/GetWalletModal";
-import { SECRET_LCD, SECRET_CHAIN_ID, SECRET_RPC } from "shared/utils/config";
 import { SecretjsContext } from "../context/SecretjsContext";
 import { useHoverOutside } from "shared/utils/useHoverOutside";
 
