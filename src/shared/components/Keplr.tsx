@@ -1,6 +1,11 @@
-import React, { Component, useContext, useEffect, useState } from "react";
+import React, {
+  Component,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import CopyToClipboard from "react-copy-to-clipboard";
-import { Else, If, Then } from "react-if";
 import { SecretNetworkClient } from "secretjs";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCopy, faWallet } from "@fortawesome/free-solid-svg-icons";
@@ -8,143 +13,107 @@ import { toast } from "react-toastify";
 import GetWalletModal from "shared/components/GetWalletModal";
 import { SECRET_LCD, SECRET_CHAIN_ID, SECRET_RPC } from "shared/utils/config";
 import { SecretjsContext } from "./SecretjsContext";
-import { FeeGrantContext } from "./FeeGrantContext";
+import { useHoverOutside } from "shared/utils/useOutsideClick";
 
 export function KeplrPanel() {
-  const { secretjs, setSecretjs, secretAddress, setSecretAddress } =
-    useContext(SecretjsContext);
-  const { feeGrantStatus, setFeeGrantStatus } = useContext(FeeGrantContext);
-
-  const [isModalOpen, setIsModalOpen] = useState(false);
-
-  async function connectWallet(setSecretjs: any, setSecretAddress: any) {
-    if (!window.keplr) {
-      setIsModalOpen(true);
-      document.body.classList.add("overflow-hidden");
-    } else {
-      await setupKeplr(setSecretjs, setSecretAddress);
-      localStorage.setItem("keplrAutoConnect", "true");
-    }
-  }
-
-  const [isFeeGranted, setIsFeeGranted] = useState<boolean>(false);
+  const {
+    secretjs,
+    secretAddress,
+    connectWallet,
+    disconnectWallet,
+    isModalOpen,
+    setIsModalOpen,
+  } = useContext(SecretjsContext);
 
   const [isMenuVisible, setIsMenuVisible] = useState<boolean>(false);
 
-  function disconnectWallet() {
-    // reset secretjs and secretAddress
-    setSecretAddress("");
-    setSecretjs(null);
-
-    // reset fee grant
-    setIsFeeGranted(false);
-    setFeeGrantStatus("Untouched");
-
-    // disable auto connect
-    localStorage.setItem("keplrAutoConnect", "false");
-
-    // Toast for success
-    toast.success("Wallet disconnected!");
-  }
-
   useEffect(() => {
-    // Local Storage
-    let localStorageKeplrAutoConnect = false;
     if (localStorage.getItem("keplrAutoConnect") === "true") {
-      localStorageKeplrAutoConnect = true;
-    }
-
-    if (localStorageKeplrAutoConnect) {
-      connectWallet(setSecretjs, setSecretAddress);
+      connectWallet();
     }
   }, []);
 
-  class KeplrMenu extends React.Component {
-    render() {
-      return (
-        <>
-          <div
-            className="absolute pt-2 right-4 z-40"
-            style={{ top: "3.35rem" }}
-            onMouseEnter={() => setIsMenuVisible(true)}
-            onMouseLeave={() => setIsMenuVisible(false)}
-          >
-            <div className="bg-white dark:bg-neutral-800 border text-xs border-neutral-200 dark:border-neutral-700 p-4 w-auto rounded-lg">
-              <CopyToClipboard
-                text={secretAddress}
-                onCopy={() => {
-                  toast.success("Address copied to clipboard!");
-                }}
-              >
-                <button className="px-2 py-1 mb-2 rounded-lg flex gap-2 items-center group bg-neutral-100 dark:bg-neutral-900 hover:bg-neutral-200 dark:hover:bg-black transition-colors">
-                  <div>
-                    {secretAddress.slice(0, 14) +
-                      "..." +
-                      secretAddress.slice(-14)}
-                  </div>
-                  <div className="block text-neutral-500 dark:text-neutral-500 transition-colors">
-                    <FontAwesomeIcon icon={faCopy} />
-                  </div>
-                </button>
-              </CopyToClipboard>
-              <div className="text-right">
-                <button
-                  onClick={disconnectWallet}
-                  className="font-semibold px-3 py-1.5 rounded-md text-white dark:text-red-400 bg-red-500 dark:bg-red-500/30 hover:bg-red-400 dark:hover:bg-red-500/50 hover:text-white transition-colors cursor-pointer"
-                >
-                  Disconnect Wallet
-                </button>
-              </div>
-            </div>
-          </div>
-        </>
-      );
-    }
-  }
+  const keplrRef = useRef();
 
-  const content = (
-    <>
-      <div className="flex items-center font-semibold text-sm">
-        <div className="flex">
-          <If condition={secretAddress.length > 0}>
-            <Then>
-              <span className="relative w-2.5 mr-3">
-                <span className="flex absolute h-2 w-2 top-[0.175rem] left-0.5">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-1/2"></span>
-                  <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
-                </span>
+  useHoverOutside(keplrRef, () => setIsMenuVisible(false));
+
+  const KeplrMenu = () => {
+    return (
+      <div className="absolute pt-2 right-4 z-40 top-[3.7rem]">
+        <div className="bg-white dark:bg-neutral-800 border text-xs border-neutral-200 dark:border-neutral-700 p-4 w-auto rounded-lg">
+          <CopyToClipboard
+            text={secretAddress}
+            onCopy={() => {
+              toast.success("Address copied to clipboard!");
+            }}
+          >
+            <button className="px-2 py-1 mb-2 rounded-lg flex gap-2 items-center group bg-neutral-100 dark:bg-neutral-900 hover:bg-neutral-200 dark:hover:bg-black transition-colors">
+              <span>
+                {secretAddress.slice(0, 14) + "..." + secretAddress.slice(-14)}
               </span>
-            </Then>
-          </If>
-          <FontAwesomeIcon icon={faWallet} className="mr-2" />
+              <FontAwesomeIcon
+                icon={faCopy}
+                className="block text-neutral-500 dark:text-neutral-500 transition-colors"
+              />
+            </button>
+          </CopyToClipboard>
+          <div className="text-right">
+            <button
+              onClick={disconnectWallet}
+              className="font-semibold px-3 py-1.5 rounded-md text-white dark:text-red-400 bg-red-500 dark:bg-red-500/30 hover:bg-red-400 dark:hover:bg-red-500/50 hover:text-white transition-colors cursor-pointer"
+            >
+              Disconnect Wallet
+            </button>
+          </div>
         </div>
-        <span>
-          <If condition={secretAddress.length > 0}>
-            <Then>Connected</Then>
-            <Else>Connect Wallet</Else>
-          </If>
-        </span>
       </div>
-    </>
-  );
+    );
+  };
+
+  const AnimatedDot = () => {
+    return (
+      <span className="flex relative h-2 w-2">
+        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-1/2"></span>
+        <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+      </span>
+    );
+  };
+
+  const Content = () => {
+    return (
+      <>
+        <div className="flex items-center font-semibold text-sm">
+          <div className="flex items-center">
+            {/* Animated Dot */}
+            {secretAddress.length > 0 ? (
+              <span className="mr-3">
+                <AnimatedDot />
+              </span>
+            ) : null}
+            {/* Wallet Icon */}
+            <FontAwesomeIcon icon={faWallet} className="mr-2" />
+            {/* Connect Wallet || Connected */}
+            <span className="flex-1">
+              {secretAddress.length > 0 ? "Connected" : "Connect Wallet"}
+            </span>
+          </div>
+        </div>
+      </>
+    );
+  };
 
   if (secretjs) {
     return (
       <>
-        <If condition={isMenuVisible}>
+        <div ref={keplrRef}>
+          {isMenuVisible ? <KeplrMenu /> : null}
           <div
-            onMouseEnter={() => setIsMenuVisible(true)}
-            onMouseLeave={() => setIsMenuVisible(false)}
+            className="w-full sm:w-auto rounded-lg px-4 py-3 bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700  select-none cursor-pointer"
+            onMouseOver={() => setIsMenuVisible(true)}
+            ref={keplrRef}
           >
-            <KeplrMenu />
+            <Content />
           </div>
-        </If>
-        <div
-          className="w-full sm:w-auto rounded-lg px-4 py-3 bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700  select-none cursor-pointer"
-          onMouseEnter={() => setIsMenuVisible(true)}
-          onMouseLeave={() => setIsMenuVisible(false)}
-        >
-          {content}
         </div>
       </>
     );
@@ -160,76 +129,12 @@ export function KeplrPanel() {
         />
         <button
           id="keplr-button"
-          onClick={() => connectWallet(setSecretjs, setSecretAddress)}
+          onClick={() => connectWallet()}
           className="w-full sm:w-auto rounded-lg px-4 py-3 bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 hover:bg-neutral-100 dark:hover:bg-neutral-700 active:bg-neutral-500 dark:active:bg-neutral-600 transition-colors select-none"
         >
-          {content}
+          <Content />
         </button>
       </>
     );
-  }
-}
-
-async function setupKeplr(
-  setSecretjs: React.Dispatch<React.SetStateAction<SecretNetworkClient | null>>,
-  setSecretAddress: React.Dispatch<React.SetStateAction<string>>
-) {
-  const sleep = (ms: number) =>
-    new Promise((resolve) => setTimeout(resolve, ms));
-
-  while (
-    !window.keplr ||
-    !window.getEnigmaUtils ||
-    !window.getOfflineSignerOnlyAmino
-  ) {
-    await sleep(50);
-  }
-
-  await window.keplr.enable(SECRET_CHAIN_ID);
-  window.keplr.defaultOptions = {
-    sign: {
-      preferNoSetFee: false,
-      disableBalanceCheck: true,
-    },
-  };
-
-  const keplrOfflineSigner = window.getOfflineSignerOnlyAmino(SECRET_CHAIN_ID);
-  const accounts = await keplrOfflineSigner.getAccounts();
-
-  const secretAddress = accounts[0].address;
-
-  const secretjs = new SecretNetworkClient({
-    url: SECRET_LCD,
-    chainId: SECRET_CHAIN_ID,
-    wallet: keplrOfflineSigner,
-    walletAddress: secretAddress,
-    encryptionUtils: window.getEnigmaUtils(SECRET_CHAIN_ID),
-  });
-
-  setSecretAddress(secretAddress);
-  setSecretjs(secretjs);
-}
-
-export async function setKeplrViewingKey(token: string) {
-  if (!window.keplr) {
-    console.error("Keplr not present");
-    return;
-  }
-
-  await window.keplr.suggestToken(SECRET_CHAIN_ID, token);
-}
-
-export async function getKeplrViewingKey(
-  token: string
-): Promise<string | null> {
-  if (!window.keplr) {
-    console.error("Keplr not present");
-    return null;
-  }
-
-  try {
-    return await window.keplr.getSecret20ViewingKey(SECRET_CHAIN_ID, token);
-  } catch (e) {
-    return null;
   }
 }

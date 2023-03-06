@@ -18,7 +18,6 @@ import Apps from "apps/Apps";
 // Contexts
 import { ThemeContextProvider } from "shared/components/ThemeContext";
 import { SecretjsContextProvider } from "shared/components/SecretjsContext";
-import { FeeGrantContextProvider } from "shared/components/FeeGrantContext";
 import { APIContextProvider } from "shared/components/APIContext";
 
 // for html-head
@@ -73,13 +72,11 @@ root.render(
       <BrowserRouter>
         <ThemeContextProvider>
           <SecretjsContextProvider>
-            <FeeGrantContextProvider>
-              <APIContextProvider>
-                <DefaultLayout>
-                  <App />
-                </DefaultLayout>
-              </APIContextProvider>
-            </FeeGrantContextProvider>
+            <APIContextProvider>
+              <DefaultLayout>
+                <App />
+              </DefaultLayout>
+            </APIContextProvider>
           </SecretjsContextProvider>
         </ThemeContextProvider>
       </BrowserRouter>
