@@ -10,9 +10,9 @@ import { SecretNetworkClient } from "secretjs";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCopy, faWallet } from "@fortawesome/free-solid-svg-icons";
 import { toast } from "react-toastify";
-import GetWalletModal from "shared/components/GetWalletModal";
+import GetWalletModal from "shared/context/GetWalletModal";
 import { SECRET_LCD, SECRET_CHAIN_ID, SECRET_RPC } from "shared/utils/config";
-import { SecretjsContext } from "./SecretjsContext";
+import { SecretjsContext } from "../context/SecretjsContext";
 import { useHoverOutside } from "shared/utils/useHoverOutside";
 
 export function KeplrPanel() {

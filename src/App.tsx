@@ -16,9 +16,9 @@ import { Dashboard } from "dashboard/Dashboard";
 import Bridge from "bridge/Bridge";
 import Apps from "apps/Apps";
 // Contexts
-import { ThemeContextProvider } from "shared/components/ThemeContext";
-import { SecretjsContextProvider } from "shared/components/SecretjsContext";
-import { APIContextProvider } from "shared/components/APIContext";
+import { ThemeContextProvider } from "shared/context/ThemeContext";
+import { SecretjsContextProvider } from "shared/context/SecretjsContext";
+import { APIContextProvider } from "shared/context/APIContext";
 
 // for html-head
 export const websiteName = "Secret Dashboard";
