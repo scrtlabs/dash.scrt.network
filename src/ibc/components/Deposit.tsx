@@ -974,14 +974,14 @@ function Deposit() {
                 disableHoverListener={!secretjs && !secretAddress}
                 arrow
               >
-                <>
+                <span>
                   <button
                     className="text-neutral-500 enabled:hover:text-white enabled:active:text-neutral-500 transition-colors"
                     disabled={!secretjs && !secretAddress}
                   >
                     <FontAwesomeIcon icon={faCopy} />
                   </button>
-                </>
+                </span>
               </Tooltip>
             </CopyToClipboard>
           </div>
