@@ -23,10 +23,10 @@ export function KeplrPanel() {
     setIsModalOpen,
   } = useContext(SecretjsContext);
 
-  const [isMenuVisible, setIsMenuVisible] = useState<boolean>(false);
+  const [isMenuVisible, setIsMenuVisible] = useState<boolean>(true);
 
   useEffect(() => {
-    if (localStorage.getItem("keplrAutoConnect") === "true") {
+    if (localStorage.getItem("keplrAutoConnect") === "false") {
       connectWallet();
     }
   }, []);
@@ -35,34 +35,86 @@ export function KeplrPanel() {
 
   useHoverOutside(keplrRef, () => setIsMenuVisible(false));
 
+  const CopyableAddress = () => {
+    return (
+      <CopyToClipboard
+        text={secretAddress}
+        onCopy={() => {
+          toast.success("Address copied to clipboard!");
+        }}
+      >
+        <button className="px-2 py-1 mb-2 rounded-lg flex gap-2 items-center group bg-neutral-100 dark:bg-neutral-900 hover:bg-neutral-200 dark:hover:bg-black transition-colors">
+          {secretAddress.slice(0, 14) + "..." + secretAddress.slice(-14)}
+          <FontAwesomeIcon
+            icon={faCopy}
+            className="block text-neutral-500 dark:text-neutral-500 transition-colors"
+          />
+        </button>
+      </CopyToClipboard>
+    );
+  };
+
+  const Balances = () => {
+    return (
+      <div>
+        <div className="font-bold mb-2">Balances</div>
+        <div className="flex flex-col gap-2">
+          {/* item */}
+          <div className="flex items-center gap-3">
+            <div>
+              <img
+                src="/img/assets/scrt.svg"
+                alt="Secret Network Logo"
+                className="h-7"
+              />
+            </div>
+            <div className="text-xs">
+              <div className="font-bold">29.762182 SCRT</div>
+              <div className="text-gray-500">≈ $18.44</div>
+            </div>
+          </div>
+          {/* item */}
+          <div className="flex items-center gap-3">
+            <div>
+              <img
+                src="/img/assets/scrt.svg"
+                alt="Secret Network Logo"
+                className="h-7"
+              />
+            </div>
+            <div className="text-xs">
+              <div className="font-bold">0 sSCRT</div>
+              <div className="text-gray-500">≈ $0.00</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  const Disconnect = () => {
+    return (
+      <button
+        onClick={disconnectWallet}
+        className="w-full font-semibold px-3 py-1.5 rounded-md text-white dark:text-red-400 bg-red-500 dark:bg-red-500/30 hover:bg-red-400 dark:hover:bg-red-500/50 hover:text-white transition-colors cursor-pointer"
+      >
+        Disconnect Wallet
+      </button>
+    );
+  };
+
   const KeplrMenu = () => {
     return (
       <div className="absolute pt-2 right-4 z-40 top-[3.7rem]">
-        <div className="bg-white dark:bg-neutral-800 border text-xs border-neutral-200 dark:border-neutral-700 p-4 w-auto rounded-lg">
-          <CopyToClipboard
-            text={secretAddress}
-            onCopy={() => {
-              toast.success("Address copied to clipboard!");
-            }}
-          >
-            <button className="px-2 py-1 mb-2 rounded-lg flex gap-2 items-center group bg-neutral-100 dark:bg-neutral-900 hover:bg-neutral-200 dark:hover:bg-black transition-colors">
-              <span>
-                {secretAddress.slice(0, 14) + "..." + secretAddress.slice(-14)}
-              </span>
-              <FontAwesomeIcon
-                icon={faCopy}
-                className="block text-neutral-500 dark:text-neutral-500 transition-colors"
-              />
-            </button>
-          </CopyToClipboard>
-          <div className="text-right">
-            <button
-              onClick={disconnectWallet}
-              className="font-semibold px-3 py-1.5 rounded-md text-white dark:text-red-400 bg-red-500 dark:bg-red-500/30 hover:bg-red-400 dark:hover:bg-red-500/50 hover:text-white transition-colors cursor-pointer"
-            >
-              Disconnect Wallet
-            </button>
-          </div>
+        <div className="bg-white dark:bg-neutral-800 border text-xs border-neutral-200 dark:border-neutral-700 p-4 w-auto rounded-lg flex-row space-y-4">
+          {/* Copyable Wallet Address */}
+          <CopyableAddress />
+
+          {/* Balances */}
+          <Balances />
+
+          {/* Disconnect Button */}
+          <Disconnect />
         </div>
       </div>
     );
