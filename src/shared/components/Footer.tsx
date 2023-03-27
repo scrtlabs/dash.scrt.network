@@ -7,6 +7,7 @@ import {
   faYoutube,
 } from "@fortawesome/free-brands-svg-icons";
 import { faComments } from "@fortawesome/free-regular-svg-icons";
+import { faArrowUpRightFromSquare } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React from "react";
 
@@ -15,22 +16,32 @@ class Footer extends React.Component {
     return (
       <>
         <div className="grid grid-cols-12 items-center px-6 py-8 mt-12 text-center gap-4">
-          <div className="col-span-12 text-sm font-medium text-neutral-600 dark:text-neutral-400">
-            ⚡️ Powered by{" "}
+          <div className="col-span-12 text-sm text-neutral-600 dark:text-neutral-400 font-medium">
+            {"⚡️ Powered by "}
             <a
               href="https://scrt.network/"
               target="_blank"
-              className="transition-colors hover:text-black dark:hover:text-white"
+              className="transition-colors hover:text-black dark:hover:text-white font-bold"
             >
               Secret Network
-            </a>{" "}
-            &amp;{" "}
+            </a>
+          </div>
+          <div className="col-span-12 text-xs font-medium text-neutral-600 dark:text-neutral-400">
+            {"Developed by "}
+            <a
+              href="https://secretjupiter.com/"
+              target="_blank"
+              className="transition-colors hover:text-black dark:hover:text-white"
+            >
+              Secret Jupiter
+            </a>
+            {", "}
             <a
               href="https://secretsaturn.net/"
               target="_blank"
               className="transition-colors hover:text-black dark:hover:text-white"
             >
-              🪐 𝕊ecret 𝕊aturn
+              Secret Saturn
             </a>
           </div>
           <div className="col-span-12 space-x-4 text-xl text-center">
