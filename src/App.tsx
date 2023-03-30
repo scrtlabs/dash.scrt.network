@@ -15,6 +15,7 @@ import DefaultLayout from "shared/layouts/DefaultLayout";
 import { Dashboard } from "dashboard/Dashboard";
 import Bridge from "bridge/Bridge";
 import Apps from "apps/Apps";
+import { Restake } from "stake/Restake";
 // Contexts
 import { ThemeContextProvider } from "shared/context/ThemeContext";
 import { SecretjsContextProvider } from "shared/context/SecretjsContext";
@@ -96,6 +97,7 @@ export default function App() {
         <Route path="/wrap" element={<Wrap />} />
         <Route path="/apps" element={<Apps />} />
         <Route path="/bridge" element={<Bridge />} />
+        <Route path="/restake" element={<Restake />} />
       </Routes>
     </>
   );
