@@ -4,6 +4,17 @@
 
 Secret Dashboard is an entry point for new users into Secret Network. Features include a Dashboard UI for Secret Network data, IBC Transfer to and from Secret, a Wrap/Unwrap interface, a list of all active Secret dApps, a link collection to useful secret tools and more.
 
+## Table of Contents
+
+- [System Requirements](#motivation)
+- [Setup](#mission)
+- [Running the app](#community)
+- [Contributing](#contributing)
+- [Contributors](#contributors)
+- [Sponsors](#sponsors)
+- [Backers](#backers)
+- [License](#license)
+
 ## System Requirements
 
 - [Node.js 18 LTS](https://nodejs.org/)
@@ -41,7 +52,7 @@ docker compose up
 
 The App runs on port 3000. For further information check the `Dockerfile` and the `docker-compose.yml`.
 
-### License
+## License
 
 Developed by [Secret Jupiter](https://secretjupiter.com) and [Secret Saturn](https://secretsaturn.net)
 
