@@ -2,9 +2,7 @@
 
 # Secret Dashboard
 
-Wrapping Coins as Secret Tokens immediately supercharges them with private balances and private transfers.
-
-## Prerequisites
+Secret Dashboard is an entry point for new users into Secret Network. Features include a Dashboard UI for Secret Network data, IBC Transfer to and from Secret, a Wrap/Unwrap interface, a list of all active Secret dApps, a link collection to useful secret tools and more.
 
 ## System Requirements
 
@@ -28,7 +26,7 @@ yarn install
 To get the app up and running, run:
 
 ```
-npm start
+yarn start
 ```
 
 The App runs on port 3000.
@@ -42,3 +40,9 @@ docker compose up
 ```
 
 The App runs on port 3000. For further information check the `Dockerfile` and the `docker-compose.yml`.
+
+### License
+
+Developed by [Secret Jupiter](https://secretjupiter.com) and [Secret Saturn](https://secretsaturn.net)
+
+Licensed under the [MIT license](https://github.com/scrtlabs/dash.scrt.network/blob/master/LICENSE.md)
