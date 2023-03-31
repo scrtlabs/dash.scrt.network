@@ -25,7 +25,7 @@ export function KeplrPanel() {
 
   const [isMenuVisible, setIsMenuVisible] = useState<boolean>(true);
   const [SCRTBalance, setSCRTBalance] = useState<number>();
-  const [sSCRTBalance, setSSCRTBalance] = useState<number>();
+  const [sSCRTBalance, setSSCRTBalance] = useState<any>();
   const [SCRTPrice, setSCRTPrice] = useState<number>();
 
   useEffect(() => {
@@ -37,7 +37,6 @@ export function KeplrPanel() {
         denom: "uscrt",
       });
       setSCRTBalance(amount);
-      console.log(amount);
     };
     fetchBalance();
   }, [secretjs, secretAddress]);
@@ -48,7 +47,7 @@ export function KeplrPanel() {
     )
       .then((resp) => resp.json())
       .then((result: { [coingecko_id: string]: { usd: number } }) => {
-        setSCRTPrice(result[0].usd);
+        setSCRTPrice(result["secret"].usd);
       });
   }, [SCRTBalance]);
 
@@ -99,7 +98,7 @@ export function KeplrPanel() {
               <div className="font-bold">
                 {(SCRTBalance / 1e6).toFixed(2)} SCRT
               </div>
-              {!SCRTPrice && !SCRTBalance && (
+              {SCRTPrice && SCRTBalance && (
                 <div className="text-gray-500">
                   ≈ ${((SCRTBalance / 1e6) * SCRTPrice).toFixed(2)}
                 </div>
