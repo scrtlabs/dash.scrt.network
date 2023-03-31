@@ -24,6 +24,33 @@ export function KeplrPanel() {
   } = useContext(SecretjsContext);
 
   const [isMenuVisible, setIsMenuVisible] = useState<boolean>(true);
+  const [SCRTBalance, setSCRTBalance] = useState<number>();
+  const [sSCRTBalance, setSSCRTBalance] = useState<number>();
+  const [SCRTPrice, setSCRTPrice] = useState<number>();
+
+  useEffect(() => {
+    const fetchBalance = async () => {
+      const {
+        balance: { amount },
+      } = await secretjs.query.bank.balance({
+        address: secretAddress,
+        denom: "uscrt",
+      });
+      setSCRTBalance(amount);
+      console.log(amount);
+    };
+    fetchBalance();
+  }, [secretjs, secretAddress]);
+
+  useEffect(() => {
+    fetch(
+      `https://api.coingecko.com/api/v3/simple/price?ids=secret&vs_currencies=USD`
+    )
+      .then((resp) => resp.json())
+      .then((result: { [coingecko_id: string]: { usd: number } }) => {
+        setSCRTPrice(result[0].usd);
+      });
+  }, [SCRTBalance]);
 
   useEffect(() => {
     if (localStorage.getItem("keplrAutoConnect") === "false") {
@@ -69,12 +96,18 @@ export function KeplrPanel() {
               />
             </div>
             <div className="text-xs">
-              <div className="font-bold">29.762182 SCRT</div>
-              <div className="text-gray-500">≈ $18.44</div>
+              <div className="font-bold">
+                {(SCRTBalance / 1e6).toFixed(2)} SCRT
+              </div>
+              {!SCRTPrice && !SCRTBalance && (
+                <div className="text-gray-500">
+                  ≈ ${((SCRTBalance / 1e6) * SCRTPrice).toFixed(2)}
+                </div>
+              )}
             </div>
           </div>
           {/* item */}
-          <div className="flex items-center gap-3">
+          {/*  <div className="flex items-center gap-3">
             <div>
               <img
                 src="/img/assets/scrt.svg"
@@ -84,9 +117,9 @@ export function KeplrPanel() {
             </div>
             <div className="text-xs">
               <div className="font-bold">0 sSCRT</div>
-              <div className="text-gray-500">≈ $0.00</div>
+              {(!SCRTPrice && !sSCRTBalance) && (<div className="text-gray-500">≈ ${(sSCRTBalance/1e6*SCRTPrice).toFixed(2)}</div>)}
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
     );
