@@ -5,14 +5,23 @@ import React, {
   useRef,
   useState,
 } from "react";
+import { sleep, viewingKeyErrorString, usdString } from "shared/utils/commons";
+import Tooltip from "@mui/material/Tooltip";
 import CopyToClipboard from "react-copy-to-clipboard";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCopy, faWallet } from "@fortawesome/free-solid-svg-icons";
 import { toast } from "react-toastify";
 import GetWalletModal from "shared/context/GetWalletModal";
-import { SecretjsContext } from "../context/SecretjsContext";
 import { useHoverOutside } from "shared/utils/useHoverOutside";
 import { APIContext } from "shared/context/APIContext";
+import { Token, tokens } from "shared/utils/config";
+import BigNumber from "bignumber.js";
+import { faKey, faInfoCircle } from "@fortawesome/free-solid-svg-icons";
+import {
+  getKeplrViewingKey,
+  SecretjsContext,
+  setKeplrViewingKey,
+} from "shared/context/SecretjsContext";
 
 export function KeplrPanel() {
   const {
@@ -47,6 +56,8 @@ export function KeplrPanel() {
   const [SCRTBalance, setSCRTBalance] = useState<number>();
   const [sSCRTBalance, setSSCRTBalance] = useState<any>();
 
+  const SCRTToken = tokens.filter((token) => token.name === "SCRT")[0];
+
   useEffect(() => {
     const fetchBalance = async () => {
       const {
@@ -57,8 +68,103 @@ export function KeplrPanel() {
       });
       setSCRTBalance(amount);
     };
+
     fetchBalance();
+    updateTokenBalance();
   }, [secretjs, secretAddress]);
+
+  const updateTokenBalance = async () => {
+    if (!secretjs || !secretAddress) {
+      return;
+    }
+
+    const key = await getKeplrViewingKey(SCRTToken.address);
+    if (!key) {
+      setSSCRTBalance(viewingKeyErrorString);
+      return;
+    }
+
+    try {
+      const result: {
+        viewing_key_error: any;
+        balance: {
+          amount: string;
+        };
+      } = await secretjs.query.compute.queryContract({
+        contract_address: SCRTToken.address,
+        code_hash: SCRTToken.code_hash,
+        query: {
+          balance: { address: secretAddress, key },
+        },
+      });
+
+      if (result.viewing_key_error) {
+        setSSCRTBalance(viewingKeyErrorString);
+        return;
+      }
+
+      setSSCRTBalance(result.balance.amount);
+    } catch (e) {
+      console.error(`Error getting balance for s${SCRTToken.name}`, e);
+
+      setSSCRTBalance(viewingKeyErrorString);
+    }
+  };
+
+  function WrappedTokenBalanceUi() {
+    if (!secretjs || !secretAddress || !sSCRTBalance) {
+      return <></>;
+    } else if (sSCRTBalance == viewingKeyErrorString) {
+      return (
+        <>
+          <button
+            className="ml-2 font-semibold bg-neutral-100 dark:bg-neutral-900 px-1.5 py-0.5 rounded-md border-neutral-300 dark:border-neutral-700 transition-colors hover:bg-neutral-300 dark:hover:bg-neutral-700 focus:bg-neutral-500 dark:focus:bg-neutral-500 cursor-pointer disabled:text-neutral-500 dark:disabled:text-neutral-500 disabled:hover:bg-neutral-100 dark:disabled:hover:bg-neutral-900 disabled:cursor-default"
+            onClick={async () => {
+              await setKeplrViewingKey(SCRTToken.address);
+              try {
+                await sleep(1000); // sometimes query nodes lag
+                await updateTokenBalance();
+              } finally {
+                console.log("sdgfbydsjhg");
+              }
+            }}
+          >
+            <FontAwesomeIcon icon={faKey} className="mr-2" />
+            Set Viewing Key
+          </button>
+          <Tooltip title={"tsgdfdgshdgf"} placement="right" arrow>
+            <span className="ml-2 mt-1 text-neutral-600 dark:text-neutral-400 hover:text-black dark:hover:text-white transition-colors cursor-pointer">
+              <FontAwesomeIcon icon={faInfoCircle} />
+            </span>
+          </Tooltip>
+        </>
+      );
+    } else if (Number(sSCRTBalance) > -1) {
+      return (
+        <>
+          {/* Available: 0.123456 sSCRT () */}
+          <div className="text-xs">
+            <div className="font-bold">
+              {` ${new BigNumber(sSCRTBalance!)
+                .dividedBy(`1e${SCRTToken.decimals}`)
+                .toFormat()} sSCRT`}
+            </div>
+            {currentPrice && sSCRTBalance && (
+              <div className="text-gray-500">
+                ≈{" "}
+                {` ${usdString.format(
+                  new BigNumber(sSCRTBalance!)
+                    .dividedBy(`1e${SCRTToken.decimals}`)
+                    .multipliedBy(Number(currentPrice))
+                    .toNumber()
+                )}`}
+              </div>
+            )}
+          </div>
+        </>
+      );
+    }
+  }
 
   useEffect(() => {
     if (localStorage.getItem("keplrAutoConnect") === "false") {
@@ -105,29 +211,36 @@ export function KeplrPanel() {
             </div>
             <div className="text-xs">
               <div className="font-bold">
-                {(SCRTBalance / 1e6).toFixed(2)} SCRT
+                {` ${new BigNumber(SCRTBalance!)
+                  .dividedBy(`1e${SCRTToken.decimals}`)
+                  .toFormat()} SCRT`}
               </div>
               {currentPrice && SCRTBalance && (
                 <div className="text-gray-500">
-                  ≈ ${((SCRTBalance / 1e6) * currentPrice).toFixed(2)}
+                  ≈{" "}
+                  {` ${usdString.format(
+                    new BigNumber(SCRTBalance!)
+                      .dividedBy(`1e${SCRTToken.decimals}`)
+                      .multipliedBy(Number(currentPrice))
+                      .toNumber()
+                  )}`}
                 </div>
               )}
             </div>
           </div>
           {/* item */}
-          {/*  <div className="flex items-center gap-3">
-            <div>
-              <img
-                src="/img/assets/scrt.svg"
-                alt="Secret Network Logo"
-                className="h-7"
-              />
+          {
+            <div className="flex items-center gap-3">
+              <div>
+                <img
+                  src="/img/assets/scrt.svg"
+                  alt="Secret Network Logo"
+                  className="h-7"
+                />
+              </div>
+              <WrappedTokenBalanceUi />
             </div>
-            <div className="text-xs">
-              <div className="font-bold">0 sSCRT</div>
-              {(!currentPrice && !sSCRTBalance) && (<div className="text-gray-500">≈ ${(sSCRTBalance/1e6*currentPrice).toFixed(2)}</div>)}
-            </div>
-          </div> */}
+          }
         </div>
       </div>
     );
