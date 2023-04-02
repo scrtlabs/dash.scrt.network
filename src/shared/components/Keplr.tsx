@@ -12,6 +12,7 @@ import { toast } from "react-toastify";
 import GetWalletModal from "shared/context/GetWalletModal";
 import { SecretjsContext } from "../context/SecretjsContext";
 import { useHoverOutside } from "shared/utils/useHoverOutside";
+import { APIContext } from "shared/context/APIContext";
 
 export function KeplrPanel() {
   const {
@@ -23,10 +24,28 @@ export function KeplrPanel() {
     setIsModalOpen,
   } = useContext(SecretjsContext);
 
+  const {
+    coingeckoApiData_Day,
+    setCoinGeckoApiData_Day,
+    coingeckoApiData_Month,
+    setCoinGeckoApiData_Month,
+    coingeckoApiData_Year,
+    setCoinGeckoApiData_Year,
+    defiLamaApiData_Year,
+    setDefiLamaApiData_Year,
+    spartanApiData,
+    setSpartanApiData,
+    currentPrice,
+    setCurrentPrice,
+    volume,
+    setVolume,
+    marketCap,
+    setMarketCap,
+  } = useContext(APIContext);
+
   const [isMenuVisible, setIsMenuVisible] = useState<boolean>(true);
   const [SCRTBalance, setSCRTBalance] = useState<number>();
   const [sSCRTBalance, setSSCRTBalance] = useState<any>();
-  const [SCRTPrice, setSCRTPrice] = useState<number>();
 
   useEffect(() => {
     const fetchBalance = async () => {
@@ -40,16 +59,6 @@ export function KeplrPanel() {
     };
     fetchBalance();
   }, [secretjs, secretAddress]);
-
-  useEffect(() => {
-    fetch(
-      `https://api.coingecko.com/api/v3/simple/price?ids=secret&vs_currencies=USD`
-    )
-      .then((resp) => resp.json())
-      .then((result: { [coingecko_id: string]: { usd: number } }) => {
-        setSCRTPrice(result["secret"].usd);
-      });
-  }, [SCRTBalance]);
 
   useEffect(() => {
     if (localStorage.getItem("keplrAutoConnect") === "false") {
@@ -98,9 +107,9 @@ export function KeplrPanel() {
               <div className="font-bold">
                 {(SCRTBalance / 1e6).toFixed(2)} SCRT
               </div>
-              {SCRTPrice && SCRTBalance && (
+              {currentPrice && SCRTBalance && (
                 <div className="text-gray-500">
-                  ≈ ${((SCRTBalance / 1e6) * SCRTPrice).toFixed(2)}
+                  ≈ ${((SCRTBalance / 1e6) * currentPrice).toFixed(2)}
                 </div>
               )}
             </div>
@@ -116,7 +125,7 @@ export function KeplrPanel() {
             </div>
             <div className="text-xs">
               <div className="font-bold">0 sSCRT</div>
-              {(!SCRTPrice && !sSCRTBalance) && (<div className="text-gray-500">≈ ${(sSCRTBalance/1e6*SCRTPrice).toFixed(2)}</div>)}
+              {(!currentPrice && !sSCRTBalance) && (<div className="text-gray-500">≈ ${(sSCRTBalance/1e6*currentPrice).toFixed(2)}</div>)}
             </div>
           </div> */}
         </div>

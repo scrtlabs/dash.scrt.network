@@ -53,6 +53,7 @@ const APIContextProvider = ({ children }: any) => {
   const [coingeckoApiData_Year, setCoinGeckoApiData_Year] = useState();
   const [defiLamaApiData_Year, setDefiLamaApiData_Year] = useState();
   const [spartanApiData, setSpartanApiData] = useState();
+  const [currentPrice, setCurrentPrice] = useState(Number);
   const [volume, setVolume] = useState(Number);
   const [marketCap, setMarketCap] = useState(Number);
 
@@ -99,11 +100,12 @@ const APIContextProvider = ({ children }: any) => {
         setSpartanApiData(response);
       });
 
-    // Coingecko Market Cap & Volume
+    // Coingecko Market Price, Market Cap & Volume
     let coingeckoMarketCapVolumeUrl = `https://api.coingecko.com/api/v3/simple/price?ids=secret&vs_currencies=USD&include_market_cap=true&include_24hr_vol=true&include_24hr_change=true`;
     fetch(coingeckoMarketCapVolumeUrl)
       .then((response) => response.json())
       .then((response) => {
+        setCurrentPrice(response.secret.usd);
         setMarketCap(response.secret.usd_market_cap);
         setVolume(response.secret.usd_24h_vol);
       });
@@ -126,6 +128,8 @@ const APIContextProvider = ({ children }: any) => {
     setDefiLamaApiData_Year,
     spartanApiData,
     setSpartanApiData,
+    currentPrice,
+    setCurrentPrice,
     volume,
     setVolume,
     marketCap,
