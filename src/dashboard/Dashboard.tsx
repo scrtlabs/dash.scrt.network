@@ -30,6 +30,8 @@ export function Dashboard() {
     setDefiLamaApiData_Year,
     spartanApiData,
     setSpartanApiData,
+    currentPrice,
+    setCurrentPrice,
     volume,
     setVolume,
     marketCap,
@@ -179,7 +181,6 @@ export function Dashboard() {
   }, [volume, marketCap]);
 
   const [circulatingSupply, setCirculatingSupply] = useState(0);
-  const [currentPrice, setCurrentPrice] = useState(Number);
   const [communityPool, setCommunityPool] = useState(Number); // in uscrt
 
   useEffect(() => {
@@ -189,11 +190,6 @@ export function Dashboard() {
           url: SECRET_LCD,
           chainId: SECRET_CHAIN_ID,
         });
-        setCurrentPrice(
-          (coingeckoApiData_Month as any).prices[
-            (coingeckoApiData_Month as any).prices.length - 1
-          ][1]
-        );
         secretjsquery?.query?.tendermint
           ?.getLatestBlock("")
           ?.then((res) => setBlockHeight(res.block.header.height)); // setting block height
