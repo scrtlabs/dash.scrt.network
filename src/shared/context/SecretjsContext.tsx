@@ -1,8 +1,13 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { SecretNetworkClient } from "secretjs";
-import { faucetURL } from "shared/utils/commons";
-import { SECRET_CHAIN_ID, SECRET_LCD } from "shared/utils/config";
+import { faucetURL, sleep, viewingKeyErrorString } from "shared/utils/commons";
+import {
+  SECRET_CHAIN_ID,
+  SECRET_LCD,
+  Token,
+  tokens,
+} from "shared/utils/config";
 import GetWalletModal from "./GetWalletModal";
 
 const SecretjsContext = createContext(null);
@@ -16,6 +21,68 @@ const SecretjsContextProvider = ({ children }: any) => {
   const [isFeeGranted, setIsFeeGranted] = useState<boolean>(false);
   const [feeGrantStatus, setFeeGrantStatus] =
     useState<FeeGrantStatus>("Untouched");
+
+  // Balances
+  const [SCRTToken, setSCRTToken] = useState<Token>(
+    tokens.find((token) => token.name == "SCRT")
+  );
+  const [SCRTBalance, setSCRTBalance] = useState<any>();
+  const [sSCRTBalance, setSSCRTBalance] = useState<any>();
+
+  const updateTokenBalance = async () => {
+    if (!secretjs || !secretAddress) {
+      return;
+    }
+
+    const key = await getKeplrViewingKey(SCRTToken.address);
+
+    if (!key) {
+      setSSCRTBalance(viewingKeyErrorString);
+      return;
+    }
+
+    try {
+      const result: {
+        viewing_key_error: any;
+        balance: {
+          amount: string;
+        };
+      } = await secretjs.query.compute.queryContract({
+        contract_address: SCRTToken.address,
+        code_hash: SCRTToken.code_hash,
+        query: {
+          balance: { address: secretAddress, key },
+        },
+      });
+
+      if (result.viewing_key_error) {
+        console.error(result.viewing_key_error.msg);
+        setSSCRTBalance(viewingKeyErrorString);
+        return;
+      }
+
+      setSSCRTBalance(result.balance.amount);
+    } catch (e) {
+      console.error(`Error getting balance for s${SCRTToken.name}`, e);
+
+      setSSCRTBalance(viewingKeyErrorString);
+    }
+  };
+
+  useEffect(() => {
+    const fetchBalance = async () => {
+      const {
+        balance: { amount },
+      } = await secretjs.query.bank.balance({
+        address: secretAddress,
+        denom: "uscrt",
+      });
+      setSCRTBalance(amount);
+    };
+
+    fetchBalance();
+    updateTokenBalance();
+  }, [secretjs, secretAddress]);
 
   async function setupKeplr(
     setSecretjs: React.Dispatch<
@@ -106,6 +173,21 @@ const SecretjsContextProvider = ({ children }: any) => {
     }
   }
 
+  const [loadingTokenBalance, setLoadingTokenBalance] = useState<boolean>(true);
+
+  async function setViewingKey(token: Token) {
+    await setKeplrViewingKey(token.address);
+    try {
+      setLoadingTokenBalance(true);
+      await sleep(1000); // sometimes query nodes lag
+      await updateTokenBalance();
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setLoadingTokenBalance(false);
+    }
+  }
+
   function disconnectWallet() {
     // reset secretjs and secretAddress
     setSecretAddress("");
@@ -136,6 +218,16 @@ const SecretjsContextProvider = ({ children }: any) => {
         feeGrantStatus,
         setFeeGrantStatus,
         requestFeeGrant,
+        SCRTBalance,
+        setSCRTBalance,
+        sSCRTBalance,
+        setSSCRTBalance,
+        updateTokenBalance,
+        SCRTToken,
+        setSCRTToken,
+        loadingTokenBalance,
+        setLoadingTokenBalance,
+        setViewingKey,
       }}
     >
       <GetWalletModal
