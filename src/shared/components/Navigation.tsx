@@ -125,7 +125,7 @@ export function Navigation({
             }
           >
             <FontAwesomeIcon icon={faRecycle} className="mr-2" />
-            <span>Auto-Restake</span>
+            <span>Auto Restake</span>
           </NavLink>
         </li>
         <li>

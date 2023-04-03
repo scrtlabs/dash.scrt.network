@@ -1,24 +1,17 @@
-import { useEffect, useState, useContext, createContext } from "react";
+import { useEffect, useState, useContext } from "react";
 import { MsgSetAutoRestake } from "secretjs";
 import { SECRET_LCD } from "shared/utils/config";
-import { sleep, faucetURL, faucetAddress } from "shared/utils/commons";
-import BigNumber from "bignumber.js";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  faKey,
-  faArrowRightArrowLeft,
-  faRightLeft,
+  faArrowUpRightFromSquare,
   faInfoCircle,
-  faCheckCircle,
-  faXmarkCircle,
+  faTriangleExclamation,
 } from "@fortawesome/free-solid-svg-icons";
-import { Link } from "react-router-dom";
 import Select from "react-select";
 import Tooltip from "@mui/material/Tooltip";
 import { Helmet } from "react-helmet-async";
-import { websiteName } from "App";
 import { SecretjsContext } from "shared/context/SecretjsContext";
 
 export function Restake() {
@@ -154,13 +147,9 @@ export function Restake() {
             disabled={disabled}
             onClick={() => submit()}
           >
-            {secretAddress && secretjs && isRestakeEnabled === false && (
-              <>{`Enable auto-restake`}</>
-            )}
-            {secretAddress && secretjs && isRestakeEnabled === true && (
-              <>{`Disable auto-restake`}</>
-            )}
-            {!secretAddress && !secretjs && <>{`Connect wallet`}</>}
+            {secretjs && secretAddress && isRestakeEnabled === true
+              ? "Disable Auto Restake"
+              : "Enable Auto Restake"}
           </button>
         </div>
       </>
@@ -168,7 +157,7 @@ export function Restake() {
   }
 
   const handleClick = () => {
-    if (!secretAddress || !secretjs) {
+    if (!secretjs || !secretAddress) {
       connectWallet();
     }
   };
@@ -192,11 +181,11 @@ export function Restake() {
           {/* Header */}
           <div className="flex items-center mb-4">
             <h1 className="inline text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-500 to-purple-500">
-              Auto-Restake enabler
+              Auto Restake
             </h1>
             <Tooltip
               title={
-                "Use the auto-restake feature to automatically claim and restake your staked SCRT."
+                'Automating the process of "claim and restake" for your sSCRT'
               }
               placement="right"
               arrow
@@ -208,11 +197,58 @@ export function Restake() {
           </div>
 
           {/* *** From *** */}
+          <div className="bg-neutral-200 border border-yellow-500 dark:border-yellow-600 dark:bg-yellow-800/40 text-yellow-500 p-4 rounded-xl mb-4">
+            {/* Title Bar */}
+            <div className="flex flex-col sm:flex-row">
+              <div className="flex-1 font-semibold mb-4 text-center sm:text-left">
+                <FontAwesomeIcon
+                  icon={faTriangleExclamation}
+                  className="mr-2"
+                />
+                {`You do not have any SCRT for staking`}
+              </div>
+            </div>
+
+            <div className="flex center">
+              <ul className="list-disc pl-4 space-y-1">
+                <li>
+                  <a
+                    href="https://scrt.network/about/get-scrt#buy-scrt"
+                    target="_blank"
+                    className="text-neutral-300 border-b border-transparent hover:border-inherit transition-colors"
+                  >
+                    {`Get SCRT`}
+                    <FontAwesomeIcon
+                      icon={faArrowUpRightFromSquare}
+                      className="text-xs ml-2"
+                      size={"xs"}
+                    />
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="https://scrt.network/learn/secret-basics/how-to-buy-store-stake-scrt"
+                    target="_blank"
+                    className="text-neutral-300 border-b border-transparent hover:border-inherit transition-colors"
+                  >
+                    {`Learn more about Staking`}
+                    <FontAwesomeIcon
+                      icon={faArrowUpRightFromSquare}
+                      className="text-xs ml-2"
+                      size={"xs"}
+                    />
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          {/* *** From *** */}
           <div className="bg-neutral-200 dark:bg-neutral-800 p-4 rounded-xl">
             {/* Title Bar */}
             <div className="flex flex-col sm:flex-row">
               <div className="flex-1 font-semibold mb-2 text-center sm:text-left">
-                Your active delegations
+                Active Delegations
               </div>
             </div>
 
@@ -290,6 +326,20 @@ export function Restake() {
                 <label></label>
               )}
             </div>
+          </div>
+          <div className="mt-2">
+            <a
+              href="https://wallet.keplr.app/chains/secret-network?tab=staking"
+              target="_blank"
+              className="text-neutral-500 hover:text-white border-b border-transparent hover:border-inherit transition-colors text-sm"
+            >
+              {`Manual Staking`}
+              <FontAwesomeIcon
+                icon={faArrowUpRightFromSquare}
+                className="text-xs ml-2"
+                size={"xs"}
+              />
+            </a>
           </div>
           <div className="mt-4">
             {/* Submit Button */}
