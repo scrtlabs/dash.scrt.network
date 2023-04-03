@@ -1,5 +1,5 @@
-import React, {
-  Component,
+import {
+  FunctionComponent,
   useContext,
   useEffect,
   useRef,
@@ -14,14 +14,14 @@ import { toast } from "react-toastify";
 import GetWalletModal from "shared/context/GetWalletModal";
 import { useHoverOutside } from "shared/utils/useHoverOutside";
 import { APIContext } from "shared/context/APIContext";
-import { Token, tokens } from "shared/utils/config";
+import { Token } from "shared/utils/config";
 import BigNumber from "bignumber.js";
 import { faKey, faInfoCircle } from "@fortawesome/free-solid-svg-icons";
 import {
-  getKeplrViewingKey,
   SecretjsContext,
   setKeplrViewingKey,
 } from "shared/context/SecretjsContext";
+import BalanceItem from "./BalanceItem";
 
 export function KeplrPanel() {
   const {
@@ -31,85 +31,16 @@ export function KeplrPanel() {
     disconnectWallet,
     isModalOpen,
     setIsModalOpen,
+    SCRTBalance,
+    sSCRTBalance,
+    updateTokenBalance,
+    SCRTToken,
+    setSCRTToken,
   } = useContext(SecretjsContext);
 
-  const {
-    coingeckoApiData_Day,
-    setCoinGeckoApiData_Day,
-    coingeckoApiData_Month,
-    setCoinGeckoApiData_Month,
-    coingeckoApiData_Year,
-    setCoinGeckoApiData_Year,
-    defiLamaApiData_Year,
-    setDefiLamaApiData_Year,
-    spartanApiData,
-    setSpartanApiData,
-    currentPrice,
-    setCurrentPrice,
-    volume,
-    setVolume,
-    marketCap,
-    setMarketCap,
-  } = useContext(APIContext);
+  const { currentPrice } = useContext(APIContext);
 
-  const [isMenuVisible, setIsMenuVisible] = useState<boolean>(true);
-  const [SCRTBalance, setSCRTBalance] = useState<number>();
-  const [sSCRTBalance, setSSCRTBalance] = useState<any>();
-
-  const SCRTToken = tokens.filter((token) => token.name === "SCRT")[0];
-
-  useEffect(() => {
-    const fetchBalance = async () => {
-      const {
-        balance: { amount },
-      } = await secretjs.query.bank.balance({
-        address: secretAddress,
-        denom: "uscrt",
-      });
-      setSCRTBalance(amount);
-    };
-
-    fetchBalance();
-    updateTokenBalance();
-  }, [secretjs, secretAddress]);
-
-  const updateTokenBalance = async () => {
-    if (!secretjs || !secretAddress) {
-      return;
-    }
-
-    const key = await getKeplrViewingKey(SCRTToken.address);
-    if (!key) {
-      setSSCRTBalance(viewingKeyErrorString);
-      return;
-    }
-
-    try {
-      const result: {
-        viewing_key_error: any;
-        balance: {
-          amount: string;
-        };
-      } = await secretjs.query.compute.queryContract({
-        contract_address: SCRTToken.address,
-        code_hash: SCRTToken.code_hash,
-        query: {
-          balance: { address: secretAddress, key },
-        },
-      });
-
-      if (result.viewing_key_error) {
-        setSSCRTBalance(viewingKeyErrorString);
-        return;
-      }
-
-      setSSCRTBalance(result.balance.amount);
-    } catch (e) {
-      console.error(`Error getting balance for s${SCRTToken.name}`, e);
-
-      setSSCRTBalance(viewingKeyErrorString);
-    }
-  };
+  const [isMenuVisible, setIsMenuVisible] = useState<boolean>(true); // set to true for debugging menu
 
   function WrappedTokenBalanceUi() {
     if (!secretjs || !secretAddress || !sSCRTBalance) {
@@ -142,7 +73,6 @@ export function KeplrPanel() {
     } else if (Number(sSCRTBalance) > -1) {
       return (
         <>
-          {/* Available: 0.123456 sSCRT () */}
           <div className="text-xs">
             <div className="font-bold">
               {` ${new BigNumber(sSCRTBalance!)
@@ -167,13 +97,12 @@ export function KeplrPanel() {
   }
 
   useEffect(() => {
-    if (localStorage.getItem("keplrAutoConnect") === "false") {
+    if (localStorage.getItem("keplrAutoConnect") === "true") {
       connectWallet();
     }
   }, []);
 
   const keplrRef = useRef();
-
   useHoverOutside(keplrRef, () => setIsMenuVisible(false));
 
   const CopyableAddress = () => {
@@ -199,49 +128,12 @@ export function KeplrPanel() {
     return (
       <div>
         <div className="font-bold mb-2">Balances</div>
-        <div className="flex flex-col gap-2">
-          {/* item */}
-          <div className="flex items-center gap-3">
-            <div>
-              <img
-                src="/img/assets/scrt.svg"
-                alt="Secret Network Logo"
-                className="h-7"
-              />
-            </div>
-            <div className="text-xs">
-              <div className="font-bold">
-                {` ${new BigNumber(SCRTBalance!)
-                  .dividedBy(`1e${SCRTToken.decimals}`)
-                  .toFormat()} SCRT`}
-              </div>
-              {currentPrice && SCRTBalance && (
-                <div className="text-gray-500">
-                  ≈{" "}
-                  {` ${usdString.format(
-                    new BigNumber(SCRTBalance!)
-                      .dividedBy(`1e${SCRTToken.decimals}`)
-                      .multipliedBy(Number(currentPrice))
-                      .toNumber()
-                  )}`}
-                </div>
-              )}
-            </div>
-          </div>
-          {/* item */}
-          {
-            <div className="flex items-center gap-3">
-              <div>
-                <img
-                  src="/img/assets/scrt.svg"
-                  alt="Secret Network Logo"
-                  className="h-7"
-                />
-              </div>
-              <WrappedTokenBalanceUi />
-            </div>
-          }
+        <div className="flex flex-col gap-2 mb-2">
+          <BalanceItem token={SCRTToken} isSecretToken={false} /> {/* SCRT */}
+          <BalanceItem token={SCRTToken} isSecretToken={true} /> {/* sSCRT */}
         </div>
+        {/* TODO: implement viewing key manager */}
+        {/* <button className="inline-block border border-neutral-300 dark:border-neutral-600 hover:bg-neutral-300 dark:hover:bg-neutral-600 transition-colors text-black dark:text-white font-semibold py-1.5 w-full rounded-lg">Manage Viewing Keys</button> */}
       </div>
     );
   };
