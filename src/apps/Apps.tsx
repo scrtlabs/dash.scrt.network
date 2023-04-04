@@ -43,7 +43,7 @@ function Apps() {
           className={
             "inline-block text-sm px-1.5 py-0.5 rounded-md overflow-hidden transition-colors" +
             (isTagInFilterList(this.props.name)
-              ? " bg-neutral-500 dark:bg-neutral-500 text-white dark:text-white hover:bg-neutral-400 dark:hover:bg-neutral-600 font-semibold"
+              ? "  text-white dark:text-white font-semibold bg-gradient-to-br from-cyan-600 to-purple-600 hover:from-cyan-500 hover:to-purple-500"
               : " bg-white dark:bg-neutral-800 hover:bg-neutral-300 dark:hover:bg-neutral-700 font-medium")
           }
         >
@@ -97,7 +97,7 @@ function Apps() {
             onChange={(e) => setSearchText(e.target.value)}
             type="text"
             id="search"
-            className="block w-full p-4 pl-10 text-sm rounded-lg text-neutral-800 dark:text-white bg-white dark:bg-neutral-800 placeholder-neutral-600 dark:placeholder-neutral-400 border border-neutra-300 dark:border-neutral-700"
+            className="block w-full p-4 pl-10 text-sm rounded-lg text-neutral-800 dark:text-white bg-white dark:bg-neutral-800 placeholder-neutral-600 dark:placeholder-neutral-400 border border-neutral-300 dark:border-neutral-700"
             placeholder="Search"
           />
         </div>
