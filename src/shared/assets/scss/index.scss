@@ -11,6 +11,10 @@ body {
   margin: 0;
 }
 
+::selection {
+  @apply bg-purple-500/40  text-black dark:text-white;
+}
+
 body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;

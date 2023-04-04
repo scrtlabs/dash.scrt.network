@@ -7,7 +7,11 @@ import React, {
 } from "react";
 import CopyToClipboard from "react-copy-to-clipboard";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCopy, faWallet } from "@fortawesome/free-solid-svg-icons";
+import {
+  faArrowRightFromBracket,
+  faCopy,
+  faWallet,
+} from "@fortawesome/free-solid-svg-icons";
 import { toast } from "react-toastify";
 import GetWalletModal from "shared/context/GetWalletModal";
 import { SecretjsContext } from "../context/SecretjsContext";
@@ -23,7 +27,7 @@ export function KeplrPanel() {
     setIsModalOpen,
   } = useContext(SecretjsContext);
 
-  const [isMenuVisible, setIsMenuVisible] = useState<boolean>(false);
+  const [isMenuVisible, setIsMenuVisible] = useState<boolean>(true);
 
   useEffect(() => {
     if (localStorage.getItem("keplrAutoConnect") === "true") {
@@ -38,29 +42,34 @@ export function KeplrPanel() {
   const KeplrMenu = () => {
     return (
       <div className="absolute pt-2 right-4 z-40 top-[3.7rem]">
-        <div className="bg-white dark:bg-neutral-800 border text-xs border-neutral-200 dark:border-neutral-700 p-4 w-auto rounded-lg">
+        <div className="bg-white dark:bg-neutral-800 text-xs p-4 w-auto rounded-lg">
           <CopyToClipboard
             text={secretAddress}
             onCopy={() => {
               toast.success("Address copied to clipboard!");
             }}
           >
-            <button className="px-2 py-1 mb-2 rounded-lg flex gap-2 items-center group bg-neutral-100 dark:bg-neutral-900 hover:bg-neutral-200 dark:hover:bg-black transition-colors">
+            <button className="px-2 py-1 mb-2 rounded-lg flex gap-2 items-center group bg-neutral-100 dark:bg-neutral-600 hover:bg-neutral-200 dark:hover:bg-neutral-500 transition-colors">
               <span>
                 {secretAddress.slice(0, 14) + "..." + secretAddress.slice(-14)}
               </span>
               <FontAwesomeIcon
                 icon={faCopy}
-                className="block text-neutral-500 dark:text-neutral-500 transition-colors"
+                className="block transition-colors"
               />
             </button>
           </CopyToClipboard>
-          <div className="text-right">
+          <div className="text-right border-t border-neutral-200 dark:border-neutral-600 mt-4 pt-3">
             <button
               onClick={disconnectWallet}
-              className="font-semibold px-3 py-1.5 rounded-md text-white dark:text-red-400 bg-red-500 dark:bg-red-500/30 hover:bg-red-400 dark:hover:bg-red-500/50 hover:text-white transition-colors cursor-pointer"
+              className="inline-block font-semibold text-white dark:text-red-200 bg-red-500 dark:bg-red-500/60 hover:bg-red-400 dark:hover:bg-red-500/80 hover:text-white transition-colors px-2 py-1 rounded"
             >
-              Disconnect Wallet
+              <FontAwesomeIcon
+                icon={faArrowRightFromBracket}
+                className="mr-1"
+                size="sm"
+              />
+              {"Disconnect Wallet"}
             </button>
           </div>
         </div>
@@ -106,7 +115,7 @@ export function KeplrPanel() {
         <div ref={keplrRef}>
           {isMenuVisible ? <KeplrMenu /> : null}
           <div
-            className="w-full sm:w-auto rounded-lg px-4 py-3 bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700  select-none cursor-pointer"
+            className="w-full sm:w-auto rounded-lg px-4 py-3 bg-white dark:bg-neutral-700 hover:dark:bg-neutral-600 select-none cursor-pointer transition-colors"
             onMouseOver={() => setIsMenuVisible(true)}
             ref={keplrRef}
           >
@@ -128,7 +137,7 @@ export function KeplrPanel() {
         <button
           id="keplr-button"
           onClick={() => connectWallet()}
-          className="w-full sm:w-auto rounded-lg px-4 py-3 bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 hover:bg-neutral-100 dark:hover:bg-neutral-700 active:bg-neutral-500 dark:active:bg-neutral-600 transition-colors select-none"
+          className="w-full sm:w-auto rounded-lg px-4 py-3 bg-white dark:bg-neutral-700 hover:dark:bg-neutral-600 select-none cursor-pointer transition-colors"
         >
           <Content />
         </button>
