@@ -185,7 +185,7 @@ export function Restake() {
             </h1>
             <Tooltip
               title={
-                'Automating the process of "claim and restake" for your sSCRT'
+                'Automating the process of "claim and restake" for your SCRT'
               }
               placement="right"
               arrow
