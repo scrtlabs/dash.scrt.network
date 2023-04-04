@@ -27,7 +27,7 @@ export function KeplrPanel() {
     setIsModalOpen,
   } = useContext(SecretjsContext);
 
-  const [isMenuVisible, setIsMenuVisible] = useState<boolean>(true);
+  const [isMenuVisible, setIsMenuVisible] = useState<boolean>(false);
 
   useEffect(() => {
     if (localStorage.getItem("keplrAutoConnect") === "true") {
