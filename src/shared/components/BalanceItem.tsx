@@ -3,8 +3,12 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import BigNumber from "bignumber.js";
 import React, { FunctionComponent, useContext } from "react";
 import { APIContext } from "shared/context/APIContext";
-import { SecretjsContext } from "shared/context/SecretjsContext";
-import { usdString } from "shared/utils/commons";
+import {
+  getKeplrViewingKey,
+  SecretjsContext,
+  setKeplrViewingKey,
+} from "shared/context/SecretjsContext";
+import { sleep, usdString } from "shared/utils/commons";
 import { Token } from "shared/utils/config";
 
 type IBalanceProps = {
@@ -35,8 +39,15 @@ const BalanceItem: FunctionComponent<IBalanceProps> = ({
   const SetViewingKeyButton = (props: { token: Token }) => {
     return (
       <button
-        onClick={() => {
-          alert("to be implemented");
+        onClick={async () => {
+          console.log("btn pressed");
+          await setKeplrViewingKey(token.address);
+          try {
+            await sleep(1000); // sometimes query nodes lag
+            await updateTokenBalance();
+          } finally {
+            console.log("test");
+          }
         }}
         className="ml-2 font-semibold bg-neutral-100 dark:bg-neutral-900 px-1.5 py-0.5 rounded-md border-neutral-300 dark:border-neutral-700 transition-colors hover:bg-neutral-300 dark:hover:bg-neutral-700 focus:bg-neutral-500 dark:focus:bg-neutral-500 cursor-pointer disabled:text-neutral-500 dark:disabled:text-neutral-500 disabled:hover:bg-neutral-100 dark:disabled:hover:bg-neutral-900 disabled:cursor-default"
       >
