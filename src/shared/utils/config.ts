@@ -58,20 +58,20 @@ export const chains: { [chain_name: string]: Chain } = {
     chain_image: "/bld.webp",
     explorer_account: "https://agoric.explorers.guru/account/",
   },
-  Akash: {
-    chain_name: "Akash",
-    deposit_channel_id: "channel-43",
-    deposit_gas: 150_000,
-    deposit_gas_denom: "uakt",
-    withdraw_channel_id: "channel-21",
-    withdraw_gas: 30_000,
-    chain_id: "akashnet-2",
-    bech32_prefix: "akash",
-    lcd: "https://akash-api.lavenderfive.com",
-    rpc: "https://rpc.akash.forbole.com",
-    chain_image: "/akt.svg",
-    explorer_account: "https://www.mintscan.io/akash/account/",
-  },
+  // Akash: {
+  //   chain_name: "Akash",
+  //   deposit_channel_id: "channel-43",
+  //   deposit_gas: 150_000,
+  //   deposit_gas_denom: "uakt",
+  //   withdraw_channel_id: "channel-21",
+  //   withdraw_gas: 30_000,
+  //   chain_id: "akashnet-2",
+  //   bech32_prefix: "akash",
+  //   lcd: "https://akash-api.lavenderfive.com",
+  //   rpc: "https://rpc.akash.forbole.com",
+  //   chain_image: "/akt.svg",
+  //   explorer_account: "https://www.mintscan.io/akash/account/",
+  // },
   Chihuahua: {
     chain_name: "Chihuahua",
     deposit_channel_id: "channel-16",
@@ -338,18 +338,18 @@ export const tokens: Token[] = [
           "uscrt"
         ),
       },
-      {
-        chain_name: "Akash",
-        from_denom: ibcDenom(
-          [
-            {
-              incomingChannelId: chains["Akash"].deposit_channel_id,
-              incomingPortId: "transfer",
-            },
-          ],
-          "uscrt"
-        ),
-      },
+      // {
+      //   chain_name: "Akash",
+      //   from_denom: ibcDenom(
+      //     [
+      //       {
+      //         incomingChannelId: chains["Akash"].deposit_channel_id,
+      //         incomingPortId: "transfer",
+      //       },
+      //     ],
+      //     "uscrt"
+      //   ),
+      // },
       {
         chain_name: "Chihuahua",
         from_denom: ibcDenom(
@@ -524,10 +524,10 @@ export const tokens: Token[] = [
         chain_name: "Agoric",
         from_denom: "uscrt",
       },
-      {
-        chain_name: "Akash",
-        from_denom: "uscrt",
-      },
+      // {
+      //   chain_name: "Akash",
+      //   from_denom: "uscrt",
+      // },
       {
         chain_name: "Chihuahua",
         from_denom: "uscrt",
@@ -586,35 +586,35 @@ export const tokens: Token[] = [
       },
     ],
   },
-  {
-    name: "AKT",
-    address: "secret168j5f78magfce5r2j4etaytyuy7ftjkh4cndqw",
-    code_hash:
-      "5a085bd8ed89de92b35134ddd12505a602c7759ea25fb5c089ba03c8535b3042",
-    image: "/akt.svg",
-    decimals: 6,
-    coingecko_id: "akash-network",
-    deposits: [
-      {
-        chain_name: "Akash",
-        from_denom: "uakt",
-      },
-    ],
-    withdrawals: [
-      {
-        chain_name: "Akash",
-        from_denom: ibcDenom(
-          [
-            {
-              incomingChannelId: chains["Akash"].withdraw_channel_id,
-              incomingPortId: "transfer",
-            },
-          ],
-          "uakt"
-        ),
-      },
-    ],
-  },
+  // {
+  //   name: "AKT",
+  //   address: "secret168j5f78magfce5r2j4etaytyuy7ftjkh4cndqw",
+  //   code_hash:
+  //     "5a085bd8ed89de92b35134ddd12505a602c7759ea25fb5c089ba03c8535b3042",
+  //   image: "/akt.svg",
+  //   decimals: 6,
+  //   coingecko_id: "akash-network",
+  //   deposits: [
+  //     {
+  //       chain_name: "Akash",
+  //       from_denom: "uakt",
+  //     },
+  //   ],
+  //   withdrawals: [
+  //     {
+  //       chain_name: "Akash",
+  //       from_denom: ibcDenom(
+  //         [
+  //           {
+  //             incomingChannelId: chains["Akash"].withdraw_channel_id,
+  //             incomingPortId: "transfer",
+  //           },
+  //         ],
+  //         "uakt"
+  //       ),
+  //     },
+  //   ],
+  // },
   {
     name: "ATOM",
     address: "secret14mzwd0ps5q277l20ly2q3aetqe3ev4m4260gf4",
