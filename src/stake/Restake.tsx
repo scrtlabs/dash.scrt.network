@@ -29,6 +29,24 @@ export function Restake() {
   const [restakeEntries, setRestakeEntries] = useState<any>();
   const [selectedValidator, setSelectedValidator] = useState<any>();
 
+  const fetchDelegations = async () => {
+    const { validators } = await secretjs.query.staking.validators({
+      status: "BOND_STATUS_BONDED",
+    });
+    setValidators(validators);
+    const validatorsForDelegator =
+      await secretjs.query.staking.delegatorDelegations({
+        delegator_addr: secretAddress,
+      });
+    setValidatorsForDelegator(validatorsForDelegator);
+    const url = `${SECRET_LCD}/cosmos/distribution/v1beta1/restake_entries?delegator=${secretAddress}`;
+    await fetch(url)
+      .then((response) => response.json())
+      .then((response) => {
+        setRestakeEntries(response);
+      });
+  };
+
   useEffect(() => {
     if (!secretjs || !secretAddress) {
       setValidators(undefined);
@@ -36,26 +54,16 @@ export function Restake() {
       setRestakeEntries(undefined);
       return;
     }
-    const fetchData = async () => {
-      const { validators } = await secretjs.query.staking.validators({
-        status: "BOND_STATUS_BONDED",
-      });
-      setValidators(validators);
-      const validatorsForDelegator =
-        await secretjs.query.staking.delegatorDelegations({
-          delegator_addr: secretAddress,
-        });
-      setValidatorsForDelegator(validatorsForDelegator);
-      console.log(validatorsForDelegator);
+    fetchDelegations();
+  }, [secretAddress, secretjs]);
+
+  useEffect(() => {
+    if (!secretjs || !secretAddress) return;
+
+    const interval = setInterval(fetchDelegations, 10000);
+    return () => {
+      clearInterval(interval);
     };
-    fetchData();
-    const url = `${SECRET_LCD}/cosmos/distribution/v1beta1/restake_entries?delegator=${secretAddress}`;
-    fetch(url)
-      .then((response) => response.json())
-      .then((response) => {
-        console.log(response);
-        setRestakeEntries(response);
-      });
   }, [secretAddress, secretjs]);
 
   useEffect(() => {
@@ -77,7 +85,9 @@ export function Restake() {
 
       try {
         const toastId = toast.loading(
-          `Changing restaking for validator ${selectedValidator.name}`,
+          !isRestakeEnabled
+            ? `Enabling Auto Restaking for validator ${selectedValidator.validatorName}`
+            : `Disabling Auto Restaking for validator ${selectedValidator.validatorName}`,
           { closeButton: true }
         );
         await secretjs.tx
@@ -99,14 +109,18 @@ export function Restake() {
             console.error(error);
             if (error?.tx?.rawLog) {
               toast.update(toastId, {
-                render: `Changing restaking failed: ${error.tx.rawLog}`,
+                render: !isRestakeEnabled
+                  ? `Enabling Auto Restaking failed: ${error.tx.rawLog}`
+                  : `Disabling Auto Restaking failed: ${error.tx.rawLog}`,
                 type: "error",
                 isLoading: false,
                 closeOnClick: true,
               });
             } else {
               toast.update(toastId, {
-                render: `Changing restaking failed: ${error.message}`,
+                render: !isRestakeEnabled
+                  ? `Enabling Auto Restaking failed: ${error.message}`
+                  : `Disabling Auto Restaking failed: ${error.message}`,
                 type: "error",
                 isLoading: false,
                 closeOnClick: true,
@@ -118,14 +132,18 @@ export function Restake() {
             if (tx) {
               if (tx.code === 0) {
                 toast.update(toastId, {
-                  render: `Changed restaking successfully`,
+                  render: !isRestakeEnabled
+                    ? `Enabled Auto Restaking successfully for validator ${selectedValidator.validatorName}`
+                    : `Disabled Auto Restaking successfully for validator ${selectedValidator.validatorName}`,
                   type: "success",
                   isLoading: false,
                   closeOnClick: true,
                 });
               } else {
                 toast.update(toastId, {
-                  render: `Changing restaking failed: ${tx.rawLog}`,
+                  render: !isRestakeEnabled
+                    ? `Enabling Auto Restaking failed: ${tx.rawLog}`
+                    : `Disabling Auto Restaking failed: ${tx.rawLog}`,
                   type: "error",
                   isLoading: false,
                   closeOnClick: true,
@@ -147,9 +165,11 @@ export function Restake() {
             disabled={disabled}
             onClick={() => submit()}
           >
-            {secretjs && secretAddress && isRestakeEnabled === true
-              ? "Disable Auto Restake"
-              : "Enable Auto Restake"}
+            {selectedValidator
+              ? secretjs && secretAddress && isRestakeEnabled === true
+                ? `Disable Auto Restake for ${selectedValidator?.validatorName}`
+                : `Enable Auto Restake for ${selectedValidator?.validatorName}`
+              : "Auto Restake"}
           </button>
         </div>
       </>
@@ -196,52 +216,53 @@ export function Restake() {
             </Tooltip>
           </div>
 
-          {/* *** From *** */}
-          <div className="bg-neutral-200 border border-yellow-500 dark:border-yellow-600 dark:bg-yellow-800/40 text-yellow-500 p-4 rounded-xl mb-4">
-            {/* Title Bar */}
-            <div className="flex flex-col sm:flex-row">
-              <div className="flex-1 font-semibold mb-4 text-center sm:text-left">
-                <FontAwesomeIcon
-                  icon={faTriangleExclamation}
-                  className="mr-2"
-                />
-                {`You do not have any SCRT for staking`}
+          {validatorsForDelegator?.delegation_responses?.length == 0 && (
+            <div className="bg-neutral-200 border border-yellow-500 dark:border-yellow-600 dark:bg-yellow-800/40 text-yellow-500 p-4 rounded-xl mb-4">
+              {/* Title Bar */}
+              <div className="flex flex-col sm:flex-row">
+                <div className="flex-1 font-semibold mb-4 text-center sm:text-left">
+                  <FontAwesomeIcon
+                    icon={faTriangleExclamation}
+                    className="mr-2"
+                  />
+                  {`You do not have any SCRT staked`}
+                </div>
+              </div>
+
+              <div className="flex center">
+                <ul className="list-disc pl-4 space-y-1">
+                  <li>
+                    <a
+                      href="https://scrt.network/about/get-scrt#buy-scrt"
+                      target="_blank"
+                      className="text-neutral-300 border-b border-transparent hover:border-inherit transition-colors"
+                    >
+                      {`Get SCRT`}
+                      <FontAwesomeIcon
+                        icon={faArrowUpRightFromSquare}
+                        className="text-xs ml-2"
+                        size={"xs"}
+                      />
+                    </a>
+                  </li>
+                  <li>
+                    <a
+                      href="https://scrt.network/learn/secret-basics/how-to-buy-store-stake-scrt"
+                      target="_blank"
+                      className="text-neutral-300 border-b border-transparent hover:border-inherit transition-colors"
+                    >
+                      {`Learn more about Staking`}
+                      <FontAwesomeIcon
+                        icon={faArrowUpRightFromSquare}
+                        className="text-xs ml-2"
+                        size={"xs"}
+                      />
+                    </a>
+                  </li>
+                </ul>
               </div>
             </div>
-
-            <div className="flex center">
-              <ul className="list-disc pl-4 space-y-1">
-                <li>
-                  <a
-                    href="https://scrt.network/about/get-scrt#buy-scrt"
-                    target="_blank"
-                    className="text-neutral-300 border-b border-transparent hover:border-inherit transition-colors"
-                  >
-                    {`Get SCRT`}
-                    <FontAwesomeIcon
-                      icon={faArrowUpRightFromSquare}
-                      className="text-xs ml-2"
-                      size={"xs"}
-                    />
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="https://scrt.network/learn/secret-basics/how-to-buy-store-stake-scrt"
-                    target="_blank"
-                    className="text-neutral-300 border-b border-transparent hover:border-inherit transition-colors"
-                  >
-                    {`Learn more about Staking`}
-                    <FontAwesomeIcon
-                      icon={faArrowUpRightFromSquare}
-                      className="text-xs ml-2"
-                      size={"xs"}
-                    />
-                  </a>
-                </li>
-              </ul>
-            </div>
-          </div>
+          )}
 
           {/* *** From *** */}
           <div className="bg-neutral-200 dark:bg-neutral-800 p-4 rounded-xl">
@@ -273,6 +294,11 @@ export function Restake() {
                           ? "Auto-restake enabled ✅"
                           : "Auto-restake not enabled ❌"
                       }`,
+                      validatorName: validators?.find(
+                        (validator: any) =>
+                          validator.operator_address ==
+                          item?.delegation?.validator_address
+                      )?.description?.moniker,
                       value: item?.delegation?.validator_address,
                       balance: item.balance.amount,
                     };
@@ -290,7 +316,7 @@ export function Restake() {
                       <span className="font-semibold text-base">
                         {validator.balance >= restakeThreshold
                           ? validator.name
-                          : `${validator.name} (below threshold)`}
+                          : `${validator.validatorName} (below threshold)`}
                       </span>
                     </div>
                   );
@@ -303,23 +329,13 @@ export function Restake() {
               {secretAddress && secretjs && selectedValidator ? (
                 isRestakeEnabled ? (
                   <label>
-                    Auto-restaking <b>is enabled</b> ✅ for validator{" "}
-                    {
-                      validators?.find(
-                        (validator: any) =>
-                          validator.operator_address == selectedValidator?.value
-                      )?.description?.moniker
-                    }
+                    Auto-restaking <b>is enabled</b> ✅ for validator <br />
+                    {selectedValidator?.validatorName}
                   </label>
                 ) : (
                   <label>
-                    Auto-restaking <b>is NOT enabled</b> ❌ for validator{" "}
-                    {
-                      validators?.find(
-                        (validator: any) =>
-                          validator.operator_address == selectedValidator?.value
-                      )?.description?.moniker
-                    }
+                    Auto-restaking <b>is NOT enabled</b> ❌ for validator <br />
+                    {selectedValidator?.validatorName}
                   </label>
                 )
               ) : (
