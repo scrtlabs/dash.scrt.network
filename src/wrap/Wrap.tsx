@@ -636,7 +636,7 @@ export function Wrap() {
         <div className="flex items-center">
           <button
             className={
-              "enabled:bg-gradient-to-r enabled:from-cyan-600 enabled:to-purple-600 enabled:hover:from-cyan-500 enabled:hover:to-purple-500 transition-colors text-white font-semibold py-2.5 w-full rounded-lg disabled:bg-neutral-500"
+              "enabled:bg-gradient-to-br enabled:from-cyan-600 enabled:to-purple-600 enabled:hover:from-cyan-500 enabled:hover:to-purple-500 transition-colors text-white font-semibold py-2.5 w-full rounded-lg disabled:bg-neutral-500"
             }
             disabled={disabled}
             onClick={() => submit()}
@@ -792,7 +792,7 @@ export function Wrap() {
           <div className="border border-neutral-200 dark:border-neutral-700 rounded-2xl p-8 w-full text-neutral-800 dark:text-neutral-200 bg-white dark:bg-neutral-900">
             {/* Header */}
             <div className="flex items-center mb-4">
-              <h1 className="inline text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-500 to-purple-500">
+              <h1 className="inline text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-br from-cyan-500 to-purple-500">
                 Secret {wrappingMode === "Wrap" ? "Wrap" : "Unwrap"}
               </h1>
 
