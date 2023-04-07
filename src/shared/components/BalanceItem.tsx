@@ -94,7 +94,10 @@ const BalanceItem: FunctionComponent<IBalanceProps> = ({
           </div>
           {/* Balance in USD */}
           {currentPrice && SCRTBalance && (
-            <div className="text-gray-500">{"≈ " + scrtBalanceUsdString}</div>
+            <div className="text-gray-500">
+              {"≈ " +
+                (isSecretToken ? sScrtBalanceUsdString : scrtBalanceUsdString)}
+            </div>
           )}
         </div>
       )}
