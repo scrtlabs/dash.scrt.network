@@ -32,6 +32,8 @@ const BalanceItem: FunctionComponent<IBalanceProps> = ({
     updateTokenBalance,
     SCRTToken,
     setSCRTToken,
+    viewingKey,
+    setViewingKey,
   } = useContext(SecretjsContext);
 
   const { currentPrice } = useContext(APIContext);
@@ -39,16 +41,7 @@ const BalanceItem: FunctionComponent<IBalanceProps> = ({
   const SetViewingKeyButton = (props: { token: Token }) => {
     return (
       <button
-        onClick={async () => {
-          console.log("btn pressed");
-          await setKeplrViewingKey(token.address);
-          try {
-            await sleep(1000); // sometimes query nodes lag
-            await updateTokenBalance();
-          } finally {
-            console.log("test");
-          }
-        }}
+        onClick={() => setViewingKey(props.token)}
         className="ml-2 font-semibold bg-neutral-100 dark:bg-neutral-900 px-1.5 py-0.5 rounded-md border-neutral-300 dark:border-neutral-700 transition-colors hover:bg-neutral-300 dark:hover:bg-neutral-700 focus:bg-neutral-500 dark:focus:bg-neutral-500 cursor-pointer disabled:text-neutral-500 dark:disabled:text-neutral-500 disabled:hover:bg-neutral-100 dark:disabled:hover:bg-neutral-900 disabled:cursor-default"
       >
         <FontAwesomeIcon icon={faKey} className="mr-2" />
@@ -58,8 +51,15 @@ const BalanceItem: FunctionComponent<IBalanceProps> = ({
   };
 
   //  e.g. "$1.23"
-  const balanceUsdString = usdString.format(
+  const scrtBalanceUsdString = usdString.format(
     new BigNumber(SCRTBalance!)
+      .dividedBy(`1e${SCRTToken.decimals}`)
+      .multipliedBy(Number(currentPrice))
+      .toNumber()
+  );
+  //  e.g. "$1.23"
+  const sScrtBalanceUsdString = usdString.format(
+    new BigNumber(sSCRTBalance!)
       .dividedBy(`1e${SCRTToken.decimals}`)
       .multipliedBy(Number(currentPrice))
       .toNumber()
@@ -74,7 +74,7 @@ const BalanceItem: FunctionComponent<IBalanceProps> = ({
           className="h-7"
         />
       </div>
-      {isSecretToken ? (
+      {isSecretToken && !sSCRTBalance ? (
         <div>
           <SetViewingKeyButton token={token} />
         </div>
@@ -82,15 +82,19 @@ const BalanceItem: FunctionComponent<IBalanceProps> = ({
         <div className="text-xs">
           {/* Balance as native token */}
           <div className="font-bold">
-            {new BigNumber(SCRTBalance!)
-              .dividedBy(`1e${SCRTToken.decimals}`)
-              .toFormat()}
+            {!isSecretToken
+              ? new BigNumber(SCRTBalance!)
+                  .dividedBy(`1e${SCRTToken.decimals}`)
+                  .toFormat()
+              : new BigNumber(sSCRTBalance!)
+                  .dividedBy(`1e${SCRTToken.decimals}`)
+                  .toFormat()}
             {/* Token name */}
             {" " + (isSecretToken ? "s" : "") + token.name}
           </div>
           {/* Balance in USD */}
           {currentPrice && SCRTBalance && (
-            <div className="text-gray-500">{"≈ " + balanceUsdString}</div>
+            <div className="text-gray-500">{"≈ " + scrtBalanceUsdString}</div>
           )}
         </div>
       )}

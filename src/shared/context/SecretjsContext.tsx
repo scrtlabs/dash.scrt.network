@@ -176,6 +176,8 @@ const SecretjsContextProvider = ({ children }: any) => {
   const [loadingTokenBalance, setLoadingTokenBalance] = useState<boolean>(true);
 
   async function setViewingKey(token: Token) {
+    console.log(token);
+
     await setKeplrViewingKey(token.address);
     try {
       setLoadingTokenBalance(true);
