@@ -52,9 +52,9 @@ export function Restake() {
       setValidators(undefined);
       setValidatorsForDelegator(undefined);
       setRestakeEntries(undefined);
-      return;
+    } else {
+      fetchDelegations();
     }
-    fetchDelegations();
   }, [secretAddress, secretjs]);
 
   useEffect(() => {
