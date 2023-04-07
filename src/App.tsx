@@ -15,7 +15,7 @@ import DefaultLayout from "shared/layouts/DefaultLayout";
 import { Dashboard } from "dashboard/Dashboard";
 import Bridge from "bridge/Bridge";
 import Apps from "apps/Apps";
-import { Restake } from "stake/Restake";
+import Restake from "stake/RestakeRedesign";
 // Contexts
 import { ThemeContextProvider } from "shared/context/ThemeContext";
 import { SecretjsContextProvider } from "shared/context/SecretjsContext";
