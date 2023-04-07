@@ -17,7 +17,7 @@ function Bridge() {
       <div className="max-w-2xl mx-auto px-6 text-neutral-600 dark:text-neutral-400 leading-7 text-justify">
         {/* Title */}
         <div className="text-center mb-4">
-          <h1 className="font-bold text-4xl inline text-transparent bg-clip-text bg-gradient-to-r from-cyan-500 to-purple-500">
+          <h1 className="font-bold text-4xl inline text-transparent bg-clip-text bg-gradient-to-br from-cyan-500 to-purple-500">
             Bridge
           </h1>
         </div>
@@ -44,7 +44,7 @@ function Bridge() {
             –{" "}
           </span>
           After bridging your assets from Axelar Bridge, they remain publicly
-          visible. If you want to make your assets private, wrap them using
+          visible. If you want to make your assets private, wrap them using{" "}
           <Link
             to={"/wrap"}
             className="pb-0.5 border-b border-neutral-400 dark:border-neutral-600 hover:text-black dark:hover:text-white hover:border-black dark:hover:border-white transition-colors"

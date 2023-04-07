@@ -9,7 +9,11 @@ import { sleep, viewingKeyErrorString, usdString } from "shared/utils/commons";
 import Tooltip from "@mui/material/Tooltip";
 import CopyToClipboard from "react-copy-to-clipboard";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCopy, faWallet } from "@fortawesome/free-solid-svg-icons";
+import {
+  faArrowRightFromBracket,
+  faCopy,
+  faWallet,
+} from "@fortawesome/free-solid-svg-icons";
 import { toast } from "react-toastify";
 import GetWalletModal from "shared/context/GetWalletModal";
 import { useHoverOutside } from "shared/utils/useHoverOutside";
@@ -204,7 +208,7 @@ export function KeplrPanel() {
         <div ref={keplrRef}>
           {isMenuVisible ? <KeplrMenu /> : null}
           <div
-            className="w-full sm:w-auto rounded-lg px-4 py-3 bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700  select-none cursor-pointer"
+            className="w-full sm:w-auto rounded-lg px-4 py-3 bg-white dark:bg-neutral-700 hover:dark:bg-neutral-600 select-none cursor-pointer transition-colors"
             onMouseOver={() => setIsMenuVisible(true)}
             ref={keplrRef}
           >
@@ -226,7 +230,7 @@ export function KeplrPanel() {
         <button
           id="keplr-button"
           onClick={() => connectWallet()}
-          className="w-full sm:w-auto rounded-lg px-4 py-3 bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 hover:bg-neutral-100 dark:hover:bg-neutral-700 active:bg-neutral-500 dark:active:bg-neutral-600 transition-colors select-none"
+          className="w-full sm:w-auto rounded-lg px-4 py-3 bg-white dark:bg-neutral-700 hover:dark:bg-neutral-600 select-none cursor-pointer transition-colors"
         >
           <Content />
         </button>
