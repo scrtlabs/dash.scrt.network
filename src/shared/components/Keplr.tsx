@@ -40,7 +40,7 @@ export function KeplrPanel() {
 
   const { currentPrice } = useContext(APIContext);
 
-  const [isMenuVisible, setIsMenuVisible] = useState<boolean>(true); // set to true for debugging menu
+  const [isMenuVisible, setIsMenuVisible] = useState<boolean>(false); // set to true for debugging menu
 
   function WrappedTokenBalanceUi() {
     if (!secretjs || !secretAddress || !sSCRTBalance) {
