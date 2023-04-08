@@ -205,7 +205,7 @@ export function Restake() {
             </h1>
             <Tooltip
               title={
-                'Automating the process of "claim and restake" for your SCRT'
+                'Automating the process of "claim and restake" for your SCRT. Your normal SCRT balance is not affected. Only pending staking reward will be affected.'
               }
               placement="right"
               arrow

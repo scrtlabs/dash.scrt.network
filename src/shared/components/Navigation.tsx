@@ -128,7 +128,7 @@ export function Navigation({
             <span>Auto Restake</span>
           </NavLink>
         </li>
-        <li>
+        {/* <li>
           <NavLink
             to="/restake-redesign"
             className={({ isActive }) =>
@@ -140,7 +140,7 @@ export function Navigation({
             <FontAwesomeIcon icon={faRecycle} className="mr-2" />
             <span>Staking</span>
           </NavLink>
-        </li>
+        </li> */}
         <li>
           <NavLink
             to="/apps"

@@ -22,9 +22,9 @@ import NoScrtWarning from "./components/NoScrtWarning";
 function RestakeRedesign() {
   const { secretjs, secretAddress } = useContext(SecretjsContext);
 
-  useEffect(() => {
-    alert("hi");
-  }, []);
+  // useEffect(() => {
+  //   alert("hi");
+  // }, []);
 
   return (
     <>
@@ -56,7 +56,7 @@ function RestakeRedesign() {
           </button>
           <Tooltip
             title={
-              'Automating the process of "claim and restake" for your SCRT'
+              'Automating the process of "claim and restake" for your SCRT. Your normal SCRT balance is not affected. Only pending staking reward will be affected.'
             }
             placement="right"
             arrow
