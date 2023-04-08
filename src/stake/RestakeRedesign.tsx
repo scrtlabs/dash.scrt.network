@@ -8,7 +8,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { websiteName } from "App";
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import MyValidatorsItem from "./components/MyValidatorsItem";
 import AllValidatorsItem from "./components/AllValidatorsItem";
@@ -21,10 +21,25 @@ import NoScrtWarning from "./components/NoScrtWarning";
 
 function RestakeRedesign() {
   const { secretjs, secretAddress } = useContext(SecretjsContext);
+  const [validators, setValidators] = useState<any>();
+  const [activeValidators, setActiveValidators] = useState<any>();
+  const [inactiveValidators, setInactiveValidators] = useState<any>();
 
-  // useEffect(() => {
-  //   alert("hi");
-  // }, []);
+  const fetchValidators = async () => {
+    const { validators } = await secretjs.query.staking.validators({
+      status: "",
+    });
+    setValidators(validators);
+    console.log(validators);
+  };
+
+  useEffect(() => {
+    if (!secretjs || !secretAddress) {
+      setValidators(undefined);
+      return;
+    }
+    fetchValidators();
+  }, [secretAddress, secretjs]);
 
   return (
     <>
@@ -56,7 +71,7 @@ function RestakeRedesign() {
           </button>
           <Tooltip
             title={
-              'Automating the process of "claim and restake" for your SCRT. Your normal SCRT balance is not affected. Only pending staking reward will be affected.'
+              'Automating the process of "claim and restake" for your SCRT'
             }
             placement="right"
             arrow
@@ -105,75 +120,15 @@ function RestakeRedesign() {
           </div>
         </div>
         <div className="all-validators flex flex-col px-4">
-          <AllValidatorsItem
-            position={1}
-            name="0% Fee >2024 💸 | melea"
-            commisionPercentage={0}
-            votingPower={15967671}
-            imgUrl="https://wallet.keplr.app/_next/image?url=https%3A%2F%2Fs3.amazonaws.com%2Fkeybase_processed_uploads%2Fff855e93d7b9c9de64ce0e404d47c105_360_360.jpg&w=128&q=75"
-          />
-          <AllValidatorsItem
-            position={2}
-            name="Citadel.one"
-            commisionPercentage={5}
-            votingPower={15967671}
-            imgUrl="https://wallet.keplr.app/_next/image?url=https%3A%2F%2Fs3.amazonaws.com%2Fkeybase_processed_uploads%2F2826e38259411adafb416505fb948c05_360_360.jpg&w=128&q=75"
-          />
-          <AllValidatorsItem
-            position={3}
-            name="Blizzard.finance❄️"
-            commisionPercentage={5}
-            votingPower={15967671}
-            imgUrl="https://wallet.keplr.app/_next/image?url=https%3A%2F%2Fs3.amazonaws.com%2Fkeybase_processed_uploads%2F5a41bb0b26799624923e9f29c34d3805_360_360.jpg&w=128&q=75"
-          />
-          <AllValidatorsItem
-            position={4}
-            name="WhisperNode🤐"
-            commisionPercentage={5}
-            votingPower={15967671}
-            imgUrl="https://wallet.keplr.app/_next/image?url=https%3A%2F%2Fs3.amazonaws.com%2Fkeybase_processed_uploads%2Ffd488355ab385fc78fa6c0cee76c3205_360_360.jpg&w=128&q=75"
-          />
-          <AllValidatorsItem
-            position={5}
-            name="Mario | #noCaps"
-            commisionPercentage={4}
-            votingPower={15967671}
-            imgUrl="https://wallet.keplr.app/_next/image?url=https%3A%2F%2Fs3.amazonaws.com%2Fkeybase_processed_uploads%2F04970c2854e4f25102fb781811167a05_360_360.jpg&w=128&q=75"
-          />
-          <AllValidatorsItem
-            position={6}
-            name="Kraken"
-            commisionPercentage={100}
-            votingPower={15967671}
-            imgUrl="https://wallet.keplr.app/_next/image?url=https%3A%2F%2Fs3.amazonaws.com%2Fkeybase_processed_uploads%2Fc980e65e14adb3528c44e23e0ee4e405_360_360.jpg&w=128&q=75"
-          />
-          <AllValidatorsItem
-            position={7}
-            name="🪐 𝕊ecret 𝕊aturn | 1% forever"
-            commisionPercentage={1}
-            votingPower={15967671}
-            imgUrl="https://wallet.keplr.app/_next/image?url=https%3A%2F%2Fs3.amazonaws.com%2Fkeybase_processed_uploads%2Fee1614693d1fa8c08ef59ebf812f0c05_360_360.jpg&w=128&q=75"
-          />
-          <AllValidatorsItem
-            position={8}
-            name="Staked"
-            commisionPercentage={10}
-            votingPower={15967671}
-            imgUrl="https://wallet.keplr.app/_next/image?url=https%3A%2F%2Fs3.amazonaws.com%2Fkeybase_processed_uploads%2F313047df6e3b466844bd8df96e1b9505_360_360.jpg&w=128&q=75"
-          />
-          <AllValidatorsItem
-            position={9}
-            name="securesecrets.org"
-            commisionPercentage={5}
-            votingPower={15967671}
-            imgUrl="https://wallet.keplr.app/_next/image?url=https%3A%2F%2Fs3.amazonaws.com%2Fkeybase_processed_uploads%2F245cc914fddb8f5957e635cff782ab05_360_360.jpg&w=128&q=75"
-          />
-          <AllValidatorsItem
-            position={10}
-            name={`Mr. Roboto 🤖's Secret`}
-            commisionPercentage={8}
-            votingPower={15967671}
-          />
+          {validators?.map((validator: any, i: any) => (
+            <AllValidatorsItem
+              position={i}
+              name={validator?.description?.moniker}
+              commisionPercentage={validator?.commision_rates?.rate}
+              votingPower={validator?.tokens}
+              identity={validator?.description?.identity}
+            />
+          ))}
         </div>
       </div>
     </>

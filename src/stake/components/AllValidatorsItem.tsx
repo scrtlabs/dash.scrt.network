@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { faChevronRight, faGlobe } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { formatNumber } from "shared/utils/commons";
@@ -7,18 +7,37 @@ interface IAllValidatorsItemProps {
   name: string;
   commisionPercentage: number;
   votingPower: number;
-  imgUrl?: string;
+  identity?: string;
   position: number;
 }
 
 const AllValidatorsItem = (props: IAllValidatorsItemProps) => {
   // TODO: format votingPowerString
+
+  const [imgUrl, setImgUrl] = useState<any>();
   const votingPowerString = formatNumber(props.votingPower);
 
   // TODO: get APR by API
   const fullApr: number = 24.27;
   const apr: number = fullApr - fullApr * (0.01 * props.commisionPercentage);
   const aprString: string = apr.toFixed(2);
+
+  const fetchKeybaseImgUrl = async () => {
+    console.log(props.identity);
+    const url = `https://keybase.io/_/api/1.0/user/lookup.json?key_suffix=${props.identity}&fields=pictures`;
+    await fetch(url)
+      .then((response) => response.json())
+      .then((response) => {
+        console.log(response.them[0]);
+        setImgUrl(response?.them[0].pictures?.primary?.url);
+      });
+  };
+
+  useEffect(() => {
+    if (props.identity) {
+      fetchKeybaseImgUrl();
+    }
+  }, []);
 
   return (
     <>
@@ -31,10 +50,10 @@ const AllValidatorsItem = (props: IAllValidatorsItemProps) => {
         <div className="rank w-6 text-right">{props.position}</div>
         {/* Image */}
         <div className="image">
-          {props.imgUrl ? (
+          {imgUrl ? (
             <>
               <img
-                src={props.imgUrl}
+                src={imgUrl}
                 alt={`validator logo`}
                 className="rounded-full w-10"
               />
