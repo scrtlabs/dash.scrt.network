@@ -16,6 +16,7 @@ import Tooltip from "@mui/material/Tooltip";
 import "./RestakeRedesign.scss";
 import { SecretjsContext } from "shared/context/SecretjsContext";
 import NoScrtWarning from "./components/NoScrtWarning";
+import ValidatorModal from "./components/ValidatorModal";
 
 // for html-head
 
@@ -24,6 +25,8 @@ function RestakeRedesign() {
   const [validators, setValidators] = useState<any>();
   const [activeValidators, setActiveValidators] = useState<any>();
   const [inactiveValidators, setInactiveValidators] = useState<any>();
+
+  const [isValidatorModalOpen, setIsValidatorModalOpen] = useState(true);
 
   const fetchValidators = async () => {
     const { validators } = await secretjs.query.staking.validators({
@@ -36,9 +39,9 @@ function RestakeRedesign() {
   useEffect(() => {
     if (!secretjs || !secretAddress) {
       setValidators(undefined);
-      return;
+    } else {
+      fetchValidators();
     }
-    fetchValidators();
   }, [secretAddress, secretjs]);
 
   return (
@@ -46,6 +49,14 @@ function RestakeRedesign() {
       <Helmet>
         <title>{websiteName} | Staking</title>
       </Helmet>
+
+      <ValidatorModal
+        open={isValidatorModalOpen}
+        onClose={() => {
+          setIsValidatorModalOpen(false);
+          document.body.classList.remove("overflow-hidden");
+        }}
+      />
 
       {/* Title */}
       <div className="text-center mb-4 max-w-6xl mx-auto">
