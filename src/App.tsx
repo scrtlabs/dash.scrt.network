@@ -15,10 +15,12 @@ import DefaultLayout from "shared/layouts/DefaultLayout";
 import { Dashboard } from "dashboard/Dashboard";
 import Bridge from "bridge/Bridge";
 import Apps from "apps/Apps";
+import { Restake } from "stake/Restake";
 // Contexts
 import { ThemeContextProvider } from "shared/context/ThemeContext";
 import { SecretjsContextProvider } from "shared/context/SecretjsContext";
 import { APIContextProvider } from "shared/context/APIContext";
+import RestakeRedesign from "stake/RestakeRedesign";
 
 // for html-head
 export const websiteName = "Secret Dashboard";
@@ -94,8 +96,10 @@ export default function App() {
         <Route path="/" element={<Dashboard />} />
         <Route path="/ibc" element={<Ibc />} />
         <Route path="/wrap" element={<Wrap />} />
-        <Route path="/apps" element={<Apps />} />
         <Route path="/bridge" element={<Bridge />} />
+        <Route path="/restake" element={<Restake />} />
+        <Route path="/restake-redesign" element={<RestakeRedesign />} />
+        <Route path="/apps" element={<Apps />} />
       </Routes>
     </>
   );
