@@ -347,7 +347,7 @@ export function Restake() {
             <a
               href="https://wallet.keplr.app/chains/secret-network?tab=staking"
               target="_blank"
-              className="text-neutral-500 hover:text-white border-b border-transparent hover:border-inherit transition-colors text-sm"
+              className="text-neutral-500 dark:text-neutral-500 hover:text-black dark:hover:text-white border-b border-transparent hover:border-black dark:hover:border-white transition-colors text-sm"
             >
               {`Manual Staking`}
               <FontAwesomeIcon
