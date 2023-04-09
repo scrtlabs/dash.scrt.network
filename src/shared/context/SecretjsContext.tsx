@@ -70,6 +70,9 @@ const SecretjsContextProvider = ({ children }: any) => {
   };
 
   useEffect(() => {
+    if (!secretjs || !secretAddress) {
+      return;
+    }
     const fetchBalance = async () => {
       const {
         balance: { amount },

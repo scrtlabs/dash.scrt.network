@@ -1,6 +1,6 @@
 import { useContext, useEffect, useRef, useState } from "react";
 import { formatNumber } from "shared/utils/commons";
-import { SECRET_LCD, SECRET_CHAIN_ID } from "shared/utils/config";
+import { APIContext } from "shared/context/APIContext";
 
 import {
   Chart as ChartJS,
@@ -14,7 +14,6 @@ import {
   ArcElement,
 } from "chart.js";
 import { Doughnut } from "react-chartjs-2";
-import { SecretNetworkClient } from "secretjs";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowUpRightFromSquare } from "@fortawesome/free-solid-svg-icons";
 import { ThemeContext } from "shared/context/ThemeContext";
@@ -33,34 +32,43 @@ ChartJS.register(
 export default function StakingChart() {
   const chartRef = useRef<ChartJS<"doughnut", number[], string>>(null);
 
-  const [communityPool, setCommunityPool] = useState(Number); // in uscrt
-  const [totalSupply, setTotalSupply] = useState(Number);
-  const [pool, setPool] = useState(null);
+  const {
+    dappsData,
+    setDappsData,
+    dappsDataSorted,
+    setDappsDataSorted,
+    tags,
+    setTags,
+    coingeckoApiData_Day,
+    setCoinGeckoApiData_Day,
+    coingeckoApiData_Month,
+    setCoinGeckoApiData_Month,
+    coingeckoApiData_Year,
+    setCoinGeckoApiData_Year,
+    defiLamaApiData_Year,
+    setDefiLamaApiData_Year,
+    spartanApiData,
+    setSpartanApiData,
+    currentPrice,
+    setCurrentPrice,
+    volume,
+    setVolume,
+    inflation,
+    bondedRatio,
+    communityTax,
+    communityPool,
+    pool,
+    totalSupply,
+    bondedToken,
+    notBondedToken,
+    secretFoundationTax,
+    APR,
+    marketCap,
+    setMarketCap,
+  } = useContext(APIContext);
 
   const { theme, setTheme } = useContext(ThemeContext);
 
-  useEffect(() => {
-    const queryData = async () => {
-      const secretjsquery = new SecretNetworkClient({
-        url: SECRET_LCD,
-        chainId: SECRET_CHAIN_ID,
-      });
-      secretjsquery?.query?.distribution
-        ?.communityPool("")
-        ?.then((res) =>
-          setCommunityPool(Math.floor((res.pool[1] as any).amount / 10e5))
-        );
-      secretjsquery?.query?.bank
-        ?.supplyOf({ denom: "uscrt" })
-        ?.then((res) => setTotalSupply((res.amount.amount as any) / 1e6));
-      secretjsquery?.query?.staking?.pool("")?.then((res) => setPool(res.pool));
-    };
-
-    queryData();
-  }, []);
-
-  const bondedToken = parseInt(pool?.bonded_tokens) / 10e5;
-  let notBondedToken = totalSupply - bondedToken - communityPool;
   //const operationalToken = notBondedToken - parseInt(pool?.not_bonded_tokens) / 10e4;
   //notBondedToken = notBondedToken - operationalToken;
 

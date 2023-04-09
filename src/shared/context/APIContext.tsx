@@ -1,6 +1,7 @@
 import { createContext, useEffect, useRef, useState } from "react";
 import { SecretNetworkClient } from "secretjs";
 import { dAppsURL, shuffleArray, sortDAppsArray } from "shared/utils/commons";
+import { SECRET_LCD, SECRET_CHAIN_ID } from "shared/utils/config";
 
 const APIContext = createContext(null);
 
@@ -56,6 +57,65 @@ const APIContextProvider = ({ children }: any) => {
   const [currentPrice, setCurrentPrice] = useState(Number);
   const [volume, setVolume] = useState(Number);
   const [marketCap, setMarketCap] = useState(Number);
+
+  //chain data
+  const [inflation, setInflation] = useState(0);
+  const [bondedRatio, setBondedRatio] = useState(0);
+  const [blockHeight, setBlockHeight] = useState(0);
+  const [communityTax, setCommunityTax] = useState(Number);
+  const [communityPool, setCommunityPool] = useState(Number);
+  const [secretFoundationTax, setSecretFoundationTax] = useState(Number);
+  const [pool, setPool] = useState(null);
+  const [totalSupply, setTotalSupply] = useState(Number);
+  const [bondedToken, setBondedToken] = useState(Number);
+  const [notBondedToken, setNotBondedToken] = useState(Number);
+
+  useEffect(() => {
+    const queryData = async () => {
+      const secretjsquery = new SecretNetworkClient({
+        url: SECRET_LCD,
+        chainId: SECRET_CHAIN_ID,
+      });
+      await secretjsquery?.query?.tendermint
+        ?.getLatestBlock("")
+        ?.then((res) => setBlockHeight(res.block.header.height as any)); // setting block height
+      await secretjsquery?.query?.mint
+        ?.inflation("")
+        ?.then((res) => setInflation(res.inflation as any));
+      await secretjsquery?.query?.distribution
+        ?.communityPool("")
+        ?.then((res) =>
+          setCommunityPool(Math.floor((res.pool[1] as any).amount / 10e5))
+        );
+      await secretjsquery?.query?.distribution?.params("")?.then((res) => {
+        setSecretFoundationTax(parseFloat(res.params.secret_foundation_tax));
+        setCommunityTax(parseFloat(res.params.community_tax));
+      });
+      await secretjsquery?.query?.distribution
+        ?.communityPool("")
+        ?.then((res) =>
+          setCommunityPool(Math.floor((res.pool[1] as any).amount / 10e5))
+        );
+      await secretjsquery?.query?.bank
+        ?.supplyOf({ denom: "uscrt" })
+        ?.then((res) => setTotalSupply((res.amount.amount as any) / 1e6));
+      await secretjsquery?.query?.staking
+        ?.pool("")
+        ?.then((res) => setPool(res.pool));
+    };
+
+    queryData();
+  }, []);
+
+  useEffect(() => {
+    if (totalSupply && communityPool && pool) {
+      const bondedToken = parseInt(pool?.bonded_tokens) / 10e5;
+      setBondedToken(bondedToken);
+      const notBondedToken = totalSupply - bondedToken;
+      setNotBondedToken(notBondedToken);
+      setBondedRatio((bondedToken / (bondedToken + notBondedToken)) * 100);
+    }
+  }, [totalSupply, communityPool, pool]);
 
   useEffect(() => {
     // Coingecko API
@@ -132,10 +192,19 @@ const APIContextProvider = ({ children }: any) => {
     setCurrentPrice,
     volume,
     setVolume,
+    blockHeight,
+    inflation,
+    bondedRatio,
+    communityTax,
+    communityPool,
+    pool,
+    totalSupply,
+    bondedToken,
+    notBondedToken,
+    secretFoundationTax,
     marketCap,
     setMarketCap,
   };
-
   return (
     <APIContext.Provider value={providerValue}>{children}</APIContext.Provider>
   );

@@ -12,7 +12,7 @@ import Tooltip from "@mui/material/Tooltip";
 
 interface IMyValidatorsItemProps {
   name: string;
-  commisionPercentage: number;
+  commissionPercentage: number;
   stakedAmount: number;
   imgUrl?: string;
 }
@@ -90,7 +90,7 @@ const MyValidatorsItem = (props: IMyValidatorsItemProps) => {
           <div className="text-sm font-semibold text-neutral-400">$7,393</div>
         </div>
         <div className="commission font-semibold">
-          {props.commisionPercentage}%
+          {props.commissionPercentage}%
         </div>
         <div className="flex items-center font-semibold border-b border-white/0 hover:border-white transition-colors">
           <FontAwesomeIcon icon={faChevronRight} size="sm" className="ml-1" />

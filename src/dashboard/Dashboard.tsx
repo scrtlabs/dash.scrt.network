@@ -6,7 +6,6 @@ import MiniTile from "./components/MiniTile";
 import PriceVolumeTVL from "./components/PriceVolTVLChart/PriceVolumeTVL";
 import QuadTile from "./components/QuadTile";
 import SocialMedia from "./components/SocialMedia";
-import { SECRET_LCD, SECRET_CHAIN_ID } from "shared/utils/config";
 import StakingChart from "./components/StakingChart";
 import { formatNumber } from "shared/utils/commons";
 import { APIContext } from "shared/context/APIContext";
@@ -20,6 +19,12 @@ export const DashboardContext = createContext<{
 
 export function Dashboard() {
   const {
+    dappsData,
+    setDappsData,
+    dappsDataSorted,
+    setDappsDataSorted,
+    tags,
+    setTags,
     coingeckoApiData_Day,
     setCoinGeckoApiData_Day,
     coingeckoApiData_Month,
@@ -34,12 +39,21 @@ export function Dashboard() {
     setCurrentPrice,
     volume,
     setVolume,
+    blockHeight,
+    inflation,
+    bondedRatio,
+    communityTax,
+    communityPool,
+    pool,
+    totalSupply,
+    bondedToken,
+    notBondedToken,
+    secretFoundationTax,
     marketCap,
     setMarketCap,
   } = useContext(APIContext);
 
   // block height
-  const [blockHeight, setBlockHeight] = useState(null); // by Coingecko API
   const [blockHeightFormattedString, setblockHeightFormattedString] =
     useState("");
 
@@ -75,21 +89,7 @@ export function Dashboard() {
   }, [dailyTransactions]);
 
   // taxes
-  const [communityTax, setCommunityTax] = useState("");
-  const [secretFoundationTax, setSecretFoundationTax] = useState("");
   const [taxFormattedString, setTaxFormattedString] = useState("");
-
-  useEffect(() => {
-    if (communityTax) {
-      setTaxFormattedString(
-        (parseFloat(communityTax) * 100).toString() +
-          "%" +
-          " / " +
-          (parseFloat(secretFoundationTax) * 100).toString() +
-          "%"
-      );
-    }
-  }, [communityTax, secretFoundationTax]);
 
   useEffect(() => {
     if (communityTax) {
@@ -116,7 +116,6 @@ export function Dashboard() {
   }, [feesPaid]);
 
   // inflation
-  const [inflation, setInflation] = useState(0);
   const [inflationFormattedString, setInflationFormattedString] = useState("");
 
   useEffect(() => {
@@ -130,38 +129,26 @@ export function Dashboard() {
     useState("");
 
   //Bonded Ratio
-  const [bondedRatio, setBondedRatio] = useState(0);
   const [bondedRatioFormattedString, setBondedRatioFormattedString] =
     useState("");
 
-  // // totalSupply, bonded, notBonded
-  // const [totalSupply, setTotalSupply] = useState(Number);
-  // const [bondedToken, setBondedToken] = useState(Number);
-  // const [notBondedToken, setNotBondedToken] = useState(Number);
-
-  // useEffect(() => {
-  //   const queryData = async () => {
-  //     const secretjsquery = new SecretNetworkClient({
-  //       url: SECRET_LCD,
-  //       chainId: SECRET_CHAIN_ID,
-  //     });
-  //     secretjsquery?.query?.bank
-  //       ?.supplyOf({ denom: "uscrt" })
-  //       ?.then((res) => setTotalSupply((res.amount.amount as any) / 1e6));
-  //     secretjsquery?.query?.staking
-  //       ?.pool("")
-  //       ?.then((res) =>
-  //         setBondedToken(parseInt(res.pool.bonded_tokens) / 10e5)
-  //       );
-  //     secretjsquery?.query?.staking
-  //       ?.pool("")
-  //       ?.then((res) =>
-  //         setNotBondedToken(parseInt(res.pool.not_bonded_tokens) / 10e4)
-  //       );
-  //   };
-
-  //   queryData();
-  // }, []);
+  useEffect(() => {
+    console.log(inflation, secretFoundationTax, communityTax, bondedRatio);
+    if (inflation && secretFoundationTax && communityTax && bondedRatio) {
+      // staking ratio missing
+      const I = inflation; // inflation
+      const F = secretFoundationTax; // foundation tax
+      const C = 0.0; // validator commision rate; median is 5%
+      const T = parseFloat(communityTax); // community tax
+      const R = bondedRatio / 100; // bonded ratio
+      const realYield = (I / R) * (1 - F - T) * (1 - C) * 100;
+      const APR = (I / R) * 100;
+      setGrowthRateFormattedString(
+        APR.toFixed(2) + "%" + " / " + realYield.toFixed(2) + "%"
+      );
+      setBondedRatioFormattedString(bondedRatio.toFixed(2) + "%");
+    }
+  }, [inflation, secretFoundationTax, communityTax, bondedRatio]);
 
   // volume & market cap
   const [volumeFormattedString, setVolumeFormattedString] = useState("");
@@ -180,66 +167,16 @@ export function Dashboard() {
     }
   }, [volume, marketCap]);
 
-  const [circulatingSupply, setCirculatingSupply] = useState(0);
-  const [communityPool, setCommunityPool] = useState(Number); // in uscrt
-
-  useEffect(() => {
-    if (coingeckoApiData_Month) {
-      const queryData = async () => {
-        const secretjsquery = new SecretNetworkClient({
-          url: SECRET_LCD,
-          chainId: SECRET_CHAIN_ID,
-        });
-        secretjsquery?.query?.tendermint
-          ?.getLatestBlock("")
-          ?.then((res) => setBlockHeight(res.block.header.height)); // setting block height
-        // secretjsquery?.query?.mint?.inflation("")?.then(res => setInflation(res.inflation));
-        secretjsquery?.query?.distribution
-          ?.communityPool("")
-          ?.then((res) =>
-            setCommunityPool(Math.floor((res.pool[1] as any).amount / 10e5))
-          );
-      };
-
-      queryData();
-    }
-  }, [coingeckoApiData_Month]);
-
   useEffect(() => {
     if (spartanApiData) {
       const queryData = async () => {
-        setInflation((spartanApiData as any).inflation);
-        setCirculatingSupply((spartanApiData as any).circulating_supply);
         setBlockTime((spartanApiData as any).avg_block_time);
         setDailyTransactions((spartanApiData as any).tx_volume);
-        setCommunityTax((spartanApiData as any).staking_params?.community_tax);
-        setSecretFoundationTax(
-          (spartanApiData as any).staking_params?.secret_foundation_tax
-        );
         setFeesPaid((spartanApiData as any).fees_paid);
-        setBondedRatio((spartanApiData as any).bond_rate);
       };
-
       queryData();
     }
   }, [spartanApiData]);
-
-  useEffect(() => {
-    if (inflation && secretFoundationTax && communityTax && bondedRatio) {
-      // staking ratio missing
-      const I = inflation; // inflation
-      const F = parseFloat(secretFoundationTax); // foundation tax
-      const C = 0.0; // validator commision rate; median is 5%
-      const T = parseFloat(communityTax); // community tax
-      const R = bondedRatio / 100; // bonded ratio
-      const APR = (I / R) * 100;
-      const realYield = (I / R) * (1 - F - T) * (1 - C) * 100;
-      setGrowthRateFormattedString(
-        APR.toFixed(2) + "%" + " / " + realYield.toFixed(2) + "%"
-      );
-      setBondedRatioFormattedString(bondedRatio.toFixed(2) + "%");
-    }
-  }, [inflation, secretFoundationTax, communityTax, bondedRatio]);
 
   return (
     <>

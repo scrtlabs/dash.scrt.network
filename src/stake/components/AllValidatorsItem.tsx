@@ -1,26 +1,63 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { faChevronRight, faGlobe } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { formatNumber } from "shared/utils/commons";
+import { APIContext } from "shared/context/APIContext";
 
 interface IAllValidatorsItemProps {
   name: string;
-  commisionPercentage: number;
+  commissionPercentage: number;
   votingPower: number;
   identity?: string;
   position: number;
 }
 
 const AllValidatorsItem = (props: IAllValidatorsItemProps) => {
-  // TODO: format votingPowerString
+  const {
+    dappsData,
+    setDappsData,
+    dappsDataSorted,
+    setDappsDataSorted,
+    tags,
+    setTags,
+    coingeckoApiData_Day,
+    setCoinGeckoApiData_Day,
+    coingeckoApiData_Month,
+    setCoinGeckoApiData_Month,
+    coingeckoApiData_Year,
+    setCoinGeckoApiData_Year,
+    defiLamaApiData_Year,
+    setDefiLamaApiData_Year,
+    spartanApiData,
+    setSpartanApiData,
+    currentPrice,
+    setCurrentPrice,
+    volume,
+    setVolume,
+    blockHeight,
+    inflation,
+    bondedRatio,
+    communityTax,
+    communityPool,
+    pool,
+    totalSupply,
+    bondedToken,
+    notBondedToken,
+    secretFoundationTax,
+    marketCap,
+    setMarketCap,
+  } = useContext(APIContext);
 
   const [imgUrl, setImgUrl] = useState<any>();
-  const votingPowerString = formatNumber(props.votingPower);
+  const votingPowerString = formatNumber(props.votingPower / 1e6);
 
-  // TODO: get APR by API
-  const fullApr: number = 24.27;
-  const apr: number = fullApr - fullApr * (0.01 * props.commisionPercentage);
-  const aprString: string = apr.toFixed(2);
+  const I = inflation; // inflation
+  const F = secretFoundationTax; // foundation tax
+  const C = props.commissionPercentage; // validator commision rate; median is 5%
+  const T = parseFloat(communityTax); // community tax
+  const R = bondedRatio / 100; // bonded ratio
+  const realYield = (I / R) * (1 - F - T) * (1 - C) * 100;
+  const APRString: string = realYield.toFixed(2);
 
   const fetchKeybaseImgUrl = async () => {
     console.log(props.identity);
@@ -90,9 +127,9 @@ const AllValidatorsItem = (props: IAllValidatorsItemProps) => {
           <span className="text-neutral-400 text-sm">SCRT</span>
         </div>
         <div className="commission font-semibold">
-          {props.commisionPercentage}%
+          {(props.commissionPercentage * 100).toFixed(2)}%
         </div>
-        <div className="apr font-semibold">{aprString}%</div>
+        <div className="apr font-semibold">{APRString}%</div>
         <div className="flex items-center font-semibold border-b border-white/0 hover:border-white transition-colors">
           <FontAwesomeIcon icon={faChevronRight} size="sm" className="ml-1" />
         </div>

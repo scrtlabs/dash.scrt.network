@@ -31,8 +31,15 @@ function RestakeRedesign() {
   const fetchValidators = async () => {
     const { validators } = await secretjs.query.staking.validators({
       status: "",
+      "pagination.limit": 1000,
     });
     setValidators(validators);
+    setActiveValidators(
+      validators.filter((item: any) => item.status === "BOND_STATUS_BONDED")
+    );
+    setInactiveValidators(
+      validators.filter((item: any) => item.status === "BOND_STATUS_UNBONDED")
+    );
     console.log(validators);
   };
 
@@ -96,13 +103,13 @@ function RestakeRedesign() {
         <div className="my-validators flex flex-col px-4">
           <MyValidatorsItem
             name="🪐 𝕊ecret 𝕊aturn | 1% forever"
-            commisionPercentage={2}
+            commissionPercentage={2}
             stakedAmount={10816.72}
             imgUrl="https://wallet.keplr.app/_next/image?url=https%3A%2F%2Fs3.amazonaws.com%2Fkeybase_processed_uploads%2Fee1614693d1fa8c08ef59ebf812f0c05_360_360.jpg&w=128&q=75"
           />
           <MyValidatorsItem
             name="0% Fee >2024 💸 | melea"
-            commisionPercentage={2}
+            commissionPercentage={2}
             stakedAmount={15967671}
             imgUrl="https://wallet.keplr.app/_next/image?url=https%3A%2F%2Fs3.amazonaws.com%2Fkeybase_processed_uploads%2Fff855e93d7b9c9de64ce0e404d47c105_360_360.jpg&w=128&q=75"
           />
@@ -131,11 +138,13 @@ function RestakeRedesign() {
           </div>
         </div>
         <div className="all-validators flex flex-col px-4">
-          {validators?.map((validator: any, i: any) => (
+          {activeValidators?.map((validator: any, i: any) => (
             <AllValidatorsItem
               position={i}
               name={validator?.description?.moniker}
-              commisionPercentage={validator?.commision_rates?.rate}
+              commissionPercentage={
+                validator?.commission.commission_rates?.rate
+              }
               votingPower={validator?.tokens}
               identity={validator?.description?.identity}
             />
