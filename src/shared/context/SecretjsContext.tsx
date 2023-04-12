@@ -10,6 +10,11 @@ import {
 } from "shared/utils/config";
 import GetWalletModal from "./GetWalletModal";
 
+export async function isViewingKeyAvailable(token: Token) {
+  const key = await getKeplrViewingKey(token.address);
+  return key ? true : false;
+}
+
 const SecretjsContext = createContext(null);
 
 export type FeeGrantStatus = "Success" | "Fail" | "Untouched";
@@ -176,8 +181,6 @@ const SecretjsContextProvider = ({ children }: any) => {
   const [loadingTokenBalance, setLoadingTokenBalance] = useState<boolean>(true);
 
   async function setViewingKey(token: Token) {
-    console.log(token);
-
     await setKeplrViewingKey(token.address);
     try {
       setLoadingTokenBalance(true);
