@@ -1583,6 +1583,16 @@ export const ICSTokens: Token[] = [
         gas: 200_000,
       }, */
       {
+        chain_name: "Juno",
+        axelar_chain_name: CHAINS.MAINNET.JUNO,
+        from_denom: ibcDenom(
+          [{ incomingChannelId: "channel-71", incomingPortId: "transfer" }],
+          "uusdc"
+        ),
+        channel_id: "channel-71",
+        gas: 200_000,
+      },
+      {
         chain_name: "Kujira",
         axelar_chain_name: CHAINS.MAINNET.KUJIRA,
         from_denom: ibcDenom(
@@ -1611,6 +1621,13 @@ export const ICSTokens: Token[] = [
         channel_id: "channel-61",
         gas: 350_000,
       }, */
+      {
+        chain_name: "Juno",
+        axelar_chain_name: CHAINS.MAINNET.JUNO,
+        from_denom: "secret1yxjmepvyl2c25vnt53cr2dpn8amknwausxee83",
+        channel_id: "channel-61",
+        gas: 350_000,
+      },
       {
         chain_name: "Kujira",
         axelar_chain_name: CHAINS.MAINNET.KUJIRA,
@@ -1646,6 +1663,16 @@ export const ICSTokens: Token[] = [
         gas: 200_000,
       }, */
       {
+        chain_name: "Juno",
+        axelar_chain_name: CHAINS.MAINNET.JUNO,
+        from_denom: ibcDenom(
+          [{ incomingChannelId: "channel-71", incomingPortId: "transfer" }],
+          "weth-wei"
+        ),
+        channel_id: "channel-71",
+        gas: 200_000,
+      },
+      {
         chain_name: "Kujira",
         axelar_chain_name: CHAINS.MAINNET.KUJIRA,
         from_denom: ibcDenom(
@@ -1667,6 +1694,13 @@ export const ICSTokens: Token[] = [
       },
     ],
     withdrawals: [
+      {
+        chain_name: "Juno",
+        axelar_chain_name: CHAINS.MAINNET.JUNO,
+        from_denom: "secret1yxjmepvyl2c25vnt53cr2dpn8amknwausxee83",
+        channel_id: "channel-61",
+        gas: 350_000,
+      },
       {
         chain_name: "Kujira",
         axelar_chain_name: CHAINS.MAINNET.KUJIRA,
@@ -1702,6 +1736,16 @@ export const ICSTokens: Token[] = [
         gas: 200_000,
       }, */
       {
+        chain_name: "Juno",
+        axelar_chain_name: CHAINS.MAINNET.JUNO,
+        from_denom: ibcDenom(
+          [{ incomingChannelId: "channel-71", incomingPortId: "transfer" }],
+          "wbtc-satoshi"
+        ),
+        channel_id: "channel-71",
+        gas: 200_000,
+      },
+      {
         chain_name: "Kujira",
         axelar_chain_name: CHAINS.MAINNET.KUJIRA,
         from_denom: ibcDenom(
@@ -1723,6 +1767,13 @@ export const ICSTokens: Token[] = [
       },
     ],
     withdrawals: [
+      {
+        chain_name: "Juno",
+        axelar_chain_name: CHAINS.MAINNET.JUNO,
+        from_denom: "secret1yxjmepvyl2c25vnt53cr2dpn8amknwausxee83",
+        channel_id: "channel-61",
+        gas: 350_000,
+      },
       {
         chain_name: "Kujira",
         axelar_chain_name: CHAINS.MAINNET.KUJIRA,
@@ -1758,6 +1809,16 @@ export const ICSTokens: Token[] = [
         gas: 200_000,
       }, */
       {
+        chain_name: "Juno",
+        axelar_chain_name: CHAINS.MAINNET.JUNO,
+        from_denom: ibcDenom(
+          [{ incomingChannelId: "channel-71", incomingPortId: "transfer" }],
+          "wbnb-wei"
+        ),
+        channel_id: "channel-71",
+        gas: 200_000,
+      },
+      {
         chain_name: "Kujira",
         axelar_chain_name: CHAINS.MAINNET.KUJIRA,
         from_denom: ibcDenom(
@@ -1779,6 +1840,13 @@ export const ICSTokens: Token[] = [
       },
     ],
     withdrawals: [
+      {
+        chain_name: "Juno",
+        axelar_chain_name: CHAINS.MAINNET.JUNO,
+        from_denom: "secret1yxjmepvyl2c25vnt53cr2dpn8amknwausxee83",
+        channel_id: "channel-61",
+        gas: 350_000,
+      },
       {
         chain_name: "Kujira",
         axelar_chain_name: CHAINS.MAINNET.KUJIRA,
@@ -1814,6 +1882,16 @@ export const ICSTokens: Token[] = [
         gas: 200_000,
       }, */
       {
+        chain_name: "Juno",
+        axelar_chain_name: CHAINS.MAINNET.JUNO,
+        from_denom: ibcDenom(
+          [{ incomingChannelId: "channel-71", incomingPortId: "transfer" }],
+          "busd-wei"
+        ),
+        channel_id: "channel-71",
+        gas: 200_000,
+      },
+      {
         chain_name: "Kujira",
         axelar_chain_name: CHAINS.MAINNET.KUJIRA,
         from_denom: ibcDenom(
@@ -1835,6 +1913,13 @@ export const ICSTokens: Token[] = [
       },
     ],
     withdrawals: [
+      {
+        chain_name: "Juno",
+        axelar_chain_name: CHAINS.MAINNET.JUNO,
+        from_denom: "secret1yxjmepvyl2c25vnt53cr2dpn8amknwausxee83",
+        channel_id: "channel-61",
+        gas: 350_000,
+      },
       {
         chain_name: "Kujira",
         axelar_chain_name: CHAINS.MAINNET.KUJIRA,
@@ -1870,11 +1955,21 @@ export const ICSTokens: Token[] = [
         gas: 200_000,
       }, */
       {
+        chain_name: "Juno",
+        axelar_chain_name: CHAINS.MAINNET.JUNO,
+        from_denom: ibcDenom(
+          [{ incomingChannelId: "channel-71", incomingPortId: "transfer" }],
+          "dai-wei"
+        ),
+        channel_id: "channel-71",
+        gas: 200_000,
+      },
+      {
         chain_name: "Kujira",
         axelar_chain_name: CHAINS.MAINNET.KUJIRA,
         from_denom: ibcDenom(
           [{ incomingChannelId: "channel-9", incomingPortId: "transfer" }],
-          "busd-wei"
+          "dai-wei"
         ),
         channel_id: "channel-9",
         gas: 200_000,
@@ -1891,6 +1986,13 @@ export const ICSTokens: Token[] = [
       },
     ],
     withdrawals: [
+      {
+        chain_name: "Juno",
+        axelar_chain_name: CHAINS.MAINNET.JUNO,
+        from_denom: "secret1yxjmepvyl2c25vnt53cr2dpn8amknwausxee83",
+        channel_id: "channel-61",
+        gas: 350_000,
+      },
       {
         chain_name: "Kujira",
         axelar_chain_name: CHAINS.MAINNET.KUJIRA,
@@ -1926,6 +2028,16 @@ export const ICSTokens: Token[] = [
         gas: 200_000,
       }, */
       {
+        chain_name: "Juno",
+        axelar_chain_name: CHAINS.MAINNET.JUNO,
+        from_denom: ibcDenom(
+          [{ incomingChannelId: "channel-71", incomingPortId: "transfer" }],
+          "uni-wei"
+        ),
+        channel_id: "channel-71",
+        gas: 200_000,
+      },
+      {
         chain_name: "Kujira",
         axelar_chain_name: CHAINS.MAINNET.KUJIRA,
         from_denom: ibcDenom(
@@ -1947,6 +2059,13 @@ export const ICSTokens: Token[] = [
       },
     ],
     withdrawals: [
+      {
+        chain_name: "Juno",
+        axelar_chain_name: CHAINS.MAINNET.JUNO,
+        from_denom: "secret1yxjmepvyl2c25vnt53cr2dpn8amknwausxee83",
+        channel_id: "channel-61",
+        gas: 350_000,
+      },
       {
         chain_name: "Kujira",
         axelar_chain_name: CHAINS.MAINNET.KUJIRA,
@@ -1982,6 +2101,16 @@ export const ICSTokens: Token[] = [
         gas: 200_000,
       }, */
       {
+        chain_name: "Juno",
+        axelar_chain_name: CHAINS.MAINNET.JUNO,
+        from_denom: ibcDenom(
+          [{ incomingChannelId: "channel-71", incomingPortId: "transfer" }],
+          "uusdt"
+        ),
+        channel_id: "channel-71",
+        gas: 200_000,
+      },
+      {
         chain_name: "Kujira",
         axelar_chain_name: CHAINS.MAINNET.KUJIRA,
         from_denom: ibcDenom(
@@ -2003,6 +2132,13 @@ export const ICSTokens: Token[] = [
       },
     ],
     withdrawals: [
+      {
+        chain_name: "Juno",
+        axelar_chain_name: CHAINS.MAINNET.JUNO,
+        from_denom: "secret1yxjmepvyl2c25vnt53cr2dpn8amknwausxee83",
+        channel_id: "channel-61",
+        gas: 350_000,
+      },
       {
         chain_name: "Kujira",
         axelar_chain_name: CHAINS.MAINNET.KUJIRA,
@@ -2038,6 +2174,16 @@ export const ICSTokens: Token[] = [
         gas: 200_000,
       }, */
       {
+        chain_name: "Juno",
+        axelar_chain_name: CHAINS.MAINNET.JUNO,
+        from_denom: ibcDenom(
+          [{ incomingChannelId: "channel-71", incomingPortId: "transfer" }],
+          "frax-wei"
+        ),
+        channel_id: "channel-71",
+        gas: 200_000,
+      },
+      {
         chain_name: "Kujira",
         axelar_chain_name: CHAINS.MAINNET.KUJIRA,
         from_denom: ibcDenom(
@@ -2059,6 +2205,13 @@ export const ICSTokens: Token[] = [
       },
     ],
     withdrawals: [
+      {
+        chain_name: "Juno",
+        axelar_chain_name: CHAINS.MAINNET.JUNO,
+        from_denom: "secret1yxjmepvyl2c25vnt53cr2dpn8amknwausxee83",
+        channel_id: "channel-61",
+        gas: 350_000,
+      },
       {
         chain_name: "Kujira",
         axelar_chain_name: CHAINS.MAINNET.KUJIRA,
