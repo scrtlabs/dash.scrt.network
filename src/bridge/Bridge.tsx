@@ -56,7 +56,7 @@ function Bridge() {
             target="_blank"
             className="text-white block my-6 p-3 w-full text-center font-semibold bg-cyan-600 dark:bg-cyan-600 rounded-lg text-sm hover:bg-cyan-500 dark:hover:bg-cyan-500 focus:bg-cyan-600 dark:focus:bg-cyan-600 transition-colors"
           >
-            <FontAwesomeIcon icon={faShuffle} size={"s"} className="mr-2" />
+            <FontAwesomeIcon icon={faShuffle} className="mr-2" />
             Go to IBC Transfers
           </a>
         </p>
