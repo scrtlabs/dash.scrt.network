@@ -51,14 +51,13 @@ function Bridge() {
           </span>
           If you want to bridge Axelar Assets (such as USDC, USDT) from other
           Cosmos based chains to Secret, please use the IBC tab:
-          <a
-            href={"/ibc"}
-            target="_blank"
+          <Link
+            to={"/ibc"}
             className="text-white block my-6 p-3 w-full text-center font-semibold bg-cyan-600 dark:bg-cyan-600 rounded-lg text-sm hover:bg-cyan-500 dark:hover:bg-cyan-500 focus:bg-cyan-600 dark:focus:bg-cyan-600 transition-colors"
           >
             <FontAwesomeIcon icon={faShuffle} className="mr-2" />
             Go to IBC Transfers
-          </a>
+          </Link>
         </p>
       </div>
     </>
