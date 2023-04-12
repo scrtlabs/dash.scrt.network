@@ -1,3 +1,4 @@
+import { CHAINS } from "@axelar-network/axelarjs-sdk";
 import { ibcDenom } from "shared/utils/commons";
 
 export type Chain = {
@@ -275,7 +276,13 @@ export type Token = {
   name: string;
   /** a snip20 token that's originated from Secret Network */
   is_snip20?: boolean;
+  /** a ICS20 token that's originated from Secret Network */
+  is_ics20?: boolean;
+  /** symbol of the ICS20 token for axelar API */
+  ics20_symbol?: string;
   /** secret contract address of the token */
+  axelar_denom?: string;
+  /** denom name of ICS20 token in axelar */
   address: string;
   /** secret contract code hash of the token */
   code_hash: string;
@@ -294,9 +301,12 @@ export type Token = {
 export type Deposit = {
   /** display name of the source chain */
   chain_name: string;
+  /** Axelar chain name of the source chain */
+  axelar_chain_name?: string;
+  /** Axelar channel name of the source chain */
+  axelar_channel_id?: string;
   /** denom on the other chain */
   from_denom: string;
-
   /** channel_id on the chain (snip20) */
   channel_id?: string;
   /** gas limit for ibc transfer from the chain to Secret Network (snip20) */
@@ -308,7 +318,8 @@ export type Withdraw = {
   chain_name: string;
   /** denom on Secret Network */
   from_denom: string;
-
+  /** Axelar chain name of the source chain */
+  axelar_chain_name?: string;
   /** channel_id on Secret Network (snip20) */
   channel_id?: string;
   /** gas limit for ibc transfer from Secret Network to the chain (snip20) */
@@ -1520,6 +1531,41 @@ export const snips: Token[] = [
         chain_name: "Juno",
         from_denom: "secret1k6u0cy4feepm6pehnz804zmwakuwdapm69tuc4",
         channel_id: "channel-45",
+        gas: 350_000,
+      },
+    ],
+  },
+];
+
+export const ICSTokens: Token[] = [
+  {
+    name: "aUSDC",
+    is_ics20: true,
+    address: "secret1vkq022x4q8t8kx9de3r84u669l65xnwf2lg3e6",
+    code_hash:
+      "638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e",
+    image: "/aUSDC.svg",
+    decimals: 6,
+    coingecko_id: "usdc",
+    axelar_denom: "uusdc",
+    deposits: [
+      {
+        chain_name: "Osmosis",
+        axelar_chain_name: CHAINS.MAINNET.OSMOSIS,
+        from_denom: ibcDenom(
+          [{ incomingChannelId: "channel-208", incomingPortId: "transfer" }],
+          "uusdc"
+        ),
+        channel_id: "channel-208",
+        gas: 200_000,
+      },
+    ],
+    withdrawals: [
+      {
+        chain_name: "Osmosis",
+        axelar_chain_name: CHAINS.MAINNET.OSMOSIS,
+        from_denom: "secret1yxjmepvyl2c25vnt53cr2dpn8amknwausxee83",
+        channel_id: "channel-61",
         gas: 350_000,
       },
     ],

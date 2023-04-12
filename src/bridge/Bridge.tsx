@@ -25,17 +25,23 @@ function Bridge() {
         <p>
           Use the{" "}
           <a
-            href="https://satellite.money/?asset_denom=uusdc&source=ethereum&destination=secret"
+            href="https://tunnel.scrt.network"
             target="_blank"
             className="pb-0.5 border-b border-neutral-400 dark:border-neutral-600 hover:text-black dark:hover:text-white hover:border-black dark:hover:border-white transition-colors"
           >
-            Axelar Bridge
+            Secret Tunnel
           </a>{" "}
           to bridge your assets from blockchains such as Ethereum, Binance Smart
-          Chain (BSC), Arbitrum, Avalance, Moonbeam and Polygon to Secret
-          Network!
+          Chain (BSC) and Axelar to Secret Network!
         </p>
-        <br />
+        <a
+          href="https://tunnel.scrt.network"
+          target="_blank"
+          className="text-white block my-6 p-3 w-full text-center font-semibold bg-cyan-600 dark:bg-cyan-600 rounded-lg text-sm hover:bg-cyan-500 dark:hover:bg-cyan-500 focus:bg-cyan-600 dark:focus:bg-cyan-600 transition-colors"
+        >
+          Go to Secret Tunnel
+          <FontAwesomeIcon icon={faArrowUpRightFromSquare} className="ml-2" />
+        </a>
         <p>
           <span className="select-none">
             <span className="inline-block bg-emerald-500 dark:bg-green-800 text-white text-xs py-0.5 px-1.5 rounded uppercase font-semibold">
@@ -43,26 +49,17 @@ function Bridge() {
             </span>{" "}
             –{" "}
           </span>
-          After bridging your assets from Axelar Bridge, they remain publicly
-          visible. If you want to make your assets private, wrap them using{" "}
-          <Link
-            to={"/wrap"}
-            className="pb-0.5 border-b border-neutral-400 dark:border-neutral-600 hover:text-black dark:hover:text-white hover:border-black dark:hover:border-white transition-colors"
+          If you want to bridge Axelar Assets (such as USDC, USDT) from other
+          Cosmos based chains to Secret, please use the IBC tab:
+          <a
+            href={"/ibc"}
+            target="_blank"
+            className="text-white block my-6 p-3 w-full text-center font-semibold bg-cyan-600 dark:bg-cyan-600 rounded-lg text-sm hover:bg-cyan-500 dark:hover:bg-cyan-500 focus:bg-cyan-600 dark:focus:bg-cyan-600 transition-colors"
           >
-            <FontAwesomeIcon icon={faShuffle} size={"xs"} className="mr-2" />
-            Secret Wrap
-          </Link>
-          ! Once wrapped, no one can view your assets on-chain unless they have
-          the right viewing key.
+            <FontAwesomeIcon icon={faShuffle} size={"s"} className="mr-2" />
+            Go to IBC Transfers
+          </a>
         </p>
-        <a
-          href="https://satellite.money/?asset_denom=uusdc&source=ethereum&destination=secret"
-          target="_blank"
-          className="text-white block my-6 p-3 w-full text-center font-semibold bg-cyan-600 dark:bg-cyan-600 rounded-lg text-sm hover:bg-cyan-500 dark:hover:bg-cyan-500 focus:bg-cyan-600 dark:focus:bg-cyan-600 transition-colors"
-        >
-          Go to the Axelar Bridge
-          <FontAwesomeIcon icon={faArrowUpRightFromSquare} className="ml-2" />
-        </a>
       </div>
     </>
   );
