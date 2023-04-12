@@ -89,6 +89,7 @@ function Deposit() {
   )[0]
     ? chainByQueryParam?.toLowerCase()
     : "osmosis";
+
   const [selectedSource, setSelectedSource] = useState<any>(
     selectedToken.deposits.filter(
       (deposit: any) => deposit.chain_name.toLowerCase() === sourcePreselection
@@ -251,7 +252,7 @@ function Deposit() {
     }
     setAxelarTransferFee(undefined);
     getAxelarTransferFee();
-  }, [amountToTransfer, selectedToken]);
+  }, [amountToTransfer, selectedToken, selectedSource]);
 
   const FeesInfo = () => {
     return (
@@ -260,11 +261,20 @@ function Deposit() {
         <div className="bg-neutral-200 dark:bg-neutral-800 p-4 rounded-lg select-none flex items-center my-4">
           <div className="flex-1 flex items-center">
             <span className="font-semibold text-sm">Transfer Fees</span>
+            <Tooltip
+              title={`Make sure to always transfer a higher amount than the transfer fees!`}
+              placement="right"
+              arrow
+            >
+              <span className="ml-2 mt-1 text-neutral-600 dark:text-neutral-400 hover:text-black dark:hover:text-white transition-colors cursor-pointer">
+                <FontAwesomeIcon icon={faInfoCircle} />
+              </span>
+            </Tooltip>
           </div>
           <div className="flex-initial">
             {selectedToken.is_ics20 && axelarTransferFee && (
               <>
-                <div className="text-xs font-semibold text-neutral-600 dark:text-neutral-400 flex items-center h-[1.6rem]">
+                <div className="text-s font-semibold text-neutral-600 dark:text-neutral-400 flex items-center h-[1.6rem]">
                   <span>
                     {new BigNumber(axelarTransferFee.fee.amount)
                       .dividedBy(`1e${selectedToken.decimals}`)
@@ -556,6 +566,10 @@ function Deposit() {
         deposit_channel_id = selectedSource.channel_id || deposit_channel_id;
         deposit_gas = selectedSource.gas || deposit_gas;
 
+        const depositChain = selectedToken.deposits.filter(
+          (deposit: any) => deposit.chain_name === selectedSource.chain_name
+        )[0];
+
         const toastId = toast.loading(
           `Sending ${normalizedAmount} ${selectedToken.name} from ${selectedSource.chain_name} to Secret Network`,
           {
@@ -567,14 +581,20 @@ function Deposit() {
           let tx: TxResponse;
           if (
             !["Evmos", "Injective"].includes(selectedSource.chain_name) &&
-            !selectedToken.is_ics20
+            (!selectedToken.is_ics20 ||
+              depositChain.axelar_chain_name == CHAINS.MAINNET.AXELAR)
           ) {
+            const source_channel_id =
+              depositChain.axelar_chain_name == CHAINS.MAINNET.AXELAR &&
+              selectedToken.name !== "SCRT"
+                ? depositChain.channel_id
+                : deposit_channel_id;
             // Regular cosmos chain (not ethermint signing)
             tx = await sourceChainSecretjs.tx.ibc.transfer(
               {
                 sender: sourceAddress,
                 receiver: secretAddress,
-                source_channel: deposit_channel_id,
+                source_channel: source_channel_id,
                 source_port: "transfer",
                 token: {
                   amount,
@@ -595,11 +615,10 @@ function Deposit() {
                 },
               }
             );
-          } else if (selectedToken.is_ics20) {
-            const depositChain = (selectedToken as any).deposits.filter(
-              (deposit: any) => deposit.chain_name === selectedSource.chain_name
-            )[0];
-
+          } else if (
+            selectedToken.is_ics20 &&
+            depositChain.axelar_chain_name != CHAINS.MAINNET.AXELAR
+          ) {
             const fromChain = depositChain.axelar_chain_name,
               toChain = "secret-snip",
               destinationAddress = secretAddress,
@@ -769,12 +788,7 @@ function Deposit() {
                 isLoading: false,
                 closeOnClick: true,
               });
-              if (
-                ibcMode === "deposit" ||
-                (selectedToken.is_ics20 && isViewingKeyAvailable(selectedToken))
-              ) {
-                setIsWrapModalOpen(true);
-              }
+              setIsWrapModalOpen(true);
             } else {
               toast.update(toastId, {
                 render: `Timed out while waiting to receive ${normalizedAmount} ${selectedToken.name} on Secret Network from ${selectedSource.chain_name}`,
@@ -785,7 +799,11 @@ function Deposit() {
           }
         } catch (e) {
           toast.update(toastId, {
-            render: `Failed sending ${normalizedAmount} ${selectedToken.name} from ${selectedSource.chain_name} to Secret Network: ${e}`,
+            render: `Failed sending ${normalizedAmount} ${
+              selectedToken.name
+            } from ${selectedSource.chain_name} to Secret Network: ${
+              (e as any).message
+            }`,
             type: "error",
             isLoading: false,
           });
@@ -825,6 +843,13 @@ function Deposit() {
 
         withdraw_channel_id = selectedSource.channel_id || withdraw_channel_id;
         withdraw_gas = selectedSource.gas || withdraw_gas;
+
+        const withdrawalChain = selectedToken.withdrawals.filter(
+          (withdrawal: any) =>
+            withdrawal.chain_name === selectedSource.chain_name
+        )[0];
+
+        console.log(withdrawalChain);
 
         const toastId = toast.loading(
           `Sending ${normalizedAmount} ${selectedToken.name} from Secret Network to ${selectedSource.chain_name}`,
@@ -871,14 +896,12 @@ function Deposit() {
                 },
               }
             );
-          } else if (selectedToken.is_ics20) {
-            const destinationChain = (selectedToken as any).withdrawals.filter(
-              (withdrawal: any) =>
-                withdrawal.chain_name === selectedSource.chain_name
-            )[0];
-
+          } else if (
+            selectedToken.is_ics20 &&
+            withdrawalChain?.axelar_chain_name !== CHAINS.MAINNET.AXELAR
+          ) {
             const fromChain = "secret-snip",
-              toChain = destinationChain.axelar_chain_name,
+              toChain = withdrawalChain.axelar_chain_name,
               destinationAddress = sourceAddress,
               asset = selectedToken.axelar_denom;
 
@@ -902,7 +925,7 @@ function Deposit() {
                     msg: toBase64(
                       toUtf8(
                         JSON.stringify({
-                          channel: destinationChain.channel_id,
+                          channel: withdrawalChain.channel_id,
                           remote_address: depositAddress,
                           timeout: 600, // 10 minute timeout
                         })
@@ -923,18 +946,20 @@ function Deposit() {
               }
             );
           } else {
+            const source_channel_id =
+              withdrawalChain?.axelar_chain_name == CHAINS.MAINNET.AXELAR &&
+              selectedToken.name !== "SCRT"
+                ? withdrawalChain.channel_id
+                : withdraw_channel_id;
             tx = await secretjs.tx.ibc.transfer(
               {
                 sender: secretAddress,
                 receiver: sourceAddress,
-                source_channel: withdraw_channel_id,
+                source_channel: source_channel_id,
                 source_port: "transfer",
                 token: {
                   amount,
-                  denom: selectedToken.withdrawals.filter(
-                    (withdraw: any) =>
-                      withdraw.chain_name === selectedSource.chain_name
-                  )[0].from_denom,
+                  denom: withdrawalChain.from_denom,
                 },
                 timeout_timestamp: String(
                   Math.floor(Date.now() / 1000) + 10 * 60
@@ -1371,7 +1396,10 @@ function Deposit() {
 
       {ibcMode == "withdrawal" && !selectedToken.is_ics20 && <FeeGrant />}
 
-      {selectedToken.is_ics20 && <FeesInfo />}
+      {selectedToken.is_ics20 &&
+        selectedToken.deposits.filter(
+          (deposit: any) => deposit.chain_name === selectedSource.chain_name
+        )[0].axelar_chain_name !== CHAINS.MAINNET.AXELAR && <FeesInfo />}
 
       <div className="mt-4">
         <SubmitButton />

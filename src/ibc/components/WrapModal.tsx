@@ -5,13 +5,23 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { IbcContext, IbcMode } from "ibc/Ibc";
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import {
   SecretjsContext,
   getKeplrViewingKey,
   isViewingKeyAvailable,
 } from "shared/context/SecretjsContext";
+import {
+  sleep,
+  suggestCrescentToKeplr,
+  suggestChihuahuaToKeplr,
+  suggestInjectiveToKeplr,
+  suggestKujiraToKeplr,
+  suggestTerraToKeplr,
+  faucetAddress,
+  viewingKeyErrorString,
+} from "shared/utils/commons";
 import { Token, tokens } from "shared/utils/config";
 
 interface IWrapModalProps {
@@ -23,6 +33,31 @@ interface IWrapModalProps {
 
 const WrapModal = (props: IWrapModalProps) => {
   const { setViewingKey } = useContext(SecretjsContext);
+
+  const {
+    isWrapModalOpen,
+    setIsWrapModalOpen,
+    selectedTokenName,
+    setSelectedTokenName,
+    ibcMode,
+    setIbcMode,
+    toggleIbcMode,
+    selectedToken,
+    setSelectedToken,
+  } = useContext(IbcContext);
+
+  const [assetViewingKey, setAssetViewingKey] = useState<any>();
+
+  useEffect(() => {
+    setSelectedTokenName(selectedToken.name);
+    const updateCoinBalance = async () => {
+      const key = await getKeplrViewingKey(selectedToken.address);
+      if (!key) {
+        setAssetViewingKey(viewingKeyErrorString);
+      }
+    };
+    updateCoinBalance();
+  }, [selectedToken, assetViewingKey, isWrapModalOpen]);
 
   if (!props.open) return null;
 
@@ -65,23 +100,23 @@ const WrapModal = (props: IWrapModalProps) => {
 
               {/* Body */}
               <div className="text-center">
-                {!(
-                  props.selectedToken.is_ics20 === true &&
-                  props.ibcMode == "deposit" &&
-                  !isViewingKeyAvailable(props.selectedToken)
-                ) ? (
-                  <>
-                    <p className="text-neutral-600 dark:text-neutral-400 max-w-sm mx-auto mb-6">
-                      Set a viewing key to see your deposited tokens
-                    </p>
-                    <button
-                      onClick={() => setViewingKey(props.selectedToken)}
-                      className="sm:max-w-[200px] w-full md:px-4 inline-block bg-cyan-500 dark:bg-cyan-600 text-cyan-100 hover:text-white hover:bg-cyan-400 dark:hover:bg-cyan-600 text-center transition-colors py-2.5 rounded-xl font-semibold text-sm"
-                    >
-                      Set viewing key
-                    </button>
-                  </>
-                ) : (
+                {selectedToken.is_ics20 &&
+                  ibcMode === "deposit" &&
+                  assetViewingKey === viewingKeyErrorString && (
+                    <>
+                      <p className="text-neutral-600 dark:text-neutral-400 max-w-sm mx-auto mb-6">
+                        Set a viewing key to see your newly deposited s
+                        {selectedToken.name} tokens
+                      </p>
+                      <button
+                        onClick={() => setViewingKey(selectedToken)}
+                        className="sm:max-w-[200px] w-full md:px-4 inline-block bg-cyan-500 dark:bg-cyan-600 text-cyan-100 hover:text-white hover:bg-cyan-400 dark:hover:bg-cyan-600 text-center transition-colors py-2.5 rounded-xl font-semibold text-sm"
+                      >
+                        Set viewing key
+                      </button>
+                    </>
+                  )}{" "}
+                {ibcMode === "deposit" && !selectedToken.is_ics20 && (
                   <>
                     <p className="text-neutral-600 dark:text-neutral-400 max-w-sm mx-auto mb-6">
                       Now that you have (publicly visible){" "}
