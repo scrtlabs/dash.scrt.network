@@ -1,4 +1,4 @@
-import { CircularProgress } from "@mui/material";
+import { CircularProgress, DialogActionsClassKey } from "@mui/material";
 import Tooltip from "@mui/material/Tooltip";
 import Select from "react-select";
 import { createTxIBCMsgTransfer } from "@tharsis/transactions";
@@ -23,7 +23,14 @@ import {
   TxResponse,
   toUtf8,
 } from "secretjs";
-import { chains, Token, tokens, snips } from "shared/utils/config";
+import {
+  chains,
+  Token,
+  tokens,
+  snips,
+  ICSTokens,
+  Deposit,
+} from "shared/utils/config";
 import { TxRaw } from "secretjs/dist/protobuf/cosmos/tx/v1beta1/tx";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -39,17 +46,29 @@ import {
 import { IbcContext } from "ibc/Ibc";
 import {
   getKeplrViewingKey,
+  isViewingKeyAvailable,
   SecretjsContext,
   setKeplrViewingKey,
 } from "shared/context/SecretjsContext";
 import CopyToClipboard from "react-copy-to-clipboard";
+import {
+  AxelarAssetTransfer,
+  AxelarQueryAPI,
+  CHAINS,
+  Environment,
+} from "@axelar-network/axelarjs-sdk";
 
 function Deposit() {
   const { feeGrantStatus, setFeeGrantStatus, requestFeeGrant } =
     useContext(SecretjsContext);
-
-  const { setIsWrapModalOpen, setSelectedTokenName, ibcMode, toggleIbcMode } =
-    useContext(IbcContext);
+  const {
+    setIsWrapModalOpen,
+    setSelectedTokenName,
+    ibcMode,
+    toggleIbcMode,
+    selectedToken,
+    setSelectedToken,
+  } = useContext(IbcContext);
 
   const [sourceAddress, setSourceAddress] = useState<string>("");
   const [availableBalance, setAvailableBalance] = useState<string>("");
@@ -58,24 +77,31 @@ function Deposit() {
     useState<SecretNetworkClient | null>(null);
   const [fetchBalanceInterval, setFetchBalanceInterval] = useState<any>(null);
   const [amountToTransfer, setAmountToTransfer] = useState<string>("");
+  const [axelarTransferFee, setAxelarTransferFee] = useState<any>();
   const { secretjs, secretAddress } = useContext(SecretjsContext);
   const queryParams = new URLSearchParams(window.location.search);
 
   const chainByQueryParam = queryParams.get("chain"); // "scrt", "akash", etc.
-  const [selectedToken, setSelectedToken] = useState<Token>(
-    tokens.filter((token) => token.name === "SCRT")[0]
-  );
+
   const sourcePreselection = selectedToken.deposits.filter(
-    (deposit) =>
+    (deposit: any) =>
       deposit.chain_name.toLowerCase() === chainByQueryParam?.toLowerCase()
   )[0]
     ? chainByQueryParam?.toLowerCase()
     : "osmosis";
+
   const [selectedSource, setSelectedSource] = useState<any>(
     selectedToken.deposits.filter(
-      (deposit) => deposit.chain_name.toLowerCase() === sourcePreselection
+      (deposit: any) => deposit.chain_name.toLowerCase() === sourcePreselection
     )[0]
   );
+
+  const sdk = new AxelarAssetTransfer({
+    environment: Environment.MAINNET,
+  });
+  const axelarQuery = new AxelarQueryAPI({
+    environment: Environment.MAINNET,
+  });
 
   useEffect(() => {
     setSelectedTokenName(selectedToken.name);
@@ -137,9 +163,149 @@ function Deposit() {
     }
   }
 
+  const FeeGrant = () => {
+    return (
+      <>
+        {/* Fee Grant */}
+        <div className="bg-neutral-200 dark:bg-neutral-800 p-4 rounded-lg select-none flex items-center my-4">
+          <div className="flex-1 flex items-center">
+            <span className="font-semibold text-sm">Fee Grant</span>
+            <Tooltip
+              title={`Request Fee Grant so that you don't have to pay gas fees (up to 0.1 SCRT)`}
+              placement="right"
+              arrow
+            >
+              <span className="ml-2 mt-1 text-neutral-600 dark:text-neutral-400 hover:text-black dark:hover:text-white transition-colors cursor-pointer">
+                <FontAwesomeIcon icon={faInfoCircle} />
+              </span>
+            </Tooltip>
+          </div>
+          <div className="flex-initial">
+            {/* Untouched */}
+            {ibcMode === "withdrawal" && feeGrantStatus === "Untouched" && (
+              <>
+                <button
+                  id="feeGrantButton"
+                  onClick={requestFeeGrant}
+                  className="font-semibold text-xs bg-neutral-100 dark:bg-neutral-900 px-1.5 py-1 rounded-md transition-colors hover:bg-neutral-300 dark:hover:bg-neutral-700 focus:bg-neutral-500 dark:focus:bg-neutral-500 cursor-pointer disabled:text-neutral-500 dark:disabled:text-neutral-500 disabled:hover:bg-neutral-100 dark:disabled:hover:bg-neutral-900 disabled:cursor-default"
+                  disabled={!secretjs || !secretAddress}
+                >
+                  Request Fee Grant
+                </button>
+              </>
+            )}
+            {/* Success */}
+            {ibcMode === "withdrawal" && feeGrantStatus === "Success" && (
+              <div className="font-semibold text-sm flex items-center h-[1.6rem]">
+                <FontAwesomeIcon
+                  icon={faCheckCircle}
+                  className="text-green-500 mr-1.5"
+                />
+                Fee Granted
+              </div>
+            )}
+            {/* Fail */}
+            {ibcMode === "withdrawal" && feeGrantStatus === "Fail" && (
+              <div className="font-semibold text-sm h-[1.6rem]">
+                <FontAwesomeIcon
+                  icon={faXmarkCircle}
+                  className="text-red-500 mr-1.5"
+                />
+                Request failed
+              </div>
+            )}
+          </div>
+        </div>
+      </>
+    );
+  };
+
+  useEffect(() => {
+    async function getAxelarTransferFee() {
+      if (selectedToken.is_ics20) {
+        const chain = (selectedToken as any).deposits.filter(
+          (chain: any) => chain.chain_name === selectedSource.chain_name
+        )[0];
+        const fromChain =
+            ibcMode === "deposit" ? chain.axelar_chain_name : "secret-snip",
+          toChain =
+            ibcMode === "deposit" ? "secret-snip" : chain.axelar_chain_name,
+          asset = selectedToken.axelar_denom;
+
+        const normalizedAmount = (amountToTransfer as string).replace(/,/g, "");
+
+        if (!(Number(normalizedAmount) > 0)) {
+          console.error(`${normalizedAmount} not bigger than 0`);
+          return;
+        }
+        const amount = new BigNumber(normalizedAmount)
+          .multipliedBy(`1e${selectedToken.decimals}`)
+          .toNumber();
+        const fee = await axelarQuery.getTransferFee(
+          fromChain,
+          toChain,
+          asset,
+          amount
+        );
+        setAxelarTransferFee(fee);
+      }
+    }
+    setAxelarTransferFee(undefined);
+    getAxelarTransferFee();
+  }, [amountToTransfer, selectedToken, selectedSource]);
+
+  const FeesInfo = () => {
+    return (
+      <>
+        {/* Fee Grant */}
+        <div className="bg-neutral-200 dark:bg-neutral-800 p-4 rounded-lg select-none flex items-center my-4">
+          <div className="flex-1 flex items-center">
+            <span className="font-semibold text-sm">Transfer Fees</span>
+            <Tooltip
+              title={`Make sure to always transfer a higher amount than the transfer fees!`}
+              placement="right"
+              arrow
+            >
+              <span className="ml-2 mt-1 text-neutral-600 dark:text-neutral-400 hover:text-black dark:hover:text-white transition-colors cursor-pointer">
+                <FontAwesomeIcon icon={faInfoCircle} />
+              </span>
+            </Tooltip>
+          </div>
+          <div className="flex-initial">
+            {selectedToken.is_ics20 && axelarTransferFee && (
+              <>
+                <div className="text-s font-semibold text-neutral-600 dark:text-neutral-400 flex items-center h-[1.6rem]">
+                  <span>
+                    {new BigNumber(axelarTransferFee.fee.amount)
+                      .dividedBy(`1e${selectedToken.decimals}`)
+                      .toFormat()}{" "}
+                    {ibcMode == "withdrawal" && "s"}
+                    {
+                      ICSTokens.filter(
+                        (icstoken: any) =>
+                          icstoken.axelar_denom === axelarTransferFee.fee.denom
+                      )[0].name
+                    }
+                  </span>
+                </div>
+              </>
+            )}
+            {selectedToken.is_ics20 && !axelarTransferFee && (
+              <>
+                <div className="text-xs font-semibold text-neutral-600 dark:text-neutral-400 flex items-center h-[1.6rem]">
+                  <span> - </span>
+                </div>
+              </>
+            )}
+          </div>
+        </div>
+      </>
+    );
+  };
+
   const updateCoinBalance = async () => {
     if (secretjs && secretAddress) {
-      if (selectedToken.is_snip20) {
+      if (selectedToken.is_snip20 || selectedToken.is_ics20) {
         const key = await getKeplrViewingKey(selectedToken.address);
         if (!key) {
           setAvailableBalance(viewingKeyErrorString);
@@ -212,7 +378,8 @@ function Deposit() {
               (c) =>
                 c.denom ===
                 selectedToken.deposits.filter(
-                  (deposit) => deposit.chain_name === selectedSource.chain_name
+                  (deposit: any) =>
+                    deposit.chain_name === selectedSource.chain_name
                 )[0].from_denom
             )?.amount || "0";
           setAvailableBalance(balance);
@@ -259,6 +426,12 @@ function Deposit() {
     if (!(secretjs && secretAddress)) {
       return;
     }
+    const possibleICS20 = ICSTokens.filter(
+      (token) =>
+        token.deposits.find(
+          (token) => token.chain_name == selectedSource.chain_name
+        )!
+    );
     const possibleSnips = snips.filter(
       (token) =>
         token.deposits.find(
@@ -271,7 +444,9 @@ function Deposit() {
           (token) => token.chain_name == selectedSource.chain_name
         )!
     );
-    const supportedTokens = possibleTokens.concat(possibleSnips);
+    const supportedTokens = possibleTokens
+      .concat(possibleICS20)
+      .concat(possibleSnips);
 
     setSupportedTokens(supportedTokens);
 
@@ -391,6 +566,10 @@ function Deposit() {
         deposit_channel_id = selectedSource.channel_id || deposit_channel_id;
         deposit_gas = selectedSource.gas || deposit_gas;
 
+        const depositChain = selectedToken.deposits.filter(
+          (deposit: any) => deposit.chain_name === selectedSource.chain_name
+        )[0];
+
         const toastId = toast.loading(
           `Sending ${normalizedAmount} ${selectedToken.name} from ${selectedSource.chain_name} to Secret Network`,
           {
@@ -400,20 +579,66 @@ function Deposit() {
 
         try {
           let tx: TxResponse;
-          if (!["Evmos", "Injective"].includes(selectedSource.chain_name)) {
+          if (
+            !["Evmos", "Injective"].includes(selectedSource.chain_name) &&
+            (!selectedToken.is_ics20 ||
+              depositChain.axelar_chain_name == CHAINS.MAINNET.AXELAR)
+          ) {
+            const source_channel_id =
+              depositChain.axelar_chain_name == CHAINS.MAINNET.AXELAR &&
+              selectedToken.name !== "SCRT"
+                ? depositChain.channel_id
+                : deposit_channel_id;
             // Regular cosmos chain (not ethermint signing)
             tx = await sourceChainSecretjs.tx.ibc.transfer(
               {
                 sender: sourceAddress,
                 receiver: secretAddress,
-                source_channel: deposit_channel_id,
+                source_channel: source_channel_id,
                 source_port: "transfer",
                 token: {
                   amount,
                   denom: selectedToken.deposits.filter(
-                    (deposit) =>
+                    (deposit: any) =>
                       deposit.chain_name === selectedSource.chain_name
                   )[0].from_denom,
+                },
+                timeout_timestamp: String(
+                  Math.floor(Date.now() / 1000) + 10 * 60
+                ), // 10 minute timeout
+              },
+              {
+                gasLimit: deposit_gas,
+                ibcTxsOptions: {
+                  resolveResponsesCheckIntervalMs: 10_000,
+                  resolveResponsesTimeoutMs: 10.25 * 60 * 1000,
+                },
+              }
+            );
+          } else if (
+            selectedToken.is_ics20 &&
+            depositChain.axelar_chain_name != CHAINS.MAINNET.AXELAR
+          ) {
+            const fromChain = depositChain.axelar_chain_name,
+              toChain = "secret-snip",
+              destinationAddress = secretAddress,
+              asset = selectedToken.axelar_denom; // denom of asset. See note (2) below
+
+            const depositAddress = await sdk.getDepositAddress({
+              fromChain,
+              toChain,
+              destinationAddress,
+              asset,
+            });
+            tx = await sourceChainSecretjs.tx.ibc.transfer(
+              {
+                sender: sourceAddress,
+                receiver: depositAddress,
+                source_channel: depositChain.channel_id,
+                source_port: "transfer",
+                token: {
+                  amount,
+                  denom: depositChain.from_denom,
                 },
                 timeout_timestamp: String(
                   Math.floor(Date.now() / 1000) + 10 * 60
@@ -483,7 +708,8 @@ function Deposit() {
                 sourceChannel: deposit_channel_id,
                 amount,
                 denom: selectedToken.deposits.filter(
-                  (deposit) => deposit.chain_name === selectedSource.chain_name
+                  (deposit: Deposit) =>
+                    deposit.chain_name === selectedSource.chain_name
                 )[0].from_denom,
                 receiver: secretAddress,
                 revisionNumber: 0,
@@ -562,9 +788,7 @@ function Deposit() {
                 isLoading: false,
                 closeOnClick: true,
               });
-              if (ibcMode === "deposit") {
-                setIsWrapModalOpen(true);
-              }
+              setIsWrapModalOpen(true);
             } else {
               toast.update(toastId, {
                 render: `Timed out while waiting to receive ${normalizedAmount} ${selectedToken.name} on Secret Network from ${selectedSource.chain_name}`,
@@ -575,7 +799,11 @@ function Deposit() {
           }
         } catch (e) {
           toast.update(toastId, {
-            render: `Failed sending ${normalizedAmount} ${selectedToken.name} from ${selectedSource.chain_name} to Secret Network: ${e}`,
+            render: `Failed sending ${normalizedAmount} ${
+              selectedToken.name
+            } from ${selectedSource.chain_name} to Secret Network: ${
+              (e as any).message
+            }`,
             type: "error",
             isLoading: false,
           });
@@ -615,6 +843,13 @@ function Deposit() {
 
         withdraw_channel_id = selectedSource.channel_id || withdraw_channel_id;
         withdraw_gas = selectedSource.gas || withdraw_gas;
+
+        const withdrawalChain = selectedToken.withdrawals.filter(
+          (withdrawal: any) =>
+            withdrawal.chain_name === selectedSource.chain_name
+        )[0];
+
+        console.log(withdrawalChain);
 
         const toastId = toast.loading(
           `Sending ${normalizedAmount} ${selectedToken.name} from Secret Network to ${selectedSource.chain_name}`,
@@ -661,19 +896,70 @@ function Deposit() {
                 },
               }
             );
+          } else if (
+            selectedToken.is_ics20 &&
+            withdrawalChain?.axelar_chain_name !== CHAINS.MAINNET.AXELAR
+          ) {
+            const fromChain = "secret-snip",
+              toChain = withdrawalChain.axelar_chain_name,
+              destinationAddress = sourceAddress,
+              asset = selectedToken.axelar_denom;
+
+            const depositAddress = await sdk.getDepositAddress({
+              fromChain,
+              toChain,
+              destinationAddress,
+              asset,
+            });
+            tx = await secretjs.tx.compute.executeContract(
+              {
+                contract_address: selectedToken.address,
+                code_hash: selectedToken.code_hash,
+                sender: secretAddress,
+                msg: {
+                  send: {
+                    recipient: "secret1yxjmepvyl2c25vnt53cr2dpn8amknwausxee83", // ics20
+                    recipient_code_hash:
+                      "2976a2577999168b89021ecb2e09c121737696f71c4342f9a922ce8654e98662",
+                    amount,
+                    msg: toBase64(
+                      toUtf8(
+                        JSON.stringify({
+                          channel: withdrawalChain.channel_id,
+                          remote_address: depositAddress,
+                          timeout: 600, // 10 minute timeout
+                        })
+                      )
+                    ),
+                  },
+                },
+              },
+              {
+                gasLimit: 300_000,
+                gasPriceInFeeDenom: 0.1,
+                feeDenom: "uscrt",
+                feeGranter: feeGrantStatus === "Success" ? faucetAddress : "",
+                ibcTxsOptions: {
+                  resolveResponsesCheckIntervalMs: 10_000,
+                  resolveResponsesTimeoutMs: 10.25 * 60 * 1000,
+                },
+              }
+            );
           } else {
+            const source_channel_id =
+              withdrawalChain?.axelar_chain_name == CHAINS.MAINNET.AXELAR &&
+              selectedToken.name !== "SCRT"
+                ? withdrawalChain.channel_id
+                : withdraw_channel_id;
             tx = await secretjs.tx.ibc.transfer(
               {
                 sender: secretAddress,
                 receiver: sourceAddress,
-                source_channel: withdraw_channel_id,
+                source_channel: source_channel_id,
                 source_port: "transfer",
                 token: {
                   amount,
-                  denom: selectedToken.withdrawals.filter(
-                    (withdraw) =>
-                      withdraw.chain_name === selectedSource.chain_name
-                  )[0].from_denom,
+                  denom: withdrawalChain.from_denom,
                 },
                 timeout_timestamp: String(
                   Math.floor(Date.now() / 1000) + 10 * 60
@@ -1001,7 +1287,10 @@ function Deposit() {
                   src={`/img/assets/${token.image}`}
                   className="w-6 h-6 mr-2 rounded-full"
                 />
-                <span className="font-semibold text-sm">{token.name}</span>
+                <span className="font-semibold text-sm">
+                  {token.is_ics20 && ibcMode == "withdrawal" && "s"}
+                  {token.name}
+                </span>
               </div>
             )}
             className="react-select-wrap-container"
@@ -1064,7 +1353,9 @@ function Deposit() {
                 if (prettyBalance === "NaN") {
                   return "Error";
                 }
-                return `${prettyBalance} ${selectedToken.name}`;
+                return `${prettyBalance} ${
+                  selectedToken.is_ics20 && ibcMode == "withdrawal" ? "s" : ""
+                }${selectedToken.name}`;
               })()}
             </span>
           </div>
@@ -1103,65 +1394,12 @@ function Deposit() {
         </div>
       </div>
 
-      {/* Fee Grant */}
-      <div className="bg-neutral-200 dark:bg-neutral-800 p-4 rounded-lg select-none flex items-center my-4">
-        <div className="flex-1 flex items-center">
-          <span className="font-semibold text-sm">Fee Grant</span>
-          <Tooltip
-            title={`Request Fee Grant so that you don't have to pay gas fees (up to 0.1 SCRT)`}
-            placement="right"
-            arrow
-          >
-            <span className="ml-2 mt-1 text-neutral-600 dark:text-neutral-400 hover:text-black dark:hover:text-white transition-colors cursor-pointer">
-              <FontAwesomeIcon icon={faInfoCircle} />
-            </span>
-          </Tooltip>
-        </div>
-        <div className="flex-initial">
-          {/* Deposit => no fee grant */}
-          {ibcMode === "deposit" && (
-            <>
-              <div className="text-xs font-semibold text-neutral-600 dark:text-neutral-400 flex items-center h-[1.6rem]">
-                <span>Unavailable</span>
-              </div>
-            </>
-          )}
+      {ibcMode == "withdrawal" && !selectedToken.is_ics20 && <FeeGrant />}
 
-          {/* Untouched */}
-          {ibcMode === "withdrawal" && feeGrantStatus === "Untouched" && (
-            <>
-              <button
-                id="feeGrantButton"
-                onClick={requestFeeGrant}
-                className="font-semibold text-xs bg-neutral-100 dark:bg-neutral-900 px-1.5 py-1 rounded-md transition-colors hover:bg-neutral-300 dark:hover:bg-neutral-700 focus:bg-neutral-500 dark:focus:bg-neutral-500 cursor-pointer disabled:text-neutral-500 dark:disabled:text-neutral-500 disabled:hover:bg-neutral-100 dark:disabled:hover:bg-neutral-900 disabled:cursor-default"
-                disabled={!secretjs || !secretAddress}
-              >
-                Request Fee Grant
-              </button>
-            </>
-          )}
-          {/* Success */}
-          {ibcMode === "withdrawal" && feeGrantStatus === "Success" && (
-            <div className="font-semibold text-sm flex items-center h-[1.6rem]">
-              <FontAwesomeIcon
-                icon={faCheckCircle}
-                className="text-green-500 mr-1.5"
-              />
-              Fee Granted
-            </div>
-          )}
-          {/* Fail */}
-          {ibcMode === "withdrawal" && feeGrantStatus === "Fail" && (
-            <div className="font-semibold text-sm h-[1.6rem]">
-              <FontAwesomeIcon
-                icon={faXmarkCircle}
-                className="text-red-500 mr-1.5"
-              />
-              Request failed
-            </div>
-          )}
-        </div>
-      </div>
+      {selectedToken.is_ics20 &&
+        selectedToken.deposits.filter(
+          (deposit: any) => deposit.chain_name === selectedSource.chain_name
+        )[0].axelar_chain_name !== CHAINS.MAINNET.AXELAR && <FeesInfo />}
 
       <div className="mt-4">
         <SubmitButton />
