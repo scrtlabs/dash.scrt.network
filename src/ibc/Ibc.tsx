@@ -7,6 +7,8 @@ import { websiteName } from "App";
 import WrapModal from "./components/WrapModal";
 import Deposit from "./components/Deposit";
 import { SecretjsContext } from "shared/context/SecretjsContext";
+import ViewingKeyModal from "./components/ViewingKeyModal";
+import { Token, tokens } from "shared/utils/config";
 
 export const IbcContext = createContext(null);
 
@@ -16,6 +18,10 @@ export function Ibc() {
   const [isWrapModalOpen, setIsWrapModalOpen] = useState(false);
 
   const [selectedTokenName, setSelectedTokenName] = useState("");
+
+  const [selectedToken, setSelectedToken] = useState<Token>(
+    tokens.filter((token) => token.name === "SCRT")[0]
+  );
 
   const [ibcMode, setIbcMode] = useState<IbcMode>("deposit");
 
@@ -36,24 +42,28 @@ export function Ibc() {
     }
   };
 
+  const ibcContextProviderValue = {
+    isWrapModalOpen,
+    setIsWrapModalOpen,
+    selectedTokenName,
+    setSelectedTokenName,
+    ibcMode,
+    setIbcMode,
+    toggleIbcMode,
+    selectedToken,
+    setSelectedToken,
+  };
+
   return (
     <>
       <Helmet>
         <title>{websiteName} | IBC</title>
       </Helmet>
-      <IbcContext.Provider
-        value={{
-          isWrapModalOpen,
-          setIsWrapModalOpen,
-          selectedTokenName,
-          setSelectedTokenName,
-          ibcMode,
-          setIbcMode,
-          toggleIbcMode,
-        }}
-      >
+      <IbcContext.Provider value={ibcContextProviderValue}>
         <WrapModal
           open={isWrapModalOpen}
+          selectedToken={selectedToken}
+          ibcMode={ibcMode}
           onClose={() => {
             setIsWrapModalOpen(false);
             document.body.classList.remove("overflow-hidden");
