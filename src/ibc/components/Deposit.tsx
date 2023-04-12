@@ -249,8 +249,9 @@ function Deposit() {
         setAxelarTransferFee(fee);
       }
     }
+    setAxelarTransferFee(undefined);
     getAxelarTransferFee();
-  }, [amountToTransfer]);
+  }, [amountToTransfer, selectedToken]);
 
   const FeesInfo = () => {
     return (
@@ -261,7 +262,6 @@ function Deposit() {
             <span className="font-semibold text-sm">Transfer Fees</span>
           </div>
           <div className="flex-initial">
-            {/* Deposit => no fee grant */}
             {selectedToken.is_ics20 && axelarTransferFee && (
               <>
                 <div className="text-xs font-semibold text-neutral-600 dark:text-neutral-400 flex items-center h-[1.6rem]">

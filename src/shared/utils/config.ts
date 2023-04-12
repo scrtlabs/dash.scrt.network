@@ -1612,6 +1612,26 @@ export const ICSTokens: Token[] = [
         channel_id: "channel-208",
         gas: 200_000,
       },
+      {
+        chain_name: "Stargaze",
+        axelar_chain_name: CHAINS.MAINNET.STARGAZE,
+        from_denom: ibcDenom(
+          [{ incomingChannelId: "channel-50", incomingPortId: "transfer" }],
+          "uusdc"
+        ),
+        channel_id: "channel-50",
+        gas: 200_000,
+      },
+      {
+        chain_name: "Terra",
+        axelar_chain_name: CHAINS.MAINNET.TERRA,
+        from_denom: ibcDenom(
+          [{ incomingChannelId: "channel-6", incomingPortId: "transfer" }],
+          "uusdc"
+        ),
+        channel_id: "channel-6",
+        gas: 200_000,
+      },
     ],
     withdrawals: [
       /*       {
@@ -1638,6 +1658,20 @@ export const ICSTokens: Token[] = [
       {
         chain_name: "Osmosis",
         axelar_chain_name: CHAINS.MAINNET.OSMOSIS,
+        from_denom: "secret1yxjmepvyl2c25vnt53cr2dpn8amknwausxee83",
+        channel_id: "channel-61",
+        gas: 350_000,
+      },
+      {
+        chain_name: "Stargaze",
+        axelar_chain_name: CHAINS.MAINNET.STARGAZE,
+        from_denom: "secret1yxjmepvyl2c25vnt53cr2dpn8amknwausxee83",
+        channel_id: "channel-61",
+        gas: 350_000,
+      },
+      {
+        chain_name: "Terra",
+        axelar_chain_name: CHAINS.MAINNET.TERRA,
         from_denom: "secret1yxjmepvyl2c25vnt53cr2dpn8amknwausxee83",
         channel_id: "channel-61",
         gas: 350_000,
@@ -1692,6 +1726,26 @@ export const ICSTokens: Token[] = [
         channel_id: "channel-208",
         gas: 200_000,
       },
+      {
+        chain_name: "Stargaze",
+        axelar_chain_name: CHAINS.MAINNET.STARGAZE,
+        from_denom: ibcDenom(
+          [{ incomingChannelId: "channel-50", incomingPortId: "transfer" }],
+          "weth-wei"
+        ),
+        channel_id: "channel-50",
+        gas: 200_000,
+      },
+      {
+        chain_name: "Terra",
+        axelar_chain_name: CHAINS.MAINNET.TERRA,
+        from_denom: ibcDenom(
+          [{ incomingChannelId: "channel-6", incomingPortId: "transfer" }],
+          "weth-wei"
+        ),
+        channel_id: "channel-6",
+        gas: 200_000,
+      },
     ],
     withdrawals: [
       {
@@ -1711,6 +1765,20 @@ export const ICSTokens: Token[] = [
       {
         chain_name: "Osmosis",
         axelar_chain_name: CHAINS.MAINNET.OSMOSIS,
+        from_denom: "secret1yxjmepvyl2c25vnt53cr2dpn8amknwausxee83",
+        channel_id: "channel-61",
+        gas: 350_000,
+      },
+      {
+        chain_name: "Stargaze",
+        axelar_chain_name: CHAINS.MAINNET.STARGAZE,
+        from_denom: "secret1yxjmepvyl2c25vnt53cr2dpn8amknwausxee83",
+        channel_id: "channel-61",
+        gas: 350_000,
+      },
+      {
+        chain_name: "Terra",
+        axelar_chain_name: CHAINS.MAINNET.TERRA,
         from_denom: "secret1yxjmepvyl2c25vnt53cr2dpn8amknwausxee83",
         channel_id: "channel-61",
         gas: 350_000,
@@ -1765,6 +1833,26 @@ export const ICSTokens: Token[] = [
         channel_id: "channel-208",
         gas: 200_000,
       },
+      {
+        chain_name: "Stargaze",
+        axelar_chain_name: CHAINS.MAINNET.STARGAZE,
+        from_denom: ibcDenom(
+          [{ incomingChannelId: "channel-50", incomingPortId: "transfer" }],
+          "weth-satoshi"
+        ),
+        channel_id: "channel-50",
+        gas: 200_000,
+      },
+      {
+        chain_name: "Terra",
+        axelar_chain_name: CHAINS.MAINNET.TERRA,
+        from_denom: ibcDenom(
+          [{ incomingChannelId: "channel-6", incomingPortId: "transfer" }],
+          "weth-satoshi"
+        ),
+        channel_id: "channel-6",
+        gas: 200_000,
+      },
     ],
     withdrawals: [
       {
@@ -1784,6 +1872,20 @@ export const ICSTokens: Token[] = [
       {
         chain_name: "Osmosis",
         axelar_chain_name: CHAINS.MAINNET.OSMOSIS,
+        from_denom: "secret1yxjmepvyl2c25vnt53cr2dpn8amknwausxee83",
+        channel_id: "channel-61",
+        gas: 350_000,
+      },
+      {
+        chain_name: "Stargaze",
+        axelar_chain_name: CHAINS.MAINNET.STARGAZE,
+        from_denom: "secret1yxjmepvyl2c25vnt53cr2dpn8amknwausxee83",
+        channel_id: "channel-61",
+        gas: 350_000,
+      },
+      {
+        chain_name: "Terra",
+        axelar_chain_name: CHAINS.MAINNET.TERRA,
         from_denom: "secret1yxjmepvyl2c25vnt53cr2dpn8amknwausxee83",
         channel_id: "channel-61",
         gas: 350_000,
@@ -1838,6 +1940,26 @@ export const ICSTokens: Token[] = [
         channel_id: "channel-208",
         gas: 200_000,
       },
+      {
+        chain_name: "Stargaze",
+        axelar_chain_name: CHAINS.MAINNET.STARGAZE,
+        from_denom: ibcDenom(
+          [{ incomingChannelId: "channel-50", incomingPortId: "transfer" }],
+          "wbnb-wei"
+        ),
+        channel_id: "channel-50",
+        gas: 200_000,
+      },
+      {
+        chain_name: "Terra",
+        axelar_chain_name: CHAINS.MAINNET.TERRA,
+        from_denom: ibcDenom(
+          [{ incomingChannelId: "channel-6", incomingPortId: "transfer" }],
+          "wbnb-wei"
+        ),
+        channel_id: "channel-6",
+        gas: 200_000,
+      },
     ],
     withdrawals: [
       {
@@ -1857,6 +1979,20 @@ export const ICSTokens: Token[] = [
       {
         chain_name: "Osmosis",
         axelar_chain_name: CHAINS.MAINNET.OSMOSIS,
+        from_denom: "secret1yxjmepvyl2c25vnt53cr2dpn8amknwausxee83",
+        channel_id: "channel-61",
+        gas: 350_000,
+      },
+      {
+        chain_name: "Stargaze",
+        axelar_chain_name: CHAINS.MAINNET.STARGAZE,
+        from_denom: "secret1yxjmepvyl2c25vnt53cr2dpn8amknwausxee83",
+        channel_id: "channel-61",
+        gas: 350_000,
+      },
+      {
+        chain_name: "Terra",
+        axelar_chain_name: CHAINS.MAINNET.TERRA,
         from_denom: "secret1yxjmepvyl2c25vnt53cr2dpn8amknwausxee83",
         channel_id: "channel-61",
         gas: 350_000,
@@ -1911,6 +2047,26 @@ export const ICSTokens: Token[] = [
         channel_id: "channel-208",
         gas: 200_000,
       },
+      {
+        chain_name: "Stargaze",
+        axelar_chain_name: CHAINS.MAINNET.STARGAZE,
+        from_denom: ibcDenom(
+          [{ incomingChannelId: "channel-50", incomingPortId: "transfer" }],
+          "busd-wei"
+        ),
+        channel_id: "channel-50",
+        gas: 200_000,
+      },
+      {
+        chain_name: "Terra",
+        axelar_chain_name: CHAINS.MAINNET.TERRA,
+        from_denom: ibcDenom(
+          [{ incomingChannelId: "channel-6", incomingPortId: "transfer" }],
+          "busd-wei"
+        ),
+        channel_id: "channel-6",
+        gas: 200_000,
+      },
     ],
     withdrawals: [
       {
@@ -1930,6 +2086,20 @@ export const ICSTokens: Token[] = [
       {
         chain_name: "Osmosis",
         axelar_chain_name: CHAINS.MAINNET.OSMOSIS,
+        from_denom: "secret1yxjmepvyl2c25vnt53cr2dpn8amknwausxee83",
+        channel_id: "channel-61",
+        gas: 350_000,
+      },
+      {
+        chain_name: "Stargaze",
+        axelar_chain_name: CHAINS.MAINNET.STARGAZE,
+        from_denom: "secret1yxjmepvyl2c25vnt53cr2dpn8amknwausxee83",
+        channel_id: "channel-61",
+        gas: 350_000,
+      },
+      {
+        chain_name: "Terra",
+        axelar_chain_name: CHAINS.MAINNET.TERRA,
         from_denom: "secret1yxjmepvyl2c25vnt53cr2dpn8amknwausxee83",
         channel_id: "channel-61",
         gas: 350_000,
@@ -1984,6 +2154,26 @@ export const ICSTokens: Token[] = [
         channel_id: "channel-208",
         gas: 200_000,
       },
+      {
+        chain_name: "Stargaze",
+        axelar_chain_name: CHAINS.MAINNET.STARGAZE,
+        from_denom: ibcDenom(
+          [{ incomingChannelId: "channel-50", incomingPortId: "transfer" }],
+          "dai-wei"
+        ),
+        channel_id: "channel-50",
+        gas: 200_000,
+      },
+      {
+        chain_name: "Terra",
+        axelar_chain_name: CHAINS.MAINNET.TERRA,
+        from_denom: ibcDenom(
+          [{ incomingChannelId: "channel-6", incomingPortId: "transfer" }],
+          "dai-wei"
+        ),
+        channel_id: "channel-6",
+        gas: 200_000,
+      },
     ],
     withdrawals: [
       {
@@ -2003,6 +2193,20 @@ export const ICSTokens: Token[] = [
       {
         chain_name: "Osmosis",
         axelar_chain_name: CHAINS.MAINNET.OSMOSIS,
+        from_denom: "secret1yxjmepvyl2c25vnt53cr2dpn8amknwausxee83",
+        channel_id: "channel-61",
+        gas: 350_000,
+      },
+      {
+        chain_name: "Stargaze",
+        axelar_chain_name: CHAINS.MAINNET.STARGAZE,
+        from_denom: "secret1yxjmepvyl2c25vnt53cr2dpn8amknwausxee83",
+        channel_id: "channel-61",
+        gas: 350_000,
+      },
+      {
+        chain_name: "Terra",
+        axelar_chain_name: CHAINS.MAINNET.TERRA,
         from_denom: "secret1yxjmepvyl2c25vnt53cr2dpn8amknwausxee83",
         channel_id: "channel-61",
         gas: 350_000,
@@ -2057,6 +2261,26 @@ export const ICSTokens: Token[] = [
         channel_id: "channel-208",
         gas: 200_000,
       },
+      {
+        chain_name: "Stargaze",
+        axelar_chain_name: CHAINS.MAINNET.STARGAZE,
+        from_denom: ibcDenom(
+          [{ incomingChannelId: "channel-50", incomingPortId: "transfer" }],
+          "uni-wei"
+        ),
+        channel_id: "channel-50",
+        gas: 200_000,
+      },
+      {
+        chain_name: "Terra",
+        axelar_chain_name: CHAINS.MAINNET.TERRA,
+        from_denom: ibcDenom(
+          [{ incomingChannelId: "channel-6", incomingPortId: "transfer" }],
+          "uni-wei"
+        ),
+        channel_id: "channel-6",
+        gas: 200_000,
+      },
     ],
     withdrawals: [
       {
@@ -2076,6 +2300,20 @@ export const ICSTokens: Token[] = [
       {
         chain_name: "Osmosis",
         axelar_chain_name: CHAINS.MAINNET.OSMOSIS,
+        from_denom: "secret1yxjmepvyl2c25vnt53cr2dpn8amknwausxee83",
+        channel_id: "channel-61",
+        gas: 350_000,
+      },
+      {
+        chain_name: "Stargaze",
+        axelar_chain_name: CHAINS.MAINNET.STARGAZE,
+        from_denom: "secret1yxjmepvyl2c25vnt53cr2dpn8amknwausxee83",
+        channel_id: "channel-61",
+        gas: 350_000,
+      },
+      {
+        chain_name: "Terra",
+        axelar_chain_name: CHAINS.MAINNET.TERRA,
         from_denom: "secret1yxjmepvyl2c25vnt53cr2dpn8amknwausxee83",
         channel_id: "channel-61",
         gas: 350_000,
@@ -2130,6 +2368,26 @@ export const ICSTokens: Token[] = [
         channel_id: "channel-208",
         gas: 200_000,
       },
+      {
+        chain_name: "Stargaze",
+        axelar_chain_name: CHAINS.MAINNET.STARGAZE,
+        from_denom: ibcDenom(
+          [{ incomingChannelId: "channel-50", incomingPortId: "transfer" }],
+          "uusdt"
+        ),
+        channel_id: "channel-50",
+        gas: 200_000,
+      },
+      {
+        chain_name: "Terra",
+        axelar_chain_name: CHAINS.MAINNET.TERRA,
+        from_denom: ibcDenom(
+          [{ incomingChannelId: "channel-6", incomingPortId: "transfer" }],
+          "uusdt"
+        ),
+        channel_id: "channel-6",
+        gas: 200_000,
+      },
     ],
     withdrawals: [
       {
@@ -2149,6 +2407,20 @@ export const ICSTokens: Token[] = [
       {
         chain_name: "Osmosis",
         axelar_chain_name: CHAINS.MAINNET.OSMOSIS,
+        from_denom: "secret1yxjmepvyl2c25vnt53cr2dpn8amknwausxee83",
+        channel_id: "channel-61",
+        gas: 350_000,
+      },
+      {
+        chain_name: "Stargaze",
+        axelar_chain_name: CHAINS.MAINNET.STARGAZE,
+        from_denom: "secret1yxjmepvyl2c25vnt53cr2dpn8amknwausxee83",
+        channel_id: "channel-61",
+        gas: 350_000,
+      },
+      {
+        chain_name: "Terra",
+        axelar_chain_name: CHAINS.MAINNET.TERRA,
         from_denom: "secret1yxjmepvyl2c25vnt53cr2dpn8amknwausxee83",
         channel_id: "channel-61",
         gas: 350_000,
@@ -2203,6 +2475,26 @@ export const ICSTokens: Token[] = [
         channel_id: "channel-208",
         gas: 200_000,
       },
+      {
+        chain_name: "Stargaze",
+        axelar_chain_name: CHAINS.MAINNET.STARGAZE,
+        from_denom: ibcDenom(
+          [{ incomingChannelId: "channel-50", incomingPortId: "transfer" }],
+          "frax-wei"
+        ),
+        channel_id: "channel-50",
+        gas: 200_000,
+      },
+      {
+        chain_name: "Terra",
+        axelar_chain_name: CHAINS.MAINNET.TERRA,
+        from_denom: ibcDenom(
+          [{ incomingChannelId: "channel-6", incomingPortId: "transfer" }],
+          "frax-wei"
+        ),
+        channel_id: "channel-6",
+        gas: 200_000,
+      },
     ],
     withdrawals: [
       {
@@ -2222,6 +2514,20 @@ export const ICSTokens: Token[] = [
       {
         chain_name: "Osmosis",
         axelar_chain_name: CHAINS.MAINNET.OSMOSIS,
+        from_denom: "secret1yxjmepvyl2c25vnt53cr2dpn8amknwausxee83",
+        channel_id: "channel-61",
+        gas: 350_000,
+      },
+      {
+        chain_name: "Stargaze",
+        axelar_chain_name: CHAINS.MAINNET.STARGAZE,
+        from_denom: "secret1yxjmepvyl2c25vnt53cr2dpn8amknwausxee83",
+        channel_id: "channel-61",
+        gas: 350_000,
+      },
+      {
+        chain_name: "Terra",
+        axelar_chain_name: CHAINS.MAINNET.TERRA,
         from_denom: "secret1yxjmepvyl2c25vnt53cr2dpn8amknwausxee83",
         channel_id: "channel-61",
         gas: 350_000,
