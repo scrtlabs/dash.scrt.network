@@ -1575,6 +1575,23 @@ export const ICSTokens: Token[] = [
     coingecko_id: "usdc",
     axelar_denom: "uusdc",
     deposits: [
+      /*       {
+        chain_name: "Axelar",
+        axelar_chain_name: CHAINS.MAINNET.AXELAR,
+        from_denom: "uusdc",
+        channel_id: "channel-69",
+        gas: 200_000,
+      }, */
+      {
+        chain_name: "Kujira",
+        axelar_chain_name: CHAINS.MAINNET.KUJIRA,
+        from_denom: ibcDenom(
+          [{ incomingChannelId: "channel-9", incomingPortId: "transfer" }],
+          "uusdc"
+        ),
+        channel_id: "channel-9",
+        gas: 200_000,
+      },
       {
         chain_name: "Osmosis",
         axelar_chain_name: CHAINS.MAINNET.OSMOSIS,
@@ -1587,6 +1604,20 @@ export const ICSTokens: Token[] = [
       },
     ],
     withdrawals: [
+      /*       {
+        chain_name: "Axelar",
+        axelar_chain_name: CHAINS.MAINNET.AXELAR,
+        from_denom: "secret1yxjmepvyl2c25vnt53cr2dpn8amknwausxee83",
+        channel_id: "channel-61",
+        gas: 350_000,
+      }, */
+      {
+        chain_name: "Kujira",
+        axelar_chain_name: CHAINS.MAINNET.KUJIRA,
+        from_denom: "secret1yxjmepvyl2c25vnt53cr2dpn8amknwausxee83",
+        channel_id: "channel-61",
+        gas: 350_000,
+      },
       {
         chain_name: "Osmosis",
         axelar_chain_name: CHAINS.MAINNET.OSMOSIS,
@@ -1597,7 +1628,7 @@ export const ICSTokens: Token[] = [
     ],
   },
   {
-    name: "aWETH (ETH)",
+    name: "aWETH",
     is_ics20: true,
     address: "secret139qfh3nmuzfgwsx2npnmnjl4hrvj3xq5rmq8a0",
     code_hash:
@@ -1607,6 +1638,23 @@ export const ICSTokens: Token[] = [
     coingecko_id: "eth",
     axelar_denom: "weth-wei",
     deposits: [
+      /*       {
+        chain_name: "Axelar",
+        axelar_chain_name: CHAINS.MAINNET.AXELAR,
+        from_denom: "weth-wei",
+        channel_id: "channel-69",
+        gas: 200_000,
+      }, */
+      {
+        chain_name: "Kujira",
+        axelar_chain_name: CHAINS.MAINNET.KUJIRA,
+        from_denom: ibcDenom(
+          [{ incomingChannelId: "channel-9", incomingPortId: "transfer" }],
+          "weth-wei"
+        ),
+        channel_id: "channel-9",
+        gas: 200_000,
+      },
       {
         chain_name: "Osmosis",
         axelar_chain_name: CHAINS.MAINNET.OSMOSIS,
@@ -1620,6 +1668,13 @@ export const ICSTokens: Token[] = [
     ],
     withdrawals: [
       {
+        chain_name: "Kujira",
+        axelar_chain_name: CHAINS.MAINNET.KUJIRA,
+        from_denom: "secret1yxjmepvyl2c25vnt53cr2dpn8amknwausxee83",
+        channel_id: "channel-61",
+        gas: 350_000,
+      },
+      {
         chain_name: "Osmosis",
         axelar_chain_name: CHAINS.MAINNET.OSMOSIS,
         from_denom: "secret1yxjmepvyl2c25vnt53cr2dpn8amknwausxee83",
@@ -1629,7 +1684,7 @@ export const ICSTokens: Token[] = [
     ],
   },
   {
-    name: "aWBTC (BTC)",
+    name: "aWBTC",
     is_ics20: true,
     address: "secret1guyayjwg5f84daaxl7w84skd8naxvq8vz9upqx",
     code_hash:
@@ -1639,6 +1694,23 @@ export const ICSTokens: Token[] = [
     coingecko_id: "btc",
     axelar_denom: "wbtc-satoshi",
     deposits: [
+      /*       {
+        chain_name: "Axelar",
+        axelar_chain_name: CHAINS.MAINNET.AXELAR,
+        from_denom: "wbtc-satoshi",
+        channel_id: "channel-69",
+        gas: 200_000,
+      }, */
+      {
+        chain_name: "Kujira",
+        axelar_chain_name: CHAINS.MAINNET.KUJIRA,
+        from_denom: ibcDenom(
+          [{ incomingChannelId: "channel-9", incomingPortId: "transfer" }],
+          "wbtc-satoshi"
+        ),
+        channel_id: "channel-9",
+        gas: 200_000,
+      },
       {
         chain_name: "Osmosis",
         axelar_chain_name: CHAINS.MAINNET.OSMOSIS,
@@ -1652,6 +1724,13 @@ export const ICSTokens: Token[] = [
     ],
     withdrawals: [
       {
+        chain_name: "Kujira",
+        axelar_chain_name: CHAINS.MAINNET.KUJIRA,
+        from_denom: "secret1yxjmepvyl2c25vnt53cr2dpn8amknwausxee83",
+        channel_id: "channel-61",
+        gas: 350_000,
+      },
+      {
         chain_name: "Osmosis",
         axelar_chain_name: CHAINS.MAINNET.OSMOSIS,
         from_denom: "secret1yxjmepvyl2c25vnt53cr2dpn8amknwausxee83",
@@ -1661,7 +1740,7 @@ export const ICSTokens: Token[] = [
     ],
   },
   {
-    name: "aWBNB (BNB)",
+    name: "aWBNB",
     is_ics20: true,
     address: "secret19xsac2kstky8nhgvvz257uszt44g0cu6ycd5e4",
     code_hash:
@@ -1671,6 +1750,23 @@ export const ICSTokens: Token[] = [
     coingecko_id: "bnb",
     axelar_denom: "wbnb-wei",
     deposits: [
+      /*       {
+        chain_name: "Axelar",
+        axelar_chain_name: CHAINS.MAINNET.AXELAR,
+        from_denom: "wbnb-wei",
+        channel_id: "channel-69",
+        gas: 200_000,
+      }, */
+      {
+        chain_name: "Kujira",
+        axelar_chain_name: CHAINS.MAINNET.KUJIRA,
+        from_denom: ibcDenom(
+          [{ incomingChannelId: "channel-9", incomingPortId: "transfer" }],
+          "wbnb-wei"
+        ),
+        channel_id: "channel-9",
+        gas: 200_000,
+      },
       {
         chain_name: "Osmosis",
         axelar_chain_name: CHAINS.MAINNET.OSMOSIS,
@@ -1683,6 +1779,13 @@ export const ICSTokens: Token[] = [
       },
     ],
     withdrawals: [
+      {
+        chain_name: "Kujira",
+        axelar_chain_name: CHAINS.MAINNET.KUJIRA,
+        from_denom: "secret1yxjmepvyl2c25vnt53cr2dpn8amknwausxee83",
+        channel_id: "channel-61",
+        gas: 350_000,
+      },
       {
         chain_name: "Osmosis",
         axelar_chain_name: CHAINS.MAINNET.OSMOSIS,
@@ -1703,6 +1806,23 @@ export const ICSTokens: Token[] = [
     coingecko_id: "busd",
     axelar_denom: "busd-wei",
     deposits: [
+      /*       {
+        chain_name: "Axelar",
+        axelar_chain_name: CHAINS.MAINNET.AXELAR,
+        from_denom: "busd-wei",
+        channel_id: "channel-69",
+        gas: 200_000,
+      }, */
+      {
+        chain_name: "Kujira",
+        axelar_chain_name: CHAINS.MAINNET.KUJIRA,
+        from_denom: ibcDenom(
+          [{ incomingChannelId: "channel-9", incomingPortId: "transfer" }],
+          "busd-wei"
+        ),
+        channel_id: "channel-9",
+        gas: 200_000,
+      },
       {
         chain_name: "Osmosis",
         axelar_chain_name: CHAINS.MAINNET.OSMOSIS,
@@ -1715,6 +1835,13 @@ export const ICSTokens: Token[] = [
       },
     ],
     withdrawals: [
+      {
+        chain_name: "Kujira",
+        axelar_chain_name: CHAINS.MAINNET.KUJIRA,
+        from_denom: "secret1yxjmepvyl2c25vnt53cr2dpn8amknwausxee83",
+        channel_id: "channel-61",
+        gas: 350_000,
+      },
       {
         chain_name: "Osmosis",
         axelar_chain_name: CHAINS.MAINNET.OSMOSIS,
@@ -1735,6 +1862,23 @@ export const ICSTokens: Token[] = [
     coingecko_id: "dai",
     axelar_denom: "dai-wei",
     deposits: [
+      /*       {
+        chain_name: "Axelar",
+        axelar_chain_name: CHAINS.MAINNET.AXELAR,
+        from_denom: "dai-wei",
+        channel_id: "channel-69",
+        gas: 200_000,
+      }, */
+      {
+        chain_name: "Kujira",
+        axelar_chain_name: CHAINS.MAINNET.KUJIRA,
+        from_denom: ibcDenom(
+          [{ incomingChannelId: "channel-9", incomingPortId: "transfer" }],
+          "busd-wei"
+        ),
+        channel_id: "channel-9",
+        gas: 200_000,
+      },
       {
         chain_name: "Osmosis",
         axelar_chain_name: CHAINS.MAINNET.OSMOSIS,
@@ -1747,6 +1891,13 @@ export const ICSTokens: Token[] = [
       },
     ],
     withdrawals: [
+      {
+        chain_name: "Kujira",
+        axelar_chain_name: CHAINS.MAINNET.KUJIRA,
+        from_denom: "secret1yxjmepvyl2c25vnt53cr2dpn8amknwausxee83",
+        channel_id: "channel-61",
+        gas: 350_000,
+      },
       {
         chain_name: "Osmosis",
         axelar_chain_name: CHAINS.MAINNET.OSMOSIS,
@@ -1767,6 +1918,23 @@ export const ICSTokens: Token[] = [
     coingecko_id: "uni",
     axelar_denom: "uni-wei",
     deposits: [
+      /*       {
+        chain_name: "Axelar",
+        axelar_chain_name: CHAINS.MAINNET.AXELAR,
+        from_denom: "uni-wei",
+        channel_id: "channel-69",
+        gas: 200_000,
+      }, */
+      {
+        chain_name: "Kujira",
+        axelar_chain_name: CHAINS.MAINNET.KUJIRA,
+        from_denom: ibcDenom(
+          [{ incomingChannelId: "channel-9", incomingPortId: "transfer" }],
+          "uni-wei"
+        ),
+        channel_id: "channel-9",
+        gas: 200_000,
+      },
       {
         chain_name: "Osmosis",
         axelar_chain_name: CHAINS.MAINNET.OSMOSIS,
@@ -1779,6 +1947,13 @@ export const ICSTokens: Token[] = [
       },
     ],
     withdrawals: [
+      {
+        chain_name: "Kujira",
+        axelar_chain_name: CHAINS.MAINNET.KUJIRA,
+        from_denom: "secret1yxjmepvyl2c25vnt53cr2dpn8amknwausxee83",
+        channel_id: "channel-61",
+        gas: 350_000,
+      },
       {
         chain_name: "Osmosis",
         axelar_chain_name: CHAINS.MAINNET.OSMOSIS,
@@ -1799,6 +1974,23 @@ export const ICSTokens: Token[] = [
     coingecko_id: "usdt",
     axelar_denom: "uusdt",
     deposits: [
+      /*       {
+        chain_name: "Axelar",
+        axelar_chain_name: CHAINS.MAINNET.AXELAR,
+        from_denom: "uusdt",
+        channel_id: "channel-69",
+        gas: 200_000,
+      }, */
+      {
+        chain_name: "Kujira",
+        axelar_chain_name: CHAINS.MAINNET.KUJIRA,
+        from_denom: ibcDenom(
+          [{ incomingChannelId: "channel-9", incomingPortId: "transfer" }],
+          "uusdt"
+        ),
+        channel_id: "channel-9",
+        gas: 200_000,
+      },
       {
         chain_name: "Osmosis",
         axelar_chain_name: CHAINS.MAINNET.OSMOSIS,
@@ -1811,6 +2003,13 @@ export const ICSTokens: Token[] = [
       },
     ],
     withdrawals: [
+      {
+        chain_name: "Kujira",
+        axelar_chain_name: CHAINS.MAINNET.KUJIRA,
+        from_denom: "secret1yxjmepvyl2c25vnt53cr2dpn8amknwausxee83",
+        channel_id: "channel-61",
+        gas: 350_000,
+      },
       {
         chain_name: "Osmosis",
         axelar_chain_name: CHAINS.MAINNET.OSMOSIS,
@@ -1828,9 +2027,26 @@ export const ICSTokens: Token[] = [
       "638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e",
     image: "/afrax.svg",
     decimals: 18,
-    coingecko_id: "uni",
+    coingecko_id: "frax",
     axelar_denom: "frax-wei",
     deposits: [
+      /*       {
+        chain_name: "Axelar",
+        axelar_chain_name: CHAINS.MAINNET.AXELAR,
+        from_denom: "frax-wei",
+        channel_id: "channel-69",
+        gas: 200_000,
+      }, */
+      {
+        chain_name: "Kujira",
+        axelar_chain_name: CHAINS.MAINNET.KUJIRA,
+        from_denom: ibcDenom(
+          [{ incomingChannelId: "channel-9", incomingPortId: "transfer" }],
+          "frax-wei"
+        ),
+        channel_id: "channel-9",
+        gas: 200_000,
+      },
       {
         chain_name: "Osmosis",
         axelar_chain_name: CHAINS.MAINNET.OSMOSIS,
@@ -1843,6 +2059,13 @@ export const ICSTokens: Token[] = [
       },
     ],
     withdrawals: [
+      {
+        chain_name: "Kujira",
+        axelar_chain_name: CHAINS.MAINNET.KUJIRA,
+        from_denom: "secret1yxjmepvyl2c25vnt53cr2dpn8amknwausxee83",
+        channel_id: "channel-61",
+        gas: 350_000,
+      },
       {
         chain_name: "Osmosis",
         axelar_chain_name: CHAINS.MAINNET.OSMOSIS,
