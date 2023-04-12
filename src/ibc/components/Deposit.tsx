@@ -563,12 +563,12 @@ function Deposit() {
           lcd: lcdSrcChain,
         } = chains[selectedSource.chain_name];
 
-        deposit_channel_id = selectedSource.channel_id || deposit_channel_id;
-        deposit_gas = selectedSource.gas || deposit_gas;
-
         const depositChain = selectedToken.deposits.filter(
           (deposit: any) => deposit.chain_name === selectedSource.chain_name
         )[0];
+
+        deposit_channel_id = depositChain.channel_id || deposit_channel_id;
+        deposit_gas = depositChain.gas || deposit_gas;
 
         const toastId = toast.loading(
           `Sending ${normalizedAmount} ${selectedToken.name} from ${selectedSource.chain_name} to Secret Network`,
@@ -594,7 +594,7 @@ function Deposit() {
               {
                 sender: sourceAddress,
                 receiver: secretAddress,
-                source_channel: source_channel_id,
+                source_channel: deposit_channel_id,
                 source_port: "transfer",
                 token: {
                   amount,
@@ -634,7 +634,7 @@ function Deposit() {
               {
                 sender: sourceAddress,
                 receiver: depositAddress,
-                source_channel: depositChain.channel_id,
+                source_channel: deposit_channel_id,
                 source_port: "transfer",
                 token: {
                   amount,
@@ -841,13 +841,13 @@ function Deposit() {
           lcd: lcdDstChain,
         } = chains[selectedSource.chain_name];
 
-        withdraw_channel_id = selectedSource.channel_id || withdraw_channel_id;
-        withdraw_gas = selectedSource.gas || withdraw_gas;
-
         const withdrawalChain = selectedToken.withdrawals.filter(
           (withdrawal: any) =>
             withdrawal.chain_name === selectedSource.chain_name
         )[0];
+
+        withdraw_channel_id = withdrawalChain.channel_id || withdraw_channel_id;
+        withdraw_gas = withdrawalChain.gas || withdraw_gas;
 
         console.log(withdrawalChain);
 
@@ -925,7 +925,7 @@ function Deposit() {
                     msg: toBase64(
                       toUtf8(
                         JSON.stringify({
-                          channel: withdrawalChain.channel_id,
+                          channel: withdraw_channel_id,
                           remote_address: depositAddress,
                           timeout: 600, // 10 minute timeout
                         })

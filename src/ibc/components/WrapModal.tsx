@@ -100,7 +100,7 @@ const WrapModal = (props: IWrapModalProps) => {
 
               {/* Body */}
               <div className="text-center">
-                {selectedToken.is_ics20 &&
+                {(selectedToken.is_ics20 || selectedToken.is_snip20) &&
                   ibcMode === "deposit" &&
                   assetViewingKey === viewingKeyErrorString && (
                     <>
@@ -116,23 +116,26 @@ const WrapModal = (props: IWrapModalProps) => {
                       </button>
                     </>
                   )}{" "}
-                {ibcMode === "deposit" && !selectedToken.is_ics20 && (
-                  <>
-                    <p className="text-neutral-600 dark:text-neutral-400 max-w-sm mx-auto mb-6">
-                      Now that you have (publicly visible){" "}
-                      {props.selectedToken.name || "SCRT"} in Secret Network,
-                      make sure to wrap your assets into the privacy-preserving
-                      equivalent s{props.selectedToken.name || "SCRT"}.
-                    </p>
-                    <Link
-                      to={"/wrap?token=" + props.selectedToken.name}
-                      className="sm:max-w-[200px] w-full md:px-4 inline-block bg-cyan-500 dark:bg-cyan-600 text-cyan-100 hover:text-white hover:bg-cyan-400 dark:hover:bg-cyan-600 text-center transition-colors py-2.5 rounded-xl font-semibold text-sm"
-                    >
-                      <FontAwesomeIcon icon={faShuffle} className="mr-2" />
-                      Secret Wrap
-                    </Link>
-                  </>
-                )}
+                {ibcMode === "deposit" &&
+                  !selectedToken.is_ics20 &&
+                  !selectedToken.is_snip20 && (
+                    <>
+                      <p className="text-neutral-600 dark:text-neutral-400 max-w-sm mx-auto mb-6">
+                        Now that you have (publicly visible){" "}
+                        {props.selectedToken.name || "SCRT"} in Secret Network,
+                        make sure to wrap your assets into the
+                        privacy-preserving equivalent s
+                        {props.selectedToken.name || "SCRT"}.
+                      </p>
+                      <Link
+                        to={"/wrap?token=" + props.selectedToken.name}
+                        className="sm:max-w-[200px] w-full md:px-4 inline-block bg-cyan-500 dark:bg-cyan-600 text-cyan-100 hover:text-white hover:bg-cyan-400 dark:hover:bg-cyan-600 text-center transition-colors py-2.5 rounded-xl font-semibold text-sm"
+                      >
+                        <FontAwesomeIcon icon={faShuffle} className="mr-2" />
+                        Secret Wrap
+                      </Link>
+                    </>
+                  )}
               </div>
             </div>
           </div>
