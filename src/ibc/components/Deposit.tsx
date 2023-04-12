@@ -1399,7 +1399,7 @@ function Deposit() {
       {selectedToken.is_ics20 &&
         selectedToken.deposits.filter(
           (deposit: any) => deposit.chain_name === selectedSource.chain_name
-        )[0].axelar_chain_name !== CHAINS.MAINNET.AXELAR && <FeesInfo />}
+        )[0]?.axelar_chain_name !== CHAINS.MAINNET.AXELAR && <FeesInfo />}
 
       <div className="mt-4">
         <SubmitButton />
