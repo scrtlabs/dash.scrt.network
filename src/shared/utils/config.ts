@@ -1389,12 +1389,71 @@ export const snips: Token[] = [
     ],
   },
   {
-    name: "SHD",
+    name: "SHD (new)",
+    is_snip20: true,
+    address: "secret153wu605vvp934xhd4k9dtd640zsep5jkesstdm",
+    code_hash:
+      "638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e",
+    image: "/shd.svg",
+    decimals: 8,
+    coingecko_id: "shade-protocol",
+    deposits: [
+      {
+        chain_name: "Osmosis",
+        from_denom: ibcDenom(
+          [{ incomingChannelId: "channel-476", incomingPortId: "transfer" }],
+          "cw20:secret153wu605vvp934xhd4k9dtd640zsep5jkesstdm"
+        ),
+        channel_id: "channel-476",
+        gas: 200_000,
+      },
+      {
+        chain_name: "Kujira",
+        from_denom: ibcDenom(
+          [{ incomingChannelId: "channel-44", incomingPortId: "transfer" }],
+          "cw20:secret153wu605vvp934xhd4k9dtd640zsep5jkesstdm"
+        ),
+        channel_id: "channel-44",
+        gas: 200_000,
+      },
+      {
+        chain_name: "Juno",
+        from_denom: ibcDenom(
+          [{ incomingChannelId: "channel-163", incomingPortId: "transfer" }],
+          "cw20:secret153wu605vvp934xhd4k9dtd640zsep5jkesstdm"
+        ),
+        channel_id: "channel-163",
+        gas: 200_000,
+      },
+    ],
+    withdrawals: [
+      {
+        chain_name: "Osmosis",
+        from_denom: "secret153wu605vvp934xhd4k9dtd640zsep5jkesstdm",
+        channel_id: "channel-44",
+        gas: 350_000,
+      },
+      {
+        chain_name: "Kujira",
+        from_denom: "secret153wu605vvp934xhd4k9dtd640zsep5jkesstdm",
+        channel_id: "channel-46",
+        gas: 350_000,
+      },
+      {
+        chain_name: "Juno",
+        from_denom: "secret153wu605vvp934xhd4k9dtd640zsep5jkesstdm",
+        channel_id: "channel-45",
+        gas: 350_000,
+      },
+    ],
+  },
+  {
+    name: "SHD (old)",
     is_snip20: true,
     address: "secret1qfql357amn448duf5gvp9gr48sxx9tsnhupu3d",
     code_hash:
       "fa824c4504f21fc59250da0cdf549dd392fd862baf2689d246a07b9e941f04a9",
-    image: "/shd.jpg",
+    image: "/shdold.svg",
     decimals: 8,
     coingecko_id: "shade-protocol",
     deposits: [
