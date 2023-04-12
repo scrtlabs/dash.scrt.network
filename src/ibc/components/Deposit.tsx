@@ -23,7 +23,7 @@ import {
   TxResponse,
   toUtf8,
 } from "secretjs";
-import { chains, Token, tokens, snips } from "shared/utils/config";
+import { chains, Token, tokens, snips, ICSTokens } from "shared/utils/config";
 import { TxRaw } from "secretjs/dist/protobuf/cosmos/tx/v1beta1/tx";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -43,6 +43,12 @@ import {
   setKeplrViewingKey,
 } from "shared/context/SecretjsContext";
 import CopyToClipboard from "react-copy-to-clipboard";
+import {
+  AxelarAssetTransfer,
+  AxelarQueryAPI,
+  CHAINS,
+  Environment,
+} from "@axelar-network/axelarjs-sdk";
 
 function Deposit() {
   const { feeGrantStatus, setFeeGrantStatus, requestFeeGrant } =
@@ -76,6 +82,13 @@ function Deposit() {
       (deposit) => deposit.chain_name.toLowerCase() === sourcePreselection
     )[0]
   );
+
+  const sdk = new AxelarAssetTransfer({
+    environment: Environment.MAINNET,
+  });
+  const axelarQuery = new AxelarQueryAPI({
+    environment: Environment.MAINNET,
+  });
 
   useEffect(() => {
     setSelectedTokenName(selectedToken.name);
@@ -139,7 +152,7 @@ function Deposit() {
 
   const updateCoinBalance = async () => {
     if (secretjs && secretAddress) {
-      if (selectedToken.is_snip20) {
+      if (selectedToken.is_snip20 || selectedToken.is_ics20) {
         const key = await getKeplrViewingKey(selectedToken.address);
         if (!key) {
           setAvailableBalance(viewingKeyErrorString);
@@ -259,6 +272,12 @@ function Deposit() {
     if (!(secretjs && secretAddress)) {
       return;
     }
+    const possibleICS20 = ICSTokens.filter(
+      (token) =>
+        token.deposits.find(
+          (token) => token.chain_name == selectedSource.chain_name
+        )!
+    );
     const possibleSnips = snips.filter(
       (token) =>
         token.deposits.find(
@@ -271,7 +290,9 @@ function Deposit() {
           (token) => token.chain_name == selectedSource.chain_name
         )!
     );
-    const supportedTokens = possibleTokens.concat(possibleSnips);
+    const supportedTokens = possibleTokens
+      .concat(possibleICS20)
+      .concat(possibleSnips);
 
     setSupportedTokens(supportedTokens);
 
@@ -400,13 +421,59 @@ function Deposit() {
 
         try {
           let tx: TxResponse;
-          if (!["Evmos", "Injective"].includes(selectedSource.chain_name)) {
+          if (
+            !["Evmos", "Injective"].includes(selectedSource.chain_name) &&
+            !selectedToken.is_ics20
+          ) {
             // Regular cosmos chain (not ethermint signing)
             tx = await sourceChainSecretjs.tx.ibc.transfer(
               {
                 sender: sourceAddress,
                 receiver: secretAddress,
                 source_channel: deposit_channel_id,
+                source_port: "transfer",
+                token: {
+                  amount,
+                  denom: selectedToken.deposits.filter(
+                    (deposit) =>
+                      deposit.chain_name === selectedSource.chain_name
+                  )[0].from_denom,
+                },
+                timeout_timestamp: String(
+                  Math.floor(Date.now() / 1000) + 10 * 60
+                ), // 10 minute timeout
+              },
+              {
+                gasLimit: deposit_gas,
+                ibcTxsOptions: {
+                  resolveResponsesCheckIntervalMs: 10_000,
+                  resolveResponsesTimeoutMs: 10.25 * 60 * 1000,
+                },
+              }
+            );
+          } else if (selectedToken.is_ics20) {
+            const depositChain = (selectedToken as any).deposits.filter(
+              (deposit: any) => deposit.chain_name === selectedSource.chain_name
+            )[0];
+
+            const fromChain = depositChain.axelar_chain_name,
+              toChain = "secret-snip",
+              destinationAddress = secretAddress,
+              asset = selectedToken.axelar_denom; // denom of asset. See note (2) below
+
+            const depositAddress = await sdk.getDepositAddress({
+              fromChain,
+              toChain,
+              destinationAddress,
+              asset,
+            });
+
+            console.log(depositAddress);
+            tx = await sourceChainSecretjs.tx.ibc.transfer(
+              {
+                sender: sourceAddress,
+                receiver: depositAddress,
+                source_channel: depositChain.channel_id,
                 source_port: "transfer",
                 token: {
                   amount,
@@ -562,7 +629,7 @@ function Deposit() {
                 isLoading: false,
                 closeOnClick: true,
               });
-              if (ibcMode === "deposit") {
+              if (ibcMode === "deposit" && !selectedToken.is_ics20) {
                 setIsWrapModalOpen(true);
               }
             } else {
@@ -652,6 +719,57 @@ function Deposit() {
               },
               {
                 gasLimit: withdraw_gas,
+                gasPriceInFeeDenom: 0.1,
+                feeDenom: "uscrt",
+                feeGranter: feeGrantStatus === "Success" ? faucetAddress : "",
+                ibcTxsOptions: {
+                  resolveResponsesCheckIntervalMs: 10_000,
+                  resolveResponsesTimeoutMs: 10.25 * 60 * 1000,
+                },
+              }
+            );
+          } else if (selectedToken.is_ics20) {
+            const destinationChain = (selectedToken as any).withdrawals.filter(
+              (withdrawal: any) =>
+                withdrawal.chain_name === selectedSource.chain_name
+            )[0];
+
+            const fromChain = "secret-snip",
+              toChain = destinationChain.axelar_chain_name,
+              destinationAddress = sourceAddress,
+              asset = selectedToken.axelar_denom;
+
+            const depositAddress = await sdk.getDepositAddress({
+              fromChain,
+              toChain,
+              destinationAddress,
+              asset,
+            });
+            tx = await secretjs.tx.compute.executeContract(
+              {
+                contract_address: selectedToken.address,
+                code_hash: selectedToken.code_hash,
+                sender: secretAddress,
+                msg: {
+                  send: {
+                    recipient: "secret1yxjmepvyl2c25vnt53cr2dpn8amknwausxee83", // ics20
+                    recipient_code_hash:
+                      "2976a2577999168b89021ecb2e09c121737696f71c4342f9a922ce8654e98662",
+                    amount,
+                    msg: toBase64(
+                      toUtf8(
+                        JSON.stringify({
+                          channel: destinationChain.channel_id,
+                          remote_address: depositAddress,
+                          timeout: 600, // 10 minute timeout
+                        })
+                      )
+                    ),
+                  },
+                },
+              },
+              {
+                gasLimit: 300_000,
                 gasPriceInFeeDenom: 0.1,
                 feeDenom: "uscrt",
                 feeGranter: feeGrantStatus === "Success" ? faucetAddress : "",
@@ -1001,7 +1119,10 @@ function Deposit() {
                   src={`/img/assets/${token.image}`}
                   className="w-6 h-6 mr-2 rounded-full"
                 />
-                <span className="font-semibold text-sm">{token.name}</span>
+                <span className="font-semibold text-sm">
+                  {token.is_ics20 && ibcMode == "withdrawal" && "s"}
+                  {token.name}
+                </span>
               </div>
             )}
             className="react-select-wrap-container"
@@ -1064,7 +1185,9 @@ function Deposit() {
                 if (prettyBalance === "NaN") {
                   return "Error";
                 }
-                return `${prettyBalance} ${selectedToken.name}`;
+                return `${prettyBalance} ${
+                  selectedToken.is_ics20 && ibcMode == "withdrawal" ? "s" : ""
+                }${selectedToken.name}`;
               })()}
             </span>
           </div>
