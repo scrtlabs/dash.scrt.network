@@ -1700,96 +1700,11 @@ export const ICSTokens: Token[] = [
         channel_id: "channel-69",
         gas: 200_000,
       },
-      {
-        chain_name: "Juno",
-        axelar_chain_name: CHAINS.MAINNET.JUNO,
-        from_denom: ibcDenom(
-          [{ incomingChannelId: "channel-71", incomingPortId: "transfer" }],
-          "uaxl"
-        ),
-        channel_id: "channel-71",
-        gas: 200_000,
-      },
-      {
-        chain_name: "Kujira",
-        axelar_chain_name: CHAINS.MAINNET.KUJIRA,
-        from_denom: ibcDenom(
-          [{ incomingChannelId: "channel-9", incomingPortId: "transfer" }],
-          "uaxl"
-        ),
-        channel_id: "channel-9",
-        gas: 200_000,
-      },
-      {
-        chain_name: "Osmosis",
-        axelar_chain_name: CHAINS.MAINNET.OSMOSIS,
-        from_denom: ibcDenom(
-          [{ incomingChannelId: "channel-208", incomingPortId: "transfer" }],
-          "uaxl"
-        ),
-        channel_id: "channel-208",
-        gas: 200_000,
-      },
-      {
-        chain_name: "Stargaze",
-        axelar_chain_name: CHAINS.MAINNET.STARGAZE,
-        from_denom: ibcDenom(
-          [{ incomingChannelId: "channel-50", incomingPortId: "transfer" }],
-          "uaxl"
-        ),
-        channel_id: "channel-50",
-        gas: 200_000,
-      },
-      {
-        chain_name: "Terra",
-        axelar_chain_name: CHAINS.MAINNET.TERRA,
-        from_denom: ibcDenom(
-          [{ incomingChannelId: "channel-6", incomingPortId: "transfer" }],
-          "uaxl"
-        ),
-        channel_id: "channel-6",
-        gas: 200_000,
-      },
     ],
     withdrawals: [
       {
         chain_name: "Axelar",
         axelar_chain_name: CHAINS.MAINNET.AXELAR,
-        from_denom: "secret1yxjmepvyl2c25vnt53cr2dpn8amknwausxee83",
-        channel_id: "channel-61",
-        gas: 350_000,
-      },
-      {
-        chain_name: "Juno",
-        axelar_chain_name: CHAINS.MAINNET.JUNO,
-        from_denom: "secret1yxjmepvyl2c25vnt53cr2dpn8amknwausxee83",
-        channel_id: "channel-61",
-        gas: 350_000,
-      },
-      {
-        chain_name: "Kujira",
-        axelar_chain_name: CHAINS.MAINNET.KUJIRA,
-        from_denom: "secret1yxjmepvyl2c25vnt53cr2dpn8amknwausxee83",
-        channel_id: "channel-61",
-        gas: 350_000,
-      },
-      {
-        chain_name: "Osmosis",
-        axelar_chain_name: CHAINS.MAINNET.OSMOSIS,
-        from_denom: "secret1yxjmepvyl2c25vnt53cr2dpn8amknwausxee83",
-        channel_id: "channel-61",
-        gas: 350_000,
-      },
-      {
-        chain_name: "Stargaze",
-        axelar_chain_name: CHAINS.MAINNET.STARGAZE,
-        from_denom: "secret1yxjmepvyl2c25vnt53cr2dpn8amknwausxee83",
-        channel_id: "channel-61",
-        gas: 350_000,
-      },
-      {
-        chain_name: "Terra",
-        axelar_chain_name: CHAINS.MAINNET.TERRA,
         from_denom: "secret1yxjmepvyl2c25vnt53cr2dpn8amknwausxee83",
         channel_id: "channel-61",
         gas: 350_000,
