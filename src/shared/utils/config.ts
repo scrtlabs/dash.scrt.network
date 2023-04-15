@@ -773,6 +773,17 @@ export const tokens: Token[] = [
     ],
   },
   {
+    name: "DVPN (old)",
+    address: "secret1k8cge73c3nh32d4u0dsd5dgtmk63shtlrfscj5",
+    code_hash:
+      "ad91060456344fc8d8e93c0600a3957b8158605c044b3bef7048510b3157b807",
+    image: "/dvpn.jpeg",
+    decimals: 6,
+    coingecko_id: "sentinel",
+    deposits: [],
+    withdrawals: [],
+  },
+  {
     name: "EVMOS",
     address: "secret1grg9unv2ue8cf98t50ea45prce7gcrj2n232kq",
     code_hash:

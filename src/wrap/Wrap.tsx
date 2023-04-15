@@ -12,6 +12,10 @@ import BigNumber from "bignumber.js";
 import { toast } from "react-toastify";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
+  faArrowUpRightFromSquare,
+  faTriangleExclamation,
+} from "@fortawesome/free-solid-svg-icons";
+import {
   faKey,
   faArrowRightArrowLeft,
   faRightLeft,
@@ -780,6 +784,7 @@ export function Wrap() {
             document.body.classList.remove("overflow-hidden");
           }}
         />
+
         <div className="w-full max-w-xl mx-auto px-4 onEnter_fadeInDown relative">
           {!secretjs && !secretAddress ? (
             // Overlay to connect on click
@@ -802,6 +807,40 @@ export function Wrap() {
                 </span>
               </Tooltip>
             </div>
+            <>
+              <div className="px-4 mb-4 max-w-6xl mx-auto">
+                <div className="inline-block w-full md:w-auto bg-yellow-800/40 border border-yellow-600 text-neutral-300 p-4 rounded-lg">
+                  <div className="font-semibold text-yellow-600 mb-3 flex flex-row items-center">
+                    <FontAwesomeIcon
+                      icon={faTriangleExclamation}
+                      className="mr-3"
+                    />
+                    <span>{`SNIP-20 Migration`}</span>
+                  </div>
+                  <ul className="list-disc ml-4 flex flex-col gap-0.5">
+                    <li>
+                      To migrate your old SNIP-20 tokens to the new SNIP-25
+                      standard, unwrap the old token, shown as "(old)" and then
+                      wrap it again with the new version of the token.
+                    </li>
+                    <li>
+                      <a
+                        href="https://app.shadeprotocol.io/migrate"
+                        className="hover:border-b"
+                      >
+                        To migrate your SHD tokens, please visit the Shade
+                        Protocol Migration Page.
+                        <FontAwesomeIcon
+                          icon={faArrowUpRightFromSquare}
+                          className="text-xs ml-2"
+                          size={"xs"}
+                        />
+                      </a>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </>
 
             {/* *** From *** */}
             <div className="bg-neutral-200 dark:bg-neutral-800 p-4 rounded-xl">

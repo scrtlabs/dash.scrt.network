@@ -16,7 +16,10 @@ function NoScrtWarning() {
           </div>
           <ul className="list-disc ml-4 flex flex-col gap-0.5">
             <li>
-              <a href="" className="hover:border-b">
+              <a
+                href="https://scrt.network/about/get-scrt#buy-scrt"
+                className="hover:border-b"
+              >
                 Get SCRT
                 <FontAwesomeIcon
                   icon={faArrowUpRightFromSquare}
