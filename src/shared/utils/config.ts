@@ -661,7 +661,7 @@ export const tokens: Token[] = [
     address: "secret19e75l25r6sa6nhdf4lggjmgpw0vmpfvsw5cnpe",
     code_hash:
       "638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e",
-    image: "/atom.jpg",
+    image: "/atom.svg",
     decimals: 6,
     coingecko_id: "cosmos",
     deposits: [
@@ -670,6 +670,30 @@ export const tokens: Token[] = [
         from_denom: "uatom",
       },
     ],
+    withdrawals: [
+      {
+        chain_name: "Cosmos Hub",
+        from_denom: ibcDenom(
+          [
+            {
+              incomingChannelId: chains["Cosmos Hub"].withdraw_channel_id,
+              incomingPortId: "transfer",
+            },
+          ],
+          "uatom"
+        ),
+      },
+    ],
+  },
+  {
+    name: "ATOM (old)",
+    address: "secret14mzwd0ps5q277l20ly2q3aetqe3ev4m4260gf4",
+    code_hash:
+      "ad91060456344fc8d8e93c0600a3957b8158605c044b3bef7048510b3157b807",
+    image: "/atom.svg",
+    decimals: 6,
+    coingecko_id: "cosmos",
+    deposits: [],
     withdrawals: [
       {
         chain_name: "Cosmos Hub",
@@ -781,7 +805,20 @@ export const tokens: Token[] = [
     decimals: 6,
     coingecko_id: "sentinel",
     deposits: [],
-    withdrawals: [],
+    withdrawals: [
+      {
+        chain_name: "Sentinel",
+        from_denom: ibcDenom(
+          [
+            {
+              incomingChannelId: chains["Sentinel"].withdraw_channel_id,
+              incomingPortId: "transfer",
+            },
+          ],
+          "udvpn"
+        ),
+      },
+    ],
   },
   {
     name: "EVMOS",
