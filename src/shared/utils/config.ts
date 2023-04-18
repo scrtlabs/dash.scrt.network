@@ -739,6 +739,30 @@ export const tokens: Token[] = [
     ],
   },
   {
+    name: "BLD (old)",
+    address: "secret1rw2l7z22s3ed6dl5v70ktvnckhurldy23a3a58",
+    code_hash:
+      "5a085bd8ed89de92b35134ddd12505a602c7759ea25fb5c089ba03c8535b3042",
+    image: "/bld.webp",
+    decimals: 6,
+    coingecko_id: "agoric",
+    deposits: [],
+    withdrawals: [
+      {
+        chain_name: "Agoric",
+        from_denom: ibcDenom(
+          [
+            {
+              incomingChannelId: chains["Agoric"].withdraw_channel_id,
+              incomingPortId: "transfer",
+            },
+          ],
+          "ubld"
+        ),
+      },
+    ],
+  },
+  {
     name: "CRE",
     address: "secret1tatdlkyznf00m3a7hftw5daaq2nk38ugfphuyr",
     code_hash:
@@ -966,6 +990,30 @@ export const tokens: Token[] = [
     ],
   },
   {
+    name: "IST (old)",
+    address: "secret1kjqktuq2wq6mk7l0ecvk2cwcskjmv3ghpklctn",
+    code_hash:
+      "5a085bd8ed89de92b35134ddd12505a602c7759ea25fb5c089ba03c8535b3042",
+    image: "/ist.webp",
+    decimals: 6,
+    coingecko_id: "inter-stable-token",
+    deposits: [],
+    withdrawals: [
+      {
+        chain_name: "Agoric",
+        from_denom: ibcDenom(
+          [
+            {
+              incomingChannelId: chains["Agoric"].withdraw_channel_id,
+              incomingPortId: "transfer",
+            },
+          ],
+          "uist"
+        ),
+      },
+    ],
+  },
+  {
     name: "JUNO",
     address: "secret1z6e4skg5g9w65u5sqznrmagu05xq8u6zjcdg4a",
     code_hash:
@@ -1024,6 +1072,30 @@ export const tokens: Token[] = [
     ],
   },
   {
+    name: "KUJI (old)",
+    address: "secret1gaew7k9tv4hlx2f4wq4ta4utggj4ywpkjysqe8",
+    code_hash:
+      "5a085bd8ed89de92b35134ddd12505a602c7759ea25fb5c089ba03c8535b3042",
+    image: "/kuji-token.webp",
+    decimals: 6,
+    coingecko_id: "kujira",
+    deposits: [],
+    withdrawals: [
+      {
+        chain_name: "Kujira",
+        from_denom: ibcDenom(
+          [
+            {
+              incomingChannelId: chains["Kujira"].withdraw_channel_id,
+              incomingPortId: "transfer",
+            },
+          ],
+          "ukuji"
+        ),
+      },
+    ],
+  },
+  {
     name: "LUNA",
     address: "secret149e7c5j7w24pljg6em6zj2p557fuyhg8cnk7z8",
     code_hash:
@@ -1053,6 +1125,30 @@ export const tokens: Token[] = [
     ],
   },
   {
+    name: "LUNA (old)",
+    address: "secret1w8d0ntrhrys4yzcfxnwprts7gfg5gfw86ccdpf",
+    code_hash:
+      "5a085bd8ed89de92b35134ddd12505a602c7759ea25fb5c089ba03c8535b3042",
+    image: "/luna2.svg",
+    decimals: 6,
+    coingecko_id: "terra-luna-2",
+    deposits: [],
+    withdrawals: [
+      {
+        chain_name: "Terra",
+        from_denom: ibcDenom(
+          [
+            {
+              incomingChannelId: chains["Terra"].withdraw_channel_id,
+              incomingPortId: "transfer",
+            },
+          ],
+          "uluna"
+        ),
+      },
+    ],
+  },
+  {
     name: "OSMO",
     address: "secret150jec8mc2hzyyqak4umv6cfevelr0x9p0mjxgg",
     code_hash:
@@ -1066,6 +1162,30 @@ export const tokens: Token[] = [
         from_denom: "uosmo",
       },
     ],
+    withdrawals: [
+      {
+        chain_name: "Osmosis",
+        from_denom: ibcDenom(
+          [
+            {
+              incomingChannelId: chains["Osmosis"].withdraw_channel_id,
+              incomingPortId: "transfer",
+            },
+          ],
+          "uosmo"
+        ),
+      },
+    ],
+  },
+  {
+    name: "OSMO (old)",
+    address: "secret1zwwealwm0pcl9cul4nt6f38dsy6vzplw8lp3qg",
+    code_hash:
+      "ad91060456344fc8d8e93c0600a3957b8158605c044b3bef7048510b3157b807",
+    image: "/osmo.jpeg",
+    decimals: 6,
+    coingecko_id: "osmosis",
+    deposits: [],
     withdrawals: [
       {
         chain_name: "Osmosis",
@@ -1169,10 +1289,68 @@ export const tokens: Token[] = [
     ],
   },
   {
+    name: "stATOM (old)",
+    address: "secret1gedmwfcjfykl9ljt5u50ecfzp8pwwsvgjgq8vc",
+    code_hash:
+      "0e6b2ae7575d5b91ea534933ad9df0ffb6c33e77819876a2e68b0e5dcd2539a8",
+    image: "/statom.svg",
+    decimals: 6,
+    coingecko_id: "stride-staked-atom",
+    deposits: [
+      {
+        chain_name: "Stride",
+        from_denom: "stuatom",
+      },
+    ],
+    withdrawals: [
+      {
+        chain_name: "Stride",
+        from_denom: ibcDenom(
+          [
+            {
+              incomingChannelId: chains["Stride"].withdraw_channel_id,
+              incomingPortId: "transfer",
+            },
+          ],
+          "stuatom"
+        ),
+      },
+    ],
+  },
+  {
     name: "stOSMO",
     address: "secret1jrp6z8v679yaq65rndsr970mhaxzgfkymvc58g",
     code_hash:
       "638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e",
+    image: "/stosmo.svg",
+    decimals: 6,
+    coingecko_id: "stride-staked-osmo",
+    deposits: [
+      {
+        chain_name: "Stride",
+        from_denom: "stuosmo",
+      },
+    ],
+    withdrawals: [
+      {
+        chain_name: "Stride",
+        from_denom: ibcDenom(
+          [
+            {
+              incomingChannelId: chains["Stride"].withdraw_channel_id,
+              incomingPortId: "transfer",
+            },
+          ],
+          "stuosmo"
+        ),
+      },
+    ],
+  },
+  {
+    name: "stOSMO (old)",
+    address: "secret1ffrjnxpvrc0cv0s7rmtgc2a29cy7acnxxu6jtf",
+    code_hash:
+      "0e6b2ae7575d5b91ea534933ad9df0ffb6c33e77819876a2e68b0e5dcd2539a8",
     image: "/stosmo.svg",
     decimals: 6,
     coingecko_id: "stride-staked-osmo",
@@ -1227,10 +1405,69 @@ export const tokens: Token[] = [
     ],
   },
   {
+    name: "stJUNO (old)",
+    address: "secret1uhmquwlra5efgrsp5srwlsaqz5mtfcsvlrxrkv",
+    code_hash:
+      "0e6b2ae7575d5b91ea534933ad9df0ffb6c33e77819876a2e68b0e5dcd2539a8",
+    image: "/stjuno.svg",
+    decimals: 6,
+    coingecko_id: "stride-staked-juno",
+    deposits: [
+      {
+        chain_name: "Stride",
+        from_denom: "stujuno",
+      },
+    ],
+    withdrawals: [
+      {
+        chain_name: "Stride",
+        from_denom: ibcDenom(
+          [
+            {
+              incomingChannelId: chains["Stride"].withdraw_channel_id,
+              incomingPortId: "transfer",
+            },
+          ],
+          "stujuno"
+        ),
+      },
+    ],
+  },
+  {
     name: "STRD",
     address: "secret1rfhgs3ryqt7makakr2qw9zsqq4h5wdqawfa2aa",
     code_hash:
       "638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e",
+    image: "/stride.svg",
+    decimals: 6,
+    coingecko_id: "stride",
+    deposits: [
+      {
+        chain_name: "Stride",
+        from_denom: "ustrd",
+      },
+    ],
+    withdrawals: [
+      {
+        chain_name: "Stride",
+        from_denom: ibcDenom(
+          [
+            {
+              incomingChannelId: chains["Stride"].withdraw_channel_id,
+              incomingPortId: "transfer",
+            },
+          ],
+          "ustrd"
+        ),
+      },
+    ],
+  },
+  {
+    name: "STRD (old)",
+    address: "secret17gg8xcx04ldqkvkrd7r9w60rdae4ck8aslt9cf",
+    address: "secret1rfhgs3ryqt7makakr2qw9zsqq4h5wdqawfa2aa",
+    code_hash:
+      "5a085bd8ed89de92b35134ddd12505a602c7759ea25fb5c089ba03c8535b3042",
     image: "/stride.svg",
     decimals: 6,
     coingecko_id: "stride",
