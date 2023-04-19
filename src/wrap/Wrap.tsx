@@ -121,7 +121,7 @@ export function Wrap() {
     // setting amountToWrap to max. value, if entered value is > available
     const availableAmount =
       wrappingMode === "Wrap"
-        ? new BigNumber(sSCRTBalance).dividedBy(`1e${selectedToken.decimals}`)
+        ? new BigNumber(SCRTBalance).dividedBy(`1e${selectedToken.decimals}`)
         : new BigNumber(sSCRTBalance).dividedBy(`1e${selectedToken.decimals}`);
     if (
       !new BigNumber(amountToWrap).isNaN() &&
