@@ -115,7 +115,7 @@ export const chains: { [chain_name: string]: Chain } = {
     chain_image: "/atom.jpg",
     explorer_account: "https://www.mintscan.io/cosmos/account/",
   },
-  Crescent: {
+  /*   Crescent: {
     chain_name: "Crescent",
     deposit_channel_id: "channel-10",
     deposit_gas: 150_000,
@@ -128,7 +128,7 @@ export const chains: { [chain_name: string]: Chain } = {
     rpc: "https://mainnet.crescent.network:26657",
     chain_image: "/cre.svg",
     explorer_account: "https://www.mintscan.io/crescent/account/",
-  },
+  }, */
   Evmos: {
     chain_name: "Evmos",
     deposit_channel_id: "channel-15",
@@ -241,7 +241,7 @@ export const chains: { [chain_name: string]: Chain } = {
     chain_image: "/dvpn.jpeg",
     explorer_account: "https://www.mintscan.io/sentinel/account/",
   },
-  Sifchain: {
+  /*   Sifchain: {
     chain_name: "Sifchain",
     deposit_channel_id: "channel-65",
     deposit_gas: 150_000,
@@ -254,7 +254,7 @@ export const chains: { [chain_name: string]: Chain } = {
     rpc: "https://rpc.sifchain.finance",
     chain_image: "/rowan.svg",
     explorer_account: "https://www.mintscan.io/sifchain/account/",
-  },
+  }, */
   Stargaze: {
     chain_name: "Stargaze",
     deposit_channel_id: "channel-48",
@@ -425,7 +425,7 @@ export const tokens: Token[] = [
           "uscrt"
         ),
       },
-      {
+      /*       {
         chain_name: "Crescent",
         from_denom: ibcDenom(
           [
@@ -436,7 +436,7 @@ export const tokens: Token[] = [
           ],
           "uscrt"
         ),
-      },
+      }, */
       {
         chain_name: "Evmos",
         from_denom: ibcDenom(
@@ -533,7 +533,7 @@ export const tokens: Token[] = [
           "uscrt"
         ),
       },
-      {
+      /*       {
         chain_name: "Sifchain",
         from_denom: ibcDenom(
           [
@@ -544,7 +544,7 @@ export const tokens: Token[] = [
           ],
           "uscrt"
         ),
-      },
+      }, */
       {
         chain_name: "Stargaze",
         from_denom: ibcDenom(
@@ -603,10 +603,10 @@ export const tokens: Token[] = [
         chain_name: "Cosmos Hub",
         from_denom: "uscrt",
       },
-      {
+      /*       {
         chain_name: "Crescent",
         from_denom: "uscrt",
-      },
+      }, */
       {
         chain_name: "Evmos",
         from_denom: "uscrt",
@@ -639,10 +639,10 @@ export const tokens: Token[] = [
         chain_name: "Sentinel",
         from_denom: "uscrt",
       },
-      {
+      /*       {
         chain_name: "Sifchain",
         from_denom: "uscrt",
-      },
+      }, */
       {
         chain_name: "Stargaze",
         from_denom: "uscrt",
@@ -744,7 +744,7 @@ export const tokens: Token[] = [
       },
     ],
   },
-  {
+  /*  {
     name: "CRE",
     address: "secret1tatdlkyznf00m3a7hftw5daaq2nk38ugfphuyr",
     code_hash:
@@ -772,7 +772,7 @@ export const tokens: Token[] = [
         ),
       },
     ],
-  },
+  }, */
   {
     name: "DVPN",
     address: "secret15qtw24mpmwkjessr46dnqruq4s4tstzf74jtkf",
@@ -1092,7 +1092,7 @@ export const tokens: Token[] = [
       },
     ],
   },
-  {
+  /* {
     name: "ROWAN",
     address: "secret159p22zvq2wzsdtqhm2plp4wg33srxp2hf0qudc",
     code_hash:
@@ -1120,7 +1120,7 @@ export const tokens: Token[] = [
         ),
       },
     ],
-  },
+  }, */
   {
     name: "STARS",
     address: "secret1x0dqckf2khtxyrjwhlkrx9lwwmz44k24vcv2vv",
