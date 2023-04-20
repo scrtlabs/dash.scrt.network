@@ -736,6 +736,7 @@ export function Wrap() {
   }, [secretAddress, secretjs, selectedToken, feeGrantStatus]);
 
   useEffect(() => {
+    setPrice(0);
     fetch(
       `https://api.coingecko.com/api/v3/simple/price?ids=${selectedToken.coingecko_id}&vs_currencies=USD`
     )
@@ -743,7 +744,7 @@ export function Wrap() {
       .then((result: { [coingecko_id: string]: { usd: number } }) => {
         setPrice(result[selectedToken.coingecko_id].usd);
       });
-  }, []);
+  }, [selectedToken]);
 
   const handleClick = () => {
     if (!secretAddress || !secretjs) {

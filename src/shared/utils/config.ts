@@ -171,6 +171,20 @@ export const chains: { [chain_name: string]: Chain } = {
     chain_image: "/inj.svg",
     explorer_account: "https://www.mintscan.io/injective/account/",
   },
+  Jackal: {
+    chain_name: "Jackal",
+    deposit_channel_id: "channel-2",
+    deposit_gas: 150_000,
+    deposit_gas_denom: "ujkl",
+    withdraw_channel_id: "channel-62",
+    withdraw_gas: 30_000,
+    chain_id: "jackal-1",
+    bech32_prefix: "jkl",
+    lcd: "https://api.jackal.nodestake.top",
+    rpc: "https://rpc.jackal.nodestake.top",
+    chain_image: "/jkl.svg",
+    explorer_account: "https://explorer.nodestake.top/jackal/account/",
+  },
   Juno: {
     chain_name: "Juno",
     deposit_channel_id: "channel-48",
@@ -460,6 +474,18 @@ export const tokens: Token[] = [
         ),
       },
       {
+        chain_name: "Jackal",
+        from_denom: ibcDenom(
+          [
+            {
+              incomingChannelId: chains["Jackal"].deposit_channel_id,
+              incomingPortId: "transfer",
+            },
+          ],
+          "uscrt"
+        ),
+      },
+      {
         chain_name: "Juno",
         from_denom: ibcDenom(
           [
@@ -591,6 +617,10 @@ export const tokens: Token[] = [
       },
       {
         chain_name: "Injective",
+        from_denom: "uscrt",
+      },
+      {
+        chain_name: "Jackal",
         from_denom: "uscrt",
       },
       {
@@ -913,6 +943,35 @@ export const tokens: Token[] = [
             },
           ],
           "uist"
+        ),
+      },
+    ],
+  },
+  {
+    name: "JKL",
+    address: "secret1sgaz455pmtgld6dequqayrdseq8vy2fc48n8y3",
+    code_hash:
+      "638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e",
+    image: "/jkl.svg",
+    decimals: 6,
+    coingecko_id: "jackal-protocol",
+    deposits: [
+      {
+        chain_name: "Jackal",
+        from_denom: "ujkl",
+      },
+    ],
+    withdrawals: [
+      {
+        chain_name: "Jackal",
+        from_denom: ibcDenom(
+          [
+            {
+              incomingChannelId: chains["Jackal"].withdraw_channel_id,
+              incomingPortId: "transfer",
+            },
+          ],
+          "ujkl"
         ),
       },
     ],

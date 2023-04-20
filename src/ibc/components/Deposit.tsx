@@ -782,6 +782,7 @@ function Deposit() {
             const ibcResp = await tx.ibcResponses[0];
 
             if (ibcResp.type === "ack") {
+              updateCoinBalance();
               toast.update(toastId, {
                 render: `Received ${normalizedAmount} ${selectedToken.name} on Secret Network from ${selectedSource.chain_name}`,
                 type: "success",
@@ -991,6 +992,7 @@ function Deposit() {
             const ibcResp = await tx.ibcResponses[0];
 
             if (ibcResp.type === "ack") {
+              updateCoinBalance();
               toast.update(toastId, {
                 render: `Received ${normalizedAmount} ${selectedToken.name} on ${selectedSource.chain_name}`,
                 type: "success",
