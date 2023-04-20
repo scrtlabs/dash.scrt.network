@@ -43,6 +43,7 @@ import {
   setKeplrViewingKey,
 } from "shared/context/SecretjsContext";
 import CopyToClipboard from "react-copy-to-clipboard";
+import mixpanel from "mixpanel-browser";
 
 function Deposit() {
   const { feeGrantStatus, setFeeGrantStatus, requestFeeGrant } =
@@ -574,6 +575,28 @@ function Deposit() {
             }
           }
         } catch (e) {
+          if (import.meta.env.VITE_MIXPANEL_ENABLED === "true") {
+            mixpanel.init(import.meta.env.VITE_MIXPANEL_PROJECT_TOKEN, {
+              debug: true,
+            });
+            mixpanel.identify("Dashboard-App");
+            mixpanel.track("IBC Transfer", {
+              "Source Chain":
+                ibcMode === "deposit"
+                  ? selectedSource.chain_name
+                  : "Secret Network",
+              "Target Chain":
+                ibcMode === "withdrawal"
+                  ? selectedSource.chain_name
+                  : "Secret Network",
+              // "Amount": amountToTransfer,
+              "Fee Grant used":
+                feeGrantStatus === "Success" && ibcMode === "withdrawal"
+                  ? true
+                  : false,
+            });
+          }
+
           toast.update(toastId, {
             render: `Failed sending ${normalizedAmount} ${selectedToken.name} from ${selectedSource.chain_name} to Secret Network: ${e}`,
             type: "error",
