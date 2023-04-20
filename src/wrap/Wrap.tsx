@@ -1,4 +1,10 @@
-import { useEffect, useState, useContext, createContext } from "react";
+import {
+  useEffect,
+  useState,
+  useContext,
+  createContext,
+  ChangeEvent,
+} from "react";
 import { MsgExecuteContract } from "secretjs";
 import { Token, tokens } from "shared/utils/config";
 import {
@@ -19,7 +25,7 @@ import {
   faCheckCircle,
   faXmarkCircle,
 } from "@fortawesome/free-solid-svg-icons";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Select from "react-select";
 import Tooltip from "@mui/material/Tooltip";
 import { Helmet } from "react-helmet-async";
@@ -31,6 +37,7 @@ import {
   SecretjsContext,
   setKeplrViewingKey,
 } from "shared/context/SecretjsContext";
+import { useSearchParams } from "react-router-dom";
 
 export const WrapContext = createContext(null);
 
@@ -48,32 +55,47 @@ export function Wrap() {
     setSSCRTBalance,
   } = useContext(SecretjsContext);
 
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const modeUrlParam = searchParams.get("mode");
+  const tokenUrlParam = searchParams.get("token");
+  const amountUrlParam = searchParams.get("amount");
+
   const [isUnknownBalanceModalOpen, setIsUnknownBalanceModalOpen] =
     useState(false);
   const [isFeeGrantInfoModalOpen, setIsFeeGrantInfoModalOpen] = useState(false);
 
   type WrappingMode = "Wrap" | "Unwrap";
 
-  const queryParams = new URLSearchParams(window.location.search);
-  const tokenByQueryParam = queryParams.get("token"); // 'scrt', 'akash', etc.
-  const modeByQueryParam = queryParams.get("mode"); // 'wrap' or 'unwrap'
-  const tokenPreselection = tokens.filter(
-    (token) => token.name === tokenByQueryParam?.toUpperCase()
-  )[0]
-    ? tokenByQueryParam?.toUpperCase()
-    : "SCRT";
-  const modePreselection =
-    modeByQueryParam?.toLowerCase() === "unwrap" ? "Unwrap" : "Wrap";
-
   const { secretjs, secretAddress, connectWallet } =
     useContext(SecretjsContext);
 
-  const [amountToWrap, setAmountToWrap] = useState<string>("");
-  const [wrappingMode, setWrappingMode] =
-    useState<WrappingMode>(modePreselection);
-  const [selectedToken, setselectedToken] = useState<Token>(
-    tokens.filter((token) => token.name === tokenPreselection)[0]
+  const isValidTokenParam = () => {
+    return tokens.find((token) => token.name === tokenUrlParam) ? true : false;
+  };
+
+  const [amountToWrap, setAmountToWrap] = useState<string>(
+    amountUrlParam !== null ? amountUrlParam : ""
   );
+  const [wrappingMode, setWrappingMode] = useState<WrappingMode>(
+    modeUrlParam === "unwrap" ? "Unwrap" : "Wrap"
+  );
+  const [selectedToken, setselectedToken] = useState<Token>(
+    isValidTokenParam()
+      ? tokens.find((token) => token.name === tokenUrlParam.toUpperCase())
+      : tokens.find((token) => token.name === "SCRT")
+  );
+
+  useEffect(() => {
+    var params = {};
+    if (wrappingMode) {
+      params = { ...params, mode: wrappingMode === "Wrap" ? "wrap" : "unwrap" };
+    }
+    if (selectedToken) {
+      params = { ...params, token: selectedToken.name.toLowerCase() };
+    }
+    setSearchParams(params);
+  }, [wrappingMode, selectedToken]);
 
   // UI
   const [price, setPrice] = useState<number>();
