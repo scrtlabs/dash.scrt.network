@@ -1287,7 +1287,7 @@ export const snips: Token[] = [
           "cw20:secret12rcvz0umvk875kd6a803txhtlu7y0pnd73kcej"
         ),
         channel_id: "channel-476",
-        gas: 200_000,
+        gas: 300_000,
       },
       {
         chain_name: "Kujira",
@@ -1296,7 +1296,7 @@ export const snips: Token[] = [
           "cw20:secret12rcvz0umvk875kd6a803txhtlu7y0pnd73kcej"
         ),
         channel_id: "channel-44",
-        gas: 200_000,
+        gas: 300_000,
       },
       {
         chain_name: "Juno",
@@ -1305,7 +1305,7 @@ export const snips: Token[] = [
           "cw20:secret12rcvz0umvk875kd6a803txhtlu7y0pnd73kcej"
         ),
         channel_id: "channel-163",
-        gas: 200_000,
+        gas: 300_000,
       },
     ],
     withdrawals: [
@@ -1346,7 +1346,7 @@ export const snips: Token[] = [
           "cw20:secret1s09x2xvfd2lp2skgzm29w2xtena7s8fq98v852"
         ),
         channel_id: "channel-476",
-        gas: 200_000,
+        gas: 300_000,
       },
       {
         chain_name: "Kujira",
@@ -1355,7 +1355,7 @@ export const snips: Token[] = [
           "cw20:secret1s09x2xvfd2lp2skgzm29w2xtena7s8fq98v852"
         ),
         channel_id: "channel-44",
-        gas: 200_000,
+        gas: 300_000,
       },
       {
         chain_name: "Juno",
@@ -1364,7 +1364,7 @@ export const snips: Token[] = [
           "cw20:secret1s09x2xvfd2lp2skgzm29w2xtena7s8fq98v852"
         ),
         channel_id: "channel-163",
-        gas: 200_000,
+        gas: 300_000,
       },
     ],
     withdrawals: [
@@ -1405,7 +1405,7 @@ export const snips: Token[] = [
           "cw20:secret1yxcexylwyxlq58umhgsjgstgcg2a0ytfy4d9lt"
         ),
         channel_id: "channel-476",
-        gas: 200_000,
+        gas: 300_000,
       },
       {
         chain_name: "Kujira",
@@ -1414,7 +1414,7 @@ export const snips: Token[] = [
           "cw20:secret1yxcexylwyxlq58umhgsjgstgcg2a0ytfy4d9lt"
         ),
         channel_id: "channel-44",
-        gas: 200_000,
+        gas: 300_000,
       },
       {
         chain_name: "Juno",
@@ -1423,7 +1423,7 @@ export const snips: Token[] = [
           "cw20:secret1yxcexylwyxlq58umhgsjgstgcg2a0ytfy4d9lt"
         ),
         channel_id: "channel-163",
-        gas: 200_000,
+        gas: 300_000,
       },
     ],
     withdrawals: [
@@ -1464,7 +1464,7 @@ export const snips: Token[] = [
           "cw20:secret153wu605vvp934xhd4k9dtd640zsep5jkesstdm"
         ),
         channel_id: "channel-476",
-        gas: 200_000,
+        gas: 300_000,
       },
       {
         chain_name: "Kujira",
@@ -1473,7 +1473,7 @@ export const snips: Token[] = [
           "cw20:secret153wu605vvp934xhd4k9dtd640zsep5jkesstdm"
         ),
         channel_id: "channel-44",
-        gas: 200_000,
+        gas: 300_000,
       },
       {
         chain_name: "Juno",
@@ -1482,7 +1482,7 @@ export const snips: Token[] = [
           "cw20:secret153wu605vvp934xhd4k9dtd640zsep5jkesstdm"
         ),
         channel_id: "channel-163",
-        gas: 200_000,
+        gas: 300_000,
       },
     ],
     withdrawals: [
@@ -1523,7 +1523,7 @@ export const snips: Token[] = [
           "cw20:secret1qfql357amn448duf5gvp9gr48sxx9tsnhupu3d"
         ),
         channel_id: "channel-476",
-        gas: 200_000,
+        gas: 300_000,
       },
       {
         chain_name: "Kujira",
@@ -1532,7 +1532,7 @@ export const snips: Token[] = [
           "cw20:secret1qfql357amn448duf5gvp9gr48sxx9tsnhupu3d"
         ),
         channel_id: "channel-44",
-        gas: 200_000,
+        gas: 300_000,
       },
       {
         chain_name: "Juno",
@@ -1541,7 +1541,7 @@ export const snips: Token[] = [
           "cw20:secret1qfql357amn448duf5gvp9gr48sxx9tsnhupu3d"
         ),
         channel_id: "channel-163",
-        gas: 200_000,
+        gas: 300_000,
       },
     ],
     withdrawals: [
@@ -1582,7 +1582,7 @@ export const snips: Token[] = [
           "cw20:secret1rgm2m5t530tdzyd99775n6vzumxa5luxcllml4"
         ),
         channel_id: "channel-476",
-        gas: 200_000,
+        gas: 300_000,
       },
       {
         chain_name: "Kujira",
@@ -1591,7 +1591,7 @@ export const snips: Token[] = [
           "cw20:secret1rgm2m5t530tdzyd99775n6vzumxa5luxcllml4"
         ),
         channel_id: "channel-44",
-        gas: 200_000,
+        gas: 300_000,
       },
       {
         chain_name: "Juno",
@@ -1600,7 +1600,7 @@ export const snips: Token[] = [
           "cw20:secret1rgm2m5t530tdzyd99775n6vzumxa5luxcllml4"
         ),
         channel_id: "channel-163",
-        gas: 200_000,
+        gas: 300_000,
       },
     ],
     withdrawals: [
@@ -1641,7 +1641,7 @@ export const snips: Token[] = [
           "cw20:secret1k6u0cy4feepm6pehnz804zmwakuwdapm69tuc4"
         ),
         channel_id: "channel-476",
-        gas: 200_000,
+        gas: 300_000,
       },
       {
         chain_name: "Kujira",
@@ -1650,7 +1650,7 @@ export const snips: Token[] = [
           "cw20:secret1k6u0cy4feepm6pehnz804zmwakuwdapm69tuc4"
         ),
         channel_id: "channel-44",
-        gas: 200_000,
+        gas: 300_000,
       },
       {
         chain_name: "Juno",
@@ -1659,7 +1659,7 @@ export const snips: Token[] = [
           "cw20:secret1k6u0cy4feepm6pehnz804zmwakuwdapm69tuc4"
         ),
         channel_id: "channel-163",
-        gas: 200_000,
+        gas: 300_000,
       },
     ],
     withdrawals: [
@@ -1702,7 +1702,7 @@ export const ICSTokens: Token[] = [
         axelar_chain_name: CHAINS.MAINNET.AXELAR,
         from_denom: "uusdc",
         channel_id: "channel-69",
-        gas: 200_000,
+        gas: 300_000,
       },
       {
         chain_name: "Juno",
@@ -1712,7 +1712,7 @@ export const ICSTokens: Token[] = [
           "uusdc"
         ),
         channel_id: "channel-71",
-        gas: 200_000,
+        gas: 300_000,
       },
       {
         chain_name: "Kujira",
@@ -1722,7 +1722,7 @@ export const ICSTokens: Token[] = [
           "uusdc"
         ),
         channel_id: "channel-9",
-        gas: 200_000,
+        gas: 300_000,
       },
       {
         chain_name: "Osmosis",
@@ -1732,7 +1732,7 @@ export const ICSTokens: Token[] = [
           "uusdc"
         ),
         channel_id: "channel-208",
-        gas: 200_000,
+        gas: 300_000,
       },
       {
         chain_name: "Stargaze",
@@ -1742,7 +1742,7 @@ export const ICSTokens: Token[] = [
           "uusdc"
         ),
         channel_id: "channel-50",
-        gas: 200_000,
+        gas: 300_000,
       },
       {
         chain_name: "Terra",
@@ -1752,7 +1752,7 @@ export const ICSTokens: Token[] = [
           "uusdc"
         ),
         channel_id: "channel-6",
-        gas: 200_000,
+        gas: 300_000,
       },
     ],
     withdrawals: [
@@ -1816,7 +1816,7 @@ export const ICSTokens: Token[] = [
         axelar_chain_name: CHAINS.MAINNET.AXELAR,
         from_denom: "uaxl",
         channel_id: "channel-69",
-        gas: 200_000,
+        gas: 300_000,
       },
     ],
     withdrawals: [
@@ -1845,7 +1845,7 @@ export const ICSTokens: Token[] = [
         axelar_chain_name: CHAINS.MAINNET.AXELAR,
         from_denom: "weth-wei",
         channel_id: "channel-69",
-        gas: 200_000,
+        gas: 300_000,
       },
       {
         chain_name: "Juno",
@@ -1855,7 +1855,7 @@ export const ICSTokens: Token[] = [
           "weth-wei"
         ),
         channel_id: "channel-71",
-        gas: 200_000,
+        gas: 300_000,
       },
       {
         chain_name: "Kujira",
@@ -1865,7 +1865,7 @@ export const ICSTokens: Token[] = [
           "weth-wei"
         ),
         channel_id: "channel-9",
-        gas: 200_000,
+        gas: 300_000,
       },
       {
         chain_name: "Osmosis",
@@ -1875,7 +1875,7 @@ export const ICSTokens: Token[] = [
           "weth-wei"
         ),
         channel_id: "channel-208",
-        gas: 200_000,
+        gas: 300_000,
       },
       {
         chain_name: "Stargaze",
@@ -1885,7 +1885,7 @@ export const ICSTokens: Token[] = [
           "weth-wei"
         ),
         channel_id: "channel-50",
-        gas: 200_000,
+        gas: 300_000,
       },
       {
         chain_name: "Terra",
@@ -1895,7 +1895,7 @@ export const ICSTokens: Token[] = [
           "weth-wei"
         ),
         channel_id: "channel-6",
-        gas: 200_000,
+        gas: 300_000,
       },
     ],
     withdrawals: [
@@ -1952,7 +1952,7 @@ export const ICSTokens: Token[] = [
         axelar_chain_name: CHAINS.MAINNET.AXELAR,
         from_denom: "wbtc-satoshi",
         channel_id: "channel-69",
-        gas: 200_000,
+        gas: 300_000,
       },
       {
         chain_name: "Juno",
@@ -1962,7 +1962,7 @@ export const ICSTokens: Token[] = [
           "wbtc-satoshi"
         ),
         channel_id: "channel-71",
-        gas: 200_000,
+        gas: 300_000,
       },
       {
         chain_name: "Kujira",
@@ -1972,7 +1972,7 @@ export const ICSTokens: Token[] = [
           "wbtc-satoshi"
         ),
         channel_id: "channel-9",
-        gas: 200_000,
+        gas: 300_000,
       },
       {
         chain_name: "Osmosis",
@@ -1982,7 +1982,7 @@ export const ICSTokens: Token[] = [
           "weth-satoshi"
         ),
         channel_id: "channel-208",
-        gas: 200_000,
+        gas: 300_000,
       },
       {
         chain_name: "Stargaze",
@@ -1992,7 +1992,7 @@ export const ICSTokens: Token[] = [
           "weth-satoshi"
         ),
         channel_id: "channel-50",
-        gas: 200_000,
+        gas: 300_000,
       },
       {
         chain_name: "Terra",
@@ -2002,7 +2002,7 @@ export const ICSTokens: Token[] = [
           "weth-satoshi"
         ),
         channel_id: "channel-6",
-        gas: 200_000,
+        gas: 300_000,
       },
     ],
     withdrawals: [
@@ -2059,7 +2059,7 @@ export const ICSTokens: Token[] = [
         axelar_chain_name: CHAINS.MAINNET.AXELAR,
         from_denom: "wbnb-wei",
         channel_id: "channel-69",
-        gas: 200_000,
+        gas: 300_000,
       },
       {
         chain_name: "Juno",
@@ -2069,7 +2069,7 @@ export const ICSTokens: Token[] = [
           "wbnb-wei"
         ),
         channel_id: "channel-71",
-        gas: 200_000,
+        gas: 300_000,
       },
       {
         chain_name: "Kujira",
@@ -2079,7 +2079,7 @@ export const ICSTokens: Token[] = [
           "wbnb-wei"
         ),
         channel_id: "channel-9",
-        gas: 200_000,
+        gas: 300_000,
       },
       {
         chain_name: "Osmosis",
@@ -2089,7 +2089,7 @@ export const ICSTokens: Token[] = [
           "wbnb-wei"
         ),
         channel_id: "channel-208",
-        gas: 200_000,
+        gas: 300_000,
       },
       {
         chain_name: "Stargaze",
@@ -2099,7 +2099,7 @@ export const ICSTokens: Token[] = [
           "wbnb-wei"
         ),
         channel_id: "channel-50",
-        gas: 200_000,
+        gas: 300_000,
       },
       {
         chain_name: "Terra",
@@ -2109,7 +2109,7 @@ export const ICSTokens: Token[] = [
           "wbnb-wei"
         ),
         channel_id: "channel-6",
-        gas: 200_000,
+        gas: 300_000,
       },
     ],
     withdrawals: [
@@ -2166,7 +2166,7 @@ export const ICSTokens: Token[] = [
         axelar_chain_name: CHAINS.MAINNET.AXELAR,
         from_denom: "busd-wei",
         channel_id: "channel-69",
-        gas: 200_000,
+        gas: 300_000,
       },
       {
         chain_name: "Juno",
@@ -2176,7 +2176,7 @@ export const ICSTokens: Token[] = [
           "busd-wei"
         ),
         channel_id: "channel-71",
-        gas: 200_000,
+        gas: 300_000,
       },
       {
         chain_name: "Kujira",
@@ -2186,7 +2186,7 @@ export const ICSTokens: Token[] = [
           "busd-wei"
         ),
         channel_id: "channel-9",
-        gas: 200_000,
+        gas: 300_000,
       },
       {
         chain_name: "Osmosis",
@@ -2196,7 +2196,7 @@ export const ICSTokens: Token[] = [
           "busd-wei"
         ),
         channel_id: "channel-208",
-        gas: 200_000,
+        gas: 300_000,
       },
       {
         chain_name: "Stargaze",
@@ -2206,7 +2206,7 @@ export const ICSTokens: Token[] = [
           "busd-wei"
         ),
         channel_id: "channel-50",
-        gas: 200_000,
+        gas: 300_000,
       },
       {
         chain_name: "Terra",
@@ -2216,7 +2216,7 @@ export const ICSTokens: Token[] = [
           "busd-wei"
         ),
         channel_id: "channel-6",
-        gas: 200_000,
+        gas: 300_000,
       },
     ],
     withdrawals: [
@@ -2273,7 +2273,7 @@ export const ICSTokens: Token[] = [
         axelar_chain_name: CHAINS.MAINNET.AXELAR,
         from_denom: "dai-wei",
         channel_id: "channel-69",
-        gas: 200_000,
+        gas: 300_000,
       },
       {
         chain_name: "Juno",
@@ -2283,7 +2283,7 @@ export const ICSTokens: Token[] = [
           "dai-wei"
         ),
         channel_id: "channel-71",
-        gas: 200_000,
+        gas: 300_000,
       },
       {
         chain_name: "Kujira",
@@ -2293,7 +2293,7 @@ export const ICSTokens: Token[] = [
           "dai-wei"
         ),
         channel_id: "channel-9",
-        gas: 200_000,
+        gas: 300_000,
       },
       {
         chain_name: "Osmosis",
@@ -2303,7 +2303,7 @@ export const ICSTokens: Token[] = [
           "dai-wei"
         ),
         channel_id: "channel-208",
-        gas: 200_000,
+        gas: 300_000,
       },
       {
         chain_name: "Stargaze",
@@ -2313,7 +2313,7 @@ export const ICSTokens: Token[] = [
           "dai-wei"
         ),
         channel_id: "channel-50",
-        gas: 200_000,
+        gas: 300_000,
       },
       {
         chain_name: "Terra",
@@ -2323,7 +2323,7 @@ export const ICSTokens: Token[] = [
           "dai-wei"
         ),
         channel_id: "channel-6",
-        gas: 200_000,
+        gas: 300_000,
       },
     ],
     withdrawals: [
@@ -2380,7 +2380,7 @@ export const ICSTokens: Token[] = [
         axelar_chain_name: CHAINS.MAINNET.AXELAR,
         from_denom: "uni-wei",
         channel_id: "channel-69",
-        gas: 200_000,
+        gas: 300_000,
       },
       {
         chain_name: "Juno",
@@ -2390,7 +2390,7 @@ export const ICSTokens: Token[] = [
           "uni-wei"
         ),
         channel_id: "channel-71",
-        gas: 200_000,
+        gas: 300_000,
       },
       {
         chain_name: "Kujira",
@@ -2400,7 +2400,7 @@ export const ICSTokens: Token[] = [
           "uni-wei"
         ),
         channel_id: "channel-9",
-        gas: 200_000,
+        gas: 300_000,
       },
       {
         chain_name: "Osmosis",
@@ -2410,7 +2410,7 @@ export const ICSTokens: Token[] = [
           "uni-wei"
         ),
         channel_id: "channel-208",
-        gas: 200_000,
+        gas: 300_000,
       },
       {
         chain_name: "Stargaze",
@@ -2420,7 +2420,7 @@ export const ICSTokens: Token[] = [
           "uni-wei"
         ),
         channel_id: "channel-50",
-        gas: 200_000,
+        gas: 300_000,
       },
       {
         chain_name: "Terra",
@@ -2430,7 +2430,7 @@ export const ICSTokens: Token[] = [
           "uni-wei"
         ),
         channel_id: "channel-6",
-        gas: 200_000,
+        gas: 300_000,
       },
     ],
     withdrawals: [
@@ -2487,7 +2487,7 @@ export const ICSTokens: Token[] = [
         axelar_chain_name: CHAINS.MAINNET.AXELAR,
         from_denom: "uusdt",
         channel_id: "channel-69",
-        gas: 200_000,
+        gas: 300_000,
       },
       {
         chain_name: "Juno",
@@ -2497,7 +2497,7 @@ export const ICSTokens: Token[] = [
           "uusdt"
         ),
         channel_id: "channel-71",
-        gas: 200_000,
+        gas: 300_000,
       },
       {
         chain_name: "Kujira",
@@ -2507,7 +2507,7 @@ export const ICSTokens: Token[] = [
           "uusdt"
         ),
         channel_id: "channel-9",
-        gas: 200_000,
+        gas: 300_000,
       },
       {
         chain_name: "Osmosis",
@@ -2517,7 +2517,7 @@ export const ICSTokens: Token[] = [
           "uusdt"
         ),
         channel_id: "channel-208",
-        gas: 200_000,
+        gas: 300_000,
       },
       {
         chain_name: "Stargaze",
@@ -2527,7 +2527,7 @@ export const ICSTokens: Token[] = [
           "uusdt"
         ),
         channel_id: "channel-50",
-        gas: 200_000,
+        gas: 300_000,
       },
       {
         chain_name: "Terra",
@@ -2537,7 +2537,7 @@ export const ICSTokens: Token[] = [
           "uusdt"
         ),
         channel_id: "channel-6",
-        gas: 200_000,
+        gas: 300_000,
       },
     ],
     withdrawals: [
@@ -2594,7 +2594,7 @@ export const ICSTokens: Token[] = [
         axelar_chain_name: CHAINS.MAINNET.AXELAR,
         from_denom: "frax-wei",
         channel_id: "channel-69",
-        gas: 200_000,
+        gas: 300_000,
       },
       {
         chain_name: "Juno",
@@ -2604,7 +2604,7 @@ export const ICSTokens: Token[] = [
           "frax-wei"
         ),
         channel_id: "channel-71",
-        gas: 200_000,
+        gas: 300_000,
       },
       {
         chain_name: "Kujira",
@@ -2614,7 +2614,7 @@ export const ICSTokens: Token[] = [
           "frax-wei"
         ),
         channel_id: "channel-9",
-        gas: 200_000,
+        gas: 300_000,
       },
       {
         chain_name: "Osmosis",
@@ -2624,7 +2624,7 @@ export const ICSTokens: Token[] = [
           "frax-wei"
         ),
         channel_id: "channel-208",
-        gas: 200_000,
+        gas: 300_000,
       },
       {
         chain_name: "Stargaze",
@@ -2634,7 +2634,7 @@ export const ICSTokens: Token[] = [
           "frax-wei"
         ),
         channel_id: "channel-50",
-        gas: 200_000,
+        gas: 300_000,
       },
       {
         chain_name: "Terra",
@@ -2644,7 +2644,7 @@ export const ICSTokens: Token[] = [
           "frax-wei"
         ),
         channel_id: "channel-6",
-        gas: 200_000,
+        gas: 300_000,
       },
     ],
     withdrawals: [
