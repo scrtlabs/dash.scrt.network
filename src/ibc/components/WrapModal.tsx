@@ -4,7 +4,7 @@ import {
   faXmark,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { IbcContext, IbcMode } from "ibc/Ibc";
+import { IbcContext } from "ibc/Ibc";
 import { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import {
@@ -12,6 +12,7 @@ import {
   getKeplrViewingKey,
   isViewingKeyAvailable,
 } from "shared/context/SecretjsContext";
+import { IbcMode } from "shared/types/IbcMode";
 import {
   sleep,
   suggestCrescentToKeplr,
