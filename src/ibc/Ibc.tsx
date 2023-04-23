@@ -1,4 +1,4 @@
-import { useState, createContext, useContext } from "react";
+import { useState, createContext, useContext, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faInfoCircle } from "@fortawesome/free-solid-svg-icons";
 import Tooltip from "@mui/material/Tooltip";
@@ -9,10 +9,10 @@ import Deposit from "./components/Deposit";
 import { SecretjsContext } from "shared/context/SecretjsContext";
 import ViewingKeyModal from "./components/ViewingKeyModal";
 import { Token, tokens } from "shared/utils/config";
+import { IbcMode } from "shared/types/IbcMode";
+import { useSearchParams } from "react-router-dom";
 
 export const IbcContext = createContext(null);
-
-export type IbcMode = "deposit" | "withdrawal";
 
 export function Ibc() {
   const [isWrapModalOpen, setIsWrapModalOpen] = useState(false);
@@ -27,6 +27,32 @@ export function Ibc() {
 
   const { secretjs, secretAddress, connectWallet } =
     useContext(SecretjsContext);
+
+  // URL params
+  const [searchParams, setSearchParams] = useSearchParams();
+  const modeUrlParam = searchParams.get("mode");
+  const chainUrlParam = searchParams.get("chain");
+  const tokenUrlParam = searchParams.get("token");
+
+  useEffect(() => {
+    if (
+      modeUrlParam?.toLowerCase() === "deposit" ||
+      modeUrlParam?.toLowerCase() === "withdrawal"
+    ) {
+      setIbcMode(modeUrlParam.toLowerCase() as IbcMode);
+    }
+  }, []);
+
+  useEffect(() => {
+    var params = {};
+    if (ibcMode) {
+      params = { ...params, mode: ibcMode.toLowerCase() };
+    }
+    // if (selectedToken) {
+    //   params = { ...params, token: selectedToken.name.toLowerCase() };
+    // }
+    setSearchParams(params);
+  }, [ibcMode, selectedToken]);
 
   function toggleIbcMode() {
     if (ibcMode === "deposit") {
