@@ -1,4 +1,4 @@
-import { useState, createContext, useContext } from "react";
+import { useState, createContext, useContext, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faInfoCircle } from "@fortawesome/free-solid-svg-icons";
 import Tooltip from "@mui/material/Tooltip";
@@ -7,20 +7,52 @@ import { websiteName } from "App";
 import WrapModal from "./components/WrapModal";
 import Deposit from "./components/Deposit";
 import { SecretjsContext } from "shared/context/SecretjsContext";
+import ViewingKeyModal from "./components/ViewingKeyModal";
+import { Token, tokens } from "shared/utils/config";
+import { IbcMode } from "shared/types/IbcMode";
+import { useSearchParams } from "react-router-dom";
 
 export const IbcContext = createContext(null);
-
-export type IbcMode = "deposit" | "withdrawal";
 
 export function Ibc() {
   const [isWrapModalOpen, setIsWrapModalOpen] = useState(false);
 
   const [selectedTokenName, setSelectedTokenName] = useState("");
 
+  const [selectedToken, setSelectedToken] = useState<Token>(
+    tokens.filter((token) => token.name === "SCRT")[0]
+  );
+
   const [ibcMode, setIbcMode] = useState<IbcMode>("deposit");
 
   const { secretjs, secretAddress, connectWallet } =
     useContext(SecretjsContext);
+
+  // URL params
+  const [searchParams, setSearchParams] = useSearchParams();
+  const modeUrlParam = searchParams.get("mode");
+  const chainUrlParam = searchParams.get("chain");
+  const tokenUrlParam = searchParams.get("token");
+
+  useEffect(() => {
+    if (
+      modeUrlParam?.toLowerCase() === "deposit" ||
+      modeUrlParam?.toLowerCase() === "withdrawal"
+    ) {
+      setIbcMode(modeUrlParam.toLowerCase() as IbcMode);
+    }
+  }, []);
+
+  useEffect(() => {
+    var params = {};
+    if (ibcMode) {
+      params = { ...params, mode: ibcMode.toLowerCase() };
+    }
+    // if (selectedToken) {
+    //   params = { ...params, token: selectedToken.name.toLowerCase() };
+    // }
+    setSearchParams(params);
+  }, [ibcMode, selectedToken]);
 
   function toggleIbcMode() {
     if (ibcMode === "deposit") {
@@ -36,24 +68,28 @@ export function Ibc() {
     }
   };
 
+  const ibcContextProviderValue = {
+    isWrapModalOpen,
+    setIsWrapModalOpen,
+    selectedTokenName,
+    setSelectedTokenName,
+    ibcMode,
+    setIbcMode,
+    toggleIbcMode,
+    selectedToken,
+    setSelectedToken,
+  };
+
   return (
     <>
       <Helmet>
         <title>{websiteName} | IBC</title>
       </Helmet>
-      <IbcContext.Provider
-        value={{
-          isWrapModalOpen,
-          setIsWrapModalOpen,
-          selectedTokenName,
-          setSelectedTokenName,
-          ibcMode,
-          setIbcMode,
-          toggleIbcMode,
-        }}
-      >
+      <IbcContext.Provider value={ibcContextProviderValue}>
         <WrapModal
           open={isWrapModalOpen}
+          selectedToken={selectedToken}
+          ibcMode={ibcMode}
           onClose={() => {
             setIsWrapModalOpen(false);
             document.body.classList.remove("overflow-hidden");
@@ -66,7 +102,7 @@ export function Ibc() {
           >
             {/* Header */}
             <div className="flex items-center mb-4">
-              <h1 className="inline text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-500 to-purple-500">
+              <h1 className="inline text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-br from-cyan-500 to-purple-500">
                 IBC Transfer
               </h1>
               <Tooltip
