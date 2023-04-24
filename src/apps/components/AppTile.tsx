@@ -43,21 +43,6 @@ const AppTile = (props: IAppItemProps) => {
         {/* Name */}
         <div className="text-xl font-semibold flex-initial mb-1">
           {props.name}
-          </div>
-
-          {/* Description */}
-          <div className="text-neutral-400 flex-1">
-            {this.props.description}
-          </div>
-
-          {/* Tags */}
-          {this.props.tags?.length! > 0 && (
-            <div className="space-x-2 mt-4 flex-initial">
-              {this.props.tags?.map((tag) => (
-                <AppTileTag key={tag} name={tag} />
-              ))}
-            </div>
-          )}
         </div>
 
         {/* Description */}
@@ -65,7 +50,6 @@ const AppTile = (props: IAppItemProps) => {
 
         {/* Tags */}
         {props.tags?.length! > 0 && (
-          // <div className='space-x-2 mt-4 flex-initial'>{tagsHtml}</div>
           <div className="space-x-2 mt-4 flex-initial">
             {props.tags?.map((tag) => (
               <AppTileTag key={tag} name={tag} />

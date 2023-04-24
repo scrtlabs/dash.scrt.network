@@ -412,7 +412,7 @@ export function Wrap() {
       return (
         <>
           {/* Available: 0.123456 sSCRT () */}
-          <span className="font-bold">Available:</span>
+          <span className="font-semibold">Available:</span>
           <span className="font-medium">
             {` ${new BigNumber(sSCRTBalance!)
               .dividedBy(`1e${selectedToken.decimals}`)
@@ -663,19 +663,20 @@ export function Wrap() {
           mixpanel.identify("Dashboard-App");
           mixpanel.track("Secret Wrap", {
             "Wrapping Mode": wrappingMode,
-            From: (wrappingMode == "Wrap" ? "" : "s") + selectedToken.name,
-            To: (wrappingMode == "Wrap" ? "s" : "") + selectedToken.name,
+            From: (wrappingMode == "wrap" ? "" : "s") + selectedToken.name,
+            To: (wrappingMode == "wrap" ? "s" : "") + selectedToken.name,
             // "Amount": amountToWrap,
             "Fee Grant used": feeGrantStatus === "Success" ? true : false,
           });
         }
-        setLoadingWrapOrUnwrap(false);
         try {
           setLoadingCoinBalance(true);
+          setLoadingTokenBalance(true);
           await sleep(1000); // sometimes query nodes lag
-          await updateCoinBalance();
+          await updateBalance();
         } finally {
           setLoadingCoinBalance(false);
+          setLoadingTokenBalance(false);
         }
       }
     }

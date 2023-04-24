@@ -867,7 +867,7 @@ export const tokens: Token[] = [
       "182d7230c396fa8f548220ff88c34cb0291a00046df9ff2686e407c3b55692e9",
     image: "/huahua.jpg",
     decimals: 6,
-    coingecko_id: "chihuahua-chain",
+    coingecko_id: "chihuahua-token",
     deposits: [
       {
         chain_name: "Chihuahua",

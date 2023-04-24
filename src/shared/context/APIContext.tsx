@@ -19,6 +19,7 @@ const APIContextProvider = ({ children }: any) => {
       coinGeckoIdsString = coinGeckoIdsString.concat(",");
     }
   });
+  console.log(coinGeckoIdsString);
 
   function fetchPrices() {
     let pricesApiUrl = `https://api.coingecko.com/api/v3/simple/price?ids=${coinGeckoIdsString}&vs_currencies=USD`;
