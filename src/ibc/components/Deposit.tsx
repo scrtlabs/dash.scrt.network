@@ -91,10 +91,6 @@ function Deposit() {
   });
 
   useEffect(() => {
-    console.log(chains);
-  }, []);
-
-  useEffect(() => {
     setSelectedTokenName(selectedToken.name);
   }, [selectedToken]);
 
