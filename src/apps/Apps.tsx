@@ -43,7 +43,7 @@ function Apps() {
           className={
             "inline-block text-sm px-1.5 py-0.5 rounded-md overflow-hidden transition-colors" +
             (isTagInFilterList(this.props.name)
-              ? "  text-white dark:text-white font-semibold bg-gradient-to-br from-cyan-600 to-purple-600 hover:from-cyan-500 hover:to-purple-500"
+              ? "  text-white dark:text-white font-semibold bg-gradient-to-r from-cyan-600 to-purple-600 hover:from-cyan-500 hover:to-purple-500"
               : " bg-white dark:bg-neutral-800 hover:bg-neutral-300 dark:hover:bg-neutral-700 font-medium")
           }
         >

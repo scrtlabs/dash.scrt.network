@@ -17,7 +17,7 @@ class AppTile extends React.Component<IAppItemProps> {
         target={this.props.url ? "_blank" : "_self"}
         className="block group col-span-12 sm:col-span-6 lg:col-span-6 xl:col-span-4 2xl:col-span-3"
       >
-        <div className="group-hover:bg-gradient-to-br from-cyan-600 to-purple-600 p-0.5 h-full rounded-xl overflow-hidden">
+        <div className="group-hover:bg-gradient-to-r from-cyan-600 to-purple-600 p-0.5 h-full rounded-xl overflow-hidden">
           <div className="bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700  group-hover:bg-neutral-100 dark:group-hover:bg-neutral-700 p-4 flex flex-col h-full rounded-xl overflow-hidden text-center sm:text-left">
             {/* Image */}
             {this.props.image && (

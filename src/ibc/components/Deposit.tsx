@@ -1008,7 +1008,7 @@ function Deposit() {
       <>
         <button
           className={
-            "enabled:bg-gradient-to-br enabled:from-cyan-600 enabled:to-purple-600 enabled:hover:from-cyan-500 enabled:hover:to-purple-500 transition-colors text-white font-semibold py-2.5 w-full rounded-lg disabled:bg-neutral-500"
+            "enabled:bg-gradient-to-r enabled:from-cyan-600 enabled:to-purple-600 enabled:hover:from-cyan-500 enabled:hover:to-purple-500 transition-colors text-white font-semibold py-2.5 w-full rounded-lg disabled:bg-neutral-500"
           }
           disabled={!secretjs || !secretAddress}
           onClick={() => submit()}
