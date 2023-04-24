@@ -28,9 +28,10 @@ if (import.meta.env.VITE_MIXPANEL_ENABLED === "true") {
   mixpanel.init(import.meta.env.VITE_MIXPANEL_PROJECT_TOKEN, { debug: true });
   mixpanel.identify("Dashboard-App");
 
-  mixpanel.track("Dashboard has been opened", {
-    "Signup Type": "Referral",
-  });
+  mixpanel.track("Dashboard has been opened", {});
+  console.log("Mixpanel is enabled!");
+} else {
+  console.log("Mixpanel is disabled!");
 }
 
 // for html-head
