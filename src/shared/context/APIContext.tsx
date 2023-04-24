@@ -1,6 +1,7 @@
 import { createContext, useEffect, useRef, useState } from "react";
 import { SecretNetworkClient } from "secretjs";
 import { dAppsURL, shuffleArray, sortDAppsArray } from "shared/utils/commons";
+import { tokens } from "shared/utils/config";
 
 const APIContext = createContext(null);
 
@@ -8,6 +9,39 @@ const APIContextProvider = ({ children }: any) => {
   const [dappsData, setDappsData] = useState<any[]>([]);
   const [dappsDataSorted, setDappsDataSorted] = useState<any[]>([]);
   const [tags, setTags] = useState<string[]>([]);
+
+  const [prices, setPrices] = useState<any>([]);
+
+  let coinGeckoIdsString: string = "";
+  tokens.forEach((token, index) => {
+    coinGeckoIdsString = coinGeckoIdsString.concat(token.coingecko_id);
+    if (index !== tokens.length - 1) {
+      coinGeckoIdsString = coinGeckoIdsString.concat(",");
+    }
+  });
+
+  function fetchPrices() {
+    let pricesApiUrl = `https://api.coingecko.com/api/v3/simple/price?ids=${coinGeckoIdsString}&vs_currencies=USD`;
+    fetch(pricesApiUrl)
+      .then((resp) => resp.json())
+      .then((result: { [coingecko_id: string]: { usd: number } }) => {
+        const formattedPrices = Object.entries(result).map(
+          ([coingecko_id, { usd }]) => ({
+            coingecko_id,
+            priceUsd: usd,
+          })
+        );
+        setPrices(formattedPrices);
+      });
+  }
+
+  useEffect(() => {
+    fetchPrices();
+  }, []);
+
+  useEffect(() => {
+    console.log(prices);
+  }, [prices]);
 
   const fetchDappsURL = () => {
     fetch(dAppsURL)
@@ -134,6 +168,7 @@ const APIContextProvider = ({ children }: any) => {
     setVolume,
     marketCap,
     setMarketCap,
+    prices,
   };
 
   return (
