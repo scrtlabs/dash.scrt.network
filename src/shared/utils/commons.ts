@@ -3,6 +3,7 @@ import { Bech32Address } from "@keplr-wallet/cosmos";
 import { Keplr } from "@keplr-wallet/types";
 import { sha256 } from "@noble/hashes/sha256";
 import { toHex, toUtf8 } from "secretjs";
+import { tokens } from "./config";
 
 export const viewingKeyErrorString = "🧐";
 
