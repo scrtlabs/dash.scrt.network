@@ -23,6 +23,8 @@ export function Ibc() {
     tokens.filter((token) => token.name === "SCRT")[0]
   );
 
+  const [supportedTokens, setSupportedTokens] = useState<Token[]>([]);
+
   const [ibcMode, setIbcMode] = useState<IbcMode>("deposit");
 
   const { secretjs, secretAddress, connectWallet } =
@@ -34,6 +36,29 @@ export function Ibc() {
   const chainUrlParam = searchParams.get("chain");
   const tokenUrlParam = searchParams.get("token");
 
+  const selectableChains = tokens.find(
+    (token) => token.name === "SCRT"
+  ).deposits;
+
+  const [selectedSource, setSelectedSource] = useState<any>(
+    selectedToken.deposits.find(
+      (deposit: any) => deposit.chain_name.toLowerCase() === "osmosis"
+    )
+  );
+
+  const isValidChainUrlParam = () => {
+    return selectedToken.deposits.find(
+      (deposit: any) =>
+        deposit.chain_name.toLowerCase() === chainUrlParam.toLowerCase()
+    )
+      ? true
+      : false;
+  };
+
+  const isValidTokenUrlParam = () => {
+    return true;
+  };
+
   useEffect(() => {
     if (
       modeUrlParam?.toLowerCase() === "deposit" ||
@@ -44,15 +69,33 @@ export function Ibc() {
   }, []);
 
   useEffect(() => {
+    if (chainUrlParam && isValidChainUrlParam()) {
+      setSelectedSource(
+        selectedToken.deposits.find(
+          (deposit: any) =>
+            deposit.chain_name.toLowerCase() === chainUrlParam.toLowerCase()
+        )
+      );
+    }
+    if (tokenUrlParam && isValidTokenUrlParam()) {
+      setSelectedToken(
+        tokens.find(
+          (token) => token.name.toLowerCase() === tokenUrlParam.toLowerCase()
+        )
+      );
+    }
+  }, []);
+
+  useEffect(() => {
     var params = {};
     if (ibcMode) {
       params = { ...params, mode: ibcMode.toLowerCase() };
     }
-    // if (selectedToken) {
-    //   params = { ...params, token: selectedToken.name.toLowerCase() };
-    // }
+    if (selectedSource) {
+      params = { ...params, chain: selectedSource.chain_name.toLowerCase() };
+    }
     setSearchParams(params);
-  }, [ibcMode, selectedToken]);
+  }, [ibcMode, selectedSource]);
 
   function toggleIbcMode() {
     if (ibcMode === "deposit") {
@@ -78,6 +121,11 @@ export function Ibc() {
     toggleIbcMode,
     selectedToken,
     setSelectedToken,
+    selectableChains,
+    selectedSource,
+    setSelectedSource,
+    supportedTokens,
+    setSupportedTokens,
   };
 
   return (
@@ -102,7 +150,7 @@ export function Ibc() {
           >
             {/* Header */}
             <div className="flex items-center mb-4">
-              <h1 className="inline text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-br from-cyan-500 to-purple-500">
+              <h1 className="inline text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-500 to-purple-500">
                 IBC Transfer
               </h1>
               <Tooltip

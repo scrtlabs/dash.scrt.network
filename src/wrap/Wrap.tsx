@@ -1,10 +1,4 @@
-import {
-  useEffect,
-  useState,
-  useContext,
-  createContext,
-  ChangeEvent,
-} from "react";
+import { useEffect, useState, useContext, createContext } from "react";
 import { MsgExecuteContract } from "secretjs";
 import { Token, tokens } from "shared/utils/config";
 import {
@@ -25,7 +19,7 @@ import {
   faCheckCircle,
   faXmarkCircle,
 } from "@fortawesome/free-solid-svg-icons";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import Select from "react-select";
 import Tooltip from "@mui/material/Tooltip";
 import { Helmet } from "react-helmet-async";
@@ -35,11 +29,11 @@ import FeeGrantInfoModal from "./components/FeeGrantInfoModal";
 import {
   getKeplrViewingKey,
   SecretjsContext,
-  setKeplrViewingKey,
 } from "shared/context/SecretjsContext";
 import mixpanel from "mixpanel-browser";
 import { useSearchParams } from "react-router-dom";
 import { WrappingMode } from "shared/types/WrappingMode";
+import { APIContext } from "shared/context/APIContext";
 
 export const WrapContext = createContext(null);
 
@@ -55,20 +49,27 @@ export function Wrap() {
     setSCRTBalance,
     sSCRTBalance,
     setSSCRTBalance,
+    secretjs,
+    secretAddress,
+    connectWallet,
   } = useContext(SecretjsContext);
 
-  const [isUnknownBalanceModalOpen, setIsUnknownBalanceModalOpen] =
-    useState(false);
-  const [isFeeGrantInfoModalOpen, setIsFeeGrantInfoModalOpen] = useState(false);
+  const { prices } = useContext(APIContext);
 
-  const { secretjs, secretAddress, connectWallet } =
-    useContext(SecretjsContext);
-
+  const secretToken: Token = tokens.find((token) => token.name === "SCRT");
+  const [selectedToken, setSelectedToken] = useState<Token>(secretToken);
+  const [selectedTokenPrice, setSelectedTokenPrice] = useState<number>(0);
   const [amountString, setAmountString] = useState<string>("");
   const [wrappingMode, setWrappingMode] = useState<WrappingMode>("wrap");
-  const [selectedToken, setSelectedToken] = useState<Token>(
-    tokens.find((token) => token.name === "SCRT")
-  );
+
+  useEffect(() => {
+    setSelectedTokenPrice(
+      prices.find(
+        (price: { coingecko_id: string }) =>
+          price.coingecko_id === selectedToken.coingecko_id
+      )?.priceUsd
+    );
+  }, [selectedToken, prices]);
 
   // URL params
   const [searchParams, setSearchParams] = useSearchParams();
@@ -95,7 +96,9 @@ export function Wrap() {
   useEffect(() => {
     if (tokenUrlParam && isValidTokenParam()) {
       setSelectedToken(
-        tokens.find((token) => token.name === tokenUrlParam.toUpperCase())
+        tokens.find(
+          (token) => token.name.toLowerCase() === tokenUrlParam.toLowerCase()
+        )
       );
     }
   }, []);
@@ -111,14 +114,15 @@ export function Wrap() {
     setSearchParams(params);
   }, [wrappingMode, selectedToken]);
 
+  const [isUnknownBalanceModalOpen, setIsUnknownBalanceModalOpen] =
+    useState(false);
+  const [isFeeGrantInfoModalOpen, setIsFeeGrantInfoModalOpen] = useState(false);
+
   // UI
-  const [price, setPrice] = useState<number>();
   const [isValidAmount, setisValidAmount] = useState<boolean>(false);
   const [validationMessage, setValidationMessage] = useState<string>("");
   const [isValidationActive, setIsValidationActive] = useState<boolean>(false);
 
-  const [loadingWrapOrUnwrap, setLoadingWrapOrUnwrap] =
-    useState<boolean>(false);
   const [loadingCoinBalance, setLoadingCoinBalance] = useState<boolean>(true);
 
   function validateForm() {
@@ -176,7 +180,6 @@ export function Wrap() {
     }
   }, [amountString, wrappingMode, isValidationActive]);
 
-  // reset amountToWrap on selectedToken change
   useEffect(() => {
     setAmountString("");
   }, [selectedToken, wrappingMode]);
@@ -202,7 +205,7 @@ export function Wrap() {
   function toggleWrappingMode() {
     if (wrappingMode === "wrap") {
       setWrappingMode("unwrap");
-    } else {
+    } else if (wrappingMode === "unwrap") {
       setWrappingMode("wrap");
     }
   }
@@ -210,7 +213,7 @@ export function Wrap() {
   const message =
     wrappingMode === "wrap"
       ? `Converting publicly visible ${selectedToken.name} into its privacy-preserving equivalent s${selectedToken.name}. These tokens are not publicly visible and require a viewing key!`
-      : `Convert privacy-preserving s${selectedToken.name} into its publicly visible equivalent ${selectedToken.name}!`;
+      : `Converting privacy-preserving s${selectedToken.name} into its publicly visible equivalent ${selectedToken.name}!`;
 
   {
     new BigNumber(sSCRTBalance!)
@@ -368,7 +371,7 @@ export function Wrap() {
             {usdString.format(
               new BigNumber(SCRTBalance!)
                 .dividedBy(`1e${selectedToken.decimals}`)
-                .multipliedBy(Number(price))
+                .multipliedBy(Number(selectedTokenPrice))
                 .toNumber()
             )}
             )
@@ -388,10 +391,6 @@ export function Wrap() {
       return <></>;
     }
   }
-
-  useEffect(() => {
-    console.log("sSCRTBalance", sSCRTBalance);
-  }, [sSCRTBalance]);
 
   function WrappedTokenBalanceUi() {
     if (loadingTokenBalance || !secretjs || !secretAddress || !sSCRTBalance) {
@@ -422,7 +421,7 @@ export function Wrap() {
               ` (${usdString.format(
                 new BigNumber(sSCRTBalance!)
                   .dividedBy(`1e${selectedToken.decimals}`)
-                  .multipliedBy(Number(price))
+                  .multipliedBy(Number(selectedTokenPrice))
                   .toNumber()
               )})`}
           </span>
@@ -449,7 +448,7 @@ export function Wrap() {
         >
           <span>
             <button
-              onClick={() => toggleWrappingMode()}
+              onClick={toggleWrappingMode}
               disabled={disabled}
               className={
                 "inline-block bg-neutral-200 dark:bg-neutral-800 px-3 py-2 text-cyan-500 dark:text-cyan-500 transition-colors rounded-xl disabled:text-neutral-500 dark:disabled:text-neutral-500" +
@@ -521,7 +520,6 @@ export function Wrap() {
       var errorMessage = "";
 
       try {
-        setLoadingWrapOrUnwrap(true);
         const toastId = toast.loading(
           wrappingMode === "wrap"
             ? `Wrapping ${selectedToken.name}`
@@ -671,7 +669,6 @@ export function Wrap() {
             "Fee Grant used": feeGrantStatus === "Success" ? true : false,
           });
         }
-
         setLoadingWrapOrUnwrap(false);
         try {
           setLoadingCoinBalance(true);
@@ -688,7 +685,7 @@ export function Wrap() {
         <div className="flex items-center">
           <button
             className={
-              "enabled:bg-gradient-to-br enabled:from-cyan-600 enabled:to-purple-600 enabled:hover:from-cyan-500 enabled:hover:to-purple-500 transition-colors text-white font-semibold py-2.5 w-full rounded-lg disabled:bg-neutral-500"
+              "enabled:bg-gradient-to-r enabled:from-cyan-600 enabled:to-purple-600 enabled:hover:from-cyan-500 enabled:hover:to-purple-500 transition-colors text-white font-semibold py-2.5 w-full rounded-lg disabled:bg-neutral-500"
             }
             disabled={disabled}
             onClick={() => submit()}
@@ -713,7 +710,7 @@ export function Wrap() {
 
             {/* general text without value */}
             {(!amount || !secretAddress || !secretAddress) &&
-              (wrappingMode === "wrap" ? "wrap" : "unwrap")}
+              (wrappingMode === "wrap" ? "Wrap" : "Unwrap")}
           </button>
         </div>
       </>
@@ -787,17 +784,6 @@ export function Wrap() {
     };
   }, [secretAddress, secretjs, selectedToken, feeGrantStatus]);
 
-  useEffect(() => {
-    setPrice(0);
-    fetch(
-      `https://api.coingecko.com/api/v3/simple/price?ids=${selectedToken.coingecko_id}&vs_currencies=USD`
-    )
-      .then((resp) => resp.json())
-      .then((result: { [coingecko_id: string]: { usd: number } }) => {
-        setPrice(result[selectedToken.coingecko_id].usd);
-      });
-  }, [selectedToken]);
-
   const handleClick = () => {
     if (!secretAddress || !secretjs) {
       connectWallet();
@@ -845,8 +831,8 @@ export function Wrap() {
           <div className="border border-neutral-200 dark:border-neutral-700 rounded-2xl p-8 w-full text-neutral-800 dark:text-neutral-200 bg-white dark:bg-neutral-900">
             {/* Header */}
             <div className="flex items-center mb-4">
-              <h1 className="inline text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-br from-cyan-500 to-purple-500">
-                Secret {wrappingMode === "wrap" ? "wrap" : "unwrap"}
+              <h1 className="inline text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-500 to-purple-500">
+                Secret {wrappingMode === "wrap" ? "Wrap" : "Unwrap"}
               </h1>
 
               <Tooltip title={message} placement="right" arrow>

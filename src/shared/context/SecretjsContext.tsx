@@ -75,18 +75,20 @@ const SecretjsContextProvider = ({ children }: any) => {
   };
 
   useEffect(() => {
-    const fetchBalance = async () => {
-      const {
-        balance: { amount },
-      } = await secretjs.query.bank.balance({
-        address: secretAddress,
-        denom: "uscrt",
-      });
-      setSCRTBalance(amount);
-    };
+    if (secretjs) {
+      const fetchBalance = async () => {
+        const {
+          balance: { amount },
+        } = await secretjs.query.bank.balance({
+          address: secretAddress,
+          denom: "uscrt",
+        });
+        setSCRTBalance(amount);
+      };
 
-    fetchBalance();
-    updateTokenBalance();
+      fetchBalance();
+      updateTokenBalance();
+    }
   }, [secretjs, secretAddress]);
 
   async function setupKeplr(
