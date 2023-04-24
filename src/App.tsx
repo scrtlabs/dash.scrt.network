@@ -22,6 +22,17 @@ import { SecretjsContextProvider } from "shared/context/SecretjsContext";
 import { APIContextProvider } from "shared/context/APIContext";
 import RestakeRedesign from "stake/RestakeRedesign";
 
+import mixpanel from "mixpanel-browser";
+
+if (import.meta.env.VITE_MIXPANEL_ENABLED === "true") {
+  mixpanel.init(import.meta.env.VITE_MIXPANEL_PROJECT_TOKEN, { debug: true });
+  mixpanel.identify("Dashboard-App");
+
+  mixpanel.track("Dashboard has been opened", {
+    "Signup Type": "Referral",
+  });
+}
+
 // for html-head
 export const websiteName = "Secret Dashboard";
 

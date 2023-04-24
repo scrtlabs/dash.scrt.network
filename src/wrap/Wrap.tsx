@@ -37,6 +37,7 @@ import {
   SecretjsContext,
   setKeplrViewingKey,
 } from "shared/context/SecretjsContext";
+import mixpanel from "mixpanel-browser";
 import { useSearchParams } from "react-router-dom";
 import { WrappingMode } from "shared/types/WrappingMode";
 
@@ -517,6 +518,8 @@ export function Wrap() {
         return;
       }
 
+      var errorMessage = "";
+
       try {
         setLoadingWrapOrUnwrap(true);
         const toastId = toast.loading(
@@ -655,6 +658,20 @@ export function Wrap() {
             });
         }
       } finally {
+        if (import.meta.env.VITE_MIXPANEL_ENABLED === "true") {
+          mixpanel.init(import.meta.env.VITE_MIXPANEL_PROJECT_TOKEN, {
+            debug: true,
+          });
+          mixpanel.identify("Dashboard-App");
+          mixpanel.track("Secret Wrap", {
+            "Wrapping Mode": wrappingMode,
+            From: (wrappingMode == "Wrap" ? "" : "s") + selectedToken.name,
+            To: (wrappingMode == "Wrap" ? "s" : "") + selectedToken.name,
+            // "Amount": amountToWrap,
+            "Fee Grant used": feeGrantStatus === "Success" ? true : false,
+          });
+        }
+
         setLoadingWrapOrUnwrap(false);
         try {
           setLoadingCoinBalance(true);
