@@ -68,33 +68,20 @@ function Deposit() {
     toggleIbcMode,
     selectedToken,
     setSelectedToken,
+    selectableChains,
+    selectedSource,
+    setSelectedSource,
   } = useContext(IbcContext);
+  const { secretjs, secretAddress } = useContext(SecretjsContext);
 
   const [sourceAddress, setSourceAddress] = useState<string>("");
   const [availableBalance, setAvailableBalance] = useState<string>("");
-  const [loadingTx, setLoading] = useState<boolean>(false);
+  const [loadingTx, setLoadingTx] = useState<boolean>(false);
   const [sourceChainSecretjs, setSourceChainSecretjs] =
     useState<SecretNetworkClient | null>(null);
   const [fetchBalanceInterval, setFetchBalanceInterval] = useState<any>(null);
   const [amountToTransfer, setAmountToTransfer] = useState<string>("");
   const [axelarTransferFee, setAxelarTransferFee] = useState<any>();
-  const { secretjs, secretAddress } = useContext(SecretjsContext);
-  const queryParams = new URLSearchParams(window.location.search);
-
-  const chainByQueryParam = queryParams.get("chain"); // "scrt", "akash", etc.
-
-  const sourcePreselection = selectedToken.deposits.filter(
-    (deposit: any) =>
-      deposit.chain_name.toLowerCase() === chainByQueryParam?.toLowerCase()
-  )[0]
-    ? chainByQueryParam?.toLowerCase()
-    : "osmosis";
-
-  const [selectedSource, setSelectedSource] = useState<any>(
-    selectedToken.deposits.filter(
-      (deposit: any) => deposit.chain_name.toLowerCase() === sourcePreselection
-    )[0]
-  );
 
   const sdk = new AxelarAssetTransfer({
     environment: Environment.MAINNET,
@@ -102,6 +89,10 @@ function Deposit() {
   const axelarQuery = new AxelarQueryAPI({
     environment: Environment.MAINNET,
   });
+
+  useEffect(() => {
+    console.log(chains);
+  }, []);
 
   useEffect(() => {
     setSelectedTokenName(selectedToken.name);
@@ -121,9 +112,7 @@ function Deposit() {
       return (
         <>
           <Select
-            options={
-              tokens.filter((token) => token.name === "SCRT")[0].deposits
-            }
+            options={selectableChains}
             value={selectedSource}
             onChange={setSelectedSource}
             isSearchable={false}
@@ -550,7 +539,7 @@ function Deposit() {
           return;
         }
 
-        setLoading(true);
+        setLoadingTx(true);
 
         const amount = new BigNumber(normalizedAmount)
           .multipliedBy(`1e${selectedToken.decimals}`)
@@ -809,7 +798,7 @@ function Deposit() {
             isLoading: false,
           });
         } finally {
-          setLoading(false);
+          setLoadingTx(false);
         }
       }
       if (ibcMode === "withdrawal") {
@@ -830,7 +819,7 @@ function Deposit() {
           return;
         }
 
-        setLoading(true);
+        setLoadingTx(true);
 
         const amount = new BigNumber(normalizedAmount)
           .multipliedBy(`1e${selectedToken.decimals}`)
@@ -1014,7 +1003,7 @@ function Deposit() {
             isLoading: false,
           });
         } finally {
-          setLoading(false);
+          setLoadingTx(false);
         }
       }
     }

@@ -95,7 +95,7 @@ export function Wrap() {
   useEffect(() => {
     if (tokenUrlParam && isValidTokenParam()) {
       setSelectedToken(
-        tokens.find((token) => token.name === tokenUrlParam.toUpperCase())
+        tokens.find((token) => token.name === tokenUrlParam.toLowerCase())
       );
     }
   }, []);
