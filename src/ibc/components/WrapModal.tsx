@@ -5,18 +5,62 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { IbcContext } from "ibc/Ibc";
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import {
+  SecretjsContext,
+  getKeplrViewingKey,
+  isViewingKeyAvailable,
+} from "shared/context/SecretjsContext";
+import { IbcMode } from "shared/types/IbcMode";
+import {
+  sleep,
+  suggestCrescentToKeplr,
+  suggestChihuahuaToKeplr,
+  suggestInjectiveToKeplr,
+  suggestKujiraToKeplr,
+  suggestTerraToKeplr,
+  faucetAddress,
+  viewingKeyErrorString,
+} from "shared/utils/commons";
+import { Token, tokens } from "shared/utils/config";
 
 interface IWrapModalProps {
   open: boolean;
   onClose: any;
+  selectedToken: Token;
+  ibcMode: IbcMode;
 }
 
 const WrapModal = (props: IWrapModalProps) => {
-  if (!props.open) return null;
+  const { setViewingKey } = useContext(SecretjsContext);
 
-  const { selectedTokenName } = useContext(IbcContext);
+  const {
+    isWrapModalOpen,
+    setIsWrapModalOpen,
+    selectedTokenName,
+    setSelectedTokenName,
+    ibcMode,
+    setIbcMode,
+    toggleIbcMode,
+    selectedToken,
+    setSelectedToken,
+  } = useContext(IbcContext);
+
+  const [assetViewingKey, setAssetViewingKey] = useState<any>();
+
+  useEffect(() => {
+    setSelectedTokenName(selectedToken.name);
+    const updateCoinBalance = async () => {
+      const key = await getKeplrViewingKey(selectedToken.address);
+      if (!key) {
+        setAssetViewingKey(viewingKeyErrorString);
+      }
+    };
+    updateCoinBalance();
+  }, [selectedToken, assetViewingKey, isWrapModalOpen]);
+
+  if (!props.open) return null;
 
   return (
     <>
@@ -53,23 +97,47 @@ const WrapModal = (props: IWrapModalProps) => {
                   />
                   Transaction Successful
                 </h2>
-                <p className="text-neutral-600 dark:text-neutral-400 max-w-sm mx-auto mb-6">
-                  Now that you have (publicly visible){" "}
-                  {selectedTokenName || "SCRT"} in Secret Network, make sure to
-                  wrap your assets into the privacy-preserving equivalent s
-                  {selectedTokenName || "SCRT"}.
-                </p>
-                <Link
-                  to={"/wrap?token=" + selectedTokenName}
-                  className="sm:max-w-[200px] w-full md:px-4 inline-block bg-cyan-500 dark:bg-cyan-600 text-cyan-100 hover:text-white hover:bg-cyan-400 dark:hover:bg-cyan-600 text-center transition-colors py-2.5 rounded-xl font-semibold text-sm"
-                >
-                  <FontAwesomeIcon icon={faShuffle} className="mr-2" />
-                  Secret Wrap
-                </Link>
               </div>
 
               {/* Body */}
-              <div className="text-center"></div>
+              <div className="text-center">
+                {(selectedToken.is_ics20 || selectedToken.is_snip20) &&
+                  ibcMode === "deposit" &&
+                  assetViewingKey === viewingKeyErrorString && (
+                    <>
+                      <p className="text-neutral-600 dark:text-neutral-400 max-w-sm mx-auto mb-6">
+                        Set a viewing key to see your newly deposited s
+                        {selectedToken.name} tokens
+                      </p>
+                      <button
+                        onClick={() => setViewingKey(selectedToken)}
+                        className="sm:max-w-[200px] w-full md:px-4 inline-block bg-cyan-500 dark:bg-cyan-600 text-cyan-100 hover:text-white hover:bg-cyan-400 dark:hover:bg-cyan-600 text-center transition-colors py-2.5 rounded-xl font-semibold text-sm"
+                      >
+                        Set viewing key
+                      </button>
+                    </>
+                  )}{" "}
+                {ibcMode === "deposit" &&
+                  !selectedToken.is_ics20 &&
+                  !selectedToken.is_snip20 && (
+                    <>
+                      <p className="text-neutral-600 dark:text-neutral-400 max-w-sm mx-auto mb-6">
+                        Now that you have (publicly visible){" "}
+                        {props.selectedToken.name || "SCRT"} in Secret Network,
+                        make sure to wrap your assets into the
+                        privacy-preserving equivalent s
+                        {props.selectedToken.name || "SCRT"}.
+                      </p>
+                      <Link
+                        to={"/wrap?token=" + props.selectedToken.name}
+                        className="sm:max-w-[200px] w-full md:px-4 inline-block bg-cyan-500 dark:bg-cyan-600 text-cyan-100 hover:text-white hover:bg-cyan-400 dark:hover:bg-cyan-600 text-center transition-colors py-2.5 rounded-xl font-semibold text-sm"
+                      >
+                        <FontAwesomeIcon icon={faShuffle} className="mr-2" />
+                        Secret Wrap
+                      </Link>
+                    </>
+                  )}
+              </div>
             </div>
           </div>
         </div>
