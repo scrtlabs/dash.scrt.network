@@ -57,20 +57,17 @@ export function Wrap() {
 
   const secretToken: Token = tokens.find((token) => token.name === "SCRT");
   const [selectedToken, setSelectedToken] = useState<Token>(secretToken);
+  const [selectedTokenPrice, setSelectedTokenPrice] = useState<number>(0);
   const [amountString, setAmountString] = useState<string>("");
   const [wrappingMode, setWrappingMode] = useState<WrappingMode>("wrap");
 
-  const [selectedTokenPrice, setSelectedTokenPrice] = useState<number>(0);
-
   useEffect(() => {
-    if (prices.length > 1) {
-      setSelectedTokenPrice(
-        prices.find(
-          (price: { coingecko_id: string }) =>
-            price.coingecko_id === selectedToken.coingecko_id
-        )?.usd
-      );
-    }
+    setSelectedTokenPrice(
+      prices.find(
+        (price: { coingecko_id: string }) =>
+          price.coingecko_id === selectedToken.coingecko_id
+      )?.priceUsd
+    );
   }, [selectedToken, prices]);
 
   // URL params
@@ -123,8 +120,6 @@ export function Wrap() {
   const [validationMessage, setValidationMessage] = useState<string>("");
   const [isValidationActive, setIsValidationActive] = useState<boolean>(false);
 
-  const [loadingWrapOrUnwrap, setLoadingWrapOrUnwrap] =
-    useState<boolean>(false);
   const [loadingCoinBalance, setLoadingCoinBalance] = useState<boolean>(true);
 
   function validateForm() {
@@ -394,10 +389,6 @@ export function Wrap() {
     }
   }
 
-  useEffect(() => {
-    console.log("sSCRTBalance", sSCRTBalance);
-  }, [sSCRTBalance]);
-
   function WrappedTokenBalanceUi() {
     if (loadingTokenBalance || !secretjs || !secretAddress || !sSCRTBalance) {
       return <></>;
@@ -524,7 +515,6 @@ export function Wrap() {
       }
 
       try {
-        setLoadingWrapOrUnwrap(true);
         const toastId = toast.loading(
           wrappingMode === "wrap"
             ? `Wrapping ${selectedToken.name}`
@@ -661,7 +651,6 @@ export function Wrap() {
             });
         }
       } finally {
-        setLoadingWrapOrUnwrap(false);
         try {
           setLoadingCoinBalance(true);
           await sleep(1000); // sometimes query nodes lag

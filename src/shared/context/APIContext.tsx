@@ -39,10 +39,6 @@ const APIContextProvider = ({ children }: any) => {
     fetchPrices();
   }, []);
 
-  useEffect(() => {
-    console.log(prices);
-  }, [prices]);
-
   const fetchDappsURL = () => {
     fetch(dAppsURL)
       .then((response) => {
