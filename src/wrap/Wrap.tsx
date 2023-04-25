@@ -398,6 +398,17 @@ export function Wrap() {
             <FontAwesomeIcon icon={faKey} className="mr-2" />
             Set Viewing Key
           </button>
+          <Tooltip
+            title={
+              "Balances on Secret Network are private by default. Create a viewing key to view your encrypted balances."
+            }
+            placement="right"
+            arrow
+          >
+            <span className="ml-2 mt-1 text-neutral-600 dark:text-neutral-400 hover:text-black dark:hover:text-white transition-colors cursor-pointer">
+              <FontAwesomeIcon icon={faInfoCircle} />
+            </span>
+          </Tooltip>
         </>
       );
     } else if (Number(sSCRTBalance) > -1) {
