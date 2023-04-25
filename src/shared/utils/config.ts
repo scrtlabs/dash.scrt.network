@@ -101,6 +101,20 @@ export const chains: { [chain_name: string]: Chain } = {
     chain_image: "/huahua.jpg",
     explorer_account: "https://ping.pub/chihuahua/account/",
   },
+  Comdex: {
+    chain_name: "Comdex",
+    deposit_channel_id: "channel-65",
+    deposit_gas: 150_000,
+    deposit_gas_denom: "ucmdx",
+    withdraw_channel_id: "channel-63",
+    withdraw_gas: 30_000,
+    chain_id: "comdex-1",
+    bech32_prefix: "comdex",
+    lcd: "https://comdex-api.lavenderfive.com/",
+    rpc: "https://comdex-rpc.lavenderfive.com/",
+    chain_image: "/cmdx.svg",
+    explorer_account: "https://www.mintscan.io/comdex/account/",
+  },
   "Cosmos Hub": {
     chain_name: "Cosmos Hub",
     deposit_channel_id: "channel-235",
@@ -414,6 +428,18 @@ export const tokens: Token[] = [
         ),
       },
       {
+        chain_name: "Comdex",
+        from_denom: ibcDenom(
+          [
+            {
+              incomingChannelId: chains["Comdex"].deposit_channel_id,
+              incomingPortId: "transfer",
+            },
+          ],
+          "uscrt"
+        ),
+      },
+      {
         chain_name: "Cosmos Hub",
         from_denom: ibcDenom(
           [
@@ -600,6 +626,10 @@ export const tokens: Token[] = [
         from_denom: "uscrt",
       },
       {
+        chain_name: "Comdex",
+        from_denom: "uscrt",
+      },
+      {
         chain_name: "Cosmos Hub",
         from_denom: "uscrt",
       },
@@ -744,6 +774,64 @@ export const tokens: Token[] = [
       },
     ],
   },
+  {
+    name: "CMDX",
+    address: "secret1mndng80tqppllk0qclgcnvccf9urak08e9w2fl",
+    code_hash:
+      "638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e",
+    image: "/cmdx.svg",
+    decimals: 6,
+    coingecko_id: "comdex",
+    deposits: [
+      {
+        chain_name: "Comdex",
+        from_denom: "ucmdx",
+      },
+    ],
+    withdrawals: [
+      {
+        chain_name: "Comdex",
+        from_denom: ibcDenom(
+          [
+            {
+              incomingChannelId: chains["Comdex"].withdraw_channel_id,
+              incomingPortId: "transfer",
+            },
+          ],
+          "ucmdx"
+        ),
+      },
+    ],
+  },
+  {
+    name: "CMST",
+    address: "secret14l7s0evqw7grxjlesn8yyuk5lexuvkwgpfdxr5",
+    code_hash:
+      "638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e",
+    image: "/cmst.svg",
+    decimals: 6,
+    coingecko_id: "composite",
+    deposits: [
+      {
+        chain_name: "Comdex",
+        from_denom: "ucmst",
+      },
+    ],
+    withdrawals: [
+      {
+        chain_name: "Comdex",
+        from_denom: ibcDenom(
+          [
+            {
+              incomingChannelId: chains["Comdex"].withdraw_channel_id,
+              incomingPortId: "transfer",
+            },
+          ],
+          "ucmst"
+        ),
+      },
+    ],
+  },
   /*  {
     name: "CRE",
     address: "secret1tatdlkyznf00m3a7hftw5daaq2nk38ugfphuyr",
@@ -856,6 +944,35 @@ export const tokens: Token[] = [
             },
           ],
           "ugraviton"
+        ),
+      },
+    ],
+  },
+  {
+    name: "HARBOR",
+    address: "secret1lrlkqhmwkh5y4326akn3hwn6j69f8l5656m43e",
+    code_hash:
+      "638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e",
+    image: "/harbor.svg",
+    decimals: 6,
+    coingecko_id: "harbor",
+    deposits: [
+      {
+        chain_name: "Comdex",
+        from_denom: "uharbor",
+      },
+    ],
+    withdrawals: [
+      {
+        chain_name: "Comdex",
+        from_denom: ibcDenom(
+          [
+            {
+              incomingChannelId: chains["Comdex"].withdraw_channel_id,
+              incomingPortId: "transfer",
+            },
+          ],
+          "uharbor"
         ),
       },
     ],
@@ -1088,6 +1205,35 @@ export const tokens: Token[] = [
             },
           ],
           "uosmo"
+        ),
+      },
+    ],
+  },
+  {
+    name: "USK",
+    address: "secret1cj2fvj4ap79fl9euz8kqn0k5xlvck0pw9z9xhr",
+    code_hash:
+      "638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e",
+    image: "/usk.svg",
+    decimals: 6,
+    coingecko_id: "kujira",
+    deposits: [
+      {
+        chain_name: "Kujira",
+        from_denom: "uusk",
+      },
+    ],
+    withdrawals: [
+      {
+        chain_name: "Kujira",
+        from_denom: ibcDenom(
+          [
+            {
+              incomingChannelId: chains["Kujira"].withdraw_channel_id,
+              incomingPortId: "transfer",
+            },
+          ],
+          "uusk"
         ),
       },
     ],

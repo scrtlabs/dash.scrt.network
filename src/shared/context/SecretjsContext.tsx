@@ -9,6 +9,7 @@ import {
   tokens,
 } from "shared/utils/config";
 import GetWalletModal from "./GetWalletModal";
+import BalanceItem from "shared/components/BalanceItem";
 
 export async function isViewingKeyAvailable(token: Token) {
   const key = await getKeplrViewingKey(token.address);
@@ -38,9 +39,7 @@ const SecretjsContextProvider = ({ children }: any) => {
     if (!secretjs || !secretAddress) {
       return;
     }
-
     const key = await getKeplrViewingKey(SCRTToken.address);
-
     if (!key) {
       setSSCRTBalance(viewingKeyErrorString);
       return;
@@ -59,7 +58,6 @@ const SecretjsContextProvider = ({ children }: any) => {
           balance: { address: secretAddress, key },
         },
       });
-
       if (result.viewing_key_error) {
         console.error(result.viewing_key_error.msg);
         setSSCRTBalance(viewingKeyErrorString);
@@ -74,21 +72,54 @@ const SecretjsContextProvider = ({ children }: any) => {
     }
   };
 
-  useEffect(() => {
-    if (secretjs) {
-      const fetchBalance = async () => {
-        const {
-          balance: { amount },
-        } = await secretjs.query.bank.balance({
-          address: secretAddress,
-          denom: "uscrt",
+  const fetchBalance = async () => {
+    const {
+      balance: { amount },
+    } = await secretjs.query.bank.balance({
+      address: secretAddress,
+      denom: "uscrt",
+    });
+    setSCRTBalance(amount);
+    if (amount == "0" && feeGrantStatus === "Untouched") {
+      try {
+        const response = await fetch(faucetURL, {
+          method: "POST",
+          body: JSON.stringify({ Address: secretAddress }),
+          headers: { "Content-Type": "application/json" },
         });
-        setSCRTBalance(amount);
-      };
-
-      fetchBalance();
-      updateTokenBalance();
+        const result = await response;
+        const textBody = await result.text();
+        if (result.ok == true) {
+          toast.success(
+            `Your wallet does not have any SCRT to pay for transaction costs. Successfully sent new fee grant (0.1 SCRT) to address ${secretAddress}.`
+          );
+          setFeeGrantStatus("Success");
+        } else if (textBody == "Existing Fee Grant did not expire\n") {
+          toast.success(
+            `Your wallet does not have any SCRT to pay for transaction costs. Your address ${secretAddress} however does already have an existing fee grant.`
+          );
+          setFeeGrantStatus("Success");
+        } else {
+          toast.error(
+            `Fee Grant for address ${secretAddress} failed with status code: ${result.status}`
+          );
+          setFeeGrantStatus("Fail");
+        }
+      } catch (e) {
+        toast.error(
+          `Fee Grant for address ${secretAddress} failed with error: ${e}`
+        );
+        setFeeGrantStatus("Fail");
+      }
     }
+  };
+
+  useEffect(() => {
+    if (!secretjs || !secretAddress) {
+      return;
+    }
+    fetchBalance();
+    updateTokenBalance();
   }, [secretjs, secretAddress]);
 
   async function setupKeplr(
@@ -267,6 +298,7 @@ async function getKeplrViewingKey(token: string): Promise<string | null> {
   try {
     return await window.keplr.getSecret20ViewingKey(SECRET_CHAIN_ID, token);
   } catch (e) {
+    console.log(e);
     return null;
   }
 }

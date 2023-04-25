@@ -1,15 +1,16 @@
-import { faKey } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import BigNumber from "bignumber.js";
 import React, { FunctionComponent, useContext } from "react";
 import { APIContext } from "shared/context/APIContext";
+import { sleep, viewingKeyErrorString, usdString } from "shared/utils/commons";
+import Tooltip from "@mui/material/Tooltip";
 import {
   getKeplrViewingKey,
   SecretjsContext,
   setKeplrViewingKey,
 } from "shared/context/SecretjsContext";
-import { sleep, usdString } from "shared/utils/commons";
 import { Token } from "shared/utils/config";
+import { faKey, faInfoCircle } from "@fortawesome/free-solid-svg-icons";
 
 type IBalanceProps = {
   token: Token;
@@ -74,8 +75,10 @@ const BalanceItem: FunctionComponent<IBalanceProps> = ({
           className="h-7"
         />
       </div>
-      {isSecretToken && !sSCRTBalance ? (
-        <div>
+      {isSecretToken && sSCRTBalance == viewingKeyErrorString ? (
+        <div className="font-bold">
+          {" "}
+          sSCRT
           <SetViewingKeyButton token={token} />
         </div>
       ) : (
