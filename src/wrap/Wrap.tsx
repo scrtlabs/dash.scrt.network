@@ -194,14 +194,6 @@ export function Wrap() {
     document.body.classList.add("overflow-hidden");
   }
 
-  const updateFeeGrantButton = (text: string, color: string) => {
-    const btnFeeGrant = document.getElementById("grantButton");
-    if (btnFeeGrant != null) {
-      btnFeeGrant.style.color = color;
-      btnFeeGrant.textContent = text;
-    }
-  };
-
   function toggleWrappingMode() {
     if (wrappingMode === "wrap") {
       setWrappingMode("unwrap");
@@ -727,46 +719,6 @@ export function Wrap() {
         denom: selectedToken.withdrawals[0]?.from_denom,
       });
       setSCRTBalance(amount);
-      if (
-        selectedToken.withdrawals[0]?.from_denom == "uscrt" &&
-        amount == "0" &&
-        feeGrantStatus === "Untouched"
-      ) {
-        try {
-          const response = await fetch(faucetURL, {
-            method: "POST",
-            body: JSON.stringify({ Address: secretAddress }),
-            headers: { "Content-Type": "application/json" },
-          });
-          const result = await response;
-          const textBody = await result.text();
-          if (result.ok == true) {
-            updateFeeGrantButton("Fee Granted", "green");
-            toast.success(
-              `Your wallet does not have any SCRT to pay for transaction costs. Successfully sent new fee grant (0.1 SCRT) to address ${secretAddress}.`
-            );
-            setFeeGrantStatus("Success");
-          } else if (textBody == "Existing Fee Grant did not expire\n") {
-            updateFeeGrantButton("Fee Granted", "green");
-            toast.success(
-              `Your wallet does not have any SCRT to pay for transaction costs. Your address ${secretAddress} however does already have an existing fee grant.`
-            );
-            setFeeGrantStatus("Success");
-          } else {
-            updateFeeGrantButton("Fee Grant failed", "red");
-            toast.error(
-              `Fee Grant for address ${secretAddress} failed with status code: ${result.status}`
-            );
-            setFeeGrantStatus("Fail");
-          }
-        } catch (e) {
-          updateFeeGrantButton("Fee Grant failed", "red");
-          toast.error(
-            `Fee Grant for address ${secretAddress} failed with error: ${e}`
-          );
-          setFeeGrantStatus("Fail");
-        }
-      }
     } catch (e) {
       console.error(`Error while trying to query ${selectedToken.name}:`, e);
     }
@@ -871,7 +823,7 @@ export function Wrap() {
                     <div className="flex items-center">
                       <img
                         src={`/img/assets/${token.image}`}
-                        className="w-5 h-5 mr-2 rounded-full"
+                        className="w-6 h-6 mr-2 rounded-full"
                       />
                       <span className="font-semibold text-sm">
                         {wrappingMode == "unwrap" && "s"}

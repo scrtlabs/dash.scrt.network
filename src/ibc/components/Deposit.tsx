@@ -1290,6 +1290,7 @@ function Deposit() {
             options={supportedTokens}
             value={selectedToken}
             onChange={setSelectedToken}
+            isSearchable={false}
             isDisabled={!secretjs || !secretAddress}
             formatOptionLabel={(token) => (
               <div className="flex items-center">
