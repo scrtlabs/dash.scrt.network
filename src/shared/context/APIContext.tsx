@@ -82,6 +82,7 @@ const APIContextProvider = ({ children }: any) => {
   const [coingeckoApiData_Month, setCoinGeckoApiData_Month] = useState();
   const [coingeckoApiData_Year, setCoinGeckoApiData_Year] = useState();
   const [defiLamaApiData_Year, setDefiLamaApiData_Year] = useState();
+  const [defiLamaApiData_TVL, setDefiLamaApiData_TVL] = useState();
   const [spartanApiData, setSpartanApiData] = useState();
   const [currentPrice, setCurrentPrice] = useState(Number);
   const [volume, setVolume] = useState(Number);
@@ -122,7 +123,16 @@ const APIContextProvider = ({ children }: any) => {
         );
       });
 
-    //  API
+    let defiLamaApiUrl_TVL = `https://api.llama.fi/chains`;
+    fetch(defiLamaApiUrl_TVL)
+      .then((response) => response.json())
+      .then((response) => {
+        setDefiLamaApiData_TVL(
+          response.filter((item: any) => item?.gecko_id === "secret")[0]?.tvl
+        );
+      });
+
+    //  AP?
     let spartanApiUrl = `https://core.spartanapi.dev/secret/chains/secret-4/chain_info`;
     fetch(spartanApiUrl)
       .then((response) => response.json())
@@ -156,6 +166,8 @@ const APIContextProvider = ({ children }: any) => {
     setCoinGeckoApiData_Year,
     defiLamaApiData_Year,
     setDefiLamaApiData_Year,
+    defiLamaApiData_TVL,
+    setDefiLamaApiData_TVL,
     spartanApiData,
     setSpartanApiData,
     currentPrice,
