@@ -69,6 +69,21 @@ export const DefaultLayout = ({ children }: any) => {
           </NavigationContext.Provider>
         </aside>
         <main className="flex flex-col min-h-screen flex-1 lg:ml-[17rem]">
+          {/* Info Box */}
+          <div className="bg-orange-500 dark:bg-orange-600 px-4 py-1.5 text-sm text-center">
+            ⚡️ <b>Secret Surge is LIVE</b>, bringing up to{" "}
+            <b>$4 MILLION in rewards</b> to Secret DeFi dApps!{" "}
+            <a
+              href="https://scrt.network/blog/secret-surge"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="underline"
+            >
+              Learn More
+            </a>
+            {" ⚡️"}
+          </div>
+
           <div className="flex-1">
             {/* Top Bar [Burger Menu | Socials | Keplr] */}
             <div className="flex items-center gap-4 p-4">
