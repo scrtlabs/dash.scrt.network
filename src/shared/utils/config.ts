@@ -1,5 +1,5 @@
 import { CHAINS } from "@axelar-network/axelarjs-sdk";
-import { ibcDenom } from "shared/utils/commons";
+import { ibcDenom } from "secretjs";
 
 export type Chain = {
   /** display name of the chain */
@@ -40,7 +40,7 @@ export const chains: { [chain_name: string]: Chain } = {
     withdraw_gas: 0,
     chain_id: "secret-4",
     bech32_prefix: "secret",
-    lcd: "https://lcd.secret.express",
+    lcd: "https://1rpc.io/scrt-lcd",
     rpc: "https://wgrpc.secret.express", // gRPC-web
     chain_image: "img/assets/scrt.svg",
     explorer_account: "https://www.mintscan.io/secret/account/",
