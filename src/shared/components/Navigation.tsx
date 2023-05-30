@@ -259,7 +259,7 @@ export function Navigation({
             </li>
             <li>
               <a
-                href="https://secretnodes.com/"
+                href="https://www.mintscan.io/secret"
                 target="_blank"
                 className="cursor-pointer dark:hover:text-white w-full lg:mx-8 rounded-xl transition-colors text-neutral-600 dark:text-neutral-300 hover:text-black block lg:flex lg:items-center"
               >
