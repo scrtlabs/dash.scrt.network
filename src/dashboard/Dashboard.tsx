@@ -131,9 +131,20 @@ export function Dashboard() {
         ?.supplyOf({ denom: "uscrt" })
         ?.then((res) => setTotalSupply((res.amount.amount as any) / 1e6));
 
-      secretjsquery?.query?.tendermint
-        .getLatestBlock("")
-        ?.then((res) => setBlockHeight(res.block.header.height));
+      secretjsquery?.query?.tendermint.getLatestBlock("")?.then((res1) => {
+        setBlockHeight(res1.block.header.height);
+        secretjsquery?.query?.tendermint
+          .getBlockByHeight({
+            height: (Number(res1.block.header.height) - 1).toString(),
+          })
+          ?.then((res2) => {
+            const timestamp1 = new Date(res1.block.header.time as any);
+            const timestamp2 = new Date(res2.block.header.time as any);
+            const diffInSeconds =
+              Math.abs((timestamp1 as any) - (timestamp2 as any)) / 1000;
+            setBlockTime(diffInSeconds.toFixed(2));
+          });
+      });
 
       secretjsquery?.query?.staking?.pool("")?.then((res) => {
         setBondedToken(parseInt(res.pool.bonded_tokens) / 10e5);
@@ -142,7 +153,7 @@ export function Dashboard() {
 
       secretjsquery?.query?.mint
         ?.inflation("")
-        ?.then((res) => setInflation(res?.inflation));
+        ?.then((res) => setInflation((res as any).inflation));
 
       secretjsquery?.query?.distribution
         ?.communityPool("")
@@ -207,7 +218,6 @@ export function Dashboard() {
       notBondedToken
     ) {
       // staking ratio missing
-      console.log(bondedToken, notBondedToken);
       const I = inflation; // inflation
       const F = parseFloat(secretFoundationTax); // foundation tax
       const C = 0.0; // validator commision rate; median is 5%
@@ -268,7 +278,7 @@ export function Dashboard() {
             <QuadTile
               item1_key="Block Height"
               item1_value={blockHeightFormattedString}
-              item2_key="Block Time (100 blocks)"
+              item2_key="Block Time (last block)"
               item2_value={blockTimeFormattedString}
               item3_key="# Transactions (24h)"
               item3_value={dailyTransactionsFormattedString}
