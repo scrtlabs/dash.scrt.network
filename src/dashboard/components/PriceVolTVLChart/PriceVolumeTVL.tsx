@@ -42,8 +42,6 @@ export default function PriceVolumeTVL(props: any) {
     setCoinGeckoApiData_Year,
     defiLamaApiData_Year,
     setDefiLamaApiData_Year,
-    spartanApiData,
-    setSpartanApiData,
     currentPrice,
     setCurrentPrice,
     volume,
