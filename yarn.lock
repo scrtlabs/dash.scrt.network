@@ -1345,27 +1345,36 @@
     "@jridgewell/resolve-uri" "3.1.0"
     "@jridgewell/sourcemap-codec" "1.4.14"
 
-"@keplr-wallet/cosmos@0.11.12":
-  version "0.11.12"
-  resolved "https://registry.npmjs.org/@keplr-wallet/cosmos/-/cosmos-0.11.12.tgz"
-  integrity sha512-5p0yIcOO183nY21+/d6dblZIiJKKTN2Bd/Dm8kA0+FqDlPDxnpCQukWsrNNb7Sctci94DYDAVYYa2vmacFUGRQ==
+"@keplr-wallet/common@0.11.59":
+  version "0.11.59"
+  resolved "https://registry.yarnpkg.com/@keplr-wallet/common/-/common-0.11.59.tgz#f59e5b0d943ec79916032b72da06b6e0f6d17210"
+  integrity sha512-S8gQOc87jJfUJ5plpe/rEepVXqp3nfB4f/XSBYAqSjZp7g1fJ2Z968HLe2Ad0u9nGK3AbUPaNXd8gxmCsoZUvA==
   dependencies:
-    "@cosmjs/launchpad" "^0.24.0-alpha.25"
+    "@keplr-wallet/crypto" "0.11.59"
+    buffer "^6.0.3"
+    delay "^4.4.0"
+
+"@keplr-wallet/cosmos@0.11.59":
+  version "0.11.59"
+  resolved "https://registry.yarnpkg.com/@keplr-wallet/cosmos/-/cosmos-0.11.59.tgz#1ae968c2cbbb5adc2bdde3dd3bb2bd5aa2763936"
+  integrity sha512-eT4t72tT/2bILuZK6iPoj3dZHtWpofIq5gfRPM4iNmjco3qjqIXHOIhYZaewPIQb6bUKNrYueM+0hqwHqWcULg==
+  dependencies:
     "@ethersproject/address" "^5.6.0"
-    "@keplr-wallet/crypto" "0.11.12"
-    "@keplr-wallet/proto-types" "0.11.12"
-    "@keplr-wallet/types" "0.11.12"
-    "@keplr-wallet/unit" "0.11.12"
+    "@keplr-wallet/common" "0.11.59"
+    "@keplr-wallet/crypto" "0.11.59"
+    "@keplr-wallet/proto-types" "0.11.59"
+    "@keplr-wallet/types" "0.11.59"
+    "@keplr-wallet/unit" "0.11.59"
     axios "^0.27.2"
     bech32 "^1.1.4"
     buffer "^6.0.3"
     long "^4.0.0"
     protobufjs "^6.11.2"
 
-"@keplr-wallet/crypto@0.11.12":
-  version "0.11.12"
-  resolved "https://registry.npmjs.org/@keplr-wallet/crypto/-/crypto-0.11.12.tgz"
-  integrity sha512-Fa6OsU4dUZXVBOxg4zdcv+UcSR2c7rvSGzH/by9aR2bwhMQt4jXhpjxFWM4YDvDBWnDLovtf4ClzxREL7dT5pA==
+"@keplr-wallet/crypto@0.11.59":
+  version "0.11.59"
+  resolved "https://registry.yarnpkg.com/@keplr-wallet/crypto/-/crypto-0.11.59.tgz#405cb8e0c9af514eaa4657fefd461672eeb3427c"
+  integrity sha512-kkkBAqeSQIbSuVDNrlm1dAhJNZRSPOdmbbTLTVClev6xZvW84vEMdXYMy6prUdPIHn3ItvckCL9X4pRt6SbMtA==
   dependencies:
     "@ethersproject/keccak256" "^5.5.0"
     bip32 "^2.0.6"
@@ -1376,10 +1385,10 @@
     elliptic "^6.5.3"
     sha.js "^2.4.11"
 
-"@keplr-wallet/proto-types@0.11.12":
-  version "0.11.12"
-  resolved "https://registry.npmjs.org/@keplr-wallet/proto-types/-/proto-types-0.11.12.tgz"
-  integrity sha512-w3p95oOgGc4pzj5Xrtopea+gw8pjEbjwUwCmjhAEXX0IIGFa0iPuy+O6Vmv35VgtiseT6+lx+TTNChFaECKPIQ==
+"@keplr-wallet/proto-types@0.11.59":
+  version "0.11.59"
+  resolved "https://registry.yarnpkg.com/@keplr-wallet/proto-types/-/proto-types-0.11.59.tgz#bf3b2646735043a07900c20040cfec73bbd8e906"
+  integrity sha512-vdX6Ufe6SdhAIK1PXGupt8xI3VOvnkfe6+Z4qrneMfn3f/3swSst91IgKFKUMghLMjy38KUytTFSGjH6wBtFMg==
   dependencies:
     long "^4.0.0"
     protobufjs "^6.11.2"
@@ -1395,12 +1404,20 @@
     long "^4.0.0"
     secretjs "0.17.7"
 
-"@keplr-wallet/unit@0.11.12":
-  version "0.11.12"
-  resolved "https://registry.npmjs.org/@keplr-wallet/unit/-/unit-0.11.12.tgz"
-  integrity sha512-ZvVm/iFOq/7NfytTznOE6M8iQPaprGT/ew6Rtd5kMDenvR12uH6HMnwzOMqfuJqi9o1vnyqXL2RRi+GqVgaL4A==
+"@keplr-wallet/types@0.11.59":
+  version "0.11.59"
+  resolved "https://registry.yarnpkg.com/@keplr-wallet/types/-/types-0.11.59.tgz#5514dd0c79edb870138f521689894cf71efc7485"
+  integrity sha512-/zuB3JgGZqbCSpK/RK2lhnTtdpBbMNuH1hLQ4eYKqrG3UX6bWD1l+SGDFLq6UulnoIGadfTe3Tbgbi9Jl1cgpw==
   dependencies:
-    "@keplr-wallet/types" "0.11.12"
+    axios "^0.27.2"
+    long "^4.0.0"
+
+"@keplr-wallet/unit@0.11.59":
+  version "0.11.59"
+  resolved "https://registry.yarnpkg.com/@keplr-wallet/unit/-/unit-0.11.59.tgz#7ce16b537037285e03f02a978e88c5cc2cdda9b9"
+  integrity sha512-nKpPSignifAwA5LT8Ci+h5ZBKQrk1uRbwo8FPifmVEBrKkjoU2lPb04ccrQlzt6aGGPQLd8cZ8tkJhzn3os8fA==
+  dependencies:
+    "@keplr-wallet/types" "0.11.59"
     big-integer "^1.6.48"
     utility-types "^3.10.0"
 
@@ -2732,6 +2749,11 @@ define-properties@^1.1.2, define-properties@^1.1.3, define-properties@^1.1.4:
   dependencies:
     has-property-descriptors "^1.0.0"
     object-keys "^1.1.1"
+
+delay@^4.4.0:
+  version "4.4.1"
+  resolved "https://registry.yarnpkg.com/delay/-/delay-4.4.1.tgz#6e02d02946a1b6ab98b39262ced965acba2ac4d1"
+  integrity sha512-aL3AhqtfhOlT/3ai6sWXeqwnw63ATNpnUiN4HL7x9q+My5QtHlO3OIkasmug9LKzpheLdmUKGRKnYXYAS7FQkQ==
 
 delayed-stream@~1.0.0:
   version "1.0.0"
