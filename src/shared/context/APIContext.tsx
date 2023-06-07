@@ -83,8 +83,8 @@ const APIContextProvider = ({ children }: any) => {
   const [coingeckoApiData_Year, setCoinGeckoApiData_Year] = useState();
   const [defiLamaApiData_Year, setDefiLamaApiData_Year] = useState();
   const [defiLamaApiData_TVL, setDefiLamaApiData_TVL] = useState();
-  const [spartanApiData, setSpartanApiData] = useState();
   const [currentPrice, setCurrentPrice] = useState(Number);
+  const [externalApiData, setExternalApiData] = useState();
   const [volume, setVolume] = useState(Number);
   const [marketCap, setMarketCap] = useState(Number);
 
@@ -132,14 +132,6 @@ const APIContextProvider = ({ children }: any) => {
         );
       });
 
-    //  AP?
-    let spartanApiUrl = `https://core.spartanapi.dev/secret/chains/secret-4/chain_info`;
-    fetch(spartanApiUrl)
-      .then((response) => response.json())
-      .then((response) => {
-        setSpartanApiData(response);
-      });
-
     // Coingecko Market Price, Market Cap & Volume
     let coingeckoMarketCapVolumeUrl = `https://api.coingecko.com/api/v3/simple/price?ids=secret&vs_currencies=USD&include_market_cap=true&include_24hr_vol=true&include_24hr_change=true`;
     fetch(coingeckoMarketCapVolumeUrl)
@@ -148,6 +140,14 @@ const APIContextProvider = ({ children }: any) => {
         setCurrentPrice(response.secret.usd);
         setMarketCap(response.secret.usd_market_cap);
         setVolume(response.secret.usd_24h_vol);
+      });
+
+    // Coingecko Market Price, Market Cap & Volume
+    let mintscanApiDataUrl = `https://api.mintscan.io/v1/secret/status`;
+    fetch(mintscanApiDataUrl)
+      .then((response) => response.json())
+      .then((response) => {
+        setExternalApiData(response);
       });
   }, []);
 
@@ -168,10 +168,10 @@ const APIContextProvider = ({ children }: any) => {
     setDefiLamaApiData_Year,
     defiLamaApiData_TVL,
     setDefiLamaApiData_TVL,
-    spartanApiData,
-    setSpartanApiData,
     currentPrice,
     setCurrentPrice,
+    externalApiData,
+    setExternalApiData,
     volume,
     setVolume,
     marketCap,
