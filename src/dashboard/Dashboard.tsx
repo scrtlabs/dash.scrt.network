@@ -25,6 +25,8 @@ export function Dashboard() {
     setDefiLamaApiData_TVL,
     currentPrice,
     setCurrentPrice,
+    externalApiData,
+    setExternalApiData,
     volume,
     setVolume,
     marketCap,
@@ -53,19 +55,15 @@ export function Dashboard() {
   }, [blockTime]);
 
   // daily transactions
-  const [dailyTransactions, setDailyTransactions] = useState("");
-  const [
-    dailyTransactionsFormattedString,
-    setDailyTransactionsFormattedString,
-  ] = useState("");
+  const [transactions, setTransactions] = useState("");
+  const [dailyTransactionsFormattedString, setTransactionsFormattedString] =
+    useState("");
 
   useEffect(() => {
-    if (dailyTransactions) {
-      setDailyTransactionsFormattedString(
-        parseInt(dailyTransactions).toLocaleString()
-      );
+    if (transactions) {
+      setTransactionsFormattedString(parseInt(transactions).toLocaleString());
     }
-  }, [dailyTransactions]);
+  }, [transactions]);
 
   // taxes
   const [communityTax, setCommunityTax] = useState("");
@@ -133,17 +131,17 @@ export function Dashboard() {
 
       secretjsquery?.query?.tendermint.getLatestBlock("")?.then((res1) => {
         setBlockHeight(res1.block.header.height);
-        secretjsquery?.query?.tendermint
-          .getBlockByHeight({
-            height: (Number(res1.block.header.height) - 1).toString(),
-          })
-          ?.then((res2) => {
-            const timestamp1 = new Date(res1.block.header.time as any);
-            const timestamp2 = new Date(res2.block.header.time as any);
-            const diffInSeconds =
-              Math.abs((timestamp1 as any) - (timestamp2 as any)) / 1000;
-            setBlockTime(diffInSeconds.toFixed(2));
-          });
+        // secretjsquery?.query?.tendermint
+        //   .getBlockByHeight({
+        //     height: (Number(res1.block.header.height) - 1).toString(),
+        //   })
+        //   ?.then((res2) => {
+        //     const timestamp1 = new Date(res1.block.header.time as any);
+        //     const timestamp2 = new Date(res2.block.header.time as any);
+        //     const diffInSeconds =
+        //       Math.abs((timestamp1 as any) - (timestamp2 as any)) / 1000;
+        //     setBlockTime(diffInSeconds.toFixed(2));
+        //   });
       });
 
       secretjsquery?.query?.staking?.pool("")?.then((res) => {
@@ -196,18 +194,18 @@ export function Dashboard() {
   const [circulatingSupply, setCirculatingSupply] = useState(0);
   const [communityPool, setCommunityPool] = useState(Number); // in uscrt
 
-  // useEffect(() => {
-  //   if (spartanApiData) {
-  //     const queryData = async () => {
-  //       setCirculatingSupply((spartanApiData as any).circulating_supply);
-  //       setBlockTime((spartanApiData as any).avg_block_time);
-  //       setDailyTransactions((spartanApiData as any).tx_volume);
-  //       setFeesPaid((spartanApiData as any).fees_paid);
-  //     };
+  useEffect(() => {
+    if (externalApiData) {
+      console.log(externalApiData);
+      const queryData = async () => {
+        setTransactions((externalApiData as any).total_txs_num);
+        setFeesPaid((externalApiData as any).fees_paid);
+        setBlockTime((externalApiData as any).block_time);
+      };
 
-  //     queryData();
-  //   }
-  // }, [spartanApiData]);
+      queryData();
+    }
+  }, [externalApiData]);
 
   useEffect(() => {
     if (
@@ -215,7 +213,8 @@ export function Dashboard() {
       secretFoundationTax &&
       communityTax &&
       bondedToken &&
-      notBondedToken
+      notBondedToken &&
+      totalSupply
     ) {
       // staking ratio missing
       const I = inflation; // inflation
@@ -280,7 +279,7 @@ export function Dashboard() {
               item1_value={blockHeightFormattedString}
               item2_key="Block Time (last block)"
               item2_value={blockTimeFormattedString}
-              item3_key="# Transactions (24h)"
+              item3_key="# Transactions (total)"
               item3_value={dailyTransactionsFormattedString}
               item4_key="Fees Paid (24h)"
               item4_value={feesPaidFormattedString}
