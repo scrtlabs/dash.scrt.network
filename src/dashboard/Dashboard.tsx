@@ -144,6 +144,10 @@ export function Dashboard() {
         //   });
       });
 
+      // secretjsquery.query?.txsQuery("message.action='/secret.compute.v1beta1.MsgExecuteContract'").then((res) => {
+      //   console.log(res)
+      // });
+
       secretjsquery?.query?.staking?.pool("")?.then((res) => {
         setBondedToken(parseInt(res.pool.bonded_tokens) / 10e5);
         setNotBondedToken(parseInt(res.pool.not_bonded_tokens) / 10e4);

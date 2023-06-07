@@ -595,6 +595,7 @@ function Deposit() {
               },
               {
                 gasLimit: deposit_gas,
+                feeDenom: deposit_gas_denom,
                 ibcTxsOptions: {
                   resolveResponsesCheckIntervalMs: 10_000,
                   resolveResponsesTimeoutMs: 10.25 * 60 * 1000,
@@ -632,6 +633,7 @@ function Deposit() {
               },
               {
                 gasLimit: deposit_gas,
+                feeDenom: deposit_gas_denom,
                 ibcTxsOptions: {
                   resolveResponsesCheckIntervalMs: 10_000,
                   resolveResponsesTimeoutMs: 10.25 * 60 * 1000,
