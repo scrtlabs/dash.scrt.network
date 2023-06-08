@@ -303,7 +303,7 @@ export function Wrap() {
       <div className="inline-flex rounded-full text-xs font-bold">
         <button
           onClick={() => setAmountByPercentage(25)}
-          className="bg-neutral-100 dark:bg-neutral-900 px-1.5 py-0.5 rounded-l-md transition-colors hover:bg-neutral-300 dark:hover:bg-neutral-700 focus:bg-neutral-500 dark:focus:bg-neutral-500 cursor-pointer disabled:text-neutral-500 dark:disabled:text-neutral-500 disabled:hover:bg-neutral-900 dark:disabled:hover:bg-neutral-900 disabled:cursor-default"
+          className="bg-neutral-100 dark:bg-neutral-900 px-1.5 py-0.5 rounded-l-md transition-colors hover:bg-neutral-300 dark:hover:bg-neutral-700 cursor-pointer disabled:text-neutral-500 dark:disabled:text-neutral-500 disabled:hover:bg-neutral-900 dark:disabled:hover:bg-neutral-900 disabled:cursor-default focus:outline-0 focus:ring-2 ring-sky-500/40 focus:z-10"
           disabled={
             !secretjs ||
             !secretAddress ||
@@ -314,7 +314,7 @@ export function Wrap() {
         </button>
         <button
           onClick={() => setAmountByPercentage(50)}
-          className="bg-neutral-100 dark:bg-neutral-900 px-1.5 py-0.5 border-l border-neutral-300 dark:border-neutral-700 transition-colors hover:bg-neutral-300 dark:hover:bg-neutral-700 focus:bg-neutral-500 dark:focus:bg-neutral-500 cursor-pointer disabled:text-neutral-500 dark:disabled:text-neutral-500 disabled:hover:bg-neutral-900 dark:disabled:hover:bg-neutral-900 disabled:cursor-default"
+          className="bg-neutral-100 dark:bg-neutral-900 px-1.5 py-0.5 border-l border-neutral-300 dark:border-neutral-700 transition-colors hover:bg-neutral-300 dark:hover:bg-neutral-700 cursor-pointer disabled:text-neutral-500 dark:disabled:text-neutral-500 disabled:hover:bg-neutral-900 dark:disabled:hover:bg-neutral-900 disabled:cursor-default focus:outline-0 focus:ring-2 ring-sky-500/40 focus:z-10"
           disabled={
             !secretjs ||
             !secretAddress ||
@@ -325,7 +325,7 @@ export function Wrap() {
         </button>
         <button
           onClick={() => setAmountByPercentage(75)}
-          className="bg-neutral-100 dark:bg-neutral-900 px-1.5 py-0.5 border-l border-neutral-300 dark:border-neutral-700 transition-colors hover:bg-neutral-300 dark:hover:bg-neutral-700 focus:bg-neutral-500 dark:focus:bg-neutral-500 cursor-pointer disabled:text-neutral-500 dark:disabled:text-neutral-500 disabled:hover:bg-neutral-900 dark:disabled:hover:bg-neutral-900 disabled:cursor-default"
+          className="bg-neutral-100 dark:bg-neutral-900 px-1.5 py-0.5 border-l border-neutral-300 dark:border-neutral-700 transition-colors hover:bg-neutral-300 dark:hover:bg-neutral-700 cursor-pointer disabled:text-neutral-500 dark:disabled:text-neutral-500 disabled:hover:bg-neutral-900 dark:disabled:hover:bg-neutral-900 disabled:cursor-default focus:outline-0 focus:ring-2 ring-sky-500/40 focus:z-10"
           disabled={
             !secretjs ||
             !secretAddress ||
@@ -336,7 +336,7 @@ export function Wrap() {
         </button>
         <button
           onClick={() => setAmountByPercentage(100)}
-          className="bg-neutral-100 dark:bg-neutral-900 px-1.5 py-0.5 rounded-r-md border-l border-neutral-300 dark:border-neutral-700 transition-colors hover:bg-neutral-300 dark:hover:bg-neutral-700 focus:bg-neutral-500 dark:focus:bg-neutral-500 cursor-pointer disabled:text-neutral-500 dark:disabled:text-neutral-500 disabled:hover:bg-neutral-900 dark:disabled:hover:bg-neutral-900 disabled:cursor-default"
+          className="bg-neutral-100 dark:bg-neutral-900 px-1.5 py-0.5 rounded-r-md border-l border-neutral-300 dark:border-neutral-700 transition-colors hover:bg-neutral-300 dark:hover:bg-neutral-700 cursor-pointer disabled:text-neutral-500 dark:disabled:text-neutral-500 disabled:hover:bg-neutral-900 dark:disabled:hover:bg-neutral-900 disabled:cursor-default focus:outline-0 focus:ring-2 ring-sky-500/40 focus:z-10"
           disabled={
             !secretjs ||
             !secretAddress ||
@@ -372,7 +372,7 @@ export function Wrap() {
           <Tooltip title={`IBC Transfer`} placement="bottom" arrow>
             <Link
               to="/ibc"
-              className="ml-2 hover:text-w dark:hover:text-white transition-colors hover:bg-neutral-100 dark:hover:bg-neutral-900 px-1.5 py-0.5 rounded"
+              className="ml-2 hover:text-w dark:hover:text-white transition-colors hover:bg-neutral-100 dark:hover:bg-neutral-900 px-1.5 py-0.5 rounded focus:outline-0 focus:ring-2 ring-sky-500/40"
             >
               <FontAwesomeIcon icon={faArrowRightArrowLeft} />
             </Link>
@@ -392,7 +392,7 @@ export function Wrap() {
         <>
           <span className="font-semibold">Available:</span>
           <button
-            className="ml-2 font-semibold bg-neutral-100 dark:bg-neutral-900 px-1.5 py-0.5 rounded-md border-neutral-300 dark:border-neutral-700 transition-colors hover:bg-neutral-300 dark:hover:bg-neutral-700 focus:bg-neutral-500 dark:focus:bg-neutral-500 cursor-pointer disabled:text-neutral-500 dark:disabled:text-neutral-500 disabled:hover:bg-neutral-100 dark:disabled:hover:bg-neutral-900 disabled:cursor-default"
+            className="ml-2 font-semibold bg-neutral-100 dark:bg-neutral-900 px-1.5 py-0.5 rounded-md border-neutral-300 dark:border-neutral-700 transition-colors hover:bg-neutral-300 dark:hover:bg-neutral-700 cursor-pointer disabled:text-neutral-500 dark:disabled:text-neutral-500 disabled:hover:bg-neutral-100 dark:disabled:hover:bg-neutral-900 disabled:cursor-default focus:outline-0 focus:ring-2 ring-sky-500/40"
             onClick={() => setViewingKey(selectedToken)}
           >
             <FontAwesomeIcon icon={faKey} className="mr-2" />
@@ -433,16 +433,16 @@ export function Wrap() {
     }
   }
 
-  function WrappingModeSwitch(props: {
+  interface IWrappingModeSwitchProps {
     wrappingMode: WrappingMode;
     disabled: boolean;
-  }) {
-    const disabled = props.disabled;
+  }
 
+  function WrappingModeSwitch(props: IWrappingModeSwitchProps) {
     return (
       <div className="text-center my-4">
         <Tooltip
-          disableHoverListener={disabled}
+          disableHoverListener={props.disabled}
           title={`Switch to ${
             wrappingMode === "wrap" ? "Unwrapping" : "Wrapping"
           }`}
@@ -452,10 +452,10 @@ export function Wrap() {
           <span>
             <button
               onClick={toggleWrappingMode}
-              disabled={disabled}
+              disabled={props.disabled}
               className={
-                "inline-block bg-neutral-200 dark:bg-neutral-800 px-3 py-2 text-cyan-500 dark:text-cyan-500 transition-colors rounded-xl disabled:text-neutral-500 dark:disabled:text-neutral-500" +
-                (!disabled
+                "inline-block bg-neutral-200 dark:bg-neutral-800 px-3 py-2 text-cyan-500 dark:text-cyan-500 transition-colors rounded-xl disabled:text-neutral-500 dark:disabled:text-neutral-500 focus:outline-0 focus:ring-2 ring-sky-500/40" +
+                (!props.disabled
                   ? " hover:text-cyan-600 dark:hover:text-cyan-300"
                   : "")
               }
@@ -686,35 +686,36 @@ export function Wrap() {
 
     return (
       <>
-        <div className="flex items-center">
+        <div className="flex flex-col gap-4 items-center">
           <button
             className={
-              "enabled:bg-gradient-to-r enabled:from-cyan-600 enabled:to-purple-600 enabled:hover:from-cyan-500 enabled:hover:to-purple-500 transition-colors text-white font-semibold py-2.5 w-full rounded-lg disabled:bg-neutral-500"
+              "enabled:bg-gradient-to-r enabled:from-cyan-600 enabled:to-purple-600 enabled:hover:from-cyan-500 enabled:hover:to-purple-500 transition-colors text-white font-semibold py-3 w-full rounded-lg disabled:bg-neutral-500 focus:outline-0 focus:ring-4 ring-sky-500/40"
             }
             disabled={disabled}
             onClick={() => submit()}
           >
-            {/* {wrappingMode === 'Wrap' ? 'Wrap' : 'Unwrap'} */}
-            {/* text for wrapping with value */}
-            {secretAddress && secretjs && wrappingMode === "wrap" && amount && (
+            {secretAddress && secretjs && wrappingMode === "wrap" && amount ? (
               <>
                 {`Wrap ${amount} ${nativeCurrency} into ${amount} ${wrappedCurrency}`}
               </>
-            )}
+            ) : null}
 
             {/* text for unwrapping with value */}
             {secretAddress &&
-              secretjs &&
-              wrappingMode === "unwrap" &&
-              amount && (
-                <>
-                  {`Unwrap ${amount} ${wrappedCurrency} into ${amount} ${nativeCurrency}`}
-                </>
-              )}
+            secretjs &&
+            wrappingMode === "unwrap" &&
+            amount ? (
+              <>
+                {`Unwrap ${amount} ${wrappedCurrency} into ${amount} ${nativeCurrency}`}
+              </>
+            ) : null}
 
             {/* general text without value */}
-            {(!amount || !secretAddress || !secretAddress) &&
-              (wrappingMode === "wrap" ? "Wrap" : "Unwrap")}
+            {!amount || !secretAddress || !secretAddress
+              ? wrappingMode === "wrap"
+                ? "Wrap"
+                : "Unwrap"
+              : null}
           </button>
         </div>
       </>
@@ -850,7 +851,7 @@ export function Wrap() {
                   onChange={handleInputChange}
                   type="text"
                   className={
-                    "text-right focus:z-10 block flex-1 min-w-0 w-full bg-neutral-100 dark:bg-neutral-900 text-black dark:text-white px-4 rounded-r-lg disabled:placeholder-neutral-300 dark:disabled:placeholder-neutral-700 transition-colors font-medium" +
+                    "text-right focus:z-10 block flex-1 min-w-0 w-full bg-neutral-100 dark:bg-neutral-900 text-black dark:text-white px-4 rounded-r-lg disabled:placeholder-neutral-300 dark:disabled:placeholder-neutral-700 transition-colors font-medium focus:outline-0 focus:ring-2 ring-sky-500/40" +
                     (!isValidAmount && isValidationActive
                       ? "  border border-red-500 dark:border-red-500"
                       : "")
@@ -914,7 +915,7 @@ export function Wrap() {
                   onChange={handleInputChange}
                   type="text"
                   className={
-                    "text-right focus:z-10 block flex-1 min-w-0 w-full bg-neutral-100 dark:bg-neutral-900 text-black dark:text-white px-4 rounded-r-lg disabled:placeholder-neutral-300 dark:disabled:placeholder-neutral-700 transition-colors font-medium"
+                    "text-right focus:z-10 block flex-1 min-w-0 w-full bg-neutral-100 dark:bg-neutral-900 text-black dark:text-white px-4 rounded-r-lg disabled:placeholder-neutral-300 dark:disabled:placeholder-neutral-700 transition-colors font-medium focus:outline-0 focus:ring-2 ring-sky-500/40"
                   }
                   name="toValue"
                   id="toValue"
@@ -947,7 +948,7 @@ export function Wrap() {
                     <button
                       id="feeGrantButton"
                       onClick={requestFeeGrant}
-                      className="font-semibold text-xs bg-neutral-100 dark:bg-neutral-900 px-1.5 py-1 rounded-md transition-colors hover:bg-neutral-300 dark:hover:bg-neutral-700 focus:bg-neutral-500 dark:focus:bg-neutral-500 cursor-pointer disabled:text-neutral-500 dark:disabled:text-neutral-500 disabled:hover:bg-neutral-100 dark:disabled:hover:bg-neutral-900 disabled:cursor-default"
+                      className="font-semibold text-xs bg-neutral-100 dark:bg-neutral-900 px-1.5 py-1 rounded-md transition-colors hover:bg-neutral-300 dark:hover:bg-neutral-700 cursor-pointer disabled:text-neutral-500 dark:disabled:text-neutral-500 disabled:hover:bg-neutral-100 dark:disabled:hover:bg-neutral-900 disabled:cursor-default focus:outline-0 focus:ring-2 ring-sky-500/40"
                       disabled={!secretjs || !secretAddress}
                     >
                       Request Fee Grant
