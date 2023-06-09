@@ -85,6 +85,7 @@ const APIContextProvider = ({ children }: any) => {
   const [defiLamaApiData_TVL, setDefiLamaApiData_TVL] = useState();
   const [currentPrice, setCurrentPrice] = useState(Number);
   const [externalApiData, setExternalApiData] = useState();
+  const [secretAnalyticslApiData, setSecretAnalyticslApiData] = useState();
   const [volume, setVolume] = useState(Number);
   const [marketCap, setMarketCap] = useState(Number);
 
@@ -149,6 +150,13 @@ const APIContextProvider = ({ children }: any) => {
       .then((response) => {
         setExternalApiData(response);
       });
+
+    let secretAnalyticsApiDataUrl = `https://api.secretanalytics.xyz/network`;
+    fetch(secretAnalyticsApiDataUrl)
+      .then((response) => response.json())
+      .then((response) => {
+        setSecretAnalyticslApiData(response);
+      });
   }, []);
 
   const providerValue = {
@@ -172,6 +180,8 @@ const APIContextProvider = ({ children }: any) => {
     setCurrentPrice,
     externalApiData,
     setExternalApiData,
+    secretAnalyticslApiData,
+    setSecretAnalyticslApiData,
     volume,
     setVolume,
     marketCap,
