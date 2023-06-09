@@ -265,7 +265,7 @@ const COUNT_ABBRS = [
 export function formatNumber(count: number, decimals = 2) {
   const i = count < 1 ? 0 : Math.floor(Math.log(count) / Math.log(1000));
   return (
-    parseFloat((count / 1000 ** i).toFixed(decimals)).toString() +
+    parseFloat((count / 1000 ** i).toFixed(decimals)).toLocaleString() +
     COUNT_ABBRS[i]
   );
 }
