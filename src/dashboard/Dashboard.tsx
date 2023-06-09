@@ -136,22 +136,18 @@ export function Dashboard() {
 
       secretjsquery?.query?.tendermint.getLatestBlock("")?.then((res1) => {
         setBlockHeight(res1.block.header.height);
-        // secretjsquery?.query?.tendermint
-        //   .getBlockByHeight({
-        //     height: (Number(res1.block.header.height) - 1).toString(),
-        //   })
-        //   ?.then((res2) => {
-        //     const timestamp1 = new Date(res1.block.header.time as any);
-        //     const timestamp2 = new Date(res2.block.header.time as any);
-        //     const diffInSeconds =
-        //       Math.abs((timestamp1 as any) - (timestamp2 as any)) / 1000;
-        //     setBlockTime(diffInSeconds.toFixed(2));
-        //   });
+        secretjsquery?.query?.tendermint
+          .getBlockByHeight({
+            height: (Number(res1.block.header.height) - 1).toString(),
+          })
+          ?.then((res2) => {
+            const timestamp1 = new Date(res1.block.header.time as any);
+            const timestamp2 = new Date(res2.block.header.time as any);
+            const diffInSeconds =
+              Math.abs((timestamp1 as any) - (timestamp2 as any)) / 1000;
+            setBlockTime(diffInSeconds.toFixed(2));
+          });
       });
-
-      // secretjsquery.query?.txsQuery("message.action='/secret.compute.v1beta1.MsgExecuteContract'").then((res) => {
-      //   console.log(res)
-      // });
 
       secretjsquery?.query?.staking?.pool("")?.then((res) => {
         setBondedToken(parseInt(res.pool.bonded_tokens) / 10e5);
@@ -203,15 +199,15 @@ export function Dashboard() {
   const [circulatingSupply, setCirculatingSupply] = useState(0);
   const [communityPool, setCommunityPool] = useState(Number); // in uscrt
 
-  useEffect(() => {
-    if (externalApiData) {
-      const queryData = async () => {
-        setBlockTime((externalApiData as any).block_time);
-      };
+  // useEffect(() => {
+  //   if (externalApiData) {
+  //     const queryData = async () => {
+  //       setBlockTime((externalApiData as any).block_time);
+  //     };
 
-      queryData();
-    }
-  }, [externalApiData]);
+  //     queryData();
+  //   }
+  // }, [externalApiData]);
 
   useEffect(() => {
     if (secretAnalyticslApiData) {
