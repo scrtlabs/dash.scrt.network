@@ -27,6 +27,8 @@ export function Dashboard() {
     setCurrentPrice,
     externalApiData,
     setExternalApiData,
+    secretAnalyticslApiData,
+    setSecretAnalyticslApiData,
     volume,
     setVolume,
     marketCap,
@@ -46,11 +48,16 @@ export function Dashboard() {
 
   // block time
   const [blockTime, setBlockTime] = useState(null); // in seconds
-  const [blockTimeFormattedString, setbBlockTimeFormattedString] = useState("");
+  const [blockTimeFormattedString, setBlockTimeFormattedString] = useState("");
 
   useEffect(() => {
     if (blockTime) {
-      setbBlockTimeFormattedString(blockTime + "s");
+      setBlockTimeFormattedString(
+        parseFloat(blockTime).toLocaleString(undefined, {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2,
+        }) + "s"
+      );
     }
   }, [blockTime]);
 
@@ -83,16 +90,14 @@ export function Dashboard() {
   }, [communityTax, secretFoundationTax]);
 
   // feesPaid
-  const [feesPaid, setFeesPaid] = useState("");
-  const [feesPaidFormattedString, setFeesPaidFormattedString] = useState("");
+  const [gasUsed, setGasUsed] = useState("");
+  const [gasUsedFormattedString, setGasUsedFormattedString] = useState("");
 
   useEffect(() => {
-    if (feesPaid) {
-      setFeesPaidFormattedString(
-        (parseFloat(feesPaid) / 1e6).toFixed(2).toString() + " SCRT"
-      );
+    if (gasUsed) {
+      setGasUsedFormattedString(formatNumber(parseInt(gasUsed), 2));
     }
-  }, [feesPaid]);
+  }, [gasUsed]);
 
   // inflation
   const [inflation, setInflation] = useState(0);
@@ -200,16 +205,24 @@ export function Dashboard() {
 
   useEffect(() => {
     if (externalApiData) {
-      console.log(externalApiData);
       const queryData = async () => {
-        setTransactions((externalApiData as any).total_txs_num);
-        setFeesPaid((externalApiData as any).fees_paid);
         setBlockTime((externalApiData as any).block_time);
       };
 
       queryData();
     }
   }, [externalApiData]);
+
+  useEffect(() => {
+    if (secretAnalyticslApiData) {
+      const queryData = async () => {
+        setTransactions((secretAnalyticslApiData as any).tx_count);
+        setGasUsed((secretAnalyticslApiData as any).gas_used);
+      };
+
+      queryData();
+    }
+  }, [secretAnalyticslApiData]);
 
   useEffect(() => {
     if (
@@ -238,9 +251,10 @@ export function Dashboard() {
     inflation,
     secretFoundationTax,
     communityTax,
-    notBondedToken,
     bondedToken,
+    notBondedToken,
     bondedRatio,
+    totalSupply,
   ]);
 
   return (
@@ -283,10 +297,10 @@ export function Dashboard() {
               item1_value={blockHeightFormattedString}
               item2_key="Block Time (last block)"
               item2_value={blockTimeFormattedString}
-              item3_key="# Transactions (total)"
+              item3_key="# Transactions (24h)"
               item3_value={dailyTransactionsFormattedString}
-              item4_key="Fees Paid (24h)"
-              item4_value={feesPaidFormattedString}
+              item4_key="Gas Used (24h)"
+              item4_value={gasUsedFormattedString}
             />
           </div>
 
