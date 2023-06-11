@@ -19,7 +19,7 @@ class CurrentPrice extends React.Component<ICurrentPriceProps> {
             <div className="text-xl">
               <If condition={this.props.price}>
                 <Then>
-                  {this.props.price?.toLocaleString("en-US", {
+                  {this.props.price?.toLocaleString(undefined, {
                     style: "currency",
                     currency: "USD",
                   })}

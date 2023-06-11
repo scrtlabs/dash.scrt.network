@@ -42,7 +42,7 @@ export function Dashboard() {
 
   useEffect(() => {
     if (blockHeight) {
-      setblockHeightFormattedString(parseInt(blockHeight).toLocaleString());
+      setblockHeightFormattedString(parseInt(blockHeight).toString());
     }
   }, [blockHeight]);
 
@@ -80,10 +80,10 @@ export function Dashboard() {
   useEffect(() => {
     if (communityTax && secretFoundationTax) {
       setTaxFormattedString(
-        (parseFloat(communityTax) * 100).toString() +
+        (parseFloat(communityTax) * 100).toLocaleString() +
           "%" +
           " / " +
-          (parseFloat(secretFoundationTax) * 100).toString() +
+          (parseFloat(secretFoundationTax) * 100).toLocaleString() +
           "%"
       );
     }
@@ -105,7 +105,7 @@ export function Dashboard() {
 
   useEffect(() => {
     if (inflation) {
-      setInflationFormattedString((inflation * 100).toString() + "%");
+      setInflationFormattedString((inflation * 100).toLocaleString() + "%");
     }
   }, [inflation]);
 
@@ -239,9 +239,9 @@ export function Dashboard() {
       const APR = (I / R) * 100;
       const realYield = (I / R) * (1 - F - T) * (1 - C) * 100;
       setGrowthRateFormattedString(
-        APR.toFixed(2) + "%" + " / " + realYield.toFixed(2) + "%"
+        formatNumber(APR, 2) + "%" + " / " + formatNumber(realYield, 2) + "%"
       );
-      setBondedRatioFormattedString(bondedRatio.toFixed(2) + "%");
+      setBondedRatioFormattedString(formatNumber(bondedRatio, 2) + "%");
     }
   }, [
     inflation,
