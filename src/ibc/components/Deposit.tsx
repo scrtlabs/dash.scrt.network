@@ -1308,7 +1308,9 @@ function Deposit() {
             classNamePrefix="react-select-wrap"
           />
           <input
-            type="text"
+            type="number"
+            min="0"
+            step="0.000001"
             value={amountToTransfer}
             onChange={handleInputChange}
             className={
