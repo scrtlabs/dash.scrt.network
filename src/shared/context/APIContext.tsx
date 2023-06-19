@@ -143,13 +143,12 @@ const APIContextProvider = ({ children }: any) => {
         setVolume(response.secret.usd_24h_vol);
       });
 
-    // Coingecko Market Price, Market Cap & Volume
-    let mintscanApiDataUrl = `https://api.mintscan.io/v1/secret/status`;
+    /*let mintscanApiDataUrl = `https://api.mintscan.io/v1/secret/status`;
     fetch(mintscanApiDataUrl)
       .then((response) => response.json())
       .then((response) => {
         setExternalApiData(response);
-      });
+      }); */
 
     let secretAnalyticsApiDataUrl = `https://api.secretanalytics.xyz/network`;
     fetch(secretAnalyticsApiDataUrl)
