@@ -849,7 +849,9 @@ export function Wrap() {
                 <input
                   value={amountString}
                   onChange={handleInputChange}
-                  type="text"
+                  type="number"
+                  min="0"
+                  step="0.000001"
                   className={
                     "text-right focus:z-10 block flex-1 min-w-0 w-full bg-neutral-100 dark:bg-neutral-900 text-black dark:text-white px-4 rounded-r-lg disabled:placeholder-neutral-300 dark:disabled:placeholder-neutral-700 transition-colors font-medium focus:outline-0 focus:ring-2 ring-sky-500/40" +
                     (!isValidAmount && isValidationActive
@@ -913,7 +915,9 @@ export function Wrap() {
                 <input
                   value={amountString}
                   onChange={handleInputChange}
-                  type="text"
+                  type="number"
+                  min="0"
+                  step="0.000001"
                   className={
                     "text-right focus:z-10 block flex-1 min-w-0 w-full bg-neutral-100 dark:bg-neutral-900 text-black dark:text-white px-4 rounded-r-lg disabled:placeholder-neutral-300 dark:disabled:placeholder-neutral-700 transition-colors font-medium focus:outline-0 focus:ring-2 ring-sky-500/40"
                   }
