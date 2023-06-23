@@ -1113,7 +1113,7 @@ function Deposit() {
                     className={
                       "focus:outline-0 focus:ring-2 ring-sky-500/40 inline-block bg-neutral-200 dark:bg-neutral-800 px-3 py-2 text-cyan-500 dark:text-cyan-500 transition-colors rounded-xl disabled:text-neutral-500 dark:disabled:text-neutral-500" +
                       (secretjs && secretAddress
-                        ? " hover:text-cyan-700 dark:hover:text-cyan-300"
+                        ? "hover:text-cyan-700 dark:hover:text-cyan-300"
                         : "")
                     }
                     disabled={!secretjs || !secretAddress}
@@ -1191,7 +1191,7 @@ function Deposit() {
                 }${sourceAddress}`}
                 target="_blank"
               >
-                {sourceAddress}
+                {sourceAddress.slice(0, 19) + "..." + sourceAddress.slice(-19)}
               </a>
             )}
             {ibcMode === "withdrawal" && secretjs && secretAddress && (
@@ -1201,7 +1201,7 @@ function Deposit() {
                 }${secretAddress}`}
                 target="_blank"
               >
-                {secretAddress}
+                {secretAddress.slice(0, 19) + "..." + secretAddress.slice(-19)}
               </a>
             )}
           </div>
@@ -1243,7 +1243,7 @@ function Deposit() {
                 }${sourceAddress}`}
                 target="_blank"
               >
-                {sourceAddress}
+                {sourceAddress.slice(0, 19) + "..." + sourceAddress.slice(-19)}
               </a>
             )}
             {ibcMode === "deposit" && (
@@ -1251,7 +1251,7 @@ function Deposit() {
                 href={`${targetChain.explorer_account}${secretAddress}`}
                 target="_blank"
               >
-                {secretAddress}
+                {secretAddress.slice(0, 19) + "..." + secretAddress.slice(-19)}
               </a>
             )}
           </div>
