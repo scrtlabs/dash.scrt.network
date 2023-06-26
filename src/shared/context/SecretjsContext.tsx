@@ -153,7 +153,7 @@ const SecretjsContextProvider = ({ children }: any) => {
   }, [secretjs, secretAddress]);
 
   async function connectWallet() {
-    if (!window.keplr || !(window as any).leap) {
+    if (!window.keplr && !(window as any).leap) {
       setIsGetModalOpen(true);
       document.body.classList.add("overflow-hidden");
     } else {
@@ -418,7 +418,7 @@ const SecretjsContextProvider = ({ children }: any) => {
 };
 
 async function setWalletViewingKey(token: string) {
-  if (!window.keplr || !(window as any).leap) {
+  if (!window.keplr && !(window as any).leap) {
     console.error("Wallet not present");
     return;
   }
@@ -426,7 +426,7 @@ async function setWalletViewingKey(token: string) {
 }
 
 async function getWalletViewingKey(token: string): Promise<string | null> {
-  if (!window.keplr || !(window as any).leap) {
+  if (!window.keplr && !(window as any).leap) {
     console.error("Wallet not present");
     return null;
   }
