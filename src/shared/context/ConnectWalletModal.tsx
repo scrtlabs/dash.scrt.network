@@ -6,8 +6,6 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { isMobile } from "react-device-detect";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { SecretjsContext } from "./SecretjsContext";
-import { useContext } from "react";
 import React from "react";
 
 interface IConnectWalletModalProps {
