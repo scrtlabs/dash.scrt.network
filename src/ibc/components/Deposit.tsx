@@ -8,11 +8,11 @@ import Long from "long";
 import { useEffect, useState, useContext, Component } from "react";
 import {
   sleep,
-  suggestCrescentToKeplr,
-  suggestChihuahuaToKeplr,
-  suggestInjectiveToKeplr,
-  suggestKujiraToKeplr,
-  suggestTerraToKeplr,
+  suggestCrescenttoWallet,
+  suggestChihuahuatoWallet,
+  suggestInjectivetoWallet,
+  suggestKujiratoWallet,
+  suggestTerratoWallet,
   faucetAddress,
   viewingKeyErrorString,
 } from "shared/utils/commons";
@@ -440,34 +440,38 @@ function Deposit() {
       setSelectedToken(supportedTokens[0]);
     }
     (async () => {
-      while (!window.keplr || !window.getOfflineSignerOnlyAmino) {
+      while (
+        !(window as any).wallet ||
+        !(window as any).wallet.getOfflineSignerOnlyAmino
+      ) {
         await sleep(100);
       }
       if (selectedSource.chain_name === "Terra") {
-        await suggestTerraToKeplr(window.keplr);
+        await suggestTerratoWallet((window as any).wallet);
       } else if (selectedSource.chain_name === "Injective") {
-        await suggestInjectiveToKeplr(window.keplr);
+        await suggestInjectivetoWallet((window as any).wallet);
       } else if (selectedSource.chain_name === "Crescent") {
-        await suggestCrescentToKeplr(window.keplr);
+        await suggestCrescenttoWallet((window as any).wallet);
       } else if (selectedSource.chain_name === "Kujira") {
-        await suggestKujiraToKeplr(window.keplr);
+        await suggestKujiratoWallet((window as any).wallet);
       } else if (selectedSource.chain_name === "Chihuahua") {
-        await suggestChihuahuaToKeplr(window.keplr);
+        await suggestChihuahuatoWallet((window as any).wallet);
       }
 
-      // Initialize cosmjs on the source chain, because it has sendIbcTokens()
       const { chain_id, lcd, bech32_prefix } =
         chains[selectedSource.chain_name];
-      await window.keplr.enable(chain_id);
+      await (window as any).wallet.enable(chain_id);
 
-      window.keplr.defaultOptions = {
+      (window as any).wallet.defaultOptions = {
         sign: {
           preferNoSetFee: false,
           disableBalanceCheck: true,
         },
       };
 
-      const sourceOfflineSigner = window.getOfflineSignerOnlyAmino(chain_id);
+      const sourceOfflineSigner = (
+        window as any
+      ).wallet.getOfflineSignerOnlyAmino(chain_id);
       const depositFromAccounts = await sourceOfflineSigner.getAccounts();
       setSourceAddress(depositFromAccounts[0].address);
 
@@ -719,7 +723,7 @@ function Deposit() {
             }
 
             // Sign the tx
-            const sig = await window?.keplr?.signDirect(
+            const sig = await (window as any).wallet?.signDirect(
               chains[selectedSource.chain_name].chain_id,
               sourceAddress,
               {
@@ -729,7 +733,6 @@ function Deposit() {
                 chainId: chains[selectedSource.chain_name].chain_id,
                 accountNumber: new Long(Number(accountNumber)),
               },
-              // @ts-expect-error the types are not updated on the Keplr types package
               { isEthereum: true }
             );
 
