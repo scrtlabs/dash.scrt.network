@@ -13,16 +13,7 @@ import {
   isViewingKeyAvailable,
 } from "shared/context/SecretjsContext";
 import { IbcMode } from "shared/types/IbcMode";
-import {
-  sleep,
-  suggestCrescentToKeplr,
-  suggestChihuahuaToKeplr,
-  suggestInjectiveToKeplr,
-  suggestKujiraToKeplr,
-  suggestTerraToKeplr,
-  faucetAddress,
-  viewingKeyErrorString,
-} from "shared/utils/commons";
+import { viewingKeyErrorString } from "shared/utils/commons";
 import { Token, tokens } from "shared/utils/config";
 
 interface IWrapModalProps {
