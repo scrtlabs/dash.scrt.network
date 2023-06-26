@@ -153,7 +153,7 @@ const SecretjsContextProvider = ({ children }: any) => {
   }, [secretjs, secretAddress]);
 
   async function connectWallet() {
-    if (!window.keplr || !window.leap) {
+    if (!window.keplr || !(window as any).leap) {
       setIsGetModalOpen(true);
       document.body.classList.add("overflow-hidden");
     } else {
@@ -173,16 +173,16 @@ const SecretjsContextProvider = ({ children }: any) => {
       }
       if (connectWalletName == "Keplr") {
         connectKeplr();
-        window.wallet = window.keplr;
+        (window as any).wallet = window.keplr;
       } else if (connectWalletName == "Leap") {
         connectLeap();
-        window.wallet = window.keplr;
+        (window as any).wallet = window.keplr;
       } else if (connectWalletName == "Fina") {
         connectFina();
-        window.wallet = window.keplr;
+        (window as any).wallet = window.keplr;
       } else if (connectWalletName == "StarShell") {
         connectStarShell();
-        window.wallet = window.keplr;
+        (window as any).wallet = window.keplr;
       }
     }
   }
@@ -268,14 +268,14 @@ const SecretjsContextProvider = ({ children }: any) => {
     } else {
       //@ts-ignore
       while (
-        !window.leap ||
+        !(window as any).leap ||
         !window.getEnigmaUtils ||
         !window.getOfflineSignerOnlyAmino
       ) {
         await sleep(50);
       }
 
-      await window.leap.enable(SECRET_CHAIN_ID);
+      await (window as any).leap.enable(SECRET_CHAIN_ID);
 
       //@ts-ignore
       const wallet = window.leap.getOfflineSignerOnlyAmino(SECRET_CHAIN_ID);
@@ -296,7 +296,7 @@ const SecretjsContextProvider = ({ children }: any) => {
       localStorage.setItem(LOCALSTORAGE_KEY, "Leap");
       window.dispatchEvent(new Event("storage"));
 
-      window.wallet = window.leap;
+      (window as any).wallet = (window as any).leap;
     }
   }
 
@@ -418,20 +418,23 @@ const SecretjsContextProvider = ({ children }: any) => {
 };
 
 async function setWalletViewingKey(token: string) {
-  if (!window.keplr || !window.leap) {
+  if (!window.keplr || !(window as any).leap) {
     console.error("Wallet not present");
     return;
   }
-  await window.wallet.suggestToken(SECRET_CHAIN_ID, token);
+  await (window as any).wallet.suggestToken(SECRET_CHAIN_ID, token);
 }
 
 async function getWalletViewingKey(token: string): Promise<string | null> {
-  if (!window.keplr || !window.leap) {
+  if (!window.keplr || !(window as any).leap) {
     console.error("Wallet not present");
     return null;
   }
   try {
-    return await window.wallet.getSecret20ViewingKey(SECRET_CHAIN_ID, token);
+    return await (window as any).wallet.getSecret20ViewingKey(
+      SECRET_CHAIN_ID,
+      token
+    );
   } catch (e) {
     console.log(e);
     return null;
