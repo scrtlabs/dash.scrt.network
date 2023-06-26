@@ -27,7 +27,7 @@ import { websiteName } from "App";
 import UnknownBalanceModal from "./components/UnknownBalanceModal";
 import FeeGrantInfoModal from "./components/FeeGrantInfoModal";
 import {
-  getKeplrViewingKey,
+  getWalletViewingKey,
   SecretjsContext,
 } from "shared/context/SecretjsContext";
 import mixpanel from "mixpanel-browser";
@@ -265,7 +265,7 @@ export function Wrap() {
       return;
     }
 
-    const key = await getKeplrViewingKey(selectedToken.address);
+    const key = await getWalletViewingKey(selectedToken.address);
     if (!key) {
       setSSCRTBalance(viewingKeyErrorString);
       return;
