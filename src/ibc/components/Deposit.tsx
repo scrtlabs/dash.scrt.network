@@ -45,10 +45,10 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { IbcContext } from "ibc/Ibc";
 import {
-  getKeplrViewingKey,
+  getWalletViewingKey,
   isViewingKeyAvailable,
   SecretjsContext,
-  setKeplrViewingKey,
+  setWalletViewingKey,
 } from "shared/context/SecretjsContext";
 import CopyToClipboard from "react-copy-to-clipboard";
 import mixpanel from "mixpanel-browser";
@@ -292,7 +292,7 @@ function Deposit() {
   const updateCoinBalance = async () => {
     if (secretjs && secretAddress) {
       if (selectedToken.is_snip20 || selectedToken.is_ics20) {
-        const key = await getKeplrViewingKey(selectedToken.address);
+        const key = await getWalletViewingKey(selectedToken.address);
         if (!key) {
           setAvailableBalance(viewingKeyErrorString);
           return;
@@ -1345,7 +1345,7 @@ function Deposit() {
                       <button
                         className="ml-2 font-semibold bg-neutral-100 dark:bg-neutral-900 px-1.5 py-0.5 rounded-md border-neutral-300 dark:border-neutral-700 transition-colors hover:bg-neutral-300 dark:hover:bg-neutral-700 cursor-pointer disabled:text-neutral-500 dark:disabled:text-neutral-500 disabled:hover:bg-neutral-100 dark:disabled:hover:bg-neutral-900 disabled:cursor-default"
                         onClick={async () => {
-                          await setKeplrViewingKey(selectedToken.address);
+                          await setWalletViewingKey(selectedToken.address);
                           try {
                             setAvailableBalance("");
                             //setLoadingTokenBalance(true);

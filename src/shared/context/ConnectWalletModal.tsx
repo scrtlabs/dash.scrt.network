@@ -4,15 +4,19 @@ import {
   faWallet,
   faXmark,
 } from "@fortawesome/free-solid-svg-icons";
+import { isMobile } from "react-device-detect";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { SecretjsContext } from "./SecretjsContext";
+import { useContext } from "react";
 import React from "react";
 
-interface IGetWalletModalProps {
+interface IConnectWalletModalProps {
   open: boolean;
+  setWalletName: any;
   onClose: any;
 }
 
-class GetWalletModal extends React.Component<IGetWalletModalProps> {
+class ConnectWalletModal extends React.Component<IConnectWalletModalProps> {
   render() {
     if (!this.props.open) return null;
 
@@ -45,16 +49,20 @@ class GetWalletModal extends React.Component<IGetWalletModalProps> {
                 <div className="mb-8 text-center">
                   <h2 className="text-2xl font-medium mb-2">
                     <FontAwesomeIcon icon={faWallet} className="mr-2" />
-                    Get Wallet
+                    Connect to a wallet
                   </h2>
                   <p className="text-neutral-600 dark:text-neutral-400 max-w-sm mx-auto">
-                    Please install a wallet to access all applications
+                    Please connect to one of your wallets to access your
+                    applications
                   </p>
                 </div>
                 {/* Body */}
                 <div className="flex flex-col bg-neutral-200 dark:bg-neutral-800 rounded-xl overflow-hidden">
                   <a
-                    href="https://starshell.net"
+                    onClick={() => {
+                      this.props.onClose();
+                      this.props.setWalletName("StarShell");
+                    }}
                     target="_blank"
                     className="group p-5 flex items-center gap-2.5 hover:bg-neutral-300 dark:hover:bg-neutral-700 transition-colors"
                   >
@@ -71,7 +79,10 @@ class GetWalletModal extends React.Component<IGetWalletModalProps> {
                     </span>
                   </a>
                   <a
-                    href="https://www.leapwallet.io"
+                    onClick={() => {
+                      this.props.onClose();
+                      this.props.setWalletName("Leap");
+                    }}
                     target="_blank"
                     className="group p-5 flex items-center gap-2.5 hover:bg-neutral-300 dark:hover:bg-neutral-700 transition-colors"
                   >
@@ -88,7 +99,10 @@ class GetWalletModal extends React.Component<IGetWalletModalProps> {
                     </span>
                   </a>
                   <a
-                    href="https://fina.cash/wallet"
+                    onClick={() => {
+                      this.props.onClose();
+                      this.props.setWalletName("Fina");
+                    }}
                     target="_blank"
                     className="group p-5 flex items-center gap-2.5 hover:bg-neutral-300 dark:hover:bg-neutral-700 transition-colors"
                   >
@@ -103,7 +117,10 @@ class GetWalletModal extends React.Component<IGetWalletModalProps> {
                     </span>
                   </a>
                   <a
-                    href="https://chrome.google.com/webstore/detail/keplr/dmkamcknogkgcdfhhbddcghachkejeap?hl=en"
+                    onClick={() => {
+                      this.props.onClose();
+                      this.props.setWalletName("Keplr");
+                    }}
                     target="_blank"
                     className="group p-5 flex items-center gap-2.5 hover:bg-neutral-300 dark:hover:bg-neutral-700 transition-colors"
                   >
@@ -127,4 +144,4 @@ class GetWalletModal extends React.Component<IGetWalletModalProps> {
   }
 }
 
-export default GetWalletModal;
+export default ConnectWalletModal;
