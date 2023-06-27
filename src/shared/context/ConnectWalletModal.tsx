@@ -18,6 +18,13 @@ class ConnectWalletModal extends React.Component<IConnectWalletModalProps> {
   render() {
     if (!this.props.open) return null;
 
+    const leapAvailable = (window as any).leap
+      ? undefined
+      : "opacity-50 cursor-not-allowed";
+    const keplrAvailable = window.keplr
+      ? undefined
+      : "opacity-50 cursor-not-allowed";
+
     return (
       <>
         {/* Outter */}
@@ -58,11 +65,12 @@ class ConnectWalletModal extends React.Component<IConnectWalletModalProps> {
                 <div className="flex flex-col bg-neutral-200 dark:bg-neutral-800 rounded-xl overflow-hidden">
                   <a
                     onClick={() => {
+                      if (keplrAvailable) return;
                       this.props.onClose();
                       this.props.setWalletName("StarShell");
                     }}
                     target="_blank"
-                    className="group p-5 flex items-center gap-2.5 hover:bg-neutral-300 dark:hover:bg-neutral-700 transition-colors"
+                    className={`group p-5 flex items-center gap-2.5 hover:bg-neutral-300 dark:hover:bg-neutral-700 transition-colors ${keplrAvailable}`}
                   >
                     <img
                       src="/img/assets/starshell.svg"
@@ -78,11 +86,12 @@ class ConnectWalletModal extends React.Component<IConnectWalletModalProps> {
                   </a>
                   <a
                     onClick={() => {
+                      if (leapAvailable) return;
                       this.props.onClose();
                       this.props.setWalletName("Leap");
                     }}
                     target="_blank"
-                    className="group p-5 flex items-center gap-2.5 hover:bg-neutral-300 dark:hover:bg-neutral-700 transition-colors"
+                    className={`group p-5 flex items-center gap-2.5 hover:bg-neutral-300 dark:hover:bg-neutral-700 transition-colors ${leapAvailable}`}
                   >
                     <img
                       src="/img/assets/leap.svg"
@@ -98,11 +107,12 @@ class ConnectWalletModal extends React.Component<IConnectWalletModalProps> {
                   </a>
                   <a
                     onClick={() => {
+                      if (keplrAvailable) return;
                       this.props.onClose();
                       this.props.setWalletName("Fina");
                     }}
                     target="_blank"
-                    className="group p-5 flex items-center gap-2.5 hover:bg-neutral-300 dark:hover:bg-neutral-700 transition-colors"
+                    className={`group p-5 flex items-center gap-2.5 hover:bg-neutral-300 dark:hover:bg-neutral-700 transition-colors ${keplrAvailable}`}
                   >
                     <img
                       src="/img/assets/fina.webp"
@@ -116,11 +126,12 @@ class ConnectWalletModal extends React.Component<IConnectWalletModalProps> {
                   </a>
                   <a
                     onClick={() => {
+                      if (keplrAvailable) return;
                       this.props.onClose();
                       this.props.setWalletName("Keplr");
                     }}
                     target="_blank"
-                    className="group p-5 flex items-center gap-2.5 hover:bg-neutral-300 dark:hover:bg-neutral-700 transition-colors"
+                    className={`group p-5 flex items-center gap-2.5 hover:bg-neutral-300 dark:hover:bg-neutral-700 transition-colors ${keplrAvailable}`}
                   >
                     <img
                       src="/img/assets/keplr.svg"
