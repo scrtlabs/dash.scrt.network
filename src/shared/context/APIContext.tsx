@@ -1,7 +1,7 @@
 import { createContext, useEffect, useRef, useState } from "react";
 import { SecretNetworkClient } from "secretjs";
 import { dAppsURL, shuffleArray, sortDAppsArray } from "shared/utils/commons";
-import { SECRET_LCD, SECRET_CHAIN_ID } from "shared/utils/config";
+import { tokens } from "shared/utils/config";
 
 const APIContext = createContext(null);
 
@@ -9,6 +9,35 @@ const APIContextProvider = ({ children }: any) => {
   const [dappsData, setDappsData] = useState<any[]>([]);
   const [dappsDataSorted, setDappsDataSorted] = useState<any[]>([]);
   const [tags, setTags] = useState<string[]>([]);
+
+  const [prices, setPrices] = useState<any>([]);
+
+  let coinGeckoIdsString: string = "";
+  tokens.forEach((token, index) => {
+    coinGeckoIdsString = coinGeckoIdsString.concat(token.coingecko_id);
+    if (index !== tokens.length - 1) {
+      coinGeckoIdsString = coinGeckoIdsString.concat(",");
+    }
+  });
+
+  function fetchPrices() {
+    let pricesApiUrl = `https://api.coingecko.com/api/v3/simple/price?ids=${coinGeckoIdsString}&vs_currencies=USD`;
+    fetch(pricesApiUrl)
+      .then((resp) => resp.json())
+      .then((result: { [coingecko_id: string]: { usd: number } }) => {
+        const formattedPrices = Object.entries(result).map(
+          ([coingecko_id, { usd }]) => ({
+            coingecko_id,
+            priceUsd: usd,
+          })
+        );
+        setPrices(formattedPrices);
+      });
+  }
+
+  useEffect(() => {
+    fetchPrices();
+  }, []);
 
   const fetchDappsURL = () => {
     fetch(dAppsURL)
@@ -53,8 +82,10 @@ const APIContextProvider = ({ children }: any) => {
   const [coingeckoApiData_Month, setCoinGeckoApiData_Month] = useState();
   const [coingeckoApiData_Year, setCoinGeckoApiData_Year] = useState();
   const [defiLamaApiData_Year, setDefiLamaApiData_Year] = useState();
-  const [spartanApiData, setSpartanApiData] = useState();
+  const [defiLamaApiData_TVL, setDefiLamaApiData_TVL] = useState();
   const [currentPrice, setCurrentPrice] = useState(Number);
+  const [externalApiData, setExternalApiData] = useState();
+  const [secretAnalyticslApiData, setSecretAnalyticslApiData] = useState();
   const [volume, setVolume] = useState(Number);
   const [marketCap, setMarketCap] = useState(Number);
 
@@ -152,12 +183,13 @@ const APIContextProvider = ({ children }: any) => {
         );
       });
 
-    //  API
-    let spartanApiUrl = `https://core.spartanapi.dev/secret/chains/secret-4/chain_info`;
-    fetch(spartanApiUrl)
+    let defiLamaApiUrl_TVL = `https://api.llama.fi/chains`;
+    fetch(defiLamaApiUrl_TVL)
       .then((response) => response.json())
       .then((response) => {
-        setSpartanApiData(response);
+        setDefiLamaApiData_TVL(
+          response.filter((item: any) => item?.gecko_id === "secret")[0]?.tvl
+        );
       });
 
     // Coingecko Market Price, Market Cap & Volume
@@ -168,6 +200,20 @@ const APIContextProvider = ({ children }: any) => {
         setCurrentPrice(response.secret.usd);
         setMarketCap(response.secret.usd_market_cap);
         setVolume(response.secret.usd_24h_vol);
+      });
+
+    /*let mintscanApiDataUrl = `https://api.mintscan.io/v1/secret/status`;
+    fetch(mintscanApiDataUrl)
+      .then((response) => response.json())
+      .then((response) => {
+        setExternalApiData(response);
+      }); */
+
+    let secretAnalyticsApiDataUrl = `https://api.secretanalytics.xyz/network`;
+    fetch(secretAnalyticsApiDataUrl)
+      .then((response) => response.json())
+      .then((response) => {
+        setSecretAnalyticslApiData(response);
       });
   }, []);
 
@@ -186,10 +232,14 @@ const APIContextProvider = ({ children }: any) => {
     setCoinGeckoApiData_Year,
     defiLamaApiData_Year,
     setDefiLamaApiData_Year,
-    spartanApiData,
-    setSpartanApiData,
+    defiLamaApiData_TVL,
+    setDefiLamaApiData_TVL,
     currentPrice,
     setCurrentPrice,
+    externalApiData,
+    setExternalApiData,
+    secretAnalyticslApiData,
+    setSecretAnalyticslApiData,
     volume,
     setVolume,
     blockHeight,
@@ -204,6 +254,7 @@ const APIContextProvider = ({ children }: any) => {
     secretFoundationTax,
     marketCap,
     setMarketCap,
+    prices,
   };
   return (
     <APIContext.Provider value={providerValue}>{children}</APIContext.Provider>

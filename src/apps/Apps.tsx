@@ -41,9 +41,9 @@ function Apps() {
         <button
           onClick={() => toggleTagFilter(this.props.name)}
           className={
-            "inline-block text-sm px-1.5 py-0.5 rounded-md overflow-hidden transition-colors" +
+            "inline-block text-sm px-1.5 py-0.5 rounded-md overflow-hidden transition-colors focus:outline-none focus:ring-2 focus:ring-cyan-500 dark:focus:ring-cyan-500" +
             (isTagInFilterList(this.props.name)
-              ? "  text-white dark:text-white font-semibold bg-gradient-to-br from-cyan-600 to-purple-600 hover:from-cyan-500 hover:to-purple-500"
+              ? "  text-white dark:text-white font-semibold bg-gradient-to-r from-cyan-600 to-purple-600 hover:from-cyan-500 hover:to-purple-500"
               : " bg-white dark:bg-neutral-800 hover:bg-neutral-300 dark:hover:bg-neutral-700 font-medium")
           }
         >
@@ -97,7 +97,7 @@ function Apps() {
             onChange={(e) => setSearchText(e.target.value)}
             type="text"
             id="search"
-            className="block w-full p-4 pl-10 text-sm rounded-lg text-neutral-800 dark:text-white bg-white dark:bg-neutral-800 placeholder-neutral-600 dark:placeholder-neutral-400 border border-neutral-300 dark:border-neutral-700"
+            className="block w-full p-4 pl-10 text-sm rounded-lg text-neutral-800 dark:text-white bg-white dark:bg-neutral-800 placeholder-neutral-600 dark:placeholder-neutral-400 border border-neutral-300 dark:border-neutral-700 focus:outline-none focus:ring-2 focus:ring-cyan-500 dark:focus:ring-cyan-500"
             placeholder="Search"
           />
         </div>

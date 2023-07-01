@@ -54,18 +54,37 @@ class GetWalletModal extends React.Component<IGetWalletModalProps> {
                 {/* Body */}
                 <div className="flex flex-col bg-neutral-200 dark:bg-neutral-800 rounded-xl overflow-hidden">
                   <a
-                    href="https://chrome.google.com/webstore/detail/keplr/dmkamcknogkgcdfhhbddcghachkejeap?hl=en"
+                    href="https://starshell.net"
                     target="_blank"
                     className="group p-5 flex items-center gap-2.5 hover:bg-neutral-300 dark:hover:bg-neutral-700 transition-colors"
                   >
                     <img
-                      src="/img/assets/keplr.svg"
+                      src="/img/assets/starshell.svg"
                       className="flex-initial w-7 h-7"
                     />
-                    <span className="flex-1 font-medium">Keplr Wallet</span>
+                    <span className="flex-1 font-medium">Starshell Wallet</span>
                     <span className="text-white dark:text-white bg-blue-500 dark:bg-blue-500 group-hover:bg-blue-600 dark:group-hover:bg-blue-400 transition-colors px-3 py-1.5 rounded text-xs font-semibold">
                       <FontAwesomeIcon icon={faDesktop} className="mr-2" />
-                      Desktop
+                      Desktop /{" "}
+                      <FontAwesomeIcon icon={faMobileScreen} className="mr-2" />
+                      Mobile
+                    </span>
+                  </a>
+                  <a
+                    href="https://www.leapwallet.io"
+                    target="_blank"
+                    className="group p-5 flex items-center gap-2.5 hover:bg-neutral-300 dark:hover:bg-neutral-700 transition-colors"
+                  >
+                    <img
+                      src="/img/assets/leap.svg"
+                      className="flex-initial w-7 h-7"
+                    />
+                    <span className="flex-1 font-medium">Leap Wallet</span>
+                    <span className="text-white dark:text-white bg-blue-500 dark:bg-blue-500 group-hover:bg-blue-600 dark:group-hover:bg-blue-400 transition-colors px-3 py-1.5 rounded text-xs font-semibold">
+                      <FontAwesomeIcon icon={faDesktop} className="mr-2" />
+                      Desktop /{" "}
+                      <FontAwesomeIcon icon={faMobileScreen} className="mr-2" />
+                      Mobile
                     </span>
                   </a>
                   <a
@@ -81,6 +100,21 @@ class GetWalletModal extends React.Component<IGetWalletModalProps> {
                     <span className="text-white dark:text-white bg-blue-500 dark:bg-blue-500 group-hover:bg-blue-600 dark:group-hover:bg-blue-400 transition-colors px-3 py-1.5 rounded text-xs font-semibold">
                       <FontAwesomeIcon icon={faMobileScreen} className="mr-2" />
                       Mobile
+                    </span>
+                  </a>
+                  <a
+                    href="https://chrome.google.com/webstore/detail/keplr/dmkamcknogkgcdfhhbddcghachkejeap?hl=en"
+                    target="_blank"
+                    className="group p-5 flex items-center gap-2.5 hover:bg-neutral-300 dark:hover:bg-neutral-700 transition-colors"
+                  >
+                    <img
+                      src="/img/assets/keplr.svg"
+                      className="flex-initial w-7 h-7"
+                    />
+                    <span className="flex-1 font-medium">Keplr Wallet</span>
+                    <span className="text-white dark:text-white bg-blue-500 dark:bg-blue-500 group-hover:bg-blue-600 dark:group-hover:bg-blue-400 transition-colors px-3 py-1.5 rounded text-xs font-semibold">
+                      <FontAwesomeIcon icon={faDesktop} className="mr-2" />
+                      Desktop
                     </span>
                   </a>
                 </div>

@@ -4,3 +4,5 @@ build
 yarn-error.log
 .vscode/launch.json
 .DS_Store
+.env
+.npmrc

@@ -146,11 +146,22 @@ export function Navigation({
             to="/apps"
             className={({ isActive }) =>
               isActive
-                ? "text-black dark:text-white bg-gradient-to-r from-neutral-200 via-neutral-200 to-neutral-200/10 dark:from-neutral-700 dark:via-neutral-700 dark:to-neutral-700/10 block w-full px-8 py-3 rounded-xl transition-colors font-bold cursor-default"
-                : "text-neutral-700 dark:text-neutral-300 cursor-pointer hover:text-black dark:hover:text-white block w-full px-8 py-3 rounded-xl transition-colors"
+                ? "isActiveNavLink text-black dark:text-white bg-gradient-to-r from-neutral-200 via-neutral-200 to-neutral-200/10 dark:from-neutral-700 dark:via-neutral-700 dark:to-neutral-700/10 block w-full px-8 py-3 rounded-xl transition-colors font-bold cursor-default"
+                : "isInactiveNavLink text-neutral-700 dark:text-neutral-300 cursor-pointer hover:text-black dark:hover:text-white block w-full px-8 py-3 rounded-xl transition-colors"
             }
           >
-            <FontAwesomeIcon icon={faBox} className="mr-2" />
+            <svg
+              className="transition-colors h-[1.15em] mb-[.1em] inline-block mr-2"
+              width="18"
+              height="18"
+              viewBox="0 0 18 18"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path d="M3.0001 0.600098C1.67461 0.600098 0.600098 1.67461 0.600098 3.0001V5.4001C0.600098 6.72558 1.67461 7.8001 3.0001 7.8001H5.4001C6.72558 7.8001 7.8001 6.72558 7.8001 5.4001V3.0001C7.8001 1.67461 6.72558 0.600098 5.4001 0.600098H3.0001Z" />
+              <path d="M3.0001 10.2001C1.67461 10.2001 0.600098 11.2746 0.600098 12.6001V15.0001C0.600098 16.3256 1.67461 17.4001 3.0001 17.4001H5.4001C6.72558 17.4001 7.8001 16.3256 7.8001 15.0001V12.6001C7.8001 11.2746 6.72558 10.2001 5.4001 10.2001H3.0001Z" />
+              <path d="M10.2001 3.0001C10.2001 1.67461 11.2746 0.600098 12.6001 0.600098H15.0001C16.3256 0.600098 17.4001 1.67461 17.4001 3.0001V5.4001C17.4001 6.72558 16.3256 7.8001 15.0001 7.8001H12.6001C11.2746 7.8001 10.2001 6.72558 10.2001 5.4001V3.0001Z" />
+              <path d="M13.8001 10.2001C14.4628 10.2001 15.0001 10.7374 15.0001 11.4001V12.6001H16.2001C16.8628 12.6001 17.4001 13.1374 17.4001 13.8001C17.4001 14.4628 16.8628 15.0001 16.2001 15.0001H15.0001V16.2001C15.0001 16.8628 14.4628 17.4001 13.8001 17.4001C13.1374 17.4001 12.6001 16.8628 12.6001 16.2001V15.0001H11.4001C10.7374 15.0001 10.2001 14.4628 10.2001 13.8001C10.2001 13.1374 10.7374 12.6001 11.4001 12.6001H12.6001V11.4001C12.6001 10.7374 13.1374 10.2001 13.8001 10.2001Z" />
+            </svg>
             Apps
           </NavLink>
         </li>
@@ -201,7 +212,28 @@ export function Navigation({
                 target="_blank"
                 className="cursor-pointer dark:hover:text-white w-full lg:mx-8 rounded-xl transition-colors text-neutral-600 dark:text-neutral-300 hover:text-black block lg:flex lg:items-center"
               >
-                <FontAwesomeIcon icon={faCheckToSlot} className="mr-2" />
+                <svg
+                  className="mr-2 fill-current h-4"
+                  viewBox="0 0 22 19"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <g clip-path="url(#clip0_8623_40851)">
+                    <path d="M14.6002 4.2001C14.6002 6.18832 12.9884 7.8001 11.0002 7.8001C9.01196 7.8001 7.40019 6.18832 7.40019 4.2001C7.40019 2.21187 9.01196 0.600098 11.0002 0.600098C12.9884 0.600098 14.6002 2.21187 14.6002 4.2001Z" />
+                    <path d="M20.6002 6.6001C20.6002 7.92558 19.5257 9.0001 18.2002 9.0001C16.8747 9.0001 15.8002 7.92558 15.8002 6.6001C15.8002 5.27461 16.8747 4.2001 18.2002 4.2001C19.5257 4.2001 20.6002 5.27461 20.6002 6.6001Z" />
+                    <path d="M15.8002 15.0001C15.8002 12.3491 13.6512 10.2001 11.0002 10.2001C8.34922 10.2001 6.20019 12.3491 6.20019 15.0001V18.6001H15.8002V15.0001Z" />
+                    <path d="M6.20019 6.6001C6.20019 7.92558 5.12567 9.0001 3.80019 9.0001C2.47471 9.0001 1.40019 7.92558 1.40019 6.6001C1.40019 5.27461 2.47471 4.2001 3.80019 4.2001C5.12567 4.2001 6.20019 5.27461 6.20019 6.6001Z" />
+                    <path d="M18.2002 18.6001V15.0001C18.2002 13.7351 17.874 12.5463 17.3011 11.5133C17.5885 11.4394 17.8897 11.4001 18.2002 11.4001C20.1884 11.4001 21.8002 13.0119 21.8002 15.0001V18.6001H18.2002Z" />
+                    <path d="M4.69931 11.5133C4.12641 12.5463 3.80019 13.7351 3.80019 15.0001V18.6001H0.200195V15.0001C0.200195 13.0119 1.81197 11.4001 3.80019 11.4001C4.11064 11.4001 4.41192 11.4394 4.69931 11.5133Z" />
+                  </g>
+                  <defs>
+                    <clipPath id="clip0_8623_40851">
+                      <rect width="22" height="19" fill="white" />
+                    </clipPath>
+                  </defs>
+                </svg>
+
+                {/* <FontAwesomeIcon icon={faCheckToSlot} className="mr-2" /> */}
                 <span>Governance</span>
                 <FontAwesomeIcon
                   icon={faArrowUpRightFromSquare}
@@ -227,7 +259,7 @@ export function Navigation({
             </li>
             <li>
               <a
-                href="https://secretnodes.com/"
+                href="https://www.mintscan.io/secret"
                 target="_blank"
                 className="cursor-pointer dark:hover:text-white w-full lg:mx-8 rounded-xl transition-colors text-neutral-600 dark:text-neutral-300 hover:text-black block lg:flex lg:items-center"
               >

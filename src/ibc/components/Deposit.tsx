@@ -1,4 +1,4 @@
-import { CircularProgress } from "@mui/material";
+import { CircularProgress, DialogActionsClassKey } from "@mui/material";
 import Tooltip from "@mui/material/Tooltip";
 import Select from "react-select";
 import { createTxIBCMsgTransfer } from "@tharsis/transactions";
@@ -8,11 +8,11 @@ import Long from "long";
 import { useEffect, useState, useContext, Component } from "react";
 import {
   sleep,
-  suggestCrescentToKeplr,
-  suggestChihuahuaToKeplr,
-  suggestInjectiveToKeplr,
-  suggestKujiraToKeplr,
-  suggestTerraToKeplr,
+  suggestCrescenttoWallet,
+  suggestChihuahuatoWallet,
+  suggestInjectivetoWallet,
+  suggestKujiratoWallet,
+  suggestTerratoWallet,
   faucetAddress,
   viewingKeyErrorString,
 } from "shared/utils/commons";
@@ -23,7 +23,14 @@ import {
   TxResponse,
   toUtf8,
 } from "secretjs";
-import { chains, Token, tokens, snips } from "shared/utils/config";
+import {
+  chains,
+  Token,
+  tokens,
+  snips,
+  ICSTokens,
+  Deposit,
+} from "shared/utils/config";
 import { TxRaw } from "secretjs/dist/protobuf/cosmos/tx/v1beta1/tx";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -38,44 +45,51 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { IbcContext } from "ibc/Ibc";
 import {
-  getKeplrViewingKey,
+  getWalletViewingKey,
+  isViewingKeyAvailable,
   SecretjsContext,
-  setKeplrViewingKey,
+  setWalletViewingKey,
 } from "shared/context/SecretjsContext";
 import CopyToClipboard from "react-copy-to-clipboard";
+import mixpanel from "mixpanel-browser";
+import {
+  AxelarAssetTransfer,
+  AxelarQueryAPI,
+  CHAINS,
+  Environment,
+} from "@axelar-network/axelarjs-sdk";
 
 function Deposit() {
   const { feeGrantStatus, setFeeGrantStatus, requestFeeGrant } =
     useContext(SecretjsContext);
-
-  const { setIsWrapModalOpen, setSelectedTokenName, ibcMode, toggleIbcMode } =
-    useContext(IbcContext);
+  const {
+    setIsWrapModalOpen,
+    setSelectedTokenName,
+    ibcMode,
+    toggleIbcMode,
+    selectedToken,
+    setSelectedToken,
+    selectableChains,
+    selectedSource,
+    setSelectedSource,
+  } = useContext(IbcContext);
+  const { secretjs, secretAddress } = useContext(SecretjsContext);
 
   const [sourceAddress, setSourceAddress] = useState<string>("");
   const [availableBalance, setAvailableBalance] = useState<string>("");
-  const [loadingTx, setLoading] = useState<boolean>(false);
+  const [loadingTx, setLoadingTx] = useState<boolean>(false);
   const [sourceChainSecretjs, setSourceChainSecretjs] =
     useState<SecretNetworkClient | null>(null);
   const [fetchBalanceInterval, setFetchBalanceInterval] = useState<any>(null);
   const [amountToTransfer, setAmountToTransfer] = useState<string>("");
-  const { secretjs, secretAddress } = useContext(SecretjsContext);
-  const queryParams = new URLSearchParams(window.location.search);
+  const [axelarTransferFee, setAxelarTransferFee] = useState<any>();
 
-  const chainByQueryParam = queryParams.get("chain"); // "scrt", "akash", etc.
-  const [selectedToken, setSelectedToken] = useState<Token>(
-    tokens.filter((token) => token.name === "SCRT")[0]
-  );
-  const sourcePreselection = selectedToken.deposits.filter(
-    (deposit) =>
-      deposit.chain_name.toLowerCase() === chainByQueryParam?.toLowerCase()
-  )[0]
-    ? chainByQueryParam?.toLowerCase()
-    : "osmosis";
-  const [selectedSource, setSelectedSource] = useState<any>(
-    selectedToken.deposits.filter(
-      (deposit) => deposit.chain_name.toLowerCase() === sourcePreselection
-    )[0]
-  );
+  const sdk = new AxelarAssetTransfer({
+    environment: Environment.MAINNET,
+  });
+  const axelarQuery = new AxelarQueryAPI({
+    environment: Environment.MAINNET,
+  });
 
   useEffect(() => {
     setSelectedTokenName(selectedToken.name);
@@ -95,9 +109,7 @@ function Deposit() {
       return (
         <>
           <Select
-            options={
-              tokens.filter((token) => token.name === "SCRT")[0].deposits
-            }
+            options={selectableChains}
             value={selectedSource}
             onChange={setSelectedSource}
             isSearchable={false}
@@ -137,10 +149,150 @@ function Deposit() {
     }
   }
 
+  const FeeGrant = () => {
+    return (
+      <>
+        {/* Fee Grant */}
+        <div className="bg-neutral-200 dark:bg-neutral-800 p-4 rounded-lg select-none flex items-center my-4">
+          <div className="flex-1 flex items-center">
+            <span className="font-semibold text-sm">Fee Grant</span>
+            <Tooltip
+              title={`Request Fee Grant so that you don't have to pay gas fees (up to 0.1 SCRT)`}
+              placement="right"
+              arrow
+            >
+              <span className="ml-2 mt-1 text-neutral-600 dark:text-neutral-400 hover:text-black dark:hover:text-white transition-colors cursor-pointer">
+                <FontAwesomeIcon icon={faInfoCircle} />
+              </span>
+            </Tooltip>
+          </div>
+          <div className="flex-initial">
+            {/* Untouched */}
+            {ibcMode === "withdrawal" && feeGrantStatus === "Untouched" && (
+              <>
+                <button
+                  id="feeGrantButton"
+                  onClick={requestFeeGrant}
+                  className="font-semibold text-xs bg-neutral-100 dark:bg-neutral-900 px-1.5 py-1 rounded-md transition-colors hover:bg-neutral-300 dark:hover:bg-neutral-700 cursor-pointer disabled:text-neutral-500 dark:disabled:text-neutral-500 disabled:hover:bg-neutral-100 dark:disabled:hover:bg-neutral-900 disabled:cursor-default focus:outline-0 focus:ring-2 ring-sky-500/40"
+                  disabled={!secretjs || !secretAddress}
+                >
+                  Request Fee Grant
+                </button>
+              </>
+            )}
+            {/* Success */}
+            {ibcMode === "withdrawal" && feeGrantStatus === "Success" && (
+              <div className="font-semibold text-sm flex items-center h-[1.6rem]">
+                <FontAwesomeIcon
+                  icon={faCheckCircle}
+                  className="text-green-500 mr-1.5"
+                />
+                Fee Granted
+              </div>
+            )}
+            {/* Fail */}
+            {ibcMode === "withdrawal" && feeGrantStatus === "Fail" && (
+              <div className="font-semibold text-sm h-[1.6rem]">
+                <FontAwesomeIcon
+                  icon={faXmarkCircle}
+                  className="text-red-500 mr-1.5"
+                />
+                Request failed
+              </div>
+            )}
+          </div>
+        </div>
+      </>
+    );
+  };
+
+  useEffect(() => {
+    async function getAxelarTransferFee() {
+      if (selectedToken.is_ics20) {
+        const chain = (selectedToken as any).deposits.filter(
+          (chain: any) => chain.chain_name === selectedSource.chain_name
+        )[0];
+        const fromChain =
+            ibcMode === "deposit" ? chain.axelar_chain_name : "secret-snip",
+          toChain =
+            ibcMode === "deposit" ? "secret-snip" : chain.axelar_chain_name,
+          asset = selectedToken.axelar_denom;
+
+        const normalizedAmount = (amountToTransfer as string).replace(/,/g, "");
+
+        if (!(Number(normalizedAmount) > 0)) {
+          console.error(`${normalizedAmount} not bigger than 0`);
+          return;
+        }
+        const amount = new BigNumber(normalizedAmount)
+          .multipliedBy(`1e${selectedToken.decimals}`)
+          .toNumber();
+        const fee = await axelarQuery.getTransferFee(
+          fromChain,
+          toChain,
+          asset,
+          amount
+        );
+        setAxelarTransferFee(fee);
+      }
+    }
+    setAxelarTransferFee(undefined);
+    getAxelarTransferFee();
+  }, [amountToTransfer, selectedToken, selectedSource]);
+
+  const FeesInfo = () => {
+    return (
+      <>
+        {/* Fee Grant */}
+        <div className="bg-neutral-200 dark:bg-neutral-800 p-4 rounded-lg select-none flex items-center my-4">
+          <div className="flex-1 flex items-center">
+            <span className="font-semibold text-sm">Transfer Fees</span>
+            <Tooltip
+              title={`Make sure to always transfer a higher amount than the transfer fees!`}
+              placement="right"
+              arrow
+            >
+              <span className="ml-2 mt-1 text-neutral-600 dark:text-neutral-400 hover:text-black dark:hover:text-white transition-colors cursor-pointer">
+                <FontAwesomeIcon icon={faInfoCircle} />
+              </span>
+            </Tooltip>
+          </div>
+          <div className="flex-initial">
+            {selectedToken.is_ics20 && axelarTransferFee && (
+              <>
+                <div className="text-s font-semibold text-neutral-600 dark:text-neutral-400 flex items-center h-[1.6rem]">
+                  <span>
+                    {new BigNumber(axelarTransferFee.fee.amount)
+                      .dividedBy(`1e${selectedToken.decimals}`)
+                      .toFormat()}{" "}
+                    {ibcMode == "withdrawal" && "s"}
+                    {
+                      ICSTokens.filter(
+                        (icstoken: any) =>
+                          icstoken.axelar_denom === axelarTransferFee.fee.denom
+                      )[0].name
+                    }
+                  </span>
+                </div>
+              </>
+            )}
+            {selectedToken.is_ics20 && !axelarTransferFee && (
+              <>
+                <div className="text-xs font-semibold text-neutral-600 dark:text-neutral-400 flex items-center h-[1.6rem]">
+                  <span> - </span>
+                </div>
+              </>
+            )}
+          </div>
+        </div>
+      </>
+    );
+  };
+
   const updateCoinBalance = async () => {
     if (secretjs && secretAddress) {
-      if (selectedToken.is_snip20) {
-        const key = await getKeplrViewingKey(selectedToken.address);
+      if (selectedToken.is_snip20 || selectedToken.is_ics20) {
+        const key = await getWalletViewingKey(selectedToken.address);
         if (!key) {
           setAvailableBalance(viewingKeyErrorString);
           return;
@@ -212,7 +364,8 @@ function Deposit() {
               (c) =>
                 c.denom ===
                 selectedToken.deposits.filter(
-                  (deposit) => deposit.chain_name === selectedSource.chain_name
+                  (deposit: any) =>
+                    deposit.chain_name === selectedSource.chain_name
                 )[0].from_denom
             )?.amount || "0";
           setAvailableBalance(balance);
@@ -259,6 +412,12 @@ function Deposit() {
     if (!(secretjs && secretAddress)) {
       return;
     }
+    const possibleICS20 = ICSTokens.filter(
+      (token) =>
+        token.deposits.find(
+          (token) => token.chain_name == selectedSource.chain_name
+        )!
+    );
     const possibleSnips = snips.filter(
       (token) =>
         token.deposits.find(
@@ -271,7 +430,9 @@ function Deposit() {
           (token) => token.chain_name == selectedSource.chain_name
         )!
     );
-    const supportedTokens = possibleTokens.concat(possibleSnips);
+    const supportedTokens = possibleTokens
+      .concat(possibleICS20)
+      .concat(possibleSnips);
 
     setSupportedTokens(supportedTokens);
 
@@ -279,34 +440,38 @@ function Deposit() {
       setSelectedToken(supportedTokens[0]);
     }
     (async () => {
-      while (!window.keplr || !window.getOfflineSignerOnlyAmino) {
+      while (
+        !(window as any).wallet ||
+        !(window as any).wallet.getOfflineSignerOnlyAmino
+      ) {
         await sleep(100);
       }
       if (selectedSource.chain_name === "Terra") {
-        await suggestTerraToKeplr(window.keplr);
+        await suggestTerratoWallet((window as any).wallet);
       } else if (selectedSource.chain_name === "Injective") {
-        await suggestInjectiveToKeplr(window.keplr);
+        await suggestInjectivetoWallet((window as any).wallet);
       } else if (selectedSource.chain_name === "Crescent") {
-        await suggestCrescentToKeplr(window.keplr);
+        await suggestCrescenttoWallet((window as any).wallet);
       } else if (selectedSource.chain_name === "Kujira") {
-        await suggestKujiraToKeplr(window.keplr);
+        await suggestKujiratoWallet((window as any).wallet);
       } else if (selectedSource.chain_name === "Chihuahua") {
-        await suggestChihuahuaToKeplr(window.keplr);
+        await suggestChihuahuatoWallet((window as any).wallet);
       }
 
-      // Initialize cosmjs on the source chain, because it has sendIbcTokens()
       const { chain_id, lcd, bech32_prefix } =
         chains[selectedSource.chain_name];
-      await window.keplr.enable(chain_id);
+      await (window as any).wallet.enable(chain_id);
 
-      window.keplr.defaultOptions = {
+      (window as any).wallet.defaultOptions = {
         sign: {
           preferNoSetFee: false,
           disableBalanceCheck: true,
         },
       };
 
-      const sourceOfflineSigner = window.getOfflineSignerOnlyAmino(chain_id);
+      const sourceOfflineSigner = (
+        window as any
+      ).wallet.getOfflineSignerOnlyAmino(chain_id);
       const depositFromAccounts = await sourceOfflineSigner.getAccounts();
       setSourceAddress(depositFromAccounts[0].address);
 
@@ -375,7 +540,7 @@ function Deposit() {
           return;
         }
 
-        setLoading(true);
+        setLoadingTx(true);
 
         const amount = new BigNumber(normalizedAmount)
           .multipliedBy(`1e${selectedToken.decimals}`)
@@ -388,8 +553,12 @@ function Deposit() {
           lcd: lcdSrcChain,
         } = chains[selectedSource.chain_name];
 
-        deposit_channel_id = selectedSource.channel_id || deposit_channel_id;
-        deposit_gas = selectedSource.gas || deposit_gas;
+        const depositChain = selectedToken.deposits.filter(
+          (deposit: any) => deposit.chain_name === selectedSource.chain_name
+        )[0];
+
+        deposit_channel_id = depositChain.channel_id || deposit_channel_id;
+        deposit_gas = depositChain.gas || deposit_gas;
 
         const toastId = toast.loading(
           `Sending ${normalizedAmount} ${selectedToken.name} from ${selectedSource.chain_name} to Secret Network`,
@@ -400,7 +569,16 @@ function Deposit() {
 
         try {
           let tx: TxResponse;
-          if (!["Evmos", "Injective"].includes(selectedSource.chain_name)) {
+          if (
+            !["Evmos", "Injective"].includes(selectedSource.chain_name) &&
+            (!selectedToken.is_ics20 ||
+              depositChain.axelar_chain_name == CHAINS.MAINNET.AXELAR)
+          ) {
+            const source_channel_id =
+              depositChain.axelar_chain_name == CHAINS.MAINNET.AXELAR &&
+              selectedToken.name !== "SCRT"
+                ? depositChain.channel_id
+                : deposit_channel_id;
             // Regular cosmos chain (not ethermint signing)
             tx = await sourceChainSecretjs.tx.ibc.transfer(
               {
@@ -411,7 +589,7 @@ function Deposit() {
                 token: {
                   amount,
                   denom: selectedToken.deposits.filter(
-                    (deposit) =>
+                    (deposit: any) =>
                       deposit.chain_name === selectedSource.chain_name
                   )[0].from_denom,
                 },
@@ -421,6 +599,45 @@ function Deposit() {
               },
               {
                 gasLimit: deposit_gas,
+                feeDenom: deposit_gas_denom,
+                ibcTxsOptions: {
+                  resolveResponsesCheckIntervalMs: 10_000,
+                  resolveResponsesTimeoutMs: 10.25 * 60 * 1000,
+                },
+              }
+            );
+          } else if (
+            selectedToken.is_ics20 &&
+            depositChain.axelar_chain_name != CHAINS.MAINNET.AXELAR
+          ) {
+            const fromChain = depositChain.axelar_chain_name,
+              toChain = "secret-snip",
+              destinationAddress = secretAddress,
+              asset = selectedToken.axelar_denom; // denom of asset. See note (2) below
+
+            const depositAddress = await sdk.getDepositAddress({
+              fromChain,
+              toChain,
+              destinationAddress,
+              asset,
+            });
+            tx = await sourceChainSecretjs.tx.ibc.transfer(
+              {
+                sender: sourceAddress,
+                receiver: depositAddress,
+                source_channel: deposit_channel_id,
+                source_port: "transfer",
+                token: {
+                  amount,
+                  denom: depositChain.from_denom,
+                },
+                timeout_timestamp: String(
+                  Math.floor(Date.now() / 1000) + 10 * 60
+                ), // 10 minute timeout
+              },
+              {
+                gasLimit: deposit_gas,
+                feeDenom: deposit_gas_denom,
                 ibcTxsOptions: {
                   resolveResponsesCheckIntervalMs: 10_000,
                   resolveResponsesTimeoutMs: 10.25 * 60 * 1000,
@@ -483,7 +700,8 @@ function Deposit() {
                 sourceChannel: deposit_channel_id,
                 amount,
                 denom: selectedToken.deposits.filter(
-                  (deposit) => deposit.chain_name === selectedSource.chain_name
+                  (deposit: Deposit) =>
+                    deposit.chain_name === selectedSource.chain_name
                 )[0].from_denom,
                 receiver: secretAddress,
                 revisionNumber: 0,
@@ -505,7 +723,7 @@ function Deposit() {
             }
 
             // Sign the tx
-            const sig = await window?.keplr?.signDirect(
+            const sig = await (window as any).wallet?.signDirect(
               chains[selectedSource.chain_name].chain_id,
               sourceAddress,
               {
@@ -515,7 +733,6 @@ function Deposit() {
                 chainId: chains[selectedSource.chain_name].chain_id,
                 accountNumber: new Long(Number(accountNumber)),
               },
-              // @ts-expect-error the types are not updated on the Keplr types package
               { isEthereum: true }
             );
 
@@ -556,15 +773,14 @@ function Deposit() {
             const ibcResp = await tx.ibcResponses[0];
 
             if (ibcResp.type === "ack") {
+              updateCoinBalance();
               toast.update(toastId, {
                 render: `Received ${normalizedAmount} ${selectedToken.name} on Secret Network from ${selectedSource.chain_name}`,
                 type: "success",
                 isLoading: false,
                 closeOnClick: true,
               });
-              if (ibcMode === "deposit") {
-                setIsWrapModalOpen(true);
-              }
+              setIsWrapModalOpen(true);
             } else {
               toast.update(toastId, {
                 render: `Timed out while waiting to receive ${normalizedAmount} ${selectedToken.name} on Secret Network from ${selectedSource.chain_name}`,
@@ -574,13 +790,39 @@ function Deposit() {
             }
           }
         } catch (e) {
+          if (import.meta.env.VITE_MIXPANEL_ENABLED === "true") {
+            mixpanel.init(import.meta.env.VITE_MIXPANEL_PROJECT_TOKEN, {
+              debug: true,
+            });
+            mixpanel.identify("Dashboard-App");
+            mixpanel.track("IBC Transfer", {
+              "Source Chain":
+                ibcMode === "deposit"
+                  ? selectedSource.chain_name
+                  : "Secret Network",
+              "Target Chain":
+                ibcMode === "withdrawal"
+                  ? selectedSource.chain_name
+                  : "Secret Network",
+              // "Amount": amountToTransfer,
+              "Fee Grant used":
+                feeGrantStatus === "Success" && ibcMode === "withdrawal"
+                  ? true
+                  : false,
+            });
+          }
+
           toast.update(toastId, {
-            render: `Failed sending ${normalizedAmount} ${selectedToken.name} from ${selectedSource.chain_name} to Secret Network: ${e}`,
+            render: `Failed sending ${normalizedAmount} ${
+              selectedToken.name
+            } from ${selectedSource.chain_name} to Secret Network: ${
+              (e as any).message
+            }`,
             type: "error",
             isLoading: false,
           });
         } finally {
-          setLoading(false);
+          setLoadingTx(false);
         }
       }
       if (ibcMode === "withdrawal") {
@@ -601,7 +843,7 @@ function Deposit() {
           return;
         }
 
-        setLoading(true);
+        setLoadingTx(true);
 
         const amount = new BigNumber(normalizedAmount)
           .multipliedBy(`1e${selectedToken.decimals}`)
@@ -613,8 +855,15 @@ function Deposit() {
           lcd: lcdDstChain,
         } = chains[selectedSource.chain_name];
 
-        withdraw_channel_id = selectedSource.channel_id || withdraw_channel_id;
-        withdraw_gas = selectedSource.gas || withdraw_gas;
+        const withdrawalChain = selectedToken.withdrawals.filter(
+          (withdrawal: any) =>
+            withdrawal.chain_name === selectedSource.chain_name
+        )[0];
+
+        withdraw_channel_id = withdrawalChain.channel_id || withdraw_channel_id;
+        withdraw_gas = withdrawalChain.gas || withdraw_gas;
+
+        console.log(withdrawalChain);
 
         const toastId = toast.loading(
           `Sending ${normalizedAmount} ${selectedToken.name} from Secret Network to ${selectedSource.chain_name}`,
@@ -661,19 +910,70 @@ function Deposit() {
                 },
               }
             );
+          } else if (
+            selectedToken.is_ics20 &&
+            withdrawalChain?.axelar_chain_name !== CHAINS.MAINNET.AXELAR
+          ) {
+            const fromChain = "secret-snip",
+              toChain = withdrawalChain.axelar_chain_name,
+              destinationAddress = sourceAddress,
+              asset = selectedToken.axelar_denom;
+
+            const depositAddress = await sdk.getDepositAddress({
+              fromChain,
+              toChain,
+              destinationAddress,
+              asset,
+            });
+            tx = await secretjs.tx.compute.executeContract(
+              {
+                contract_address: selectedToken.address,
+                code_hash: selectedToken.code_hash,
+                sender: secretAddress,
+                msg: {
+                  send: {
+                    recipient: "secret1yxjmepvyl2c25vnt53cr2dpn8amknwausxee83", // ics20
+                    recipient_code_hash:
+                      "2976a2577999168b89021ecb2e09c121737696f71c4342f9a922ce8654e98662",
+                    amount,
+                    msg: toBase64(
+                      toUtf8(
+                        JSON.stringify({
+                          channel: withdraw_channel_id,
+                          remote_address: depositAddress,
+                          timeout: 600, // 10 minute timeout
+                        })
+                      )
+                    ),
+                  },
+                },
+              },
+              {
+                gasLimit: 300_000,
+                gasPriceInFeeDenom: 0.1,
+                feeDenom: "uscrt",
+                feeGranter: feeGrantStatus === "Success" ? faucetAddress : "",
+                ibcTxsOptions: {
+                  resolveResponsesCheckIntervalMs: 10_000,
+                  resolveResponsesTimeoutMs: 10.25 * 60 * 1000,
+                },
+              }
+            );
           } else {
+            const source_channel_id =
+              withdrawalChain?.axelar_chain_name == CHAINS.MAINNET.AXELAR &&
+              selectedToken.name !== "SCRT"
+                ? withdrawalChain.channel_id
+                : withdraw_channel_id;
             tx = await secretjs.tx.ibc.transfer(
               {
                 sender: secretAddress,
                 receiver: sourceAddress,
-                source_channel: withdraw_channel_id,
+                source_channel: source_channel_id,
                 source_port: "transfer",
                 token: {
                   amount,
-                  denom: selectedToken.withdrawals.filter(
-                    (withdraw) =>
-                      withdraw.chain_name === selectedSource.chain_name
-                  )[0].from_denom,
+                  denom: withdrawalChain.from_denom,
                 },
                 timeout_timestamp: String(
                   Math.floor(Date.now() / 1000) + 10 * 60
@@ -705,6 +1005,7 @@ function Deposit() {
             const ibcResp = await tx.ibcResponses[0];
 
             if (ibcResp.type === "ack") {
+              updateCoinBalance();
               toast.update(toastId, {
                 render: `Received ${normalizedAmount} ${selectedToken.name} on ${selectedSource.chain_name}`,
                 type: "success",
@@ -726,23 +1027,21 @@ function Deposit() {
             isLoading: false,
           });
         } finally {
-          setLoading(false);
+          setLoadingTx(false);
         }
       }
     }
 
     return (
-      <>
-        <button
-          className={
-            "enabled:bg-gradient-to-br enabled:from-cyan-600 enabled:to-purple-600 enabled:hover:from-cyan-500 enabled:hover:to-purple-500 transition-colors text-white font-semibold py-2.5 w-full rounded-lg disabled:bg-neutral-500"
-          }
-          disabled={!secretjs || !secretAddress}
-          onClick={() => submit()}
-        >
-          Execute Transfer
-        </button>
-      </>
+      <button
+        className={
+          "enabled:bg-gradient-to-r enabled:from-cyan-600 enabled:to-purple-600 enabled:hover:from-cyan-500 enabled:hover:to-purple-500 transition-colors text-white font-semibold py-3 w-full rounded-lg disabled:bg-neutral-500 focus:outline-0 focus:ring-4 ring-sky-500/40"
+        }
+        disabled={!secretjs || !secretAddress}
+        onClick={() => submit()}
+      >
+        Execute Transfer
+      </button>
     );
   }
 
@@ -815,9 +1114,9 @@ function Deposit() {
                   <button
                     onClick={toggleIbcMode}
                     className={
-                      "inline-block bg-neutral-200 dark:bg-neutral-800 px-3 py-2 text-cyan-500 dark:text-cyan-500 transition-colors rounded-xl disabled:text-neutral-500 dark:disabled:text-neutral-500" +
+                      "focus:outline-0 focus:ring-2 ring-sky-500/40 inline-block bg-neutral-200 dark:bg-neutral-800 px-3 py-2 text-cyan-500 dark:text-cyan-500 transition-colors rounded-xl disabled:text-neutral-500 dark:disabled:text-neutral-500" +
                       (secretjs && secretAddress
-                        ? " hover:text-cyan-700 dark:hover:text-cyan-300"
+                        ? "hover:text-cyan-700 dark:hover:text-cyan-300"
                         : "")
                     }
                     disabled={!secretjs || !secretAddress}
@@ -895,7 +1194,7 @@ function Deposit() {
                 }${sourceAddress}`}
                 target="_blank"
               >
-                {sourceAddress}
+                {sourceAddress.slice(0, 19) + "..." + sourceAddress.slice(-19)}
               </a>
             )}
             {ibcMode === "withdrawal" && secretjs && secretAddress && (
@@ -905,7 +1204,7 @@ function Deposit() {
                 }${secretAddress}`}
                 target="_blank"
               >
-                {secretAddress}
+                {secretAddress.slice(0, 19) + "..." + secretAddress.slice(-19)}
               </a>
             )}
           </div>
@@ -947,7 +1246,7 @@ function Deposit() {
                 }${sourceAddress}`}
                 target="_blank"
               >
-                {sourceAddress}
+                {sourceAddress.slice(0, 19) + "..." + sourceAddress.slice(-19)}
               </a>
             )}
             {ibcMode === "deposit" && (
@@ -955,7 +1254,7 @@ function Deposit() {
                 href={`${targetChain.explorer_account}${secretAddress}`}
                 target="_blank"
               >
-                {secretAddress}
+                {secretAddress.slice(0, 19) + "..." + secretAddress.slice(-19)}
               </a>
             )}
           </div>
@@ -994,6 +1293,7 @@ function Deposit() {
             options={supportedTokens}
             value={selectedToken}
             onChange={setSelectedToken}
+            isSearchable={false}
             isDisabled={!secretjs || !secretAddress}
             formatOptionLabel={(token) => (
               <div className="flex items-center">
@@ -1001,18 +1301,23 @@ function Deposit() {
                   src={`/img/assets/${token.image}`}
                   className="w-6 h-6 mr-2 rounded-full"
                 />
-                <span className="font-semibold text-sm">{token.name}</span>
+                <span className="font-semibold text-sm">
+                  {token.is_ics20 && ibcMode == "withdrawal" && "s"}
+                  {token.name}
+                </span>
               </div>
             )}
             className="react-select-wrap-container"
             classNamePrefix="react-select-wrap"
           />
           <input
-            type="text"
+            type="number"
+            min="0"
+            step="0.000001"
             value={amountToTransfer}
             onChange={handleInputChange}
             className={
-              "text-right focus:z-10 block flex-1 min-w-0 w-full bg-neutral-100 dark:bg-neutral-900 text-black dark:text-white px-4 rounded-r-lg disabled:placeholder-neutral-300 dark:disabled:placeholder-neutral-700 transition-colors font-medium" +
+              "text-right focus:z-10 block flex-1 min-w-0 w-full bg-neutral-100 dark:bg-neutral-900 text-black dark:text-white px-4 rounded-r-lg disabled:placeholder-neutral-300 dark:disabled:placeholder-neutral-700 transition-colors font-medium focus:outline-0 focus:ring-2 ring-sky-500/40" +
               (false ? "  border border-red-500 dark:border-red-500" : "")
             }
             name="amount"
@@ -1039,23 +1344,36 @@ function Deposit() {
                   availableBalance === viewingKeyErrorString
                 ) {
                   return (
-                    <button
-                      className="ml-2 font-semibold bg-neutral-100 dark:bg-neutral-900 px-1.5 py-0.5 rounded-md border-neutral-300 dark:border-neutral-700 transition-colors hover:bg-neutral-300 dark:hover:bg-neutral-700 focus:bg-neutral-500 dark:focus:bg-neutral-500 cursor-pointer disabled:text-neutral-500 dark:disabled:text-neutral-500 disabled:hover:bg-neutral-100 dark:disabled:hover:bg-neutral-900 disabled:cursor-default"
-                      onClick={async () => {
-                        await setKeplrViewingKey(selectedToken.address);
-                        try {
-                          setAvailableBalance("");
-                          //setLoadingTokenBalance(true);
-                          await sleep(1000); // sometimes query nodes lag
-                          await updateCoinBalance();
-                        } finally {
-                          //setLoadingTokenBalance(false);
+                    <>
+                      <button
+                        className="ml-2 font-semibold bg-neutral-100 dark:bg-neutral-900 px-1.5 py-0.5 rounded-md border-neutral-300 dark:border-neutral-700 transition-colors hover:bg-neutral-300 dark:hover:bg-neutral-700 cursor-pointer disabled:text-neutral-500 dark:disabled:text-neutral-500 disabled:hover:bg-neutral-100 dark:disabled:hover:bg-neutral-900 disabled:cursor-default"
+                        onClick={async () => {
+                          await setWalletViewingKey(selectedToken.address);
+                          try {
+                            setAvailableBalance("");
+                            //setLoadingTokenBalance(true);
+                            await sleep(1000); // sometimes query nodes lag
+                            await updateCoinBalance();
+                          } finally {
+                            //setLoadingTokenBalance(false);
+                          }
+                        }}
+                      >
+                        <FontAwesomeIcon icon={faKey} className="mr-2" />
+                        Set Viewing Key
+                      </button>
+                      <Tooltip
+                        title={
+                          "Balances on Secret Network are private by default. Create a viewing key to view your encrypted balances."
                         }
-                      }}
-                    >
-                      <FontAwesomeIcon icon={faKey} className="mr-2" />
-                      Set Viewing Key
-                    </button>
+                        placement="right"
+                        arrow
+                      >
+                        <span className="ml-2 mt-1 text-neutral-600 dark:text-neutral-400 hover:text-black dark:hover:text-white transition-colors cursor-pointer">
+                          <FontAwesomeIcon icon={faInfoCircle} />
+                        </span>
+                      </Tooltip>
+                    </>
                   );
                 }
                 if (!secretAddress && !secretjs) {
@@ -1064,7 +1382,9 @@ function Deposit() {
                 if (prettyBalance === "NaN") {
                   return "Error";
                 }
-                return `${prettyBalance} ${selectedToken.name}`;
+                return `${prettyBalance} ${
+                  selectedToken.is_ics20 && ibcMode == "withdrawal" ? "s" : ""
+                }${selectedToken.name}`;
               })()}
             </span>
           </div>
@@ -1072,28 +1392,28 @@ function Deposit() {
             <div className="inline-flex rounded-full text-xs font-semibold">
               <button
                 onClick={() => setAmountByPercentage(25)}
-                className="bg-neutral-100 dark:bg-neutral-900 px-1.5 py-0.5 rounded-l-md transition-colors hover:bg-neutral-300 dark:hover:bg-neutral-700 focus:bg-neutral-500 dark:focus:bg-neutral-500 cursor-pointer disabled:text-neutral-500 dark:disabled:text-neutral-500 disabled:hover:bg-neutral-900 dark:disabled:hover:bg-neutral-900 disabled:cursor-default"
+                className="bg-neutral-100 dark:bg-neutral-900 px-1.5 py-0.5 rounded-l-md transition-colors hover:bg-neutral-300 dark:hover:bg-neutral-700 cursor-pointer disabled:text-neutral-500 dark:disabled:text-neutral-500 disabled:hover:bg-neutral-900 dark:disabled:hover:bg-neutral-900 disabled:cursor-default focus:outline-0 focus:ring-2 ring-sky-500/40 focus:z-10"
                 disabled={!secretAddress}
               >
                 25%
               </button>
               <button
                 onClick={() => setAmountByPercentage(50)}
-                className="bg-neutral-100 dark:bg-neutral-900 px-1.5 py-0.5 transition-colors hover:bg-neutral-300 dark:hover:bg-neutral-700 focus:bg-neutral-500 dark:focus:bg-neutral-500 cursor-pointer disabled:text-neutral-500 dark:disabled:text-neutral-500 disabled:hover:bg-neutral-900 dark:disabled:hover:bg-neutral-900 disabled:cursor-default"
+                className="bg-neutral-100 dark:bg-neutral-900 px-1.5 py-0.5 transition-colors hover:bg-neutral-300 dark:hover:bg-neutral-700 cursor-pointer disabled:text-neutral-500 dark:disabled:text-neutral-500 disabled:hover:bg-neutral-900 dark:disabled:hover:bg-neutral-900 disabled:cursor-default focus:outline-0 focus:ring-2 ring-sky-500/40 focus:z-10"
                 disabled={!secretAddress}
               >
                 50%
               </button>
               <button
                 onClick={() => setAmountByPercentage(75)}
-                className="bg-neutral-100 dark:bg-neutral-900 px-1.5 py-0.5 transition-colors hover:bg-neutral-300 dark:hover:bg-neutral-700 focus:bg-neutral-500 dark:focus:bg-neutral-500 cursor-pointer disabled:text-neutral-500 dark:disabled:text-neutral-500 disabled:hover:bg-neutral-900 dark:disabled:hover:bg-neutral-900 disabled:cursor-default"
+                className="bg-neutral-100 dark:bg-neutral-900 px-1.5 py-0.5 transition-colors hover:bg-neutral-300 dark:hover:bg-neutral-700 cursor-pointer disabled:text-neutral-500 dark:disabled:text-neutral-500 disabled:hover:bg-neutral-900 dark:disabled:hover:bg-neutral-900 disabled:cursor-default focus:outline-0 focus:ring-2 ring-sky-500/40 focus:z-10"
                 disabled={!secretAddress}
               >
                 75%
               </button>
               <button
                 onClick={() => setAmountByPercentage(100)}
-                className="bg-neutral-100 dark:bg-neutral-900 px-1.5 py-0.5 rounded-r-md transition-colors hover:bg-neutral-300 dark:hover:bg-neutral-700 focus:bg-neutral-500 dark:focus:bg-neutral-500 cursor-pointer disabled:text-neutral-500 dark:disabled:text-neutral-500 disabled:hover:bg-neutral-900 dark:disabled:hover:bg-neutral-900 disabled:cursor-default"
+                className="bg-neutral-100 dark:bg-neutral-900 px-1.5 py-0.5 rounded-r-md transition-colors hover:bg-neutral-300 dark:hover:bg-neutral-700 cursor-pointer disabled:text-neutral-500 dark:disabled:text-neutral-500 disabled:hover:bg-neutral-900 dark:disabled:hover:bg-neutral-900 disabled:cursor-default focus:outline-0 focus:ring-2 ring-sky-500/40 focus:z-10"
                 disabled={!secretAddress}
               >
                 MAX
@@ -1103,65 +1423,12 @@ function Deposit() {
         </div>
       </div>
 
-      {/* Fee Grant */}
-      <div className="bg-neutral-200 dark:bg-neutral-800 p-4 rounded-lg select-none flex items-center my-4">
-        <div className="flex-1 flex items-center">
-          <span className="font-semibold text-sm">Fee Grant</span>
-          <Tooltip
-            title={`Request Fee Grant so that you don't have to pay gas fees (up to 0.1 SCRT)`}
-            placement="right"
-            arrow
-          >
-            <span className="ml-2 mt-1 text-neutral-600 dark:text-neutral-400 hover:text-black dark:hover:text-white transition-colors cursor-pointer">
-              <FontAwesomeIcon icon={faInfoCircle} />
-            </span>
-          </Tooltip>
-        </div>
-        <div className="flex-initial">
-          {/* Deposit => no fee grant */}
-          {ibcMode === "deposit" && (
-            <>
-              <div className="text-xs font-semibold text-neutral-600 dark:text-neutral-400 flex items-center h-[1.6rem]">
-                <span>Unavailable</span>
-              </div>
-            </>
-          )}
+      {ibcMode == "withdrawal" && !selectedToken.is_ics20 && <FeeGrant />}
 
-          {/* Untouched */}
-          {ibcMode === "withdrawal" && feeGrantStatus === "Untouched" && (
-            <>
-              <button
-                id="feeGrantButton"
-                onClick={requestFeeGrant}
-                className="font-semibold text-xs bg-neutral-100 dark:bg-neutral-900 px-1.5 py-1 rounded-md transition-colors hover:bg-neutral-300 dark:hover:bg-neutral-700 focus:bg-neutral-500 dark:focus:bg-neutral-500 cursor-pointer disabled:text-neutral-500 dark:disabled:text-neutral-500 disabled:hover:bg-neutral-100 dark:disabled:hover:bg-neutral-900 disabled:cursor-default"
-                disabled={!secretjs || !secretAddress}
-              >
-                Request Fee Grant
-              </button>
-            </>
-          )}
-          {/* Success */}
-          {ibcMode === "withdrawal" && feeGrantStatus === "Success" && (
-            <div className="font-semibold text-sm flex items-center h-[1.6rem]">
-              <FontAwesomeIcon
-                icon={faCheckCircle}
-                className="text-green-500 mr-1.5"
-              />
-              Fee Granted
-            </div>
-          )}
-          {/* Fail */}
-          {ibcMode === "withdrawal" && feeGrantStatus === "Fail" && (
-            <div className="font-semibold text-sm h-[1.6rem]">
-              <FontAwesomeIcon
-                icon={faXmarkCircle}
-                className="text-red-500 mr-1.5"
-              />
-              Request failed
-            </div>
-          )}
-        </div>
-      </div>
+      {selectedToken.is_ics20 &&
+        selectedToken.deposits.filter(
+          (deposit: any) => deposit.chain_name === selectedSource.chain_name
+        )[0]?.axelar_chain_name !== CHAINS.MAINNET.AXELAR && <FeesInfo />}
 
       <div className="mt-4">
         <SubmitButton />

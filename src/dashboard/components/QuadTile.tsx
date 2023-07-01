@@ -96,13 +96,6 @@ class QuadTile extends React.Component<IQuadTileProps> {
                 </div>
               </div>
             </div>
-            <div className="text-neutral-500 dark:text-neutral-500 text-xs -mb-4 mt-4 text-center">
-              Data provided by{" "}
-              <a href="https://blizzard.finance/" target="_blank">
-                Blizzard.finance
-                <FontAwesomeIcon icon={faSnowflake} className="ml-1" />
-              </a>
-            </div>
           </div>
         </div>
       </>

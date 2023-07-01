@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
-import { DashboardContext, useDashboardContext } from "../../Dashboard";
 import { formatNumber } from "shared/utils/commons";
 import { ThemeContext } from "shared/context/ThemeContext";
+import { APIContext } from "shared/context/APIContext";
 
 import {
   Chart as ChartJS,
@@ -35,10 +35,20 @@ export const PriceVolumeHistoryContext = createContext(null);
 export default function PriceVolumeTVL(props: any) {
   const {
     coingeckoApiData_Day,
+    setCoinGeckoApiData_Day,
     coingeckoApiData_Month,
+    setCoinGeckoApiData_Month,
     coingeckoApiData_Year,
+    setCoinGeckoApiData_Year,
     defiLamaApiData_Year,
-  } = useDashboardContext();
+    setDefiLamaApiData_Year,
+    currentPrice,
+    setCurrentPrice,
+    volume,
+    setVolume,
+    marketCap,
+    setMarketCap,
+  } = useContext(APIContext);
 
   const { theme, setTheme } = useContext(ThemeContext);
 

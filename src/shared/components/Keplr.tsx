@@ -23,7 +23,7 @@ import BigNumber from "bignumber.js";
 import { faKey, faInfoCircle } from "@fortawesome/free-solid-svg-icons";
 import {
   SecretjsContext,
-  setKeplrViewingKey,
+  setWalletViewingKey,
 } from "shared/context/SecretjsContext";
 import BalanceItem from "./BalanceItem";
 
@@ -55,7 +55,7 @@ export function KeplrPanel() {
           <button
             className="ml-2 font-semibold bg-neutral-100 dark:bg-neutral-900 px-1.5 py-0.5 rounded-md border-neutral-300 dark:border-neutral-700 transition-colors hover:bg-neutral-300 dark:hover:bg-neutral-700 focus:bg-neutral-500 dark:focus:bg-neutral-500 cursor-pointer disabled:text-neutral-500 dark:disabled:text-neutral-500 disabled:hover:bg-neutral-100 dark:disabled:hover:bg-neutral-900 disabled:cursor-default"
             onClick={async () => {
-              await setKeplrViewingKey(SCRTToken.address);
+              await setWalletViewingKey(SCRTToken.address);
               try {
                 await sleep(1000); // sometimes query nodes lag
                 await updateTokenBalance();
@@ -155,7 +155,7 @@ export function KeplrPanel() {
 
   const KeplrMenu = () => {
     return (
-      <div className="absolute pt-2 right-4 z-40 top-[3.7rem]">
+      <div className="absolute pt-10 right-4 z-40 top-[3.7rem]">
         <div className="bg-white dark:bg-neutral-800 border text-xs border-neutral-200 dark:border-neutral-700 p-4 w-auto rounded-lg flex-row space-y-4">
           {/* Copyable Wallet Address */}
           <CopyableAddress />
