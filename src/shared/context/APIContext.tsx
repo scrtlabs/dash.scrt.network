@@ -1,7 +1,7 @@
 import { createContext, useEffect, useRef, useState } from "react";
 import { SecretNetworkClient } from "secretjs";
 import { dAppsURL, shuffleArray, sortDAppsArray } from "shared/utils/commons";
-import { tokens } from "shared/utils/config";
+import { SECRET_LCD, SECRET_CHAIN_ID, tokens } from "shared/utils/config";
 
 const APIContext = createContext(null);
 

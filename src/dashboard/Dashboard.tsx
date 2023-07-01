@@ -1,4 +1,4 @@
-import { chains } from "shared/utils/config";
+import { SECRET_LCD, SECRET_CHAIN_ID } from "shared/utils/config";
 import { useEffect, useState, createContext, useContext } from "react";
 import { SecretNetworkClient } from "secretjs";
 import CurrentPrice from "./components/CurrentPrice";
@@ -8,6 +8,7 @@ import QuadTile from "./components/QuadTile";
 import SocialMedia from "./components/SocialMedia";
 import StakingChart from "./components/StakingChart";
 import { formatNumber } from "shared/utils/commons";
+
 import { APIContext } from "shared/context/APIContext";
 
 export function Dashboard() {
@@ -36,28 +37,19 @@ export function Dashboard() {
     setSecretAnalyticslApiData,
     volume,
     setVolume,
-    blockHeight,
-    inflation,
-    bondedRatio,
-    communityTax,
-    communityPool,
     pool,
-    totalSupply,
-    bondedToken,
-    notBondedToken,
-    secretFoundationTax,
     marketCap,
     setMarketCap,
   } = useContext(APIContext);
 
   // block height
-  const [blockHeight, setBlockHeight] = useState(null);
+  const [blockHeight, setBlockHeight] = useState("");
   const [blockHeightFormattedString, setblockHeightFormattedString] =
     useState("");
 
   useEffect(() => {
     if (blockHeight) {
-      setblockHeightFormattedString(parseInt(blockHeight).toString());
+      setblockHeightFormattedString(parseInt(blockHeight).toLocaleString());
     }
   }, [blockHeight]);
 
@@ -88,6 +80,8 @@ export function Dashboard() {
   }, [transactions]);
 
   // taxes
+  const [communityTax, setCommunityTax] = useState("");
+  const [secretFoundationTax, setSecretFoundationTax] = useState("");
   const [taxFormattedString, setTaxFormattedString] = useState("");
 
   useEffect(() => {
@@ -113,6 +107,7 @@ export function Dashboard() {
   }, [gasUsed]);
 
   // inflation
+  const [inflation, setInflation] = useState(0);
   const [inflationFormattedString, setInflationFormattedString] = useState("");
 
   useEffect(() => {
@@ -126,6 +121,7 @@ export function Dashboard() {
     useState("");
 
   //Bonded Ratio
+  const [bondedRatio, setBondedRatio] = useState(0);
   const [bondedRatioFormattedString, setBondedRatioFormattedString] =
     useState("");
 
