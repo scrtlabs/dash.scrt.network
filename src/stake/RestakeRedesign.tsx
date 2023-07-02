@@ -12,11 +12,14 @@ import React, { useContext, useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import MyValidatorsItem from "./components/MyValidatorsItem";
 import AllValidatorsItem from "./components/AllValidatorsItem";
+import { shuffleArray } from "shared/utils/commons";
 import Tooltip from "@mui/material/Tooltip";
 import "./RestakeRedesign.scss";
 import { SecretjsContext } from "shared/context/SecretjsContext";
 import NoScrtWarning from "./components/NoScrtWarning";
 import ValidatorModal from "./components/ValidatorModal";
+import { SECRET_LCD, SECRET_CHAIN_ID } from "shared/utils/config";
+import { SecretNetworkClient } from "secretjs";
 
 // for html-head
 
@@ -24,19 +27,30 @@ function RestakeRedesign() {
   const { secretjs, secretAddress } = useContext(SecretjsContext);
   const [validators, setValidators] = useState<any>();
   const [activeValidators, setActiveValidators] = useState<any>();
+  const [shuffledActiveValidators, setShuffledActiveValidators] =
+    useState<any>();
+  const [searchedActiveValidators, setSearchedActiveValidators] =
+    useState<any>();
   const [inactiveValidators, setInactiveValidators] = useState<any>();
+  const [searchText, setSearchText] = useState<any>();
 
   const [isValidatorModalOpen, setIsValidatorModalOpen] = useState(true);
 
   const fetchValidators = async () => {
-    const { validators } = await secretjs.query.staking.validators({
+    const secretjsquery = new SecretNetworkClient({
+      url: SECRET_LCD,
+      chainId: SECRET_CHAIN_ID,
+    });
+    const { validators } = await secretjsquery.query.staking.validators({
       status: "",
       "pagination.limit": 1000,
     });
     setValidators(validators);
-    setActiveValidators(
-      validators.filter((item: any) => item.status === "BOND_STATUS_BONDED")
+    const activeValidators = validators.filter(
+      (item: any) => item.status === "BOND_STATUS_BONDED"
     );
+    setActiveValidators(activeValidators);
+    setShuffledActiveValidators(shuffleArray(activeValidators));
     setInactiveValidators(
       validators.filter((item: any) => item.status === "BOND_STATUS_UNBONDED")
     );
@@ -44,12 +58,20 @@ function RestakeRedesign() {
   };
 
   useEffect(() => {
-    if (!secretjs || !secretAddress) {
-      setValidators(undefined);
-    } else {
-      fetchValidators();
+    fetchValidators();
+  }, []);
+
+  useEffect(() => {
+    if (shuffledActiveValidators) {
+      setSearchedActiveValidators(
+        shuffledActiveValidators.filter((validator) =>
+          validator?.description?.moniker
+            .toLowerCase()
+            .includes(searchText.toLowerCase())
+        )
+      );
     }
-  }, [secretAddress, secretjs]);
+  }, [searchText]);
 
   return (
     <>
@@ -127,8 +149,8 @@ function RestakeRedesign() {
                 <FontAwesomeIcon icon={faMagnifyingGlass} className="" />
               </div>
               <input
-                // value={searchText}
-                // onChange={(e) => setSearchText(e.target.value)}
+                value={searchText}
+                onChange={(e) => setSearchText(e.target.value)}
                 type="text"
                 id="search"
                 className="block w-full p-2.5 pl-10 text-sm rounded-lg text-neutral-800 dark:text-white bg-white dark:bg-neutral-800 placeholder-neutral-600 dark:placeholder-neutral-400 border border-neutra-300 dark:border-neutral-700"
@@ -138,17 +160,32 @@ function RestakeRedesign() {
           </div>
         </div>
         <div className="all-validators flex flex-col px-4">
-          {activeValidators?.map((validator: any, i: any) => (
-            <AllValidatorsItem
-              position={i}
-              name={validator?.description?.moniker}
-              commissionPercentage={
-                validator?.commission.commission_rates?.rate
-              }
-              votingPower={validator?.tokens}
-              identity={validator?.description?.identity}
-            />
-          ))}
+          {searchedActiveValidators &&
+            searchedActiveValidators?.map((validator: any, i: any) => (
+              <AllValidatorsItem
+                position={i}
+                name={validator?.description?.moniker}
+                commissionPercentage={
+                  validator?.commission.commission_rates?.rate
+                }
+                votingPower={validator?.tokens}
+                identity={validator?.description?.identity}
+                website={validator?.description?.website}
+              />
+            ))}
+          {!searchedActiveValidators &&
+            shuffledActiveValidators?.map((validator: any, i: any) => (
+              <AllValidatorsItem
+                position={i}
+                name={validator?.description?.moniker}
+                commissionPercentage={
+                  validator?.commission.commission_rates?.rate
+                }
+                votingPower={validator?.tokens}
+                identity={validator?.description?.identity}
+                website={validator?.description?.website}
+              />
+            ))}
         </div>
       </div>
     </>

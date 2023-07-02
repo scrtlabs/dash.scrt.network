@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from "react";
+import React, { useEffect, useState, useContext, useRef } from "react";
 import { faChevronRight, faGlobe } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { formatNumber } from "shared/utils/commons";
@@ -10,6 +10,7 @@ interface IAllValidatorsItemProps {
   votingPower: number;
   identity?: string;
   position: number;
+  website?: string;
 }
 
 const AllValidatorsItem = (props: IAllValidatorsItemProps) => {
@@ -59,32 +60,38 @@ const AllValidatorsItem = (props: IAllValidatorsItemProps) => {
   const realYield = (I / R) * (1 - F - T) * (1 - C) * 100;
   const APRString: string = realYield.toFixed(2);
 
-  const fetchKeybaseImgUrl = async () => {
-    console.log(props.identity);
-    const url = `https://keybase.io/_/api/1.0/user/lookup.json?key_suffix=${props.identity}&fields=pictures`;
-    await fetch(url)
-      .then((response) => response.json())
-      .then((response) => {
-        console.log(response.them[0]);
-        setImgUrl(response?.them[0].pictures?.primary?.url);
-      });
-  };
+  const identityRef = useRef(props.identity);
 
   useEffect(() => {
+    identityRef.current = props.identity;
+    const fetchKeybaseImgUrl = async () => {
+      console.log(identityRef.current);
+      const url = `https://keybase.io/_/api/1.0/user/lookup.json?key_suffix=${props.identity}&fields=pictures`;
+      await fetch(url)
+        .then((response) => response.json())
+        .then((response) => {
+          if (identityRef.current === props.identity) {
+            if (response?.them[0]) {
+              setImgUrl(response?.them[0].pictures?.primary?.url);
+            } else {
+              setImgUrl(undefined);
+            }
+          }
+        });
+    };
     if (props.identity) {
+      setImgUrl(undefined);
       fetchKeybaseImgUrl();
     }
-  }, []);
+  }, [props]);
 
   return (
     <>
       {/* Item */}
       <button
-        onClick={() => alert("In implementation")}
+        onClick={() => console.log("sdgghsfgh")}
         className="dark:even:bg-neutral-800 dark:odd:bg-neutral-700 flex items-center text-left dark:hover:bg-neutral-600 py-2.5 gap-4 pl-4 pr-8"
       >
-        {/* Position */}
-        <div className="rank w-6 text-right">{props.position}</div>
         {/* Image */}
         <div className="image">
           {imgUrl ? (
@@ -109,18 +116,20 @@ const AllValidatorsItem = (props: IAllValidatorsItemProps) => {
         {/* Title */}
         <div className="flex-1">
           <span className="font-semibold">{props.name}</span>
-          <a
-            href="https://google.com"
-            target="_blank"
-            className="group font-medium text-sm"
-          >
-            <FontAwesomeIcon
-              icon={faGlobe}
-              size="sm"
-              className="ml-3 mr-1 text-neutral-500 group-hover:text-white"
-            />
-            <span className="hidden group-hover:inline-block">Website</span>
-          </a>
+          {props.website && (
+            <a
+              href={props.website}
+              target="_blank"
+              className="group font-medium text-sm"
+            >
+              <FontAwesomeIcon
+                icon={faGlobe}
+                size="sm"
+                className="ml-3 mr-1 text-neutral-500 group-hover:text-white"
+              />
+              <span className="hidden group-hover:inline-block">Website</span>
+            </a>
+          )}
         </div>
         <div className="voting-power font-semibold">
           <span className="">{votingPowerString}</span>{" "}
