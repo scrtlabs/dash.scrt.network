@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState, useContext, useRef } from "react";
 import {
   faArrowRotateRight,
   faCheck,
@@ -17,7 +17,9 @@ interface IMyValidatorsItemProps {
   name: string;
   commissionPercentage: number;
   stakedAmount: number;
-  imgUrl?: string;
+  identity?: string;
+  setSelectedValidator: any;
+  validator: any;
   openModal: any;
 }
 
@@ -28,12 +30,41 @@ const MyValidatorsItem = (props: IMyValidatorsItemProps) => {
 
   const { currentPrice, setCurrentPrice } = useContext(APIContext);
 
+  const [imgUrl, setImgUrl] = useState<any>();
+
+  const identityRef = useRef(props.identity);
+
+  useEffect(() => {
+    identityRef.current = props.identity;
+    const fetchKeybaseImgUrl = async () => {
+      const url = `https://keybase.io/_/api/1.0/user/lookup.json?key_suffix=${props.identity}&fields=pictures`;
+      await fetch(url)
+        .then((response) => response.json())
+        .catch((e) => {})
+        .then((response) => {
+          if (identityRef.current === props.identity) {
+            if (response?.them[0]) {
+              setImgUrl(response?.them[0].pictures?.primary?.url);
+            } else {
+              setImgUrl(undefined);
+            }
+          }
+        })
+        .catch((e) => {});
+    };
+    if (props.identity) {
+      setImgUrl(undefined);
+      fetchKeybaseImgUrl();
+    }
+  }, [props.identity]);
+
   return (
     <>
       {/* Item */}
       <button
         onClick={() => {
           props.openModal(true);
+          props.setSelectedValidator(props.validator);
         }}
         className="dark:even:bg-neutral-700 dark:odd:bg-neutral-800 flex items-center text-left dark:hover:bg-neutral-600 py-2.5 gap-4 pl-4 pr-8"
       >

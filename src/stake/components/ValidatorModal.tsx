@@ -6,15 +6,48 @@ import {
   faXmark,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import React, { useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
+import { APIContext } from "shared/context/APIContext";
+import { usdString } from "shared/utils/commons";
+import BigNumber from "bignumber.js";
 
-const ValidatorModal = (props: any) => {
+interface IValidatorModalProps {
+  open: boolean;
+  onClose: any;
+  delegatorDelegations: any;
+  selectedValidator: any;
+}
+
+const ValidatorModal = (props: IValidatorModalProps) => {
+  const { currentPrice, setCurrentPrice } = useContext(APIContext);
+
+  const [imgUrl, setImgUrl] = useState<any>();
+
   // disable body scroll on open
   useEffect(() => {
     if (props.open) {
       document.body.classList.add("overflow-hidden");
     } else {
       document.body.classList.remove("overflow-hidden");
+    }
+
+    const fetchKeybaseImgUrl = async () => {
+      const url = `https://keybase.io/_/api/1.0/user/lookup.json?key_suffix=${props.selectedValidator?.description?.identity}&fields=pictures`;
+      await fetch(url)
+        .then((response) => response.json())
+        .catch((e) => {})
+        .then((response) => {
+          if (response?.them[0]) {
+            setImgUrl(response?.them[0].pictures?.primary?.url);
+          } else {
+            setImgUrl(undefined);
+          }
+        })
+        .catch((e) => {});
+    };
+    if (props.selectedValidator?.description?.identity) {
+      setImgUrl(undefined);
+      fetchKeybaseImgUrl();
     }
   }, [props.open]);
 
@@ -65,26 +98,32 @@ const ValidatorModal = (props: any) => {
                 <div className="flex gap-4 items-center">
                   <div className="image">
                     <img
-                      src="https://wallet.keplr.app/_next/image?url=https%3A%2F%2Fs3.amazonaws.com%2Fkeybase_processed_uploads%2Ffb91854ccdfd8183d7ed07c214519f05_360_360.jpg&w=128&q=75"
+                      src={imgUrl}
                       alt="Validator logo"
                       className="w-16 h-16 rounded-full"
                     />
                   </div>
                   <div>
                     <div className="mb-1">
-                      <span className="font-semibold">{`🌑 Secret Jupiter | 2% forever`}</span>
-                      <a
-                        href="https://google.com/"
-                        target="_blank"
-                        className="text-white hover:text-neutral-200 font-semibold"
-                      >
-                        <FontAwesomeIcon
-                          icon={faGlobe}
-                          size="sm"
-                          className="ml-3 mr-1"
-                        />
-                        {`Website`}
-                      </a>
+                      <span className="font-semibold">
+                        {props.selectedValidator.description?.moniker}
+                      </span>
+                      {props.selectedValidator?.description?.website && (
+                        <a
+                          href={props.selectedValidator?.description?.website}
+                          target="_blank"
+                          className="group font-medium text-sm"
+                        >
+                          <FontAwesomeIcon
+                            icon={faGlobe}
+                            size="sm"
+                            className="ml-3 mr-1 text-neutral-500 group-hover:text-white"
+                          />
+                          <span className="hidden group-hover:inline-block">
+                            Website
+                          </span>
+                        </a>
+                      )}
                     </div>
                     <div className="text-neutral-400 font-medium text-sm">
                       Commission 2% | APR 23.79%
@@ -96,21 +135,33 @@ const ValidatorModal = (props: any) => {
                     Description
                   </div>
                   <div className="text-neutral-400 text-sm">
-                    Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                    Adipisci repellendus voluptatibus recusandae quo rem
-                    doloremque, voluptas, maiores iste vero nesciunt perferendis
-                    in iure repellat quidem!
+                    {props.selectedValidator.description?.details}
                   </div>
                 </div>
                 {/* Highlighted Box */}
                 <div className="bg-white/5 rounded-xl px-4 py-8 mt-4">
                   <div className="font-bold mb-2">Your Delegation</div>
                   <div className="font-semibold">
-                    {`10,826 `}
+                    {props.delegatorDelegations.find(
+                      (delegatorDelegation: any) =>
+                        props.selectedValidator.operator_address ==
+                        delegatorDelegation.delegation.validator_address
+                    ).balance.amount / 1e6}
                     <span className="text-neutral-400">{`SCRT`}</span>
                   </div>
                   <div className="font-semibold text-neutral-400 mt-0.5 text-sm">
-                    $7,293
+                    {usdString.format(
+                      new BigNumber(
+                        props.delegatorDelegations.find(
+                          (delegatorDelegation: any) =>
+                            props.selectedValidator.operator_address ==
+                            delegatorDelegation.delegation.validator_address
+                        ).balance.amount
+                      )
+                        .dividedBy(`1e6`)
+                        .multipliedBy(Number(currentPrice))
+                        .toNumber()
+                    )}
                   </div>
                 </div>
               </div>

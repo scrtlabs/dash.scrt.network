@@ -11,6 +11,8 @@ interface IAllValidatorsItemProps {
   identity?: string;
   position: number;
   website?: string;
+  setSelectedValidator: any;
+  validator: any;
   openModal: any;
 }
 

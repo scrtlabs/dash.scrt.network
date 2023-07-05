@@ -30,6 +30,7 @@ function RestakeRedesign() {
   const [validators, setValidators] = useState<any>();
   const [delegatorDelegations, setDelegatorDelegations] = useState<any>();
   const [activeValidators, setActiveValidators] = useState<any>();
+  const [selectedValidator, setSelectedValidator] = useState<any>();
   const [shuffledActiveValidators, setShuffledActiveValidators] =
     useState<any>();
   const [searchedActiveValidators, setSearchedActiveValidators] =
@@ -68,7 +69,7 @@ function RestakeRedesign() {
           limit: "1000",
         },
       });
-      setValidators(validators.flat(1));
+      setValidators(validators);
       const activeValidators = validators.filter(
         (item: any) => item.status === "BOND_STATUS_BONDED"
       );
@@ -101,7 +102,10 @@ function RestakeRedesign() {
 
       <ValidatorModal
         open={isValidatorModalOpen}
+        selectedValidator={selectedValidator}
+        delegatorDelegations={delegatorDelegations}
         onClose={() => {
+          setSelectedValidator(undefined);
           setIsValidatorModalOpen(false);
           document.body.classList.remove("overflow-hidden");
         }}
@@ -162,7 +166,19 @@ function RestakeRedesign() {
                         delegation.delegation.validator_address
                     )?.commission.commission_rates?.rate
                   }
+                  validator={validators.find(
+                    (validator: any) =>
+                      validator.operator_address ==
+                      delegation.delegation.validator_address
+                  )}
+                  identity={validators.find(
+                    (validator: any) =>
+                      validator.operator_address ==
+                      delegation.delegation.validator_address?.description
+                        ?.identity
+                  )}
                   stakedAmount={delegation?.balance?.amount}
+                  setSelectedValidator={setSelectedValidator}
                   openModal={setIsValidatorModalOpen}
                 />
               ))}
@@ -196,6 +212,7 @@ function RestakeRedesign() {
             searchedActiveValidators?.map((validator: any, i: any) => (
               <AllValidatorsItem
                 position={i}
+                validator={validator}
                 name={validator?.description?.moniker}
                 commissionPercentage={
                   validator?.commission.commission_rates?.rate
@@ -203,6 +220,7 @@ function RestakeRedesign() {
                 votingPower={validator?.tokens}
                 identity={validator?.description?.identity}
                 website={validator?.description?.website}
+                setSelectedValidator={setSelectedValidator}
                 openModal={setIsValidatorModalOpen}
               />
             ))}
@@ -210,6 +228,7 @@ function RestakeRedesign() {
             shuffledActiveValidators?.map((validator: any, i: any) => (
               <AllValidatorsItem
                 position={i}
+                validator={validator}
                 name={validator?.description?.moniker}
                 commissionPercentage={
                   validator?.commission.commission_rates?.rate
@@ -217,6 +236,7 @@ function RestakeRedesign() {
                 votingPower={validator?.tokens}
                 identity={validator?.description?.identity}
                 website={validator?.description?.website}
+                setSelectedValidator={setSelectedValidator}
                 openModal={setIsValidatorModalOpen}
               />
             ))}
