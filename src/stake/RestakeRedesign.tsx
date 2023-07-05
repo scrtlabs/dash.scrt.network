@@ -21,6 +21,7 @@ import ValidatorModal from "./components/ValidatorModal";
 import { SECRET_LCD, SECRET_CHAIN_ID } from "shared/utils/config";
 import { SecretNetworkClient } from "secretjs";
 import { APIContext } from "shared/context/APIContext";
+import { Any } from "secretjs/dist/grpc_gateway/google/protobuf/any.pb";
 
 // for html-head
 
@@ -63,9 +64,11 @@ function RestakeRedesign() {
       });
       const { validators } = await secretjsquery.query.staking.validators({
         status: "",
-        "pagination.limit": 1000,
+        pagination: {
+          limit: "1000",
+        },
       });
-      setValidators(validators);
+      setValidators(validators.flat(1));
       const activeValidators = validators.filter(
         (item: any) => item.status === "BOND_STATUS_BONDED"
       );
