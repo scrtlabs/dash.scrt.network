@@ -11,6 +11,7 @@ interface IAllValidatorsItemProps {
   identity?: string;
   position: number;
   website?: string;
+  openModal: any;
 }
 
 const AllValidatorsItem = (props: IAllValidatorsItemProps) => {
@@ -65,10 +66,10 @@ const AllValidatorsItem = (props: IAllValidatorsItemProps) => {
   useEffect(() => {
     identityRef.current = props.identity;
     const fetchKeybaseImgUrl = async () => {
-      console.log(identityRef.current);
       const url = `https://keybase.io/_/api/1.0/user/lookup.json?key_suffix=${props.identity}&fields=pictures`;
       await fetch(url)
         .then((response) => response.json())
+        .catch((e) => {})
         .then((response) => {
           if (identityRef.current === props.identity) {
             if (response?.them[0]) {
@@ -77,7 +78,8 @@ const AllValidatorsItem = (props: IAllValidatorsItemProps) => {
               setImgUrl(undefined);
             }
           }
-        });
+        })
+        .catch((e) => {});
     };
     if (props.identity) {
       setImgUrl(undefined);
@@ -89,7 +91,9 @@ const AllValidatorsItem = (props: IAllValidatorsItemProps) => {
     <>
       {/* Item */}
       <button
-        onClick={() => console.log("sdgghsfgh")}
+        onClick={() => {
+          props.openModal(true);
+        }}
         className="dark:even:bg-neutral-800 dark:odd:bg-neutral-700 flex items-center text-left dark:hover:bg-neutral-600 py-2.5 gap-4 pl-4 pr-8"
       >
         {/* Image */}

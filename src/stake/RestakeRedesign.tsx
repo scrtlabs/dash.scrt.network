@@ -20,12 +20,14 @@ import NoScrtWarning from "./components/NoScrtWarning";
 import ValidatorModal from "./components/ValidatorModal";
 import { SECRET_LCD, SECRET_CHAIN_ID } from "shared/utils/config";
 import { SecretNetworkClient } from "secretjs";
+import { APIContext } from "shared/context/APIContext";
 
 // for html-head
 
 function RestakeRedesign() {
   const { secretjs, secretAddress } = useContext(SecretjsContext);
   const [validators, setValidators] = useState<any>();
+  const [delegatorDelegations, setDelegatorDelegations] = useState<any>();
   const [activeValidators, setActiveValidators] = useState<any>();
   const [shuffledActiveValidators, setShuffledActiveValidators] =
     useState<any>();
@@ -34,37 +36,52 @@ function RestakeRedesign() {
   const [inactiveValidators, setInactiveValidators] = useState<any>();
   const [searchText, setSearchText] = useState<any>();
 
-  const [isValidatorModalOpen, setIsValidatorModalOpen] = useState(true);
+  const [isValidatorModalOpen, setIsValidatorModalOpen] = useState(false);
 
-  const fetchValidators = async () => {
-    const secretjsquery = new SecretNetworkClient({
-      url: SECRET_LCD,
-      chainId: SECRET_CHAIN_ID,
-    });
-    const { validators } = await secretjsquery.query.staking.validators({
-      status: "",
-      "pagination.limit": 1000,
-    });
-    setValidators(validators);
-    const activeValidators = validators.filter(
-      (item: any) => item.status === "BOND_STATUS_BONDED"
-    );
-    setActiveValidators(activeValidators);
-    setShuffledActiveValidators(shuffleArray(activeValidators));
-    setInactiveValidators(
-      validators.filter((item: any) => item.status === "BOND_STATUS_UNBONDED")
-    );
-    console.log(validators);
-  };
+  const { currentPrice, setCurrentPrice } = useContext(APIContext);
 
   useEffect(() => {
+    const fetchDelegatorValidators = async () => {
+      if (secretjs && secretAddress) {
+        const { delegation_responses } =
+          await secretjs.query.staking.delegatorDelegations({
+            delegator_addr: secretAddress,
+            "pagination.limit": 1000,
+          });
+        console.log(delegation_responses);
+        setDelegatorDelegations(delegation_responses);
+      }
+    };
+    fetchDelegatorValidators();
+  }, [secretjs, secretAddress]);
+
+  useEffect(() => {
+    const fetchValidators = async () => {
+      const secretjsquery = new SecretNetworkClient({
+        url: SECRET_LCD,
+        chainId: SECRET_CHAIN_ID,
+      });
+      const { validators } = await secretjsquery.query.staking.validators({
+        status: "",
+        "pagination.limit": 1000,
+      });
+      setValidators(validators);
+      const activeValidators = validators.filter(
+        (item: any) => item.status === "BOND_STATUS_BONDED"
+      );
+      setActiveValidators(activeValidators);
+      setShuffledActiveValidators(shuffleArray(activeValidators));
+      setInactiveValidators(
+        validators.filter((item: any) => item.status === "BOND_STATUS_UNBONDED")
+      );
+    };
     fetchValidators();
   }, []);
 
   useEffect(() => {
     if (shuffledActiveValidators) {
       setSearchedActiveValidators(
-        shuffledActiveValidators.filter((validator) =>
+        shuffledActiveValidators.filter((validator: any) =>
           validator?.description?.moniker
             .toLowerCase()
             .includes(searchText.toLowerCase())
@@ -122,20 +139,32 @@ function RestakeRedesign() {
             />
           </Tooltip>
         </div>
-        <div className="my-validators flex flex-col px-4">
-          <MyValidatorsItem
-            name="🪐 𝕊ecret 𝕊aturn | 1% forever"
-            commissionPercentage={2}
-            stakedAmount={10816.72}
-            imgUrl="https://wallet.keplr.app/_next/image?url=https%3A%2F%2Fs3.amazonaws.com%2Fkeybase_processed_uploads%2Fee1614693d1fa8c08ef59ebf812f0c05_360_360.jpg&w=128&q=75"
-          />
-          <MyValidatorsItem
-            name="0% Fee >2024 💸 | melea"
-            commissionPercentage={2}
-            stakedAmount={15967671}
-            imgUrl="https://wallet.keplr.app/_next/image?url=https%3A%2F%2Fs3.amazonaws.com%2Fkeybase_processed_uploads%2Fff855e93d7b9c9de64ce0e404d47c105_360_360.jpg&w=128&q=75"
-          />
-        </div>
+        {
+          <div className="my-validators flex flex-col px-4">
+            {delegatorDelegations &&
+              validators &&
+              delegatorDelegations?.map((delegation: any, i: any) => (
+                <MyValidatorsItem
+                  name={
+                    validators.find(
+                      (validator: any) =>
+                        validator.operator_address ==
+                        delegation.delegation.validator_address
+                    )?.description?.moniker
+                  }
+                  commissionPercentage={
+                    validators.find(
+                      (validator: any) =>
+                        validator.operator_address ==
+                        delegation.delegation.validator_address
+                    )?.commission.commission_rates?.rate
+                  }
+                  stakedAmount={delegation?.balance?.amount}
+                  openModal={setIsValidatorModalOpen}
+                />
+              ))}
+          </div>
+        }
       </div>
 
       {/* All Validators */}
@@ -171,6 +200,7 @@ function RestakeRedesign() {
                 votingPower={validator?.tokens}
                 identity={validator?.description?.identity}
                 website={validator?.description?.website}
+                openModal={setIsValidatorModalOpen}
               />
             ))}
           {!searchedActiveValidators &&
@@ -184,6 +214,7 @@ function RestakeRedesign() {
                 votingPower={validator?.tokens}
                 identity={validator?.description?.identity}
                 website={validator?.description?.website}
+                openModal={setIsValidatorModalOpen}
               />
             ))}
         </div>

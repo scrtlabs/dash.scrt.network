@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   faArrowRotateRight,
   faCheck,
@@ -9,22 +9,32 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Tooltip from "@mui/material/Tooltip";
+import { APIContext } from "shared/context/APIContext";
+import { usdString } from "shared/utils/commons";
+import BigNumber from "bignumber.js";
 
 interface IMyValidatorsItemProps {
   name: string;
   commissionPercentage: number;
   stakedAmount: number;
   imgUrl?: string;
+  openModal: any;
 }
 
 const MyValidatorsItem = (props: IMyValidatorsItemProps) => {
-  // TODO: format stakedAmountString
-  const stakedAmountString = props.stakedAmount.toString();
+  const stakedAmountString = BigNumber(props.stakedAmount!)
+    .dividedBy(`1e6`)
+    .toString();
+
+  const { currentPrice, setCurrentPrice } = useContext(APIContext);
+
   return (
     <>
       {/* Item */}
       <button
-        onClick={() => alert("In implementation")}
+        onClick={() => {
+          props.openModal(true);
+        }}
         className="dark:even:bg-neutral-700 dark:odd:bg-neutral-800 flex items-center text-left dark:hover:bg-neutral-600 py-2.5 gap-4 pl-4 pr-8"
       >
         {/* Checkbox */}
@@ -87,10 +97,17 @@ const MyValidatorsItem = (props: IMyValidatorsItemProps) => {
               SCRT
             </span>
           </div>
-          <div className="text-sm font-semibold text-neutral-400">$7,393</div>
+          <div className="text-sm font-semibold text-neutral-400">
+            {usdString.format(
+              new BigNumber(props.stakedAmount!)
+                .dividedBy(`1e6`)
+                .multipliedBy(Number(currentPrice))
+                .toNumber()
+            )}
+          </div>
         </div>
         <div className="commission font-semibold">
-          {props.commissionPercentage}%
+          {(props.commissionPercentage * 100).toFixed(2)}%
         </div>
         <div className="flex items-center font-semibold border-b border-white/0 hover:border-white transition-colors">
           <FontAwesomeIcon icon={faChevronRight} size="sm" className="ml-1" />
