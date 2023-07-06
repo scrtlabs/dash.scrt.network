@@ -87,7 +87,7 @@ const AllValidatorsItem = (props: IAllValidatorsItemProps) => {
       setImgUrl(undefined);
       fetchKeybaseImgUrl();
     }
-  }, [props]);
+  }, [props.identity]);
 
   return (
     <>
@@ -95,6 +95,7 @@ const AllValidatorsItem = (props: IAllValidatorsItemProps) => {
       <button
         onClick={() => {
           props.openModal(true);
+          props.setSelectedValidator(props.validator);
         }}
         className="dark:even:bg-neutral-800 dark:odd:bg-neutral-700 flex items-center text-left dark:hover:bg-neutral-600 py-2.5 gap-4 pl-4 pr-8"
       >

@@ -19,9 +19,50 @@ interface IValidatorModalProps {
 }
 
 const ValidatorModal = (props: IValidatorModalProps) => {
-  const { currentPrice, setCurrentPrice } = useContext(APIContext);
-
   const [imgUrl, setImgUrl] = useState<any>();
+
+  const {
+    dappsData,
+    setDappsData,
+    dappsDataSorted,
+    setDappsDataSorted,
+    tags,
+    setTags,
+    coingeckoApiData_Day,
+    setCoinGeckoApiData_Day,
+    coingeckoApiData_Month,
+    setCoinGeckoApiData_Month,
+    coingeckoApiData_Year,
+    setCoinGeckoApiData_Year,
+    defiLamaApiData_Year,
+    setDefiLamaApiData_Year,
+    spartanApiData,
+    setSpartanApiData,
+    currentPrice,
+    setCurrentPrice,
+    volume,
+    setVolume,
+    blockHeight,
+    inflation,
+    bondedRatio,
+    communityTax,
+    communityPool,
+    pool,
+    totalSupply,
+    bondedToken,
+    notBondedToken,
+    secretFoundationTax,
+    marketCap,
+    setMarketCap,
+  } = useContext(APIContext);
+
+  const I = inflation; // inflation
+  const F = secretFoundationTax; // foundation tax
+  const C = props.selectedValidator?.commission?.commission_rates?.rate; // validator commision rate; median is 5%
+  const T = parseFloat(communityTax); // community tax
+  const R = bondedRatio / 100; // bonded ratio
+  const realYield = (I / R) * (1 - F - T) * (1 - C) * 100;
+  const APRString: string = realYield.toFixed(2);
 
   // disable body scroll on open
   useEffect(() => {
@@ -30,7 +71,7 @@ const ValidatorModal = (props: IValidatorModalProps) => {
     } else {
       document.body.classList.remove("overflow-hidden");
     }
-
+    console.log(props.selectedValidator);
     const fetchKeybaseImgUrl = async () => {
       const url = `https://keybase.io/_/api/1.0/user/lookup.json?key_suffix=${props.selectedValidator?.description?.identity}&fields=pictures`;
       await fetch(url)
@@ -55,7 +96,7 @@ const ValidatorModal = (props: IValidatorModalProps) => {
 
   return (
     <>
-      {/* Outter */}
+      {/* Outer */}
       <div
         className="fixed top-0 left-0 right-0 bottom-0 bg-black/80 z-50"
         onClick={props.onClose}
@@ -106,7 +147,7 @@ const ValidatorModal = (props: IValidatorModalProps) => {
                   <div>
                     <div className="mb-1">
                       <span className="font-semibold">
-                        {props.selectedValidator.description?.moniker}
+                        {props.selectedValidator?.description?.moniker}
                       </span>
                       {props.selectedValidator?.description?.website && (
                         <a
@@ -126,7 +167,14 @@ const ValidatorModal = (props: IValidatorModalProps) => {
                       )}
                     </div>
                     <div className="text-neutral-400 font-medium text-sm">
-                      Commission 2% | APR 23.79%
+                      <div className="commission font-semibold">
+                        Commission{" "}
+                        {(
+                          props.selectedValidator?.commission?.commission_rates
+                            ?.rate * 100
+                        ).toFixed(2)}
+                        % | APR {APRString}%
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -135,35 +183,41 @@ const ValidatorModal = (props: IValidatorModalProps) => {
                     Description
                   </div>
                   <div className="text-neutral-400 text-sm">
-                    {props.selectedValidator.description?.details}
+                    {props.selectedValidator?.description?.details}
                   </div>
                 </div>
                 {/* Highlighted Box */}
-                <div className="bg-white/5 rounded-xl px-4 py-8 mt-4">
-                  <div className="font-bold mb-2">Your Delegation</div>
-                  <div className="font-semibold">
-                    {props.delegatorDelegations.find(
-                      (delegatorDelegation: any) =>
-                        props.selectedValidator.operator_address ==
-                        delegatorDelegation.delegation.validator_address
-                    ).balance.amount / 1e6}
-                    <span className="text-neutral-400">{`SCRT`}</span>
+                {props.delegatorDelegations.find(
+                  (delegatorDelegation: any) =>
+                    props.selectedValidator?.operator_address ==
+                    delegatorDelegation.delegation.validator_address
+                ) && (
+                  <div className="bg-white/5 rounded-xl px-4 py-8 mt-4">
+                    <div className="font-bold mb-2">Your Delegation</div>
+                    <div className="font-semibold">
+                      {props.delegatorDelegations.find(
+                        (delegatorDelegation: any) =>
+                          props.selectedValidator?.operator_address ==
+                          delegatorDelegation.delegation.validator_address
+                      )?.balance?.amount / 1e6}
+                      <span className="text-neutral-400">{` SCRT`}</span>
+                    </div>
+                    <div className="font-semibold text-neutral-400 mt-0.5 text-sm">
+                      {usdString.format(
+                        new BigNumber(
+                          props.delegatorDelegations.find(
+                            (delegatorDelegation: any) =>
+                              props.selectedValidator?.operator_address ==
+                              delegatorDelegation.delegation.validator_address
+                          )?.balance?.amount
+                        )
+                          .dividedBy(`1e6`)
+                          .multipliedBy(Number(currentPrice))
+                          .toNumber()
+                      )}
+                    </div>
                   </div>
-                  <div className="font-semibold text-neutral-400 mt-0.5 text-sm">
-                    {usdString.format(
-                      new BigNumber(
-                        props.delegatorDelegations.find(
-                          (delegatorDelegation: any) =>
-                            props.selectedValidator.operator_address ==
-                            delegatorDelegation.delegation.validator_address
-                        ).balance.amount
-                      )
-                        .dividedBy(`1e6`)
-                        .multipliedBy(Number(currentPrice))
-                        .toNumber()
-                    )}
-                  </div>
-                </div>
+                )}
               </div>
 
               {/* Footer */}

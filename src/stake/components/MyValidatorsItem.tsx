@@ -85,10 +85,10 @@ const MyValidatorsItem = (props: IMyValidatorsItemProps) => {
         </div>
         {/* Image */}
         <div className="image">
-          {props.imgUrl ? (
+          {imgUrl ? (
             <>
               <img
-                src={props.imgUrl}
+                src={imgUrl}
                 alt={`validator logo`}
                 className="rounded-full w-10"
               />
