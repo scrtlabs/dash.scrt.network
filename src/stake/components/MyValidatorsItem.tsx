@@ -107,19 +107,26 @@ const MyValidatorsItem = (props: IMyValidatorsItemProps) => {
         {/* Title */}
         <div className="flex-1">
           <span className="font-semibold">{props.name}</span>
-          <a
-            href="https://google.com"
-            target="_blank"
-            className="group font-medium text-sm"
-          >
-            <FontAwesomeIcon
-              icon={faGlobe}
-              size="sm"
-              className="ml-3 mr-1 text-neutral-500 group-hover:text-white"
-            />
-            <span className="hidden group-hover:inline-block">Website</span>
-          </a>
+          {props.validator?.description?.website && (
+            <a
+              href={props.validator?.description?.website}
+              target="_blank"
+              className="group font-medium text-sm"
+            >
+              <FontAwesomeIcon
+                icon={faGlobe}
+                size="sm"
+                className="ml-3 mr-1 text-neutral-500 group-hover:text-white"
+              />
+              <span className="hidden group-hover:inline-block">Website</span>
+            </a>
+          )}
         </div>
+        {props.validator.status === "BOND_STATUS_UNBONDED" && (
+          <div className="border border-red-500 bg-transparent text-red-500 text-sm rounded px-4 py-2 cursor-not-allowed flex items-center justify-start">
+            Inactive
+          </div>
+        )}
         <div className="staked-amount">
           <div>
             <span className="font-semibold">{stakedAmountString}</span>

@@ -26,16 +26,18 @@ import { Any } from "secretjs/dist/grpc_gateway/google/protobuf/any.pb";
 // for html-head
 
 function RestakeRedesign() {
-  const { secretjs, secretAddress } = useContext(SecretjsContext);
+  const { secretjs, secretAddress, SCRTBalance } = useContext(SecretjsContext);
+
   const [validators, setValidators] = useState<any>();
   const [delegatorDelegations, setDelegatorDelegations] = useState<any>();
   const [activeValidators, setActiveValidators] = useState<any>();
   const [selectedValidator, setSelectedValidator] = useState<any>();
   const [shuffledActiveValidators, setShuffledActiveValidators] =
     useState<any>();
-  const [searchedActiveValidators, setSearchedActiveValidators] =
-    useState<any>();
+  const [searchedValidators, setSearchedValidators] = useState<any>();
   const [inactiveValidators, setInactiveValidators] = useState<any>();
+  const [validatorDisplayStatus, setValidatorDisplayStatus] =
+    useState("Active");
   const [searchText, setSearchText] = useState<any>();
 
   const [isValidatorModalOpen, setIsValidatorModalOpen] = useState(false);
@@ -50,7 +52,6 @@ function RestakeRedesign() {
             delegator_addr: secretAddress,
             "pagination.limit": 1000,
           });
-        console.log(delegation_responses);
         setDelegatorDelegations(delegation_responses);
       }
     };
@@ -83,8 +84,8 @@ function RestakeRedesign() {
   }, []);
 
   useEffect(() => {
-    if (shuffledActiveValidators) {
-      setSearchedActiveValidators(
+    if (shuffledActiveValidators && validatorDisplayStatus == "Active") {
+      setSearchedValidators(
         shuffledActiveValidators.filter((validator: any) =>
           validator?.description?.moniker
             .toLowerCase()
@@ -92,7 +93,20 @@ function RestakeRedesign() {
         )
       );
     }
-  }, [searchText]);
+    if (inactiveValidators && validatorDisplayStatus == "Inactive") {
+      setSearchedValidators(
+        inactiveValidators.filter((validator: any) =>
+          validator?.description?.moniker
+            .toLowerCase()
+            .includes(searchText.toLowerCase())
+        )
+      );
+    }
+  }, [searchText, validatorDisplayStatus]);
+
+  function enableRestakeForAll() {}
+
+  function disableRestakeForAll() {}
 
   return (
     <>
@@ -119,7 +133,7 @@ function RestakeRedesign() {
       </div>
 
       {/* TODO: Check if user has SCRT */}
-      {secretjs && secretAddress ? <NoScrtWarning /> : null}
+      {secretjs && secretAddress && SCRTBalance == 0 ? <NoScrtWarning /> : null}
 
       {/* My Validators */}
       <div className="my-validators mb-20 max-w-6xl mx-auto">
@@ -206,40 +220,58 @@ function RestakeRedesign() {
               />
             </div>
           </div>
+          <div
+            className="flex-initial inline-flex rounded-md shadow-sm"
+            role="group"
+          >
+            <button
+              onClick={() => setValidatorDisplayStatus("Active")}
+              type="button"
+              className={
+                "py-1.5 px-3 text-xs font-semibold rounded-l-lg" +
+                (validatorDisplayStatus === "Active"
+                  ? " bg-green-500 text-white"
+                  : " bg-gray-300 text-gray-800 hover:bg-gray-400 focus:bg-gray-400")
+              }
+            >
+              Active
+            </button>
+            <button
+              onClick={() => setValidatorDisplayStatus("Inactive")}
+              type="button"
+              className={
+                "py-1.5 px-3 text-xs font-semibold rounded-r-lg" +
+                (validatorDisplayStatus === "Inactive"
+                  ? " bg-red-500 text-white"
+                  : " bg-gray-300 text-gray-800 hover:bg-gray-400 focus:bg-gray-400")
+              }
+            >
+              Inactive
+            </button>
+          </div>
         </div>
+
         <div className="all-validators flex flex-col px-4">
-          {searchedActiveValidators &&
-            searchedActiveValidators?.map((validator: any, i: any) => (
-              <AllValidatorsItem
-                position={i}
-                validator={validator}
-                name={validator?.description?.moniker}
-                commissionPercentage={
-                  validator?.commission.commission_rates?.rate
-                }
-                votingPower={validator?.tokens}
-                identity={validator?.description?.identity}
-                website={validator?.description?.website}
-                setSelectedValidator={setSelectedValidator}
-                openModal={setIsValidatorModalOpen}
-              />
-            ))}
-          {!searchedActiveValidators &&
-            shuffledActiveValidators?.map((validator: any, i: any) => (
-              <AllValidatorsItem
-                position={i}
-                validator={validator}
-                name={validator?.description?.moniker}
-                commissionPercentage={
-                  validator?.commission.commission_rates?.rate
-                }
-                votingPower={validator?.tokens}
-                identity={validator?.description?.identity}
-                website={validator?.description?.website}
-                setSelectedValidator={setSelectedValidator}
-                openModal={setIsValidatorModalOpen}
-              />
-            ))}
+          {(searchedValidators
+            ? searchedValidators
+            : validatorDisplayStatus == "Active"
+            ? shuffledActiveValidators
+            : inactiveValidators
+          )?.map((validator: any, i: any) => (
+            <AllValidatorsItem
+              position={i}
+              validator={validator}
+              name={validator?.description?.moniker}
+              commissionPercentage={
+                validator?.commission.commission_rates?.rate
+              }
+              votingPower={validator?.tokens}
+              identity={validator?.description?.identity}
+              website={validator?.description?.website}
+              setSelectedValidator={setSelectedValidator}
+              openModal={setIsValidatorModalOpen}
+            />
+          ))}
         </div>
       </div>
     </>
