@@ -21,7 +21,6 @@ import ValidatorModal from "./components/ValidatorModal";
 import { SECRET_LCD, SECRET_CHAIN_ID } from "shared/utils/config";
 import { SecretNetworkClient } from "secretjs";
 import { APIContext } from "shared/context/APIContext";
-import { Any } from "secretjs/dist/grpc_gateway/google/protobuf/any.pb";
 
 // for html-head
 
@@ -129,6 +128,7 @@ function Stake() {
         open={isValidatorModalOpen}
         selectedValidator={selectedValidator}
         delegatorDelegations={delegatorDelegations}
+        restakeEntries={restakeEntries}
         onClose={() => {
           setSelectedValidator(undefined);
           setIsValidatorModalOpen(false);
@@ -202,6 +202,7 @@ function Stake() {
                       delegation.delegation.validator_address?.description
                         ?.identity
                   )}
+                  restakeEntries={restakeEntries}
                   stakedAmount={delegation?.balance?.amount}
                   setSelectedValidator={setSelectedValidator}
                   openModal={setIsValidatorModalOpen}

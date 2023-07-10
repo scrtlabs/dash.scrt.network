@@ -20,6 +20,7 @@ interface IMyValidatorsItemProps {
   stakedAmount: number;
   identity?: string;
   setSelectedValidator: any;
+  restakeEntries: any;
   validator: any;
   openModal: any;
 }
