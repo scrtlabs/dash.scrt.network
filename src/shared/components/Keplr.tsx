@@ -100,12 +100,6 @@ export function KeplrPanel() {
     }
   }
 
-  useEffect(() => {
-    if (localStorage.getItem("keplrAutoConnect") === "true") {
-      connectWallet();
-    }
-  }, []);
-
   const keplrRef = useRef();
   useHoverOutside(keplrRef, () => setIsMenuVisible(false));
 

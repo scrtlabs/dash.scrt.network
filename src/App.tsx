@@ -21,7 +21,7 @@ import { Restake } from "stake/Restake";
 import { ThemeContextProvider } from "shared/context/ThemeContext";
 import { SecretjsContextProvider } from "shared/context/SecretjsContext";
 import { APIContextProvider } from "shared/context/APIContext";
-import RestakeRedesign from "stake/RestakeRedesign";
+import Stake from "stake/Stake";
 
 // mixpanel
 import mixpanel from "mixpanel-browser";
@@ -112,7 +112,7 @@ export default function App() {
         <Route path="/wrap" element={<Wrap />} />
         <Route path="/bridge" element={<Bridge />} />
         <Route path="/restake" element={<Restake />} />
-        <Route path="/restake-redesign" element={<RestakeRedesign />} />
+        <Route path="/stake" element={<Stake />} />
         <Route path="/apps" element={<Apps />} />
       </Routes>
     </>

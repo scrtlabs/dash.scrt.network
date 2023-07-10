@@ -53,15 +53,31 @@ const AllValidatorsItem = (props: IAllValidatorsItemProps) => {
   } = useContext(APIContext);
 
   const [imgUrl, setImgUrl] = useState<any>();
+  const [realYield, setRealYield] = useState<any>();
   const votingPowerString = formatNumber(props.votingPower / 1e6);
 
-  const I = inflation; // inflation
-  const F = secretFoundationTax; // foundation tax
-  const C = props.commissionPercentage; // validator commision rate; median is 5%
-  const T = parseFloat(communityTax); // community tax
-  const R = bondedRatio / 100; // bonded ratio
-  const realYield = (I / R) * (1 - F - T) * (1 - C) * 100;
-  const APRString: string = realYield.toFixed(2);
+  useEffect(() => {
+    if (
+      inflation &&
+      secretFoundationTax &&
+      props.commissionPercentage &&
+      communityTax &&
+      bondedRatio
+    ) {
+      const I = inflation; // inflation
+      const F = secretFoundationTax; // foundation tax
+      const C = props.commissionPercentage; // validator commision rate; median is 5%
+      const T = parseFloat(communityTax); // community tax
+      const R = bondedRatio / 100; // bonded ratio
+      setRealYield((I / R) * (1 - F - T) * (1 - C) * 100);
+    }
+  }, [
+    inflation,
+    secretFoundationTax,
+    props.commissionPercentage,
+    communityTax,
+    bondedRatio,
+  ]);
 
   const identityRef = useRef(props.identity);
 
@@ -87,7 +103,7 @@ const AllValidatorsItem = (props: IAllValidatorsItemProps) => {
       setImgUrl(undefined);
       fetchKeybaseImgUrl();
     }
-  }, [props.identity]);
+  }, [props.identity, identityRef]);
 
   return (
     <>
@@ -149,9 +165,11 @@ const AllValidatorsItem = (props: IAllValidatorsItemProps) => {
           <span className="text-neutral-400 text-sm">SCRT</span>
         </div>
         <div className="commission font-semibold">
-          {(props.commissionPercentage * 100).toFixed(2)}%
+          {formatNumber(props.commissionPercentage * 100, 2)}%
         </div>
-        <div className="apr font-semibold">{APRString}%</div>
+        <div className="apr font-semibold">
+          {realYield ? formatNumber(realYield, 2) : ""}%
+        </div>
         <div className="flex items-center font-semibold border-b border-white/0 hover:border-white transition-colors">
           <FontAwesomeIcon icon={faChevronRight} size="sm" className="ml-1" />
         </div>

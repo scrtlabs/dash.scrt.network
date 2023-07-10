@@ -71,7 +71,6 @@ const ValidatorModal = (props: IValidatorModalProps) => {
     } else {
       document.body.classList.remove("overflow-hidden");
     }
-    console.log(props.selectedValidator);
     const fetchKeybaseImgUrl = async () => {
       const url = `https://keybase.io/_/api/1.0/user/lookup.json?key_suffix=${props.selectedValidator?.description?.identity}&fields=pictures`;
       await fetch(url)
@@ -90,7 +89,7 @@ const ValidatorModal = (props: IValidatorModalProps) => {
       setImgUrl(undefined);
       fetchKeybaseImgUrl();
     }
-  }, [props.open]);
+  }, [props]);
 
   if (!props.open) return null;
 
@@ -138,11 +137,26 @@ const ValidatorModal = (props: IValidatorModalProps) => {
               <div>
                 <div className="flex gap-4 items-center">
                   <div className="image">
-                    <img
-                      src={imgUrl}
-                      alt="Validator logo"
-                      className="w-16 h-16 rounded-full"
-                    />
+                    {imgUrl ? (
+                      <>
+                        <img
+                          src={imgUrl}
+                          alt={`validator logo`}
+                          className="rounded-full w-10"
+                        />
+                      </>
+                    ) : (
+                      <>
+                        <div className="relative bg-blue-500 rounded-full w-10 h-10">
+                          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 font-semibold">
+                            {/* .charAt(0) or .slice(0,1) won't work here with emojis! */}
+                            {[
+                              ...props.selectedValidator?.description?.moniker,
+                            ][0].toUpperCase()}
+                          </div>
+                        </div>
+                      </>
+                    )}
                   </div>
                   <div>
                     <div className="mb-1">
@@ -228,13 +242,13 @@ const ValidatorModal = (props: IValidatorModalProps) => {
                   </button>
                 </div>
                 <button className="bg-neutral-800 hover:bg-neutral-700 font-semibold px-4 py-2 rounded-md">
-                  Unstake
+                  Undelegate
                 </button>
                 <button className="bg-neutral-800 hover:bg-neutral-700 font-semibold px-4 py-2 rounded-md">
-                  Switch Validator
+                  Redelegate
                 </button>
                 <button className="bg-blue-600 hover:bg-blue-500 font-semibold px-4 py-2 rounded-md">
-                  Stake
+                  Delegate
                 </button>
               </div>
             </div>

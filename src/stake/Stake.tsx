@@ -14,7 +14,7 @@ import MyValidatorsItem from "./components/MyValidatorsItem";
 import AllValidatorsItem from "./components/AllValidatorsItem";
 import { shuffleArray } from "shared/utils/commons";
 import Tooltip from "@mui/material/Tooltip";
-import "./RestakeRedesign.scss";
+import "./Stake.scss";
 import { SecretjsContext } from "shared/context/SecretjsContext";
 import NoScrtWarning from "./components/NoScrtWarning";
 import ValidatorModal from "./components/ValidatorModal";
@@ -25,7 +25,7 @@ import { Any } from "secretjs/dist/grpc_gateway/google/protobuf/any.pb";
 
 // for html-head
 
-function RestakeRedesign() {
+function Stake() {
   const { secretjs, secretAddress, SCRTBalance } = useContext(SecretjsContext);
 
   const [validators, setValidators] = useState<any>();
@@ -36,8 +36,10 @@ function RestakeRedesign() {
     useState<any>();
   const [searchedValidators, setSearchedValidators] = useState<any>();
   const [inactiveValidators, setInactiveValidators] = useState<any>();
+
   const [validatorDisplayStatus, setValidatorDisplayStatus] =
     useState("Active");
+  const [restakeEntries, setRestakeEntries] = useState<any>();
   const [searchText, setSearchText] = useState<any>();
 
   const [isValidatorModalOpen, setIsValidatorModalOpen] = useState(false);
@@ -52,6 +54,12 @@ function RestakeRedesign() {
             delegator_addr: secretAddress,
             "pagination.limit": 1000,
           });
+        const { validators } =
+          await secretjs.query.distribution.restakingEntries({
+            delegator: secretAddress,
+            "pagination.limit": 1000,
+          });
+        setRestakeEntries(validators);
         setDelegatorDelegations(delegation_responses);
       }
     };
@@ -84,12 +92,15 @@ function RestakeRedesign() {
   }, []);
 
   useEffect(() => {
+    if (!searchText) {
+      return;
+    }
     if (shuffledActiveValidators && validatorDisplayStatus == "Active") {
       setSearchedValidators(
         shuffledActiveValidators.filter((validator: any) =>
           validator?.description?.moniker
             .toLowerCase()
-            .includes(searchText.toLowerCase())
+            .includes(searchText?.toLowerCase())
         )
       );
     }
@@ -98,7 +109,7 @@ function RestakeRedesign() {
         inactiveValidators.filter((validator: any) =>
           validator?.description?.moniker
             .toLowerCase()
-            .includes(searchText.toLowerCase())
+            .includes(searchText?.toLowerCase())
         )
       );
     }
@@ -149,7 +160,7 @@ function RestakeRedesign() {
           </button>
           <Tooltip
             title={
-              'Automating the process of "claim and restake" for your SCRT'
+              'Automating the process of "claim and restake" for your SCRT. Auto-compounds your staked SCRT for increased staking returns'
             }
             placement="right"
             arrow
@@ -202,7 +213,21 @@ function RestakeRedesign() {
 
       {/* All Validators */}
       <div className="max-w-6xl mx-auto">
-        <div className="font-bold text-lg mb-4 px-4">All Validators</div>
+        <div className="font-bold text-lg mb-4 px-4">
+          All Validators{" "}
+          <Tooltip
+            title={
+              "All Validators are randomly ordered. Please consider delegating to smaller validators as well."
+            }
+            placement="right"
+            arrow
+          >
+            <FontAwesomeIcon
+              icon={faInfoCircle}
+              className="ml-2 text-neutral-400"
+            />
+          </Tooltip>
+        </div>
         <div className="grid grid-cols-12 px-4">
           {/* Search */}
           <div className="col-span-12 md:col-span-6">
@@ -221,32 +246,36 @@ function RestakeRedesign() {
             </div>
           </div>
           <div
-            className="flex-initial inline-flex rounded-md shadow-sm"
+            className="flex-initial inline-flex items-center rounded-md shadow-sm pl-3"
             role="group"
           >
             <button
               onClick={() => setValidatorDisplayStatus("Active")}
               type="button"
               className={
-                "py-1.5 px-3 text-xs font-semibold rounded-l-lg" +
+                "px-3 text-xs font-semibold rounded-l-lg py-2" +
                 (validatorDisplayStatus === "Active"
                   ? " bg-green-500 text-white"
                   : " bg-gray-300 text-gray-800 hover:bg-gray-400 focus:bg-gray-400")
               }
             >
-              Active
+              {`Active${activeValidators ? "(" : ""}${
+                activeValidators ? activeValidators?.length : ""
+              }${activeValidators ? ")" : ""}`}
             </button>
             <button
               onClick={() => setValidatorDisplayStatus("Inactive")}
               type="button"
               className={
-                "py-1.5 px-3 text-xs font-semibold rounded-r-lg" +
+                "px-3 text-xs font-semibold rounded-r-lg py-2" +
                 (validatorDisplayStatus === "Inactive"
                   ? " bg-red-500 text-white"
                   : " bg-gray-300 text-gray-800 hover:bg-gray-400 focus:bg-gray-400")
               }
             >
-              Inactive
+              {`Inactive${inactiveValidators ? "(" : ""}${
+                inactiveValidators ? inactiveValidators?.length : ""
+              }${inactiveValidators ? ")" : ""}`}
             </button>
           </div>
         </div>
@@ -278,4 +307,4 @@ function RestakeRedesign() {
   );
 }
 
-export default RestakeRedesign;
+export default Stake;

@@ -130,14 +130,14 @@ export function Navigation({
         </li>
         <li>
           <NavLink
-            to="/restake-redesign"
+            to="/stake"
             className={({ isActive }) =>
               isActive
                 ? "text-black dark:text-white bg-gradient-to-r from-neutral-200 via-neutral-200 to-neutral-200/10 dark:from-neutral-700 dark:via-neutral-700 dark:to-neutral-700/10 block w-full px-8 py-3 rounded-xl transition-colors font-bold cursor-default"
                 : "text-neutral-700 dark:text-neutral-300 cursor-pointer hover:text-black dark:hover:text-white block w-full px-8 py-3 rounded-xl transition-colors"
             }
           >
-            <FontAwesomeIcon icon={faRecycle} className="mr-2" />
+            <FontAwesomeIcon icon={faCoins} className="mr-2" />
             <span>Staking</span>
           </NavLink>
         </li>
@@ -191,21 +191,6 @@ export function Navigation({
           id="extended-menu"
         >
           <ul className="space-y-6 font-medium">
-            <li>
-              <a
-                href="https://wallet.keplr.app/chains/secret-network?tab=staking"
-                target="_blank"
-                className="cursor-pointer dark:hover:text-white w-full lg:mx-8 rounded-xl transition-colors text-neutral-600 dark:text-neutral-300 hover:text-black block lg:flex lg:items-center"
-              >
-                <FontAwesomeIcon icon={faCoins} className="mr-2" />
-                <span>Stake</span>
-                <FontAwesomeIcon
-                  icon={faArrowUpRightFromSquare}
-                  className="text-xs ml-2"
-                  size={"xs"}
-                />
-              </a>
-            </li>
             <li>
               <a
                 href="https://wallet.keplr.app/chains/secret-network?tab=governance"

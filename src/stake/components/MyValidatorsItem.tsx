@@ -12,6 +12,7 @@ import Tooltip from "@mui/material/Tooltip";
 import { APIContext } from "shared/context/APIContext";
 import { usdString } from "shared/utils/commons";
 import BigNumber from "bignumber.js";
+import { formatNumber } from "shared/utils/commons";
 
 interface IMyValidatorsItemProps {
   name: string;
@@ -56,7 +57,7 @@ const MyValidatorsItem = (props: IMyValidatorsItemProps) => {
       setImgUrl(undefined);
       fetchKeybaseImgUrl();
     }
-  }, [props.identity]);
+  }, [props.identity, identityRef]);
 
   return (
     <>
@@ -145,7 +146,7 @@ const MyValidatorsItem = (props: IMyValidatorsItemProps) => {
           </div>
         </div>
         <div className="commission font-semibold">
-          {(props.commissionPercentage * 100).toFixed(2)}%
+          {formatNumber(props.commissionPercentage * 100, 2)}%
         </div>
         <div className="flex items-center font-semibold border-b border-white/0 hover:border-white transition-colors">
           <FontAwesomeIcon icon={faChevronRight} size="sm" className="ml-1" />
