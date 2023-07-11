@@ -6,6 +6,7 @@ import {
   faMagnifyingGlass,
   faTriangleExclamation,
 } from "@fortawesome/free-solid-svg-icons";
+import { toast } from "react-toastify";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { websiteName } from "App";
 import React, { useContext, useEffect, useState } from "react";
@@ -19,13 +20,15 @@ import { SecretjsContext } from "shared/context/SecretjsContext";
 import NoScrtWarning from "./components/NoScrtWarning";
 import ValidatorModal from "./components/ValidatorModal";
 import { SECRET_LCD, SECRET_CHAIN_ID } from "shared/utils/config";
-import { SecretNetworkClient } from "secretjs";
+import { SecretNetworkClient, MsgSetAutoRestake } from "secretjs";
 import { APIContext } from "shared/context/APIContext";
 
 // for html-head
 
 function Stake() {
   const { secretjs, secretAddress, SCRTBalance } = useContext(SecretjsContext);
+
+  const restakeThreshold = 10000000;
 
   const [validators, setValidators] = useState<any>();
   const [delegatorDelegations, setDelegatorDelegations] = useState<any>();
@@ -92,6 +95,7 @@ function Stake() {
 
   useEffect(() => {
     if (!searchText) {
+      setSearchedValidators(undefined);
       return;
     }
     if (shuffledActiveValidators && validatorDisplayStatus == "Active") {
@@ -114,9 +118,219 @@ function Stake() {
     }
   }, [searchText, validatorDisplayStatus]);
 
-  function enableRestakeForAll() {}
+  function enableRestakeForValidators(validatorAddresses: string[]) {
+    async function submit() {
+      if (!secretjs || !secretAddress) return;
 
-  function disableRestakeForAll() {}
+      const validatorObjects = validators.filter((validator: any) => {
+        return validatorAddresses.find(
+          (validator_address: any) =>
+            validator.operator_address === validator_address
+        );
+      });
+
+      try {
+        const toastId = toast.loading(
+          `Enabling Auto Restaking for validators ${validatorObjects
+            .map((validator: any) => {
+              return validator?.description?.moniker;
+            })
+            .join(", ")}`,
+          { closeButton: true }
+        );
+        const txs = delegatorDelegations.map((delegation: any) => {
+          return new MsgSetAutoRestake({
+            delegator_address: secretAddress,
+            validator_address: delegation?.delegation?.validator_address,
+            enabled: true,
+          });
+        });
+
+        await secretjs.tx
+          .broadcast(txs, {
+            gasLimit: 100_000 * txs.length,
+            gasPriceInFeeDenom: 0.25,
+            feeDenom: "uscrt",
+          })
+          .catch((error: any) => {
+            console.error(error);
+            if (error?.tx?.rawLog) {
+              toast.update(toastId, {
+                render: `Enabling Auto Restaking failed: ${error.tx.rawLog}`,
+                type: "error",
+                isLoading: false,
+                closeOnClick: true,
+              });
+            } else {
+              toast.update(toastId, {
+                render: `Enabling Auto Restaking failed: ${error.message}`,
+                type: "error",
+                isLoading: false,
+                closeOnClick: true,
+              });
+            }
+          })
+          .then((tx: any) => {
+            console.log(tx);
+            if (tx) {
+              if (tx.code === 0) {
+                toast.update(toastId, {
+                  render: `Enabled Auto Restaking successfully for validators ${validatorObjects
+                    .map((validator: any) => {
+                      return validator?.description?.moniker;
+                    })
+                    .join(", ")}`,
+                  type: "success",
+                  isLoading: false,
+                  closeOnClick: true,
+                });
+              } else {
+                toast.update(toastId, {
+                  render: `Enabling Auto Restaking failed: ${tx.rawLog}`,
+                  type: "error",
+                  isLoading: false,
+                  closeOnClick: true,
+                });
+              }
+            }
+          });
+      } finally {
+      }
+    }
+    submit();
+  }
+
+  function enableRestakeForAll() {
+    async function submit() {
+      if (!secretjs || !secretAddress) return;
+      const toastId = toast.loading(
+        `Enabling Auto Restaking for all delegations`,
+        { closeButton: true }
+      );
+      try {
+        const txs = delegatorDelegations.map((delegation: any) => {
+          return new MsgSetAutoRestake({
+            delegator_address: secretAddress,
+            validator_address: delegation?.delegation?.validator_address,
+            enabled: true,
+          });
+        });
+
+        await secretjs.tx
+          .broadcast(txs, {
+            gasLimit: 100_000 * txs.length,
+            gasPriceInFeeDenom: 0.25,
+            feeDenom: "uscrt",
+          })
+          .catch((error: any) => {
+            console.error(error);
+            if (error?.tx?.rawLog) {
+              toast.update(toastId, {
+                render: `Enabling Auto Restaking failed: ${error.tx.rawLog}`,
+                type: "error",
+                isLoading: false,
+                closeOnClick: true,
+              });
+            } else {
+              toast.update(toastId, {
+                render: `Enabling Auto Restaking failed: ${error.message}`,
+                type: "error",
+                isLoading: false,
+                closeOnClick: true,
+              });
+            }
+          })
+          .then((tx: any) => {
+            console.log(tx);
+            if (tx) {
+              if (tx.code === 0) {
+                toast.update(toastId, {
+                  render: `Enabled Auto Restaking successfully for all delegations`,
+                  type: "success",
+                  isLoading: false,
+                  closeOnClick: true,
+                });
+              } else {
+                toast.update(toastId, {
+                  render: `Enabling Auto Restaking failed: ${tx.rawLog}`,
+                  type: "error",
+                  isLoading: false,
+                  closeOnClick: true,
+                });
+              }
+            }
+          });
+      } finally {
+      }
+    }
+    submit();
+  }
+
+  function disableRestakeForAll() {
+    async function submit() {
+      if (!secretjs || !secretAddress) return;
+      const toastId = toast.loading(
+        `Disabling Auto Restaking for all delegations`,
+        { closeButton: true }
+      );
+      try {
+        const txs = delegatorDelegations.map((delegation: any) => {
+          return new MsgSetAutoRestake({
+            delegator_address: secretAddress,
+            validator_address: delegation?.delegation?.validator_address,
+            enabled: false,
+          });
+        });
+
+        await secretjs.tx
+          .broadcast(txs, {
+            gasLimit: 100_000 * txs.length,
+            gasPriceInFeeDenom: 0.25,
+            feeDenom: "uscrt",
+          })
+          .catch((error: any) => {
+            console.error(error);
+            if (error?.tx?.rawLog) {
+              toast.update(toastId, {
+                render: `Disabling Auto Restaking failed: ${error.tx.rawLog}`,
+                type: "error",
+                isLoading: false,
+                closeOnClick: true,
+              });
+            } else {
+              toast.update(toastId, {
+                render: `Disabling Auto Restaking failed: ${error.message}`,
+                type: "error",
+                isLoading: false,
+                closeOnClick: true,
+              });
+            }
+          })
+          .then((tx: any) => {
+            console.log(tx);
+            if (tx) {
+              if (tx.code === 0) {
+                toast.update(toastId, {
+                  render: `Disabling Auto Restaking successfully for all delegations`,
+                  type: "success",
+                  isLoading: false,
+                  closeOnClick: true,
+                });
+              } else {
+                toast.update(toastId, {
+                  render: `Disabling Auto Restaking failed: ${tx.rawLog}`,
+                  type: "error",
+                  isLoading: false,
+                  closeOnClick: true,
+                });
+              }
+            }
+          });
+      } finally {
+      }
+    }
+    submit();
+  }
 
   return (
     <>
@@ -147,35 +361,33 @@ function Stake() {
       {secretjs && secretAddress && SCRTBalance == 0 ? <NoScrtWarning /> : null}
 
       {/* My Validators */}
-      <div className="my-validators mb-20 max-w-6xl mx-auto">
-        <div className="font-bold text-lg mb-4 px-4">My Validators</div>
+      {delegatorDelegations && validators && (
+        <div className="my-validators mb-20 max-w-6xl mx-auto">
+          <div className="font-bold text-lg mb-4 px-4">My Validators</div>
 
-        <div className="px-4 pb-2">
-          <button
-            disabled
-            onClick={() => alert("In implementation")}
-            className="text-medium disabled:bg-neutral-600 enabled:bg-green-600 enabled:hover:bg-green-700 disabled:text-neutral-400 enabled:text-white transition-colors font-semibold px-2 py-2 text-sm rounded-md"
-          >
-            Enable Auto Restake
-          </button>
-          <Tooltip
-            title={
-              'Automating the process of "claim and restake" for your SCRT. Auto-compounds your staked SCRT for increased staking returns'
-            }
-            placement="right"
-            arrow
-          >
-            <FontAwesomeIcon
-              icon={faInfoCircle}
-              className="ml-2 text-neutral-400"
-            />
-          </Tooltip>
-        </div>
-        {
-          <div className="my-validators flex flex-col px-4">
-            {delegatorDelegations &&
-              validators &&
-              delegatorDelegations?.map((delegation: any, i: any) => (
+          <div className="px-4 pb-2">
+            <button
+              onClick={() => enableRestakeForAll()}
+              className="text-medium disabled:bg-neutral-600 enabled:bg-green-600 enabled:hover:bg-green-700 disabled:text-neutral-400 enabled:text-white transition-colors font-semibold px-2 py-2 text-sm rounded-md"
+            >
+              Enable Auto Restake
+            </button>
+            <Tooltip
+              title={
+                'Automating the process of "claim and restake" for your SCRT. Auto-compounds your staked SCRT for increased staking returns'
+              }
+              placement="right"
+              arrow
+            >
+              <FontAwesomeIcon
+                icon={faInfoCircle}
+                className="ml-2 text-neutral-400"
+              />
+            </Tooltip>
+          </div>
+          {
+            <div className="my-validators flex flex-col px-4">
+              {delegatorDelegations?.map((delegation: any, i: any) => (
                 <MyValidatorsItem
                   name={
                     validators.find(
@@ -208,9 +420,10 @@ function Stake() {
                   openModal={setIsValidatorModalOpen}
                 />
               ))}
-          </div>
-        }
-      </div>
+            </div>
+          }
+        </div>
+      )}
 
       {/* All Validators */}
       <div className="max-w-6xl mx-auto">

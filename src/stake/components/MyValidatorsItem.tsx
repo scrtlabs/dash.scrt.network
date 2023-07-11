@@ -58,6 +58,12 @@ const MyValidatorsItem = (props: IMyValidatorsItemProps) => {
       setImgUrl(undefined);
       fetchKeybaseImgUrl();
     }
+    console.log(
+      props.restakeEntries.find(
+        (validatorAddress: string) =>
+          props.validator.validator_address === validatorAddress
+      )
+    );
   }, [props.identity, identityRef]);
 
   return (
@@ -76,13 +82,34 @@ const MyValidatorsItem = (props: IMyValidatorsItemProps) => {
         </div>
         {/* Auto Restake */}
         <div className="auto-restake">
-          <Tooltip title={"Auto restake is enabled"} placement="bottom" arrow>
-            <div className="flex items-center">
-              <span className="font-bold text-xs text-green-600">
-                {"enabled"}
-              </span>
-            </div>
-          </Tooltip>
+          {props.restakeEntries.find(
+            (validatorAddress: string) =>
+              props.validator.operator_address === validatorAddress
+          ) && (
+            <Tooltip title={"Auto restake is enabled"} placement="bottom" arrow>
+              <div className="flex items-center">
+                <span className="font-bold text-xs text-green-600">
+                  {"Autorestake enabled"}
+                </span>
+              </div>
+            </Tooltip>
+          )}
+          {!props.restakeEntries.find(
+            (validatorAddress: string) =>
+              props.validator.operator_address === validatorAddress
+          ) && (
+            <Tooltip
+              title={"Auto restake is disabled"}
+              placement="bottom"
+              arrow
+            >
+              <div className="flex items-center">
+                <span className="font-bold text-xs text-red-600">
+                  {"Autorestake disabled"}
+                </span>
+              </div>
+            </Tooltip>
+          )}
           {/* <FontAwesomeIcon icon={faArrowRotateRight} /> */}
         </div>
         {/* Image */}

@@ -59,7 +59,7 @@ const AllValidatorsItem = (props: IAllValidatorsItemProps) => {
   useEffect(() => {
     if (
       inflation &&
-      secretFoundationTax &&
+      secretFoundationTax >= 0 &&
       props.commissionPercentage &&
       communityTax &&
       bondedRatio
@@ -113,7 +113,19 @@ const AllValidatorsItem = (props: IAllValidatorsItemProps) => {
           props.openModal(true);
           props.setSelectedValidator(props.validator);
         }}
-        className="dark:even:bg-neutral-800 dark:odd:bg-neutral-700 flex items-center text-left dark:hover:bg-neutral-600 py-2.5 gap-4 pl-4 pr-8"
+        className={`dark:even:bg-neutral-800 ${
+          props.validator?.delegator_shares &&
+          bondedToken &&
+          props.validator?.delegator_shares / 1e6 / bondedToken > 0.05
+            ? "dark:odd:bg-red-400"
+            : "dark:odd:bg-neutral-700"
+        }  flex items-center text-left ${
+          props.validator?.delegator_shares &&
+          bondedToken &&
+          props.validator?.delegator_shares / 1e6 / bondedToken > 0.05
+            ? "dark:hover:bg-red-500"
+            : "dark:hover:bg-neutral-600"
+        }  py-2.5 gap-4 pl-4 pr-8`}
       >
         {/* Image */}
         <div className="image">
@@ -168,7 +180,7 @@ const AllValidatorsItem = (props: IAllValidatorsItemProps) => {
           {formatNumber(props.commissionPercentage * 100, 2)}%
         </div>
         <div className="apr font-semibold">
-          {realYield ? formatNumber(realYield, 2) : ""}%
+          {realYield ? `${formatNumber(realYield, 2)}%` : ""}
         </div>
         <div className="flex items-center font-semibold border-b border-white/0 hover:border-white transition-colors">
           <FontAwesomeIcon icon={faChevronRight} size="sm" className="ml-1" />
