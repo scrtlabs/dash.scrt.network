@@ -75,7 +75,6 @@ export default function StakingChart() {
 
   const [operationalToken, setOperationalToken] = useState(null);
 
-  const [centerText, setCenterText] = useState(null);
   const [data, setData] = useState({
     labels: [""],
     datasets: [
@@ -103,33 +102,6 @@ export default function StakingChart() {
       communityPool &&
       operationalToken
     ) {
-      setCenterText({
-        id: "centerText",
-        afterDatasetsDraw(chart: any, args: any, options: any) {
-          const {
-            ctx,
-            chartArea: { left, right, top, bottom, width, height },
-          } = chart;
-
-          ctx.save();
-
-          ctx.font = "bold 0.9rem sans-serif";
-          ctx.fillStyle = theme === "dark" ? "#fff" : "#000";
-          ctx.textAlign = "center";
-          ctx.fillText(`Total Supply`, width / 2, height / 2.25 + top);
-          ctx.restore();
-
-          ctx.font = "400 2rem sans-serif";
-          ctx.fillStyle = theme === "dark" ? "#fff" : "#000";
-          ctx.textAlign = "center";
-          ctx.fillText(
-            `${formatNumber(totalSupply, 2)}`,
-            width / 2,
-            height / 1.75 + top
-          );
-          ctx.restore();
-        },
-      });
       setData({
         labels: [
           `Staked: ${formatNumber(bondedToken, 2)} (${(
@@ -170,6 +142,34 @@ export default function StakingChart() {
     communityPool,
     operationalToken,
   ]);
+
+  const centerText = {
+    id: "centerText",
+    afterDatasetsDraw(chart: any, args: any, options: any) {
+      const {
+        ctx,
+        chartArea: { left, right, top, bottom, width, height },
+      } = chart;
+
+      ctx.save();
+
+      ctx.font = "bold 0.9rem sans-serif";
+      ctx.fillStyle = theme === "dark" ? "#fff" : "#000";
+      ctx.textAlign = "center";
+      ctx.fillText(`Total Supply`, width / 2, height / 2.25 + top);
+      ctx.restore();
+
+      ctx.font = "400 2rem sans-serif";
+      ctx.fillStyle = theme === "dark" ? "#fff" : "#000";
+      ctx.textAlign = "center";
+      ctx.fillText(
+        `${formatNumber(totalSupply, 2)}`,
+        width / 2,
+        height / 1.75 + top
+      );
+      ctx.restore();
+    },
+  };
 
   const options = {
     responsive: true,
@@ -241,8 +241,22 @@ export default function StakingChart() {
                 options={options as any}
                 plugins={[centerText]}
                 ref={chartRef}
+                redraw
               />
             )}
+          {!(
+            totalSupply != undefined &&
+            bondedToken != undefined &&
+            notBondedToken != undefined &&
+            operationalToken != undefined &&
+            data != undefined &&
+            options != undefined &&
+            centerText != undefined
+          ) && (
+            <div className="animate-pulse">
+              <div className="bg-neutral-300/40 dark:bg-neutral-700/40 rounded col-span-2 w-full h-full min-h-[250px] xl:min-h-[300px] mx-auto"></div>
+            </div>
+          )}
         </div>
 
         <a
