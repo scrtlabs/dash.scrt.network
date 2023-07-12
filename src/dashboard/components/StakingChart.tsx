@@ -178,6 +178,7 @@ export default function StakingChart() {
     borderWidth: 0,
     animation: {
       animateRotate: true,
+      responsiveAnimationDuration: false,
     },
     plugins: {
       legend: {
@@ -227,13 +228,13 @@ export default function StakingChart() {
 
         {/* Chart */}
         <div className="w-full h-[250px] xl:h-[300px]">
-          {totalSupply &&
-            bondedToken &&
-            notBondedToken &&
-            operationalToken &&
-            data &&
-            options &&
-            centerText && (
+          {totalSupply != undefined &&
+            bondedToken != undefined &&
+            notBondedToken != undefined &&
+            operationalToken != undefined &&
+            data != undefined &&
+            options != undefined &&
+            centerText != undefined && (
               <Doughnut
                 id="stakingChartDoughnut"
                 data={data}
