@@ -15,7 +15,6 @@ import DefaultLayout from "shared/layouts/DefaultLayout";
 import { Dashboard } from "dashboard/Dashboard";
 import Bridge from "bridge/Bridge";
 import Apps from "apps/Apps";
-import { Restake } from "stake/Restake";
 
 // Contexts
 import { ThemeContextProvider } from "shared/context/ThemeContext";
@@ -111,7 +110,6 @@ export default function App() {
         <Route path="/ibc" element={<Ibc />} />
         <Route path="/wrap" element={<Wrap />} />
         <Route path="/bridge" element={<Bridge />} />
-        <Route path="/restake" element={<Restake />} />
         <Route path="/stake" element={<Stake />} />
         <Route path="/apps" element={<Apps />} />
       </Routes>

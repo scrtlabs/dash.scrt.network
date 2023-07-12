@@ -8,8 +8,13 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useContext, useEffect, useState } from "react";
 import { APIContext } from "shared/context/APIContext";
-import { usdString } from "shared/utils/commons";
+import { usdString, formatNumber } from "shared/utils/commons";
 import BigNumber from "bignumber.js";
+import { SECRET_LCD, SECRET_CHAIN_ID } from "shared/utils/config";
+import {
+  SecretNetworkClient,
+  validatorAddressToSelfDelegatorAddress,
+} from "secretjs";
 
 interface IValidatorModalProps {
   open: boolean;
@@ -57,13 +62,32 @@ const ValidatorModal = (props: IValidatorModalProps) => {
     setMarketCap,
   } = useContext(APIContext);
 
-  const I = inflation; // inflation
-  const F = secretFoundationTax; // foundation tax
-  const C = props.selectedValidator?.commission?.commission_rates?.rate; // validator commision rate; median is 5%
-  const T = parseFloat(communityTax); // community tax
-  const R = bondedRatio / 100; // bonded ratio
-  const realYield = (I / R) * (1 - F - T) * (1 - C) * 100;
-  const APRString: string = realYield.toFixed(2);
+  const [realYield, setRealYield] = useState<any>();
+
+  useEffect(() => {
+    if (
+      inflation &&
+      secretFoundationTax >= 0 &&
+      props.selectedValidator?.commission?.commission_rates?.rate &&
+      communityTax &&
+      bondedRatio
+    ) {
+      const I = inflation; // inflation
+      const F = secretFoundationTax; // foundation tax
+      const C = props.selectedValidator?.commission?.commission_rates?.rate; // validator commision rate; median is 5%
+      const T = parseFloat(communityTax); // community tax
+      const R = bondedRatio / 100; // bonded ratio
+      setRealYield((I / R) * (1 - F - T) * (1 - C) * 100);
+    }
+  }, [
+    inflation,
+    secretFoundationTax,
+    props.selectedValidator?.commission?.commission_rates?.rate,
+    communityTax,
+    bondedRatio,
+  ]);
+
+  const [validatorSelfDelegation, setValidatorSelfDelegation] = useState<any>();
 
   // disable body scroll on open
   useEffect(() => {
@@ -72,6 +96,21 @@ const ValidatorModal = (props: IValidatorModalProps) => {
     } else {
       document.body.classList.remove("overflow-hidden");
     }
+    const fetchValidatorSelfDelegations = async () => {
+      const selfDelegatingAddr = validatorAddressToSelfDelegatorAddress(
+        props.selectedValidator?.operator_address
+      );
+      const secretjsquery = new SecretNetworkClient({
+        url: SECRET_LCD,
+        chainId: SECRET_CHAIN_ID,
+      });
+      const { delegation_response } =
+        await secretjsquery.query.staking.delegation({
+          delegator_addr: selfDelegatingAddr,
+          validator_addr: props.selectedValidator?.operator_address,
+        });
+      setValidatorSelfDelegation(delegation_response?.balance.amount);
+    };
     const fetchKeybaseImgUrl = async () => {
       const url = `https://keybase.io/_/api/1.0/user/lookup.json?key_suffix=${props.selectedValidator?.description?.identity}&fields=pictures`;
       await fetch(url)
@@ -90,6 +129,9 @@ const ValidatorModal = (props: IValidatorModalProps) => {
       setImgUrl(undefined);
       fetchKeybaseImgUrl();
     }
+    if (props.selectedValidator?.operator_address) {
+      fetchValidatorSelfDelegations();
+    }
   }, [props]);
 
   if (!props.open) return null;
@@ -102,7 +144,7 @@ const ValidatorModal = (props: IValidatorModalProps) => {
         onClick={props.onClose}
       >
         {/* Inner */}
-        <div className="absolute top-[15%] w-full onEnter_fadeInDown">
+        <div className="absolute top-[5%] w-full onEnter_fadeInDown">
           <div className="mx-auto max-w-4xl px-4">
             <div
               className="bg-neutral-900 p-8 rounded-2xl"
@@ -181,6 +223,20 @@ const ValidatorModal = (props: IValidatorModalProps) => {
                         </a>
                       )}
                     </div>
+                    <div className="flex gap-4 items-center">
+                      {props.selectedValidator?.status ===
+                        "BOND_STATUS_BONDED" && (
+                        <div className="border border-green-500 bg-transparent text-green-500 text-sm rounded px-4 py-2 cursor-not-allowed flex items-center justify-start">
+                          Active
+                        </div>
+                      )}
+                      {props.selectedValidator?.status ===
+                        "BOND_STATUS_UNBONDED" && (
+                        <div className="border border-red-500 bg-transparent text-red-500 text-sm rounded px-4 py-2 cursor-not-allowed flex items-center justify-start">
+                          Inactive
+                        </div>
+                      )}
+                    </div>
                     <div className="text-neutral-400 font-medium text-sm">
                       <div className="commission font-semibold">
                         Commission{" "}
@@ -188,7 +244,7 @@ const ValidatorModal = (props: IValidatorModalProps) => {
                           props.selectedValidator?.commission?.commission_rates
                             ?.rate * 100
                         ).toFixed(2)}
-                        % | APR {APRString}%
+                        % | APR {formatNumber(realYield, 2)}%
                       </div>
                     </div>
                   </div>
@@ -201,6 +257,82 @@ const ValidatorModal = (props: IValidatorModalProps) => {
                     {props.selectedValidator?.description?.details}
                   </div>
                 </div>
+                {/* Properties of the Val */}
+                <div className="bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 p-8 rounded-xl h-full">
+                  <div className="flex flex-col h-full justify-start">
+                    {/* First Item */}
+                    {props.selectedValidator?.description?.identity && (
+                      <div className="flex-1 h-full flex flex-col justify-center">
+                        <div className="py-4">
+                          <div className="text-neutral-400 dark:text-neutral-500 text-xs font-semibold mb-0.5">
+                            Self Delegation
+                          </div>
+                          <div className="text-neutral-400 dark:text-neutral-500 text-sm font-semibold mb-0.5">
+                            {props.selectedValidator?.description?.identity}
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                    {/* Second Item */}
+                    {props.selectedValidator?.description?.security_contact && (
+                      <div className="flex-1 h-full flex flex-col justify-center">
+                        <div className="py-4">
+                          <div className="text-neutral-400 dark:text-neutral-500 text-xs font-semibold mb-0.5">
+                            Security Contact
+                          </div>
+                          <div className="text-neutral-400 dark:text-neutral-500 text-sm font-semibold mb-0.5">
+                            {
+                              props.selectedValidator?.description
+                                ?.security_contact
+                            }
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                    {/* Third Item */}
+                    <div className="flex-1 h-full flex flex-col justify-center">
+                      <div className="py-4">
+                        <div className="text-neutral-400 dark:text-neutral-500 text-xs font-semibold mb-0.5">
+                          Staked Tokens
+                        </div>
+                        <div className="text-neutral-400 dark:text-neutral-500 text-sm font-semibold mb-0.5">
+                          {`${formatNumber(
+                            props.selectedValidator?.tokens / 1e6,
+                            2
+                          )} SCRT`}
+                        </div>
+                      </div>
+                    </div>
+                    {/* Fourth Item */}
+                    <div className="flex-1 h-full flex flex-col justify-center">
+                      <div className="py-4">
+                        <div className="text-neutral-400 dark:text-neutral-500 text-xs font-semibold mb-0.5">
+                          Minimum Self Delegation
+                        </div>
+                        <div className="text-neutral-400 dark:text-neutral-500 text-sm font-semibold mb-0.5">
+                          {`${props.selectedValidator?.min_self_delegation} SCRT`}
+                        </div>
+                      </div>
+                    </div>
+                    {/* Fifth Item */}
+                    {validatorSelfDelegation && (
+                      <div className="flex-1 h-full flex flex-col justify-center">
+                        <div className="py-4">
+                          <div className="text-neutral-400 dark:text-neutral-500 text-xs font-semibold mb-0.5">
+                            Self Delegation
+                          </div>
+                          <div className="text-neutral-400 dark:text-neutral-500 text-sm font-semibold mb-0.5">
+                            {`${formatNumber(
+                              validatorSelfDelegation / 1e6,
+                              2
+                            )} SCRT`}
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
                 {/* Highlighted Box */}
                 {props.delegatorDelegations?.find(
                   (delegatorDelegation: any) =>
@@ -236,21 +368,29 @@ const ValidatorModal = (props: IValidatorModalProps) => {
               </div>
 
               {/* Footer */}
-              <div className="flex gap-3 mt-4">
-                <div className="flex-1">
-                  <button className="bg-neutral-800 hover:bg-neutral-700 font-semibold px-3 py-2 rounded-md">
-                    <FontAwesomeIcon icon={faLink} className="fa-fw" />
-                  </button>
+              <div className="bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 p-4 rounded-xl h-full">
+                <div className="flex flex-col h-full">
+                  <div className="flex-1 flex text-center items-center">
+                    <div className="flex-1">
+                      <div className="flex-1 h-full flex flex-col justify-center border-r border-b border-neutral-200 dark:border-neutral-700">
+                        <div className="py-4">
+                          <button className="bg-neutral-800 hover:bg-neutral-700 font-semibold px-3 py-2 rounded-md">
+                            <FontAwesomeIcon icon={faLink} className="fa-fw" />
+                          </button>
+                        </div>
+                        <button className="bg-neutral-800 hover:bg-neutral-700 font-semibold px-4 py-2 rounded-md">
+                          Undelegate
+                        </button>
+                        <button className="bg-neutral-800 hover:bg-neutral-700 font-semibold px-4 py-2 rounded-md">
+                          Redelegate
+                        </button>
+                        <button className="bg-blue-600 hover:bg-blue-500 font-semibold px-4 py-2 rounded-md">
+                          Delegate
+                        </button>
+                      </div>
+                    </div>
+                  </div>
                 </div>
-                <button className="bg-neutral-800 hover:bg-neutral-700 font-semibold px-4 py-2 rounded-md">
-                  Undelegate
-                </button>
-                <button className="bg-neutral-800 hover:bg-neutral-700 font-semibold px-4 py-2 rounded-md">
-                  Redelegate
-                </button>
-                <button className="bg-blue-600 hover:bg-blue-500 font-semibold px-4 py-2 rounded-md">
-                  Delegate
-                </button>
               </div>
             </div>
           </div>

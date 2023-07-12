@@ -56,6 +56,8 @@ const AllValidatorsItem = (props: IAllValidatorsItemProps) => {
   const [realYield, setRealYield] = useState<any>();
   const votingPowerString = formatNumber(props.votingPower / 1e6);
 
+  const maxVPThreshold = 0.1;
+
   useEffect(() => {
     if (
       inflation &&
@@ -116,13 +118,13 @@ const AllValidatorsItem = (props: IAllValidatorsItemProps) => {
         className={`dark:even:bg-neutral-800 ${
           props.validator?.delegator_shares &&
           bondedToken &&
-          props.validator?.delegator_shares / 1e6 / bondedToken > 0.05
+          props.validator?.delegator_shares / 1e6 / bondedToken > maxVPThreshold
             ? "dark:odd:bg-red-400"
             : "dark:odd:bg-neutral-700"
         }  flex items-center text-left ${
           props.validator?.delegator_shares &&
           bondedToken &&
-          props.validator?.delegator_shares / 1e6 / bondedToken > 0.05
+          props.validator?.delegator_shares / 1e6 / bondedToken > maxVPThreshold
             ? "dark:hover:bg-red-500"
             : "dark:hover:bg-neutral-600"
         }  py-2.5 gap-4 pl-4 pr-8`}
@@ -179,9 +181,18 @@ const AllValidatorsItem = (props: IAllValidatorsItemProps) => {
         <div className="commission font-semibold">
           {formatNumber(props.commissionPercentage * 100, 2)}%
         </div>
-        <div className="apr font-semibold">
-          {realYield ? `${formatNumber(realYield, 2)}%` : ""}
-        </div>
+        {realYield && (
+          <div className="apr font-semibold">
+            {realYield || realYield != 0
+              ? `${formatNumber(realYield, 2)} %`
+              : ""}
+          </div>
+        )}
+        {realYield === undefined && (
+          <div className="animate-pulse">
+            <div className="bg-neutral-300/40 dark:bg-neutral-700/40 rounded col-span-2 w-16 h-7 mx-auto"></div>
+          </div>
+        )}
         <div className="flex items-center font-semibold border-b border-white/0 hover:border-white transition-colors">
           <FontAwesomeIcon icon={faChevronRight} size="sm" className="ml-1" />
         </div>
