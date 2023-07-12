@@ -2,6 +2,7 @@ import { createContext, useEffect, useRef, useState } from "react";
 import { SecretNetworkClient } from "secretjs";
 import { dAppsURL, shuffleArray, sortDAppsArray } from "shared/utils/commons";
 import { tokens } from "shared/utils/config";
+import { SECRET_LCD, SECRET_CHAIN_ID } from "shared/utils/config";
 
 const APIContext = createContext(null);
 
@@ -9,6 +10,18 @@ const APIContextProvider = ({ children }: any) => {
   const [dappsData, setDappsData] = useState<any[]>([]);
   const [dappsDataSorted, setDappsDataSorted] = useState<any[]>([]);
   const [tags, setTags] = useState<string[]>([]);
+
+  // totalSupply, bonded, notBonded
+  const [totalSupply, setTotalSupply] = useState(Number);
+  const [bondedToken, setBondedToken] = useState(Number);
+  const [notBondedToken, setNotBondedToken] = useState(Number);
+
+  const [inflation, setInflation] = useState(0);
+
+  const [communityTax, setCommunityTax] = useState("");
+  const [secretFoundationTax, setSecretFoundationTax] = useState("");
+
+  const [communityPool, setCommunityPool] = useState(Number); // in uscrt
 
   const [prices, setPrices] = useState<any>([]);
 
@@ -37,6 +50,40 @@ const APIContextProvider = ({ children }: any) => {
 
   useEffect(() => {
     fetchPrices();
+  }, []);
+
+  useEffect(() => {
+    const queryData = async () => {
+      const secretjsquery = new SecretNetworkClient({
+        url: SECRET_LCD,
+        chainId: SECRET_CHAIN_ID,
+      });
+
+      secretjsquery?.query?.bank
+        ?.supplyOf({ denom: "uscrt" })
+        ?.then((res) => setTotalSupply((res.amount.amount as any) / 1e6));
+
+      secretjsquery?.query?.staking?.pool("")?.then((res) => {
+        setBondedToken(parseInt(res.pool.bonded_tokens) / 10e5);
+        setNotBondedToken(parseInt(res.pool.not_bonded_tokens) / 10e4);
+      });
+
+      secretjsquery?.query?.distribution
+        ?.communityPool("")
+        ?.then((res) =>
+          setCommunityPool(Math.floor((res.pool[1] as any).amount / 10e5))
+        );
+
+      secretjsquery?.query?.mint
+        ?.inflation("")
+        ?.then((res) => setInflation((res as any).inflation));
+
+      secretjsquery?.query?.distribution.params("")?.then((res) => {
+        setSecretFoundationTax(res?.params.secret_foundation_tax);
+        setCommunityTax(res?.params.community_tax);
+      });
+    };
+    queryData();
   }, []);
 
   const fetchDappsURL = () => {
@@ -181,6 +228,20 @@ const APIContextProvider = ({ children }: any) => {
     setExternalApiData,
     secretAnalyticslApiData,
     setSecretAnalyticslApiData,
+    bondedToken,
+    setBondedToken,
+    notBondedToken,
+    setNotBondedToken,
+    totalSupply,
+    setTotalSupply,
+    communityPool,
+    setCommunityPool,
+    inflation,
+    setInflation,
+    secretFoundationTax,
+    setSecretFoundationTax,
+    communityTax,
+    setCommunityTax,
     volume,
     setVolume,
     marketCap,

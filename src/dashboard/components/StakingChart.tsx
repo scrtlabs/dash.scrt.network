@@ -1,6 +1,6 @@
 import { useContext, useEffect, useRef, useState } from "react";
 import { formatNumber } from "shared/utils/commons";
-import { SECRET_LCD, SECRET_CHAIN_ID } from "shared/utils/config";
+import { APIContext } from "shared/context/APIContext";
 
 import {
   Chart as ChartJS,
@@ -18,6 +18,7 @@ import { SecretNetworkClient } from "secretjs";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowUpRightFromSquare } from "@fortawesome/free-solid-svg-icons";
 import { ThemeContext } from "shared/context/ThemeContext";
+import { setDatasets } from "react-chartjs-2/dist/utils";
 
 ChartJS.register(
   CategoryScale,
@@ -33,95 +34,151 @@ ChartJS.register(
 export default function StakingChart() {
   const chartRef = useRef<ChartJS<"doughnut", number[], string>>(null);
 
-  const [communityPool, setCommunityPool] = useState(Number); // in uscrt
-  const [totalSupply, setTotalSupply] = useState(Number);
-  const [pool, setPool] = useState(null);
+  const {
+    coingeckoApiData_Day,
+    setCoinGeckoApiData_Day,
+    coingeckoApiData_Month,
+    setCoinGeckoApiData_Month,
+    coingeckoApiData_Year,
+    setCoinGeckoApiData_Year,
+    defiLamaApiData_Year,
+    setDefiLamaApiData_Year,
+    defiLamaApiData_TVL,
+    setDefiLamaApiData_TVL,
+    currentPrice,
+    setCurrentPrice,
+    externalApiData,
+    setExternalApiData,
+    secretAnalyticslApiData,
+    setSecretAnalyticslApiData,
+    bondedToken,
+    setBondedToken,
+    notBondedToken,
+    setNotBondedToken,
+    totalSupply,
+    setTotalSupply,
+    communityPool,
+    setCommunityPool,
+    inflation,
+    setInflation,
+    secretFoundationTax,
+    setSecretFoundationTax,
+    communityTax,
+    setCommunityTax,
+    volume,
+    setVolume,
+    marketCap,
+    setMarketCap,
+  } = useContext(APIContext);
 
   const { theme, setTheme } = useContext(ThemeContext);
 
-  useEffect(() => {
-    const queryData = async () => {
-      const secretjsquery = new SecretNetworkClient({
-        url: SECRET_LCD,
-        chainId: SECRET_CHAIN_ID,
-      });
-      secretjsquery?.query?.distribution
-        ?.communityPool("")
-        ?.then((res) =>
-          setCommunityPool(Math.floor((res.pool[1] as any).amount / 10e5))
-        );
-      secretjsquery?.query?.bank
-        ?.supplyOf({ denom: "uscrt" })
-        ?.then((res) => setTotalSupply((res.amount.amount as any) / 1e6));
-      secretjsquery?.query?.staking?.pool("")?.then((res) => setPool(res.pool));
-    };
+  const [operationalToken, setOperationalToken] = useState(null);
 
-    queryData();
-  }, []);
-
-  const bondedToken = parseInt(pool?.bonded_tokens) / 10e5;
-  let notBondedToken = totalSupply - bondedToken - communityPool;
-  //const operationalToken = notBondedToken - parseInt(pool?.not_bonded_tokens) / 10e4;
-  //notBondedToken = notBondedToken - operationalToken;
-
-  const centerText = {
-    id: "centerText",
-    afterDatasetsDraw(chart: any, args: any, options: any) {
-      const {
-        ctx,
-        chartArea: { left, right, top, bottom, width, height },
-      } = chart;
-
-      ctx.save();
-
-      ctx.font = "bold 0.9rem sans-serif";
-      ctx.fillStyle = theme === "dark" ? "#fff" : "#000";
-      ctx.textAlign = "center";
-      ctx.fillText(`Total Supply`, width / 2, height / 2.25 + top);
-      ctx.restore();
-
-      ctx.font = "400 2rem sans-serif";
-      ctx.fillStyle = theme === "dark" ? "#fff" : "#000";
-      ctx.textAlign = "center";
-      ctx.fillText(
-        `${formatNumber(totalSupply, 2)}`,
-        width / 2,
-        height / 1.75 + top
-      );
-      ctx.restore();
-    },
-  };
-
-  const data = {
-    labels: [
-      `Staked: ${formatNumber(bondedToken, 2)} (${(
-        (bondedToken / totalSupply) *
-        100
-      ).toFixed(2)}%)`,
-      `Unstaked: ${formatNumber(notBondedToken, 2)} (${(
-        (notBondedToken / totalSupply) *
-        100
-      ).toFixed(2)}%)`,
-      `Community Pool: ${formatNumber(communityPool, 2)} (${(
-        (communityPool / totalSupply) *
-        100
-      ).toFixed(2)}%)`,
-      //`Operational (SCRT Labs): ${formatNumber(operationalToken, 2)} (${((operationalToken/totalSupply)*100).toFixed(2)}%)`,
-    ],
+  const [centerText, setCenterText] = useState(null);
+  const [data, setData] = useState({
+    labels: [""],
     datasets: [
       {
-        data: [bondedToken, notBondedToken, communityPool],
-        backgroundColor: ["#06b6d4", "#8b5cf6", "#ff8800"],
-        hoverBackgroundColor: ["#06b6d4", "#8b5cf6", "#ff8800"],
+        data: [],
+        backgroundColor: [],
+        hoverBackgroundColor: [],
       },
     ],
-  };
+  });
+
+  useEffect(() => {
+    if (bondedToken && notBondedToken && totalSupply && communityPool) {
+      setOperationalToken(
+        totalSupply - bondedToken - notBondedToken - communityPool
+      );
+    }
+  }, [bondedToken, notBondedToken, totalSupply, communityPool]);
+
+  useEffect(() => {
+    if (
+      bondedToken &&
+      notBondedToken &&
+      totalSupply &&
+      communityPool &&
+      operationalToken
+    ) {
+      setCenterText({
+        id: "centerText",
+        afterDatasetsDraw(chart: any, args: any, options: any) {
+          const {
+            ctx,
+            chartArea: { left, right, top, bottom, width, height },
+          } = chart;
+
+          ctx.save();
+
+          ctx.font = "bold 0.9rem sans-serif";
+          ctx.fillStyle = theme === "dark" ? "#fff" : "#000";
+          ctx.textAlign = "center";
+          ctx.fillText(`Total Supply`, width / 2, height / 2.25 + top);
+          ctx.restore();
+
+          ctx.font = "400 2rem sans-serif";
+          ctx.fillStyle = theme === "dark" ? "#fff" : "#000";
+          ctx.textAlign = "center";
+          ctx.fillText(
+            `${formatNumber(totalSupply, 2)}`,
+            width / 2,
+            height / 1.75 + top
+          );
+          ctx.restore();
+        },
+      });
+      setData({
+        labels: [
+          `Staked: ${formatNumber(bondedToken, 2)} (${(
+            (bondedToken / totalSupply) *
+            100
+          ).toFixed(2)}%)`,
+          `Unstaked: ${formatNumber(notBondedToken, 2)} (${(
+            (notBondedToken / totalSupply) *
+            100
+          ).toFixed(2)}%)`,
+          `Operational: ${formatNumber(operationalToken, 2)} (${(
+            (operationalToken / totalSupply) *
+            100
+          ).toFixed(2)}%)`,
+          `Community Pool: ${formatNumber(communityPool, 2)} (${(
+            (communityPool / totalSupply) *
+            100
+          ).toFixed(2)}%)`,
+        ],
+        datasets: [
+          {
+            data: [
+              bondedToken,
+              notBondedToken,
+              operationalToken,
+              communityPool,
+            ],
+            backgroundColor: ["#06b6d4", "#8b5cf6", "#008080", "#ff8800"],
+            hoverBackgroundColor: ["#06b6d4", "#8b5cf6", "#008080", "#ff8800"],
+          },
+        ],
+      });
+    }
+  }, [
+    bondedToken,
+    notBondedToken,
+    totalSupply,
+    communityPool,
+    operationalToken,
+  ]);
 
   const options = {
     responsive: true,
     maintainAspectRatio: false,
-    cutout: "90%",
+    cutout: "92%",
     borderWidth: 0,
+    animation: {
+      animateRotate: true,
+    },
     plugins: {
       legend: {
         display: true,
@@ -170,16 +227,21 @@ export default function StakingChart() {
 
         {/* Chart */}
         <div className="w-full h-[250px] xl:h-[300px]">
-          {totalSupply && (
-            <Doughnut
-              id="stakingChartDoughnut"
-              data={data}
-              options={options as any}
-              plugins={[centerText]}
-              ref={chartRef}
-              redraw
-            />
-          )}
+          {totalSupply &&
+            bondedToken &&
+            notBondedToken &&
+            operationalToken &&
+            data &&
+            options &&
+            centerText && (
+              <Doughnut
+                id="stakingChartDoughnut"
+                data={data}
+                options={options as any}
+                plugins={[centerText]}
+                ref={chartRef}
+              />
+            )}
         </div>
 
         <a
