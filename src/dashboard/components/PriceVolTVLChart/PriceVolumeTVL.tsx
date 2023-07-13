@@ -114,7 +114,7 @@ export default function PriceVolumeTVL(props: any) {
 
   const glowPlugin = {
     id: "glow",
-    beforeDatasetsDraw: (chart, args, options) => {
+    beforeDatasetsDraw: (chart: any, args: any, options: any) => {
       const ctx = chart.ctx;
       ctx.save();
       (ctx.shadowColor = theme === "dark" ? "#06b6d4" : "#06b6d4"),
@@ -122,7 +122,7 @@ export default function PriceVolumeTVL(props: any) {
       ctx.shadowOffsetX = 0;
       ctx.shadowOffsetY = 0;
     },
-    afterDatasetsDraw: (chart) => {
+    afterDatasetsDraw: (chart: any) => {
       chart.ctx.restore();
     },
   };
