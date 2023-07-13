@@ -601,8 +601,9 @@ function Deposit() {
                 gasLimit: deposit_gas,
                 feeDenom: deposit_gas_denom,
                 ibcTxsOptions: {
+                  resolveResponses: true,
                   resolveResponsesCheckIntervalMs: 10_000,
-                  resolveResponsesTimeoutMs: 10.25 * 60 * 1000,
+                  resolveResponsesTimeoutMs: 12 * 60 * 1000,
                 },
               }
             );
@@ -639,6 +640,7 @@ function Deposit() {
                 gasLimit: deposit_gas,
                 feeDenom: deposit_gas_denom,
                 ibcTxsOptions: {
+                  resolveResponses: true,
                   resolveResponsesCheckIntervalMs: 10_000,
                   resolveResponsesTimeoutMs: 10.25 * 60 * 1000,
                 },
@@ -751,6 +753,7 @@ function Deposit() {
               toBase64(txBytes),
               {
                 ibcTxsOptions: {
+                  resolveResponses: true,
                   resolveResponsesCheckIntervalMs: 10_000,
                   resolveResponsesTimeoutMs: 10.25 * 60 * 1000,
                 },
@@ -905,8 +908,9 @@ function Deposit() {
                 feeDenom: "uscrt",
                 feeGranter: feeGrantStatus === "Success" ? faucetAddress : "",
                 ibcTxsOptions: {
+                  resolveResponses: true,
                   resolveResponsesCheckIntervalMs: 10_000,
-                  resolveResponsesTimeoutMs: 10.25 * 60 * 1000,
+                  resolveResponsesTimeoutMs: 12 * 60 * 1000,
                 },
               }
             );
@@ -954,8 +958,9 @@ function Deposit() {
                 feeDenom: "uscrt",
                 feeGranter: feeGrantStatus === "Success" ? faucetAddress : "",
                 ibcTxsOptions: {
+                  resolveResponses: true,
                   resolveResponsesCheckIntervalMs: 10_000,
-                  resolveResponsesTimeoutMs: 10.25 * 60 * 1000,
+                  resolveResponsesTimeoutMs: 12 * 60 * 1000,
                 },
               }
             );
@@ -985,8 +990,9 @@ function Deposit() {
                 feeDenom: "uscrt",
                 feeGranter: feeGrantStatus === "Success" ? faucetAddress : "",
                 ibcTxsOptions: {
+                  resolveResponses: true,
                   resolveResponsesCheckIntervalMs: 10_000,
-                  resolveResponsesTimeoutMs: 10.25 * 60 * 1000,
+                  resolveResponsesTimeoutMs: 12 * 60 * 1000,
                 },
               }
             );
