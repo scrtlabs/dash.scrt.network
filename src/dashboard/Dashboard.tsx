@@ -56,7 +56,7 @@ export function Dashboard() {
 
   useEffect(() => {
     if (blockHeight) {
-      setblockHeightFormattedString(parseInt(blockHeight).toString());
+      setblockHeightFormattedString(parseInt(blockHeight).toLocaleString());
     }
   }, [blockHeight]);
 
