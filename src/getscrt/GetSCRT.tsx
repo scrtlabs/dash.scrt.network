@@ -15,10 +15,17 @@ function GetSCRT() {
   const { secretjs, secretAddress, connectWallet } =
     useContext(SecretjsContext);
 
+  const [loading, setLoading] = useState(true);
+
   let transakQueryStrings: { [key: string]: any } = {};
 
-  transakQueryStrings.apiKey = "4fcd6904-706b-4aff-bd9d-77422813bbb7";
-  transakQueryStrings.environment = "STAGING";
+  if (import.meta.env.TRANSAK_API_KEY) {
+    transakQueryStrings.apiKey = import.meta.env.TRANSAK_API_KEY;
+    transakQueryStrings.environment = "PRODUCTION";
+  } else {
+    transakQueryStrings.apiKey = "4fcd6904-706b-4aff-bd9d-77422813bbb7";
+    transakQueryStrings.environment = "PRODUCTION";
+  }
   transakQueryStrings.cryptoCurrencyList = "SCRT";
   transakQueryStrings.walletAddress = secretAddress;
   transakQueryStrings.disableWalletAddressForm = false;
@@ -44,15 +51,27 @@ function GetSCRT() {
             height: "80dvh",
             margin: "auto",
             overflow: "hidden",
+            position: "relative",
           }}
         >
+          {/* Loading Spinner */}
+          {loading && (
+            <div className="animate-pulse">
+              <div className="bg-neutral-300/40 dark:bg-neutral-700/40 w-screen h-screen"></div>
+            </div>
+          )}
+
           <iframe
             src={`https://global-stg.transak.com?${queryString.stringify(
               transakQueryStrings
             )}`}
+            onLoad={() => setLoading(false)}
             allow="camera;microphone;fullscreen;payment"
             style={{ height: "100%", width: "100%", border: "none" }}
           ></iframe>
+        </div>
+        <div className="col-span-12 text-xs font-medium text-neutral-600 dark:text-neutral-400 flex justify-center">
+          {`Not Available in the U.S. Use at your own risk.`}
         </div>
       </div>
     </>
