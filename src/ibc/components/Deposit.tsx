@@ -136,15 +136,14 @@ function Deposit() {
   // handles [25% | 50% | 75% | Max] Button-Group
   function setAmountByPercentage(percentage: number) {
     if (availableBalance) {
-      let availableAmount =
-        Number(availableBalance) * 10 ** -selectedToken.decimals;
-      let potentialInput = new BigNumber(
-        availableAmount * (percentage * 0.01)
-      ).toFormat();
+      let availableAmount = new BigNumber(availableBalance).dividedBy(
+        `1e${selectedToken.decimals}`
+      );
+      let potentialInput = availableAmount.toNumber() * (percentage * 0.01);
       if (Number(potentialInput) == 0) {
         setAmountToTransfer("");
       } else {
-        setAmountToTransfer(potentialInput);
+        setAmountToTransfer(potentialInput.toFixed(selectedToken.decimals));
       }
     }
   }
