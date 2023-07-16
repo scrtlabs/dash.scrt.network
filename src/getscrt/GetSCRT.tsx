@@ -24,7 +24,7 @@ function GetSCRT() {
     transakQueryStrings.environment = "PRODUCTION";
   } else {
     transakQueryStrings.apiKey = "4fcd6904-706b-4aff-bd9d-77422813bbb7";
-    transakQueryStrings.environment = "PRODUCTION";
+    transakQueryStrings.environment = "STAGING";
   }
   transakQueryStrings.cryptoCurrencyList = "SCRT";
   transakQueryStrings.walletAddress = secretAddress;
@@ -39,39 +39,54 @@ function GetSCRT() {
       </Helmet>
       <div className="max-w-2xl mx-auto px-6 text-neutral-600 dark:text-neutral-400 leading-7 text-justify">
         {/* Title */}
-        <div className="text-center mb-4">
-          <h1 className="font-bold text-4xl inline text-transparent bg-clip-text bg-gradient-to-r from-cyan-500 to-purple-500">
-            Get SCRT
-          </h1>
-        </div>
-        <div
-          style={{
-            MozAnimation: "relative",
-            width: "500px",
-            height: "80dvh",
-            margin: "auto",
-            overflow: "hidden",
-            position: "relative",
-          }}
-        >
-          {/* Loading Spinner */}
-          {loading && (
-            <div className="animate-pulse">
-              <div className="bg-neutral-300/40 dark:bg-neutral-700/40 w-screen h-screen"></div>
+        <div className="w-full max-w-xl mx-auto px-4 onEnter_fadeInDown">
+          <div className="rounded-2xl p-8 border border-neutral-200 dark:border-neutral-700 w-full text-neutral-800 dark:text-neutral-200 bg-white dark:bg-neutral-900">
+            {/* Header */}
+            <div className="flex text-center mb-4 justify-center">
+              <h1 className="font-bold text-4xl inline text-transparent bg-clip-text bg-gradient-to-r from-cyan-500 to-purple-500">
+                Get SCRT
+              </h1>
             </div>
-          )}
+            <div className="flex text-center mb-4 justify-center">
+              <div
+                style={{
+                  MozAnimation: "relative",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  width: "500px",
+                  height: "80vh",
+                  overflow: "hidden",
+                  position: "relative",
+                  margin: "auto",
+                }}
+              >
+                {/* Loading Spinner */}
+                {loading && (
+                  <div className="animate-pulse">
+                    <div className="bg-neutral-300/40 dark:bg-neutral-700/40 w-screen h-screen"></div>
+                  </div>
+                )}
 
-          <iframe
-            src={`https://global-stg.transak.com?${queryString.stringify(
-              transakQueryStrings
-            )}`}
-            onLoad={() => setLoading(false)}
-            allow="camera;microphone;fullscreen;payment"
-            style={{ height: "100%", width: "100%", border: "none" }}
-          ></iframe>
-        </div>
-        <div className="col-span-12 text-xs font-medium text-neutral-600 dark:text-neutral-400 flex justify-center">
-          {`Not Available in the U.S. Use at your own risk.`}
+                <iframe
+                  src={`https://global-stg.transak.com?${queryString.stringify(
+                    transakQueryStrings
+                  )}`}
+                  onLoad={() => setLoading(false)}
+                  allow="camera;microphone;fullscreen;payment"
+                  style={{
+                    height: "100%",
+                    width: "100%",
+                    border: "none",
+                    margin: "auto",
+                  }}
+                ></iframe>
+              </div>
+            </div>
+            <div className="col-span-12 text-xs font-medium text-neutral-600 dark:text-neutral-400 flex justify-center">
+              {`Not Available in the U.S. Use at your own risk.`}
+            </div>
+          </div>
         </div>
       </div>
     </>
