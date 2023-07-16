@@ -118,6 +118,28 @@ export function Navigation({
         </li>
         <li>
           <NavLink
+            to="/getSCRT"
+            className={({ isActive }) =>
+              isActive
+                ? "isActiveNavLink text-black dark:text-white bg-gradient-to-r from-neutral-200 via-neutral-200 to-neutral-200/10 dark:from-neutral-700 dark:via-neutral-700 dark:to-neutral-700/10 block w-full px-8 py-3 rounded-xl transition-colors font-bold cursor-default"
+                : "isInactiveNavLink text-neutral-700 dark:text-neutral-300 cursor-pointer hover:text-black dark:hover:text-white block w-full px-8 py-3 rounded-xl transition-colors"
+            }
+          >
+            <svg
+              className="transition-colors h-[1.15em] mb-[.1em] inline-block mr-2"
+              version="1.0"
+              viewBox="0 0 512 512"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <g transform="translate(0 512) scale(.1 -.1)">
+                <path d="m4155 4896c-131-26-230-74-320-157-49-45-120-148-150-216l-18-42-1226-4c-1345-4-1250 1-1446-64-318-105-569-314-690-576-151-326-111-729 99-1014 134-183 353-333 598-412 198-63 149-61 1504-61 820 0 1259-4 1311-11 102-14 275-71 354-118 187-108 294-276 306-476 17-293-147-514-462-622-160-55-113-53-1385-53h-1179l-27 61c-75 167-232 296-419 344-84 21-225 19-319-5-309-79-509-377-466-696 21-160 75-271 184-379 121-119 268-178 446-178 218-1 410 99 523 271 24 37 51 85 59 107l16 40 1228 6c1113 5 1236 7 1299 22 660 161 1012 635 914 1232-60 368-358 682-771 814-199 63-150 61-1504 61-820 0-1259 4-1311 11-102 14-275 71-354 118-187 108-294 276-306 476-10 180 42 321 162 440 83 82 153 126 275 172 177 66 111 63 1410 63h1178l30-62c82-175 230-295 422-344 87-22 259-15 350 15 202 65 360 233 416 441 22 85 23 243 1 330-57 220-234 400-449 454-87 22-204 27-283 12zm186-428c57-19 90-49 115-102 42-91 27-185-40-252-97-98-275-73-336 46-60 120-10 264 106 305 48 17 110 19 155 3zm-3387-3425c88-44 128-137 105-244-28-131-175-196-305-135-125 58-154 230-57 337 60 66 173 85 257 42z" />
+              </g>
+            </svg>
+            <span>Get SCRT</span>
+          </NavLink>
+        </li>
+        <li>
+          <NavLink
             to="/restake"
             className={({ isActive }) =>
               isActive
