@@ -27,7 +27,7 @@ import { websiteName } from "App";
 import UnknownBalanceModal from "./components/UnknownBalanceModal";
 import FeeGrantInfoModal from "./components/FeeGrantInfoModal";
 import {
-  getKeplrViewingKey,
+  getWalletViewingKey,
   SecretjsContext,
 } from "shared/context/SecretjsContext";
 import mixpanel from "mixpanel-browser";
@@ -227,12 +227,17 @@ export function Wrap() {
         `1e${selectedToken.decimals}`
       );
       let potentialInput = availableAmount.toNumber() * (percentage * 0.01);
-      console.log("availableAmount", availableAmount);
-      console.log("potentialInput", potentialInput);
+      if (
+        percentage == 100 &&
+        potentialInput > 0.05 &&
+        selectedToken.name === "SCRT"
+      ) {
+        potentialInput = potentialInput - 0.05;
+      }
       if (Number(potentialInput) == 0) {
         setAmountString("");
       } else {
-        setAmountString(potentialInput.toString());
+        setAmountString(potentialInput.toFixed(selectedToken.decimals));
       }
 
       validateForm();
@@ -265,7 +270,7 @@ export function Wrap() {
       return;
     }
 
-    const key = await getKeplrViewingKey(selectedToken.address);
+    const key = await getWalletViewingKey(selectedToken.address);
     if (!key) {
       setSSCRTBalance(viewingKeyErrorString);
       return;

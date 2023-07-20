@@ -29,6 +29,20 @@ export function Dashboard() {
     setExternalApiData,
     secretAnalyticslApiData,
     setSecretAnalyticslApiData,
+    bondedToken,
+    setBondedToken,
+    notBondedToken,
+    setNotBondedToken,
+    totalSupply,
+    setTotalSupply,
+    communityPool,
+    setCommunityPool,
+    inflation,
+    setInflation,
+    secretFoundationTax,
+    setSecretFoundationTax,
+    communityTax,
+    setCommunityTax,
     volume,
     setVolume,
     marketCap,
@@ -42,7 +56,7 @@ export function Dashboard() {
 
   useEffect(() => {
     if (blockHeight) {
-      setblockHeightFormattedString(parseInt(blockHeight).toString());
+      setblockHeightFormattedString(parseInt(blockHeight).toLocaleString());
     }
   }, [blockHeight]);
 
@@ -73,8 +87,6 @@ export function Dashboard() {
   }, [transactions]);
 
   // taxes
-  const [communityTax, setCommunityTax] = useState("");
-  const [secretFoundationTax, setSecretFoundationTax] = useState("");
   const [taxFormattedString, setTaxFormattedString] = useState("");
 
   useEffect(() => {
@@ -100,7 +112,6 @@ export function Dashboard() {
   }, [gasUsed]);
 
   // inflation
-  const [inflation, setInflation] = useState(0);
   const [inflationFormattedString, setInflationFormattedString] = useState("");
 
   useEffect(() => {
@@ -118,21 +129,12 @@ export function Dashboard() {
   const [bondedRatioFormattedString, setBondedRatioFormattedString] =
     useState("");
 
-  // totalSupply, bonded, notBonded
-  const [totalSupply, setTotalSupply] = useState(Number);
-  const [bondedToken, setBondedToken] = useState(Number);
-  const [notBondedToken, setNotBondedToken] = useState(Number);
-
   useEffect(() => {
     const queryData = async () => {
       const secretjsquery = new SecretNetworkClient({
         url: SECRET_LCD,
         chainId: SECRET_CHAIN_ID,
       });
-
-      secretjsquery?.query?.bank
-        ?.supplyOf({ denom: "uscrt" })
-        ?.then((res) => setTotalSupply((res.amount.amount as any) / 1e6));
 
       secretjsquery?.query?.tendermint.getLatestBlock("")?.then((res1) => {
         setBlockHeight(res1.block.header.height);
@@ -147,26 +149,6 @@ export function Dashboard() {
               Math.abs((timestamp1 as any) - (timestamp2 as any)) / 1000;
             setBlockTime(diffInSeconds.toFixed(2));
           });
-      });
-
-      secretjsquery?.query?.staking?.pool("")?.then((res) => {
-        setBondedToken(parseInt(res.pool.bonded_tokens) / 10e5);
-        setNotBondedToken(parseInt(res.pool.not_bonded_tokens) / 10e4);
-      });
-
-      secretjsquery?.query?.mint
-        ?.inflation("")
-        ?.then((res) => setInflation((res as any).inflation));
-
-      secretjsquery?.query?.distribution
-        ?.communityPool("")
-        ?.then((res) =>
-          setCommunityPool(Math.floor((res.pool[1] as any).amount / 10e5))
-        );
-
-      secretjsquery?.query?.distribution.params("")?.then((res) => {
-        setSecretFoundationTax(res?.params.secret_foundation_tax);
-        setCommunityTax(res?.params.community_tax);
       });
     };
     queryData();
@@ -197,7 +179,6 @@ export function Dashboard() {
   }, [volume, marketCap, defiLamaApiData_TVL]);
 
   const [circulatingSupply, setCirculatingSupply] = useState(0);
-  const [communityPool, setCommunityPool] = useState(Number); // in uscrt
 
   // useEffect(() => {
   //   if (externalApiData) {

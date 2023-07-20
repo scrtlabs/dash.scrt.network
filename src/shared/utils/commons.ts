@@ -1,8 +1,7 @@
 import { StdFee } from "@cosmjs/stargate";
 import { Bech32Address } from "@keplr-wallet/cosmos";
-import { Keplr } from "@keplr-wallet/types";
 import { sha256 } from "@noble/hashes/sha256";
-import { toHex, toUtf8 } from "secretjs";
+import { Wallet, toHex, toUtf8 } from "secretjs";
 import { tokens } from "./config";
 
 export const viewingKeyErrorString = "🧐";
@@ -29,8 +28,8 @@ export function gasToFee(gas: number, denom: string): StdFee {
   };
 }
 
-export async function suggestTerraToKeplr(keplr: Keplr) {
-  await keplr.experimentalSuggestChain({
+export async function suggestTerratoWallet(wallet: any) {
+  await wallet.experimentalSuggestChain({
     rpc: "https://terra-rpc.polkachu.com",
     rest: "https://terra-api.polkachu.com",
     chainId: "phoenix-1",
@@ -70,8 +69,8 @@ export async function suggestTerraToKeplr(keplr: Keplr) {
   });
 }
 
-export async function suggestInjectiveToKeplr(keplr: Keplr) {
-  await keplr.experimentalSuggestChain({
+export async function suggestInjectivetoWallet(wallet: any) {
+  await wallet.experimentalSuggestChain({
     rpc: "https://tm.injective.network",
     rest: "https://public.lcd.injective.network",
     chainId: "injective-1",
@@ -111,8 +110,8 @@ export async function suggestInjectiveToKeplr(keplr: Keplr) {
   });
 }
 
-export async function suggestCrescentToKeplr(keplr: Keplr) {
-  await keplr.experimentalSuggestChain({
+export async function suggestCrescenttoWallet(wallet: any) {
+  await wallet.experimentalSuggestChain({
     rpc: "https://mainnet.crescent.network:26657",
     rest: "https://mainnet.crescent.network:1317",
     chainId: "crescent-1",
@@ -152,8 +151,8 @@ export async function suggestCrescentToKeplr(keplr: Keplr) {
   });
 }
 
-export async function suggestKujiraToKeplr(keplr: Keplr) {
-  await keplr.experimentalSuggestChain({
+export async function suggestKujiratoWallet(wallet: any) {
+  await wallet.experimentalSuggestChain({
     rpc: "https://rpc.kaiyo.kujira.setten.io",
     rest: "https://lcd.kaiyo.kujira.setten.io",
     chainId: "kaiyo-1",
@@ -193,8 +192,8 @@ export async function suggestKujiraToKeplr(keplr: Keplr) {
   });
 }
 
-export async function suggestChihuahuaToKeplr(keplr: Keplr) {
-  await keplr.experimentalSuggestChain({
+export async function suggestChihuahuatoWallet(wallet: any) {
+  await wallet.experimentalSuggestChain({
     rpc: "https://rpc-chihuahua-ia.cosmosia.notional.ventures",
     rest: "https://api-chihuahua-ia.cosmosia.notional.ventures",
     chainId: "chihuahua-1",

@@ -4,17 +4,26 @@ import {
   faWallet,
   faXmark,
 } from "@fortawesome/free-solid-svg-icons";
+import { isMobile } from "react-device-detect";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React from "react";
 
-interface IGetWalletModalProps {
+interface IConnectWalletModalProps {
   open: boolean;
+  setWalletName: any;
   onClose: any;
 }
 
-class GetWalletModal extends React.Component<IGetWalletModalProps> {
+class ConnectWalletModal extends React.Component<IConnectWalletModalProps> {
   render() {
     if (!this.props.open) return null;
+
+    const leapAvailable = (window as any).leap
+      ? undefined
+      : "opacity-50 cursor-not-allowed";
+    const keplrAvailable = window.keplr
+      ? undefined
+      : "opacity-50 cursor-not-allowed";
 
     return (
       <>
@@ -45,26 +54,29 @@ class GetWalletModal extends React.Component<IGetWalletModalProps> {
                 <div className="mb-8 text-center">
                   <h2 className="text-2xl font-medium mb-2">
                     <FontAwesomeIcon icon={faWallet} className="mr-2" />
-                    Get Wallet
+                    Connect to a wallet
                   </h2>
                   <p className="text-neutral-600 dark:text-neutral-400 max-w-sm mx-auto">
-                    Please install a wallet to access all applications
+                    Please connect to one of your wallets to access your
+                    applications
                   </p>
                 </div>
                 {/* Body */}
                 <div className="flex flex-col bg-neutral-200 dark:bg-neutral-800 rounded-xl overflow-hidden">
                   <a
-                    href="https://starshell.net"
+                    onClick={() => {
+                      if (keplrAvailable) return;
+                      this.props.onClose();
+                      this.props.setWalletName("StarShell");
+                    }}
                     target="_blank"
-                    className="group p-5 flex items-center gap-2.5 hover:bg-neutral-300 dark:hover:bg-neutral-700 transition-colors focus:outline-none focus:ring-2 focus:ring-cyan-500 dark:focus:ring-cyan-500 text-white dark:text-white font-semibold bg-gradient-to-r from-cyan-600 to-purple-600 hover:from-cyan-500 hover:to-purple-500"
+                    className={`group p-5 flex items-center gap-2.5 hover:bg-neutral-300 dark:hover:bg-neutral-700 transition-colors ${keplrAvailable}`}
                   >
                     <img
                       src="/img/assets/starshell.svg"
                       className="flex-initial w-7 h-7"
                     />
-                    <span className="flex-1 font-medium">
-                      Starshell (recommended)
-                    </span>
+                    <span className="flex-1 font-medium">Starshell Wallet</span>
                     <span className="text-white dark:text-white bg-blue-500 dark:bg-blue-500 group-hover:bg-blue-600 dark:group-hover:bg-blue-400 transition-colors px-3 py-1.5 rounded text-xs font-semibold">
                       <FontAwesomeIcon icon={faDesktop} className="mr-2" />
                       Desktop /{" "}
@@ -73,15 +85,19 @@ class GetWalletModal extends React.Component<IGetWalletModalProps> {
                     </span>
                   </a>
                   <a
-                    href="https://www.leapwallet.io"
+                    onClick={() => {
+                      if (leapAvailable) return;
+                      this.props.onClose();
+                      this.props.setWalletName("Leap");
+                    }}
                     target="_blank"
-                    className="group p-5 flex items-center gap-2.5 hover:bg-neutral-300 dark:hover:bg-neutral-700 transition-colors"
+                    className={`group p-5 flex items-center gap-2.5 hover:bg-neutral-300 dark:hover:bg-neutral-700 transition-colors ${leapAvailable}`}
                   >
                     <img
                       src="/img/assets/leap.svg"
                       className="flex-initial w-7 h-7"
                     />
-                    <span className="flex-1 font-medium">Leap</span>
+                    <span className="flex-1 font-medium">Leap Wallet</span>
                     <span className="text-white dark:text-white bg-blue-500 dark:bg-blue-500 group-hover:bg-blue-600 dark:group-hover:bg-blue-400 transition-colors px-3 py-1.5 rounded text-xs font-semibold">
                       <FontAwesomeIcon icon={faDesktop} className="mr-2" />
                       Desktop /{" "}
@@ -90,30 +106,38 @@ class GetWalletModal extends React.Component<IGetWalletModalProps> {
                     </span>
                   </a>
                   <a
-                    href="https://fina.cash/wallet"
+                    onClick={() => {
+                      if (keplrAvailable) return;
+                      this.props.onClose();
+                      this.props.setWalletName("Fina");
+                    }}
                     target="_blank"
-                    className="group p-5 flex items-center gap-2.5 hover:bg-neutral-300 dark:hover:bg-neutral-700 transition-colors"
+                    className={`group p-5 flex items-center gap-2.5 hover:bg-neutral-300 dark:hover:bg-neutral-700 transition-colors ${keplrAvailable}`}
                   >
                     <img
                       src="/img/assets/fina.webp"
                       className="flex-initial w-7 h-7"
                     />
-                    <span className="flex-1 font-medium">Fina</span>
+                    <span className="flex-1 font-medium">Fina Wallet</span>
                     <span className="text-white dark:text-white bg-blue-500 dark:bg-blue-500 group-hover:bg-blue-600 dark:group-hover:bg-blue-400 transition-colors px-3 py-1.5 rounded text-xs font-semibold">
                       <FontAwesomeIcon icon={faMobileScreen} className="mr-2" />
                       Mobile
                     </span>
                   </a>
                   <a
-                    href="https://chrome.google.com/webstore/detail/keplr/dmkamcknogkgcdfhhbddcghachkejeap?hl=en"
+                    onClick={() => {
+                      if (keplrAvailable) return;
+                      this.props.onClose();
+                      this.props.setWalletName("Keplr");
+                    }}
                     target="_blank"
-                    className="group p-5 flex items-center gap-2.5 hover:bg-neutral-300 dark:hover:bg-neutral-700 transition-colors"
+                    className={`group p-5 flex items-center gap-2.5 hover:bg-neutral-300 dark:hover:bg-neutral-700 transition-colors ${keplrAvailable}`}
                   >
                     <img
                       src="/img/assets/keplr.svg"
                       className="flex-initial w-7 h-7"
                     />
-                    <span className="flex-1 font-medium">Keplr</span>
+                    <span className="flex-1 font-medium">Keplr Wallet</span>
                     <span className="text-white dark:text-white bg-blue-500 dark:bg-blue-500 group-hover:bg-blue-600 dark:group-hover:bg-blue-400 transition-colors px-3 py-1.5 rounded text-xs font-semibold">
                       <FontAwesomeIcon icon={faDesktop} className="mr-2" />
                       Desktop
@@ -129,4 +153,4 @@ class GetWalletModal extends React.Component<IGetWalletModalProps> {
   }
 }
 
-export default GetWalletModal;
+export default ConnectWalletModal;

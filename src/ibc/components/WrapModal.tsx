@@ -9,20 +9,11 @@ import { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import {
   SecretjsContext,
-  getKeplrViewingKey,
+  getWalletViewingKey,
   isViewingKeyAvailable,
 } from "shared/context/SecretjsContext";
 import { IbcMode } from "shared/types/IbcMode";
-import {
-  sleep,
-  suggestCrescentToKeplr,
-  suggestChihuahuaToKeplr,
-  suggestInjectiveToKeplr,
-  suggestKujiraToKeplr,
-  suggestTerraToKeplr,
-  faucetAddress,
-  viewingKeyErrorString,
-} from "shared/utils/commons";
+import { viewingKeyErrorString } from "shared/utils/commons";
 import { Token, tokens } from "shared/utils/config";
 
 interface IWrapModalProps {
@@ -52,7 +43,7 @@ const WrapModal = (props: IWrapModalProps) => {
   useEffect(() => {
     setSelectedTokenName(selectedToken.name);
     const updateCoinBalance = async () => {
-      const key = await getKeplrViewingKey(selectedToken.address);
+      const key = await getWalletViewingKey(selectedToken.address);
       if (!key) {
         setAssetViewingKey(viewingKeyErrorString);
       }

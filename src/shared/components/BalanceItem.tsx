@@ -5,9 +5,9 @@ import { APIContext } from "shared/context/APIContext";
 import { sleep, viewingKeyErrorString, usdString } from "shared/utils/commons";
 import Tooltip from "@mui/material/Tooltip";
 import {
-  getKeplrViewingKey,
+  getWalletViewingKey,
   SecretjsContext,
-  setKeplrViewingKey,
+  setWalletViewingKey,
 } from "shared/context/SecretjsContext";
 import { Token } from "shared/utils/config";
 import { faKey, faInfoCircle } from "@fortawesome/free-solid-svg-icons";

@@ -104,12 +104,27 @@ export default function PriceVolumeTVL(props: any) {
       {
         label: chartType,
         data: chartData.map((x: any[]) => ({ x: x[0], y: x[1] })),
-        fill: false,
-        borderColor: theme === "dark" ? "#fff" : "#06b6d4",
+        fill: "start",
+        borderColor: theme === "dark" ? "#06b6d4" : "#06b6d4",
         tension: 0.1,
         pointHitRadius: "5",
       },
     ],
+  };
+
+  const glowPlugin = {
+    id: "glow",
+    beforeDatasetsDraw: (chart: any, args: any, options: any) => {
+      const ctx = chart.ctx;
+      ctx.save();
+      (ctx.shadowColor = theme === "dark" ? "#06b6d4" : "#06b6d4"),
+        (ctx.shadowBlur = 8);
+      ctx.shadowOffsetX = 0;
+      ctx.shadowOffsetY = 0;
+    },
+    afterDatasetsDraw: (chart: any) => {
+      chart.ctx.restore();
+    },
   };
 
   const options = {
@@ -122,6 +137,7 @@ export default function PriceVolumeTVL(props: any) {
       },
       tooltip: {
         xAlign: true,
+        color: theme === "dark" ? "#06b6d4" : "#06b6d4",
         callbacks: {
           label: function (context: any) {
             let label = context.dataset.label || "";
@@ -180,19 +196,6 @@ export default function PriceVolumeTVL(props: any) {
       },
     },
     pointStyle: false,
-    fill: {
-      type: "gradient",
-      gradient: {
-        shade: "dark",
-        inverseColors: false,
-        gradientToColors: ["#ff0000"],
-        shadeIntensity: 1,
-        type: "horizontal",
-        opacityFrom: 1,
-        opacityTo: 1,
-        stops: [0, 100, 100, 100],
-      },
-    },
   };
 
   const providerValue = {
@@ -222,7 +225,11 @@ export default function PriceVolumeTVL(props: any) {
           </div>
         </div>
         <div className="w-full h-[300px] xl:h-[400px]">
-          <Line data={data as any} options={options as any} />
+          <Line
+            data={data as any}
+            options={options as any}
+            plugins={[glowPlugin]}
+          />
         </div>
       </PriceVolumeHistoryContext.Provider>
     </>

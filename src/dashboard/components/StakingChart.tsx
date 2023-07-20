@@ -1,6 +1,6 @@
 import { useContext, useEffect, useRef, useState } from "react";
 import { formatNumber } from "shared/utils/commons";
-import { SECRET_LCD, SECRET_CHAIN_ID } from "shared/utils/config";
+import { APIContext } from "shared/context/APIContext";
 
 import {
   Chart as ChartJS,
@@ -18,6 +18,7 @@ import { SecretNetworkClient } from "secretjs";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowUpRightFromSquare } from "@fortawesome/free-solid-svg-icons";
 import { ThemeContext } from "shared/context/ThemeContext";
+import { setDatasets } from "react-chartjs-2/dist/utils";
 
 ChartJS.register(
   CategoryScale,
@@ -33,36 +34,114 @@ ChartJS.register(
 export default function StakingChart() {
   const chartRef = useRef<ChartJS<"doughnut", number[], string>>(null);
 
-  const [communityPool, setCommunityPool] = useState(Number); // in uscrt
-  const [totalSupply, setTotalSupply] = useState(Number);
-  const [pool, setPool] = useState(null);
+  const {
+    coingeckoApiData_Day,
+    setCoinGeckoApiData_Day,
+    coingeckoApiData_Month,
+    setCoinGeckoApiData_Month,
+    coingeckoApiData_Year,
+    setCoinGeckoApiData_Year,
+    defiLamaApiData_Year,
+    setDefiLamaApiData_Year,
+    defiLamaApiData_TVL,
+    setDefiLamaApiData_TVL,
+    currentPrice,
+    setCurrentPrice,
+    externalApiData,
+    setExternalApiData,
+    secretAnalyticslApiData,
+    setSecretAnalyticslApiData,
+    bondedToken,
+    setBondedToken,
+    notBondedToken,
+    setNotBondedToken,
+    totalSupply,
+    setTotalSupply,
+    communityPool,
+    setCommunityPool,
+    inflation,
+    setInflation,
+    secretFoundationTax,
+    setSecretFoundationTax,
+    communityTax,
+    setCommunityTax,
+    volume,
+    setVolume,
+    marketCap,
+    setMarketCap,
+  } = useContext(APIContext);
 
   const { theme, setTheme } = useContext(ThemeContext);
 
+  const [operationalToken, setOperationalToken] = useState(null);
+
+  const [data, setData] = useState({
+    labels: [""],
+    datasets: [
+      {
+        data: [],
+        backgroundColor: [],
+        hoverBackgroundColor: [],
+      },
+    ],
+  });
+
   useEffect(() => {
-    const queryData = async () => {
-      const secretjsquery = new SecretNetworkClient({
-        url: SECRET_LCD,
-        chainId: SECRET_CHAIN_ID,
+    if (bondedToken && notBondedToken && totalSupply && communityPool) {
+      setOperationalToken(
+        totalSupply - bondedToken - notBondedToken - communityPool
+      );
+    }
+  }, [bondedToken, notBondedToken, totalSupply, communityPool]);
+
+  useEffect(() => {
+    if (
+      bondedToken &&
+      notBondedToken &&
+      totalSupply &&
+      communityPool &&
+      operationalToken
+    ) {
+      setData({
+        labels: [
+          `Staked: ${formatNumber(bondedToken, 2)} (${(
+            (bondedToken / totalSupply) *
+            100
+          ).toFixed(2)}%)`,
+          `Unstaked: ${formatNumber(notBondedToken, 2)} (${(
+            (notBondedToken / totalSupply) *
+            100
+          ).toFixed(2)}%)`,
+          `Operational: ${formatNumber(operationalToken, 2)} (${(
+            (operationalToken / totalSupply) *
+            100
+          ).toFixed(2)}%)`,
+          `Community Pool: ${formatNumber(communityPool, 2)} (${(
+            (communityPool / totalSupply) *
+            100
+          ).toFixed(2)}%)`,
+        ],
+        datasets: [
+          {
+            data: [
+              bondedToken,
+              notBondedToken,
+              operationalToken,
+              communityPool,
+            ],
+            backgroundColor: ["#06b6d4", "#8b5cf6", "#008080", "#ff8800"],
+            hoverBackgroundColor: ["#06b6d4", "#8b5cf6", "#008080", "#ff8800"],
+          },
+        ],
       });
-      secretjsquery?.query?.distribution
-        ?.communityPool("")
-        ?.then((res) =>
-          setCommunityPool(Math.floor((res.pool[1] as any).amount / 10e5))
-        );
-      secretjsquery?.query?.bank
-        ?.supplyOf({ denom: "uscrt" })
-        ?.then((res) => setTotalSupply((res.amount.amount as any) / 1e6));
-      secretjsquery?.query?.staking?.pool("")?.then((res) => setPool(res.pool));
-    };
-
-    queryData();
-  }, []);
-
-  const bondedToken = parseInt(pool?.bonded_tokens) / 10e5;
-  let notBondedToken = totalSupply - bondedToken - communityPool;
-  //const operationalToken = notBondedToken - parseInt(pool?.not_bonded_tokens) / 10e4;
-  //notBondedToken = notBondedToken - operationalToken;
+    }
+  }, [
+    bondedToken,
+    notBondedToken,
+    totalSupply,
+    communityPool,
+    operationalToken,
+  ]);
 
   const centerText = {
     id: "centerText",
@@ -92,36 +171,15 @@ export default function StakingChart() {
     },
   };
 
-  const data = {
-    labels: [
-      `Staked: ${formatNumber(bondedToken, 2)} (${(
-        (bondedToken / totalSupply) *
-        100
-      ).toFixed(2)}%)`,
-      `Unstaked: ${formatNumber(notBondedToken, 2)} (${(
-        (notBondedToken / totalSupply) *
-        100
-      ).toFixed(2)}%)`,
-      `Community Pool: ${formatNumber(communityPool, 2)} (${(
-        (communityPool / totalSupply) *
-        100
-      ).toFixed(2)}%)`,
-      //`Operational (SCRT Labs): ${formatNumber(operationalToken, 2)} (${((operationalToken/totalSupply)*100).toFixed(2)}%)`,
-    ],
-    datasets: [
-      {
-        data: [bondedToken, notBondedToken, communityPool],
-        backgroundColor: ["#06b6d4", "#8b5cf6", "#ff8800"],
-        hoverBackgroundColor: ["#06b6d4", "#8b5cf6", "#ff8800"],
-      },
-    ],
-  };
-
   const options = {
     responsive: true,
     maintainAspectRatio: false,
-    cutout: "90%",
+    cutout: "92%",
     borderWidth: 0,
+    animation: {
+      animateRotate: true,
+      responsiveAnimationDuration: false,
+    },
     plugins: {
       legend: {
         display: true,
@@ -170,15 +228,34 @@ export default function StakingChart() {
 
         {/* Chart */}
         <div className="w-full h-[250px] xl:h-[300px]">
-          {totalSupply && (
-            <Doughnut
-              id="stakingChartDoughnut"
-              data={data}
-              options={options as any}
-              plugins={[centerText]}
-              ref={chartRef}
-              redraw
-            />
+          {totalSupply != undefined &&
+            bondedToken != undefined &&
+            notBondedToken != undefined &&
+            operationalToken != undefined &&
+            data != undefined &&
+            options != undefined &&
+            centerText != undefined && (
+              <Doughnut
+                id="stakingChartDoughnut"
+                data={data}
+                options={options as any}
+                plugins={[centerText]}
+                ref={chartRef}
+                redraw
+              />
+            )}
+          {!(
+            totalSupply != undefined &&
+            bondedToken != undefined &&
+            notBondedToken != undefined &&
+            operationalToken != undefined &&
+            data != undefined &&
+            options != undefined &&
+            centerText != undefined
+          ) && (
+            <div className="animate-pulse">
+              <div className="bg-neutral-300/40 dark:bg-neutral-700/40 rounded col-span-2 w-full h-full min-h-[250px] xl:min-h-[300px] mx-auto"></div>
+            </div>
           )}
         </div>
 

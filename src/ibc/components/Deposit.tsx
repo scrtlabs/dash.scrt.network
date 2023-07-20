@@ -8,11 +8,11 @@ import Long from "long";
 import { useEffect, useState, useContext, Component } from "react";
 import {
   sleep,
-  suggestCrescentToKeplr,
-  suggestChihuahuaToKeplr,
-  suggestInjectiveToKeplr,
-  suggestKujiraToKeplr,
-  suggestTerraToKeplr,
+  suggestCrescenttoWallet,
+  suggestChihuahuatoWallet,
+  suggestInjectivetoWallet,
+  suggestKujiratoWallet,
+  suggestTerratoWallet,
   faucetAddress,
   viewingKeyErrorString,
 } from "shared/utils/commons";
@@ -45,10 +45,10 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { IbcContext } from "ibc/Ibc";
 import {
-  getKeplrViewingKey,
+  getWalletViewingKey,
   isViewingKeyAvailable,
   SecretjsContext,
-  setKeplrViewingKey,
+  setWalletViewingKey,
 } from "shared/context/SecretjsContext";
 import CopyToClipboard from "react-copy-to-clipboard";
 import mixpanel from "mixpanel-browser";
@@ -136,15 +136,14 @@ function Deposit() {
   // handles [25% | 50% | 75% | Max] Button-Group
   function setAmountByPercentage(percentage: number) {
     if (availableBalance) {
-      let availableAmount =
-        Number(availableBalance) * 10 ** -selectedToken.decimals;
-      let potentialInput = new BigNumber(
-        availableAmount * (percentage * 0.01)
-      ).toFormat();
+      let availableAmount = new BigNumber(availableBalance).dividedBy(
+        `1e${selectedToken.decimals}`
+      );
+      let potentialInput = availableAmount.toNumber() * (percentage * 0.01);
       if (Number(potentialInput) == 0) {
         setAmountToTransfer("");
       } else {
-        setAmountToTransfer(potentialInput);
+        setAmountToTransfer(potentialInput.toFixed(selectedToken.decimals));
       }
     }
   }
@@ -292,7 +291,7 @@ function Deposit() {
   const updateCoinBalance = async () => {
     if (secretjs && secretAddress) {
       if (selectedToken.is_snip20 || selectedToken.is_ics20) {
-        const key = await getKeplrViewingKey(selectedToken.address);
+        const key = await getWalletViewingKey(selectedToken.address);
         if (!key) {
           setAvailableBalance(viewingKeyErrorString);
           return;
@@ -440,34 +439,38 @@ function Deposit() {
       setSelectedToken(supportedTokens[0]);
     }
     (async () => {
-      while (!window.keplr || !window.getOfflineSignerOnlyAmino) {
+      while (
+        !(window as any).wallet ||
+        !(window as any).wallet.getOfflineSignerOnlyAmino
+      ) {
         await sleep(100);
       }
       if (selectedSource.chain_name === "Terra") {
-        await suggestTerraToKeplr(window.keplr);
+        await suggestTerratoWallet((window as any).wallet);
       } else if (selectedSource.chain_name === "Injective") {
-        await suggestInjectiveToKeplr(window.keplr);
+        await suggestInjectivetoWallet((window as any).wallet);
       } else if (selectedSource.chain_name === "Crescent") {
-        await suggestCrescentToKeplr(window.keplr);
+        await suggestCrescenttoWallet((window as any).wallet);
       } else if (selectedSource.chain_name === "Kujira") {
-        await suggestKujiraToKeplr(window.keplr);
+        await suggestKujiratoWallet((window as any).wallet);
       } else if (selectedSource.chain_name === "Chihuahua") {
-        await suggestChihuahuaToKeplr(window.keplr);
+        await suggestChihuahuatoWallet((window as any).wallet);
       }
 
-      // Initialize cosmjs on the source chain, because it has sendIbcTokens()
       const { chain_id, lcd, bech32_prefix } =
         chains[selectedSource.chain_name];
-      await window.keplr.enable(chain_id);
+      await (window as any).wallet.enable(chain_id);
 
-      window.keplr.defaultOptions = {
+      (window as any).wallet.defaultOptions = {
         sign: {
           preferNoSetFee: false,
           disableBalanceCheck: true,
         },
       };
 
-      const sourceOfflineSigner = window.getOfflineSignerOnlyAmino(chain_id);
+      const sourceOfflineSigner = (
+        window as any
+      ).wallet.getOfflineSignerOnlyAmino(chain_id);
       const depositFromAccounts = await sourceOfflineSigner.getAccounts();
       setSourceAddress(depositFromAccounts[0].address);
 
@@ -597,8 +600,9 @@ function Deposit() {
                 gasLimit: deposit_gas,
                 feeDenom: deposit_gas_denom,
                 ibcTxsOptions: {
+                  resolveResponses: true,
                   resolveResponsesCheckIntervalMs: 10_000,
-                  resolveResponsesTimeoutMs: 10.25 * 60 * 1000,
+                  resolveResponsesTimeoutMs: 12 * 60 * 1000,
                 },
               }
             );
@@ -635,6 +639,7 @@ function Deposit() {
                 gasLimit: deposit_gas,
                 feeDenom: deposit_gas_denom,
                 ibcTxsOptions: {
+                  resolveResponses: true,
                   resolveResponsesCheckIntervalMs: 10_000,
                   resolveResponsesTimeoutMs: 10.25 * 60 * 1000,
                 },
@@ -719,7 +724,7 @@ function Deposit() {
             }
 
             // Sign the tx
-            const sig = await window?.keplr?.signDirect(
+            const sig = await (window as any).wallet?.signDirect(
               chains[selectedSource.chain_name].chain_id,
               sourceAddress,
               {
@@ -729,7 +734,6 @@ function Deposit() {
                 chainId: chains[selectedSource.chain_name].chain_id,
                 accountNumber: new Long(Number(accountNumber)),
               },
-              // @ts-expect-error the types are not updated on the Keplr types package
               { isEthereum: true }
             );
 
@@ -748,6 +752,7 @@ function Deposit() {
               toBase64(txBytes),
               {
                 ibcTxsOptions: {
+                  resolveResponses: true,
                   resolveResponsesCheckIntervalMs: 10_000,
                   resolveResponsesTimeoutMs: 10.25 * 60 * 1000,
                 },
@@ -902,8 +907,9 @@ function Deposit() {
                 feeDenom: "uscrt",
                 feeGranter: feeGrantStatus === "Success" ? faucetAddress : "",
                 ibcTxsOptions: {
+                  resolveResponses: true,
                   resolveResponsesCheckIntervalMs: 10_000,
-                  resolveResponsesTimeoutMs: 10.25 * 60 * 1000,
+                  resolveResponsesTimeoutMs: 12 * 60 * 1000,
                 },
               }
             );
@@ -951,8 +957,9 @@ function Deposit() {
                 feeDenom: "uscrt",
                 feeGranter: feeGrantStatus === "Success" ? faucetAddress : "",
                 ibcTxsOptions: {
+                  resolveResponses: true,
                   resolveResponsesCheckIntervalMs: 10_000,
-                  resolveResponsesTimeoutMs: 10.25 * 60 * 1000,
+                  resolveResponsesTimeoutMs: 12 * 60 * 1000,
                 },
               }
             );
@@ -982,8 +989,9 @@ function Deposit() {
                 feeDenom: "uscrt",
                 feeGranter: feeGrantStatus === "Success" ? faucetAddress : "",
                 ibcTxsOptions: {
+                  resolveResponses: true,
                   resolveResponsesCheckIntervalMs: 10_000,
-                  resolveResponsesTimeoutMs: 10.25 * 60 * 1000,
+                  resolveResponsesTimeoutMs: 12 * 60 * 1000,
                 },
               }
             );
@@ -1345,7 +1353,7 @@ function Deposit() {
                       <button
                         className="ml-2 font-semibold bg-neutral-100 dark:bg-neutral-900 px-1.5 py-0.5 rounded-md border-neutral-300 dark:border-neutral-700 transition-colors hover:bg-neutral-300 dark:hover:bg-neutral-700 cursor-pointer disabled:text-neutral-500 dark:disabled:text-neutral-500 disabled:hover:bg-neutral-100 dark:disabled:hover:bg-neutral-900 disabled:cursor-default"
                         onClick={async () => {
-                          await setKeplrViewingKey(selectedToken.address);
+                          await setWalletViewingKey(selectedToken.address);
                           try {
                             setAvailableBalance("");
                             //setLoadingTokenBalance(true);

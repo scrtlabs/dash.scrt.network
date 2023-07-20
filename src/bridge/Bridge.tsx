@@ -32,7 +32,7 @@ function Bridge() {
             Secret Tunnel
           </a>{" "}
           to bridge your assets from blockchains such as Ethereum, Binance Smart
-          Chain (BSC) and Axelar to Secret Network!
+          Chain (BSC) and Axelar to Secret Network.
         </p>
         <a
           href="https://tunnel.scrt.network"
@@ -50,7 +50,8 @@ function Bridge() {
             –{" "}
           </span>
           If you want to bridge Axelar Assets (such as USDC, USDT) from other
-          Cosmos based chains to Secret, please use the IBC tab:
+          Cosmos based chains (Osmosis, Kujira) to Secret, please use the IBC
+          tab:
           <Link
             to={"/ibc"}
             className="text-white block my-6 p-3 w-full text-center font-semibold bg-cyan-600 dark:bg-cyan-600 rounded-lg text-sm hover:bg-cyan-500 dark:hover:bg-cyan-500 focus:bg-cyan-600 dark:focus:bg-cyan-600 transition-colors"
@@ -58,6 +59,25 @@ function Bridge() {
             <FontAwesomeIcon icon={faShuffle} className="mr-2" />
             Go to IBC Transfers
           </Link>
+        </p>
+        <p>
+          Use the{" "}
+          <a
+            href="https://ipfs.trivium.network/ipns/k51qzi5uqu5dhovcugri8aul3itkct8lvnodtnv2y3o1saotkjsa7ao1aq0dqa/"
+            target="_blank"
+            className="pb-0.5 border-b border-neutral-400 dark:border-neutral-600 hover:text-black dark:hover:text-white hover:border-black dark:hover:border-white transition-colors"
+          >
+            Monero Bridge
+          </a>{" "}
+          to bridge your XMR from Monero to Secret Network.
+          <a
+            href="https://ipfs.trivium.network/ipns/k51qzi5uqu5dhovcugri8aul3itkct8lvnodtnv2y3o1saotkjsa7ao1aq0dqa/"
+            target="_blank"
+            className="text-white block my-6 p-3 w-full text-center font-semibold bg-cyan-600 dark:bg-cyan-600 rounded-lg text-sm hover:bg-cyan-500 dark:hover:bg-cyan-500 focus:bg-cyan-600 dark:focus:bg-cyan-600 transition-colors"
+          >
+            Go to Monero Bridge
+            <FontAwesomeIcon icon={faArrowUpRightFromSquare} className="ml-2" />
+          </a>
         </p>
       </div>
     </>
