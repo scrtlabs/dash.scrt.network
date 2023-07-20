@@ -13,6 +13,7 @@ import {
 } from "shared/utils/commons";
 import React from "react";
 import { APIContext } from "shared/context/APIContext";
+import mixpanel from "mixpanel-browser";
 
 function Apps() {
   const {
@@ -23,6 +24,16 @@ function Apps() {
     tags,
     setTags,
   } = useContext(APIContext);
+
+  useEffect(() => {
+    if (import.meta.env.VITE_MIXPANEL_ENABLED === "true") {
+      mixpanel.init(import.meta.env.VITE_MIXPANEL_PROJECT_TOKEN, {
+        debug: true,
+      });
+      mixpanel.identify("Dashboard-App");
+      mixpanel.track("Open Apps Tab");
+    }
+  }, []);
 
   // Filter + Search
   const [tagsToBeFilteredBy, setTagsToBeFilteredBy] = useState<string[]>([]);

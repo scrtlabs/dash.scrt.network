@@ -12,8 +12,21 @@ import {
   formatNumber,
   pageTitle,
 } from "shared/utils/commons";
+import { websiteName } from "App";
+import mixpanel from "mixpanel-browser";
+import { useEffect } from "react";
 
 function Bridge() {
+  useEffect(() => {
+    if (import.meta.env.VITE_MIXPANEL_ENABLED === "true") {
+      mixpanel.init(import.meta.env.VITE_MIXPANEL_PROJECT_TOKEN, {
+        debug: true,
+      });
+      mixpanel.identify("Dashboard-App");
+      mixpanel.track("Open Bridge Tab");
+    }
+  }, []);
+
   return (
     <>
       <Helmet>

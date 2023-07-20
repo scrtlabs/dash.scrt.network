@@ -16,6 +16,7 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useState } from "react";
 import { NavLink } from "react-router-dom";
+import mixpanel from "mixpanel-browser";
 
 export function Navigation({
   showMobileMenu,
@@ -28,6 +29,17 @@ export function Navigation({
 
   function toggleIsExtendedMenuOpen() {
     setIsExtendedMenuOpen(!isExtendedMenuOpen);
+  }
+
+  function trackMixPanelEvent(event: string) {
+    if (import.meta.env.VITE_MIXPANEL_ENABLED === "true" && event) {
+      mixpanel.init(import.meta.env.VITE_MIXPANEL_PROJECT_TOKEN, {
+        debug: true,
+      });
+      mixpanel.identify("Dashboard-App");
+      mixpanel.track(event);
+      console.log(event);
+    }
   }
 
   return (
@@ -196,6 +208,9 @@ export function Navigation({
                 href="https://wallet.keplr.app/chains/secret-network?tab=staking"
                 target="_blank"
                 className="cursor-pointer dark:hover:text-white w-full lg:mx-8 rounded-xl transition-colors text-neutral-600 dark:text-neutral-300 hover:text-black block lg:flex lg:items-center"
+                onClick={() => {
+                  trackMixPanelEvent("Clicked external Stake");
+                }}
               >
                 <FontAwesomeIcon icon={faCoins} className="mr-2" />
                 <span>Stake</span>
@@ -211,6 +226,9 @@ export function Navigation({
                 href="https://wallet.keplr.app/chains/secret-network?tab=governance"
                 target="_blank"
                 className="cursor-pointer dark:hover:text-white w-full lg:mx-8 rounded-xl transition-colors text-neutral-600 dark:text-neutral-300 hover:text-black block lg:flex lg:items-center"
+                onClick={() => {
+                  trackMixPanelEvent("Clicked external Governance");
+                }}
               >
                 <svg
                   className="mr-2 fill-current h-4"
@@ -247,6 +265,9 @@ export function Navigation({
                 href="https://secretanalytics.xyz"
                 target="_blank"
                 className="cursor-pointer dark:hover:text-white w-full lg:mx-8 rounded-xl transition-colors text-neutral-600 dark:text-neutral-300 hover:text-black block lg:flex lg:items-center"
+                onClick={() => {
+                  trackMixPanelEvent("Clicked external Analytics");
+                }}
               >
                 <FontAwesomeIcon icon={faChartLine} className="mr-2" />
                 <span>Stats</span>
@@ -262,6 +283,9 @@ export function Navigation({
                 href="https://www.mintscan.io/secret"
                 target="_blank"
                 className="cursor-pointer dark:hover:text-white w-full lg:mx-8 rounded-xl transition-colors text-neutral-600 dark:text-neutral-300 hover:text-black block lg:flex lg:items-center"
+                onClick={() => {
+                  trackMixPanelEvent("Clicked external Block Explorer");
+                }}
               >
                 <FontAwesomeIcon icon={faCube} className="mr-2" />
                 <span>Block Explorer</span>
@@ -277,6 +301,9 @@ export function Navigation({
                 href="https://docs.scrt.network/"
                 target="_blank"
                 className="cursor-pointer dark:hover:text-white w-full lg:mx-8 rounded-xl transition-colors text-neutral-600 dark:text-neutral-300 hover:text-black block lg:flex lg:items-center"
+                onClick={() => {
+                  trackMixPanelEvent("Clicked external docs");
+                }}
               >
                 <FontAwesomeIcon icon={faBook} className="mr-2" />
                 <span>Documentation</span>
@@ -292,6 +319,9 @@ export function Navigation({
                 href="https://cryptoclerk.xyz/"
                 target="_blank"
                 className="cursor-pointer dark:hover:text-white w-full lg:mx-8 rounded-xl transition-colors text-neutral-600 dark:text-neutral-300 hover:text-black block lg:flex lg:items-center"
+                onClick={() => {
+                  trackMixPanelEvent("Clicked external Cryptoclerk");
+                }}
               >
                 <FontAwesomeIcon icon={faBriefcase} className="mr-2" />
                 Crypto Clerk

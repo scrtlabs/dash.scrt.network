@@ -18,6 +18,7 @@ import {
   autoRestakePageDescription,
   autoRestakePageTitle,
 } from "shared/utils/commons";
+import mixpanel from "mixpanel-browser";
 
 export function Restake() {
   const queryParams = new URLSearchParams(window.location.search);
@@ -33,6 +34,16 @@ export function Restake() {
   const [validatorsForDelegator, setValidatorsForDelegator] = useState<any>();
   const [restakeEntries, setRestakeEntries] = useState<any>();
   const [selectedValidator, setSelectedValidator] = useState<any>();
+
+  useEffect(() => {
+    if (import.meta.env.VITE_MIXPANEL_ENABLED === "true") {
+      mixpanel.init(import.meta.env.VITE_MIXPANEL_PROJECT_TOKEN, {
+        debug: true,
+      });
+      mixpanel.identify("Dashboard-App");
+      mixpanel.track("Open Auto-restake Tab");
+    }
+  }, []);
 
   const fetchDelegations = async () => {
     const { validators } = await secretjs.query.staking.validators({

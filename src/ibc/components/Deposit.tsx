@@ -99,6 +99,15 @@ function Deposit() {
     setAmountToTransfer(e.target.value);
   }
 
+  useEffect(() => {
+    if (import.meta.env.VITE_MIXPANEL_ENABLED === "true") {
+      mixpanel.init(import.meta.env.VITE_MIXPANEL_PROJECT_TOKEN, {
+        debug: true,
+      });
+      mixpanel.identify("Dashboard-App");
+      mixpanel.track("Open IBC Tab");
+    }
+  }, []);
   const message =
     ibcMode === "deposit"
       ? `Deposit your SCRT via IBC transfer from ${selectedSource.chain_name} to Secret Network`
