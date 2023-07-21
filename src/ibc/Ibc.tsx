@@ -147,11 +147,17 @@ export function Ibc() {
 
         <meta property="og:title" content={ibcPageTitle} />
         <meta property="og:description" content={ibcPageDescription} />
-        {/* <meta property="og:image" content="Image URL Here"/> */}
+        <meta
+          property="og:image"
+          content={`/img/secret_dashboard_preview.png`}
+        />
 
         <meta name="twitter:title" content={ibcPageTitle} />
         <meta name="twitter:description" content={ibcPageDescription} />
-        {/* <meta name="twitter:image" content="Image URL Here"/> */}
+        <meta
+          property="twitter:image"
+          content={`/img/secret_dashboard_preview.png`}
+        />
 
         <script type="application/ld+json">
           {JSON.stringify(ibcJsonLdSchema)}
