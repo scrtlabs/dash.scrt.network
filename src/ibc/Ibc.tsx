@@ -3,7 +3,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faInfoCircle } from "@fortawesome/free-solid-svg-icons";
 import Tooltip from "@mui/material/Tooltip";
 import { Helmet } from "react-helmet-async";
-import { websiteName } from "App";
 import WrapModal from "./components/WrapModal";
 import Deposit from "./components/Deposit";
 import { SecretjsContext } from "shared/context/SecretjsContext";
@@ -11,6 +10,11 @@ import ViewingKeyModal from "./components/ViewingKeyModal";
 import { Token, tokens } from "shared/utils/config";
 import { IbcMode } from "shared/types/IbcMode";
 import { useSearchParams } from "react-router-dom";
+import {
+  ibcJsonLdSchema,
+  ibcPageDescription,
+  ibcPageTitle,
+} from "shared/utils/commons";
 
 export const IbcContext = createContext(null);
 
@@ -131,7 +135,27 @@ export function Ibc() {
   return (
     <>
       <Helmet>
-        <title>{websiteName} | IBC</title>
+        <title>{ibcPageTitle}</title>
+
+        <meta charSet="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+        <meta name="title" content={ibcPageTitle} />
+        <meta name="application-name" content={ibcPageTitle} />
+        <meta name="description" content={ibcPageDescription} />
+        <meta name="robots" content="index,follow" />
+
+        <meta property="og:title" content={ibcPageTitle} />
+        <meta property="og:description" content={ibcPageDescription} />
+        {/* <meta property="og:image" content="Image URL Here"/> */}
+
+        <meta name="twitter:title" content={ibcPageTitle} />
+        <meta name="twitter:description" content={ibcPageDescription} />
+        {/* <meta name="twitter:image" content="Image URL Here"/> */}
+
+        <script type="application/ld+json">
+          {JSON.stringify(ibcJsonLdSchema)}
+        </script>
       </Helmet>
       <IbcContext.Provider value={ibcContextProviderValue}>
         <WrapModal

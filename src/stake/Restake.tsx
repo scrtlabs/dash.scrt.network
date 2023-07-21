@@ -13,6 +13,11 @@ import Select from "react-select";
 import Tooltip from "@mui/material/Tooltip";
 import { Helmet } from "react-helmet-async";
 import { SecretjsContext } from "shared/context/SecretjsContext";
+import {
+  autoRestakeJsonLdSchema,
+  autoRestakePageDescription,
+  autoRestakePageTitle,
+} from "shared/utils/commons";
 
 export function Restake() {
   const queryParams = new URLSearchParams(window.location.search);
@@ -185,7 +190,27 @@ export function Restake() {
   return (
     <>
       <Helmet>
-        <title>Secret Dashboard | Auto-Restake</title>
+        <title>{autoRestakePageTitle}</title>
+
+        <meta charSet="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+        <meta name="title" content={autoRestakePageTitle} />
+        <meta name="application-name" content={autoRestakePageTitle} />
+        <meta name="description" content={autoRestakePageDescription} />
+        <meta name="robots" content="index,follow" />
+
+        <meta property="og:title" content={autoRestakePageTitle} />
+        <meta property="og:description" content={autoRestakePageDescription} />
+        {/* <meta property="og:image" content="Image URL Here"/> */}
+
+        <meta name="twitter:title" content={autoRestakePageTitle} />
+        <meta name="twitter:description" content={autoRestakePageDescription} />
+        {/* <meta name="twitter:image" content="Image URL Here"/> */}
+
+        <script type="application/ld+json">
+          {JSON.stringify(autoRestakeJsonLdSchema)}
+        </script>
       </Helmet>
 
       <div className="w-full max-w-xl mx-auto px-4 onEnter_fadeInDown relative">

@@ -291,3 +291,85 @@ export const sortDAppsArray = (array: any[]) => {
   );
   return sortedArray;
 };
+
+/**
+ * SEO
+ */
+
+// Dashboard
+export const pageTitle = `Secret Dashboard`;
+export const dashboardPageDescription = `Secret Dashboard is an entry point into Secret Network! Offering tools like IBC Transfer and Wrapping, Secret Dashboard leverages privacy possibilities within SCRT!`;
+export const dashboardJsonLdSchema = [
+  {
+    "@context": "http://schema.org",
+    "@type": "WebPage",
+    url: "https://dash.scrt.network",
+    name: pageTitle,
+    description: dashboardPageDescription,
+  },
+];
+
+// IBC
+export const ibcPageTitle = `${pageTitle} | IBC Transfer`;
+export const ibcPageDescription = `Deposit your assets, such as SCRT, via IBC transfer to and from Secret Network!`;
+export const ibcJsonLdSchema = [
+  {
+    "@context": "http://schema.org",
+    "@type": "WebPage",
+    url: "https://dash.scrt.network/ibc",
+    name: ibcPageTitle,
+    description: ibcPageDescription,
+  },
+];
+
+// Wrap
+export const wrapPageTitle = `${pageTitle} | Wrap`;
+export const wrapPageDescription = `Convert publicly visible SCRT into its privacy-preserving equivalent sSCRT with Secret Wrap! These secure tokens are not publicly visible and require a viewing key!`;
+export const wrapJsonLdSchema = [
+  {
+    "@context": "http://schema.org",
+    "@type": "WebPage",
+    url: "https://dash.scrt.network/wrap",
+    name: wrapPageTitle,
+    description: wrapPageDescription,
+  },
+];
+
+// Bridge
+export const bridgePageTitle = `${pageTitle} | Bridge`;
+export const bridgePageDescription = `Learn how to bridge your assets from blockchains such as Ethereum, Binance Smart Chain (BSC) and Axelar to Secret Network!`;
+export const bridgeJsonLdSchema = [
+  {
+    "@context": "http://schema.org",
+    "@type": "WebPage",
+    url: "https://dash.scrt.network/bridge",
+    name: bridgePageTitle,
+    description: bridgePageDescription,
+  },
+];
+
+// Auto Restake
+export const autoRestakePageTitle = `${pageTitle} | Auto Restake`;
+export const autoRestakePageDescription = `Automating the process of "claim and restake" for your SCRT! Your normal SCRT balance is not affected. Only pending staking reward will be affected!`;
+export const autoRestakeJsonLdSchema = [
+  {
+    "@context": "http://schema.org",
+    "@type": "WebPage",
+    url: "https://dash.scrt.network/restake",
+    name: autoRestakePageTitle,
+    description: autoRestakePageDescription,
+  },
+];
+
+// Apps
+export const appsPageTitle = `${pageTitle} | Apps`;
+export const appsPageDescription = `A curation of applications running on Secret Network Mainnet!`;
+export const appsJsonLdSchema = [
+  {
+    "@context": "http://schema.org",
+    "@type": "WebPage",
+    url: "https://dash.scrt.network/apps",
+    name: appsPageTitle,
+    description: appsPageDescription,
+  },
+];

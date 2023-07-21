@@ -118,6 +118,9 @@ function Deposit() {
               <div className="flex items-center">
                 <img
                   src={`/img/assets/${chains[option.chain_name].chain_image}`}
+                  alt={`/img/assets/${
+                    chains[option.chain_name].chain_name
+                  } asset logo`}
                   className="w-6 h-6 mr-2 rounded-full"
                 />
                 <span className="font-semibold text-sm">
@@ -1079,6 +1082,11 @@ function Deposit() {
                         : "scrt.svg")
                     }
                     className="w-full relative inline-block rounded-full overflow-hiden"
+                    alt={`${
+                      ibcMode === "deposit"
+                        ? chains[selectedSource.chain_name].chain_name
+                        : "SCRT"
+                    } logo`}
                   />
                 </div>
               </div>
@@ -1160,6 +1168,11 @@ function Deposit() {
                         : "scrt.svg")
                     }
                     className="w-full relative inline-block rounded-full overflow-hiden"
+                    alt={`${
+                      ibcMode === "withdrawal"
+                        ? chains[selectedSource.chain_name].chain_name
+                        : "SCRT"
+                    } logo`}
                   />
                 </div>
               </div>
@@ -1304,6 +1317,7 @@ function Deposit() {
               <div className="flex items-center">
                 <img
                   src={`/img/assets/${token.image}`}
+                  alt={`${token.name} asset logo`}
                   className="w-6 h-6 mr-2 rounded-full"
                 />
                 <span className="font-semibold text-sm">

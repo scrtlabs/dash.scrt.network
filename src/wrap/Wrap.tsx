@@ -7,6 +7,9 @@ import {
   faucetAddress,
   viewingKeyErrorString,
   usdString,
+  wrapPageTitle,
+  wrapPageDescription,
+  wrapJsonLdSchema,
 } from "shared/utils/commons";
 import BigNumber from "bignumber.js";
 import { toast } from "react-toastify";
@@ -23,7 +26,6 @@ import { Link } from "react-router-dom";
 import Select from "react-select";
 import Tooltip from "@mui/material/Tooltip";
 import { Helmet } from "react-helmet-async";
-import { websiteName } from "App";
 import UnknownBalanceModal from "./components/UnknownBalanceModal";
 import FeeGrantInfoModal from "./components/FeeGrantInfoModal";
 import {
@@ -763,7 +765,27 @@ export function Wrap() {
   return (
     <>
       <Helmet>
-        <title>{websiteName} | Wrap</title>
+        <title>{wrapPageTitle}</title>
+
+        <meta charSet="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+        <meta name="title" content={wrapPageTitle} />
+        <meta name="application-name" content={wrapPageTitle} />
+        <meta name="description" content={wrapPageDescription} />
+        <meta name="robots" content="index,follow" />
+
+        <meta property="og:title" content={wrapPageTitle} />
+        <meta property="og:description" content={wrapPageDescription} />
+        {/* <meta property="og:image" content="Image URL Here"/> */}
+
+        <meta name="twitter:title" content={wrapPageTitle} />
+        <meta name="twitter:description" content={wrapPageDescription} />
+        {/* <meta name="twitter:image" content="Image URL Here"/> */}
+
+        <script type="application/ld+json">
+          {JSON.stringify(wrapJsonLdSchema)}
+        </script>
       </Helmet>
 
       <WrapContext.Provider
@@ -840,6 +862,7 @@ export function Wrap() {
                     <div className="flex items-center">
                       <img
                         src={`/img/assets/${token.image}`}
+                        alt={`${token.name} logo`}
                         className="w-6 h-6 mr-2 rounded-full"
                       />
                       <span className="font-semibold text-sm">
@@ -906,6 +929,7 @@ export function Wrap() {
                     <div className="flex items-center">
                       <img
                         src={`/img/assets/${token.image}`}
+                        alt={`${token.name} logo`}
                         className="w-6 h-6 mr-2 rounded-full"
                       />
                       <span className="font-semibold text-sm">

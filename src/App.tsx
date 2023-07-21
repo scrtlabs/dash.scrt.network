@@ -36,9 +36,6 @@ if (import.meta.env.VITE_MIXPANEL_ENABLED === "true") {
   console.log("Mixpanel is disabled!");
 }
 
-// for html-head
-export const websiteName = "Secret Dashboard";
-
 globalThis.Buffer = Buffer;
 declare global {
   interface Window extends KeplrWindow {}
@@ -103,9 +100,6 @@ root.render(
 export default function App() {
   return (
     <>
-      <Helmet>
-        <title>{websiteName}</title>
-      </Helmet>
       <Routes>
         <Route path="/" element={<Dashboard />} />
         <Route path="/ibc" element={<Ibc />} />

@@ -5,14 +5,39 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Link } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
-import { websiteName } from "App";
-import { formatNumber } from "shared/utils/commons";
+import {
+  bridgeJsonLdSchema,
+  bridgePageDescription,
+  bridgePageTitle,
+  formatNumber,
+  pageTitle,
+} from "shared/utils/commons";
 
 function Bridge() {
   return (
     <>
       <Helmet>
-        <title>{websiteName} | Bridge</title>
+        <title>{bridgePageTitle}</title>
+
+        <meta charSet="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+        <meta name="title" content={bridgePageTitle} />
+        <meta name="application-name" content={bridgePageTitle} />
+        <meta name="description" content={bridgePageDescription} />
+        <meta name="robots" content="index,follow" />
+
+        <meta property="og:title" content={bridgePageTitle} />
+        <meta property="og:description" content={bridgePageDescription} />
+        {/* <meta property="og:image" content="Image URL Here"/> */}
+
+        <meta name="twitter:title" content={bridgePageTitle} />
+        <meta name="twitter:description" content={bridgePageDescription} />
+        {/* <meta name="twitter:image" content="Image URL Here"/> */}
+
+        <script type="application/ld+json">
+          {JSON.stringify(bridgeJsonLdSchema)}
+        </script>
       </Helmet>
       <div className="max-w-2xl mx-auto px-6 text-neutral-600 dark:text-neutral-400 leading-7 text-justify">
         {/* Title */}

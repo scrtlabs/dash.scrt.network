@@ -7,7 +7,6 @@ import {
   faTriangleExclamation,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { websiteName } from "App";
 import React, { useContext, useEffect } from "react";
 import { Helmet } from "react-helmet-async";
 import MyValidatorsItem from "./components/MyValidatorsItem";
@@ -16,6 +15,11 @@ import Tooltip from "@mui/material/Tooltip";
 import "./RestakeRedesign.scss";
 import { SecretjsContext } from "shared/context/SecretjsContext";
 import NoScrtWarning from "./components/NoScrtWarning";
+import {
+  autoRestakeJsonLdSchema,
+  autoRestakePageDescription,
+  autoRestakePageTitle,
+} from "shared/utils/commons";
 
 // for html-head
 
@@ -29,7 +33,27 @@ function RestakeRedesign() {
   return (
     <>
       <Helmet>
-        <title>{websiteName} | Staking</title>
+        <title>{autoRestakePageTitle}</title>
+
+        <meta charSet="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+        <meta name="title" content={autoRestakePageTitle} />
+        <meta name="application-name" content={autoRestakePageTitle} />
+        <meta name="description" content={autoRestakePageDescription} />
+        <meta name="robots" content="index,follow" />
+
+        <meta property="og:title" content={autoRestakePageTitle} />
+        <meta property="og:description" content={autoRestakePageDescription} />
+        {/* <meta property="og:image" content="Image URL Here"/> */}
+
+        <meta name="twitter:title" content={autoRestakePageTitle} />
+        <meta name="twitter:description" content={autoRestakePageDescription} />
+        {/* <meta name="twitter:image" content="Image URL Here"/> */}
+
+        <script type="application/ld+json">
+          {JSON.stringify(autoRestakeJsonLdSchema)}
+        </script>
       </Helmet>
 
       {/* Title */}
