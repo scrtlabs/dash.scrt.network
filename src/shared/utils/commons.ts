@@ -298,6 +298,7 @@ export const sortDAppsArray = (array: any[]) => {
 
 // Dashboard
 export const pageTitle = `Secret Dashboard`;
+export const alternatePageTitle = `Secret Dash`;
 export const dashboardPageDescription = `Secret Dashboard is an entry point into Secret Network! Offering tools like IBC Transfer and Wrapping, Secret Dashboard leverages privacy possibilities within SCRT!`;
 export const dashboardJsonLdSchema = [
   {
@@ -305,46 +306,51 @@ export const dashboardJsonLdSchema = [
     "@type": "WebPage",
     url: "https://dash.scrt.network",
     name: pageTitle,
+    alternateName: alternatePageTitle,
     description: dashboardPageDescription,
+    creator: "Secret Jupiter, Secret Saturn",
   },
 ];
 
 // IBC
-export const ibcPageTitle = `${pageTitle} | IBC Transfer`;
 export const ibcPageDescription = `Deposit your assets, such as SCRT, via IBC transfer to and from Secret Network!`;
 export const ibcJsonLdSchema = [
   {
     "@context": "http://schema.org",
     "@type": "WebPage",
     url: "https://dash.scrt.network/ibc",
-    name: ibcPageTitle,
+    name: `${pageTitle} | IBC Transfer`,
+    alternateName: `${alternatePageTitle} | IBC Transfer`,
     description: ibcPageDescription,
+    creator: "Secret Jupiter, Secret Saturn",
   },
 ];
 
 // Wrap
-export const wrapPageTitle = `${pageTitle} | Wrap`;
 export const wrapPageDescription = `Convert publicly visible SCRT into its privacy-preserving equivalent sSCRT with Secret Wrap! These secure tokens are not publicly visible and require a viewing key!`;
 export const wrapJsonLdSchema = [
   {
     "@context": "http://schema.org",
     "@type": "WebPage",
     url: "https://dash.scrt.network/wrap",
-    name: wrapPageTitle,
+    name: `${pageTitle} | Wrap`,
+    alternateName: `${alternatePageTitle} | Wrap`,
     description: wrapPageDescription,
+    creator: "Secret Jupiter, Secret Saturn",
   },
 ];
 
 // Bridge
-export const bridgePageTitle = `${pageTitle} | Bridge`;
 export const bridgePageDescription = `Learn how to bridge your assets from blockchains such as Ethereum, Binance Smart Chain (BSC) and Axelar to Secret Network!`;
 export const bridgeJsonLdSchema = [
   {
     "@context": "http://schema.org",
     "@type": "WebPage",
     url: "https://dash.scrt.network/bridge",
-    name: bridgePageTitle,
+    name: `${pageTitle} | Bridge`,
+    alternateName: `${pageTitle} | Wrap`,
     description: bridgePageDescription,
+    creator: "Secret Jupiter, Secret Saturn",
   },
 ];
 
@@ -358,6 +364,7 @@ export const autoRestakeJsonLdSchema = [
     url: "https://dash.scrt.network/restake",
     name: autoRestakePageTitle,
     description: autoRestakePageDescription,
+    creator: "Secret Jupiter, Secret Saturn",
   },
 ];
 
@@ -369,7 +376,9 @@ export const appsJsonLdSchema = [
     "@context": "http://schema.org",
     "@type": "WebPage",
     url: "https://dash.scrt.network/apps",
-    name: appsPageTitle,
+    name: `${pageTitle} | Apps`,
+    alternateName: `${alternatePageTitle} | Apps`,
     description: appsPageDescription,
+    creator: "Secret Jupiter, Secret Saturn",
   },
 ];
