@@ -313,6 +313,7 @@ export const dashboardJsonLdSchema = [
 ];
 
 // IBC
+export const ibcPageTitle = `${pageTitle} | IBC Transfer`;
 export const ibcPageDescription = `Deposit your assets, such as SCRT, via IBC transfer to and from Secret Network!`;
 export const ibcJsonLdSchema = [
   {
@@ -327,6 +328,7 @@ export const ibcJsonLdSchema = [
 ];
 
 // Wrap
+export const wrapPageTitle = `${pageTitle} | Wrap`;
 export const wrapPageDescription = `Convert publicly visible SCRT into its privacy-preserving equivalent sSCRT with Secret Wrap! These secure tokens are not publicly visible and require a viewing key!`;
 export const wrapJsonLdSchema = [
   {
@@ -341,6 +343,7 @@ export const wrapJsonLdSchema = [
 ];
 
 // Bridge
+export const bridgePageTitle = `${pageTitle} | Bridge`;
 export const bridgePageDescription = `Learn how to bridge your assets from blockchains such as Ethereum, Binance Smart Chain (BSC) and Axelar to Secret Network!`;
 export const bridgeJsonLdSchema = [
   {
