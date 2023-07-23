@@ -119,7 +119,7 @@ export function Navigation({
         </li>
         <li>
           <NavLink
-            to="/getSCRT"
+            to="/get-scrt"
             className={({ isActive }) =>
               isActive
                 ? "isActiveNavLink text-black dark:text-white bg-gradient-to-r from-neutral-200 via-neutral-200 to-neutral-200/10 dark:from-neutral-700 dark:via-neutral-700 dark:to-neutral-700/10 block w-full px-8 py-3 rounded-xl transition-colors font-bold cursor-default"

@@ -15,7 +15,6 @@ import DefaultLayout from "shared/layouts/DefaultLayout";
 import { Dashboard } from "dashboard/Dashboard";
 import Bridge from "bridge/Bridge";
 import Apps from "apps/Apps";
-import GetSCRT from "getscrt/GetSCRT";
 import { Restake } from "stake/Restake";
 
 // Contexts
@@ -26,6 +25,7 @@ import RestakeRedesign from "stake/RestakeRedesign";
 
 // mixpanel
 import mixpanel from "mixpanel-browser";
+import GetSCRT from "get-scrt/GetSCRT";
 
 if (import.meta.env.VITE_MIXPANEL_ENABLED === "true") {
   mixpanel.init(import.meta.env.VITE_MIXPANEL_PROJECT_TOKEN, { debug: true });
@@ -106,7 +106,7 @@ export default function App() {
         <Route path="/ibc" element={<Ibc />} />
         <Route path="/wrap" element={<Wrap />} />
         <Route path="/bridge" element={<Bridge />} />
-        <Route path="/GetSCRT" element={<GetSCRT />} />
+        <Route path="/get-scrt" element={<GetSCRT />} />
         <Route path="/restake" element={<Restake />} />
         <Route path="/restake-redesign" element={<RestakeRedesign />} />
         <Route path="/apps" element={<Apps />} />
