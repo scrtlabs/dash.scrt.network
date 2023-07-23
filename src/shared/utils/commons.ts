@@ -3,6 +3,7 @@ import { Bech32Address } from "@keplr-wallet/cosmos";
 import { sha256 } from "@noble/hashes/sha256";
 import { Wallet, toHex, toUtf8 } from "secretjs";
 import { tokens } from "./config";
+import mixpanel from "mixpanel-browser";
 
 export const viewingKeyErrorString = "🧐";
 
@@ -16,6 +17,7 @@ export const sleep = (ms: number) =>
   new Promise((resolve) => setTimeout(resolve, ms));
 
 export const gasPriceUscrt = 0.25;
+
 export function gasToFee(gas: number, denom: string): StdFee {
   return {
     amount: [
@@ -26,6 +28,17 @@ export function gasToFee(gas: number, denom: string): StdFee {
     ],
     gas: String(gas),
   };
+}
+
+export function trackMixPanelEvent(event: string) {
+  if (import.meta.env.VITE_MIXPANEL_ENABLED === "true" && event) {
+    mixpanel.init(import.meta.env.VITE_MIXPANEL_PROJECT_TOKEN, {
+      debug: true,
+    });
+    mixpanel.identify("Dashboard-App");
+    mixpanel.track(event);
+    console.log(event);
+  }
 }
 
 export async function suggestTerratoWallet(wallet: any) {

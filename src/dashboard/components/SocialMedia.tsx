@@ -5,6 +5,7 @@ import {
 } from "@fortawesome/free-brands-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React from "react";
+import { trackMixPanelEvent } from "shared/utils/commons";
 
 class SocialMedia extends React.Component {
   render() {
@@ -16,6 +17,9 @@ class SocialMedia extends React.Component {
               href="https://twitter.com/SecretNetwork"
               target="_blank"
               className="group text-neutral-700 dark:text-neutral-300 hover:text-black dark:hover:text-white transition-colors"
+              onClick={() => {
+                trackMixPanelEvent("Clicked Twitter on dashboard");
+              }}
             >
               <FontAwesomeIcon
                 icon={faTwitter}
@@ -34,6 +38,9 @@ class SocialMedia extends React.Component {
               href="https://discord.com/invite/SJK32GY"
               target="_blank"
               className="group text-neutral-700 dark:text-neutral-300 hover:text-black dark:hover:text-white transition-colors"
+              onClick={() => {
+                trackMixPanelEvent("Clicked Discord on dashboard");
+              }}
             >
               <FontAwesomeIcon
                 icon={faDiscord}
@@ -52,6 +59,9 @@ class SocialMedia extends React.Component {
               href="https://t.me/SCRTCommunity"
               target="_blank"
               className="group text-center text-neutral-700 dark:text-neutral-300 hover:text-black dark:hover:text-white transition-colors"
+              onClick={() => {
+                trackMixPanelEvent("Clicked Telegram on dashboard");
+              }}
             >
               <FontAwesomeIcon
                 icon={faTelegram}

@@ -16,7 +16,7 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useState } from "react";
 import { NavLink } from "react-router-dom";
-import mixpanel from "mixpanel-browser";
+import { trackMixPanelEvent } from "shared/utils/commons";
 
 export function Navigation({
   showMobileMenu,
@@ -29,17 +29,6 @@ export function Navigation({
 
   function toggleIsExtendedMenuOpen() {
     setIsExtendedMenuOpen(!isExtendedMenuOpen);
-  }
-
-  function trackMixPanelEvent(event: string) {
-    if (import.meta.env.VITE_MIXPANEL_ENABLED === "true" && event) {
-      mixpanel.init(import.meta.env.VITE_MIXPANEL_PROJECT_TOKEN, {
-        debug: true,
-      });
-      mixpanel.identify("Dashboard-App");
-      mixpanel.track(event);
-      console.log(event);
-    }
   }
 
   return (
