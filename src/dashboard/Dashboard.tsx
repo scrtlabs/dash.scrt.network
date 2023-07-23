@@ -11,7 +11,7 @@ import StakingChart from "./components/StakingChart";
 import { formatNumber } from "shared/utils/commons";
 import { APIContext } from "shared/context/APIContext";
 import { Helmet } from "react-helmet-async";
-import mixpanel from "mixpanel-browser";
+import { trackMixPanelEvent } from "shared/utils/commons";
 
 export function Dashboard() {
   const {
@@ -52,13 +52,7 @@ export function Dashboard() {
   } = useContext(APIContext);
 
   useEffect(() => {
-    if (import.meta.env.VITE_MIXPANEL_ENABLED === "true") {
-      mixpanel.init(import.meta.env.VITE_MIXPANEL_PROJECT_TOKEN, {
-        debug: true,
-      });
-      mixpanel.identify("Dashboard-App");
-      mixpanel.track("Open Dashboard Tab");
-    }
+    trackMixPanelEvent("Open Dashboard Tab");
   }, []);
 
   // block height

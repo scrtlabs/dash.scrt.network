@@ -76,7 +76,7 @@ export function Wrap() {
   useEffect(() => {
     if (import.meta.env.VITE_MIXPANEL_ENABLED === "true") {
       mixpanel.init(import.meta.env.VITE_MIXPANEL_PROJECT_TOKEN, {
-        debug: true,
+        debug: false,
       });
       mixpanel.identify("Dashboard-App");
       mixpanel.track("Open Wrap Tab");
@@ -678,7 +678,7 @@ export function Wrap() {
       } finally {
         if (import.meta.env.VITE_MIXPANEL_ENABLED === "true") {
           mixpanel.init(import.meta.env.VITE_MIXPANEL_PROJECT_TOKEN, {
-            debug: true,
+            debug: false,
           });
           mixpanel.identify("Dashboard-App");
           mixpanel.track("Secret Wrap", {

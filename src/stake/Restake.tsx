@@ -19,6 +19,7 @@ import {
   autoRestakePageTitle,
 } from "shared/utils/commons";
 import mixpanel from "mixpanel-browser";
+import { trackMixPanelEvent } from "shared/utils/commons";
 
 export function Restake() {
   const queryParams = new URLSearchParams(window.location.search);
@@ -36,13 +37,7 @@ export function Restake() {
   const [selectedValidator, setSelectedValidator] = useState<any>();
 
   useEffect(() => {
-    if (import.meta.env.VITE_MIXPANEL_ENABLED === "true") {
-      mixpanel.init(import.meta.env.VITE_MIXPANEL_PROJECT_TOKEN, {
-        debug: true,
-      });
-      mixpanel.identify("Dashboard-App");
-      mixpanel.track("Open Auto-restake Tab");
-    }
+    trackMixPanelEvent("Open Auto-restake Tab");
   }, []);
 
   const fetchDelegations = async () => {

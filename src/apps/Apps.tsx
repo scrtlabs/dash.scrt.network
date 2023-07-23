@@ -14,6 +14,7 @@ import {
 import React from "react";
 import { APIContext } from "shared/context/APIContext";
 import mixpanel from "mixpanel-browser";
+import { trackMixPanelEvent } from "shared/utils/commons";
 
 function Apps() {
   const {
@@ -26,13 +27,7 @@ function Apps() {
   } = useContext(APIContext);
 
   useEffect(() => {
-    if (import.meta.env.VITE_MIXPANEL_ENABLED === "true") {
-      mixpanel.init(import.meta.env.VITE_MIXPANEL_PROJECT_TOKEN, {
-        debug: true,
-      });
-      mixpanel.identify("Dashboard-App");
-      mixpanel.track("Open Apps Tab");
-    }
+    trackMixPanelEvent("Open Apps Tab");
   }, []);
 
   // Filter + Search
