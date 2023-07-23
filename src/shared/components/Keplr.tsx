@@ -26,6 +26,7 @@ import {
   setWalletViewingKey,
 } from "shared/context/SecretjsContext";
 import BalanceItem from "./BalanceItem";
+import { trackMixPanelEvent } from "shared/utils/commons";
 
 export function KeplrPanel() {
   const {
@@ -223,6 +224,7 @@ export function KeplrPanel() {
         <GetWalletModal
           open={isModalOpen}
           onClose={() => {
+            trackMixPanelEvent("Closed Get Wallet Modal");
             setIsModalOpen(false);
             document.body.classList.remove("overflow-hidden");
           }}
