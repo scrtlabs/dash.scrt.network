@@ -12,7 +12,6 @@ import {
   formatNumber,
   pageTitle,
 } from "shared/utils/commons";
-import { websiteName } from "App";
 import mixpanel from "mixpanel-browser";
 import { useEffect } from "react";
 
