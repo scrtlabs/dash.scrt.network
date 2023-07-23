@@ -12,8 +12,15 @@ import {
   formatNumber,
   pageTitle,
 } from "shared/utils/commons";
+import mixpanel from "mixpanel-browser";
+import { useEffect } from "react";
+import { trackMixPanelEvent } from "shared/utils/commons";
 
 function Bridge() {
+  useEffect(() => {
+    trackMixPanelEvent("Open Bridge Tab");
+  }, []);
+
   return (
     <>
       <Helmet>
@@ -53,6 +60,11 @@ function Bridge() {
             href="https://tunnel.scrt.network"
             target="_blank"
             className="pb-0.5 border-b border-neutral-400 dark:border-neutral-600 hover:text-black dark:hover:text-white hover:border-black dark:hover:border-white transition-colors"
+            onClick={() => {
+              trackMixPanelEvent(
+                "Clicked Secret Tunnel link (from Bridge page)"
+              );
+            }}
           >
             Secret Tunnel
           </a>{" "}
@@ -63,6 +75,9 @@ function Bridge() {
           href="https://tunnel.scrt.network"
           target="_blank"
           className="text-white block my-6 p-3 w-full text-center font-semibold bg-cyan-600 dark:bg-cyan-600 rounded-lg text-sm hover:bg-cyan-500 dark:hover:bg-cyan-500 focus:bg-cyan-600 dark:focus:bg-cyan-600 transition-colors"
+          onClick={() => {
+            trackMixPanelEvent("Clicked Secret Tunnel link (from Bridge page)");
+          }}
         >
           Go to Secret Tunnel
           <FontAwesomeIcon icon={faArrowUpRightFromSquare} className="ml-2" />
@@ -80,6 +95,11 @@ function Bridge() {
           <Link
             to={"/ibc"}
             className="text-white block my-6 p-3 w-full text-center font-semibold bg-cyan-600 dark:bg-cyan-600 rounded-lg text-sm hover:bg-cyan-500 dark:hover:bg-cyan-500 focus:bg-cyan-600 dark:focus:bg-cyan-600 transition-colors"
+            onClick={() => {
+              trackMixPanelEvent(
+                "Clicked IBC transfer link (from Bridge page)"
+              );
+            }}
           >
             <FontAwesomeIcon icon={faShuffle} className="mr-2" />
             Go to IBC Transfers
@@ -99,6 +119,11 @@ function Bridge() {
             href="https://ipfs.trivium.network/ipns/k51qzi5uqu5dhovcugri8aul3itkct8lvnodtnv2y3o1saotkjsa7ao1aq0dqa/"
             target="_blank"
             className="text-white block my-6 p-3 w-full text-center font-semibold bg-cyan-600 dark:bg-cyan-600 rounded-lg text-sm hover:bg-cyan-500 dark:hover:bg-cyan-500 focus:bg-cyan-600 dark:focus:bg-cyan-600 transition-colors"
+            onClick={() => {
+              trackMixPanelEvent(
+                "Clicked Monero Bridge link (from Bridge page)"
+              );
+            }}
           >
             Go to Monero Bridge
             <FontAwesomeIcon icon={faArrowUpRightFromSquare} className="ml-2" />

@@ -6,6 +6,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { isMobile } from "react-device-detect";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { trackMixPanelEvent } from "shared/utils/commons";
 import React from "react";
 
 interface IConnectWalletModalProps {
@@ -27,7 +28,7 @@ class ConnectWalletModal extends React.Component<IConnectWalletModalProps> {
 
     return (
       <>
-        {/* Outter */}
+        {/* Outer */}
         <div
           className="fixed top-0 left-0 right-0 bottom-0 bg-black/80 dark:bg-black/80 z-50"
           onClick={this.props.onClose}
@@ -65,6 +66,9 @@ class ConnectWalletModal extends React.Component<IConnectWalletModalProps> {
                 <div className="flex flex-col bg-neutral-200 dark:bg-neutral-800 rounded-xl overflow-hidden">
                   <a
                     onClick={() => {
+                      trackMixPanelEvent(
+                        "Clicked Starshell Wallet on Connect Wallet Modal"
+                      );
                       if (keplrAvailable) return;
                       this.props.onClose();
                       this.props.setWalletName("StarShell");
@@ -86,6 +90,9 @@ class ConnectWalletModal extends React.Component<IConnectWalletModalProps> {
                   </a>
                   <a
                     onClick={() => {
+                      trackMixPanelEvent(
+                        "Clicked Leap Wallet on Connect Wallet Modal"
+                      );
                       if (leapAvailable) return;
                       this.props.onClose();
                       this.props.setWalletName("Leap");
@@ -107,6 +114,9 @@ class ConnectWalletModal extends React.Component<IConnectWalletModalProps> {
                   </a>
                   <a
                     onClick={() => {
+                      trackMixPanelEvent(
+                        "Clicked Fina Wallet on Connect Wallet Modal"
+                      );
                       if (keplrAvailable) return;
                       this.props.onClose();
                       this.props.setWalletName("Fina");
@@ -126,6 +136,9 @@ class ConnectWalletModal extends React.Component<IConnectWalletModalProps> {
                   </a>
                   <a
                     onClick={() => {
+                      trackMixPanelEvent(
+                        "Clicked Keplr Wallet on Connect Wallet Modal"
+                      );
                       if (keplrAvailable) return;
                       this.props.onClose();
                       this.props.setWalletName("Keplr");

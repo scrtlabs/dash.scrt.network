@@ -14,7 +14,7 @@ const AppTile = (props: IAppItemProps) => {
   const handleClick = () => {
     if (import.meta.env.VITE_MIXPANEL_ENABLED === "true") {
       mixpanel.init(import.meta.env.VITE_MIXPANEL_PROJECT_TOKEN, {
-        debug: true,
+        debug: false,
       });
       mixpanel.identify("Dashboard-App");
       mixpanel.track("dApp opened", {

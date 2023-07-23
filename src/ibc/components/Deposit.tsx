@@ -51,7 +51,8 @@ import {
   setWalletViewingKey,
 } from "shared/context/SecretjsContext";
 import CopyToClipboard from "react-copy-to-clipboard";
-import mixpanel from "mixpanel-browser";
+import mixpanel, { track } from "mixpanel-browser";
+import { trackMixPanelEvent } from "shared/utils/commons";
 import {
   AxelarAssetTransfer,
   AxelarQueryAPI,
@@ -99,6 +100,9 @@ function Deposit() {
     setAmountToTransfer(e.target.value);
   }
 
+  useEffect(() => {
+    trackMixPanelEvent("Open IBC Tab");
+  }, []);
   const message =
     ibcMode === "deposit"
       ? `Deposit your SCRT via IBC transfer from ${selectedSource.chain_name} to Secret Network`
@@ -797,7 +801,7 @@ function Deposit() {
         } catch (e) {
           if (import.meta.env.VITE_MIXPANEL_ENABLED === "true") {
             mixpanel.init(import.meta.env.VITE_MIXPANEL_PROJECT_TOKEN, {
-              debug: true,
+              debug: false,
             });
             mixpanel.identify("Dashboard-App");
             mixpanel.track("IBC Transfer", {

@@ -18,6 +18,8 @@ import {
   autoRestakePageDescription,
   autoRestakePageTitle,
 } from "shared/utils/commons";
+import mixpanel from "mixpanel-browser";
+import { trackMixPanelEvent } from "shared/utils/commons";
 
 export function Restake() {
   const queryParams = new URLSearchParams(window.location.search);
@@ -33,6 +35,10 @@ export function Restake() {
   const [validatorsForDelegator, setValidatorsForDelegator] = useState<any>();
   const [restakeEntries, setRestakeEntries] = useState<any>();
   const [selectedValidator, setSelectedValidator] = useState<any>();
+
+  useEffect(() => {
+    trackMixPanelEvent("Open Auto-restake Tab");
+  }, []);
 
   const fetchDelegations = async () => {
     const { validators } = await secretjs.query.staking.validators({

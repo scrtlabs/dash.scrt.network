@@ -73,6 +73,16 @@ export function Wrap() {
     );
   }, [selectedToken, prices]);
 
+  useEffect(() => {
+    if (import.meta.env.VITE_MIXPANEL_ENABLED === "true") {
+      mixpanel.init(import.meta.env.VITE_MIXPANEL_PROJECT_TOKEN, {
+        debug: false,
+      });
+      mixpanel.identify("Dashboard-App");
+      mixpanel.track("Open Wrap Tab");
+    }
+  }, []);
+
   // URL params
   const [searchParams, setSearchParams] = useSearchParams();
   const modeUrlParam = searchParams.get("mode");
@@ -668,7 +678,7 @@ export function Wrap() {
       } finally {
         if (import.meta.env.VITE_MIXPANEL_ENABLED === "true") {
           mixpanel.init(import.meta.env.VITE_MIXPANEL_PROJECT_TOKEN, {
-            debug: true,
+            debug: false,
           });
           mixpanel.identify("Dashboard-App");
           mixpanel.track("Secret Wrap", {

@@ -11,6 +11,7 @@ import StakingChart from "./components/StakingChart";
 import { formatNumber } from "shared/utils/commons";
 import { APIContext } from "shared/context/APIContext";
 import { Helmet } from "react-helmet-async";
+import { trackMixPanelEvent } from "shared/utils/commons";
 
 export function Dashboard() {
   const {
@@ -49,6 +50,10 @@ export function Dashboard() {
     marketCap,
     setMarketCap,
   } = useContext(APIContext);
+
+  useEffect(() => {
+    trackMixPanelEvent("Open Dashboard Tab");
+  }, []);
 
   // block height
   const [blockHeight, setBlockHeight] = useState(null);

@@ -6,6 +6,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React from "react";
+import { trackMixPanelEvent } from "shared/utils/commons";
 
 interface IGetWalletModalProps {
   open: boolean;
@@ -18,7 +19,7 @@ class GetWalletModal extends React.Component<IGetWalletModalProps> {
 
     return (
       <>
-        {/* Outter */}
+        {/* Outer */}
         <div
           className="fixed top-0 left-0 right-0 bottom-0 bg-black/80 dark:bg-black/80 z-50"
           onClick={this.props.onClose}
@@ -57,6 +58,11 @@ class GetWalletModal extends React.Component<IGetWalletModalProps> {
                     href="https://starshell.net"
                     target="_blank"
                     className="group p-5 flex items-center gap-2.5 hover:bg-neutral-300 dark:hover:bg-neutral-700 transition-colors focus:outline-none focus:ring-2 focus:ring-cyan-500 dark:focus:ring-cyan-500 text-white dark:text-white font-semibold bg-gradient-to-r from-cyan-600 to-purple-600 hover:from-cyan-500 hover:to-purple-500"
+                    onClick={() => {
+                      trackMixPanelEvent(
+                        "Clicked Starshell Wallet on Get Wallet Modal"
+                      );
+                    }}
                   >
                     <img
                       src="/img/assets/starshell.svg"
@@ -76,6 +82,11 @@ class GetWalletModal extends React.Component<IGetWalletModalProps> {
                     href="https://www.leapwallet.io"
                     target="_blank"
                     className="group p-5 flex items-center gap-2.5 hover:bg-neutral-300 dark:hover:bg-neutral-700 transition-colors"
+                    onClick={() => {
+                      trackMixPanelEvent(
+                        "Clicked Leap Wallet on Get Wallet Modal"
+                      );
+                    }}
                   >
                     <img
                       src="/img/assets/leap.svg"
@@ -93,6 +104,11 @@ class GetWalletModal extends React.Component<IGetWalletModalProps> {
                     href="https://fina.cash/wallet"
                     target="_blank"
                     className="group p-5 flex items-center gap-2.5 hover:bg-neutral-300 dark:hover:bg-neutral-700 transition-colors"
+                    onClick={() => {
+                      trackMixPanelEvent(
+                        "Clicked Fina Wallet on Get Wallet Modal"
+                      );
+                    }}
                   >
                     <img
                       src="/img/assets/fina.webp"
@@ -108,6 +124,11 @@ class GetWalletModal extends React.Component<IGetWalletModalProps> {
                     href="https://chrome.google.com/webstore/detail/keplr/dmkamcknogkgcdfhhbddcghachkejeap?hl=en"
                     target="_blank"
                     className="group p-5 flex items-center gap-2.5 hover:bg-neutral-300 dark:hover:bg-neutral-700 transition-colors"
+                    onClick={() => {
+                      trackMixPanelEvent(
+                        "Clicked Keplr Wallet on Get Wallet Modal"
+                      );
+                    }}
                   >
                     <img
                       src="/img/assets/keplr.svg"

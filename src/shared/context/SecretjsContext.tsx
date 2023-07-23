@@ -12,6 +12,7 @@ import {
 import GetWalletModal from "./GetWalletModal";
 import ConnectWalletModal from "./ConnectWalletModal";
 import BalanceItem from "shared/components/BalanceItem";
+import { trackMixPanelEvent } from "shared/utils/commons";
 
 export async function isViewingKeyAvailable(token: Token) {
   const key = await getWalletViewingKey(token.address);
@@ -400,6 +401,7 @@ const SecretjsContextProvider = ({ children }: any) => {
       <GetWalletModal
         open={isGetModalOpen}
         onClose={() => {
+          trackMixPanelEvent("Closed Get Wallet Modal");
           setIsGetModalOpen(false);
           document.body.classList.remove("overflow-hidden");
         }}
@@ -408,6 +410,7 @@ const SecretjsContextProvider = ({ children }: any) => {
         open={isConnectModalOpen}
         setWalletName={setWalletName}
         onClose={() => {
+          trackMixPanelEvent("Closed Connect Wallet Modal");
           setIsConnectModalOpen(false);
           document.body.classList.remove("overflow-hidden");
         }}

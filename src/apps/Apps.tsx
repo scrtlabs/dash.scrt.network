@@ -13,6 +13,8 @@ import {
 } from "shared/utils/commons";
 import React from "react";
 import { APIContext } from "shared/context/APIContext";
+import mixpanel from "mixpanel-browser";
+import { trackMixPanelEvent } from "shared/utils/commons";
 
 function Apps() {
   const {
@@ -23,6 +25,10 @@ function Apps() {
     tags,
     setTags,
   } = useContext(APIContext);
+
+  useEffect(() => {
+    trackMixPanelEvent("Open Apps Tab");
+  }, []);
 
   // Filter + Search
   const [tagsToBeFilteredBy, setTagsToBeFilteredBy] = useState<string[]>([]);

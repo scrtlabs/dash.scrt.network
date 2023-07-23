@@ -19,6 +19,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowUpRightFromSquare } from "@fortawesome/free-solid-svg-icons";
 import { ThemeContext } from "shared/context/ThemeContext";
 import { setDatasets } from "react-chartjs-2/dist/utils";
+import { trackMixPanelEvent } from "shared/utils/commons";
 
 ChartJS.register(
   CategoryScale,
@@ -263,6 +264,9 @@ export default function StakingChart() {
           href="https://wallet.keplr.app/chains/secret-network"
           target="_blank"
           className="block bg-cyan-500 dark:bg-cyan-500/20 text-white dark:text-cyan-200 dark:hover:text-cyan-100 hover:bg-cyan-400 dark:hover:bg-cyan-500/50 w-full text-center transition-colors py-2.5 rounded-xl mt-4 font-semibold text-sm"
+          onClick={() => {
+            trackMixPanelEvent("Clicked Stake on Staking Chart");
+          }}
         >
           Stake SCRT
           <FontAwesomeIcon
