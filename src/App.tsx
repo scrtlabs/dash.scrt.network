@@ -25,7 +25,7 @@ import RestakeRedesign from "stake/RestakeRedesign";
 
 // mixpanel
 import mixpanel from "mixpanel-browser";
-import GetSCRT from "get-scrt/GetSCRT";
+import GetSCRT from "get-scrt/GetScrt";
 
 if (import.meta.env.VITE_MIXPANEL_ENABLED === "true") {
   mixpanel.init(import.meta.env.VITE_MIXPANEL_PROJECT_TOKEN, { debug: true });

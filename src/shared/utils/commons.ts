@@ -309,17 +309,20 @@ export const sortDAppsArray = (array: any[]) => {
  * SEO
  */
 
-// Dashboard
 export const pageTitle = `Secret Dashboard`;
 export const alternatePageTitle = `Secret Dash`;
+
+// Dashboard
+export const dashboardPageTitle = `Secret Dashboard`;
+export const dashboardAlternatePageTitle = `Secret Dash`;
 export const dashboardPageDescription = `Secret Dashboard is an entry point into Secret Network! Offering tools like IBC Transfer and Wrapping, Secret Dashboard leverages privacy possibilities within SCRT!`;
 export const dashboardJsonLdSchema = [
   {
     "@context": "http://schema.org",
     "@type": "WebPage",
     url: "https://dash.scrt.network",
-    name: pageTitle,
-    alternateName: alternatePageTitle,
+    name: dashboardPageTitle,
+    alternateName: dashboardAlternatePageTitle,
     description: dashboardPageDescription,
     creator: "Secret Jupiter, Secret Saturn",
   },

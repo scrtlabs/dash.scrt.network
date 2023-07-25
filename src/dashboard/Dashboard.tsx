@@ -11,7 +11,12 @@ import StakingChart from "./components/StakingChart";
 import { formatNumber } from "shared/utils/commons";
 import { APIContext } from "shared/context/APIContext";
 import { Helmet } from "react-helmet-async";
-import { trackMixPanelEvent } from "shared/utils/commons";
+import {
+  trackMixPanelEvent,
+  dashboardPageTitle,
+  dashboardPageDescription,
+  dashboardJsonLdSchema,
+} from "shared/utils/commons";
 
 export function Dashboard() {
   const {
@@ -240,42 +245,29 @@ export function Dashboard() {
     totalSupply,
   ]);
 
-  const websiteName = `Secret Dashboard`;
-  const description = `Secret Dashboard is an entry point into Secret Network! Offering tools like IBC Transfer and Wrapping, Secret Dashboard leverages privacy possibilities within SCRT!`;
-
-  const schemaOrgJSONLD = [
-    {
-      "@context": "http://schema.org",
-      "@type": "WebPage",
-      url: "https://dash.scrt.network",
-      name: websiteName,
-      alternateName: description,
-    },
-  ];
-
   return (
     <>
       <Helmet>
-        <title>{websiteName}</title>
+        <title>{dashboardPageTitle}</title>
 
         <meta charSet="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-        <meta name="title" content={websiteName} />
-        <meta name="application-name" content={websiteName} />
-        <meta name="description" content={description} />
+        <meta name="title" content={dashboardPageTitle} />
+        <meta name="application-name" content={dashboardPageTitle} />
+        <meta name="description" content={dashboardPageDescription} />
         <meta name="robots" content="index,follow" />
 
-        <meta property="og:title" content={websiteName} />
-        <meta property="og:description" content={description} />
+        <meta property="og:title" content={dashboardPageTitle} />
+        <meta property="og:description" content={dashboardPageDescription} />
         {/* <meta property="og:image" content="Image URL Here"/> */}
 
-        <meta name="twitter:title" content={websiteName} />
-        <meta name="twitter:description" content={description} />
+        <meta name="twitter:title" content={dashboardPageTitle} />
+        <meta name="twitter:description" content={dashboardPageDescription} />
         {/* <meta name="twitter:image" content="Image URL Here"/> */}
 
         <script type="application/ld+json">
-          {JSON.stringify(schemaOrgJSONLD)}
+          {JSON.stringify(dashboardJsonLdSchema)}
         </script>
       </Helmet>
       <div className="px-4 mx-auto space-y-4 w-full">

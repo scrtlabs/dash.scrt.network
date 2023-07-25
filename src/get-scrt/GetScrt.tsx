@@ -5,13 +5,11 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Link } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
-import { websiteName } from "App";
-import { formatNumber } from "shared/utils/commons";
+import { formatNumber, pageTitle } from "shared/utils/commons";
 import { useState, createContext, useContext, useEffect } from "react";
 import { SecretjsContext } from "shared/context/SecretjsContext";
 import queryString from "query-string";
 import Select from "react-select";
-import TransakModal from "./components/TransakModal";
 
 function GetSCRT() {
   const { secretjs, secretAddress, connectWallet } =
@@ -68,7 +66,7 @@ function GetSCRT() {
   return (
     <>
       <Helmet>
-        <title>{websiteName} | Get SCRT</title>
+        <title>{pageTitle} | Get SCRT</title>
       </Helmet>
 
       {/* <TransakModal open={false} onClose={undefined} /> */}
@@ -95,7 +93,7 @@ function GetSCRT() {
 
         <div className="max-w-xs mx-auto mb-8" id="fromInputWrapper">
           <Select
-            isDisabled={!secretjs || !secretAddress}
+            isDisabled={false}
             options={options}
             isSearchable={false}
             onChange={selectChange}
