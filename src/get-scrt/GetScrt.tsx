@@ -47,9 +47,6 @@ function GetSCRT() {
   if (import.meta.env.TRANSAK_API_KEY) {
     transakQueryStrings.apiKey = import.meta.env.TRANSAK_API_KEY;
     transakQueryStrings.environment = "PRODUCTION";
-  } else {
-    transakQueryStrings.apiKey = "4fcd6904-706b-4aff-bd9d-77422813bbb7";
-    transakQueryStrings.environment = "STAGING";
   }
   transakQueryStrings.cryptoCurrencyList = "SCRT";
   transakQueryStrings.walletAddress = secretAddress;
@@ -71,7 +68,7 @@ function GetSCRT() {
 
       {/* <TransakModal open={false} onClose={undefined} /> */}
 
-      <div className="max-w-2xl mx-auto px-6 text-neutral-600 dark:text-neutral-400 leading-7 text-justify">
+      <div className="max-w-2xl mx-auto px-6">
         {/* Title */}
         <div className="text-center mb-4">
           <h1 className="font-bold text-4xl inline text-transparent bg-clip-text bg-gradient-to-r from-cyan-500 to-purple-500">
@@ -79,7 +76,7 @@ function GetSCRT() {
           </h1>
         </div>
 
-        <p className="mb-8">
+        <p className="mb-8  text-neutral-600 dark:text-neutral-400 leading-7 text-justify">
           You can get SCRT by swapping tokens on a{` `}
           <a
             href="https://scrt.network/ecosystem/exchanges"
@@ -91,13 +88,13 @@ function GetSCRT() {
           {`, or you can buy directly with fiat using the interface below, powered by Transak and Kado.`}
         </p>
 
-        <div className="max-w-xs mx-auto mb-8" id="fromInputWrapper">
+        <div className="max-w-xs mx-auto mb-8" id="">
           <Select
             isDisabled={false}
             options={options}
             isSearchable={false}
             onChange={selectChange}
-            classNamePrefix="react-select-getscrt"
+            classNamePrefix="react-select"
           />
         </div>
 
