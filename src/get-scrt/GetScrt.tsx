@@ -36,7 +36,6 @@ function GetSCRT() {
       setShowExternal(true);
       setShowTransak(false);
       setShowKado(false);
-      window.open("https://scrt.network/ecosystem/exchanges", "blank");
     }
   }
 
@@ -175,19 +174,21 @@ function GetSCRT() {
         )}
 
         {showExternal && (
-          <div className="text-center">
-            <a
-              href="#"
-              target="_blank"
-              className="text-white mx-auto my-6 p-3 text-center font-semibold bg-cyan-600 dark:bg-cyan-600 rounded-lg text-sm hover:bg-cyan-500 dark:hover:bg-cyan-500 focus:bg-cyan-600 dark:focus:bg-cyan-600 transition-colors"
-            >
-              Open external{" "}
-              <FontAwesomeIcon
-                icon={faArrowUpRightFromSquare}
-                className="ml-1.5"
-              />
-            </a>
-          </div>
+          <>
+            <div className="text-center">
+              <a
+                href="https://scrt.network/about/get-scrt"
+                target="_blank"
+                className="text-white mx-auto my-6 p-3 text-center font-semibold bg-cyan-600 dark:bg-cyan-600 rounded-lg text-sm hover:bg-cyan-500 dark:hover:bg-cyan-500 focus:bg-cyan-600 dark:focus:bg-cyan-600 transition-colors"
+              >
+                Open external{" "}
+                <FontAwesomeIcon
+                  icon={faArrowUpRightFromSquare}
+                  className="ml-1.5"
+                />
+              </a>
+            </div>
+          </>
         )}
       </div>
     </>
