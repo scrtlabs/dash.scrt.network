@@ -78,6 +78,32 @@ body {
   display: none;
 }
 
+.react-select-getscrt__control {
+  cursor: pointer !important;
+  @apply py-1 bg-neutral-200 dark:bg-neutral-800 border-gray-500 dark:border-gray-500;
+  border-radius: 0.5rem 0.5rem 0.5rem 0.5rem !important;
+  &:hover {
+    background-color: #525252 !important;
+  }
+}
+
+.react-select-getscrt__single-value {
+  @apply text-black dark:text-white;
+}
+
+.react-select-getscrt__menu,
+.react-select-getscrt__option {
+  background-color: #737373 !important;
+}
+
+.react-select-getscrt__option:hover {
+  background-color: #a3a3a3 !important;
+}
+
+.react-select-getscrt__indicator-separator {
+  display: none;
+}
+
 // Animations
 .fadeInAndOutLoop {
   opacity: 1;

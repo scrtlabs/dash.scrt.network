@@ -25,6 +25,7 @@ import RestakeRedesign from "stake/RestakeRedesign";
 
 // mixpanel
 import mixpanel from "mixpanel-browser";
+import GetSCRT from "get-scrt/GetScrt";
 
 if (import.meta.env.VITE_MIXPANEL_ENABLED === "true") {
   mixpanel.init(import.meta.env.VITE_MIXPANEL_PROJECT_TOKEN, { debug: true });
@@ -105,6 +106,7 @@ export default function App() {
         <Route path="/ibc" element={<Ibc />} />
         <Route path="/wrap" element={<Wrap />} />
         <Route path="/bridge" element={<Bridge />} />
+        <Route path="/get-scrt" element={<GetSCRT />} />
         <Route path="/restake" element={<Restake />} />
         <Route path="/restake-redesign" element={<RestakeRedesign />} />
         <Route path="/apps" element={<Apps />} />
