@@ -3,6 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React from "react";
 import { Else, If, Then } from "react-if";
 import { trackMixPanelEvent } from "shared/utils/commons";
+import { Link } from "react-router-dom";
 
 interface ICurrentPriceProps {
   price?: number;
@@ -35,9 +36,8 @@ class CurrentPrice extends React.Component<ICurrentPriceProps> {
           </div>
         </div>
         <div className="flex-1 text-right">
-          <a
-            href="/getscrt"
-            target="_blank"
+          <Link
+            to="/get-scrt"
             className="w-full md:w-auto md:px-4 inline-block bg-cyan-500 dark:bg-cyan-500/20 text-white dark:text-cyan-200 dark:hover:text-cyan-100 hover:bg-cyan-400 dark:hover:bg-cyan-500/50 text-center transition-colors py-2.5 rounded-xl font-semibold text-sm"
             onClick={() => {
               trackMixPanelEvent("Clicked buy SCRT on current price");
@@ -48,7 +48,7 @@ class CurrentPrice extends React.Component<ICurrentPriceProps> {
               icon={faArrowUpRightFromSquare}
               className="text-xs ml-2"
             />
-          </a>
+          </Link>
         </div>
       </div>
     );
