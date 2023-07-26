@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { SecretNetworkClient } from "secretjs";
 import { faucetURL, sleep, viewingKeyErrorString } from "shared/utils/commons";
@@ -11,15 +11,12 @@ import {
 } from "shared/utils/config";
 import GetWalletModal from "./GetWalletModal";
 import ConnectWalletModal from "./ConnectWalletModal";
-import BalanceItem from "shared/components/BalanceItem";
 import { trackMixPanelEvent } from "shared/utils/commons";
 
 export async function isViewingKeyAvailable(token: Token) {
   const key = await getWalletViewingKey(token.address);
   return key ? true : false;
 }
-
-const LOCALSTORAGE_KEY = "dashboard_wallet";
 
 const SecretjsContext = createContext(null);
 
@@ -28,17 +25,18 @@ export type FeeGrantStatus = "Success" | "Fail" | "Untouched";
 const SecretjsContextProvider = ({ children }: any) => {
   const [secretjs, setSecretjs] = useState<SecretNetworkClient | null>(null);
   const [secretAddress, setSecretAddress] = useState<string>("");
-  const [isGetModalOpen, setIsGetModalOpen] = useState(false);
+  const [isGetWalletModalOpen, setIsGetWalletModalOpen] = useState(false);
   const [isConnectModalOpen, setIsConnectModalOpen] = useState(false);
   const [feeGrantStatus, setFeeGrantStatus] =
     useState<FeeGrantStatus>("Untouched");
-  const [walletName, setWalletName] = useState<string>("");
+  const [preferedWalletApi, setPreferedWalletApi] = useState<string>("");
 
   useEffect(() => {
     function localStorageEventHandler() {
-      const walletName = localStorage.getItem(LOCALSTORAGE_KEY);
-      if (walletName) {
-        setWalletName(walletName);
+      const localStoragePreferedWalletApi =
+        localStorage.getItem("preferedWalletApi");
+      if (localStoragePreferedWalletApi) {
+        setPreferedWalletApi(localStoragePreferedWalletApi);
       }
     }
 
@@ -51,13 +49,13 @@ const SecretjsContextProvider = ({ children }: any) => {
     // remove when the component unmounts
     return () =>
       window.removeEventListener("storage", localStorageEventHandler);
-  }, [walletName]);
+  }, [preferedWalletApi]);
 
   useEffect(() => {
-    if (walletName && !secretjs && !secretAddress) {
+    if (preferedWalletApi && !secretjs && !secretAddress) {
       connectWallet();
     }
-  }, [secretjs, secretAddress, walletName]);
+  }, [secretjs, secretAddress, preferedWalletApi]);
 
   // Balances
   const [SCRTToken, setSCRTToken] = useState<Token>(
@@ -155,53 +153,43 @@ const SecretjsContextProvider = ({ children }: any) => {
 
   async function connectWallet() {
     if (!window.keplr && !(window as any).leap) {
-      setIsGetModalOpen(true);
+      setIsGetWalletModalOpen(true);
       document.body.classList.add("overflow-hidden");
-    } else {
-      let connectWalletName;
-      if (!walletName) {
-        const storedWalletName = localStorage.getItem(LOCALSTORAGE_KEY);
-        if (storedWalletName) {
-          setWalletName(storedWalletName);
-          connectWalletName = storedWalletName;
-        } else {
-          console.log(`Cannot find ${walletName} wallet`);
-          setIsConnectModalOpen(true);
-          document.body.classList.add("overflow-hidden");
+    } else if (window.keplr && (window as any).leap) {
+      if (preferedWalletApi === "Keplr") {
+        try {
+          connectKeplr();
+        } catch (e) {
+          console.error("Could not connect to Keplr API...", e);
+          setPreferedWalletApi("");
+        }
+      } else if (preferedWalletApi === "Leap") {
+        try {
+          connectLeap();
+        } catch (e) {
+          console.error("Could not connect to Leap API...", e);
+          setPreferedWalletApi("");
         }
       } else {
-        connectWalletName = walletName;
+        setIsConnectModalOpen(true);
+        document.body.classList.add("overflow-hidden");
       }
-      if (connectWalletName == "Keplr") {
-        connectKeplr();
-        (window as any).wallet = window.keplr;
-      } else if (connectWalletName == "Leap") {
-        connectLeap();
-        (window as any).wallet = window.keplr;
-      } else if (connectWalletName == "Fina") {
-        connectFina();
-        (window as any).wallet = window.keplr;
-      } else if (connectWalletName == "StarShell") {
-        connectStarShell();
-        (window as any).wallet = window.keplr;
-      }
-    }
-  }
-
-  async function connectStarShell() {
-    if (!window.keplr && isMobile) {
-      // const urlSearchParams = new URLSearchParams();
-      // urlSearchParams.append("network", chainId);
-      // urlSearchParams.append("url", window.location.href);
-      // window.open(`fina://wllet/dapps?${urlSearchParams.toString()}`, "_blank");
-      // localStorage.setItem(LOCALSTORAGE_KEY, "Fina");
-      // window.dispatchEvent(new Event("storage"));
     } else {
-      connectKeplr("StarShell");
+      if (window.keplr) {
+        connectKeplr();
+      } else if ((window as any).leap) {
+        connectLeap();
+      }
+    }
+
+    if (preferedWalletApi === "Keplr") {
+      trackMixPanelEvent("User prefers Keplr API! (Keplr, Fina, Starshell...)");
+    } else if (preferedWalletApi === "Leap") {
+      trackMixPanelEvent("User prefers Leap API!");
     }
   }
 
-  async function connectKeplr(walletNameForLocalStorage: string = "Keplr") {
+  async function connectKeplr(preferedApiForLocalStorage: string = "Keplr") {
     const sleep = (ms: number) =>
       new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -235,26 +223,11 @@ const SecretjsContextProvider = ({ children }: any) => {
       encryptionUtils: window.getEnigmaUtils(SECRET_CHAIN_ID),
     });
 
-    localStorage.setItem(LOCALSTORAGE_KEY, walletNameForLocalStorage);
+    localStorage.setItem("preferedWalletApi", preferedApiForLocalStorage);
     window.dispatchEvent(new Event("storage"));
 
     setSecretAddress(secretAddress);
     setSecretjs(secretjs);
-  }
-
-  async function connectFina() {
-    if (!window.keplr && isMobile) {
-      const urlSearchParams = new URLSearchParams();
-      urlSearchParams.append("network", SECRET_CHAIN_ID);
-      urlSearchParams.append("url", window.location.href);
-
-      window.open(`fina://wllet/dapps?${urlSearchParams.toString()}`, "_blank");
-
-      localStorage.setItem(LOCALSTORAGE_KEY, "Fina");
-      window.dispatchEvent(new Event("storage"));
-    } else {
-      connectKeplr("Fina");
-    }
   }
 
   async function connectLeap() {
@@ -264,7 +237,7 @@ const SecretjsContextProvider = ({ children }: any) => {
       // urlSearchParams.append("network", chainId);
       // urlSearchParams.append("url", window.location.href);
       // window.open(`fina://wllet/dapps?${urlSearchParams.toString()}`, "_blank");
-      // localStorage.setItem(LOCALSTORAGE_KEY, "Fina");
+      // localStorage.setItem("preferedWalletApi", "Fina");
       // window.dispatchEvent(new Event("storage"));
     } else {
       //@ts-ignore
@@ -294,7 +267,7 @@ const SecretjsContextProvider = ({ children }: any) => {
       setSecretAddress(secretAddress);
       setSecretjs(secretjs);
 
-      localStorage.setItem(LOCALSTORAGE_KEY, "Leap");
+      localStorage.setItem("preferedWalletApi", "Leap");
       window.dispatchEvent(new Event("storage"));
 
       (window as any).wallet = (window as any).leap;
@@ -354,15 +327,18 @@ const SecretjsContextProvider = ({ children }: any) => {
 
   function disconnectWallet() {
     // reset secretjs and secretAddress
-
     setSecretAddress("");
     setSecretjs(null);
 
-    setWalletName("");
-    localStorage.setItem(LOCALSTORAGE_KEY, "");
+    // reset wallet name
+    setPreferedWalletApi("");
+    localStorage.setItem("preferedWalletApi", "");
 
     // reset fee grant
     setFeeGrantStatus("Untouched");
+
+    // disconnected => don't auto-connect again
+    localStorage.setItem("keplrAutoConnect", "false");
 
     // Toast for success
     toast.success("Wallet disconnected!");
@@ -377,12 +353,12 @@ const SecretjsContextProvider = ({ children }: any) => {
         setSecretAddress,
         connectWallet,
         disconnectWallet,
-        isGetModalOpen,
-        setIsGetModalOpen,
+        isGetWalletModalOpen,
+        setIsGetWalletModalOpen,
         isConnectModalOpen,
         setIsConnectModalOpen,
-        walletName,
-        setWalletName,
+        preferedWalletApi,
+        setPreferedWalletApi,
         feeGrantStatus,
         setFeeGrantStatus,
         requestFeeGrant,
@@ -399,16 +375,15 @@ const SecretjsContextProvider = ({ children }: any) => {
       }}
     >
       <GetWalletModal
-        open={isGetModalOpen}
+        open={isGetWalletModalOpen}
         onClose={() => {
           trackMixPanelEvent("Closed Get Wallet Modal");
-          setIsGetModalOpen(false);
+          setIsGetWalletModalOpen(false);
           document.body.classList.remove("overflow-hidden");
         }}
       />
       <ConnectWalletModal
         open={isConnectModalOpen}
-        setWalletName={setWalletName}
         onClose={() => {
           trackMixPanelEvent("Closed Connect Wallet Modal");
           setIsConnectModalOpen(false);

@@ -49,7 +49,7 @@ class GetWalletModal extends React.Component<IGetWalletModalProps> {
                     Get Wallet
                   </h2>
                   <p className="text-neutral-600 dark:text-neutral-400 max-w-sm mx-auto">
-                    Please install a wallet to access all applications
+                    Install a wallet to interact with the applications!
                   </p>
                 </div>
                 {/* Body */}
@@ -57,7 +57,7 @@ class GetWalletModal extends React.Component<IGetWalletModalProps> {
                   <a
                     href="https://starshell.net"
                     target="_blank"
-                    className="group p-5 flex items-center gap-2.5 hover:bg-neutral-300 dark:hover:bg-neutral-700 transition-colors focus:outline-none focus:ring-2 focus:ring-cyan-500 dark:focus:ring-cyan-500 text-white dark:text-white font-semibold bg-gradient-to-r from-cyan-600 to-purple-600 hover:from-cyan-500 hover:to-purple-500"
+                    className="group p-5 flex items-center gap-2.5 hover:bg-neutral-300 dark:hover:bg-neutral-700 transition-colors"
                     onClick={() => {
                       trackMixPanelEvent(
                         "Clicked Starshell Wallet on Get Wallet Modal"
@@ -68,13 +68,16 @@ class GetWalletModal extends React.Component<IGetWalletModalProps> {
                       src="/img/assets/starshell.svg"
                       className="flex-initial w-7 h-7"
                     />
-                    <span className="flex-1 font-medium">
-                      Starshell (recommended)
+                    <span className="flex-1 font-medium flex items-center">
+                      Starshell{" "}
+                      <span className="text-xs ml-2 font-semibold py-0.5 px-1.5 rounded bg-gradient-to-r from-cyan-600 to-purple-600">
+                        recommended
+                      </span>
                     </span>
                     <span className="text-white dark:text-white bg-blue-500 dark:bg-blue-500 group-hover:bg-blue-600 dark:group-hover:bg-blue-400 transition-colors px-3 py-1.5 rounded text-xs font-semibold">
-                      <FontAwesomeIcon icon={faDesktop} className="mr-2" />
+                      <FontAwesomeIcon icon={faDesktop} className="mr-1" />
                       Desktop /{" "}
-                      <FontAwesomeIcon icon={faMobileScreen} className="mr-2" />
+                      <FontAwesomeIcon icon={faMobileScreen} className="mr-1" />
                       Mobile
                     </span>
                   </a>
@@ -94,9 +97,9 @@ class GetWalletModal extends React.Component<IGetWalletModalProps> {
                     />
                     <span className="flex-1 font-medium">Leap</span>
                     <span className="text-white dark:text-white bg-blue-500 dark:bg-blue-500 group-hover:bg-blue-600 dark:group-hover:bg-blue-400 transition-colors px-3 py-1.5 rounded text-xs font-semibold">
-                      <FontAwesomeIcon icon={faDesktop} className="mr-2" />
+                      <FontAwesomeIcon icon={faDesktop} className="mr-1" />
                       Desktop /{" "}
-                      <FontAwesomeIcon icon={faMobileScreen} className="mr-2" />
+                      <FontAwesomeIcon icon={faMobileScreen} className="mr-1" />
                       Mobile
                     </span>
                   </a>
@@ -116,7 +119,7 @@ class GetWalletModal extends React.Component<IGetWalletModalProps> {
                     />
                     <span className="flex-1 font-medium">Fina</span>
                     <span className="text-white dark:text-white bg-blue-500 dark:bg-blue-500 group-hover:bg-blue-600 dark:group-hover:bg-blue-400 transition-colors px-3 py-1.5 rounded text-xs font-semibold">
-                      <FontAwesomeIcon icon={faMobileScreen} className="mr-2" />
+                      <FontAwesomeIcon icon={faMobileScreen} className="mr-1" />
                       Mobile
                     </span>
                   </a>
@@ -136,7 +139,7 @@ class GetWalletModal extends React.Component<IGetWalletModalProps> {
                     />
                     <span className="flex-1 font-medium">Keplr</span>
                     <span className="text-white dark:text-white bg-blue-500 dark:bg-blue-500 group-hover:bg-blue-600 dark:group-hover:bg-blue-400 transition-colors px-3 py-1.5 rounded text-xs font-semibold">
-                      <FontAwesomeIcon icon={faDesktop} className="mr-2" />
+                      <FontAwesomeIcon icon={faDesktop} className="mr-1" />
                       Desktop
                     </span>
                   </a>
