@@ -30,7 +30,7 @@ class Footer extends React.Component {
           <div className="col-span-12 text-xs font-medium text-neutral-600 dark:text-neutral-400">
             {"Developed by "}
             <a
-              href="https://secretjupiter.com/"
+              href="https://x.com/secretjupiter_"
               target="_blank"
               className="transition-colors hover:text-black dark:hover:text-white"
             >
@@ -38,7 +38,7 @@ class Footer extends React.Component {
             </a>
             {", "}
             <a
-              href="https://secretsaturn.net/"
+              href="https://x.com/Secret_Saturn_"
               target="_blank"
               className="transition-colors hover:text-black dark:hover:text-white"
             >

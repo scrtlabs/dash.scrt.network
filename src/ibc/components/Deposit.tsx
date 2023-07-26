@@ -1047,7 +1047,7 @@ function Deposit() {
     return (
       <button
         className={
-          "enabled:bg-gradient-to-r enabled:from-cyan-600 enabled:to-purple-600 enabled:hover:from-cyan-500 enabled:hover:to-purple-500 transition-colors text-white font-semibold py-3 w-full rounded-lg disabled:bg-neutral-500 focus:outline-0 focus:ring-4 ring-sky-500/40"
+          "enabled:bg-gradient-to-r enabled:from-cyan-600 enabled:to-purple-600 enabled:hover:from-cyan-500 enabled:hover:to-purple-500 transition-colors text-white font-semibold py-3 w-full rounded-lg disabled:bg-neutral-500 focus:outline-none focus-visible:ring-4 ring-sky-500/40"
         }
         disabled={!secretjs || !secretAddress}
         onClick={() => submit()}
@@ -1131,7 +1131,7 @@ function Deposit() {
                   <button
                     onClick={toggleIbcMode}
                     className={
-                      "focus:outline-0 focus:ring-2 ring-sky-500/40 inline-block bg-neutral-200 dark:bg-neutral-800 px-3 py-2 text-cyan-500 dark:text-cyan-500 transition-colors rounded-xl disabled:text-neutral-500 dark:disabled:text-neutral-500" +
+                      "focus:outline-none focus-visible:ring-2 ring-sky-500/40 inline-block bg-neutral-200 dark:bg-neutral-800 px-3 py-2 text-cyan-500 dark:text-cyan-500 transition-colors rounded-xl disabled:text-neutral-500 dark:disabled:text-neutral-500" +
                       (secretjs && secretAddress
                         ? "hover:text-cyan-700 dark:hover:text-cyan-300"
                         : "")
