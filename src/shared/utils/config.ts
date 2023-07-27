@@ -311,6 +311,20 @@ export const chains: { [chain_name: string]: Chain } = {
     chain_image: "/luna2.svg",
     explorer_account: "https://finder.terra.money/mainnet/address/",
   },
+  Composable: {
+    chain_name: "composable",
+    deposit_channel_id: "channel-14",
+    deposit_gas: 0,
+    deposit_gas_denom: "ppica",
+    withdraw_channel_id: "channel-80",
+    withdraw_gas: 30_000,
+    chain_id: "centauri-1",
+    bech32_prefix: "centauri",
+    lcd: "https://composable-api.lavenderfive.com",
+    rpc: "https://composable-rpc.lavenderfive.com",
+    chain_image: "/dot.svg",
+    explorer_account: "https://explorer.nodestake.top/composable/tx/${txHash}",
+  }
 };
 
 export type Token = {
@@ -2887,6 +2901,60 @@ export const ICSTokens: Token[] = [
         from_denom: "secret1yxjmepvyl2c25vnt53cr2dpn8amknwausxee83",
         channel_id: "channel-61",
         gas: 350_000,
+      },
+    ],
+  },
+  {
+    name: "DOT",
+    is_ics20: true,
+    image: "/dot.svg",
+    decimals: 10,
+    coingecko_id: "polkadot",
+    deposits: [
+      {
+        chain_name: "composable",
+        from_denom: "ibc/3CC19CEC7E5A3E90E78A5A9ECC5A0E2F8F826A375CF1E096F4515CF09DA3E366",
+      },
+    ],
+    withdrawals: [
+      {
+        chain_name: "composable",
+        from_denom: ibcDenom(
+          [
+            {
+              incomingChannelId: chains["composable"].withdraw_channel_id,
+              incomingPortId: "transfer",
+            },
+          ],
+          "ibc/3CC19CEC7E5A3E90E78A5A9ECC5A0E2F8F826A375CF1E096F4515CF09DA3E366"
+        ),
+      },
+    ],
+  },
+    {
+    name: "KSM",
+    is_ics20: true,
+    image: "/ksm.svg",
+    decimals: 12,
+    coingecko_id: "kusama",
+    deposits: [
+      {
+        chain_name: "composable",
+        from_denom: "ibc/EE9046745AEC0E8302CB7ED9D5AD67F528FB3B7AE044B247FB0FB293DBDA35E9",
+      },
+    ],
+    withdrawals: [
+      {
+        chain_name: "composable",
+        from_denom: ibcDenom(
+          [
+            {
+              incomingChannelId: chains["composable"].withdraw_channel_id,
+              incomingPortId: "transfer",
+            },
+          ],
+          "ibc/EE9046745AEC0E8302CB7ED9D5AD67F528FB3B7AE044B247FB0FB293DBDA35E9"
+        ),
       },
     ],
   },
