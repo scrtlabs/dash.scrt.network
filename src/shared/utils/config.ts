@@ -322,7 +322,7 @@ export const chains: { [chain_name: string]: Chain } = {
     bech32_prefix: "centauri",
     lcd: "https://composable-api.lavenderfive.com",
     rpc: "https://composable-rpc.lavenderfive.com",
-    chain_image: "/dot.svg",
+    chain_image: "/composable.svg",
     explorer_account: "https://explorer.nodestake.top/composable/tx/${txHash}",
   }
 };
