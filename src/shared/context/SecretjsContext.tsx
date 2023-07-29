@@ -223,6 +223,8 @@ const SecretjsContextProvider = ({ children }: any) => {
       encryptionUtils: window.getEnigmaUtils(SECRET_CHAIN_ID),
     });
 
+    (window as any).wallet = window.keplr;
+
     localStorage.setItem("preferedWalletApi", preferedApiForLocalStorage);
     window.dispatchEvent(new Event("storage"));
 
@@ -263,6 +265,8 @@ const SecretjsContextProvider = ({ children }: any) => {
         //@ts-ignore
         encryptionUtils: window.leap.getEnigmaUtils(SECRET_CHAIN_ID),
       });
+
+      (window as any).wallet = (window as any).leap;
 
       setSecretAddress(secretAddress);
       setSecretjs(secretjs);
