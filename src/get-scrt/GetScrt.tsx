@@ -54,8 +54,8 @@ function GetSCRT() {
   transakQueryStrings.defaultCryptoCurrency = "SCRT";
 
   const options = [
-    { value: "Transak", label: "Transak" },
     { value: "Kado", label: "Kado" },
+    { value: "Transak", label: "Transak" },
     { value: "More", label: "More..." },
   ];
 
@@ -84,7 +84,7 @@ function GetSCRT() {
           >
             DEX or CEX
           </a>
-          {`, or you can buy directly with fiat using the interface below, powered by Transak and Kado.`}
+          {`, or you can buy directly with fiat using the interface below, powered by Kado and Transak.`}
         </p>
 
         <div className="max-w-xs mx-auto mb-8" id="">
