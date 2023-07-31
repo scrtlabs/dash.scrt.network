@@ -13,15 +13,17 @@ import {
   pageTitle,
 } from "shared/utils/commons";
 import mixpanel from "mixpanel-browser";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import { trackMixPanelEvent } from "shared/utils/commons";
 import SquidModal from "./SquidModal";
+import { ThemeContext } from "shared/context/ThemeContext";
 
 function Bridge() {
   useEffect(() => {
     trackMixPanelEvent("Open Bridge Tab");
   }, []);
 
+  const { theme, toggleTheme } = useContext(ThemeContext);
   const [isSquidModalOpen, setIsSquidModalOpen] = useState(false);
 
   return (
@@ -104,6 +106,7 @@ function Bridge() {
             setIsSquidModalOpen(false);
             document.body.classList.remove("overflow-hidden");
           }}
+          theme={theme}
         />
         <p>
           <span className="select-none">

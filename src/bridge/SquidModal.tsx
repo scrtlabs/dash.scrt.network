@@ -7,13 +7,104 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React from "react";
 import { trackMixPanelEvent } from "shared/utils/commons";
+import { SquidWidget } from "@0xsquid/widget";
+import queryString from "query-string";
 
 interface ISquidModalProps {
   open: boolean;
   onClose: any;
+  theme: any;
 }
 
-import { SquidWidget } from "@0xsquid/widget";
+const SquidStringsDark = {
+  integratorId: "squid-swap-widget",
+  companyName: "Custom",
+  style: {
+    neutralContent: "#959BB2",
+    baseContent: "#E8ECF2",
+    base100: "#10151B",
+    base200: "#272D3D",
+    base300: "#171D2B",
+    error: "#ED6A5E",
+    warning: "#FFB155",
+    success: "#2EAEB0",
+    primary: "#71B4BD",
+    secondary: "#71B4BD",
+    secondaryContent: "#171717",
+    neutral: "#171717",
+    roundedBtn: "5px",
+    roundedCornerBtn: "999px",
+    roundedBox: "5px",
+    roundedDropDown: "7px",
+  },
+  slippage: 0.5,
+  infiniteApproval: false,
+  enableExpress: true,
+  apiUrl: "https://api.squidrouter.com",
+  comingSoonChainIds: ["cosmoshub-4", "injective-1", "kichain-2"],
+  titles: {
+    swap: "Swap",
+    settings: "Settings",
+    wallets: "Wallets",
+    tokens: "Select Token",
+    chains: "Select Chain",
+    history: "History",
+    transaction: "Transaction",
+    allTokens: "Select Token",
+    destination: "Destination address",
+  },
+  priceImpactWarnings: {
+    warning: 3,
+    critical: 5,
+  },
+  initialFromChainId: 1,
+  initialToChainId: "secret-4",
+};
+
+const SquidStringsLight = {
+  integratorId: "squid-swap-widget",
+  companyName: "Custom",
+  style: {
+    neutralContent: "#747379",
+    baseContent: "#2E2C33",
+    base100: "#F5F5F7",
+    base200: "#F2F2F2",
+    base300: "#DADADA",
+    error: "#ED6A5E",
+    warning: "#FFB155",
+    success: "#2EAEB0",
+    primary: "#2E2C33",
+    secondary: "#070707",
+    secondaryContent: "#FFFFFF",
+    neutral: "#FFFFFF",
+    roundedBtn: "999px",
+    roundedCornerBtn: "999px",
+    roundedBox: "1rem",
+    roundedDropDown: "999px",
+  },
+  slippage: 0.5,
+  infiniteApproval: false,
+  enableExpress: true,
+  apiUrl: "https://api.squidrouter.com",
+  comingSoonChainIds: ["cosmoshub-4", "injective-1", "kichain-2"],
+  titles: {
+    swap: "Swap",
+    settings: "Settings",
+    wallets: "Wallets",
+    tokens: "Select Token",
+    chains: "Select Chain",
+    history: "History",
+    transaction: "Transaction",
+    allTokens: "Select Token",
+    destination: "Destination address",
+  },
+  priceImpactWarnings: {
+    warning: 3,
+    critical: 5,
+  },
+  initialFromChainId: 1,
+  initialToChainId: "secret-4",
+};
 
 class SquidModal extends React.Component<ISquidModalProps> {
   render() {
@@ -44,55 +135,25 @@ class SquidModal extends React.Component<ISquidModalProps> {
                     <FontAwesomeIcon icon={faXmark} className="fa-fw" />
                   </button>
 
-                  {/* <SquidWidget
-          config={{
-            companyName: "Custom",
-            style: {
-              neutralContent: "#6A61FF",
-              baseContent: "#FDFDFD",
-              base100: "#342C90",
-              base200: "#181C63",
-              base300: "#13164E",
-              error: "#ED6A5E",
-              warning: "#FFB155",
-              success: "#62C555",
-              primary: "#6C5BE0",
-              secondary: "#4030FA",
-              secondaryContent: "#F6F7FB",
-              neutral: "#0C1536",
-              roundedBtn: "8px",
-              roundedBox: "12px",
-              roundedDropDown: "8px",
-              displayDivider: false,
-            },
-            slippage: 1.5,
-            infiniteApproval: false,
-            enableExpress: false,
-            apiUrl: "https://api.squidrouter.com",
-            titles: {
-              swap: "Convert",
-              settings: "Settings",
-              wallets: "Wallets",
-              tokens: "Tokens",
-              chains: "Chains",
-              history: "History",
-              transaction: "Transaction",
-              allTokens: "Tokens",
-              destination: "Destination address",
-            },
-            priceImpactWarnings: {
-              warning: 3,
-              critical: 5,
-            },
-          }}
-        />*/}
-
-                  <iframe
-                    title="squid_widget"
-                    className="bg-white dark:bg-neutral-900 mx-auto w-[50vw] h-[84vh]"
-                    style={{ maxWidth: "420px", maxHeight: "800px" }}
-                    src="https://widget.squidrouter.com/iframe?config=%7B%22integratorId%22%3A%22squid-swap-widget%22%2C%22companyName%22%3A%22Custom%22%2C%22style%22%3A%7B%22neutralContent%22%3A%22%23959BB2%22%2C%22baseContent%22%3A%22%23E8ECF2%22%2C%22base100%22%3A%22%2310151B%22%2C%22base200%22%3A%22%23272D3D%22%2C%22base300%22%3A%22%23171D2B%22%2C%22error%22%3A%22%23ED6A5E%22%2C%22warning%22%3A%22%23FFB155%22%2C%22success%22%3A%22%232EAEB0%22%2C%22primary%22%3A%22%2371B4BD%22%2C%22secondary%22%3A%22%2371B4BD%22%2C%22secondaryContent%22%3A%22%23171717%22%2C%22neutral%22%3A%22%23171717%22%2C%22roundedBtn%22%3A%225px%22%2C%22roundedCornerBtn%22%3A%22999px%22%2C%22roundedBox%22%3A%225px%22%2C%22roundedDropDown%22%3A%227px%22%7D%2C%22slippage%22%3A1.5%2C%22infiniteApproval%22%3Afalse%2C%22enableExpress%22%3Atrue%2C%22apiUrl%22%3A%22https%3A%2F%2Fapi.squidrouter.com%22%2C%22comingSoonChainIds%22%3A%5B%22cosmoshub-4%22%2C%22injective-1%22%2C%22kichain-2%22%5D%2C%22titles%22%3A%7B%22swap%22%3A%22Swap%22%2C%22settings%22%3A%22Settings%22%2C%22wallets%22%3A%22Wallets%22%2C%22tokens%22%3A%22Select%20Token%22%2C%22chains%22%3A%22Select%20Chain%22%2C%22history%22%3A%22History%22%2C%22transaction%22%3A%22Transaction%22%2C%22allTokens%22%3A%22Select%20Token%22%2C%22destination%22%3A%22Destination%20address%22%7D%2C%22priceImpactWarnings%22%3A%7B%22warning%22%3A3%2C%22critical%22%3A5%7D%7D"
-                  />
+                  {this.props.theme == "dark" ? (
+                    <iframe
+                      title="squid_widget"
+                      className="bg-white dark:bg-neutral-900 mx-auto w-[50vw] h-[84vh]"
+                      style={{ maxWidth: "420px", maxHeight: "800px" }}
+                      src={`https://widget.squidrouter.com/iframe?config=${encodeURIComponent(
+                        JSON.stringify(SquidStringsDark)
+                      )}`}
+                    />
+                  ) : (
+                    <iframe
+                      title="squid_widget"
+                      className="bg-white dark:bg-neutral-900 mx-auto w-[50vw] h-[84vh]"
+                      style={{ maxWidth: "420px", maxHeight: "800px" }}
+                      src={`https://widget.squidrouter.com/iframe?config=${encodeURIComponent(
+                        JSON.stringify(SquidStringsLight)
+                      )}`}
+                    />
+                  )}
                 </div>
               </div>
             </div>
