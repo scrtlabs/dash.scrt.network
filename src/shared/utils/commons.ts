@@ -246,6 +246,41 @@ export async function suggestChihuahuatoWallet(wallet: any) {
   });
 }
 
+export async function suggestComposabletoWallet(wallet: any) {
+  await wallet.experimentalSuggestChain({
+    rpc: "https://composable-rpc.lavenderfive.com",
+    rest: "https://composable-api.lavenderfive.com",
+    chainId: "centauri-1",
+    chainName: "Composable",
+    stakeCurrency: {
+      coinDenom: "PICA",
+      coinMinimalDenom: "ppica",
+      coinDecimals: 12,
+      coinGeckoId: "",
+    },
+    bip44: { coinType: 118 },
+    bech32Config: Bech32Address.defaultBech32Config("centauri"),
+    currencies: [
+      {
+        coinDenom: "PICA",
+        coinMinimalDenom: "ppica",
+        coinDecimals: 12,
+        coinGeckoId: "",
+      },
+    ],
+    feeCurrencies: [
+      {
+        coinDenom: "PICA",
+        coinMinimalDenom: "ppica",
+        coinDecimals: 12,
+        coinGeckoId: "",
+        gasPriceStep: { low: 0, average: 0, high: 0 },
+      },
+    ],
+    features: ["stargate", "ibc-transfer", "no-legacy-stdTx", "ibc-go"],
+  });
+}
+
 export const usdString = new Intl.NumberFormat("en-US", {
   style: "currency",
   currency: "USD",

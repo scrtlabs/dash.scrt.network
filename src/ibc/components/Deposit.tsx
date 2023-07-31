@@ -13,6 +13,7 @@ import {
   suggestInjectivetoWallet,
   suggestKujiratoWallet,
   suggestTerratoWallet,
+  suggestComposabletoWallet,
   faucetAddress,
   viewingKeyErrorString,
 } from "shared/utils/commons";
@@ -452,6 +453,7 @@ function Deposit() {
       ) {
         await sleep(100);
       }
+      console.log(selectedSource.chain_name);
       if (selectedSource.chain_name === "Terra") {
         await suggestTerratoWallet((window as any).wallet);
       } else if (selectedSource.chain_name === "Injective") {
@@ -462,6 +464,8 @@ function Deposit() {
         await suggestKujiratoWallet((window as any).wallet);
       } else if (selectedSource.chain_name === "Chihuahua") {
         await suggestChihuahuatoWallet((window as any).wallet);
+      } else if (selectedSource.chain_name === "Composable") {
+        await suggestComposabletoWallet((window as any).wallet);
       }
 
       const { chain_id, lcd, bech32_prefix } =
