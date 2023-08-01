@@ -5,11 +5,17 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Link } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
-import { formatNumber, pageTitle } from "shared/utils/commons";
+import {
+  formatNumber,
+  pageTitle,
+  trackMixPanelEvent,
+} from "shared/utils/commons";
 import { useState, createContext, useContext, useEffect } from "react";
 import { SecretjsContext } from "shared/context/SecretjsContext";
 import queryString from "query-string";
 import Select from "react-select";
+import mixpanel from "mixpanel-browser";
+import { Nullable } from "shared/types/Nullable";
 
 function GetSCRT() {
   const { secretjs, secretAddress, connectWallet } =
@@ -21,23 +27,37 @@ function GetSCRT() {
   const [showTransak, setShowTransak] = useState(false);
   const [showExternal, setShowExternal] = useState(false);
 
+  type SelectValue = "transak" | "kado" | "external";
+  const [selectedValue, setSelectedValue] =
+    useState<Nullable<SelectValue>>(null);
+
   let transakQueryStrings: { [key: string]: any } = {};
 
-  function selectChange(value: any) {
-    if (value?.value === "Transak") {
-      setShowTransak(true);
+  useEffect(() => {
+    if (selectedValue === "transak") {
       setShowKado(false);
+      setShowTransak(true);
       setShowExternal(false);
-    } else if (value?.value === "Kado") {
+    } else if (selectedValue === "kado") {
       setShowKado(true);
       setShowTransak(false);
       setShowExternal(false);
-    } else if (value?.value === "More") {
-      setShowExternal(true);
-      setShowTransak(false);
+    } else if (selectedValue === "external") {
       setShowKado(false);
+      setShowTransak(false);
+      setShowExternal(true);
     }
-  }
+
+    if (import.meta.env.VITE_MIXPANEL_ENABLED === "true") {
+      mixpanel.init(import.meta.env.VITE_MIXPANEL_PROJECT_TOKEN, {
+        debug: false,
+      });
+      mixpanel.identify("Dashboard-App");
+      mixpanel.track("User selected in 'Get SCRT'!", {
+        "Selected Mode": selectedValue,
+      });
+    }
+  }, [selectedValue]);
 
   useEffect(() => {
     setLoading(true);
@@ -53,10 +73,15 @@ function GetSCRT() {
   transakQueryStrings.themeColor = "000000";
   transakQueryStrings.defaultCryptoCurrency = "SCRT";
 
-  const options = [
-    { value: "Transak", label: "Transak" },
-    { value: "Kado", label: "Kado" },
-    { value: "More", label: "More..." },
+  interface Option {
+    value: SelectValue;
+    label: String;
+  }
+
+  const options: Option[] = [
+    { value: "transak", label: "Transak" },
+    { value: "kado", label: "Kado" },
+    { value: "external", label: "More..." },
   ];
 
   return (
@@ -91,8 +116,11 @@ function GetSCRT() {
           <Select
             isDisabled={false}
             options={options}
+            value={options.find((option) => option.value === selectedValue)}
             isSearchable={false}
-            onChange={selectChange}
+            onChange={(option) => {
+              setSelectedValue(option.value);
+            }}
             classNamePrefix="react-select"
           />
         </div>
