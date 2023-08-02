@@ -79,8 +79,8 @@ function GetSCRT() {
   }
 
   const options: Option[] = [
-    { value: "transak", label: "Transak" },
     { value: "kado", label: "Kado" },
+    { value: "transak", label: "Transak" },
     { value: "external", label: "More..." },
   ];
 
