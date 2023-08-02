@@ -13,13 +13,18 @@ import {
   pageTitle,
 } from "shared/utils/commons";
 import mixpanel from "mixpanel-browser";
-import { useEffect } from "react";
+import { useEffect, useState, useContext } from "react";
 import { trackMixPanelEvent } from "shared/utils/commons";
+import SquidModal from "./SquidModal";
+import { ThemeContext } from "shared/context/ThemeContext";
 
 function Bridge() {
   useEffect(() => {
     trackMixPanelEvent("Open Bridge Tab");
   }, []);
+
+  const { theme, toggleTheme } = useContext(ThemeContext);
+  const [isSquidModalOpen, setIsSquidModalOpen] = useState(false);
 
   return (
     <>
@@ -82,6 +87,27 @@ function Bridge() {
           Go to Secret Tunnel
           <FontAwesomeIcon icon={faArrowUpRightFromSquare} className="ml-2" />
         </a>
+        <p>
+          Alternatively, use Squid Router to bridge your assets into Secret
+          Network.
+          <a
+            target="_blank"
+            className="text-white block my-6 p-3 w-full text-center font-semibold bg-cyan-600 dark:bg-cyan-600 rounded-lg text-sm hover:bg-cyan-500 dark:hover:bg-cyan-500 focus:bg-cyan-600 dark:focus:bg-cyan-600 transition-colors"
+            onClick={() => {
+              setIsSquidModalOpen(true);
+            }}
+          >
+            Use Squid Router
+          </a>
+        </p>
+        <SquidModal
+          open={isSquidModalOpen}
+          onClose={() => {
+            setIsSquidModalOpen(false);
+            document.body.classList.remove("overflow-hidden");
+          }}
+          theme={theme}
+        />
         <p>
           <span className="select-none">
             <span className="inline-block bg-emerald-500 dark:bg-green-800 text-white text-xs py-0.5 px-1.5 rounded uppercase font-semibold">

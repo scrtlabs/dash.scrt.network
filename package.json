@@ -9,6 +9,7 @@
     "prepare": "husky install"
   },
   "dependencies": {
+    "@0xsquid/widget": "^1.4.81",
     "@axelar-network/axelarjs-sdk": "^0.12.6",
     "@babel/core": "^7.0.0",
     "@cosmjs/stargate": "0.26.5",

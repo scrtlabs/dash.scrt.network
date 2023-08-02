@@ -112,7 +112,7 @@ function GetSCRT() {
           {`, or you can buy directly with fiat using the interface below, powered by Kado and Transak.`}
         </p>
 
-        <div className="max-w-xs mx-auto mb-8" id="">
+        <div className="max-w-xs mx-auto mb-8">
           <Select
             isDisabled={false}
             options={options}
