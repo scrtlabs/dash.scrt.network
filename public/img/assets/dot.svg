@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns:xodm="http://www.corel.com/coreldraw/odm/2003" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Layer_1" x="0px" y="0px" viewBox="0 0 2500 2500" style="enable-background:new 0 0 2500 2500;" xml:space="preserve">
+<style type="text/css">
+	.st0{fill:none;}
+	.st1{fill:#E6007A;}
+</style>
+<g id="Layer_x0020_1">
+	<g id="_2085151875344">
+		<rect y="0" class="st0" width="2500" height="2500"></rect>
+		<g>
+			<ellipse class="st1" cx="1250" cy="262.2" rx="450.8" ry="262.2"></ellipse>
+			<ellipse class="st1" cx="1250" cy="2237.8" rx="450.8" ry="262.2"></ellipse>
+			
+				<ellipse transform="matrix(0.5 -0.866 0.866 0.5 -457.5668 719.7572)" class="st1" cx="394.6" cy="756.1" rx="450.8" ry="262.4"></ellipse>
+			
+				<ellipse transform="matrix(0.5 -0.866 0.866 0.5 -457.5751 2695.3049)" class="st1" cx="2105.4" cy="1743.9" rx="450.8" ry="262.2"></ellipse>
+			
+				<ellipse transform="matrix(0.866 -0.5 0.5 0.866 -819.0784 430.9572)" class="st1" cx="394.6" cy="1743.9" rx="262.4" ry="450.8"></ellipse>
+			
+				<ellipse transform="matrix(0.866 -0.5 0.5 0.866 -96.0081 1154.1161)" class="st1" cx="2105.6" cy="756.2" rx="262.2" ry="450.8"></ellipse>
+		</g>
+	</g>
+</g>
+</svg>

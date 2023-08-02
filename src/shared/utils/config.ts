@@ -115,6 +115,20 @@ export const chains: { [chain_name: string]: Chain } = {
     chain_image: "/cmdx.svg",
     explorer_account: "https://www.mintscan.io/comdex/account/",
   },
+  Composable: {
+    chain_name: "Composable",
+    deposit_channel_id: "channel-14",
+    deposit_gas: 150_000,
+    deposit_gas_denom: "ppica",
+    withdraw_channel_id: "channel-80",
+    withdraw_gas: 30_000,
+    chain_id: "centauri-1",
+    bech32_prefix: "centauri",
+    lcd: "https://composable-api.lavenderfive.com",
+    rpc: "https://composable-rpc.lavenderfive.com",
+    chain_image: "/composable.svg",
+    explorer_account: "https://explorer.nodestake.top/composable/account/",
+  },
   "Cosmos Hub": {
     chain_name: "Cosmos Hub",
     deposit_channel_id: "channel-235",
@@ -440,6 +454,18 @@ export const tokens: Token[] = [
         ),
       },
       {
+        chain_name: "Composable",
+        from_denom: ibcDenom(
+          [
+            {
+              incomingChannelId: chains["Composable"].deposit_channel_id,
+              incomingPortId: "transfer",
+            },
+          ],
+          "uscrt"
+        ),
+      },
+      {
         chain_name: "Cosmos Hub",
         from_denom: ibcDenom(
           [
@@ -627,6 +653,10 @@ export const tokens: Token[] = [
       },
       {
         chain_name: "Comdex",
+        from_denom: "uscrt",
+      },
+      {
+        chain_name: "Composable",
         from_denom: "uscrt",
       },
       {
@@ -861,6 +891,36 @@ export const tokens: Token[] = [
       },
     ],
   }, */
+  {
+    name: "DOT",
+    address: "secret1h5d3555tz37crrgl5rppu2np2fhaugq3q8yvv9",
+    code_hash:
+      "5a085bd8ed89de92b35134ddd12505a602c7759ea25fb5c089ba03c8535b3042",
+    image: "/dot.svg",
+    decimals: 10,
+    coingecko_id: "polkadot",
+    deposits: [
+      {
+        chain_name: "Composable",
+        from_denom:
+          "ibc/3CC19CEC7E5A3E90E78A5A9ECC5A0E2F8F826A375CF1E096F4515CF09DA3E366",
+      },
+    ],
+    withdrawals: [
+      {
+        chain_name: "Composable",
+        from_denom: ibcDenom(
+          [
+            {
+              incomingChannelId: chains["Composable"].withdraw_channel_id,
+              incomingPortId: "transfer",
+            },
+          ],
+          "ibc/3CC19CEC7E5A3E90E78A5A9ECC5A0E2F8F826A375CF1E096F4515CF09DA3E366"
+        ),
+      },
+    ],
+  },
   {
     name: "DVPN",
     address: "secret15qtw24mpmwkjessr46dnqruq4s4tstzf74jtkf",
@@ -1147,6 +1207,36 @@ export const tokens: Token[] = [
             },
           ],
           "ukuji"
+        ),
+      },
+    ],
+  },
+  {
+    name: "KSM",
+    address: "secret1n4dp5dk6fufqmaalu9y7pnmk2r0hs7kc66a55f",
+    code_hash:
+      "5a085bd8ed89de92b35134ddd12505a602c7759ea25fb5c089ba03c8535b3042",
+    image: "/ksm.svg",
+    decimals: 12,
+    coingecko_id: "kusama",
+    deposits: [
+      {
+        chain_name: "Composable",
+        from_denom:
+          "ibc/EE9046745AEC0E8302CB7ED9D5AD67F528FB3B7AE044B247FB0FB293DBDA35E9",
+      },
+    ],
+    withdrawals: [
+      {
+        chain_name: "Composable",
+        from_denom: ibcDenom(
+          [
+            {
+              incomingChannelId: chains["Composable"].withdraw_channel_id,
+              incomingPortId: "transfer",
+            },
+          ],
+          "ibc/EE9046745AEC0E8302CB7ED9D5AD67F528FB3B7AE044B247FB0FB293DBDA35E9"
         ),
       },
     ],
