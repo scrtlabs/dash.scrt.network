@@ -1871,6 +1871,15 @@ export const snips: Token[] = [
     coingecko_id: "",
     deposits: [
       {
+        chain_name: "Composable",
+        from_denom: ibcDenom(
+          [{ incomingChannelId: "channel-26", incomingPortId: "transfer" }],
+          "cw20:secret1fl449muk5yq8dlad7a22nje4p5d2pnsgymhjfd"
+        ),
+        channel_id: "channel-26",
+        gas: 300_000,
+      },
+      {
         chain_name: "Osmosis",
         from_denom: ibcDenom(
           [{ incomingChannelId: "channel-476", incomingPortId: "transfer" }],
@@ -1899,6 +1908,12 @@ export const snips: Token[] = [
       },
     ],
     withdrawals: [
+      {
+        chain_name: "Composable",
+        from_denom: "secret1fl449muk5yq8dlad7a22nje4p5d2pnsgymhjfd",
+        channel_id: "channel-83",
+        gas: 350_000,
+      },
       {
         chain_name: "Osmosis",
         from_denom: "secret1fl449muk5yq8dlad7a22nje4p5d2pnsgymhjfd",
