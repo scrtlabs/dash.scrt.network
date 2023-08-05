@@ -23,6 +23,7 @@ import {
   toBase64,
   TxResponse,
   toUtf8,
+  BroadcastMode,
 } from "secretjs";
 import {
   chains,
@@ -615,6 +616,7 @@ function Deposit() {
                   resolveResponsesCheckIntervalMs: 10_000,
                   resolveResponsesTimeoutMs: 12 * 60 * 1000,
                 },
+                broadcastMode: BroadcastMode.Sync,
               }
             );
           } else if (
@@ -654,6 +656,7 @@ function Deposit() {
                   resolveResponsesCheckIntervalMs: 10_000,
                   resolveResponsesTimeoutMs: 10.25 * 60 * 1000,
                 },
+                broadcastMode: BroadcastMode.Sync,
               }
             );
           } else {
@@ -922,6 +925,7 @@ function Deposit() {
                   resolveResponsesCheckIntervalMs: 10_000,
                   resolveResponsesTimeoutMs: 12 * 60 * 1000,
                 },
+                broadcastMode: BroadcastMode.Sync,
               }
             );
           } else if (
@@ -963,7 +967,7 @@ function Deposit() {
                 },
               },
               {
-                gasLimit: 300_000,
+                gasLimit: withdraw_gas,
                 gasPriceInFeeDenom: 0.1,
                 feeDenom: "uscrt",
                 feeGranter: feeGrantStatus === "Success" ? faucetAddress : "",
@@ -972,6 +976,7 @@ function Deposit() {
                   resolveResponsesCheckIntervalMs: 10_000,
                   resolveResponsesTimeoutMs: 12 * 60 * 1000,
                 },
+                broadcastMode: BroadcastMode.Sync,
               }
             );
           } else {
@@ -1004,6 +1009,7 @@ function Deposit() {
                   resolveResponsesCheckIntervalMs: 10_000,
                   resolveResponsesTimeoutMs: 12 * 60 * 1000,
                 },
+                broadcastMode: BroadcastMode.Sync,
               }
             );
           }

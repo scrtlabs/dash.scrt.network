@@ -1,5 +1,5 @@
 import { useEffect, useState, useContext, createContext } from "react";
-import { MsgExecuteContract } from "secretjs";
+import { MsgExecuteContract, BroadcastMode } from "secretjs";
 import { Token, tokens } from "shared/utils/config";
 import {
   sleep,
@@ -565,6 +565,7 @@ export function Wrap() {
                 gasPriceInFeeDenom: 0.25,
                 feeDenom: "uscrt",
                 feeGranter: feeGrantStatus === "Success" ? faucetAddress : "",
+                broadcastMode: BroadcastMode.Sync,
               }
             )
             .catch((error: any) => {
@@ -632,6 +633,7 @@ export function Wrap() {
                 gasPriceInFeeDenom: 0.25,
                 feeDenom: "uscrt",
                 feeGranter: feeGrantStatus === "Success" ? faucetAddress : "",
+                broadcastMode: BroadcastMode.Sync,
               }
             )
             .catch((error: any) => {
