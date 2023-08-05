@@ -1265,7 +1265,7 @@ function Deposit() {
         <div className="flex items-center">
           <div className="flex-initial font-semibold mr-4 w-10">To:</div>
           <div className="flex-1 truncate font-medium text-sm">
-            {ibcMode === "withdrawal" && (
+            {ibcMode === "withdrawal" && secretjs && secretAddress && (
               <a
                 href={`${
                   chains[selectedSource.chain_name].explorer_account
@@ -1275,7 +1275,7 @@ function Deposit() {
                 {sourceAddress.slice(0, 19) + "..." + sourceAddress.slice(-19)}
               </a>
             )}
-            {ibcMode === "deposit" && (
+            {ibcMode === "deposit" && secretjs && secretAddress && (
               <a
                 href={`${targetChain.explorer_account}${secretAddress}`}
                 target="_blank"
