@@ -480,9 +480,14 @@ function Deposit() {
         },
       };
 
-      const sourceOfflineSigner = (
-        window as any
-      ).wallet.getOfflineSignerOnlyAmino(chain_id);
+      let sourceOfflineSigner;
+      if (selectedSource.chain_name === "Composable") {
+        sourceOfflineSigner = (window as any).wallet.getOfflineSigner(chain_id);
+      } else {
+        sourceOfflineSigner = (window as any).wallet.getOfflineSignerOnlyAmino(
+          chain_id
+        );
+      }
       const depositFromAccounts = await sourceOfflineSigner.getAccounts();
       setSourceAddress(depositFromAccounts[0].address);
 
