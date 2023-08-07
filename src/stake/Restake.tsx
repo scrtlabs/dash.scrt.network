@@ -1,5 +1,5 @@
 import { useEffect, useState, useContext } from "react";
-import { MsgSetAutoRestake } from "secretjs";
+import { MsgSetAutoRestake, BroadcastMode } from "secretjs";
 import { SECRET_LCD } from "shared/utils/config";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -114,6 +114,7 @@ export function Restake() {
               gasLimit: 100_000,
               gasPriceInFeeDenom: 0.25,
               feeDenom: "uscrt",
+              broadcastMode: BroadcastMode.Sync,
             }
           )
           .catch((error: any) => {

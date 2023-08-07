@@ -23,6 +23,7 @@ import {
   toBase64,
   TxResponse,
   toUtf8,
+  BroadcastMode,
 } from "secretjs";
 import {
   chains,
@@ -479,9 +480,14 @@ function Deposit() {
         },
       };
 
-      const sourceOfflineSigner = (
-        window as any
-      ).wallet.getOfflineSignerOnlyAmino(chain_id);
+      let sourceOfflineSigner;
+      if (selectedSource.chain_name === "Composable") {
+        sourceOfflineSigner = (window as any).wallet.getOfflineSigner(chain_id);
+      } else {
+        sourceOfflineSigner = (window as any).wallet.getOfflineSignerOnlyAmino(
+          chain_id
+        );
+      }
       const depositFromAccounts = await sourceOfflineSigner.getAccounts();
       setSourceAddress(depositFromAccounts[0].address);
 
@@ -615,6 +621,7 @@ function Deposit() {
                   resolveResponsesCheckIntervalMs: 10_000,
                   resolveResponsesTimeoutMs: 12 * 60 * 1000,
                 },
+                broadcastMode: BroadcastMode.Sync,
               }
             );
           } else if (
@@ -654,6 +661,7 @@ function Deposit() {
                   resolveResponsesCheckIntervalMs: 10_000,
                   resolveResponsesTimeoutMs: 10.25 * 60 * 1000,
                 },
+                broadcastMode: BroadcastMode.Sync,
               }
             );
           } else {
@@ -922,6 +930,7 @@ function Deposit() {
                   resolveResponsesCheckIntervalMs: 10_000,
                   resolveResponsesTimeoutMs: 12 * 60 * 1000,
                 },
+                broadcastMode: BroadcastMode.Sync,
               }
             );
           } else if (
@@ -963,7 +972,7 @@ function Deposit() {
                 },
               },
               {
-                gasLimit: 300_000,
+                gasLimit: withdraw_gas,
                 gasPriceInFeeDenom: 0.1,
                 feeDenom: "uscrt",
                 feeGranter: feeGrantStatus === "Success" ? faucetAddress : "",
@@ -972,6 +981,7 @@ function Deposit() {
                   resolveResponsesCheckIntervalMs: 10_000,
                   resolveResponsesTimeoutMs: 12 * 60 * 1000,
                 },
+                broadcastMode: BroadcastMode.Sync,
               }
             );
           } else {
@@ -1004,6 +1014,7 @@ function Deposit() {
                   resolveResponsesCheckIntervalMs: 10_000,
                   resolveResponsesTimeoutMs: 12 * 60 * 1000,
                 },
+                broadcastMode: BroadcastMode.Sync,
               }
             );
           }

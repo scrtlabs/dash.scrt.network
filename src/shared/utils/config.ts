@@ -916,7 +916,7 @@ export const tokens: Token[] = [
               incomingPortId: "transfer",
             },
           ],
-          "ibc/3CC19CEC7E5A3E90E78A5A9ECC5A0E2F8F826A375CF1E096F4515CF09DA3E366"
+          "transfer/channel-2/transfer/channel-15/79228162514264337593543950342"
         ),
       },
     ],
@@ -1236,7 +1236,7 @@ export const tokens: Token[] = [
               incomingPortId: "transfer",
             },
           ],
-          "ibc/EE9046745AEC0E8302CB7ED9D5AD67F528FB3B7AE044B247FB0FB293DBDA35E9"
+          "transfer/channel-2/4"
         ),
       },
     ],
@@ -1694,6 +1694,15 @@ export const snips: Token[] = [
     coingecko_id: "shade-protocol",
     deposits: [
       {
+        chain_name: "Composable",
+        from_denom: ibcDenom(
+          [{ incomingChannelId: "channel-26", incomingPortId: "transfer" }],
+          "cw20:secret153wu605vvp934xhd4k9dtd640zsep5jkesstdm"
+        ),
+        channel_id: "channel-26",
+        gas: 300_000,
+      },
+      {
         chain_name: "Osmosis",
         from_denom: ibcDenom(
           [{ incomingChannelId: "channel-476", incomingPortId: "transfer" }],
@@ -1722,6 +1731,12 @@ export const snips: Token[] = [
       },
     ],
     withdrawals: [
+      {
+        chain_name: "Composable",
+        from_denom: "secret153wu605vvp934xhd4k9dtd640zsep5jkesstdm",
+        channel_id: "channel-83",
+        gas: 350_000,
+      },
       {
         chain_name: "Osmosis",
         from_denom: "secret153wu605vvp934xhd4k9dtd640zsep5jkesstdm",
@@ -1871,6 +1886,15 @@ export const snips: Token[] = [
     coingecko_id: "",
     deposits: [
       {
+        chain_name: "Composable",
+        from_denom: ibcDenom(
+          [{ incomingChannelId: "channel-26", incomingPortId: "transfer" }],
+          "cw20:secret1fl449muk5yq8dlad7a22nje4p5d2pnsgymhjfd"
+        ),
+        channel_id: "channel-26",
+        gas: 300_000,
+      },
+      {
         chain_name: "Osmosis",
         from_denom: ibcDenom(
           [{ incomingChannelId: "channel-476", incomingPortId: "transfer" }],
@@ -1899,6 +1923,12 @@ export const snips: Token[] = [
       },
     ],
     withdrawals: [
+      {
+        chain_name: "Composable",
+        from_denom: "secret1fl449muk5yq8dlad7a22nje4p5d2pnsgymhjfd",
+        channel_id: "channel-83",
+        gas: 350_000,
+      },
       {
         chain_name: "Osmosis",
         from_denom: "secret1fl449muk5yq8dlad7a22nje4p5d2pnsgymhjfd",
