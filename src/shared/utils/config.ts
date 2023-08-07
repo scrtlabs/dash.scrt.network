@@ -916,7 +916,7 @@ export const tokens: Token[] = [
               incomingPortId: "transfer",
             },
           ],
-          "ibc/3CC19CEC7E5A3E90E78A5A9ECC5A0E2F8F826A375CF1E096F4515CF09DA3E366"
+          "transfer/channel-2/transfer/channel-15/79228162514264337593543950342"
         ),
       },
     ],
@@ -1236,7 +1236,7 @@ export const tokens: Token[] = [
               incomingPortId: "transfer",
             },
           ],
-          "ibc/EE9046745AEC0E8302CB7ED9D5AD67F528FB3B7AE044B247FB0FB293DBDA35E9"
+          "transfer/channel-2/4"
         ),
       },
     ],
