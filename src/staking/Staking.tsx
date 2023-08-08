@@ -509,7 +509,7 @@ export const Staking = () => {
         </div>
 
         <div className="italic text-center mt-4 px-4 text-sm">
-          Result order is randomized.
+          Validator order is randomized.
           <Tooltip
             title={
               "To promote decentralization, all validators are ordered randomly."
