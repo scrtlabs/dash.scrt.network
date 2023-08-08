@@ -8,6 +8,8 @@ import { SECRET_LCD, SECRET_CHAIN_ID } from "shared/utils/config";
 import CopyToClipboard from "react-copy-to-clipboard";
 import { toast } from "react-toastify";
 import { faCopy } from "@fortawesome/free-solid-svg-icons";
+import Tooltip from "@mui/material/Tooltip";
+import { chains } from "shared/utils/config";
 import {
   SecretNetworkClient,
   validatorAddressToSelfDelegatorAddress,
@@ -141,11 +143,11 @@ const ValidatorModal = (props: IValidatorModalProps) => {
     <>
       {/* Outer */}
       <div
-        className="fixed top-0 left-0 right-0 bottom-0 bg-black/80 z-50"
+        className="fixed top-0 left-0 right-0 bottom-0 bg-black/80 z-50 flex justify-center items-center"
         onClick={props.onClose}
       >
         {/* Inner */}
-        <div className="absolute top-[5%] w-full onEnter_fadeInDown">
+        <div className="absolute top-[5%] w-[60vw] onEnter_fadeInDown flex center">
           <div className="mx-auto max-w-4xl px-4">
             <div
               className="bg-neutral-900 p-8 rounded-2xl"
@@ -275,10 +277,16 @@ const ValidatorModal = (props: IValidatorModalProps) => {
                       <div className="col-span-12 sm:col-span-6 flex flex-col gap-0.5 text-neutral-400 dark:text-neutral-500 font-semibold">
                         <div className="text-xs">Identity</div>
                         <div className="text-sm">
-                          {`${props.selectedValidator?.description?.identity} `}
-                          <button className="text-neutral-500 enabled:hover:text-white enabled:active:text-neutral-500 transition-colors">
-                            <FontAwesomeIcon icon={faCopy} />
-                          </button>
+                          {`${props.selectedValidator?.description?.identity}  `}
+                          <Tooltip
+                            title={"Copy to clipboard"}
+                            placement="bottom"
+                            arrow
+                          >
+                            <button className="text-neutral-500 enabled:hover:text-white enabled:active:text-neutral-500 transition-colors">
+                              <FontAwesomeIcon icon={faCopy} />
+                            </button>
+                          </Tooltip>
                         </div>
                       </div>
                     </CopyToClipboard>
@@ -298,10 +306,16 @@ const ValidatorModal = (props: IValidatorModalProps) => {
                       <div className="col-span-12 sm:col-span-6 flex flex-col gap-0.5 text-neutral-400 dark:text-neutral-500 font-semibold">
                         <div className="text-xs">Contact</div>
                         <div className="text-sm">
-                          {`${props.selectedValidator?.description?.security_contact} `}
-                          <button className="text-neutral-500 enabled:hover:text-white enabled:active:text-neutral-500 transition-colors">
-                            <FontAwesomeIcon icon={faCopy} />
-                          </button>
+                          {`${props.selectedValidator?.description?.security_contact}  `}
+                          <Tooltip
+                            title={"Copy to clipboard"}
+                            placement="bottom"
+                            arrow
+                          >
+                            <button className="text-neutral-500 enabled:hover:text-white enabled:active:text-neutral-500 transition-colors">
+                              <FontAwesomeIcon icon={faCopy} />
+                            </button>
+                          </Tooltip>
                         </div>
                       </div>
                     </CopyToClipboard>
@@ -318,7 +332,7 @@ const ValidatorModal = (props: IValidatorModalProps) => {
                       )} SCRT`}
                     </div>
                   </div>
-                  {/* Fourth Item */}
+                  {/*
                   <div className="col-span-12 sm:col-span-6 flex flex-col gap-0.5">
                     <div className="text-neutral-400 dark:text-neutral-500 text-xs font-semibold">
                       Minimum Self Delegation
@@ -326,22 +340,64 @@ const ValidatorModal = (props: IValidatorModalProps) => {
                     <div className="text-neutral-400 dark:text-neutral-500 text-sm font-semibold">
                       {`${props.selectedValidator?.min_self_delegation} SCRT`}
                     </div>
+                  </div>*/}
+                  {/* Fourth Item */}
+
+                  <div className="col-span-12 sm:col-span-6 flex flex-col gap-0.5">
+                    <div className="text-neutral-400 dark:text-neutral-500 text-xs font-semibold">
+                      Self Delegation
+                    </div>
+                    <div className="text-neutral-400 dark:text-neutral-500 text-sm font-semibold">
+                      {" "}
+                      {validatorSelfDelegation &&
+                        `${formatNumber(
+                          validatorSelfDelegation / 1e6,
+                          2
+                        )} SCRT`}{" "}
+                      {!validatorSelfDelegation && (
+                        <div className="animate-pulse">
+                          <div className="bg-neutral-700/40 rounded col-span-2 w-16 h-8"></div>
+                        </div>
+                      )}
+                    </div>
                   </div>
                   {/* Fifth Item */}
-                  {validatorSelfDelegation && (
-                    <div className="col-span-12 sm:col-span-6 flex flex-col gap-0.5">
-                      <div className="text-neutral-400 dark:text-neutral-500 text-xs font-semibold">
-                        Self Delegation
-                      </div>
-                      <div className="text-neutral-400 dark:text-neutral-500 text-sm font-semibold">{`${formatNumber(
-                        validatorSelfDelegation / 1e6,
-                        2
-                      )} SCRT`}</div>
-                    </div>
-                  )}
-                  {/* Sixth Item */}
                   <CopyToClipboard
                     text={props.selectedValidator?.operator_address}
+                    onCopy={() => {
+                      toast.success("Operator address copied to clipboard!");
+                    }}
+                  >
+                    <div className="col-span-12 sm:col-span-6 flex flex-col gap-0.5">
+                      <div className="text-neutral-400 dark:text-neutral-500 text-xs font-semibold">
+                        Operator Address
+                      </div>
+                      <div className="text-neutral-400 dark:text-neutral-500 text-sm font-semibold">
+                        {`${
+                          props.selectedValidator?.operator_address.slice(
+                            0,
+                            15
+                          ) +
+                          "..." +
+                          props.selectedValidator?.operator_address.slice(-15)
+                        } `}
+                        <Tooltip
+                          title={"Copy to clipboard"}
+                          placement="bottom"
+                          arrow
+                        >
+                          <button className="text-neutral-500 enabled:hover:text-white enabled:active:text-neutral-500 transition-colors">
+                            <FontAwesomeIcon icon={faCopy} />
+                          </button>
+                        </Tooltip>
+                      </div>
+                    </div>
+                  </CopyToClipboard>
+                  {/* Sixth Item */}
+                  <CopyToClipboard
+                    text={validatorAddressToSelfDelegatorAddress(
+                      props.selectedValidator?.operator_address
+                    )}
                     onCopy={() => {
                       toast.success("Validator address copied to clipboard!");
                     }}
@@ -350,45 +406,40 @@ const ValidatorModal = (props: IValidatorModalProps) => {
                       <div className="text-neutral-400 dark:text-neutral-500 text-xs font-semibold">
                         Validator Address
                       </div>
+
                       <div className="text-neutral-400 dark:text-neutral-500 text-sm font-semibold">
-                        {`${
-                          props.selectedValidator?.operator_address.slice(
-                            0,
-                            19
-                          ) +
-                          "..." +
-                          props.selectedValidator?.operator_address.slice(-19)
-                        } `}
-                        <button className="text-neutral-500 enabled:hover:text-white enabled:active:text-neutral-500 transition-colors">
-                          <FontAwesomeIcon icon={faCopy} />
-                        </button>
+                        <a
+                          href={`${
+                            chains["Secret Network"].explorer_account
+                          }${validatorAddressToSelfDelegatorAddress(
+                            props.selectedValidator?.operator_address
+                          )}`}
+                          target="_blank"
+                        >
+                          {`${
+                            validatorAddressToSelfDelegatorAddress(
+                              props.selectedValidator?.operator_address
+                            ).slice(0, 15) +
+                            "..." +
+                            validatorAddressToSelfDelegatorAddress(
+                              props.selectedValidator?.operator_address
+                            ).slice(-15)
+                          } `}
+                        </a>
+                        <Tooltip
+                          title={"Copy to clipboard"}
+                          placement="bottom"
+                          arrow
+                        >
+                          <button className="text-neutral-500 enabled:hover:text-white enabled:active:text-neutral-500 transition-colors">
+                            <FontAwesomeIcon icon={faCopy} />
+                          </button>
+                        </Tooltip>
                       </div>
                     </div>
                   </CopyToClipboard>
                 </div>
-                {/* Seventh Item */}
-                <CopyToClipboard
-                  text={props.selectedValidator?.operator_address}
-                  onCopy={() => {
-                    toast.success("Validator address copied to clipboard!");
-                  }}
-                >
-                  <div className="col-span-12 sm:col-span-6 flex flex-col gap-0.5">
-                    <div className="text-neutral-400 dark:text-neutral-500 text-xs font-semibold">
-                      Validator Address
-                    </div>
-                    <div className="text-neutral-400 dark:text-neutral-500 text-sm font-semibold">
-                      {`${
-                        props.selectedValidator?.operator_address.slice(0, 19) +
-                        "..." +
-                        props.selectedValidator?.operator_address.slice(-19)
-                      } `}
-                      <button className="text-neutral-500 enabled:hover:text-white enabled:active:text-neutral-500 transition-colors">
-                        <FontAwesomeIcon icon={faCopy} />
-                      </button>
-                    </div>
-                  </div>
-                </CopyToClipboard>
+
                 {/* Highlighted Box */}
                 {props.delegatorDelegations?.find(
                   (delegatorDelegation: any) =>

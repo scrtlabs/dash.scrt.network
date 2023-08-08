@@ -350,7 +350,6 @@ export const Staking = () => {
       {/* Title */}
       <Title title={"Staking"} />
 
-      {/* TODO: Check if user has SCRT */}
       {secretjs && secretAddress && SCRTBalance === 0 ? (
         <NoScrtWarning />
       ) : null}
