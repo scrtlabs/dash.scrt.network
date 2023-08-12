@@ -1,12 +1,15 @@
 import BigNumber from "bignumber.js";
 import React, { useContext, useEffect, useState } from "react";
+import { APIContext } from "shared/context/APIContext";
 import { SecretjsContext } from "shared/context/SecretjsContext";
+import { usdString } from "shared/utils/commons";
 import { StakingContext } from "staking/Staking";
 
 function StakingForm() {
   const {} = useContext(StakingContext);
   const { secretjs, secretAddress, SCRTBalance, SCRTToken } =
     useContext(SecretjsContext);
+  const { currentPrice } = useContext(APIContext);
 
   const [amountString, setAmountString] = useState<string>("");
   const [amountInDollarString, setAmountInDollarString] = useState<string>("");
@@ -16,7 +19,7 @@ function StakingForm() {
   };
 
   useEffect(() => {
-    setAmountInDollarString(amountString); // TODO: replace value with USD
+    setAmountInDollarString("$0.00");
   }, [amountString]);
 
   const handleSetMaxVal = () => {
@@ -66,8 +69,8 @@ function StakingForm() {
             disabled={!secretjs || !secretAddress}
           />
         </div>
-        <div className="mt-2 ml-2 text-sm">
-          {`\$ ${amountInDollarString || "-"}`}
+        <div className="mt-2 ml-2 text-sm text-center sm:text-left">
+          {amountInDollarString !== "$NaN" ? amountInDollarString : "$ -"}
         </div>
       </div>
 
