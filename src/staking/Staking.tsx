@@ -585,21 +585,25 @@ export const Staking = () => {
             ))}
           </div>
 
-          <div className="italic text-center mt-4 px-4 text-sm">
-            Validator order is randomized.
-            <Tooltip
-              title={
-                "To promote decentralization, all validators are ordered randomly."
-              }
-              placement="right"
-              arrow
-            >
-              <FontAwesomeIcon
-                icon={faInfoCircle}
-                className="ml-2 text-neutral-400"
-              />
-            </Tooltip>
-          </div>
+          {validators ? (
+            <>
+              <div className="italic text-center mt-4 px-4 text-sm">
+                Validator order is randomized.
+                <Tooltip
+                  title={
+                    "To promote decentralization, all validators are ordered randomly."
+                  }
+                  placement="right"
+                  arrow
+                >
+                  <FontAwesomeIcon
+                    icon={faInfoCircle}
+                    className="ml-2 text-neutral-400"
+                  />
+                </Tooltip>
+              </div>
+            </>
+          ) : null}
         </div>
       </>
     </StakingContext.Provider>
