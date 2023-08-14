@@ -71,7 +71,7 @@ export const DefaultLayout = ({ children }: any) => {
         <main className="flex flex-col min-h-screen flex-1 lg:ml-[17rem]">
           {/* Info Box */}
           <div className="bg-orange-500 dark:bg-orange-600 px-4 py-1.5 text-sm text-center">
-            <b>
+            {/* <b>
               <a
                 href="https://scrt.network/blog/secret-surge"
                 target="_blank"
@@ -83,7 +83,14 @@ export const DefaultLayout = ({ children }: any) => {
               ⚡️ is LIVE
             </b>
             , bringing up to <b>$4 MILLION in rewards</b> to Secret DeFi dApps!{" "}
-            {" ⚡️"}
+            {" ⚡️"} */}
+
+            <b>
+              Please be aware that the Secret mainnet will be performing an
+              upgrade at ~1700 UTC August 14th - The network/dashboard might be
+              out of service for the time during and up to 2 hours after the
+              upgrade.
+            </b>
           </div>
 
           <div className="flex-1">
