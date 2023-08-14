@@ -226,7 +226,7 @@ export function Dashboard() {
       const F = parseFloat(secretFoundationTax); // foundation tax
       const C = 0.0; // validator commision rate; median is 5%
       const T = parseFloat(communityTax); // community tax
-      const R = bondedToken / totalSupply; // bonded ratio
+      const R = bondedToken / (bondedToken + notBondedToken); // bonded ratio
       setBondedRatio(R * 100);
       const APR = (I / R) * 100;
       const realYield = (I / R) * (1 - F - T) * (1 - C) * 100;
