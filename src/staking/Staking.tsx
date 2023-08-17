@@ -1,6 +1,8 @@
 import {
   faInfoCircle,
   faMagnifyingGlass,
+  faXmarkCircle,
+  faCheckCircle,
 } from "@fortawesome/free-solid-svg-icons";
 import { toast } from "react-toastify";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -21,6 +23,7 @@ import Select from "react-select";
 import Title from "./components/Title";
 import { useSearchParams } from "react-router-dom";
 import { Nullable } from "shared/types/Nullable";
+import BigNumber from "bignumber.js";
 
 // dummy interface for better code readability
 interface IValidator {
@@ -40,7 +43,8 @@ export const Staking = () => {
 
   const viewUrlParam = searchParams.get("view"); // "undelegate" | "redelegate" | "delegate"
 
-  const { secretjs, secretAddress, SCRTBalance } = useContext(SecretjsContext);
+  const { secretjs, secretAddress, SCRTBalance, SCRTToken } =
+    useContext(SecretjsContext);
 
   const [validators, setValidators] = useState<IValidator[]>(null);
 
@@ -131,6 +135,11 @@ export const Staking = () => {
           });
         setRestakeEntries(validators);
         setDelegatorDelegations(delegation_responses);
+        console.log(
+          await secretjs.query.distribution.delegationTotalRewards({
+            delegator_address: secretAddress,
+          })
+        );
       }
     };
     fetchDelegatorValidators();
@@ -436,7 +445,65 @@ export const Staking = () => {
         {delegatorDelegations?.length != 0 && validators && (
           <div className="my-validators mb-20 max-w-6xl mx-auto">
             <div className="font-bold text-lg mb-4 px-4">My Validators</div>
-
+            <div className="px-4 pb-2">
+              <div className="staked-amount">
+                <div>
+                  <span className="font-semibold">
+                    {" "}
+                    Total amount staked:{" "}
+                    {delegatorDelegations
+                      ?.reduce((sum, delegation) => {
+                        const amount = new BigNumber(
+                          delegation?.balance?.amount || 0
+                        );
+                        return sum.plus(amount);
+                      }, new BigNumber(0))
+                      .dividedBy(`1e${SCRTToken.decimals}`)
+                      .toFormat()}
+                  </span>
+                  <span className="text-sm font-semibold text-neutral-400">
+                    {" "}
+                    SCRT
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div className="my-validators flex flex-col px-4">
+              {delegatorDelegations?.map((delegation: any, i: any) => (
+                <MyValidatorsItem
+                  name={
+                    validators.find(
+                      (validator: any) =>
+                        validator.operator_address ==
+                        delegation.delegation.validator_address
+                    )?.description?.moniker
+                  }
+                  commissionPercentage={
+                    validators.find(
+                      (validator: any) =>
+                        validator.operator_address ==
+                        delegation.delegation.validator_address
+                    )?.commission.commission_rates?.rate
+                  }
+                  validator={validators.find(
+                    (validator: any) =>
+                      validator.operator_address ==
+                      delegation.delegation.validator_address
+                  )}
+                  identity={
+                    validators.find(
+                      (validator: any) =>
+                        validator.operator_address ==
+                        delegation.delegation.validator_address
+                    )?.description?.identity
+                  }
+                  restakeEntries={restakeEntries}
+                  stakedAmount={delegation?.balance?.amount}
+                  setSelectedValidator={setSelectedValidator}
+                  openModal={setIsValidatorModalOpen}
+                />
+              ))}
+            </div>
             <div className="px-4 pb-2">
               <button
                 onClick={() => enableRestakeForAll()}
@@ -457,44 +524,10 @@ export const Staking = () => {
                 />
               </Tooltip>
             </div>
-            {
-              <div className="my-validators flex flex-col px-4">
-                {delegatorDelegations?.map((delegation: any, i: any) => (
-                  <MyValidatorsItem
-                    name={
-                      validators.find(
-                        (validator: any) =>
-                          validator.operator_address ==
-                          delegation.delegation.validator_address
-                      )?.description?.moniker
-                    }
-                    commissionPercentage={
-                      validators.find(
-                        (validator: any) =>
-                          validator.operator_address ==
-                          delegation.delegation.validator_address
-                      )?.commission.commission_rates?.rate
-                    }
-                    validator={validators.find(
-                      (validator: any) =>
-                        validator.operator_address ==
-                        delegation.delegation.validator_address
-                    )}
-                    identity={
-                      validators.find(
-                        (validator: any) =>
-                          validator.operator_address ==
-                          delegation.delegation.validator_address
-                      )?.description?.identity
-                    }
-                    restakeEntries={restakeEntries}
-                    stakedAmount={delegation?.balance?.amount}
-                    setSelectedValidator={setSelectedValidator}
-                    openModal={setIsValidatorModalOpen}
-                  />
-                ))}
-              </div>
-            }
+            {/* Claim Rewards*/}
+            <div className="px-4 pb-2">
+              <div className="staked-amount"></div>
+            </div>
           </div>
         )}
 

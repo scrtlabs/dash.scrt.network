@@ -212,11 +212,11 @@ export const Validator = (props: IValidatorProps) => {
             </div>
           )}
         </div>
-        <FontAwesomeIcon
+        {/*         <FontAwesomeIcon
           icon={faChevronRight}
           size="sm"
           className="hidden sm:inline-block"
-        />
+        /> */}
       </button>
     </>
   );
