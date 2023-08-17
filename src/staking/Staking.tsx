@@ -433,7 +433,7 @@ export const Staking = () => {
         ) : null}
 
         {/* My Validators */}
-        {delegatorDelegations && validators && (
+        {delegatorDelegations?.length != 0 && validators && (
           <div className="my-validators mb-20 max-w-6xl mx-auto">
             <div className="font-bold text-lg mb-4 px-4">My Validators</div>
 
@@ -480,12 +480,13 @@ export const Staking = () => {
                         validator.operator_address ==
                         delegation.delegation.validator_address
                     )}
-                    identity={validators.find(
-                      (validator: any) =>
-                        validator.operator_address ==
-                        delegation.delegation.validator_address?.description
-                          ?.identity
-                    )}
+                    identity={
+                      validators.find(
+                        (validator: any) =>
+                          validator.operator_address ==
+                          delegation.delegation.validator_address
+                      )?.description?.identity
+                    }
                     restakeEntries={restakeEntries}
                     stakedAmount={delegation?.balance?.amount}
                     setSelectedValidator={setSelectedValidator}

@@ -115,7 +115,7 @@ export const Validator = (props: IValidatorProps) => {
           props.openModal(true);
           props.setSelectedValidator(props.validator);
         }}
-        className={`group flex flex-col sm:flex-row items-center text-left even:bg-white dark:even:bg-neutral-800 py-6 sm:py-2.5 gap-4 pl-4 pr-8 ${
+        className={`group flex flex-col sm:flex-row items-center text-left even:bg-white dark:even:bg-neutral-800 py-8 sm:py-4 gap-4 pl-4 pr-8 ${
           props.validator?.delegator_shares &&
           bondedToken &&
           props.validator?.delegator_shares / 1e6 / bondedToken > maxVPThreshold
@@ -176,28 +176,42 @@ export const Validator = (props: IValidatorProps) => {
             Inactive
           </div>
         )}
-        <div className="voting-power font-semibold">
-          <span className="sm:hidden">Voting Power: </span>
-          <span className="">{votingPowerString}</span>{" "}
-          <span className="text-neutral-400 text-sm">SCRT</span>
-        </div>
-        <div className="commission font-semibold">
-          <span className="sm:hidden">Commission: </span>
-          {formatNumber(props.commissionPercentage * 100, 2)}%
-        </div>
-        {realYield && (
-          <div className="apr font-semibold">
-            <span className="sm:hidden">Yield: </span>
-            {realYield || realYield != 0
-              ? `${formatNumber(realYield, 2)} %`
-              : ""}
+        <div className="flex flex-col items-center">
+          <div className="description text-xs text-gray-500 mb-2">
+            Voting Power
           </div>
-        )}
-        {realYield === undefined && (
-          <div className="animate-pulse">
-            <div className="bg-neutral-300/40 dark:bg-neutral-700/40 rounded col-span-2 w-16 h-7 mx-auto"></div>
+          <div className="voting-power font-semibold">
+            <span className="">{votingPowerString}</span>{" "}
+            <span className="text-neutral-400 text-sm">SCRT</span>
           </div>
-        )}
+        </div>
+        <div className="flex flex-col items-center">
+          <div className="description text-xs text-gray-500 mb-2">
+            Commission
+          </div>
+          <div className="commission font-semibold">
+            <span className="sm:hidden">Commission: </span>
+            {formatNumber(props.commissionPercentage * 100, 2)}%
+          </div>
+        </div>
+        <div className="flex flex-col items-center">
+          <div className="description text-xs text-gray-500 mb-2">
+            Real Yield
+          </div>
+          {realYield && (
+            <div className="apr font-semibold">
+              <span className="sm:hidden">Yield: </span>
+              {realYield || realYield != 0
+                ? `${formatNumber(realYield, 2)} %`
+                : ""}
+            </div>
+          )}
+          {realYield === undefined && (
+            <div className="animate-pulse">
+              <div className="bg-neutral-300/40 dark:bg-neutral-700/40 rounded col-span-2 w-16 h-7 mx-auto"></div>
+            </div>
+          )}
+        </div>
         <FontAwesomeIcon
           icon={faChevronRight}
           size="sm"
