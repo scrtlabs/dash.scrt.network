@@ -182,7 +182,7 @@ export const Validator = (props: IValidatorProps) => {
           </div>
           <div className="voting-power font-semibold">
             <span className="">{votingPowerString}</span>{" "}
-            <span className="text-neutral-400 text-sm">SCRT</span>
+            <span className="text-neutral-400 text-xs">SCRT</span>
           </div>
         </div>
         <div className="flex flex-col items-center">

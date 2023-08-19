@@ -13,6 +13,7 @@ import { APIContext } from "shared/context/APIContext";
 import { usdString } from "shared/utils/commons";
 import BigNumber from "bignumber.js";
 import { formatNumber } from "shared/utils/commons";
+import { ValidatorRestakeStatus } from "../Staking";
 import {
   getWalletViewingKey,
   isViewingKeyAvailable,
@@ -29,6 +30,8 @@ interface IMyValidatorsItemProps {
   restakeEntries: any;
   validator: any;
   openModal: any;
+  restakeChoice: any;
+  setRestakeChoice: any;
 }
 
 const MyValidatorsItem = (props: IMyValidatorsItemProps) => {
@@ -37,6 +40,8 @@ const MyValidatorsItem = (props: IMyValidatorsItemProps) => {
     .toString();
 
   const { currentPrice, setCurrentPrice } = useContext(APIContext);
+
+  const [isAutoRestakeChecked, setIsAutoRestakeChecked] = useState(false);
 
   const [imgUrl, setImgUrl] = useState<any>();
 
@@ -66,6 +71,15 @@ const MyValidatorsItem = (props: IMyValidatorsItemProps) => {
     }
   }, [props.identity, identityRef]);
 
+  useEffect(() => {
+    setIsAutoRestakeChecked(
+      props.restakeEntries.find(
+        (validatorAddress: string) =>
+          props.validator.operator_address === validatorAddress
+      )
+    );
+  }, [props.restakeEntries]);
+
   return (
     <>
       {/* Item */}
@@ -78,7 +92,39 @@ const MyValidatorsItem = (props: IMyValidatorsItemProps) => {
       >
         {/* Checkbox */}
         <div className="">
-          <input type="checkbox" />
+          <input
+            type="checkbox"
+            checked={isAutoRestakeChecked}
+            onChange={(event) => {
+              const isChecked = event.target.checked;
+              setIsAutoRestakeChecked(isChecked);
+              const existingEntry = props.restakeChoice?.find(
+                (item: any) =>
+                  item.validator_address === props.validator.operator_address
+              );
+
+              if (existingEntry) {
+                props.setRestakeChoice((prevChoices: any) =>
+                  prevChoices.map((item: any) =>
+                    item.validator_address === props.validator.operator_address
+                      ? { ...item, autoRestake: isChecked }
+                      : item
+                  )
+                );
+              } else {
+                props.setRestakeChoice((prevChoices: any) => [
+                  ...prevChoices,
+                  {
+                    validator_address: props.validator.operator_address,
+                    autoRestake: isChecked,
+                  },
+                ]);
+              }
+            }}
+            onClick={(event) => {
+              event.stopPropagation();
+            }}
+          />
         </div>
         {/* Auto Restake */}
         <div className="auto-restake">
