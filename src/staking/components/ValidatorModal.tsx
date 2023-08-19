@@ -615,6 +615,13 @@ const ValidatorModal = (props: IValidatorModalProps) => {
                     <>
                       <div className="col-span-12">
                         <StakingForm />
+                        {view !== null && (
+                          <div className="col-span-12 md:col-span-6">
+                            <div className="bg-white/5 rounded-xl px-4 py-8 mt-4 text-center sm:text-left">
+                              <FeeGrant />
+                            </div>
+                          </div>
+                        )}
                       </div>
                     </>
                   ) : null}

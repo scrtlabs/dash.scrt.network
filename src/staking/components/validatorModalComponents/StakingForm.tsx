@@ -2,13 +2,13 @@ import BigNumber from "bignumber.js";
 import React, { useContext, useEffect, useState } from "react";
 import { APIContext } from "shared/context/APIContext";
 import { SecretjsContext } from "shared/context/SecretjsContext";
-import { formatNumber, usdString } from "shared/utils/commons";
+import { formatNumber, usdString, faucetAddress } from "shared/utils/commons";
 import { StakingContext } from "staking/Staking";
 import { toast } from "react-toastify";
 
 function StakingForm() {
   const { selectedValidator } = useContext(StakingContext);
-  const { secretjs, secretAddress, SCRTBalance, SCRTToken } =
+  const { secretjs, secretAddress, SCRTBalance, SCRTToken, feeGrantStatus } =
     useContext(SecretjsContext);
   const { currentPrice } = useContext(APIContext);
 
@@ -50,6 +50,7 @@ function StakingForm() {
               gasLimit: 100_000,
               gasPriceInFeeDenom: 0.25,
               feeDenom: "uscrt",
+              feeGranter: feeGrantStatus === "Success" ? faucetAddress : "",
             }
           )
           .catch((error: any) => {

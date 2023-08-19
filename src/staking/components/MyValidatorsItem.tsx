@@ -213,7 +213,7 @@ const MyValidatorsItem = (props: IMyValidatorsItemProps) => {
           <div className="staked-amount">
             <div>
               <span className="font-semibold">{stakedAmountString}</span>
-              <span className="text-sm font-semibold text-neutral-400">
+              <span className="text-xs font-semibold text-neutral-400">
                 {" "}
                 SCRT
               </span>
