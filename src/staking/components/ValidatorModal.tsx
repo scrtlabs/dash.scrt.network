@@ -540,34 +540,32 @@ const ValidatorModal = (props: IValidatorModalProps) => {
                     </>
                   ) : null}
 
+                  {/* Available to Stake */}
+                  <div className="col-span-12 md:col-span-6">
+                    <div className="bg-white/5 rounded-xl px-4 py-8 mt-4 text-center sm:text-left">
+                      <div className="font-bold mb-2">Available to Stake</div>
+                      <div className="font-semibold">
+                        {new BigNumber(SCRTBalance!)
+                          .dividedBy(`1e${SCRTToken.decimals}`)
+                          .toFormat()}
+                        <span className="text-neutral-400 text-xs">{` SCRT`}</span>
+                      </div>
+                      <div className="font-semibold text-neutral-400 mt-0.5 text-sm">
+                        {usdString.format(
+                          new BigNumber(SCRTBalance!)
+                            .dividedBy(`1e${SCRTToken.decimals}`)
+                            .toNumber()
+                        )}
+                      </div>
+                    </div>
+                  </div>
+
                   {props.delegatorDelegations?.find(
                     (delegatorDelegation: any) =>
                       selectedValidator?.operator_address ==
                       delegatorDelegation.delegation.validator_address
                   ) ? (
                     <>
-                      {/* Available to Stake */}
-                      <div className="col-span-12 md:col-span-6">
-                        <div className="bg-white/5 rounded-xl px-4 py-8 mt-4 text-center sm:text-left">
-                          <div className="font-bold mb-2">
-                            Available to Stake
-                          </div>
-                          <div className="font-semibold">
-                            {new BigNumber(SCRTBalance!)
-                              .dividedBy(`1e${SCRTToken.decimals}`)
-                              .toFormat()}
-                            <span className="text-neutral-400">{` SCRT`}</span>
-                          </div>
-                          <div className="font-semibold text-neutral-400 mt-0.5 text-sm">
-                            {usdString.format(
-                              new BigNumber(SCRTBalance!)
-                                .dividedBy(`1e${SCRTToken.decimals}`)
-                                .toNumber()
-                            )}
-                          </div>
-                        </div>
-                      </div>
-
                       {/* Your Delegation */}
                       <div className="col-span-12 md:col-span-6">
                         <div className="bg-white/5 rounded-xl px-4 py-8 mt-4 text-center sm:text-left">
@@ -578,7 +576,7 @@ const ValidatorModal = (props: IValidatorModalProps) => {
                                 selectedValidator?.operator_address ==
                                 delegatorDelegation.delegation.validator_address
                             )?.balance?.amount / 1e6}
-                            <span className="text-neutral-400">{` SCRT`}</span>
+                            <span className="text-neutral-400 text-xs">{` SCRT`}</span>
                           </div>
                           <div className="font-semibold text-neutral-400 mt-0.5 text-sm">
                             {usdString.format(
@@ -598,7 +596,20 @@ const ValidatorModal = (props: IValidatorModalProps) => {
                         </div>
                       </div>
                     </>
-                  ) : null}
+                  ) : (
+                    <>
+                      {/* Your Delegation */}
+                      <div className="col-span-12 md:col-span-6">
+                        <div className="bg-white/5 rounded-xl px-4 py-8 mt-4 text-center sm:text-left">
+                          <div className="font-bold mb-2">Your Delegation</div>
+                          <div className="font-semibold">
+                            {0}
+                            <span className="text-neutral-400 text-xs">{` SCRT`}</span>
+                          </div>
+                        </div>
+                      </div>
+                    </>
+                  )}
 
                   {view === "delegate" ? (
                     <>

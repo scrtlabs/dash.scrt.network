@@ -18,7 +18,11 @@ import { SecretjsContext } from "shared/context/SecretjsContext";
 import NoScrtWarning from "./components/NoScrtWarning";
 import ValidatorModal from "./components/ValidatorModal";
 import { SECRET_LCD, SECRET_CHAIN_ID } from "shared/utils/config";
-import { SecretNetworkClient, MsgSetAutoRestake } from "secretjs";
+import {
+  SecretNetworkClient,
+  MsgSetAutoRestake,
+  MsgWithdrawDelegationReward,
+} from "secretjs";
 import Select from "react-select";
 import Title from "./components/Title";
 import { useSearchParams } from "react-router-dom";
@@ -312,6 +316,71 @@ export const Staking = () => {
     submit();
   }
 
+  function claimRewards() {
+    async function submit() {
+      if (!secretjs || !secretAddress) return;
+
+      try {
+        const toastId = toast.loading(`Claiming Staking Rewards`);
+        console.log(delegatorDelegations);
+        const txs = delegatorDelegations.map((delegation: any) => {
+          console.log(delegation);
+          return new MsgWithdrawDelegationReward({
+            delegator_address: secretAddress,
+            validator_address: delegation?.delegation?.validator_address,
+          });
+        });
+
+        await secretjs.tx
+          .broadcast(txs, {
+            gasLimit: 100_000 * txs.length,
+            gasPriceInFeeDenom: 0.25,
+            feeDenom: "uscrt",
+          })
+          .catch((error: any) => {
+            console.error(error);
+            if (error?.tx?.rawLog) {
+              toast.update(toastId, {
+                render: `Claiming staking rewards failed: ${error.tx.rawLog}`,
+                type: "error",
+                isLoading: false,
+                closeOnClick: true,
+              });
+            } else {
+              toast.update(toastId, {
+                render: `Claiming staking rewards failed: ${error.message}`,
+                type: "error",
+                isLoading: false,
+                closeOnClick: true,
+              });
+            }
+          })
+          .then((tx: any) => {
+            console.log(tx);
+            if (tx) {
+              if (tx.code === 0) {
+                toast.update(toastId, {
+                  render: `Claiming staking rewards successful`,
+                  type: "success",
+                  isLoading: false,
+                  closeOnClick: true,
+                });
+              } else {
+                toast.update(toastId, {
+                  render: `Claiming staking rewards failed: ${tx.rawLog}`,
+                  type: "error",
+                  isLoading: false,
+                  closeOnClick: true,
+                });
+              }
+            }
+          });
+      } finally {
+      }
+    }
+    submit();
+  }
+
   const providerValue = {
     selectedValidator,
     setSelectedValidator,
@@ -447,6 +516,22 @@ export const Staking = () => {
                       {" "}
                       SCRT
                     </span>
+                    <button
+                      onClick={() => claimRewards()}
+                      className="text-medium disabled:bg-neutral-600 enabled:bg-green-600 enabled:hover:bg-green-700 disabled:text-neutral-400 enabled:text-white transition-colors font-semibold px-2 py-2 text-sm rounded-md"
+                    >
+                      Claim Rewards
+                    </button>
+                    <Tooltip
+                      title={"Claim your staking rewards"}
+                      placement="right"
+                      arrow
+                    >
+                      <FontAwesomeIcon
+                        icon={faInfoCircle}
+                        className="ml-2 text-neutral-400"
+                      />
+                    </Tooltip>
                   </div>
                 )}
               </div>
