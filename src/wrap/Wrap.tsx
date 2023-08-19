@@ -246,7 +246,7 @@ export function Wrap() {
       ) {
         potentialInput = potentialInput - 0.05;
       }
-      if (Number(potentialInput) == 0) {
+      if (Number(potentialInput) < 0) {
         setAmountString("");
       } else {
         setAmountString(potentialInput.toFixed(selectedToken.decimals));
