@@ -2,11 +2,12 @@ import BigNumber from "bignumber.js";
 import React, { useContext, useEffect, useState } from "react";
 import { APIContext } from "shared/context/APIContext";
 import { SecretjsContext } from "shared/context/SecretjsContext";
-import { usdString } from "shared/utils/commons";
+import { formatNumber, usdString } from "shared/utils/commons";
 import { StakingContext } from "staking/Staking";
+import { toast } from "react-toastify";
 
 function StakingForm() {
-  const {} = useContext(StakingContext);
+  const { selectedValidator } = useContext(StakingContext);
   const { secretjs, secretAddress, SCRTBalance, SCRTToken } =
     useContext(SecretjsContext);
   const { currentPrice } = useContext(APIContext);
@@ -19,7 +20,10 @@ function StakingForm() {
   };
 
   useEffect(() => {
-    setAmountInDollarString("$0.00");
+    const scrtBalanceUsdString = usdString.format(
+      new BigNumber(amountString!).multipliedBy(Number(currentPrice)).toNumber()
+    );
+    setAmountInDollarString(scrtBalanceUsdString);
   }, [amountString]);
 
   const handleSetMaxVal = () => {
@@ -34,7 +38,77 @@ function StakingForm() {
   };
 
   const handleSubmit = () => {
-    alert("TODO!"); // TODO: implement
+    async function submit() {
+      if (!secretjs || !secretAddress) return;
+
+      try {
+        const toastId = toast.loading(
+          `Staking ${amountString} SCRT with validator: ${selectedValidator?.description?.moniker}`
+        );
+        await secretjs.tx.staking
+          .delegate(
+            {
+              delegator_address: secretAddress,
+              validator_address: selectedValidator?.operator_address,
+              amount: {
+                amount: BigNumber(amountString).multipliedBy(
+                  `1e${SCRTToken.decimals}`
+                ),
+                denom: "uscrt",
+              },
+            },
+            {
+              gasLimit: 100_000,
+              gasPriceInFeeDenom: 0.25,
+              feeDenom: "uscrt",
+            }
+          )
+          .catch((error: any) => {
+            console.error(error);
+            if (error?.tx?.rawLog) {
+              toast.update(toastId, {
+                render: `Setting Auto Restaking failed: ${error.tx.rawLog}`,
+                type: "error",
+                isLoading: false,
+                closeOnClick: true,
+              });
+            } else {
+              toast.update(toastId, {
+                render: `Setting Auto Restaking failed: ${error.message}`,
+                type: "error",
+                isLoading: false,
+                closeOnClick: true,
+              });
+            }
+          })
+          .then((tx: any) => {
+            console.log(tx);
+            if (tx) {
+              if (tx.code === 0) {
+                toast.update(toastId, {
+                  render: `Setting Auto Restaking successfully for validators ${validatorObjects
+                    .map((validator: any) => {
+                      return validator?.description?.moniker;
+                    })
+                    .join(", ")}`,
+                  type: "success",
+                  isLoading: false,
+                  closeOnClick: true,
+                });
+              } else {
+                toast.update(toastId, {
+                  render: `Setting Auto Restaking failed: ${tx.rawLog}`,
+                  type: "error",
+                  isLoading: false,
+                  closeOnClick: true,
+                });
+              }
+            }
+          });
+      } finally {
+      }
+    }
+    submit();
   };
 
   return (
