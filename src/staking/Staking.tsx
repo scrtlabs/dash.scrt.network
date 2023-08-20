@@ -34,11 +34,10 @@ export const StakingContext = createContext(null);
 export const Staking = () => {
   // URL params
   const [searchParams, setSearchParams] = useSearchParams();
-  const valUrlParam = searchParams.get("val"); // selected validator
+  const validatorUrlParam = searchParams.get("validator"); // selected validator
+  const viewUrlParam = searchParams.get("view"); // "undelegate" | "redelegate" | "delegate"
 
   const [view, setView] = useState<Nullable<StakingView>>(null);
-
-  const viewUrlParam = searchParams.get("view"); // "undelegate" | "redelegate" | "delegate"
 
   const { secretjs, secretAddress, SCRTBalance } = useContext(SecretjsContext);
 
@@ -78,6 +77,26 @@ export const Staking = () => {
     );
   };
 
+  useEffect(() => {
+    if (
+      validatorUrlParam &&
+      validators &&
+      getValByAddressStringSnippet(validatorUrlParam.toLowerCase())
+    ) {
+      setSelectedValidator(
+        getValByAddressStringSnippet(validatorUrlParam.toLowerCase())
+      );
+    }
+  }, [validatorUrlParam, validators]);
+
+  useEffect(() => {
+    var params = {};
+    if (selectedValidator) {
+      params = { ...params, validator: selectedValidator.operator_address };
+      setSearchParams(params);
+    }
+  }, [selectedValidator]);
+
   function getViewByString(input: String): StakingView {
     input = input.toLowerCase();
     switch (input) {
@@ -106,15 +125,15 @@ export const Staking = () => {
     }
   }, [validators]);
 
-  useEffect(() => {
-    if (valUrlParam && validators && validators.length > 0) {
-      const valByUrlParam: Nullable<IValidator> =
-        getValByAddressStringSnippet(valUrlParam);
-      if (valByUrlParam !== null) {
-        setSelectedValidator(valByUrlParam);
-      }
-    }
-  }, [validators]);
+  // useEffect(() => {
+  //   if (valUrlParam && validators && validators.length > 0) {
+  //     const valByUrlParam: Nullable<IValidator> =
+  //       getValByAddressStringSnippet(valUrlParam);
+  //     if (valByUrlParam !== null) {
+  //       setSelectedValidator(valByUrlParam);
+  //     }
+  //   }
+  // }, [validators, valUrlParam]);
 
   useEffect(() => {
     const fetchDelegatorValidators = async () => {
