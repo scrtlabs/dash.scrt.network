@@ -13,6 +13,13 @@ import { APIContext } from "shared/context/APIContext";
 import { usdString } from "shared/utils/commons";
 import BigNumber from "bignumber.js";
 import { formatNumber } from "shared/utils/commons";
+import { ValidatorRestakeStatus } from "../Staking";
+import {
+  getWalletViewingKey,
+  isViewingKeyAvailable,
+  SecretjsContext,
+  setWalletViewingKey,
+} from "shared/context/SecretjsContext";
 
 interface IMyValidatorsItemProps {
   name: string;
@@ -23,6 +30,8 @@ interface IMyValidatorsItemProps {
   restakeEntries: any;
   validator: any;
   openModal: any;
+  restakeChoice: any;
+  setRestakeChoice: any;
 }
 
 const MyValidatorsItem = (props: IMyValidatorsItemProps) => {
@@ -31,6 +40,8 @@ const MyValidatorsItem = (props: IMyValidatorsItemProps) => {
     .toString();
 
   const { currentPrice, setCurrentPrice } = useContext(APIContext);
+
+  const [isAutoRestakeChecked, setIsAutoRestakeChecked] = useState(false);
 
   const [imgUrl, setImgUrl] = useState<any>();
 
@@ -58,13 +69,16 @@ const MyValidatorsItem = (props: IMyValidatorsItemProps) => {
       setImgUrl(undefined);
       fetchKeybaseImgUrl();
     }
-    console.log(
+  }, [props.identity, identityRef]);
+
+  useEffect(() => {
+    setIsAutoRestakeChecked(
       props.restakeEntries.find(
         (validatorAddress: string) =>
-          props.validator.validator_address === validatorAddress
+          props.validator.operator_address === validatorAddress
       )
     );
-  }, [props.identity, identityRef]);
+  }, [props.restakeEntries]);
 
   return (
     <>
@@ -74,11 +88,43 @@ const MyValidatorsItem = (props: IMyValidatorsItemProps) => {
           props.openModal(true);
           props.setSelectedValidator(props.validator);
         }}
-        className="dark:even:bg-neutral-700 dark:odd:bg-neutral-800 flex items-center text-left dark:hover:bg-neutral-600 py-2.5 gap-4 pl-4 pr-8"
+        className="dark:even:bg-neutral-700 dark:odd:bg-neutral-800 flex items-center text-left dark:hover:bg-neutral-600 py-8 sm:py-4 gap-4 pl-4 pr-8"
       >
         {/* Checkbox */}
         <div className="">
-          <input type="checkbox" />
+          <input
+            type="checkbox"
+            checked={isAutoRestakeChecked}
+            onChange={(event) => {
+              const isChecked = event.target.checked;
+              setIsAutoRestakeChecked(isChecked);
+              const existingEntry = props.restakeChoice?.find(
+                (item: any) =>
+                  item.validator_address === props.validator.operator_address
+              );
+
+              if (existingEntry) {
+                props.setRestakeChoice((prevChoices: any) =>
+                  prevChoices.map((item: any) =>
+                    item.validator_address === props.validator.operator_address
+                      ? { ...item, autoRestake: isChecked }
+                      : item
+                  )
+                );
+              } else {
+                props.setRestakeChoice((prevChoices: any) => [
+                  ...prevChoices,
+                  {
+                    validator_address: props.validator.operator_address,
+                    autoRestake: isChecked,
+                  },
+                ]);
+              }
+            }}
+            onClick={(event) => {
+              event.stopPropagation();
+            }}
+          />
         </div>
         {/* Auto Restake */}
         <div className="auto-restake">
@@ -87,9 +133,12 @@ const MyValidatorsItem = (props: IMyValidatorsItemProps) => {
               props.validator.operator_address === validatorAddress
           ) && (
             <Tooltip title={"Auto restake is enabled"} placement="bottom" arrow>
-              <div className="flex items-center">
+              <div className="flex items-center flex-col">
                 <span className="font-bold text-xs text-green-600">
-                  {"Autorestake enabled"}
+                  Autorestake
+                </span>
+                <span className="font-bold text-xs text-green-600">
+                  enabled
                 </span>
               </div>
             </Tooltip>
@@ -103,10 +152,11 @@ const MyValidatorsItem = (props: IMyValidatorsItemProps) => {
               placement="bottom"
               arrow
             >
-              <div className="flex items-center">
+              <div className="flex items-center flex-col">
                 <span className="font-bold text-xs text-red-600">
-                  {"Autorestake disabled"}
+                  Autorestake
                 </span>
+                <span className="font-bold text-xs text-red-600">disabled</span>
               </div>
             </Tooltip>
           )}
@@ -156,29 +206,39 @@ const MyValidatorsItem = (props: IMyValidatorsItemProps) => {
             Inactive
           </div>
         )}
-        <div className="staked-amount">
-          <div>
-            <span className="font-semibold">{stakedAmountString}</span>
-            <span className="text-sm font-semibold text-neutral-400">
-              {" "}
-              SCRT
-            </span>
+        <div className="flex flex-col items-right">
+          <div className="description text-xs text-gray-500 mb-2 text-right">
+            Your stake
           </div>
-          <div className="text-sm font-semibold text-neutral-400">
+          <div className="staked-amount">
+            <div>
+              <span className="font-semibold">{stakedAmountString}</span>
+              <span className="text-xs font-semibold text-neutral-400">
+                {" "}
+                SCRT
+              </span>
+            </div>
+            {/*           <div className="text-sm font-semibold text-neutral-400">
             {usdString.format(
               new BigNumber(props.stakedAmount!)
                 .dividedBy(`1e6`)
                 .multipliedBy(Number(currentPrice))
                 .toNumber()
             )}
+          </div> */}
           </div>
         </div>
-        <div className="commission font-semibold">
-          {formatNumber(props.commissionPercentage * 100, 2)}%
+        <div className="flex flex-col items-center">
+          <div className="description text-xs text-gray-500 mb-2">
+            Commission
+          </div>
+          <div className="commission font-semibold">
+            {formatNumber(props.commissionPercentage * 100, 2)}%
+          </div>
         </div>
-        <div className="flex items-center font-semibold border-b border-white/0 hover:border-white transition-colors">
+        {/*         <div className="flex items-center font-semibold border-b border-white/0 hover:border-white transition-colors">
           <FontAwesomeIcon icon={faChevronRight} size="sm" className="ml-1" />
-        </div>
+        </div> */}
       </button>
     </>
   );

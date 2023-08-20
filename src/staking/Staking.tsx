@@ -1,6 +1,8 @@
 import {
   faInfoCircle,
   faMagnifyingGlass,
+  faXmarkCircle,
+  faCheckCircle,
 } from "@fortawesome/free-solid-svg-icons";
 import { toast } from "react-toastify";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -9,22 +11,32 @@ import React, { createContext, useContext, useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import MyValidatorsItem from "./components/MyValidatorsItem";
 import { Validator } from "./components/Validator";
-import { shuffleArray } from "shared/utils/commons";
+import { shuffleArray, faucetAddress } from "shared/utils/commons";
 import Tooltip from "@mui/material/Tooltip";
 import "./Staking.scss";
 import { SecretjsContext } from "shared/context/SecretjsContext";
 import NoScrtWarning from "./components/NoScrtWarning";
 import ValidatorModal from "./components/ValidatorModal";
 import { SECRET_LCD, SECRET_CHAIN_ID } from "shared/utils/config";
-import { SecretNetworkClient, MsgSetAutoRestake } from "secretjs";
+import {
+  SecretNetworkClient,
+  MsgSetAutoRestake,
+  MsgWithdrawDelegationReward,
+} from "secretjs";
 import Select from "react-select";
 import Title from "./components/Title";
 import { useSearchParams } from "react-router-dom";
 import { Nullable } from "shared/types/Nullable";
+import BigNumber from "bignumber.js";
 
 // dummy interface for better code readability
-interface IValidator {
+export interface IValidator {
   [prop: string]: any;
+}
+
+export interface ValidatorRestakeStatus {
+  validator_address: string;
+  autoRestake: boolean;
 }
 
 export type StakingView = "delegate" | "redelegate" | "undelegate";
@@ -39,11 +51,23 @@ export const Staking = () => {
 
   const [view, setView] = useState<Nullable<StakingView>>(null);
 
-  const { secretjs, secretAddress, SCRTBalance } = useContext(SecretjsContext);
+  const {
+    secretjs,
+    secretAddress,
+    SCRTBalance,
+    SCRTToken,
+    feeGrantStatus,
+    setFeeGrantStatus,
+    requestFeeGrant,
+  } = useContext(SecretjsContext);
 
   const [validators, setValidators] = useState<IValidator[]>(null);
 
+  //Delegations that a Delegetor has
   const [delegatorDelegations, setDelegatorDelegations] = useState<any>();
+
+  //Rewards for each delegator
+  const [delegationTotalRewards, setDelegationTotalRewards] = useState<any>();
 
   const [selectedValidator, setSelectedValidator] = useState<IValidator>(null);
 
@@ -60,7 +84,14 @@ export const Staking = () => {
   const [validatorDisplayStatus, setValidatorDisplayStatus] =
     useState<ValidatorDisplayStatus>("active");
 
+  //Auto Restake
+
   const [restakeEntries, setRestakeEntries] = useState<any>();
+  const [restakeChoice, setRestakeChoice] = useState<ValidatorRestakeStatus[]>(
+    []
+  );
+
+  //Search Query
   const [searchQuery, setSearchQuery] = useState<string>("");
 
   const [isValidatorModalOpen, setIsValidatorModalOpen] =
@@ -150,6 +181,14 @@ export const Staking = () => {
           });
         setRestakeEntries(validators);
         setDelegatorDelegations(delegation_responses);
+
+        const result = await secretjs.query.distribution.delegationTotalRewards(
+          {
+            delegator_address: secretAddress,
+          }
+        );
+        setDelegationTotalRewards(result);
+        console.log(result);
       }
     };
     fetchDelegatorValidators();
@@ -205,52 +244,69 @@ export const Staking = () => {
     }
   }, [searchQuery, validatorDisplayStatus]);
 
-  function enableRestakeForValidators(validatorAddresses: string[]) {
+  function doRestake() {
+    if (restakeChoice.length > 0) {
+      changeRestakeForValidators(restakeChoice);
+    }
+  }
+
+  function changeRestakeForValidators(
+    validatorRestakeStatuses: ValidatorRestakeStatus[]
+  ) {
     async function submit() {
       if (!secretjs || !secretAddress) return;
 
       const validatorObjects = validators.filter((validator: any) => {
-        return validatorAddresses.find(
-          (validator_address: any) =>
-            validator.operator_address === validator_address
+        return validatorRestakeStatuses.find(
+          (status: ValidatorRestakeStatus) =>
+            validator.operator_address === status.validator_address
         );
       });
 
       try {
         const toastId = toast.loading(
-          `Enabling Auto Restaking for validators ${validatorObjects
+          `Setting Auto Restaking for validators: ${validatorObjects
             .map((validator: any) => {
-              return validator?.description?.moniker;
+              const matchedStatus = validatorRestakeStatuses.find(
+                (status) =>
+                  status.validator_address === validator.operator_address
+              );
+              return `${
+                matchedStatus?.autoRestake ? "Enabling for" : "Disabling for"
+              } ${validator?.description?.moniker}`;
             })
             .join(", ")}`,
           { closeButton: true }
         );
-        const txs = delegatorDelegations.map((delegation: any) => {
-          return new MsgSetAutoRestake({
-            delegator_address: secretAddress,
-            validator_address: delegation?.delegation?.validator_address,
-            enabled: true,
-          });
-        });
+        const txs = validatorRestakeStatuses.map(
+          (status: ValidatorRestakeStatus) => {
+            return new MsgSetAutoRestake({
+              delegator_address: secretAddress,
+              validator_address: status.validator_address,
+              enabled: status.autoRestake,
+            });
+          }
+        );
 
         await secretjs.tx
           .broadcast(txs, {
             gasLimit: 100_000 * txs.length,
             gasPriceInFeeDenom: 0.25,
             feeDenom: "uscrt",
+            feeGranter: feeGrantStatus === "Success" ? faucetAddress : "",
           })
           .catch((error: any) => {
             console.error(error);
             if (error?.tx?.rawLog) {
               toast.update(toastId, {
-                render: `Enabling Auto Restaking failed: ${error.tx.rawLog}`,
+                render: `Setting Auto Restaking failed: ${error.tx.rawLog}`,
                 type: "error",
                 isLoading: false,
                 closeOnClick: true,
               });
             } else {
               toast.update(toastId, {
-                render: `Enabling Auto Restaking failed: ${error.message}`,
+                render: `Setting Auto Restaking failed: ${error.message}`,
                 type: "error",
                 isLoading: false,
                 closeOnClick: true,
@@ -262,7 +318,7 @@ export const Staking = () => {
             if (tx) {
               if (tx.code === 0) {
                 toast.update(toastId, {
-                  render: `Enabled Auto Restaking successfully for validators ${validatorObjects
+                  render: `Setting Auto Restaking successfully for validators ${validatorObjects
                     .map((validator: any) => {
                       return validator?.description?.moniker;
                     })
@@ -273,7 +329,7 @@ export const Staking = () => {
                 });
               } else {
                 toast.update(toastId, {
-                  render: `Enabling Auto Restaking failed: ${tx.rawLog}`,
+                  render: `Setting Auto Restaking failed: ${tx.rawLog}`,
                   type: "error",
                   isLoading: false,
                   closeOnClick: true,
@@ -287,19 +343,18 @@ export const Staking = () => {
     submit();
   }
 
-  function enableRestakeForAll() {
+  function claimRewards() {
     async function submit() {
       if (!secretjs || !secretAddress) return;
-      const toastId = toast.loading(
-        `Enabling Auto Restaking for all delegations`,
-        { closeButton: true }
-      );
+
       try {
+        const toastId = toast.loading(`Claiming Staking Rewards`);
+        console.log(delegatorDelegations);
         const txs = delegatorDelegations.map((delegation: any) => {
-          return new MsgSetAutoRestake({
+          console.log(delegation);
+          return new MsgWithdrawDelegationReward({
             delegator_address: secretAddress,
             validator_address: delegation?.delegation?.validator_address,
-            enabled: true,
           });
         });
 
@@ -308,19 +363,20 @@ export const Staking = () => {
             gasLimit: 100_000 * txs.length,
             gasPriceInFeeDenom: 0.25,
             feeDenom: "uscrt",
+            feeGranter: feeGrantStatus === "Success" ? faucetAddress : "",
           })
           .catch((error: any) => {
             console.error(error);
             if (error?.tx?.rawLog) {
               toast.update(toastId, {
-                render: `Enabling Auto Restaking failed: ${error.tx.rawLog}`,
+                render: `Claiming staking rewards failed: ${error.tx.rawLog}`,
                 type: "error",
                 isLoading: false,
                 closeOnClick: true,
               });
             } else {
               toast.update(toastId, {
-                render: `Enabling Auto Restaking failed: ${error.message}`,
+                render: `Claiming staking rewards failed: ${error.message}`,
                 type: "error",
                 isLoading: false,
                 closeOnClick: true,
@@ -332,14 +388,14 @@ export const Staking = () => {
             if (tx) {
               if (tx.code === 0) {
                 toast.update(toastId, {
-                  render: `Enabled Auto Restaking successfully for all delegations`,
+                  render: `Claiming staking rewards successful`,
                   type: "success",
                   isLoading: false,
                   closeOnClick: true,
                 });
               } else {
                 toast.update(toastId, {
-                  render: `Enabling Auto Restaking failed: ${tx.rawLog}`,
+                  render: `Claiming staking rewards failed: ${tx.rawLog}`,
                   type: "error",
                   isLoading: false,
                   closeOnClick: true,
@@ -353,71 +409,62 @@ export const Staking = () => {
     submit();
   }
 
-  function disableRestakeForAll() {
-    async function submit() {
-      if (!secretjs || !secretAddress) return;
-      const toastId = toast.loading(
-        `Disabling Auto Restaking for all delegations`,
-        { closeButton: true }
-      );
-      try {
-        const txs = delegatorDelegations.map((delegation: any) => {
-          return new MsgSetAutoRestake({
-            delegator_address: secretAddress,
-            validator_address: delegation?.delegation?.validator_address,
-            enabled: false,
-          });
-        });
-
-        await secretjs.tx
-          .broadcast(txs, {
-            gasLimit: 100_000 * txs.length,
-            gasPriceInFeeDenom: 0.25,
-            feeDenom: "uscrt",
-          })
-          .catch((error: any) => {
-            console.error(error);
-            if (error?.tx?.rawLog) {
-              toast.update(toastId, {
-                render: `Disabling Auto Restaking failed: ${error.tx.rawLog}`,
-                type: "error",
-                isLoading: false,
-                closeOnClick: true,
-              });
-            } else {
-              toast.update(toastId, {
-                render: `Disabling Auto Restaking failed: ${error.message}`,
-                type: "error",
-                isLoading: false,
-                closeOnClick: true,
-              });
-            }
-          })
-          .then((tx: any) => {
-            console.log(tx);
-            if (tx) {
-              if (tx.code === 0) {
-                toast.update(toastId, {
-                  render: `Disabling Auto Restaking successfully for all delegations`,
-                  type: "success",
-                  isLoading: false,
-                  closeOnClick: true,
-                });
-              } else {
-                toast.update(toastId, {
-                  render: `Disabling Auto Restaking failed: ${tx.rawLog}`,
-                  type: "error",
-                  isLoading: false,
-                  closeOnClick: true,
-                });
-              }
-            }
-          });
-      } finally {
-      }
-    }
-    submit();
-  }
+  const FeeGrant = () => {
+    return (
+      <>
+        {/* Fee Grant */}
+        <div className="bg-neutral-200 dark:bg-neutral-800 p-4 rounded-lg select-none flex items-center my-4">
+          <div className="flex-1 flex items-center">
+            <span className="font-semibold text-sm">Fee Grant</span>
+            <Tooltip
+              title={`Request Fee Grant so that you don't have to pay gas fees (up to 0.1 SCRT)`}
+              placement="right"
+              arrow
+            >
+              <span className="ml-2 mt-1 text-neutral-600 dark:text-neutral-400 hover:text-black dark:hover:text-white transition-colors cursor-pointer">
+                <FontAwesomeIcon icon={faInfoCircle} />
+              </span>
+            </Tooltip>
+          </div>
+          <div className="flex-initial">
+            {/* Untouched */}
+            {feeGrantStatus === "Untouched" && (
+              <>
+                <button
+                  id="feeGrantButton"
+                  onClick={requestFeeGrant}
+                  className="font-semibold text-xs bg-neutral-100 dark:bg-neutral-900 px-1.5 py-1 rounded-md transition-colors hover:bg-neutral-300 dark:hover:bg-neutral-700 cursor-pointer disabled:text-neutral-500 dark:disabled:text-neutral-500 disabled:hover:bg-neutral-100 dark:disabled:hover:bg-neutral-900 disabled:cursor-default focus:outline-0 focus:ring-2 ring-sky-500/40"
+                  disabled={!secretjs || !secretAddress}
+                >
+                  Request Fee Grant
+                </button>
+              </>
+            )}
+            {/* Success */}
+            {feeGrantStatus === "Success" && (
+              <div className="font-semibold text-sm flex items-center h-[1.6rem]">
+                <FontAwesomeIcon
+                  icon={faCheckCircle}
+                  className="text-green-500 mr-1.5"
+                />
+                Fee Granted
+              </div>
+            )}
+            {/* Fail */}
+            {feeGrantStatus === "Fail" && (
+              <div className="font-semibold text-sm h-[1.6rem]">
+                <FontAwesomeIcon
+                  icon={faXmarkCircle}
+                  className="text-red-500 mr-1.5"
+                />
+                Request failed
+              </div>
+            )}
+          </div>
+        </div>
+      </>
+    );
+  };
 
   const providerValue = {
     selectedValidator,
@@ -452,67 +499,129 @@ export const Staking = () => {
         ) : null}
 
         {/* My Validators */}
-        {delegatorDelegations && validators && (
+        {delegatorDelegations?.length != 0 && validators && (
           <div className="my-validators mb-20 max-w-6xl mx-auto">
             <div className="font-bold text-lg mb-4 px-4">My Validators</div>
-
             <div className="px-4 pb-2">
-              <button
-                onClick={() => enableRestakeForAll()}
-                className="text-medium disabled:bg-neutral-600 enabled:bg-green-600 enabled:hover:bg-green-700 disabled:text-neutral-400 enabled:text-white transition-colors font-semibold px-2 py-2 text-sm rounded-md"
-              >
-                Enable Auto Restake
-              </button>
-              <Tooltip
-                title={
-                  'Automating the process of "claim and restake" for your SCRT. Auto-compounds your staked SCRT for increased staking returns'
-                }
-                placement="right"
-                arrow
-              >
-                <FontAwesomeIcon
-                  icon={faInfoCircle}
-                  className="ml-2 text-neutral-400"
-                />
-              </Tooltip>
+              <div className="staked-amount">
+                <div>
+                  <span className="font-semibold">
+                    {" "}
+                    Total amount staked:{" "}
+                    {delegatorDelegations
+                      ?.reduce((sum: any, delegation: any) => {
+                        const amount = new BigNumber(
+                          delegation?.balance?.amount || 0
+                        );
+                        return sum.plus(amount);
+                      }, new BigNumber(0))
+                      .dividedBy(`1e${SCRTToken.decimals}`)
+                      .toFormat(SCRTToken.decimals)}
+                  </span>
+                  <span className="text-xs font-semibold text-neutral-400">
+                    {" "}
+                    SCRT
+                  </span>
+                </div>
+              </div>
             </div>
-            {
-              <div className="my-validators flex flex-col px-4">
-                {delegatorDelegations?.map((delegation: any, i: any) => (
-                  <MyValidatorsItem
-                    name={
-                      validators.find(
-                        (validator: any) =>
-                          validator.operator_address ==
-                          delegation.delegation.validator_address
-                      )?.description?.moniker
-                    }
-                    commissionPercentage={
-                      validators.find(
-                        (validator: any) =>
-                          validator.operator_address ==
-                          delegation.delegation.validator_address
-                      )?.commission.commission_rates?.rate
-                    }
-                    validator={validators.find(
+            <div className="my-validators flex flex-col px-4">
+              {delegatorDelegations?.map((delegation: any, i: any) => (
+                <MyValidatorsItem
+                  name={
+                    validators.find(
                       (validator: any) =>
                         validator.operator_address ==
                         delegation.delegation.validator_address
-                    )}
-                    identity={validators.find(
+                    )?.description?.moniker
+                  }
+                  commissionPercentage={
+                    validators.find(
                       (validator: any) =>
                         validator.operator_address ==
-                        delegation.delegation.validator_address?.description
-                          ?.identity
-                    )}
-                    restakeEntries={restakeEntries}
-                    stakedAmount={delegation?.balance?.amount}
-                    setSelectedValidator={setSelectedValidator}
-                    openModal={setIsValidatorModalOpen}
+                        delegation.delegation.validator_address
+                    )?.commission.commission_rates?.rate
+                  }
+                  validator={validators.find(
+                    (validator: any) =>
+                      validator.operator_address ==
+                      delegation.delegation.validator_address
+                  )}
+                  identity={
+                    validators.find(
+                      (validator: any) =>
+                        validator.operator_address ==
+                        delegation.delegation.validator_address
+                    )?.description?.identity
+                  }
+                  restakeEntries={restakeEntries}
+                  stakedAmount={delegation?.balance?.amount}
+                  setSelectedValidator={setSelectedValidator}
+                  openModal={setIsValidatorModalOpen}
+                  restakeChoice={restakeChoice}
+                  setRestakeChoice={setRestakeChoice}
+                />
+              ))}
+            </div>
+            {restakeChoice.length > 0 && (
+              <div className="px-4 pb-2">
+                <button
+                  onClick={() => doRestake()}
+                  className="text-medium disabled:bg-neutral-600 enabled:bg-green-600 enabled:hover:bg-green-700 disabled:text-neutral-400 enabled:text-white transition-colors font-semibold px-2 py-2 text-sm rounded-md"
+                >
+                  Set Auto Restake
+                </button>
+                <Tooltip
+                  title={
+                    'Automating the process of "claim and restake" for your SCRT. Auto-compounds your staked SCRT for increased staking returns'
+                  }
+                  placement="right"
+                  arrow
+                >
+                  <FontAwesomeIcon
+                    icon={faInfoCircle}
+                    className="ml-2 text-neutral-400"
                   />
-                ))}
+                </Tooltip>
               </div>
-            }
+            )}
+            {/* Claim Rewards*/}
+            <div className="px-4 pb-2">
+              <div className="staked-amount">
+                {delegationTotalRewards && (
+                  <div>
+                    <span className="font-semibold">
+                      {" "}
+                      Total pending rewards:{" "}
+                      {BigNumber(delegationTotalRewards?.total[0]?.amount)
+                        .dividedBy(`1e${SCRTToken.decimals}`)
+                        .toFormat(SCRTToken.decimals)}
+                    </span>
+                    <span className="text-xs font-semibold text-neutral-400">
+                      {" "}
+                      SCRT
+                    </span>
+                    <button
+                      onClick={() => claimRewards()}
+                      className="text-medium disabled:bg-neutral-600 enabled:bg-green-600 enabled:hover:bg-green-700 disabled:text-neutral-400 enabled:text-white transition-colors font-semibold px-2 py-2 text-sm rounded-md"
+                    >
+                      Claim Rewards
+                    </button>
+                    <Tooltip
+                      title={"Claim your staking rewards"}
+                      placement="right"
+                      arrow
+                    >
+                      <FontAwesomeIcon
+                        icon={faInfoCircle}
+                        className="ml-2 text-neutral-400"
+                      />
+                    </Tooltip>
+                    <FeeGrant />
+                  </div>
+                )}
+              </div>
+            </div>
           </div>
         )}
 
