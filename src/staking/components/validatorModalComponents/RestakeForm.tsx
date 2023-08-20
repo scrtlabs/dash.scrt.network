@@ -7,7 +7,7 @@ import { StakingContext } from "staking/Staking";
 import { toast } from "react-toastify";
 import FeeGrant from "./FeeGrant";
 
-export default function StakingForm() {
+export default function RestakeForm() {
   const { selectedValidator, setView } = useContext(StakingContext);
   const { secretjs, secretAddress, SCRTBalance, SCRTToken, feeGrantStatus } =
     useContext(SecretjsContext);
@@ -156,7 +156,7 @@ export default function StakingForm() {
     <>
       <div className="bg-neutral-200 dark:bg-neutral-800 p-4 rounded-xl my-4">
         <div className="font-bold mb-2 text-center sm:text-left">
-          Amount to Stake
+          Amount to Restake
         </div>
 
         <input
@@ -194,7 +194,7 @@ export default function StakingForm() {
           onClick={handleSubmit}
           className="bg-blue-600 hover:bg-blue-500 font-semibold px-4 py-2 rounded-md"
         >
-          Stake
+          Restake
         </button>
         <button
           onClick={() => setView(null)}

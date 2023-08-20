@@ -47,7 +47,7 @@ export const Staking = () => {
   // URL params
   const [searchParams, setSearchParams] = useSearchParams();
   const validatorUrlParam = searchParams.get("validator"); // selected validator
-  const viewUrlParam = searchParams.get("view"); // "undelegate" | "redelegate" | "delegate"
+  const viewUrlParam: Nullable<string> = searchParams.get("view"); // "undelegate" | "redelegate" | "delegate"
 
   const [view, setView] = useState<Nullable<StakingView>>(null);
 
@@ -120,13 +120,34 @@ export const Staking = () => {
     }
   }, [validatorUrlParam, validators]);
 
+  // sets view by url param
+  useEffect(() => {
+    if (viewUrlParam && validators) {
+      if (
+        viewUrlParam === "undelegate" ||
+        viewUrlParam === "redelegate" ||
+        viewUrlParam === "delegate"
+      ) {
+        setView(viewUrlParam);
+      } else {
+        setView(null);
+      }
+    }
+  }, [viewUrlParam, validators]);
+
+  // sets url param by view
   useEffect(() => {
     var params = {};
-    if (selectedValidator) {
-      params = { ...params, validator: selectedValidator.operator_address };
+    if (selectedValidator || view) {
+      if (selectedValidator) {
+        params = { ...params, validator: selectedValidator.operator_address };
+      }
+      if (view) {
+        params = { ...params, view: view };
+      }
       setSearchParams(params);
     }
-  }, [selectedValidator]);
+  }, [selectedValidator, view]);
 
   function getViewByString(input: String): StakingView {
     input = input.toLowerCase();
@@ -486,6 +507,7 @@ export const Staking = () => {
           restakeEntries={restakeEntries}
           onClose={() => {
             setSelectedValidator(null);
+            setView(null);
             setIsValidatorModalOpen(false);
             document.body.classList.remove("overflow-hidden");
           }}

@@ -26,6 +26,8 @@ import { Nullable } from "shared/types/Nullable";
 import { StakingContext } from "staking/Staking";
 import StakingForm from "./validatorModalComponents/StakingForm";
 import { SecretjsContext } from "shared/context/SecretjsContext";
+import UnstakeForm from "./validatorModalComponents/UnstakeForm";
+import RestakeForm from "./validatorModalComponents/RestakeForm";
 
 interface IValidatorModalProps {
   open: boolean;
@@ -144,7 +146,7 @@ const ValidatorModal = (props: IValidatorModalProps) => {
     useContext(StakingContext);
 
   //debug
-  setView("delegate");
+  // setView("delegate");
 
   useEffect(() => {
     if (
@@ -611,20 +613,14 @@ const ValidatorModal = (props: IValidatorModalProps) => {
                     </>
                   )}
 
-                  {view === "delegate" ? (
-                    <>
-                      <div className="col-span-12">
-                        <StakingForm />
-                        {view !== null && (
-                          <div className="col-span-12 md:col-span-6">
-                            <div className="bg-white/5 rounded-xl px-4 py-8 mt-4 text-center sm:text-left">
-                              <FeeGrant />
-                            </div>
-                          </div>
-                        )}
-                      </div>
-                    </>
+                  {view !== null ? (
+                    <div className="col-span-12">
+                      {view === "delegate" ? <StakingForm /> : null}
+                      {view === "undelegate" ? <UnstakeForm /> : null}
+                      {view === "redelegate" ? <RestakeForm /> : null}
+                    </div>
                   ) : null}
+
                   {view === null ? (
                     <>
                       <div className="col-span-12">
@@ -635,14 +631,23 @@ const ValidatorModal = (props: IValidatorModalProps) => {
                         <FontAwesomeIcon icon={faLink} className="fa-fw" />
                       </button>
                     </div> */}
-                          <button className="bg-blue-600 hover:bg-blue-500 font-semibold px-4 py-2 rounded-md">
-                            Delegate
+                          <button
+                            onClick={() => setView("delegate")}
+                            className="bg-blue-600 hover:bg-blue-500 font-semibold px-4 py-2 rounded-md"
+                          >
+                            Stake
                           </button>
-                          <button className="bg-neutral-800 hover:bg-neutral-700 font-semibold px-4 py-2 rounded-md">
-                            Redelegate
+                          <button
+                            onClick={() => setView("redelegate")}
+                            className="bg-neutral-800 hover:bg-neutral-700 font-semibold px-4 py-2 rounded-md"
+                          >
+                            Restake
                           </button>
-                          <button className="bg-neutral-800 hover:bg-neutral-700 font-semibold px-4 py-2 rounded-md">
-                            Undelegate
+                          <button
+                            onClick={() => setView("undelegate")}
+                            className="bg-neutral-800 hover:bg-neutral-700 font-semibold px-4 py-2 rounded-md"
+                          >
+                            Unstake
                           </button>
                         </div>
                       </div>
