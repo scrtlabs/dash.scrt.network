@@ -41,9 +41,9 @@ export default function StakingForm() {
               delegator_address: secretAddress,
               validator_address: selectedValidator?.operator_address,
               amount: {
-                amount: BigNumber(amountString).multipliedBy(
-                  `1e${SCRTToken.decimals}`
-                ),
+                amount: BigNumber(amountString)
+                  .multipliedBy(`1e${SCRTToken.decimals}`)
+                  .toFixed(0, BigNumber.ROUND_DOWN),
                 denom: "uscrt",
               },
             },
@@ -134,12 +134,8 @@ export default function StakingForm() {
   }
 
   function setAmountByPercentage(percentage: number) {
-    const maxValue: string = new BigNumber(SCRTBalance!)
-      .dividedBy(`1e${SCRTToken.decimals}`)
-      .toFormat();
-
-    if (maxValue) {
-      let availableAmount = new BigNumber(maxValue).dividedBy(
+    if (SCRTBalance) {
+      let availableAmount = new BigNumber(SCRTBalance).dividedBy(
         `1e${SCRTToken.decimals}`
       );
       let potentialInput = availableAmount.toNumber() * (percentage * 0.01);

@@ -27,13 +27,13 @@ import { StakingContext } from "staking/Staking";
 import StakingForm from "./validatorModalComponents/StakingForm";
 import { SecretjsContext } from "shared/context/SecretjsContext";
 import UnstakeForm from "./validatorModalComponents/UnstakeForm";
-import RestakeForm from "./validatorModalComponents/RestakeForm";
+import RedelegateForm from "./validatorModalComponents/RedelegateForm";
 
 interface IValidatorModalProps {
   open: boolean;
   onClose: any;
-  delegatorDelegations: any;
   restakeEntries: any;
+  delegatorDelegations: any;
 }
 
 const ValidatorModal = (props: IValidatorModalProps) => {
@@ -142,11 +142,8 @@ const ValidatorModal = (props: IValidatorModalProps) => {
 
   const [realYield, setRealYield] = useState<Nullable<number>>(null);
 
-  const { selectedValidator, setSelectedValidator, view, setView } =
+  const { delegatorDelegations, selectedValidator, view, setView } =
     useContext(StakingContext);
-
-  //debug
-  // setView("delegate");
 
   useEffect(() => {
     if (
@@ -617,7 +614,7 @@ const ValidatorModal = (props: IValidatorModalProps) => {
                     <div className="col-span-12">
                       {view === "delegate" ? <StakingForm /> : null}
                       {view === "undelegate" ? <UnstakeForm /> : null}
-                      {view === "redelegate" ? <RestakeForm /> : null}
+                      {view === "redelegate" ? <RedelegateForm /> : null}
                     </div>
                   ) : null}
 
@@ -637,18 +634,26 @@ const ValidatorModal = (props: IValidatorModalProps) => {
                           >
                             Stake
                           </button>
-                          <button
-                            onClick={() => setView("redelegate")}
-                            className="bg-neutral-800 hover:bg-neutral-700 font-semibold px-4 py-2 rounded-md"
-                          >
-                            Restake
-                          </button>
-                          <button
-                            onClick={() => setView("undelegate")}
-                            className="bg-neutral-800 hover:bg-neutral-700 font-semibold px-4 py-2 rounded-md"
-                          >
-                            Unstake
-                          </button>
+                          {delegatorDelegations?.find(
+                            (delegatorDelegation: any) =>
+                              selectedValidator?.operator_address ==
+                              delegatorDelegation.delegation.validator_address
+                          ) ? (
+                            <>
+                              <button
+                                onClick={() => setView("redelegate")}
+                                className="bg-neutral-800 hover:bg-neutral-700 font-semibold px-4 py-2 rounded-md"
+                              >
+                                Redelegate
+                              </button>
+                              <button
+                                onClick={() => setView("undelegate")}
+                                className="bg-neutral-800 hover:bg-neutral-700 font-semibold px-4 py-2 rounded-md"
+                              >
+                                Unstake
+                              </button>
+                            </>
+                          ) : null}
                         </div>
                       </div>
                     </>

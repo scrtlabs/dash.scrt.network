@@ -8,7 +8,8 @@ import { toast } from "react-toastify";
 import FeeGrant from "./FeeGrant";
 
 export default function UnstakeForm() {
-  const { selectedValidator, setView } = useContext(StakingContext);
+  const { delegatorDelegations, selectedValidator, setView } =
+    useContext(StakingContext);
   const { secretjs, secretAddress, SCRTBalance, SCRTToken, feeGrantStatus } =
     useContext(SecretjsContext);
   const { currentPrice } = useContext(APIContext);
@@ -33,17 +34,17 @@ export default function UnstakeForm() {
 
       try {
         const toastId = toast.loading(
-          `Staking ${amountString} SCRT with validator: ${selectedValidator?.description?.moniker}`
+          `Unstaking ${amountString} SCRT from validator: ${selectedValidator?.description?.moniker}`
         );
         await secretjs.tx.staking
-          .delegate(
+          .undelegate(
             {
               delegator_address: secretAddress,
               validator_address: selectedValidator?.operator_address,
               amount: {
-                amount: BigNumber(amountString).multipliedBy(
-                  `1e${SCRTToken.decimals}`
-                ),
+                amount: BigNumber(amountString)
+                  .multipliedBy(`1e${SCRTToken.decimals}`)
+                  .toFixed(0, BigNumber.ROUND_DOWN),
                 denom: "uscrt",
               },
             },
@@ -58,14 +59,14 @@ export default function UnstakeForm() {
             console.error(error);
             if (error?.tx?.rawLog) {
               toast.update(toastId, {
-                render: `Staking failed: ${error.tx.rawLog}`,
+                render: `Unstaking failed: ${error.tx.rawLog}`,
                 type: "error",
                 isLoading: false,
                 closeOnClick: true,
               });
             } else {
               toast.update(toastId, {
-                render: `Staking failed: ${error.message}`,
+                render: `Unstaking failed: ${error.message}`,
                 type: "error",
                 isLoading: false,
                 closeOnClick: true,
@@ -77,14 +78,14 @@ export default function UnstakeForm() {
             if (tx) {
               if (tx.code === 0) {
                 toast.update(toastId, {
-                  render: `Staking ${amountString} SCRT successfully with validator: ${selectedValidator?.description?.moniker}`,
+                  render: `Unstaked ${amountString} SCRT successfully from validator: ${selectedValidator?.description?.moniker}`,
                   type: "success",
                   isLoading: false,
                   closeOnClick: true,
                 });
               } else {
                 toast.update(toastId, {
-                  render: `Staking failed: ${tx.rawLog}`,
+                  render: `Unstaking failed: ${tx.rawLog}`,
                   type: "error",
                   isLoading: false,
                   closeOnClick: true,
@@ -134,16 +135,17 @@ export default function UnstakeForm() {
   }
 
   function setAmountByPercentage(percentage: number) {
-    const maxValue: string = new BigNumber(SCRTBalance!)
-      .dividedBy(`1e${SCRTToken.decimals}`)
-      .toFormat();
+    const maxValue = delegatorDelegations?.find(
+      (delegatorDelegation: any) =>
+        selectedValidator?.operator_address ==
+        delegatorDelegation.delegation.validator_address
+    )?.balance?.amount;
 
     if (maxValue) {
       let availableAmount = new BigNumber(maxValue).dividedBy(
         `1e${SCRTToken.decimals}`
       );
       let potentialInput = availableAmount.toNumber() * (percentage * 0.01);
-      potentialInput = potentialInput - 0.05;
       if (Number(potentialInput) < 0) {
         setAmountString("");
       } else {

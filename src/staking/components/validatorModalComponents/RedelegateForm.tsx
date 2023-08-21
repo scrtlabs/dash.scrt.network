@@ -6,12 +6,17 @@ import { formatNumber, usdString, faucetAddress } from "shared/utils/commons";
 import { StakingContext } from "staking/Staking";
 import { toast } from "react-toastify";
 import FeeGrant from "./FeeGrant";
+import Select from "react-select";
+import { ListItem } from "@mui/material";
 
-export default function RestakeForm() {
-  const { selectedValidator, setView } = useContext(StakingContext);
+export default function RedelegateForm() {
+  const { delegatorDelegations, validators, selectedValidator, setView } =
+    useContext(StakingContext);
   const { secretjs, secretAddress, SCRTBalance, SCRTToken, feeGrantStatus } =
     useContext(SecretjsContext);
   const { currentPrice } = useContext(APIContext);
+
+  const [redelegateValidator, setRedelegateValidator] = useState<any>();
 
   const [amountString, setAmountString] = useState<string>("");
   const [amountInDollarString, setAmountInDollarString] = useState<string>("");
@@ -33,17 +38,18 @@ export default function RestakeForm() {
 
       try {
         const toastId = toast.loading(
-          `Staking ${amountString} SCRT with validator: ${selectedValidator?.description?.moniker}`
+          `Redelegating ${amountString} SCRT from ${selectedValidator?.description?.moniker} to ${redelegateValidator?.description?.moniker}`
         );
         await secretjs.tx.staking
-          .delegate(
+          .beginRedelegate(
             {
               delegator_address: secretAddress,
-              validator_address: selectedValidator?.operator_address,
+              validator_src_address: selectedValidator?.operator_address,
+              validator_dst_address: redelegateValidator?.operator_address,
               amount: {
-                amount: BigNumber(amountString).multipliedBy(
-                  `1e${SCRTToken.decimals}`
-                ),
+                amount: BigNumber(amountString)
+                  .multipliedBy(`1e${SCRTToken.decimals}`)
+                  .toFixed(0, BigNumber.ROUND_DOWN),
                 denom: "uscrt",
               },
             },
@@ -58,14 +64,14 @@ export default function RestakeForm() {
             console.error(error);
             if (error?.tx?.rawLog) {
               toast.update(toastId, {
-                render: `Staking failed: ${error.tx.rawLog}`,
+                render: `Redelgating failed: ${error.tx.rawLog}`,
                 type: "error",
                 isLoading: false,
                 closeOnClick: true,
               });
             } else {
               toast.update(toastId, {
-                render: `Staking failed: ${error.message}`,
+                render: `Redelgating failed: ${error.message}`,
                 type: "error",
                 isLoading: false,
                 closeOnClick: true,
@@ -77,14 +83,14 @@ export default function RestakeForm() {
             if (tx) {
               if (tx.code === 0) {
                 toast.update(toastId, {
-                  render: `Staking ${amountString} SCRT successfully with validator: ${selectedValidator?.description?.moniker}`,
+                  render: `Successfully redelegated ${amountString} SCRT from ${selectedValidator?.description?.moniker} to ${redelegateValidator?.description?.moniker}`,
                   type: "success",
                   isLoading: false,
                   closeOnClick: true,
                 });
               } else {
                 toast.update(toastId, {
-                  render: `Staking failed: ${tx.rawLog}`,
+                  render: `Redelgating failed: ${tx.rawLog}`,
                   type: "error",
                   isLoading: false,
                   closeOnClick: true,
@@ -134,16 +140,17 @@ export default function RestakeForm() {
   }
 
   function setAmountByPercentage(percentage: number) {
-    const maxValue: string = new BigNumber(SCRTBalance!)
-      .dividedBy(`1e${SCRTToken.decimals}`)
-      .toFormat();
+    const maxValue = delegatorDelegations?.find(
+      (delegatorDelegation: any) =>
+        selectedValidator?.operator_address ==
+        delegatorDelegation.delegation.validator_address
+    )?.balance?.amount;
 
     if (maxValue) {
       let availableAmount = new BigNumber(maxValue).dividedBy(
         `1e${SCRTToken.decimals}`
       );
       let potentialInput = availableAmount.toNumber() * (percentage * 0.01);
-      potentialInput = potentialInput - 0.05;
       if (Number(potentialInput) < 0) {
         setAmountString("");
       } else {
@@ -152,11 +159,21 @@ export default function RestakeForm() {
     }
   }
 
+  const customFilter = (option: any, searchText: any) => {
+    if (searchText.length == 0) return true;
+    console.log(option);
+    if (!option || !option?.data?.name) return false;
+    const name = option?.data?.name.toLowerCase();
+    const search = searchText.toLowerCase();
+
+    return name.includes(search);
+  };
+
   return (
     <>
       <div className="bg-neutral-200 dark:bg-neutral-800 p-4 rounded-xl my-4">
         <div className="font-bold mb-2 text-center sm:text-left">
-          Amount to Restake
+          Amount to Redelegate
         </div>
 
         <input
@@ -181,6 +198,43 @@ export default function RestakeForm() {
             <PercentagePicker />
           </div>
         </div>
+        <Select
+          isDisabled={!secretjs || !secretAddress}
+          options={validators?.map((validator: any) => {
+            return {
+              name: validator?.description?.moniker,
+              value: validator?.operator_address,
+            };
+          })}
+          onChange={(item: any) => {
+            console.log(item);
+            setRedelegateValidator(
+              validators.find(
+                (validator: any) => validator.operator_address === item.value
+              )
+            );
+          }}
+          isSearchable={true}
+          filterOption={customFilter}
+          formatOptionLabel={(validator: any) => {
+            return (
+              <div className="flex items-center">
+                <span className="font-semibold text-base">
+                  {validator?.name}
+                </span>
+                {validators.find(
+                  (item: any) => item.operator_address === validator.value
+                ).status === "BOND_STATUS_UNBONDED" && (
+                  <div className="border border-red-500 bg-transparent text-red-500 text-sm rounded px-4 py-2 cursor-not-allowed flex items-center justify-start">
+                    Inactive
+                  </div>
+                )}
+              </div>
+            );
+          }}
+          className="react-select-container"
+          classNamePrefix="react-select"
+        />
       </div>
 
       {/* Fee Grant */}
@@ -194,7 +248,7 @@ export default function RestakeForm() {
           onClick={handleSubmit}
           className="bg-blue-600 hover:bg-blue-500 font-semibold px-4 py-2 rounded-md"
         >
-          Restake
+          Redelegate
         </button>
         <button
           onClick={() => setView(null)}

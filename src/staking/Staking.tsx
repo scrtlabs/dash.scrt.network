@@ -370,7 +370,6 @@ export const Staking = () => {
 
       try {
         const toastId = toast.loading(`Claiming Staking Rewards`);
-        console.log(delegatorDelegations);
         const txs = delegatorDelegations.map((delegation: any) => {
           console.log(delegation);
           return new MsgWithdrawDelegationReward({
@@ -488,6 +487,10 @@ export const Staking = () => {
   };
 
   const providerValue = {
+    validators,
+    setValidators,
+    delegatorDelegations,
+    setDelegatorDelegations,
     selectedValidator,
     setSelectedValidator,
     view,
@@ -503,7 +506,6 @@ export const Staking = () => {
 
         <ValidatorModal
           open={!!selectedValidator}
-          delegatorDelegations={delegatorDelegations}
           restakeEntries={restakeEntries}
           onClose={() => {
             setSelectedValidator(null);
@@ -511,6 +513,7 @@ export const Staking = () => {
             setIsValidatorModalOpen(false);
             document.body.classList.remove("overflow-hidden");
           }}
+          delegatorDelegations={delegatorDelegations}
         />
 
         {/* Title */}
