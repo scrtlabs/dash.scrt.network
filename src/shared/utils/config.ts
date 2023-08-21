@@ -1817,6 +1817,64 @@ export const snips: Token[] = [
     ],
   },
   {
+    name: "SHILL",
+    is_snip20: true,
+    address: "secret197dvnt9yjxwn8sjdlx05f7zuk27lsdxtfnwxse",
+    code_hash:
+      "fe182fe93db6702b189537ea1ff6abf01b91d9b467e3d569981295497b861a1f",
+    image: "/shill.svg",
+    coingecko_id: "",
+    deposits: [
+      {
+        chain_name: "Osmosis",
+        from_denom: ibcDenom(
+          [{ incomingChannelId: "channel-476", incomingPortId: "transfer" }],
+          "cw20:secret197dvnt9yjxwn8sjdlx05f7zuk27lsdxtfnwxse"
+        ),
+        channel_id: "channel-476",
+        gas: 300_000,
+      },
+      {
+        chain_name: "Kujira",
+        from_denom: ibcDenom(
+          [{ incomingChannelId: "channel-44", incomingPortId: "transfer" }],
+          "cw20:secret197dvnt9yjxwn8sjdlx05f7zuk27lsdxtfnwxse"
+        ),
+        channel_id: "channel-44",
+        gas: 300_000,
+      },
+      {
+        chain_name: "Juno",
+        from_denom: ibcDenom(
+          [{ incomingChannelId: "channel-163", incomingPortId: "transfer" }],
+          "cw20:secret197dvnt9yjxwn8sjdlx05f7zuk27lsdxtfnwxse"
+        ),
+        channel_id: "channel-163",
+        gas: 300_000,
+      },
+    ],
+    withdrawals: [
+      {
+        chain_name: "Osmosis",
+        from_denom: "secret197dvnt9yjxwn8sjdlx05f7zuk27lsdxtfnwxse",
+        channel_id: "channel-44",
+        gas: 350_000,
+      },
+      {
+        chain_name: "Kujira",
+        from_denom: "secret197dvnt9yjxwn8sjdlx05f7zuk27lsdxtfnwxse",
+        channel_id: "channel-46",
+        gas: 350_000,
+      },
+      {
+        chain_name: "Juno",
+        from_denom: "secret197dvnt9yjxwn8sjdlx05f7zuk27lsdxtfnwxse",
+        channel_id: "channel-45",
+        gas: 350_000,
+      },
+    ],
+  },
+  {
     name: "SIENNA",
     is_snip20: true,
     address: "secret1rgm2m5t530tdzyd99775n6vzumxa5luxcllml4",
