@@ -1823,6 +1823,7 @@ export const snips: Token[] = [
     code_hash:
       "fe182fe93db6702b189537ea1ff6abf01b91d9b467e3d569981295497b861a1f",
     image: "/shill.svg",
+    decimals: 6,
     coingecko_id: "",
     deposits: [
       {
