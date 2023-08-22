@@ -1,0 +1,89 @@
+import React, { useContext } from "react";
+import { toast } from "react-toastify";
+import { MsgWithdrawDelegationReward } from "secretjs";
+import { SecretjsContext } from "shared/context/SecretjsContext";
+import { faucetAddress } from "shared/utils/commons";
+import { StakingContext } from "staking/Staking";
+import FeeGrant from "./validatorModalComponents/FeeGrant";
+
+interface IClaimRewardsModalProps {
+  open: boolean;
+  onClose: any;
+}
+
+export function ClaimRewardsModal(props: IClaimRewardsModalProps) {
+  const {
+    secretjs,
+    secretAddress,
+    SCRTBalance,
+    SCRTToken,
+    feeGrantStatus,
+    setFeeGrantStatus,
+    requestFeeGrant,
+  } = useContext(SecretjsContext);
+
+  const { delegatorDelegations } = useContext(StakingContext);
+
+  if (!props.open) return null;
+
+  function claimRewards() {}
+
+  return (
+    <>
+      {/* Outer */}
+      <div
+        className="fixed top-0 left-0 right-0 bottom-0 bg-black/80 dark:bg-black/80 z-50"
+        onClick={props.onClose}
+      >
+        {/* Inner */}
+        <div className="relative py-[6rem] w-full onEnter_fadeInDown h-full overflow-scroll scrollbar-hide">
+          <div className="mx-auto max-w-xl px-4">
+            <div
+              className="bg-white dark:bg-neutral-900 p-8 rounded-2xl"
+              onClick={(e) => {
+                e.stopPropagation();
+              }}
+            >
+              {/* Header */}
+              <div className="mb-0 text-right">
+                <button
+                  onClick={props.onClose}
+                  className="text-neutral-500 dark:text-neutral-500 hover:bg-neutral-200 dark:hover:bg-neutral-800 transition-colors px-1.5 py-1 rounded-lg text-xl"
+                >
+                  {/* <FontAwesomeIcon icon={faXmark} className="fa-fw" /> */}
+                </button>
+              </div>
+              {/* Header */}
+              <div className="mb-8 text-center">
+                <h2 className="text-2xl font-medium mb-2">
+                  {/* <FontAwesomeIcon icon={faWallet} className="mr-2" /> */}
+                  Claim Rewards
+                </h2>
+                <p className="text-neutral-600 dark:text-neutral-400 max-w-sm mx-auto">
+                  Claim your staking rewards!
+                </p>
+              </div>
+              {/* Body */}
+              <div className="flex flex-col">
+                <FeeGrant />
+                <div className="text-center my-4">
+                  <span className="font-bold">{`Claimable Amount: `}</span>
+                  <span>1234.56</span>
+                  <span className="text-gray-500 dark:text-gray-400 text-sm">{` SCRT`}</span>
+                </div>
+                <button
+                  onClick={() => {}}
+                  className="text-medium disabled:bg-neutral-600 enabled:bg-green-600 enabled:hover:bg-green-700 disabled:text-neutral-400 enabled:text-white transition-colors font-semibold px-2 py-2 text-sm rounded-md"
+                >
+                  Claim Rewards
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </>
+  );
+}
+
+export default ClaimRewardsModal;

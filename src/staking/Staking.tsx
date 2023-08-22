@@ -35,6 +35,7 @@ import { useSearchParams } from "react-router-dom";
 import { Nullable } from "shared/types/Nullable";
 import BigNumber from "bignumber.js";
 import { StakingView, isStakingView } from "shared/types/StakingView";
+import ClaimRewardsModal from "./components/ClaimRewardsModal";
 
 // dummy interface for better code readability
 export interface IValidator {
@@ -56,7 +57,7 @@ export const Staking = () => {
 
   const [view, setView] = useState<Nullable<StakingView>>(null);
 
-  const handleModalClose = () => {
+  const handleStakingModalClose = () => {
     setIsValidatorModalOpen(false);
 
     searchParams.get("validator") ? searchParams.delete("validator") : null;
@@ -65,6 +66,12 @@ export const Staking = () => {
 
     setSelectedValidator(null);
     setView(null);
+
+    document.body.classList.remove("overflow-hidden");
+  };
+
+  const handleClaimRewardsModal = () => {
+    setIsClaimRewardsModalOpen(false);
 
     document.body.classList.remove("overflow-hidden");
   };
@@ -86,6 +93,22 @@ export const Staking = () => {
 
   //Rewards for each delegator
   const [delegationTotalRewards, setDelegationTotalRewards] = useState<any>();
+
+  const totalPendingRewards = () => {
+    return BigNumber(delegationTotalRewards?.total[0]?.amount)
+      .dividedBy(`1e${SCRTToken.decimals}`)
+      .toFormat(SCRTToken.decimals);
+  };
+
+  const totalAmountStaked = () => {
+    return delegatorDelegations
+      ?.reduce((sum: any, delegation: any) => {
+        const amount = new BigNumber(delegation?.balance?.amount || 0);
+        return sum.plus(amount);
+      }, new BigNumber(0))
+      .dividedBy(`1e${SCRTToken.decimals}`)
+      .toFormat(SCRTToken.decimals);
+  };
 
   const [selectedValidator, setSelectedValidator] = useState<IValidator>(null);
 
@@ -113,6 +136,9 @@ export const Staking = () => {
   const [searchQuery, setSearchQuery] = useState<string>("");
 
   const [isValidatorModalOpen, setIsValidatorModalOpen] =
+    useState<boolean>(false);
+
+  const [isClaimRewardsModalOpen, setIsClaimRewardsModalOpen] =
     useState<boolean>(false);
 
   const getValByAddressStringSnippet = (addressSnippet: String) => {
@@ -365,71 +391,6 @@ export const Staking = () => {
     submit();
   }
 
-  function claimRewards() {
-    async function submit() {
-      if (!secretjs || !secretAddress) return;
-
-      try {
-        const toastId = toast.loading(`Claiming Staking Rewards`);
-        const txs = delegatorDelegations.map((delegation: any) => {
-          console.log(delegation);
-          return new MsgWithdrawDelegationReward({
-            delegator_address: secretAddress,
-            validator_address: delegation?.delegation?.validator_address,
-          });
-        });
-
-        await secretjs.tx
-          .broadcast(txs, {
-            gasLimit: 100_000 * txs.length,
-            gasPriceInFeeDenom: 0.25,
-            feeDenom: "uscrt",
-            feeGranter: feeGrantStatus === "Success" ? faucetAddress : "",
-          })
-          .catch((error: any) => {
-            console.error(error);
-            if (error?.tx?.rawLog) {
-              toast.update(toastId, {
-                render: `Claiming staking rewards failed: ${error.tx.rawLog}`,
-                type: "error",
-                isLoading: false,
-                closeOnClick: true,
-              });
-            } else {
-              toast.update(toastId, {
-                render: `Claiming staking rewards failed: ${error.message}`,
-                type: "error",
-                isLoading: false,
-                closeOnClick: true,
-              });
-            }
-          })
-          .then((tx: any) => {
-            console.log(tx);
-            if (tx) {
-              if (tx.code === 0) {
-                toast.update(toastId, {
-                  render: `Claiming staking rewards successful`,
-                  type: "success",
-                  isLoading: false,
-                  closeOnClick: true,
-                });
-              } else {
-                toast.update(toastId, {
-                  render: `Claiming staking rewards failed: ${tx.rawLog}`,
-                  type: "error",
-                  isLoading: false,
-                  closeOnClick: true,
-                });
-              }
-            }
-          });
-      } finally {
-      }
-    }
-    submit();
-  }
-
   const FeeGrant = () => {
     return (
       <>
@@ -534,11 +495,15 @@ export const Staking = () => {
           </script>
         </Helmet>
 
+        <ClaimRewardsModal
+          open={isClaimRewardsModalOpen}
+          onClose={handleClaimRewardsModal}
+        />
+
         <ValidatorModal
           open={!!selectedValidator}
           restakeEntries={restakeEntries}
-          onClose={handleModalClose}
-          delegatorDelegations={delegatorDelegations}
+          onClose={handleStakingModalClose}
         />
 
         {/* Title */}
@@ -551,30 +516,30 @@ export const Staking = () => {
         {/* My Validators */}
         {delegatorDelegations?.length != 0 && validators && (
           <div className="my-validators mb-20 max-w-6xl mx-auto">
-            <div className="font-bold text-lg mb-4 px-4">My Validators</div>
-            <div className="px-4 pb-2">
-              <div className="staked-amount">
-                <div>
+            <div className="font-bold text-xl mb-4 px-4">My Validators</div>
+
+            {/* Claim Rewards*/}
+            {delegationTotalRewards && (
+              <div className="px-4 mb-4 flex items-center flex-col sm:flex-row gap-2 sm:gap-4 text-center sm:text-left">
+                <div className="flex-1">
                   <span className="font-semibold">
-                    {" "}
-                    Total amount staked:{" "}
-                    {delegatorDelegations
-                      ?.reduce((sum: any, delegation: any) => {
-                        const amount = new BigNumber(
-                          delegation?.balance?.amount || 0
-                        );
-                        return sum.plus(amount);
-                      }, new BigNumber(0))
-                      .dividedBy(`1e${SCRTToken.decimals}`)
-                      .toFormat(SCRTToken.decimals)}
+                    {`Total Pending Rewards: ${totalPendingRewards()}`}
                   </span>
                   <span className="text-xs font-semibold text-neutral-400">
                     {" "}
                     SCRT
                   </span>
                 </div>
+
+                <button
+                  onClick={() => setIsClaimRewardsModalOpen(true)}
+                  className="flex-initial text-medium disabled:bg-neutral-600 enabled:bg-green-600 enabled:hover:bg-green-700 disabled:text-neutral-400 enabled:text-white transition-colors font-semibold px-2 py-2 text-sm rounded-md"
+                >
+                  Claim Pending Rewards
+                </button>
               </div>
-            </div>
+            )}
+
             <div className="my-validators flex flex-col px-4">
               {delegatorDelegations?.map((delegation: any, i: any) => (
                 <MyValidatorsItem
@@ -635,42 +600,22 @@ export const Staking = () => {
                 </Tooltip>
               </div>
             )}
-            {/* Claim Rewards*/}
-            <div className="px-4 pb-2">
-              <div className="staked-amount">
-                {delegationTotalRewards && (
-                  <div>
-                    <span className="font-semibold">
-                      {" "}
-                      Total pending rewards:{" "}
-                      {BigNumber(delegationTotalRewards?.total[0]?.amount)
-                        .dividedBy(`1e${SCRTToken.decimals}`)
-                        .toFormat(SCRTToken.decimals)}
-                    </span>
-                    <span className="text-xs font-semibold text-neutral-400">
-                      {" "}
-                      SCRT
-                    </span>
-                    <button
-                      onClick={() => claimRewards()}
-                      className="text-medium disabled:bg-neutral-600 enabled:bg-green-600 enabled:hover:bg-green-700 disabled:text-neutral-400 enabled:text-white transition-colors font-semibold px-2 py-2 text-sm rounded-md"
-                    >
-                      Claim Rewards
-                    </button>
-                    <Tooltip
-                      title={"Claim your staking rewards"}
-                      placement="right"
-                      arrow
-                    >
-                      <FontAwesomeIcon
-                        icon={faInfoCircle}
-                        className="ml-2 text-neutral-400"
-                      />
-                    </Tooltip>
-                    <FeeGrant />
-                  </div>
-                )}
+
+            {/* Total Staked | Auto Restake */}
+            <div className="px-4 mt-4 flex flex-col sm:flex-row gap-2 sm:gap-4 text-center sm:text-left">
+              <div className="flex-1">
+                <span className="font-semibold">{`Total Amount Staked: ${totalAmountStaked()}`}</span>
+                <span className="text-xs font-semibold text-neutral-400">
+                  SCRT
+                </span>
               </div>
+
+              <button
+                onClick={() => alert("Todo!")}
+                className="flex-initial text-medium disabled:bg-neutral-600 enabled:bg-sky-600 enabled:hover:bg-sky-700 disabled:text-neutral-400 enabled:text-white transition-colors font-semibold px-2 py-2 text-sm rounded-md"
+              >
+                Manage Auto Restake
+              </button>
             </div>
           </div>
         )}
@@ -678,7 +623,7 @@ export const Staking = () => {
         {/* All Validators */}
         <div className="max-w-6xl mx-auto mt-8">
           <div className="font-bold text-xl mb-4 px-4">
-            Validators
+            All Validators
             <Tooltip
               title={
                 "To promote decentralization, all validators are ordered randomly."

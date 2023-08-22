@@ -6,6 +6,7 @@ import {
   faChevronRight,
   faCircle,
   faGlobe,
+  faRepeat,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Tooltip from "@mui/material/Tooltip";
@@ -13,7 +14,7 @@ import { APIContext } from "shared/context/APIContext";
 import { usdString } from "shared/utils/commons";
 import BigNumber from "bignumber.js";
 import { formatNumber } from "shared/utils/commons";
-import { ValidatorRestakeStatus } from "../Staking";
+import { IValidator, ValidatorRestakeStatus } from "../Staking";
 import {
   getWalletViewingKey,
   isViewingKeyAvailable,
@@ -40,8 +41,6 @@ const MyValidatorsItem = (props: IMyValidatorsItemProps) => {
     .toString();
 
   const { currentPrice, setCurrentPrice } = useContext(APIContext);
-
-  const [isAutoRestakeChecked, setIsAutoRestakeChecked] = useState(false);
 
   const [imgUrl, setImgUrl] = useState<any>();
 
@@ -71,14 +70,12 @@ const MyValidatorsItem = (props: IMyValidatorsItemProps) => {
     }
   }, [props.identity, identityRef]);
 
-  useEffect(() => {
-    setIsAutoRestakeChecked(
-      props.restakeEntries.find(
-        (validatorAddress: string) =>
-          props.validator.operator_address === validatorAddress
-      )
+  const isRestakeEnabled = (validator: IValidator) => {
+    return props.restakeEntries.find(
+      (validatorAddress: string) =>
+        validatorAddress === validator.operator_address
     );
-  }, [props.restakeEntries]);
+  };
 
   return (
     <>
@@ -90,77 +87,25 @@ const MyValidatorsItem = (props: IMyValidatorsItemProps) => {
         }}
         className="dark:even:bg-neutral-700 dark:odd:bg-neutral-800 flex items-center text-left dark:hover:bg-neutral-600 py-8 sm:py-4 gap-4 pl-4 pr-8"
       >
-        {/* Checkbox */}
-        <div className="">
-          <input
-            type="checkbox"
-            checked={isAutoRestakeChecked}
-            onChange={(event) => {
-              const isChecked = event.target.checked;
-              setIsAutoRestakeChecked(isChecked);
-              const existingEntry = props.restakeChoice?.find(
-                (item: any) =>
-                  item.validator_address === props.validator.operator_address
-              );
-
-              if (existingEntry) {
-                props.setRestakeChoice((prevChoices: any) =>
-                  prevChoices.map((item: any) =>
-                    item.validator_address === props.validator.operator_address
-                      ? { ...item, autoRestake: isChecked }
-                      : item
-                  )
-                );
-              } else {
-                props.setRestakeChoice((prevChoices: any) => [
-                  ...prevChoices,
-                  {
-                    validator_address: props.validator.operator_address,
-                    autoRestake: isChecked,
-                  },
-                ]);
-              }
-            }}
-            onClick={(event) => {
-              event.stopPropagation();
-            }}
-          />
-        </div>
         {/* Auto Restake */}
         <div className="auto-restake">
-          {props.restakeEntries.find(
-            (validatorAddress: string) =>
-              props.validator.operator_address === validatorAddress
-          ) && (
-            <Tooltip title={"Auto restake is enabled"} placement="bottom" arrow>
-              <div className="flex items-center flex-col">
-                <span className="font-bold text-xs text-green-600">
-                  Autorestake
-                </span>
-                <span className="font-bold text-xs text-green-600">
-                  enabled
-                </span>
-              </div>
-            </Tooltip>
-          )}
-          {!props.restakeEntries.find(
-            (validatorAddress: string) =>
-              props.validator.operator_address === validatorAddress
-          ) && (
-            <Tooltip
-              title={"Auto restake is disabled"}
-              placement="bottom"
-              arrow
+          <Tooltip
+            title={`Auto restake is ${
+              isRestakeEnabled(props.validator) ? "enabled" : "disabled"
+            }!`}
+            placement="bottom"
+            arrow
+          >
+            <span
+              className={`font-bold text-xs p-1 rounded-full ${
+                isRestakeEnabled(props.validator)
+                  ? "text-green-200 bg-green-800"
+                  : "text-red-200 bg-red-800"
+              }`}
             >
-              <div className="flex items-center flex-col">
-                <span className="font-bold text-xs text-red-600">
-                  Autorestake
-                </span>
-                <span className="font-bold text-xs text-red-600">disabled</span>
-              </div>
-            </Tooltip>
-          )}
-          {/* <FontAwesomeIcon icon={faArrowRotateRight} /> */}
+              <FontAwesomeIcon icon={faRepeat} className="fa-fw" />
+            </span>
+          </Tooltip>
         </div>
         {/* Image */}
         <div className="image">
@@ -211,7 +156,7 @@ const MyValidatorsItem = (props: IMyValidatorsItemProps) => {
           <div className="description text-xs text-gray-500 mb-2 text-right">
             Your stake
           </div>
-          <div className="staked-amount">
+          <div>
             <div>
               <span className="font-semibold">{stakedAmountString}</span>
               <span className="text-xs font-semibold text-neutral-400">

@@ -33,7 +33,6 @@ interface IValidatorModalProps {
   open: boolean;
   onClose: any;
   restakeEntries: any;
-  delegatorDelegations: any;
 }
 
 const ValidatorModal = (props: IValidatorModalProps) => {
@@ -559,7 +558,7 @@ const ValidatorModal = (props: IValidatorModalProps) => {
                     </div>
                   </div>
 
-                  {props.delegatorDelegations?.find(
+                  {delegatorDelegations?.find(
                     (delegatorDelegation: any) =>
                       selectedValidator?.operator_address ==
                       delegatorDelegation.delegation.validator_address
@@ -570,7 +569,7 @@ const ValidatorModal = (props: IValidatorModalProps) => {
                         <div className="bg-white/5 rounded-xl px-4 py-8 mt-4 text-center sm:text-left">
                           <div className="font-bold mb-2">Your Delegation</div>
                           <div className="font-semibold">
-                            {props.delegatorDelegations?.find(
+                            {delegatorDelegations?.find(
                               (delegatorDelegation: any) =>
                                 selectedValidator?.operator_address ==
                                 delegatorDelegation.delegation.validator_address
@@ -580,7 +579,7 @@ const ValidatorModal = (props: IValidatorModalProps) => {
                           <div className="font-semibold text-neutral-400 mt-0.5 text-sm">
                             {usdString.format(
                               new BigNumber(
-                                props.delegatorDelegations?.find(
+                                delegatorDelegations?.find(
                                   (delegatorDelegation: any) =>
                                     selectedValidator?.operator_address ==
                                     delegatorDelegation.delegation
