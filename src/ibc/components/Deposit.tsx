@@ -935,19 +935,36 @@ function Deposit() {
             );
           } else if (
             selectedToken.is_ics20 &&
-            withdrawalChain?.axelar_chain_name !== CHAINS.MAINNET.AXELAR
+            !(
+              withdrawalChain?.axelar_chain_name === CHAINS.MAINNET.AXELAR &&
+              selectedToken.name === "SCRT"
+            )
           ) {
             const fromChain = "secret-snip",
               toChain = withdrawalChain.axelar_chain_name,
               destinationAddress = sourceAddress,
               asset = selectedToken.axelar_denom;
 
-            const depositAddress = await sdk.getDepositAddress({
-              fromChain,
-              toChain,
-              destinationAddress,
-              asset,
-            });
+            let depositAddress = "";
+
+            if (withdrawalChain?.axelar_chain_name === CHAINS.MAINNET.AXELAR) {
+              depositAddress = destinationAddress;
+            } else {
+              depositAddress = await sdk.getDepositAddress({
+                fromChain,
+                toChain,
+                destinationAddress,
+                asset,
+              });
+            }
+
+            console.log(
+              JSON.stringify({
+                channel: withdraw_channel_id,
+                remote_address: depositAddress,
+                timeout: 600, // 10 minute timeout
+              })
+            );
             tx = await secretjs.tx.compute.executeContract(
               {
                 contract_address: selectedToken.address,
@@ -1236,9 +1253,7 @@ function Deposit() {
             )}
             {ibcMode === "withdrawal" && secretjs && secretAddress && (
               <a
-                href={`${
-                  chains[selectedSource.chain_name].explorer_account
-                }${secretAddress}`}
+                href={`${chains["Secret Network"].explorer_account}${secretAddress}`}
                 target="_blank"
               >
                 {secretAddress.slice(0, 19) + "..." + secretAddress.slice(-19)}
