@@ -188,6 +188,7 @@ const MyValidatorsItem = (props: IMyValidatorsItemProps) => {
           <span className="font-semibold">{props.name}</span>
           {props.validator?.description?.website && (
             <a
+              onClick={(e) => e.stopPropagation()}
               href={props.validator?.description?.website}
               target="_blank"
               className="group font-medium text-sm"

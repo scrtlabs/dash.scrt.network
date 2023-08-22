@@ -28,6 +28,7 @@ import Title from "./components/Title";
 import { useSearchParams } from "react-router-dom";
 import { Nullable } from "shared/types/Nullable";
 import BigNumber from "bignumber.js";
+import { StakingView, isStakingView } from "shared/types/StakingView";
 
 // dummy interface for better code readability
 export interface IValidator {
@@ -39,8 +40,6 @@ export interface ValidatorRestakeStatus {
   autoRestake: boolean;
 }
 
-export type StakingView = "delegate" | "redelegate" | "undelegate";
-
 export const StakingContext = createContext(null);
 
 export const Staking = () => {
@@ -50,6 +49,19 @@ export const Staking = () => {
   const viewUrlParam: Nullable<string> = searchParams.get("view"); // "undelegate" | "redelegate" | "delegate"
 
   const [view, setView] = useState<Nullable<StakingView>>(null);
+
+  const handleModalClose = () => {
+    setIsValidatorModalOpen(false);
+
+    searchParams.get("validator") ? searchParams.delete("validator") : null;
+    searchParams.get("view") ? searchParams.delete("view") : null;
+    setSearchParams(searchParams);
+
+    setSelectedValidator(null);
+    setView(null);
+
+    document.body.classList.remove("overflow-hidden");
+  };
 
   const {
     secretjs,
@@ -109,28 +121,33 @@ export const Staking = () => {
   };
 
   useEffect(() => {
-    if (
-      validatorUrlParam &&
-      validators &&
-      getValByAddressStringSnippet(validatorUrlParam.toLowerCase())
-    ) {
-      setSelectedValidator(
-        getValByAddressStringSnippet(validatorUrlParam.toLowerCase())
-      );
+    if (validatorUrlParam && validators) {
+      if (getValByAddressStringSnippet(validatorUrlParam.toLowerCase())) {
+        setSelectedValidator(
+          getValByAddressStringSnippet(validatorUrlParam.toLowerCase())
+        );
+      } else {
+        searchParams.delete("validator");
+        searchParams.delete("view");
+        setSearchParams(searchParams);
+      }
     }
   }, [validatorUrlParam, validators]);
+
+  useEffect(() => {
+    if (viewUrlParam && !validatorUrlParam) {
+    }
+  }, [validatorUrlParam, viewUrlParam]);
 
   // sets view by url param
   useEffect(() => {
     if (viewUrlParam && validators) {
-      if (
-        viewUrlParam === "undelegate" ||
-        viewUrlParam === "redelegate" ||
-        viewUrlParam === "delegate"
-      ) {
-        setView(viewUrlParam);
+      if (isStakingView(viewUrlParam)) {
+        setView(viewUrlParam as StakingView);
       } else {
         setView(null);
+        searchParams.delete("view");
+        setSearchParams(searchParams);
       }
     }
   }, [viewUrlParam, validators]);
@@ -176,16 +193,6 @@ export const Staking = () => {
       }
     }
   }, [validators]);
-
-  // useEffect(() => {
-  //   if (valUrlParam && validators && validators.length > 0) {
-  //     const valByUrlParam: Nullable<IValidator> =
-  //       getValByAddressStringSnippet(valUrlParam);
-  //     if (valByUrlParam !== null) {
-  //       setSelectedValidator(valByUrlParam);
-  //     }
-  //   }
-  // }, [validators, valUrlParam]);
 
   useEffect(() => {
     const fetchDelegatorValidators = async () => {
@@ -507,12 +514,7 @@ export const Staking = () => {
         <ValidatorModal
           open={!!selectedValidator}
           restakeEntries={restakeEntries}
-          onClose={() => {
-            setSelectedValidator(null);
-            setView(null);
-            setIsValidatorModalOpen(false);
-            document.body.classList.remove("overflow-hidden");
-          }}
+          onClose={handleModalClose}
           delegatorDelegations={delegatorDelegations}
         />
 

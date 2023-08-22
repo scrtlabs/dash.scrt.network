@@ -157,6 +157,7 @@ export const Validator = (props: IValidatorProps) => {
           <span className="font-bold text-lg sm:text-base">{props.name}</span>
           {props.website && (
             <a
+              onClick={(e) => e.stopPropagation()}
               href={props.website}
               target="_blank"
               className="group font-medium text-sm hidden sm:inline-block"
