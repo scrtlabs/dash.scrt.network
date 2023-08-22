@@ -422,6 +422,20 @@ export const autoRestakeJsonLdSchema = [
   },
 ];
 
+// Staking
+export const stakingPageTitle = `${pageTitle} | Staking`;
+export const stakingPageDescription = `A staking panel for scrt! Delegate, undelegate, or auto-delegate your assets! Automate the process of "claim and restake" for your SCRT!`;
+export const stakingJsonLdSchema = [
+  {
+    "@context": "http://schema.org",
+    "@type": "WebPage",
+    url: "https://dash.scrt.network/staking",
+    name: stakingPageTitle,
+    description: stakingPageDescription,
+    creator: "Secret Jupiter, Secret Saturn",
+  },
+];
+
 // Apps
 export const appsPageTitle = `${pageTitle} | Apps`;
 export const appsPageDescription = `A curation of applications running on Secret Network Mainnet!`;

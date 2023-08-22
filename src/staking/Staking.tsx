@@ -11,7 +11,13 @@ import React, { createContext, useContext, useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import MyValidatorsItem from "./components/MyValidatorsItem";
 import { Validator } from "./components/Validator";
-import { shuffleArray, faucetAddress } from "shared/utils/commons";
+import {
+  shuffleArray,
+  faucetAddress,
+  stakingPageTitle,
+  stakingPageDescription,
+  stakingJsonLdSchema,
+} from "shared/utils/commons";
 import Tooltip from "@mui/material/Tooltip";
 import "./Staking.scss";
 import { SecretjsContext } from "shared/context/SecretjsContext";
@@ -166,22 +172,10 @@ export const Staking = () => {
     }
   }, [selectedValidator, view]);
 
-  function getViewByString(input: String): StakingView {
-    input = input.toLowerCase();
-    switch (input) {
-      case "delegate": {
-        return "delegate";
-      }
-      case "redelegate": {
-        return "redelegate";
-      }
-      case "undelegate": {
-        return "undelegate";
-      }
-      default: {
-        return null;
-      }
-    }
+  function getViewByString(input: string): Nullable<StakingView> {
+    return isStakingView(input.toLowerCase())
+      ? (input.toLowerCase() as StakingView)
+      : null;
   }
 
   useEffect(() => {
@@ -508,7 +502,36 @@ export const Staking = () => {
     <StakingContext.Provider value={providerValue}>
       <>
         <Helmet>
-          <title>{websiteName} | Staking</title>
+          <title>{stakingPageTitle}</title>
+
+          <meta charSet="UTF-8" />
+          <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1.0"
+          />
+
+          <meta name="title" content={stakingPageTitle} />
+          <meta name="application-name" content={stakingPageTitle} />
+          <meta name="description" content={stakingPageDescription} />
+          <meta name="robots" content="index,follow" />
+
+          <meta property="og:title" content={stakingPageTitle} />
+          <meta property="og:description" content={stakingPageDescription} />
+          <meta
+            property="og:image"
+            content={`/img/secret_dashboard_preview.png`}
+          />
+
+          <meta name="twitter:title" content={stakingPageTitle} />
+          <meta name="twitter:description" content={stakingPageDescription} />
+          <meta
+            property="twitter:image"
+            content={`/img/secret_dashboard_preview.png`}
+          />
+
+          <script type="application/ld+json">
+            {JSON.stringify(stakingJsonLdSchema)}
+          </script>
         </Helmet>
 
         <ValidatorModal

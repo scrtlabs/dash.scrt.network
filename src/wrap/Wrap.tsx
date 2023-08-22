@@ -34,7 +34,7 @@ import {
 } from "shared/context/SecretjsContext";
 import mixpanel from "mixpanel-browser";
 import { useSearchParams } from "react-router-dom";
-import { WrappingMode } from "shared/types/WrappingMode";
+import { WrappingMode, isWrappingMode } from "shared/types/WrappingMode";
 import { APIContext } from "shared/context/APIContext";
 
 export const WrapContext = createContext(null);
@@ -97,10 +97,7 @@ export function Wrap() {
   };
 
   useEffect(() => {
-    if (
-      modeUrlParam?.toLowerCase() === "wrap" ||
-      modeUrlParam?.toLowerCase() === "unwrap"
-    ) {
+    if (isWrappingMode(modeUrlParam?.toLowerCase())) {
       setWrappingMode(modeUrlParam.toLowerCase() as WrappingMode);
     }
   }, []);

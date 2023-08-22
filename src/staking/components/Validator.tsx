@@ -3,6 +3,9 @@ import { faChevronRight, faGlobe } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { formatNumber } from "shared/utils/commons";
 import { APIContext } from "shared/context/APIContext";
+import { IValidator } from "staking/Staking";
+import { Nullable } from "shared/types/Nullable";
+import Tooltip from "@mui/material/Tooltip";
 
 interface IValidatorProps {
   name: string;
@@ -108,6 +111,14 @@ export const Validator = (props: IValidatorProps) => {
     }
   }, [props.identity, identityRef]);
 
+  const hasTooMuchVotingPower = (validator: Nullable<IValidator>) => {
+    return (
+      validator?.delegator_shares &&
+      bondedToken &&
+      validator?.delegator_shares / 1e6 / bondedToken > maxVPThreshold
+    );
+  };
+
   return (
     <>
       <button
@@ -115,24 +126,21 @@ export const Validator = (props: IValidatorProps) => {
           props.openModal(true);
           props.setSelectedValidator(props.validator);
         }}
-        className={`group flex flex-col sm:flex-row items-center text-left even:bg-white dark:even:bg-neutral-800 py-8 sm:py-4 gap-4 pl-4 pr-8 ${
-          props.validator?.delegator_shares &&
-          bondedToken &&
-          props.validator?.delegator_shares / 1e6 / bondedToken > maxVPThreshold
-            ? "dark:odd:bg-red-400 "
-            : "dark:odd:bg-neutral-700 "
-        }
-         ${
-           props.validator?.delegator_shares &&
-           bondedToken &&
-           props.validator?.delegator_shares / 1e6 / bondedToken >
-             maxVPThreshold
-             ? "dark:hover:bg-red-500"
-             : "dark:hover:bg-neutral-600"
-         }`}
+        className="group flex flex-col sm:flex-row items-center text-left even:bg-white dark:even:bg-neutral-800 dark:odd:bg-neutral-700 py-8 sm:py-4 gap-4 pl-4 pr-8"
       >
         {/* Image */}
-        <div>
+        <div className="relative">
+          {hasTooMuchVotingPower(props.validator) ? (
+            <Tooltip
+              title={
+                "This validator has more than 10% voting power. Avoid this validator to promote decentralization."
+              }
+              placement="right"
+              arrow
+            >
+              <div className="absolute w-5 sm:w-2.5 h-5 sm:h-2.5 bg-red-500 rounded-full right-0 top-0 z-10"></div>
+            </Tooltip>
+          ) : null}
           {imgUrl ? (
             <>
               <img
