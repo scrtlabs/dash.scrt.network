@@ -190,9 +190,6 @@ const SecretjsContextProvider = ({ children }: any) => {
   }
 
   async function connectKeplr(preferedApiForLocalStorage: string = "Keplr") {
-    const sleep = (ms: number) =>
-      new Promise((resolve) => setTimeout(resolve, ms));
-
     while (
       !window.keplr ||
       !window.getEnigmaUtils ||

@@ -1,6 +1,6 @@
 import { useEffect, useState, useContext, createContext } from "react";
 import { MsgExecuteContract, BroadcastMode } from "secretjs";
-import { Token, tokens } from "shared/utils/config";
+import { Token } from "shared/utils/config";
 import {
   sleep,
   faucetURL,
@@ -10,6 +10,7 @@ import {
   wrapPageTitle,
   wrapPageDescription,
   wrapJsonLdSchema,
+  allTokens,
 } from "shared/utils/commons";
 import BigNumber from "bignumber.js";
 import { toast } from "react-toastify";
@@ -51,7 +52,7 @@ export function Send() {
 
   const { prices } = useContext(APIContext);
 
-  const secretToken: Token = tokens.find((token) => token.name === "SCRT");
+  const secretToken: Token = allTokens.find((token) => token.name === "SCRT");
   const [selectedToken, setSelectedToken] = useState<Token>(secretToken);
   const [selectedTokenPrice, setSelectedTokenPrice] = useState<number>(0);
   const [amountString, setAmountString] = useState<string>("");
@@ -84,7 +85,7 @@ export function Send() {
   const tokenUrlParam = searchParams.get("token");
 
   const isValidTokenParam = () => {
-    return tokens.find(
+    return allTokens.find(
       (token) => token.name.toLowerCase() === tokenUrlParam.toLowerCase()
     )
       ? true
@@ -94,7 +95,7 @@ export function Send() {
   useEffect(() => {
     if (tokenUrlParam && isValidTokenParam()) {
       setSelectedToken(
-        tokens.find(
+        allTokens.find(
           (token) => token.name.toLowerCase() === tokenUrlParam.toLowerCase()
         )
       );
@@ -664,7 +665,9 @@ export function Send() {
               <div className="flex mt-2" id="destinationInputWrapper">
                 <Select
                   isDisabled={!selectedToken.address || !secretAddress}
-                  options={tokens.sort((a, b) => a.name.localeCompare(b.name))}
+                  options={allTokens.sort((a, b) =>
+                    a.name.localeCompare(b.name)
+                  )}
                   value={selectedToken}
                   onChange={setSelectedToken}
                   isSearchable={false}
@@ -676,7 +679,11 @@ export function Send() {
                         className="w-6 h-6 mr-2 rounded-full"
                       />
                       <span className="font-semibold text-sm">
-                        {token.name === "SCRT" ? null : "s"}
+                        {token.name === "SCRT" ||
+                        token.is_ics20 ||
+                        token.is_snip20
+                          ? null
+                          : "s"}
                         {token.name}
                       </span>
                     </div>
