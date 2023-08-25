@@ -13,6 +13,7 @@ import {
   faShuffle,
   faRecycle,
   faCreditCard,
+  faPaperPlane,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useState } from "react";
@@ -156,6 +157,19 @@ export function Navigation({
             <span>Staking</span>
           </NavLink>
         </li> */}
+        <li>
+          <NavLink
+            to="/send"
+            className={({ isActive }) =>
+              isActive
+                ? "text-black dark:text-white bg-gradient-to-r from-neutral-200 via-neutral-200 to-neutral-200/10 dark:from-neutral-700 dark:via-neutral-700 dark:to-neutral-700/10 block w-full px-8 py-3 rounded-xl transition-colors font-bold cursor-default"
+                : "text-neutral-700 dark:text-neutral-300 cursor-pointer hover:text-black dark:hover:text-white block w-full px-8 py-3 rounded-xl transition-colors"
+            }
+          >
+            <FontAwesomeIcon icon={faPaperPlane} className="mr-2" />
+            <span>Send</span>
+          </NavLink>
+        </li>
         <li>
           <NavLink
             to="/apps"

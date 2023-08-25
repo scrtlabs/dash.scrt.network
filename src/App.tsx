@@ -16,6 +16,7 @@ import { Dashboard } from "dashboard/Dashboard";
 import Bridge from "bridge/Bridge";
 import Apps from "apps/Apps";
 import { Restake } from "stake/Restake";
+import { Send } from "send/Send";
 
 // Contexts
 import { ThemeContextProvider } from "shared/context/ThemeContext";
@@ -109,6 +110,7 @@ export default function App() {
         <Route path="/get-scrt" element={<GetSCRT />} />
         <Route path="/restake" element={<Restake />} />
         <Route path="/restake-redesign" element={<RestakeRedesign />} />
+        <Route path="/send" element={<Send />} />
         <Route path="/apps" element={<Apps />} />
       </Routes>
     </>
