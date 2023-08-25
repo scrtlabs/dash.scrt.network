@@ -1,5 +1,10 @@
 import { useEffect, useState, useContext, createContext } from "react";
-import { MsgExecuteContract, BroadcastMode } from "secretjs";
+import {
+  MsgExecuteContract,
+  BroadcastMode,
+  MsgSend,
+  validateAddress,
+} from "secretjs";
 import { Token } from "shared/utils/config";
 import {
   sleep,
@@ -35,8 +40,6 @@ import mixpanel from "mixpanel-browser";
 import { useSearchParams } from "react-router-dom";
 import { APIContext } from "shared/context/APIContext";
 
-export const WrapContext = createContext(null);
-
 export function Send() {
   const {
     feeGrantStatus,
@@ -52,10 +55,45 @@ export function Send() {
 
   const { prices } = useContext(APIContext);
 
-  const secretToken: Token = allTokens.find((token) => token.name === "SCRT");
+  let tokens = JSON.parse(JSON.stringify(allTokens));
+  const tokenToModify = tokens.find((token: any) => token.name === "SCRT");
+  if (tokenToModify) {
+    tokenToModify.address = "native";
+  }
+
+  const sSCRT = [
+    {
+      name: "SCRT",
+      address: "secret1k0jntykt7e4g3y88ltc60czgjuqdy4c9e8fzek",
+      code_hash:
+        "af74387e276be8874f07bec3a87023ee49b0e7ebe08178c49d0a49c3c98ed60e",
+      image: "/scrt.svg",
+      decimals: 6,
+      coingecko_id: "secret",
+      deposits: [
+        {
+          chain_name: "Secret",
+          from_denom: "uscrt",
+        },
+      ],
+      withdrawals: [
+        {
+          chain_name: "Secret",
+          from_denom: "uscrt",
+        },
+      ],
+    },
+  ];
+
+  tokens = tokens.concat(sSCRT);
+
+  const secretToken: Token = tokens.find((token: any) => token.name === "SCRT");
   const [selectedToken, setSelectedToken] = useState<Token>(secretToken);
   const [selectedTokenPrice, setSelectedTokenPrice] = useState<number>(0);
   const [amountString, setAmountString] = useState<string>("");
+
+  const [destinationAddress, setDestinationAddress] = useState<string>("");
+  const [memo, setMemo] = useState<string>("");
 
   const [nativeBalance, setNativeBalance] = useState<any>();
   const [tokenBalance, setTokenBalance] = useState<any>();
@@ -81,11 +119,10 @@ export function Send() {
 
   // URL params
   const [searchParams, setSearchParams] = useSearchParams();
-  const modeUrlParam = searchParams.get("mode");
   const tokenUrlParam = searchParams.get("token");
 
   const isValidTokenParam = () => {
-    return allTokens.find(
+    return tokens.find(
       (token) => token.name.toLowerCase() === tokenUrlParam.toLowerCase()
     )
       ? true
@@ -95,7 +132,7 @@ export function Send() {
   useEffect(() => {
     if (tokenUrlParam && isValidTokenParam()) {
       setSelectedToken(
-        allTokens.find(
+        tokens.find(
           (token) => token.name.toLowerCase() === tokenUrlParam.toLowerCase()
         )
       );
@@ -122,6 +159,11 @@ export function Send() {
       return match && str === match[0];
     }
 
+    if (validateAddress(destinationAddress)) {
+      setValidationMessage("Please enter a valid address");
+      setisValidAmount(false);
+    }
+
     if (
       new BigNumber(amountString).isGreaterThan(
         new BigNumber(availableAmount)
@@ -138,13 +180,14 @@ export function Send() {
       setisValidAmount(true);
       isValid = true;
     }
+
     return isValid;
   }
 
   useEffect(() => {
     // setting amountToWrap to max. value, if entered value is > available
     const availableAmount =
-      selectedToken.name === "SCRT"
+      selectedToken.address === "native"
         ? new BigNumber(nativeBalance).dividedBy(`1e${selectedToken.decimals}`)
         : new BigNumber(tokenBalance).dividedBy(`1e${selectedToken.decimals}`);
     if (
@@ -154,7 +197,8 @@ export function Send() {
         new BigNumber(availableAmount)
       ) &&
       !(
-        tokenBalance == viewingKeyErrorString && selectedToken.name != "SCRT"
+        tokenBalance == viewingKeyErrorString &&
+        selectedToken.address !== "native"
       ) &&
       amountString !== ""
     ) {
@@ -179,7 +223,12 @@ export function Send() {
 
   // handles [25% | 50% | 75% | Max] Button-Group
   function setAmountByPercentage(percentage: number) {
-    const maxValue = tokenBalance;
+    let maxValue = "0";
+    if (selectedToken.address === "native") {
+      maxValue = nativeBalance;
+    } else {
+      maxValue = tokenBalance;
+    }
 
     if (maxValue) {
       let availableAmount = new BigNumber(maxValue).dividedBy(
@@ -189,7 +238,7 @@ export function Send() {
       if (
         percentage == 100 &&
         potentialInput > 0.05 &&
-        selectedToken.name === "SCRT"
+        selectedToken.address === "native"
       ) {
         potentialInput = potentialInput - 0.05;
       }
@@ -269,7 +318,10 @@ export function Send() {
           onClick={() => setAmountByPercentage(25)}
           className="bg-neutral-100 dark:bg-neutral-900 px-1.5 py-0.5 rounded-l-md transition-colors hover:bg-neutral-300 dark:hover:bg-neutral-700 cursor-pointer disabled:text-neutral-500 dark:disabled:text-neutral-500 disabled:hover:bg-neutral-900 dark:disabled:hover:bg-neutral-900 disabled:cursor-default focus:outline-0 focus:ring-2 ring-sky-500/40 focus:z-10"
           disabled={
-            !secretjs || !secretAddress || tokenBalance == viewingKeyErrorString
+            !secretjs ||
+            !secretAddress ||
+            (tokenBalance == viewingKeyErrorString &&
+              selectedToken.address !== "native")
           }
         >
           25%
@@ -278,7 +330,10 @@ export function Send() {
           onClick={() => setAmountByPercentage(50)}
           className="bg-neutral-100 dark:bg-neutral-900 px-1.5 py-0.5 border-l border-neutral-300 dark:border-neutral-700 transition-colors hover:bg-neutral-300 dark:hover:bg-neutral-700 cursor-pointer disabled:text-neutral-500 dark:disabled:text-neutral-500 disabled:hover:bg-neutral-900 dark:disabled:hover:bg-neutral-900 disabled:cursor-default focus:outline-0 focus:ring-2 ring-sky-500/40 focus:z-10"
           disabled={
-            !secretjs || !secretAddress || tokenBalance == viewingKeyErrorString
+            !secretjs ||
+            !secretAddress ||
+            (tokenBalance == viewingKeyErrorString &&
+              selectedToken.address !== "native")
           }
         >
           50%
@@ -287,7 +342,10 @@ export function Send() {
           onClick={() => setAmountByPercentage(75)}
           className="bg-neutral-100 dark:bg-neutral-900 px-1.5 py-0.5 border-l border-neutral-300 dark:border-neutral-700 transition-colors hover:bg-neutral-300 dark:hover:bg-neutral-700 cursor-pointer disabled:text-neutral-500 dark:disabled:text-neutral-500 disabled:hover:bg-neutral-900 dark:disabled:hover:bg-neutral-900 disabled:cursor-default focus:outline-0 focus:ring-2 ring-sky-500/40 focus:z-10"
           disabled={
-            !secretjs || !secretAddress || tokenBalance == viewingKeyErrorString
+            !secretjs ||
+            !secretAddress ||
+            (tokenBalance == viewingKeyErrorString &&
+              selectedToken.address !== "native")
           }
         >
           75%
@@ -296,7 +354,10 @@ export function Send() {
           onClick={() => setAmountByPercentage(100)}
           className="bg-neutral-100 dark:bg-neutral-900 px-1.5 py-0.5 rounded-r-md border-l border-neutral-300 dark:border-neutral-700 transition-colors hover:bg-neutral-300 dark:hover:bg-neutral-700 cursor-pointer disabled:text-neutral-500 dark:disabled:text-neutral-500 disabled:hover:bg-neutral-900 dark:disabled:hover:bg-neutral-900 disabled:cursor-default focus:outline-0 focus:ring-2 ring-sky-500/40 focus:z-10"
           disabled={
-            !secretjs || !secretAddress || tokenBalance == viewingKeyErrorString
+            !secretjs ||
+            !secretAddress ||
+            (tokenBalance == viewingKeyErrorString &&
+              selectedToken.address !== "native")
           }
         >
           MAX
@@ -442,27 +503,38 @@ export function Send() {
       var errorMessage = "";
 
       try {
-        const toastId = toast.loading(`Unwrapping s${selectedToken.name}`, {
+        const toastId = toast.loading(`Sending s${selectedToken.name}`, {
           closeButton: true,
         });
+        secretAddress;
+        destinationAddress;
+        amount;
         await secretjs.tx
           .broadcast(
             [
-              new MsgExecuteContract({
-                sender: secretAddress,
-                contract_address: selectedToken.address,
-                code_hash: selectedToken.code_hash,
-                sent_funds: [],
-                msg: {
-                  redeem: {
-                    amount,
-                    denom:
-                      selectedToken.name === "SCRT"
-                        ? undefined
-                        : selectedToken.withdrawals[0].from_denom,
-                  },
-                },
-              } as any),
+              selectedToken.address === "native"
+                ? new MsgSend({
+                    from_address: secretAddress,
+                    to_address: destinationAddress,
+                    amount: [
+                      {
+                        amount: amount,
+                        denom: "uscrt",
+                      },
+                    ],
+                  } as any)
+                : new MsgExecuteContract({
+                    sender: secretAddress,
+                    contract_address: selectedToken.address,
+                    code_hash: selectedToken.code_hash,
+                    sent_funds: [],
+                    msg: {
+                      transfer: {
+                        recipient: destinationAddress,
+                        amount: amount,
+                      },
+                    },
+                  } as any),
             ],
             {
               gasLimit: 150_000,
@@ -470,20 +542,21 @@ export function Send() {
               feeDenom: "uscrt",
               feeGranter: feeGrantStatus === "Success" ? faucetAddress : "",
               broadcastMode: BroadcastMode.Sync,
+              memo: memo,
             }
           )
           .catch((error: any) => {
             console.error(error);
             if (error?.tx?.rawLog) {
               toast.update(toastId, {
-                render: `Unwrapping of s${selectedToken.name} failed: ${error.tx.rawLog}`,
+                render: `Sending of s${selectedToken.name} failed: ${error.tx.rawLog}`,
                 type: "error",
                 isLoading: false,
                 closeOnClick: true,
               });
             } else {
               toast.update(toastId, {
-                render: `Unwrapping of s${selectedToken.name} failed: ${error.message}`,
+                render: `Sending of s${selectedToken.name} failed: ${error.message}`,
                 type: "error",
                 isLoading: false,
                 closeOnClick: true,
@@ -496,7 +569,7 @@ export function Send() {
               if (tx.code === 0) {
                 setAmountString("");
                 toast.update(toastId, {
-                  render: `Unwrapped s${selectedToken.name} successfully`,
+                  render: `Sending s${selectedToken.name} successfully`,
                   type: "success",
                   isLoading: false,
                   closeOnClick: true,
@@ -545,7 +618,11 @@ export function Send() {
             onClick={() => submit()}
           >
             {secretAddress && secretjs && amount ? (
-              <>{`Send ${amount} ${wrappedCurrency}`}</>
+              <>{`Send ${amount} ${
+                selectedToken.address === "native"
+                  ? wrappedCurrency
+                  : nativeCurrency
+              }`}</>
             ) : null}
 
             {/* general text without value */}
@@ -615,234 +692,224 @@ export function Send() {
         </script>
       </Helmet>
 
-      <WrapContext.Provider
-        value={{
-          selectedTokenName: selectedToken.name,
-          amountToWrap: amountString,
-          hasEnoughBalanceForUnwrapping: false,
-        }}
-      >
-        <div className="w-full max-w-xl mx-auto px-4 onEnter_fadeInDown relative">
-          {!secretjs && !secretAddress ? (
-            // Overlay to connect on click
-            <div
-              className="absolute block top-0 left-0 right-0 bottom-0 z-10"
-              onClick={handleClick}
-            ></div>
-          ) : null}
-          {/* Content */}
-          <div className="border border-neutral-200 dark:border-neutral-700 rounded-2xl p-8 w-full text-neutral-800 dark:text-neutral-200 bg-white dark:bg-neutral-900">
-            {/* Header */}
-            <div className="flex items-center mb-4">
-              <h1 className="inline text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-500 to-purple-500">
-                Secret Send
-              </h1>
+      <div className="w-full max-w-xl mx-auto px-4 onEnter_fadeInDown relative">
+        {!secretjs && !secretAddress ? (
+          // Overlay to connect on click
+          <div
+            className="absolute block top-0 left-0 right-0 bottom-0 z-10"
+            onClick={handleClick}
+          ></div>
+        ) : null}
+        {/* Content */}
+        <div className="border border-neutral-200 dark:border-neutral-700 rounded-2xl p-8 w-full text-neutral-800 dark:text-neutral-200 bg-white dark:bg-neutral-900">
+          {/* Header */}
+          <div className="flex items-center mb-4">
+            <h1 className="inline text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-500 to-purple-500">
+              Secret Send
+            </h1>
 
-              <Tooltip title={message} placement="right" arrow>
-                <span className="ml-2 mt-1 text-neutral-600 dark:text-neutral-400 hover:text-black dark:hover:text-white transition-colors cursor-pointer">
-                  <FontAwesomeIcon icon={faInfoCircle} />
-                </span>
+            <Tooltip title={message} placement="right" arrow>
+              <span className="ml-2 mt-1 text-neutral-600 dark:text-neutral-400 hover:text-black dark:hover:text-white transition-colors cursor-pointer">
+                <FontAwesomeIcon icon={faInfoCircle} />
+              </span>
+            </Tooltip>
+          </div>
+
+          {/* *** From *** */}
+          <div className="bg-neutral-200 dark:bg-neutral-800 p-4 rounded-xl mb-4">
+            {/* Title Bar */}
+            <div className="flex flex-col sm:flex-row">
+              <div className="flex-1 font-semibold mb-2 text-center sm:text-left">
+                From
+              </div>
+              {!isValidAmount && isValidationActive && (
+                <div className="flex-initial">
+                  <div className="text-red-500 dark:text-red-500 text-xs text-center sm:text-right mb-2">
+                    {validationMessage}
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Input Field */}
+            <div className="flex mt-2" id="destinationInputWrapper">
+              <Select
+                isDisabled={!selectedToken.address || !secretAddress}
+                options={tokens.sort((a, b) => a.name.localeCompare(b.name))}
+                value={selectedToken}
+                onChange={setSelectedToken}
+                isSearchable={false}
+                formatOptionLabel={(token) => (
+                  <div className="flex items-center">
+                    <img
+                      src={`/img/assets/${token.image}`}
+                      alt={`${token.name} logo`}
+                      className="w-6 h-6 mr-2 rounded-full"
+                    />
+                    <span className="font-semibold text-sm">
+                      {token.address === "native" ||
+                      token.is_ics20 ||
+                      token.is_snip20
+                        ? null
+                        : "s"}
+                      {token.name}
+                    </span>
+                  </div>
+                )}
+                className="react-select-wrap-container"
+                classNamePrefix="react-select-wrap"
+              />
+              <input
+                value={amountString}
+                onChange={handleInputChange}
+                type="number"
+                min="0"
+                step="0.000001"
+                className={
+                  "text-right focus:z-10 block flex-1 min-w-0 w-full bg-neutral-100 dark:bg-neutral-900 text-black dark:text-white px-4 rounded-r-lg disabled:placeholder-neutral-300 dark:disabled:placeholder-neutral-700 transition-colors font-medium focus:outline-0 focus:ring-2 ring-sky-500/40" +
+                  (!isValidAmount && isValidationActive
+                    ? "  border border-red-500 dark:border-red-500"
+                    : "")
+                }
+                name="fromValue"
+                id="fromValue"
+                placeholder="0"
+                disabled={!secretjs || !secretAddress}
+              />
+            </div>
+
+            {/* Balance | [25%|50%|75%|Max] */}
+            <div className="flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 mt-2">
+              <div className="flex-1 text-xs">
+                {selectedToken.address === "native" ? (
+                  <NativeTokenBalanceUi />
+                ) : (
+                  <WrappedTokenBalanceUi />
+                )}
+              </div>
+              <div className="sm:flex-initial text-xs">
+                <PercentagePicker />
+              </div>
+            </div>
+          </div>
+
+          {/* *** Destination Address *** */}
+          <div className="bg-neutral-200 dark:bg-neutral-800 p-4 rounded-xl mb-4">
+            {/* Title Bar */}
+            <div className="flex flex-col sm:flex-row">
+              <div className="flex-1 font-semibold mb-2 text-center sm:text-left">
+                Destination Address
+              </div>
+            </div>
+
+            {/* Input Field */}
+            <div className="flex" id="destinationInputWrapper">
+              <input
+                value={destinationAddress}
+                onChange={(e) => setDestinationAddress(e.target.value)}
+                type="text"
+                className={
+                  "py-2 text-left focus:z-10 block flex-1 min-w-0 w-full bg-neutral-100 dark:bg-neutral-900 text-black dark:text-white px-4 rounded-md disabled:placeholder-neutral-300 dark:disabled:placeholder-neutral-700 transition-colors font-medium focus:outline-0 focus:ring-2 ring-sky-500/40" +
+                  (!isValidAmount && isValidationActive
+                    ? "  border border-red-500 dark:border-red-500"
+                    : "")
+                }
+                name="destinationAddress"
+                id="destinationAddress"
+                placeholder="Destination Address"
+                disabled={!secretjs || !secretAddress}
+              />
+            </div>
+          </div>
+
+          {/* *** Memo *** */}
+          <div className="bg-neutral-200 dark:bg-neutral-800 p-4 rounded-xl">
+            {/* Title Bar */}
+            <div className="flex flex-col sm:flex-row">
+              <div className="flex-1 font-semibold mb-2 text-center sm:text-left">
+                Memo (optional)
+              </div>
+            </div>
+
+            {/* Input Field */}
+            <div className="flex" id="memoInputWrapper">
+              <input
+                value={memo}
+                onChange={(e) => setMemo(e.target.value)}
+                type="text"
+                className={
+                  "py-2 text-left focus:z-10 block flex-1 min-w-0 w-full bg-neutral-100 dark:bg-neutral-900 text-black dark:text-white px-4 rounded-md disabled:placeholder-neutral-300 dark:disabled:placeholder-neutral-700 transition-colors font-medium focus:outline-0 focus:ring-2 ring-sky-500/40" +
+                  (!isValidAmount && isValidationActive
+                    ? "  border border-red-500 dark:border-red-500"
+                    : "")
+                }
+                name="memo"
+                id="memo"
+                placeholder="Memo"
+                disabled={!secretjs || !secretAddress}
+              />
+            </div>
+          </div>
+
+          {/* Fee Grant */}
+          <div className="bg-neutral-200 dark:bg-neutral-800 p-4 rounded-lg select-none flex items-center my-4">
+            <div className="flex-1 flex items-center">
+              <span className="font-semibold text-sm">Fee Grant</span>
+              <Tooltip
+                title={`Request Fee Grant so that you don't have to pay gas fees (up to 0.1 SCRT)`}
+                placement="right"
+                arrow
+              >
+                <FontAwesomeIcon icon={faInfoCircle} className="ml-2" />
               </Tooltip>
             </div>
-
-            {/* *** From *** */}
-            <div className="bg-neutral-200 dark:bg-neutral-800 p-4 rounded-xl mb-4">
-              {/* Title Bar */}
-              <div className="flex flex-col sm:flex-row">
-                <div className="flex-1 font-semibold mb-2 text-center sm:text-left">
-                  From
+            <div className="flex-initial">
+              {/* Untouched */}
+              {feeGrantStatus === "Untouched" && (
+                <>
+                  <button
+                    id="feeGrantButton"
+                    onClick={requestFeeGrant}
+                    className="font-semibold text-xs bg-neutral-100 dark:bg-neutral-900 px-1.5 py-1 rounded-md transition-colors hover:bg-neutral-300 dark:hover:bg-neutral-700 cursor-pointer disabled:text-neutral-500 dark:disabled:text-neutral-500 disabled:hover:bg-neutral-100 dark:disabled:hover:bg-neutral-900 disabled:cursor-default focus:outline-0 focus:ring-2 ring-sky-500/40"
+                    disabled={!secretjs || !secretAddress}
+                  >
+                    Request Fee Grant
+                  </button>
+                </>
+              )}
+              {/* Success */}
+              {feeGrantStatus === "Success" && (
+                <div className="font-semibold text-sm flex items-center h-[1.6rem]">
+                  <FontAwesomeIcon
+                    icon={faCheckCircle}
+                    className="text-green-500 dark:text-green-500 mr-1.5"
+                  />
+                  Fee Granted
                 </div>
-                {!isValidAmount && isValidationActive && (
-                  <div className="flex-initial">
-                    <div className="text-red-500 dark:text-red-500 text-xs text-center sm:text-right mb-2">
-                      {validationMessage}
-                    </div>
-                  </div>
-                )}
-              </div>
-
-              {/* Input Field */}
-              <div className="flex mt-2" id="destinationInputWrapper">
-                <Select
-                  isDisabled={!selectedToken.address || !secretAddress}
-                  options={allTokens.sort((a, b) =>
-                    a.name.localeCompare(b.name)
-                  )}
-                  value={selectedToken}
-                  onChange={setSelectedToken}
-                  isSearchable={false}
-                  formatOptionLabel={(token) => (
-                    <div className="flex items-center">
-                      <img
-                        src={`/img/assets/${token.image}`}
-                        alt={`${token.name} logo`}
-                        className="w-6 h-6 mr-2 rounded-full"
-                      />
-                      <span className="font-semibold text-sm">
-                        {token.name === "SCRT" ||
-                        token.is_ics20 ||
-                        token.is_snip20
-                          ? null
-                          : "s"}
-                        {token.name}
-                      </span>
-                    </div>
-                  )}
-                  className="react-select-wrap-container"
-                  classNamePrefix="react-select-wrap"
-                />
-                <input
-                  value={amountString}
-                  onChange={handleInputChange}
-                  type="number"
-                  min="0"
-                  step="0.000001"
-                  className={
-                    "text-right focus:z-10 block flex-1 min-w-0 w-full bg-neutral-100 dark:bg-neutral-900 text-black dark:text-white px-4 rounded-r-lg disabled:placeholder-neutral-300 dark:disabled:placeholder-neutral-700 transition-colors font-medium focus:outline-0 focus:ring-2 ring-sky-500/40" +
-                    (!isValidAmount && isValidationActive
-                      ? "  border border-red-500 dark:border-red-500"
-                      : "")
-                  }
-                  name="fromValue"
-                  id="fromValue"
-                  placeholder="0"
-                  disabled={!secretjs || !secretAddress}
-                />
-              </div>
-
-              {/* Balance | [25%|50%|75%|Max] */}
-              <div className="flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 mt-2">
-                <div className="flex-1 text-xs">
-                  {selectedToken.name === "SCRT" ? (
-                    <NativeTokenBalanceUi />
-                  ) : (
-                    <WrappedTokenBalanceUi />
-                  )}
+              )}
+              {/* Fail */}
+              {feeGrantStatus === "Fail" && (
+                <div className="font-semibold text-sm h-[1.6rem]">
+                  <FontAwesomeIcon
+                    icon={faXmarkCircle}
+                    className="text-red-500 dark:text-red-500 mr-1.5"
+                  />
+                  Request failed
                 </div>
-                <div className="sm:flex-initial text-xs">
-                  <PercentagePicker />
-                </div>
-              </div>
+              )}
             </div>
-
-            {/* *** Destination Address *** */}
-            <div className="bg-neutral-200 dark:bg-neutral-800 p-4 rounded-xl mb-4">
-              {/* Title Bar */}
-              <div className="flex flex-col sm:flex-row">
-                <div className="flex-1 font-semibold mb-2 text-center sm:text-left">
-                  Destination Address
-                </div>
-              </div>
-
-              {/* Input Field */}
-              <div className="flex" id="destinationInputWrapper">
-                <input
-                  value={amountString}
-                  onChange={handleInputChange}
-                  type="text"
-                  className={
-                    "py-2 text-left focus:z-10 block flex-1 min-w-0 w-full bg-neutral-100 dark:bg-neutral-900 text-black dark:text-white px-4 rounded-md disabled:placeholder-neutral-300 dark:disabled:placeholder-neutral-700 transition-colors font-medium focus:outline-0 focus:ring-2 ring-sky-500/40" +
-                    (!isValidAmount && isValidationActive
-                      ? "  border border-red-500 dark:border-red-500"
-                      : "")
-                  }
-                  name="destinationAddress"
-                  id="destinationAddress"
-                  placeholder="Destination Address"
-                  disabled={!secretjs || !secretAddress}
-                />
-              </div>
-            </div>
-
-            {/* *** Memo *** */}
-            <div className="bg-neutral-200 dark:bg-neutral-800 p-4 rounded-xl">
-              {/* Title Bar */}
-              <div className="flex flex-col sm:flex-row">
-                <div className="flex-1 font-semibold mb-2 text-center sm:text-left">
-                  Memo (optional)
-                </div>
-              </div>
-
-              {/* Input Field */}
-              <div className="flex" id="memoInputWrapper">
-                <input
-                  value={amountString}
-                  onChange={handleInputChange}
-                  type="text"
-                  className={
-                    "py-2 text-left focus:z-10 block flex-1 min-w-0 w-full bg-neutral-100 dark:bg-neutral-900 text-black dark:text-white px-4 rounded-md disabled:placeholder-neutral-300 dark:disabled:placeholder-neutral-700 transition-colors font-medium focus:outline-0 focus:ring-2 ring-sky-500/40" +
-                    (!isValidAmount && isValidationActive
-                      ? "  border border-red-500 dark:border-red-500"
-                      : "")
-                  }
-                  name="memo"
-                  id="memo"
-                  placeholder="Memo"
-                  disabled={!secretjs || !secretAddress}
-                />
-              </div>
-            </div>
-
-            {/* Fee Grant */}
-            <div className="bg-neutral-200 dark:bg-neutral-800 p-4 rounded-lg select-none flex items-center my-4">
-              <div className="flex-1 flex items-center">
-                <span className="font-semibold text-sm">Fee Grant</span>
-                <Tooltip
-                  title={`Request Fee Grant so that you don't have to pay gas fees (up to 0.1 SCRT)`}
-                  placement="right"
-                  arrow
-                >
-                  <FontAwesomeIcon icon={faInfoCircle} className="ml-2" />
-                </Tooltip>
-              </div>
-              <div className="flex-initial">
-                {/* Untouched */}
-                {feeGrantStatus === "Untouched" && (
-                  <>
-                    <button
-                      id="feeGrantButton"
-                      onClick={requestFeeGrant}
-                      className="font-semibold text-xs bg-neutral-100 dark:bg-neutral-900 px-1.5 py-1 rounded-md transition-colors hover:bg-neutral-300 dark:hover:bg-neutral-700 cursor-pointer disabled:text-neutral-500 dark:disabled:text-neutral-500 disabled:hover:bg-neutral-100 dark:disabled:hover:bg-neutral-900 disabled:cursor-default focus:outline-0 focus:ring-2 ring-sky-500/40"
-                      disabled={!secretjs || !secretAddress}
-                    >
-                      Request Fee Grant
-                    </button>
-                  </>
-                )}
-                {/* Success */}
-                {feeGrantStatus === "Success" && (
-                  <div className="font-semibold text-sm flex items-center h-[1.6rem]">
-                    <FontAwesomeIcon
-                      icon={faCheckCircle}
-                      className="text-green-500 dark:text-green-500 mr-1.5"
-                    />
-                    Fee Granted
-                  </div>
-                )}
-                {/* Fail */}
-                {feeGrantStatus === "Fail" && (
-                  <div className="font-semibold text-sm h-[1.6rem]">
-                    <FontAwesomeIcon
-                      icon={faXmarkCircle}
-                      className="text-red-500 dark:text-red-500 mr-1.5"
-                    />
-                    Request failed
-                  </div>
-                )}
-              </div>
-            </div>
-
-            {/* Submit Button */}
-            <SubmitButton
-              disabled={!secretjs || !selectedToken.address || !secretAddress}
-              amount={amountString}
-              nativeCurrency={selectedToken.name}
-              wrappedAmount={amountString}
-              wrappedCurrency={"s" + selectedToken.name}
-            />
           </div>
+
+          {/* Submit Button */}
+          <SubmitButton
+            disabled={!secretjs || !selectedToken.address || !secretAddress}
+            amount={amountString}
+            nativeCurrency={selectedToken.name}
+            wrappedAmount={amountString}
+            wrappedCurrency={"s" + selectedToken.name}
+          />
         </div>
-      </WrapContext.Provider>
+      </div>
     </>
   );
 }
