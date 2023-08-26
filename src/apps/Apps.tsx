@@ -15,6 +15,7 @@ import React from "react";
 import { APIContext } from "shared/context/APIContext";
 import mixpanel from "mixpanel-browser";
 import { trackMixPanelEvent } from "shared/utils/commons";
+import { useSecretjsStore } from "zustand/secretjs";
 
 function Apps() {
   const {
@@ -64,6 +65,8 @@ function Apps() {
     }
   }
 
+  const { walletAddress, connectWallet } = useSecretjsStore();
+
   // Search
   const [searchText, setSearchText] = useState<string>("");
 
@@ -83,7 +86,6 @@ function Apps() {
           .find((tag: any) => tagsToBeFilteredBy.includes(tag))
       );
     }
-
     return items;
   }
 
@@ -117,6 +119,10 @@ function Apps() {
           title="Apps"
           description="A curation of applications running on Secret Network Mainnet!"
         />
+
+        <button onClick={connectWallet}>Set Wallet</button>
+        <br />
+        {walletAddress + ""}
 
         {/* Search */}
         <div className="relative w-full sm:w-96 mx-auto mb-4">

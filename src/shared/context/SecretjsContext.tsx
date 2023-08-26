@@ -12,6 +12,7 @@ import {
 import GetWalletModal from "./GetWalletModal";
 import ConnectWalletModal from "./ConnectWalletModal";
 import { trackMixPanelEvent } from "shared/utils/commons";
+import { FeeGrantStatus } from "shared/types/FeeGrantStatus";
 
 export async function isViewingKeyAvailable(token: Token) {
   const key = await getWalletViewingKey(token.address);
@@ -19,8 +20,6 @@ export async function isViewingKeyAvailable(token: Token) {
 }
 
 const SecretjsContext = createContext(null);
-
-export type FeeGrantStatus = "Success" | "Fail" | "Untouched";
 
 const SecretjsContextProvider = ({ children }: any) => {
   const [secretjs, setSecretjs] = useState<SecretNetworkClient | null>(null);
@@ -30,32 +29,6 @@ const SecretjsContextProvider = ({ children }: any) => {
   const [feeGrantStatus, setFeeGrantStatus] =
     useState<FeeGrantStatus>("Untouched");
   const [preferedWalletApi, setPreferedWalletApi] = useState<string>("");
-
-  useEffect(() => {
-    function localStorageEventHandler() {
-      const localStoragePreferedWalletApi =
-        localStorage.getItem("preferedWalletApi");
-      if (localStoragePreferedWalletApi) {
-        setPreferedWalletApi(localStoragePreferedWalletApi);
-      }
-    }
-
-    // call on startup
-    localStorageEventHandler();
-
-    // call on every change
-    window.addEventListener("storage", localStorageEventHandler);
-
-    // remove when the component unmounts
-    return () =>
-      window.removeEventListener("storage", localStorageEventHandler);
-  }, [preferedWalletApi]);
-
-  useEffect(() => {
-    if (preferedWalletApi && !secretjs && !secretAddress) {
-      connectWallet();
-    }
-  }, [secretjs, secretAddress, preferedWalletApi]);
 
   // Balances
   const [SCRTToken, setSCRTToken] = useState<Token>(
@@ -150,44 +123,6 @@ const SecretjsContextProvider = ({ children }: any) => {
     fetchBalance();
     updateTokenBalance();
   }, [secretjs, secretAddress]);
-
-  async function connectWallet() {
-    if (!window.keplr && !(window as any).leap) {
-      setIsGetWalletModalOpen(true);
-      document.body.classList.add("overflow-hidden");
-    } else if (window.keplr && (window as any).leap) {
-      if (preferedWalletApi === "Keplr") {
-        try {
-          connectKeplr();
-        } catch (e) {
-          console.error("Could not connect to Keplr API...", e);
-          setPreferedWalletApi("");
-        }
-      } else if (preferedWalletApi === "Leap") {
-        try {
-          connectLeap();
-        } catch (e) {
-          console.error("Could not connect to Leap API...", e);
-          setPreferedWalletApi("");
-        }
-      } else {
-        setIsConnectModalOpen(true);
-        document.body.classList.add("overflow-hidden");
-      }
-    } else {
-      if (window.keplr) {
-        connectKeplr();
-      } else if ((window as any).leap) {
-        connectLeap();
-      }
-    }
-
-    if (preferedWalletApi === "Keplr") {
-      trackMixPanelEvent("User prefers Keplr API! (Keplr, Fina, Starshell...)");
-    } else if (preferedWalletApi === "Leap") {
-      trackMixPanelEvent("User prefers Leap API!");
-    }
-  }
 
   async function connectKeplr(preferedApiForLocalStorage: string = "Keplr") {
     const sleep = (ms: number) =>
@@ -355,7 +290,6 @@ const SecretjsContextProvider = ({ children }: any) => {
         setSecretjs,
         secretAddress,
         setSecretAddress,
-        connectWallet,
         disconnectWallet,
         isGetWalletModalOpen,
         setIsGetWalletModalOpen,
