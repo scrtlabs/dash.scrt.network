@@ -160,11 +160,6 @@ export function Send() {
       return match && str === match[0];
     }
 
-    if (validateAddress(destinationAddress)) {
-      setValidationMessage("Please enter a valid address");
-      setisValidAmount(false);
-    }
-
     if (
       new BigNumber(amountString).isGreaterThan(
         new BigNumber(availableAmount)
@@ -180,6 +175,14 @@ export function Send() {
     } else {
       setisValidAmount(true);
       isValid = true;
+    }
+    if (validateAddress(destinationAddress).isValid) {
+      setisValidAmount(true);
+      isValid = true;
+    } else {
+      setValidationMessage("Please enter a valid address");
+      setisValidAmount(false);
+      isValid = false;
     }
 
     return isValid;
@@ -220,7 +223,13 @@ export function Send() {
     setAmountString(filteredValue);
   }
 
-  const message = `Converting privacy-preserving s${selectedToken.name} into its publicly visible equivalent ${selectedToken.name}!`;
+  const message = `Send ${
+    selectedToken.address === "native" ||
+    selectedToken.is_ics20 ||
+    selectedToken.is_snip20
+      ? null
+      : "s"
+  }${selectedToken.name}`;
 
   // handles [25% | 50% | 75% | Max] Button-Group
   function setAmountByPercentage(percentage: number) {
@@ -501,8 +510,6 @@ export function Send() {
         return;
       }
 
-      var errorMessage = "";
-
       try {
         const toastId = toast.loading(`Sending s${selectedToken.name}`, {
           closeButton: true,
@@ -721,12 +728,11 @@ export function Send() {
           {/* *** From *** */}
           <div className="bg-neutral-200 dark:bg-neutral-800 p-4 rounded-xl mb-4">
             {/* Title Bar */}
-            <div className="flex flex-col sm:flex-row">
+
+            <div className="flex justify-end">
               {!isValidAmount && isValidationActive && (
-                <div className="flex-initial">
-                  <div className="text-red-500 dark:text-red-500 text-xs text-center sm:text-right mb-2">
-                    {validationMessage}
-                  </div>
+                <div className="text-red-500 dark:text-red-500 text-xs text-right mb-2">
+                  {validationMessage}
                 </div>
               )}
             </div>
@@ -805,6 +811,11 @@ export function Send() {
             </div>
 
             {/* Input Field */}
+            {!isValidAmount && isValidationActive && (
+              <div className="text-red-500 dark:text-red-500 text-xs text-right mb-2">
+                {validationMessage}
+              </div>
+            )}
             <div className="flex" id="destinationInputWrapper">
               <input
                 value={destinationAddress}
@@ -818,7 +829,7 @@ export function Send() {
                 }
                 name="destinationAddress"
                 id="destinationAddress"
-                placeholder="Destination Address"
+                placeholder="Destination Address (secret1 ...)"
                 disabled={!secretjs || !secretAddress}
               />
             </div>
