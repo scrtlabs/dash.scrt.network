@@ -87,7 +87,11 @@ export function Send() {
 
   tokens = tokens.concat(sSCRT);
 
-  const secretToken: Token = tokens.find((token: any) => token.name === "SCRT");
+  const secretToken: Token = tokens.find(
+    (token: any) =>
+      token.name === "SCRT" &&
+      token.address === "secret1k0jntykt7e4g3y88ltc60czgjuqdy4c9e8fzek"
+  );
   const [selectedToken, setSelectedToken] = useState<Token>(secretToken);
   const [selectedTokenPrice, setSelectedTokenPrice] = useState<number>(0);
   const [amountString, setAmountString] = useState<string>("");
@@ -227,8 +231,8 @@ export function Send() {
     selectedToken.address === "native" ||
     selectedToken.is_ics20 ||
     selectedToken.is_snip20
-      ? null
-      : "s"
+      ? "public "
+      : "privacy preserving s"
   }${selectedToken.name}`;
 
   // handles [25% | 50% | 75% | Max] Button-Group
@@ -715,7 +719,13 @@ export function Send() {
           {/* Header */}
           <div className="flex items-center mb-4">
             <h1 className="inline text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-500 to-purple-500">
-              Secret Send
+              {`${
+                selectedToken.address === "native" ||
+                selectedToken.is_ics20 ||
+                selectedToken.is_snip20
+                  ? "Public "
+                  : "Secret"
+              } Send`}
             </h1>
 
             <Tooltip title={message} placement="right" arrow>
