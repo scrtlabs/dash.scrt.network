@@ -123,7 +123,7 @@ export function Send() {
 
   const isValidTokenParam = () => {
     return tokens.find(
-      (token) => token.name.toLowerCase() === tokenUrlParam.toLowerCase()
+      (token: any) => token.name.toLowerCase() === tokenUrlParam.toLowerCase()
     )
       ? true
       : false;
@@ -133,7 +133,8 @@ export function Send() {
     if (tokenUrlParam && isValidTokenParam()) {
       setSelectedToken(
         tokens.find(
-          (token) => token.name.toLowerCase() === tokenUrlParam.toLowerCase()
+          (token: any) =>
+            token.name.toLowerCase() === tokenUrlParam.toLowerCase()
         )
       );
     }
@@ -619,9 +620,11 @@ export function Send() {
           >
             {secretAddress && secretjs && amount ? (
               <>{`Send ${amount} ${
-                selectedToken.address === "native"
-                  ? wrappedCurrency
-                  : nativeCurrency
+                selectedToken.address === "native" ||
+                selectedToken.is_ics20 ||
+                selectedToken.is_snip20
+                  ? nativeCurrency
+                  : wrappedCurrency
               }`}</>
             ) : null}
 
@@ -719,9 +722,6 @@ export function Send() {
           <div className="bg-neutral-200 dark:bg-neutral-800 p-4 rounded-xl mb-4">
             {/* Title Bar */}
             <div className="flex flex-col sm:flex-row">
-              <div className="flex-1 font-semibold mb-2 text-center sm:text-left">
-                From
-              </div>
               {!isValidAmount && isValidationActive && (
                 <div className="flex-initial">
                   <div className="text-red-500 dark:text-red-500 text-xs text-center sm:text-right mb-2">
@@ -735,7 +735,9 @@ export function Send() {
             <div className="flex mt-2" id="destinationInputWrapper">
               <Select
                 isDisabled={!selectedToken.address || !secretAddress}
-                options={tokens.sort((a, b) => a.name.localeCompare(b.name))}
+                options={tokens.sort((a: any, b: any) =>
+                  a.name.localeCompare(b.name)
+                )}
                 value={selectedToken}
                 onChange={setSelectedToken}
                 isSearchable={false}
