@@ -5,8 +5,6 @@ import Tooltip from "@mui/material/Tooltip";
 import { Helmet } from "react-helmet-async";
 import WrapModal from "./components/WrapModal";
 import Deposit from "./components/Deposit";
-import { SecretjsContext } from "shared/context/SecretjsContext";
-import ViewingKeyModal from "./components/ViewingKeyModal";
 import { Token, tokens } from "shared/utils/config";
 import { IbcMode } from "shared/types/IbcMode";
 import { useSearchParams } from "react-router-dom";
@@ -15,6 +13,7 @@ import {
   ibcPageDescription,
   ibcPageTitle,
 } from "shared/utils/commons";
+import { useSecretjsStore } from "zustand/secretjs";
 
 export const IbcContext = createContext(null);
 
@@ -31,8 +30,7 @@ export function Ibc() {
 
   const [ibcMode, setIbcMode] = useState<IbcMode>("deposit");
 
-  const { secretjs, secretAddress, connectWallet } =
-    useContext(SecretjsContext);
+  const { isConnected, connectWallet } = useSecretjsStore();
 
   // URL params
   const [searchParams, setSearchParams] = useSearchParams();
@@ -110,7 +108,7 @@ export function Ibc() {
   }
 
   const handleClick = () => {
-    if (!secretAddress || !secretjs) {
+    if (!isConnected) {
       connectWallet();
     }
   };

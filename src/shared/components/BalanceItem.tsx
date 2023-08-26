@@ -11,6 +11,7 @@ import {
 } from "shared/context/SecretjsContext";
 import { Token } from "shared/utils/config";
 import { faKey, faInfoCircle } from "@fortawesome/free-solid-svg-icons";
+import { useSecretjsStore } from "zustand/secretjs";
 
 type IBalanceProps = {
   token: Token;
@@ -21,21 +22,8 @@ const BalanceItem: FunctionComponent<IBalanceProps> = ({
   isSecretToken = false,
   token,
 }) => {
-  const {
-    secretjs,
-    secretAddress,
-    connectWallet,
-    disconnectWallet,
-    isModalOpen,
-    setIsModalOpen,
-    SCRTBalance,
-    sSCRTBalance,
-    updateTokenBalance,
-    SCRTToken,
-    setSCRTToken,
-    viewingKey,
-    setViewingKey,
-  } = useContext(SecretjsContext);
+  const { SCRTBalance, sSCRTBalance, SCRTToken, setViewingKey } =
+    useContext(SecretjsContext);
 
   const { currentPrice } = useContext(APIContext);
 

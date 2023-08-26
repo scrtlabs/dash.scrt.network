@@ -213,41 +213,41 @@ const SecretjsContextProvider = ({ children }: any) => {
     }
   }
 
-  async function requestFeeGrant() {
-    if (feeGrantStatus !== "Success") {
-      fetch(faucetURL, {
-        method: "POST",
-        body: JSON.stringify({ Address: secretAddress }),
-        headers: { "Content-Type": "application/json" },
-      })
-        .then(async (result) => {
-          const textBody = await result.text();
-          // console.log(textBody);
-          if (result.ok == true) {
-            setFeeGrantStatus("Success");
-            toast.success(
-              `Successfully sent new fee grant (0.1 SCRT) to address ${secretAddress}`
-            );
-          } else if (textBody == "Existing Fee Grant did not expire\n") {
-            setFeeGrantStatus("Success");
-            toast.success(
-              `Your address ${secretAddress} already has an existing fee grant`
-            );
-          } else {
-            setFeeGrantStatus("Fail");
-            toast.error(
-              `Fee Grant for address ${secretAddress} failed with status code: ${result.status}`
-            );
-          }
-        })
-        .catch((error) => {
-          setFeeGrantStatus("Fail");
-          toast.error(
-            `Fee Grant for address ${secretAddress} failed with error: ${error}`
-          );
-        });
-    }
-  }
+  // async function requestFeeGrant() {
+  //   if (feeGrantStatus !== "Success") {
+  //     fetch(faucetURL, {
+  //       method: "POST",
+  //       body: JSON.stringify({ Address: secretAddress }),
+  //       headers: { "Content-Type": "application/json" },
+  //     })
+  //       .then(async (result) => {
+  //         const textBody = await result.text();
+  //         // console.log(textBody);
+  //         if (result.ok == true) {
+  //           setFeeGrantStatus("Success");
+  //           toast.success(
+  //             `Successfully sent new fee grant (0.1 SCRT) to address ${secretAddress}`
+  //           );
+  //         } else if (textBody == "Existing Fee Grant did not expire\n") {
+  //           setFeeGrantStatus("Success");
+  //           toast.success(
+  //             `Your address ${secretAddress} already has an existing fee grant`
+  //           );
+  //         } else {
+  //           setFeeGrantStatus("Fail");
+  //           toast.error(
+  //             `Fee Grant for address ${secretAddress} failed with status code: ${result.status}`
+  //           );
+  //         }
+  //       })
+  //       .catch((error) => {
+  //         setFeeGrantStatus("Fail");
+  //         toast.error(
+  //           `Fee Grant for address ${secretAddress} failed with error: ${error}`
+  //         );
+  //       });
+  //   }
+  // }
 
   const [loadingTokenBalance, setLoadingTokenBalance] = useState<boolean>(true);
 
@@ -264,42 +264,17 @@ const SecretjsContextProvider = ({ children }: any) => {
     }
   }
 
-  function disconnectWallet() {
-    // reset secretjs and secretAddress
-    setSecretAddress("");
-    setSecretjs(null);
-
-    // reset wallet name
-    setPreferedWalletApi("");
-    localStorage.setItem("preferedWalletApi", "");
-
-    // reset fee grant
-    setFeeGrantStatus("Untouched");
-
-    // disconnected => don't auto-connect again
-    localStorage.setItem("keplrAutoConnect", "false");
-
-    // Toast for success
-    toast.success("Wallet disconnected!");
-  }
-
   return (
     <SecretjsContext.Provider
       value={{
-        secretjs,
-        setSecretjs,
         secretAddress,
         setSecretAddress,
-        disconnectWallet,
         isGetWalletModalOpen,
         setIsGetWalletModalOpen,
         isConnectModalOpen,
         setIsConnectModalOpen,
         preferedWalletApi,
         setPreferedWalletApi,
-        feeGrantStatus,
-        setFeeGrantStatus,
-        requestFeeGrant,
         SCRTBalance,
         setSCRTBalance,
         sSCRTBalance,

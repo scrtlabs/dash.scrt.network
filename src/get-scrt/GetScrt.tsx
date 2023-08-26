@@ -16,10 +16,10 @@ import queryString from "query-string";
 import Select from "react-select";
 import mixpanel from "mixpanel-browser";
 import { Nullable } from "shared/types/Nullable";
+import { useSecretjsStore } from "zustand/secretjs";
 
 function GetSCRT() {
-  const { secretjs, secretAddress, connectWallet } =
-    useContext(SecretjsContext);
+  const { secretjs, walletAddress } = useSecretjsStore();
 
   const [loading, setLoading] = useState(false);
 
@@ -68,7 +68,7 @@ function GetSCRT() {
     transakQueryStrings.environment = "PRODUCTION";
   }
   transakQueryStrings.cryptoCurrencyList = "SCRT";
-  transakQueryStrings.walletAddress = secretAddress;
+  transakQueryStrings.walletAddress = walletAddress;
   transakQueryStrings.disableWalletAddressForm = false;
   transakQueryStrings.themeColor = "000000";
   transakQueryStrings.defaultCryptoCurrency = "SCRT";
@@ -180,7 +180,7 @@ function GetSCRT() {
                 </div>
               )}
               <iframe
-                src={`https://app.kado.money/?apiKey=acd1e5a5-8a25-4b2d-b303-b5e113457ef1&onRevCurrency=SCRT&product=BUY&network=SECRET&=onToAddress=${secretAddress}`}
+                src={`https://app.kado.money/?apiKey=acd1e5a5-8a25-4b2d-b303-b5e113457ef1&onRevCurrency=SCRT&product=BUY&network=SECRET&=onToAddress=${walletAddress}`}
                 width="100%"
                 height="100%"
                 onLoad={() => setLoading(false)}

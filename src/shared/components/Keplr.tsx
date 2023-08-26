@@ -34,7 +34,7 @@ export function KeplrPanel() {
     // secretjs,
     // secretAddress,
     // connectWallet,
-    disconnectWallet,
+    // disconnectWallet,
     isModalOpen,
     setIsModalOpen,
     SCRTBalance,
@@ -44,7 +44,13 @@ export function KeplrPanel() {
     setSCRTToken,
   } = useContext(SecretjsContext);
 
-  const { secretjs, walletAddress, connectWallet } = useSecretjsStore();
+  const {
+    isConnected,
+    secretjs,
+    walletAddress,
+    connectWallet,
+    disconnectWallet,
+  } = useSecretjsStore();
 
   const { currentPrice } = useContext(APIContext);
 
@@ -123,7 +129,7 @@ export function KeplrPanel() {
       >
         <button className="px-2 py-1 mb-2 rounded-lg flex gap-2 items-center group bg-neutral-100 dark:bg-neutral-900 hover:bg-neutral-200 dark:hover:bg-black transition-colors">
           {/* {secretAddress.slice(0, 14) + "..." + secretAddress.slice(-14)} */}
-          {walletAddress + ""}
+          {walletAddress}
           <FontAwesomeIcon
             icon={faCopy}
             className="block text-neutral-500 dark:text-neutral-500 transition-colors"
@@ -207,7 +213,7 @@ export function KeplrPanel() {
     );
   };
 
-  if (secretjs) {
+  if (isConnected) {
     return (
       <>
         <div ref={keplrRef}>
