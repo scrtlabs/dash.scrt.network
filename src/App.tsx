@@ -19,7 +19,6 @@ import { Restake } from "stake/Restake";
 
 // Contexts
 import { ThemeContextProvider } from "shared/context/ThemeContext";
-import { SecretjsContextProvider } from "shared/context/SecretjsContext";
 import { APIContextProvider } from "shared/context/APIContext";
 import RestakeRedesign from "stake/RestakeRedesign";
 
@@ -32,9 +31,9 @@ if (import.meta.env.VITE_MIXPANEL_ENABLED === "true") {
   mixpanel.identify("Dashboard-App");
 
   mixpanel.track("Dashboard has been opened", {});
-  console.log("Mixpanel is enabled!");
+  console.debug("[Mixpanel] Enabled");
 } else {
-  console.log("Mixpanel is disabled!");
+  console.debug("[Mixpanel] Disabled");
 }
 
 globalThis.Buffer = Buffer;
@@ -85,13 +84,11 @@ root.render(
     <HelmetProvider>
       <BrowserRouter>
         <ThemeContextProvider>
-          <SecretjsContextProvider>
-            <APIContextProvider>
-              <DefaultLayout>
-                <App />
-              </DefaultLayout>
-            </APIContextProvider>
-          </SecretjsContextProvider>
+          <APIContextProvider>
+            <DefaultLayout>
+              <App />
+            </DefaultLayout>
+          </APIContextProvider>
         </ThemeContextProvider>
       </BrowserRouter>
     </HelmetProvider>

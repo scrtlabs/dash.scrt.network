@@ -1,17 +1,13 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import BigNumber from "bignumber.js";
-import React, { FunctionComponent, useContext } from "react";
+import { FunctionComponent, useContext, useEffect } from "react";
 import { APIContext } from "shared/context/APIContext";
-import { sleep, viewingKeyErrorString, usdString } from "shared/utils/commons";
+import { viewingKeyErrorString, usdString } from "shared/utils/commons";
 import Tooltip from "@mui/material/Tooltip";
-import {
-  getWalletViewingKey,
-  SecretjsContext,
-  setWalletViewingKey,
-} from "shared/context/SecretjsContext";
 import { Token } from "shared/utils/config";
 import { faKey, faInfoCircle } from "@fortawesome/free-solid-svg-icons";
-import { useSecretjsStore } from "zustand/secretjs";
+import { useSecretNetworkClientStore } from "zustand/secretNetworkClient";
+import { scrtToken } from "shared/utils/tokens";
 
 type IBalanceProps = {
   token: Token;
@@ -22,8 +18,8 @@ const BalanceItem: FunctionComponent<IBalanceProps> = ({
   isSecretToken = false,
   token,
 }) => {
-  const { SCRTBalance, sSCRTBalance, SCRTToken, setViewingKey } =
-    useContext(SecretjsContext);
+  const { scrtBalance, sScrtBalance, setViewingKey } =
+    useSecretNetworkClientStore();
 
   const { currentPrice } = useContext(APIContext);
 
@@ -54,15 +50,15 @@ const BalanceItem: FunctionComponent<IBalanceProps> = ({
 
   //  e.g. "$1.23"
   const scrtBalanceUsdString = usdString.format(
-    new BigNumber(SCRTBalance!)
-      .dividedBy(`1e${SCRTToken.decimals}`)
+    new BigNumber(scrtBalance!)
+      .dividedBy(`1e${scrtToken.decimals}`)
       .multipliedBy(Number(currentPrice))
       .toNumber()
   );
   //  e.g. "$1.23"
   const sScrtBalanceUsdString = usdString.format(
-    new BigNumber(sSCRTBalance!)
-      .dividedBy(`1e${SCRTToken.decimals}`)
+    new BigNumber(sScrtBalance!)
+      .dividedBy(`1e${scrtToken.decimals}`)
       .multipliedBy(Number(currentPrice))
       .toNumber()
   );
@@ -76,10 +72,9 @@ const BalanceItem: FunctionComponent<IBalanceProps> = ({
           className="h-7"
         />
       </div>
-      {isSecretToken && sSCRTBalance == viewingKeyErrorString ? (
+      {isSecretToken && sScrtBalance === viewingKeyErrorString ? (
         <div className="font-bold">
-          {" "}
-          sSCRT
+          {` sSCRT`}
           <SetViewingKeyButton token={token} />
         </div>
       ) : (
@@ -87,17 +82,17 @@ const BalanceItem: FunctionComponent<IBalanceProps> = ({
           {/* Balance as native token */}
           <div className="font-bold">
             {!isSecretToken
-              ? new BigNumber(SCRTBalance!)
-                  .dividedBy(`1e${SCRTToken.decimals}`)
+              ? new BigNumber(scrtBalance!)
+                  .dividedBy(`1e${scrtToken.decimals}`)
                   .toFormat()
-              : new BigNumber(sSCRTBalance!)
-                  .dividedBy(`1e${SCRTToken.decimals}`)
+              : new BigNumber(sScrtBalance!)
+                  .dividedBy(`1e${scrtToken.decimals}`)
                   .toFormat()}
             {/* Token name */}
             {" " + (isSecretToken ? "s" : "") + token.name}
           </div>
           {/* Balance in USD */}
-          {currentPrice && SCRTBalance && (
+          {currentPrice && scrtBalance && (
             <div className="text-gray-500">
               {"≈ " +
                 (isSecretToken ? sScrtBalanceUsdString : scrtBalanceUsdString)}

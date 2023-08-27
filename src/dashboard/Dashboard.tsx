@@ -1,4 +1,3 @@
-import { chains } from "shared/utils/config";
 import { useEffect, useState, createContext, useContext } from "react";
 import { SecretNetworkClient } from "secretjs";
 import CurrentPrice from "./components/CurrentPrice";
@@ -142,25 +141,27 @@ export function Dashboard() {
 
   useEffect(() => {
     const queryData = async () => {
-      const secretjsquery = new SecretNetworkClient({
+      const secretNetworkClientQuery = new SecretNetworkClient({
         url: SECRET_LCD,
         chainId: SECRET_CHAIN_ID,
       });
 
-      secretjsquery?.query?.tendermint.getLatestBlock("")?.then((res1) => {
-        setBlockHeight(res1.block.header.height);
-        secretjsquery?.query?.tendermint
-          .getBlockByHeight({
-            height: (Number(res1.block.header.height) - 1).toString(),
-          })
-          ?.then((res2) => {
-            const timestamp1 = new Date(res1.block.header.time as any);
-            const timestamp2 = new Date(res2.block.header.time as any);
-            const diffInSeconds =
-              Math.abs((timestamp1 as any) - (timestamp2 as any)) / 1000;
-            setBlockTime(diffInSeconds.toFixed(2));
-          });
-      });
+      secretNetworkClientQuery?.query?.tendermint
+        .getLatestBlock("")
+        ?.then((res1) => {
+          setBlockHeight(res1.block.header.height);
+          secretNetworkClientQuery?.query?.tendermint
+            .getBlockByHeight({
+              height: (Number(res1.block.header.height) - 1).toString(),
+            })
+            ?.then((res2) => {
+              const timestamp1 = new Date(res1.block.header.time as any);
+              const timestamp2 = new Date(res2.block.header.time as any);
+              const diffInSeconds =
+                Math.abs((timestamp1 as any) - (timestamp2 as any)) / 1000;
+              setBlockTime(diffInSeconds.toFixed(2));
+            });
+        });
     };
     queryData();
   }, []);

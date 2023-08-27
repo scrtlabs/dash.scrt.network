@@ -1,74 +1,51 @@
-import {
-  FunctionComponent,
-  useContext,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { sleep, viewingKeyErrorString, usdString } from "shared/utils/commons";
 import Tooltip from "@mui/material/Tooltip";
 import CopyToClipboard from "react-copy-to-clipboard";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faArrowRightFromBracket,
-  faCopy,
-  faWallet,
-} from "@fortawesome/free-solid-svg-icons";
+import { faCopy, faWallet } from "@fortawesome/free-solid-svg-icons";
 import { toast } from "react-toastify";
 import GetWalletModal from "shared/context/GetWalletModal";
 import { useHoverOutside } from "shared/utils/useHoverOutside";
 import { APIContext } from "shared/context/APIContext";
-import { Token } from "shared/utils/config";
 import BigNumber from "bignumber.js";
 import { faKey, faInfoCircle } from "@fortawesome/free-solid-svg-icons";
-import {
-  SecretjsContext,
-  setWalletViewingKey,
-} from "shared/context/SecretjsContext";
 import BalanceItem from "./BalanceItem";
 import { trackMixPanelEvent } from "shared/utils/commons";
-import { useSecretjsStore } from "zustand/secretjs";
+import { useSecretNetworkClientStore } from "zustand/secretNetworkClient";
+import { setWalletViewingKey } from "service/walletService";
+import { scrtToken } from "shared/utils/tokens";
 
 export function KeplrPanel() {
   const {
-    // secretjs,
-    // secretAddress,
-    // connectWallet,
-    // disconnectWallet,
-    isModalOpen,
-    setIsModalOpen,
-    SCRTBalance,
-    sSCRTBalance,
-    updateTokenBalance,
-    SCRTToken,
-    setSCRTToken,
-  } = useContext(SecretjsContext);
-
-  const {
     isConnected,
-    secretjs,
+    secretNetworkClient: secretjs,
     walletAddress,
     connectWallet,
     disconnectWallet,
-  } = useSecretjsStore();
+  } = useSecretNetworkClientStore();
 
   const { currentPrice } = useContext(APIContext);
 
-  const [isMenuVisible, setIsMenuVisible] = useState<boolean>(false);
+  const [isMenuVisible, setIsMenuVisible] = useState<boolean>(true);
+  const [isGetWalletModalOpen, setIsGetWalletModalOpen] =
+    useState<boolean>(false);
+
+  const { sScrtBalance, setsScrtBalance } = useSecretNetworkClientStore();
 
   function WrappedTokenBalanceUi() {
-    if (!secretjs || !walletAddress || !sSCRTBalance) {
+    if (!secretjs || !walletAddress || !sScrtBalance) {
       return <></>;
-    } else if (sSCRTBalance == viewingKeyErrorString) {
+    } else if (sScrtBalance === viewingKeyErrorString) {
       return (
         <>
           <button
             className="ml-2 font-semibold bg-neutral-100 dark:bg-neutral-900 px-1.5 py-0.5 rounded-md border-neutral-300 dark:border-neutral-700 transition-colors hover:bg-neutral-300 dark:hover:bg-neutral-700 focus:bg-neutral-500 dark:focus:bg-neutral-500 cursor-pointer disabled:text-neutral-500 dark:disabled:text-neutral-500 disabled:hover:bg-neutral-100 dark:disabled:hover:bg-neutral-900 disabled:cursor-default"
             onClick={async () => {
-              await setWalletViewingKey(SCRTToken.address);
+              await setWalletViewingKey(scrtToken.address);
               try {
                 await sleep(1000); // sometimes query nodes lag
-                await updateTokenBalance();
+                await setsScrtBalance();
               } finally {
                 console.log("sdgfbydsjhg");
               }
@@ -84,21 +61,21 @@ export function KeplrPanel() {
           </Tooltip>
         </>
       );
-    } else if (Number(sSCRTBalance) > -1) {
+    } else if (Number(sScrtBalance) > -1) {
       return (
         <>
           <div className="text-xs">
             <div className="font-bold">
-              {` ${new BigNumber(sSCRTBalance!)
-                .dividedBy(`1e${SCRTToken.decimals}`)
+              {` ${new BigNumber(sScrtBalance!)
+                .dividedBy(`1e${scrtToken.decimals}`)
                 .toFormat()} sSCRT`}
             </div>
-            {currentPrice && sSCRTBalance && (
+            {currentPrice && sScrtBalance && (
               <div className="text-gray-500">
                 ≈{" "}
                 {` ${usdString.format(
-                  new BigNumber(sSCRTBalance!)
-                    .dividedBy(`1e${SCRTToken.decimals}`)
+                  new BigNumber(sScrtBalance!)
+                    .dividedBy(`1e${scrtToken.decimals}`)
                     .multipliedBy(Number(currentPrice))
                     .toNumber()
                 )}`}
@@ -128,8 +105,7 @@ export function KeplrPanel() {
         }}
       >
         <button className="px-2 py-1 mb-2 rounded-lg flex gap-2 items-center group bg-neutral-100 dark:bg-neutral-900 hover:bg-neutral-200 dark:hover:bg-black transition-colors">
-          {/* {secretAddress.slice(0, 14) + "..." + secretAddress.slice(-14)} */}
-          {walletAddress}
+          {walletAddress.slice(0, 14) + "..." + walletAddress.slice(-14)}
           <FontAwesomeIcon
             icon={faCopy}
             className="block text-neutral-500 dark:text-neutral-500 transition-colors"
@@ -144,13 +120,25 @@ export function KeplrPanel() {
       <div>
         <div className="font-bold mb-2">Balances</div>
         <div className="flex flex-col gap-2 mb-2">
-          <BalanceItem token={SCRTToken} isSecretToken={false} /> {/* SCRT */}
-          <BalanceItem token={SCRTToken} isSecretToken={true} /> {/* sSCRT */}
+          <BalanceItem token={scrtToken} isSecretToken={false} /> {/* SCRT */}
+          <BalanceItem token={scrtToken} isSecretToken={true} /> {/* sSCRT */}
         </div>
         {/* TODO: implement viewing key manager */}
         {/* <button className="inline-block border border-neutral-300 dark:border-neutral-600 hover:bg-neutral-300 dark:hover:bg-neutral-600 transition-colors text-black dark:text-white font-semibold py-1.5 w-full rounded-lg">Manage Viewing Keys</button> */}
       </div>
     );
+  };
+
+  const handleConnectWallet = () => {
+    if (window.keplr && (window as any).leap) {
+      alert("Two wallets installed! Pls pick"); // TODO: implement wallet picker
+    } else if (window.keplr && !(window as any).leap) {
+      connectWallet("keplr");
+    } else if (!window.keplr && (window as any).leap) {
+      connectWallet("leap");
+    } else {
+      setIsGetWalletModalOpen(true);
+    }
   };
 
   const Disconnect = () => {
@@ -213,40 +201,41 @@ export function KeplrPanel() {
     );
   };
 
-  if (isConnected) {
-    return (
-      <>
-        <div ref={keplrRef}>
-          {isMenuVisible ? <KeplrMenu /> : null}
-          <div
+  return (
+    <>
+      <GetWalletModal
+        open={isGetWalletModalOpen}
+        onClose={() => {
+          trackMixPanelEvent("Closed Get Wallet Modal");
+          setIsGetWalletModalOpen(false);
+          document.body.classList.remove("overflow-hidden");
+        }}
+      />
+
+      {isConnected ? (
+        <>
+          <div ref={keplrRef}>
+            {isMenuVisible ? <KeplrMenu /> : null}
+            <div
+              className="w-full sm:w-auto rounded-lg px-4 py-3 bg-white dark:bg-neutral-700 hover:dark:bg-neutral-600 select-none cursor-pointer transition-colors"
+              onMouseOver={() => setIsMenuVisible(true)}
+              ref={keplrRef}
+            >
+              <Content />
+            </div>
+          </div>
+        </>
+      ) : (
+        <>
+          <button
+            id="keplr-button"
+            onClick={handleConnectWallet}
             className="w-full sm:w-auto rounded-lg px-4 py-3 bg-white dark:bg-neutral-700 hover:dark:bg-neutral-600 select-none cursor-pointer transition-colors"
-            onMouseOver={() => setIsMenuVisible(true)}
-            ref={keplrRef}
           >
             <Content />
-          </div>
-        </div>
-      </>
-    );
-  } else {
-    return (
-      <>
-        <GetWalletModal
-          open={isModalOpen}
-          onClose={() => {
-            trackMixPanelEvent("Closed Get Wallet Modal");
-            setIsModalOpen(false);
-            document.body.classList.remove("overflow-hidden");
-          }}
-        />
-        <button
-          id="keplr-button"
-          onClick={() => connectWallet()}
-          className="w-full sm:w-auto rounded-lg px-4 py-3 bg-white dark:bg-neutral-700 hover:dark:bg-neutral-600 select-none cursor-pointer transition-colors"
-        >
-          <Content />
-        </button>
-      </>
-    );
-  }
+          </button>
+        </>
+      )}
+    </>
+  );
 }

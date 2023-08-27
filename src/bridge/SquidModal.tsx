@@ -135,7 +135,7 @@ class SquidModal extends React.Component<ISquidModalProps> {
                     <FontAwesomeIcon icon={faXmark} className="fa-fw" />
                   </button>
 
-                  {this.props.theme == "dark" ? (
+                  {this.props.theme === "dark" ? (
                     <iframe
                       title="squid_widget"
                       className="bg-white dark:bg-neutral-900 mx-auto w-[50vw] h-[84vh]"

@@ -1,5 +1,5 @@
-export type FeeGrantStatus = "Success" | "Fail" | "Untouched";
+export type FeeGrantStatus = "success" | "fail" | "untouched";
 
 export function isFeeGrantStatus(x: String): boolean {
-  return x === "Success" || x === "Fail" || x === "Untouched";
+  return x === "success" || x === "fail" || x === "untouched";
 }

@@ -15,7 +15,7 @@ import React from "react";
 import { APIContext } from "shared/context/APIContext";
 import mixpanel from "mixpanel-browser";
 import { trackMixPanelEvent } from "shared/utils/commons";
-import { useSecretjsStore } from "zustand/secretjs";
+import { useSecretNetworkClientStore } from "zustand/secretNetworkClient";
 
 function Apps() {
   const {
@@ -65,7 +65,7 @@ function Apps() {
     }
   }
 
-  const { walletAddress, connectWallet } = useSecretjsStore();
+  const { walletAddress, connectWallet } = useSecretNetworkClientStore();
 
   // Search
   const [searchText, setSearchText] = useState<string>("");
@@ -120,10 +120,6 @@ function Apps() {
           description="A curation of applications running on Secret Network Mainnet!"
         />
 
-        <button onClick={connectWallet}>Set Wallet</button>
-        <br />
-        {walletAddress + ""}
-
         {/* Search */}
         <div className="relative w-full sm:w-96 mx-auto mb-4">
           <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
@@ -142,7 +138,7 @@ function Apps() {
         <div className="mb-4 sm:mb-8 flex gap-2 flex-wrap justify-center">
           {tags?.length > 0 &&
             tags.map((tag: any) => <>{tag && <Tag key={tag} name={tag} />}</>)}
-          {tags?.length == 0 && <div className="h-6"></div>}
+          {tags?.length === 0 && <div className="h-6"></div>}
         </div>
         {/* App-Items */}
         <div className="grid grid-cols-12 gap-4 auto-rows-auto">

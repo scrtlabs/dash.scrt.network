@@ -11,15 +11,15 @@ import {
   trackMixPanelEvent,
 } from "shared/utils/commons";
 import { useState, createContext, useContext, useEffect } from "react";
-import { SecretjsContext } from "shared/context/SecretjsContext";
 import queryString from "query-string";
 import Select from "react-select";
 import mixpanel from "mixpanel-browser";
 import { Nullable } from "shared/types/Nullable";
-import { useSecretjsStore } from "zustand/secretjs";
+import { useSecretNetworkClientStore } from "zustand/secretNetworkClient";
 
 function GetSCRT() {
-  const { secretjs, walletAddress } = useSecretjsStore();
+  const { secretNetworkClient: secretjs, walletAddress } =
+    useSecretNetworkClientStore();
 
   const [loading, setLoading] = useState(false);
 

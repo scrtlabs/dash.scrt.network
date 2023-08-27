@@ -13,7 +13,7 @@ import {
   ibcPageDescription,
   ibcPageTitle,
 } from "shared/utils/commons";
-import { useSecretjsStore } from "zustand/secretjs";
+import { useSecretNetworkClientStore } from "zustand/secretNetworkClient";
 
 export const IbcContext = createContext(null);
 
@@ -30,7 +30,7 @@ export function Ibc() {
 
   const [ibcMode, setIbcMode] = useState<IbcMode>("deposit");
 
-  const { isConnected, connectWallet } = useSecretjsStore();
+  const { isConnected, connectWallet } = useSecretNetworkClientStore();
 
   // URL params
   const [searchParams, setSearchParams] = useSearchParams();

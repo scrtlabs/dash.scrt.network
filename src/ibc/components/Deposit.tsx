@@ -46,10 +46,6 @@ import {
   faInfoCircle,
 } from "@fortawesome/free-solid-svg-icons";
 import { IbcContext } from "ibc/Ibc";
-import {
-  getWalletViewingKey,
-  setWalletViewingKey,
-} from "shared/context/SecretjsContext";
 import CopyToClipboard from "react-copy-to-clipboard";
 import mixpanel, { track } from "mixpanel-browser";
 import { trackMixPanelEvent } from "shared/utils/commons";
@@ -59,16 +55,21 @@ import {
   CHAINS,
   Environment,
 } from "@axelar-network/axelarjs-sdk";
-import { useSecretjsStore } from "zustand/secretjs";
+import { useSecretNetworkClientStore } from "zustand/secretNetworkClient";
+import {
+  getWalletViewingKey,
+  setWalletViewingKey,
+} from "service/walletService";
+import { Nullable } from "shared/types/Nullable";
 
 function Deposit() {
   const {
     feeGrantStatus,
     requestFeeGrant,
-    secretjs,
+    secretNetworkClient,
     walletAddress,
     isConnected,
-  } = useSecretjsStore();
+  } = useSecretNetworkClientStore();
 
   const {
     setIsWrapModalOpen,
@@ -86,7 +87,7 @@ function Deposit() {
   const [availableBalance, setAvailableBalance] = useState<string>("");
   const [loadingTx, setLoadingTx] = useState<boolean>(false);
   const [sourceChainSecretjs, setSourceChainSecretjs] =
-    useState<SecretNetworkClient | null>(null);
+    useState<Nullable<SecretNetworkClient>>(null);
   const [fetchBalanceInterval, setFetchBalanceInterval] = useState<any>(null);
   const [amountToTransfer, setAmountToTransfer] = useState<string>("");
   const [axelarTransferFee, setAxelarTransferFee] = useState<any>();
@@ -153,7 +154,7 @@ function Deposit() {
         `1e${selectedToken.decimals}`
       );
       let potentialInput = availableAmount.toNumber() * (percentage * 0.01);
-      if (Number(potentialInput) == 0) {
+      if (Number(potentialInput) === 0) {
         setAmountToTransfer("");
       } else {
         setAmountToTransfer(potentialInput.toFixed(selectedToken.decimals));
@@ -180,20 +181,20 @@ function Deposit() {
           </div>
           <div className="flex-initial">
             {/* Untouched */}
-            {ibcMode === "withdrawal" && feeGrantStatus === "Untouched" && (
+            {ibcMode === "withdrawal" && feeGrantStatus === "untouched" && (
               <>
                 <button
                   id="feeGrantButton"
                   onClick={requestFeeGrant}
                   className="font-semibold text-xs bg-neutral-100 dark:bg-neutral-900 px-1.5 py-1 rounded-md transition-colors hover:bg-neutral-300 dark:hover:bg-neutral-700 cursor-pointer disabled:text-neutral-500 dark:disabled:text-neutral-500 disabled:hover:bg-neutral-100 dark:disabled:hover:bg-neutral-900 disabled:cursor-default focus:outline-0 focus:ring-2 ring-sky-500/40"
-                  disabled={!secretjs || !walletAddress}
+                  disabled={!isConnected}
                 >
                   Request Fee Grant
                 </button>
               </>
             )}
             {/* Success */}
-            {ibcMode === "withdrawal" && feeGrantStatus === "Success" && (
+            {ibcMode === "withdrawal" && feeGrantStatus === "success" && (
               <div className="font-semibold text-sm flex items-center h-[1.6rem]">
                 <FontAwesomeIcon
                   icon={faCheckCircle}
@@ -203,7 +204,7 @@ function Deposit() {
               </div>
             )}
             {/* Fail */}
-            {ibcMode === "withdrawal" && feeGrantStatus === "Fail" && (
+            {ibcMode === "withdrawal" && feeGrantStatus === "fail" && (
               <div className="font-semibold text-sm h-[1.6rem]">
                 <FontAwesomeIcon
                   icon={faXmarkCircle}
@@ -277,7 +278,7 @@ function Deposit() {
                     {new BigNumber(axelarTransferFee.fee.amount)
                       .dividedBy(`1e${selectedToken.decimals}`)
                       .toFormat()}{" "}
-                    {ibcMode == "withdrawal" && "s"}
+                    {ibcMode === "withdrawal" && "s"}
                     {
                       ICSTokens.filter(
                         (icstoken: any) =>
@@ -302,7 +303,7 @@ function Deposit() {
   };
 
   const updateCoinBalance = async () => {
-    if (secretjs && walletAddress) {
+    if (isConnected) {
       if (selectedToken.is_snip20 || selectedToken.is_ics20) {
         const key = await getWalletViewingKey(selectedToken.address);
         if (!key) {
@@ -316,7 +317,7 @@ function Deposit() {
             balance: {
               amount: string;
             };
-          } = await secretjs.query.compute.queryContract({
+          } = await secretNetworkClient.query.compute.queryContract({
             contract_address: selectedToken.address,
             code_hash: selectedToken.code_hash,
             query: {
@@ -339,7 +340,7 @@ function Deposit() {
         try {
           const {
             balance: { amount },
-          } = await secretjs.query.bank.balance({
+          } = await secretNetworkClient.query.bank.balance({
             address: walletAddress as string,
             denom: selectedToken.withdrawals[0]?.from_denom,
           });
@@ -356,8 +357,8 @@ function Deposit() {
 
   const targetChain = chains["Secret Network"];
 
-  const fetchSourceBalance = async (newAddress: String | null) => {
-    if (secretjs && walletAddress) {
+  const fetchSourceBalance = async (newAddress: Nullable<string>) => {
+    if (secretNetworkClient && walletAddress) {
       if (ibcMode === "deposit") {
         const url = `${
           chains[selectedSource.chain_name].lcd
@@ -393,7 +394,7 @@ function Deposit() {
 
   useEffect(() => {
     setAvailableBalance("");
-    if (!(secretjs && walletAddress)) {
+    if (!isConnected) {
       return;
     }
     if (!sourceAddress) {
@@ -417,29 +418,29 @@ function Deposit() {
     sourceAddress,
     ibcMode,
     walletAddress,
-    secretjs,
+    secretNetworkClient,
   ]);
 
   useEffect(() => {
-    if (!(secretjs && walletAddress)) {
+    if (!isConnected) {
       return;
     }
     const possibleICS20 = ICSTokens.filter(
       (token) =>
         token.deposits.find(
-          (token) => token.chain_name == selectedSource.chain_name
+          (token) => token.chain_name === selectedSource.chain_name
         )!
     );
     const possibleSnips = snips.filter(
       (token) =>
         token.deposits.find(
-          (token) => token.chain_name == selectedSource.chain_name
+          (token) => token.chain_name === selectedSource.chain_name
         )!
     );
     const possibleTokens = tokens.filter(
       (token) =>
         token.deposits.find(
-          (token) => token.chain_name == selectedSource.chain_name
+          (token) => token.chain_name === selectedSource.chain_name
         )!
     );
     const supportedTokens = possibleTokens
@@ -495,14 +496,14 @@ function Deposit() {
       const depositFromAccounts = await sourceOfflineSigner.getAccounts();
       setSourceAddress(depositFromAccounts[0].address);
 
-      const secretjs = new SecretNetworkClient({
+      const secretNetworkClient = new SecretNetworkClient({
         url: lcd,
         chainId: chain_id,
         wallet: sourceOfflineSigner,
         walletAddress: depositFromAccounts[0].address,
       });
 
-      setSourceChainSecretjs(secretjs);
+      setSourceChainSecretjs(secretNetworkClient);
 
       fetchSourceBalance(depositFromAccounts[0].address);
     })();
@@ -512,7 +513,7 @@ function Deposit() {
     sourceAddress,
     ibcMode,
     walletAddress,
-    secretjs,
+    secretNetworkClient,
   ]);
 
   const [isCopied, setIsCopied] = useState<boolean>(false);
@@ -592,10 +593,10 @@ function Deposit() {
           if (
             !["Evmos", "Injective"].includes(selectedSource.chain_name) &&
             (!selectedToken.is_ics20 ||
-              depositChain.axelar_chain_name == CHAINS.MAINNET.AXELAR)
+              depositChain.axelar_chain_name === CHAINS.MAINNET.AXELAR)
           ) {
             const source_channel_id =
-              depositChain.axelar_chain_name == CHAINS.MAINNET.AXELAR &&
+              depositChain.axelar_chain_name === CHAINS.MAINNET.AXELAR &&
               selectedToken.name !== "SCRT"
                 ? depositChain.channel_id
                 : deposit_channel_id;
@@ -831,7 +832,7 @@ function Deposit() {
                   : "Secret Network",
               // "Amount": amountToTransfer,
               "Fee Grant used":
-                feeGrantStatus === "Success" && ibcMode === "withdrawal"
+                feeGrantStatus === "success" && ibcMode === "withdrawal"
                   ? true
                   : false,
             });
@@ -851,8 +852,8 @@ function Deposit() {
         }
       }
       if (ibcMode === "withdrawal") {
-        if (!secretjs) {
-          console.error("No secretjs");
+        if (!secretNetworkClient) {
+          console.error("SecretNetworkClient not found!");
           return;
         }
 
@@ -901,7 +902,7 @@ function Deposit() {
           let tx: TxResponse;
 
           if (selectedToken.is_snip20) {
-            tx = await secretjs.tx.compute.executeContract(
+            tx = await secretNetworkClient.tx.compute.executeContract(
               {
                 contract_address: selectedToken.address,
                 code_hash: selectedToken.code_hash,
@@ -928,7 +929,7 @@ function Deposit() {
                 gasLimit: withdraw_gas,
                 gasPriceInFeeDenom: 0.1,
                 feeDenom: "uscrt",
-                feeGranter: feeGrantStatus === "Success" ? faucetAddress : "",
+                feeGranter: feeGrantStatus === "success" ? faucetAddress : "",
                 ibcTxsOptions: {
                   resolveResponses: true,
                   resolveResponsesCheckIntervalMs: 10_000,
@@ -969,7 +970,7 @@ function Deposit() {
                 timeout: 600, // 10 minute timeout
               })
             );
-            tx = await secretjs.tx.compute.executeContract(
+            tx = await secretNetworkClient.tx.compute.executeContract(
               {
                 contract_address: selectedToken.address,
                 code_hash: selectedToken.code_hash,
@@ -996,7 +997,7 @@ function Deposit() {
                 gasLimit: withdraw_gas,
                 gasPriceInFeeDenom: 0.1,
                 feeDenom: "uscrt",
-                feeGranter: feeGrantStatus === "Success" ? faucetAddress : "",
+                feeGranter: feeGrantStatus === "success" ? faucetAddress : "",
                 ibcTxsOptions: {
                   resolveResponses: true,
                   resolveResponsesCheckIntervalMs: 10_000,
@@ -1007,11 +1008,11 @@ function Deposit() {
             );
           } else {
             const source_channel_id =
-              withdrawalChain?.axelar_chain_name == CHAINS.MAINNET.AXELAR &&
+              withdrawalChain?.axelar_chain_name === CHAINS.MAINNET.AXELAR &&
               selectedToken.name !== "SCRT"
                 ? withdrawalChain.channel_id
                 : withdraw_channel_id;
-            tx = await secretjs.tx.ibc.transfer(
+            tx = await secretNetworkClient.tx.ibc.transfer(
               {
                 sender: walletAddress as string,
                 receiver: sourceAddress,
@@ -1029,7 +1030,7 @@ function Deposit() {
                 gasLimit: withdraw_gas,
                 gasPriceInFeeDenom: 0.1,
                 feeDenom: "uscrt",
-                feeGranter: feeGrantStatus === "Success" ? faucetAddress : "",
+                feeGranter: feeGrantStatus === "success" ? faucetAddress : "",
                 ibcTxsOptions: {
                   resolveResponses: true,
                   resolveResponsesCheckIntervalMs: 10_000,
@@ -1085,7 +1086,7 @@ function Deposit() {
         className={
           "enabled:bg-gradient-to-r enabled:from-cyan-600 enabled:to-purple-600 enabled:hover:from-cyan-500 enabled:hover:to-purple-500 transition-colors text-white font-semibold py-3 w-full rounded-lg disabled:bg-neutral-500 focus:outline-none focus-visible:ring-4 ring-sky-500/40"
         }
-        disabled={!secretjs || !walletAddress}
+        disabled={!isConnected}
         onClick={() => submit()}
       >
         Execute Transfer
@@ -1109,9 +1110,7 @@ function Deposit() {
                 <div className="relative">
                   <div
                     className={`absolute inset-0 bg-cyan-500 blur-md rounded-full overflow-hidden ${
-                      secretjs && walletAddress
-                        ? "fadeInAndOutLoop"
-                        : "opacity-40"
+                      isConnected ? "fadeInAndOutLoop" : "opacity-40"
                     }`}
                   ></div>
                   <img
@@ -1160,7 +1159,7 @@ function Deposit() {
               <Tooltip
                 title={`Switch chains`}
                 placement="bottom"
-                disableHoverListener={!secretjs && !walletAddress}
+                disableHoverListener={!isConnected}
                 arrow
               >
                 <span>
@@ -1168,11 +1167,11 @@ function Deposit() {
                     onClick={toggleIbcMode}
                     className={
                       "focus:outline-none focus-visible:ring-2 ring-sky-500/40 inline-block bg-neutral-200 dark:bg-neutral-800 px-3 py-2 text-cyan-500 dark:text-cyan-500 transition-colors rounded-xl disabled:text-neutral-500 dark:disabled:text-neutral-500" +
-                      (secretjs && walletAddress
+                      (isConnected
                         ? "hover:text-cyan-700 dark:hover:text-cyan-300"
                         : "")
                     }
-                    disabled={!secretjs || !walletAddress}
+                    disabled={!isConnected}
                   >
                     <FontAwesomeIcon
                       icon={faRightLeft}
@@ -1195,9 +1194,7 @@ function Deposit() {
                 <div className="relative">
                   <div
                     className={`absolute inset-0 bg-violet-500 blur-md rounded-full overflow-hidden ${
-                      secretjs && walletAddress
-                        ? "fadeInAndOutLoop"
-                        : "opacity-40"
+                      isConnected ? "fadeInAndOutLoop" : "opacity-40"
                     }`}
                   ></div>
                   <img
@@ -1245,7 +1242,7 @@ function Deposit() {
         <div className="flex items-center">
           <div className="font-semibold mr-4 w-10">From:</div>
           <div className="flex-1 truncate font-medium text-sm">
-            {ibcMode === "deposit" && secretjs && walletAddress && (
+            {ibcMode === "deposit" && isConnected && (
               <a
                 href={`${
                   chains[selectedSource.chain_name].explorer_account
@@ -1255,7 +1252,7 @@ function Deposit() {
                 {sourceAddress.slice(0, 19) + "..." + sourceAddress.slice(-19)}
               </a>
             )}
-            {ibcMode === "withdrawal" && secretjs && walletAddress && (
+            {ibcMode === "withdrawal" && isConnected && (
               <a
                 href={`${chains["Secret Network"].explorer_account}${walletAddress}`}
                 target="_blank"
@@ -1280,13 +1277,13 @@ function Deposit() {
               <Tooltip
                 title={"Copy to clipboard"}
                 placement="bottom"
-                disableHoverListener={!secretjs && !walletAddress}
+                disableHoverListener={!isConnected}
                 arrow
               >
                 <span>
                   <button
                     className="text-neutral-500 enabled:hover:text-white enabled:active:text-neutral-500 transition-colors"
-                    disabled={!secretjs && !walletAddress}
+                    disabled={!isConnected}
                   >
                     <FontAwesomeIcon icon={faCopy} />
                   </button>
@@ -1299,7 +1296,7 @@ function Deposit() {
         <div className="flex items-center">
           <div className="flex-initial font-semibold mr-4 w-10">To:</div>
           <div className="flex-1 truncate font-medium text-sm">
-            {ibcMode === "withdrawal" && secretjs && walletAddress && (
+            {ibcMode === "withdrawal" && isConnected && (
               <a
                 href={`${
                   chains[selectedSource.chain_name].explorer_account
@@ -1309,7 +1306,7 @@ function Deposit() {
                 {sourceAddress.slice(0, 19) + "..." + sourceAddress.slice(-19)}
               </a>
             )}
-            {ibcMode === "deposit" && secretjs && walletAddress && (
+            {ibcMode === "deposit" && isConnected && (
               <a
                 href={`${targetChain.explorer_account}${walletAddress}`}
                 target="_blank"
@@ -1334,13 +1331,13 @@ function Deposit() {
               <Tooltip
                 title={"Copy to clipboard"}
                 placement="bottom"
-                disableHoverListener={!secretjs && !walletAddress}
+                disableHoverListener={!isConnected}
                 arrow
               >
                 <span>
                   <button
                     className="text-neutral-500 enabled:hover:text-white enabled:active:text-neutral-500 transition-colors"
-                    disabled={!secretjs && !walletAddress}
+                    disabled={!isConnected}
                   >
                     <FontAwesomeIcon icon={faCopy} />
                   </button>
@@ -1358,7 +1355,7 @@ function Deposit() {
             value={selectedToken}
             onChange={setSelectedToken}
             isSearchable={false}
-            isDisabled={!secretjs || !walletAddress}
+            isDisabled={!isConnected}
             formatOptionLabel={(token) => (
               <div className="flex items-center">
                 <img
@@ -1367,7 +1364,7 @@ function Deposit() {
                   className="w-6 h-6 mr-2 rounded-full"
                 />
                 <span className="font-semibold text-sm">
-                  {token.is_ics20 && ibcMode == "withdrawal" && "s"}
+                  {token.is_ics20 && ibcMode === "withdrawal" && "s"}
                   {token.name}
                 </span>
               </div>
@@ -1388,7 +1385,7 @@ function Deposit() {
             name="amount"
             id="amount"
             placeholder="0"
-            disabled={!walletAddress}
+            disabled={!isConnected}
           />
         </div>
 
@@ -1398,7 +1395,11 @@ function Deposit() {
             <span className="font-semibold">Available: </span>
             <span className="font-medium">
               {(() => {
-                if (availableBalance === "" && sourceAddress && secretjs) {
+                if (
+                  availableBalance === "" &&
+                  sourceAddress &&
+                  secretNetworkClient
+                ) {
                   return <CircularProgress size="0.6em" />;
                 }
                 const prettyBalance = new BigNumber(availableBalance)
@@ -1416,7 +1417,7 @@ function Deposit() {
                           await setWalletViewingKey(selectedToken.address);
                           try {
                             setAvailableBalance("");
-                            //setLoadingTokenBalance(true);
+                            // setLoadingTokenBalance(true);
                             await sleep(1000); // sometimes query nodes lag
                             await updateCoinBalance();
                           } finally {
@@ -1441,14 +1442,14 @@ function Deposit() {
                     </>
                   );
                 }
-                if (!walletAddress && !secretjs) {
+                if (!walletAddress && !secretNetworkClient) {
                   return "";
                 }
                 if (prettyBalance === "NaN") {
                   return "Error";
                 }
                 return `${prettyBalance} ${
-                  selectedToken.is_ics20 && ibcMode == "withdrawal" ? "s" : ""
+                  selectedToken.is_ics20 && ibcMode === "withdrawal" ? "s" : ""
                 }${selectedToken.name}`;
               })()}
             </span>
@@ -1488,7 +1489,7 @@ function Deposit() {
         </div>
       </div>
 
-      {ibcMode == "withdrawal" && !selectedToken.is_ics20 && <FeeGrant />}
+      {ibcMode === "withdrawal" && !selectedToken.is_ics20 && <FeeGrant />}
 
       {selectedToken.is_ics20 &&
         selectedToken.deposits.filter(

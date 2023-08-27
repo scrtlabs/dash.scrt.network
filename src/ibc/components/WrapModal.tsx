@@ -4,17 +4,14 @@ import {
   faXmark,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { getWalletViewingKey } from "service/walletService";
 import { IbcContext } from "ibc/Ibc";
 import { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import {
-  SecretjsContext,
-  getWalletViewingKey,
-  isViewingKeyAvailable,
-} from "shared/context/SecretjsContext";
 import { IbcMode } from "shared/types/IbcMode";
 import { viewingKeyErrorString } from "shared/utils/commons";
 import { Token, tokens } from "shared/utils/config";
+import { useSecretNetworkClientStore } from "zustand/secretNetworkClient";
 
 interface IWrapModalProps {
   open: boolean;
@@ -24,8 +21,6 @@ interface IWrapModalProps {
 }
 
 const WrapModal = (props: IWrapModalProps) => {
-  const { setViewingKey } = useContext(SecretjsContext);
-
   const {
     isWrapModalOpen,
     setIsWrapModalOpen,
@@ -37,6 +32,8 @@ const WrapModal = (props: IWrapModalProps) => {
     selectedToken,
     setSelectedToken,
   } = useContext(IbcContext);
+
+  const { setViewingKey } = useSecretNetworkClientStore();
 
   const [assetViewingKey, setAssetViewingKey] = useState<any>();
 

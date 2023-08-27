@@ -4,10 +4,7 @@ import {
   faWallet,
   faXmark,
 } from "@fortawesome/free-solid-svg-icons";
-import { isMobile } from "react-device-detect";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import React, { useContext } from "react";
-import { SecretjsContext } from "./SecretjsContext";
 
 interface IConnectWalletModalProps {
   open: boolean;
@@ -15,8 +12,8 @@ interface IConnectWalletModalProps {
 }
 
 export function ConnectWalletModal(props: IConnectWalletModalProps) {
-  const { preferedWalletApi, setPreferedWalletApi } =
-    useContext(SecretjsContext);
+  // const { setPreferedWalletApi } =
+  //   useContext(SecretjsContext);
 
   if (!props.open) return null;
 
@@ -69,7 +66,7 @@ export function ConnectWalletModal(props: IConnectWalletModalProps) {
                   onClick={() => {
                     if (keplrAvailable) return;
                     props.onClose();
-                    setPreferedWalletApi("Keplr");
+                    // setPreferedWalletApi("Keplr");
                   }}
                   target="_blank"
                   className={`group p-5 flex items-center gap-2.5 hover:bg-neutral-300 dark:hover:bg-neutral-700 transition-colors ${keplrAvailable}`}
@@ -90,7 +87,7 @@ export function ConnectWalletModal(props: IConnectWalletModalProps) {
                   onClick={() => {
                     if (leapAvailable) return;
                     props.onClose();
-                    setPreferedWalletApi("Leap");
+                    // setPreferedWalletApi("Leap");
                   }}
                   target="_blank"
                   className={`group p-5 flex items-center gap-2.5 hover:bg-neutral-300 dark:hover:bg-neutral-700 transition-colors ${leapAvailable}`}
@@ -111,7 +108,7 @@ export function ConnectWalletModal(props: IConnectWalletModalProps) {
                   onClick={() => {
                     if (keplrAvailable) return;
                     props.onClose();
-                    setPreferedWalletApi("Keplr");
+                    // setPreferedWalletApi("Keplr");
                   }}
                   target="_blank"
                   className={`group p-5 flex items-center gap-2.5 hover:bg-neutral-300 dark:hover:bg-neutral-700 transition-colors ${keplrAvailable}`}
@@ -130,7 +127,7 @@ export function ConnectWalletModal(props: IConnectWalletModalProps) {
                   onClick={() => {
                     if (keplrAvailable) return;
                     props.onClose();
-                    setPreferedWalletApi("Keplr");
+                    // setPreferedWalletApi("Keplr");
                   }}
                   target="_blank"
                   className={`group p-5 flex items-center gap-2.5 hover:bg-neutral-300 dark:hover:bg-neutral-700 transition-colors ${keplrAvailable}`}

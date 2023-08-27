@@ -1,34 +1,24 @@
 import {
-  faArrowUpRightFromSquare,
-  faChevronRight,
-  faGlobe,
   faInfoCircle,
   faMagnifyingGlass,
-  faTriangleExclamation,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import React, { useContext, useEffect } from "react";
 import { Helmet } from "react-helmet-async";
 import MyValidatorsItem from "./components/MyValidatorsItem";
 import AllValidatorsItem from "./components/AllValidatorsItem";
 import Tooltip from "@mui/material/Tooltip";
 import "./RestakeRedesign.scss";
-import { SecretjsContext } from "shared/context/SecretjsContext";
 import NoScrtWarning from "./components/NoScrtWarning";
 import {
   autoRestakeJsonLdSchema,
   autoRestakePageDescription,
   autoRestakePageTitle,
 } from "shared/utils/commons";
-
-// for html-head
+import { useSecretNetworkClientStore } from "zustand/secretNetworkClient";
 
 function RestakeRedesign() {
-  const { secretjs, secretAddress } = useContext(SecretjsContext);
-
-  // useEffect(() => {
-  //   alert("hi");
-  // }, []);
+  const { secretNetworkClient: secretjs, walletAddress } =
+    useSecretNetworkClientStore();
 
   return (
     <>
@@ -63,8 +53,7 @@ function RestakeRedesign() {
         </h1>
       </div>
 
-      {/* TODO: Check if user has SCRT */}
-      {secretjs && secretAddress ? <NoScrtWarning /> : null}
+      {secretjs && walletAddress ? <NoScrtWarning /> : null}
 
       {/* My Validators */}
       <div className="my-validators mb-20 max-w-6xl mx-auto">

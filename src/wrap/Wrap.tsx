@@ -28,30 +28,26 @@ import Tooltip from "@mui/material/Tooltip";
 import { Helmet } from "react-helmet-async";
 import UnknownBalanceModal from "./components/UnknownBalanceModal";
 import FeeGrantInfoModal from "./components/FeeGrantInfoModal";
-import {
-  getWalletViewingKey,
-  SecretjsContext,
-} from "shared/context/SecretjsContext";
 import mixpanel from "mixpanel-browser";
 import { useSearchParams } from "react-router-dom";
 import { WrappingMode } from "shared/types/WrappingMode";
 import { APIContext } from "shared/context/APIContext";
-import { useSecretjsStore } from "zustand/secretjs";
+import { useSecretNetworkClientStore } from "zustand/secretNetworkClient";
+import { getWalletViewingKey } from "service/walletService";
 
 export const WrapContext = createContext(null);
 
 export function Wrap() {
-  const { loadingTokenBalance, setLoadingTokenBalance, setViewingKey } =
-    useContext(SecretjsContext);
+  const { setViewingKey } = useSecretNetworkClientStore();
 
   const {
-    secretjs,
+    secretNetworkClient: secretjs,
     walletAddress,
     feeGrantStatus,
     requestFeeGrant,
     isConnected,
     connectWallet,
-  } = useSecretjsStore();
+  } = useSecretNetworkClientStore();
 
   const { prices } = useContext(APIContext);
 
@@ -154,7 +150,7 @@ export function Wrap() {
       new BigNumber(amountString).isGreaterThan(
         new BigNumber(availableAmount)
       ) &&
-      !(tokenBalance == viewingKeyErrorString && wrappingMode === "unwrap") &&
+      !(tokenBalance === viewingKeyErrorString && wrappingMode === "unwrap") &&
       amountString !== ""
     ) {
       setValidationMessage("Not enough balance");
@@ -181,7 +177,7 @@ export function Wrap() {
       new BigNumber(amountString).isGreaterThan(
         new BigNumber(availableAmount)
       ) &&
-      !(tokenBalance == viewingKeyErrorString && wrappingMode === "unwrap") &&
+      !(tokenBalance === viewingKeyErrorString && wrappingMode === "unwrap") &&
       amountString !== ""
     ) {
       setAmountString(availableAmount.toString());
@@ -240,7 +236,7 @@ export function Wrap() {
       );
       let potentialInput = availableAmount.toNumber() * (percentage * 0.01);
       if (
-        percentage == 100 &&
+        percentage === 100 &&
         potentialInput > 0.05 &&
         selectedToken.name === "SCRT"
       ) {
@@ -259,12 +255,12 @@ export function Wrap() {
   async function setBalance() {
     try {
       setLoadingCoinBalance(true);
-      setLoadingTokenBalance(true);
+      // setLoadingTokenBalance(true);
       await updateCoinBalance();
       await updateTokenBalance();
     } finally {
       setLoadingCoinBalance(false);
-      setLoadingTokenBalance(false);
+      // setLoadingTokenBalance(false);
     }
   }
 
@@ -323,7 +319,8 @@ export function Wrap() {
           className="bg-neutral-100 dark:bg-neutral-900 px-1.5 py-0.5 rounded-l-md transition-colors hover:bg-neutral-300 dark:hover:bg-neutral-700 cursor-pointer disabled:text-neutral-500 dark:disabled:text-neutral-500 disabled:hover:bg-neutral-900 dark:disabled:hover:bg-neutral-900 disabled:cursor-default focus:outline-0 focus:ring-2 ring-sky-500/40 focus:z-10"
           disabled={
             !isConnected ||
-            (wrappingMode === "unwrap" && tokenBalance == viewingKeyErrorString)
+            (wrappingMode === "unwrap" &&
+              tokenBalance === viewingKeyErrorString)
           }
         >
           25%
@@ -334,7 +331,8 @@ export function Wrap() {
           disabled={
             !secretjs ||
             !walletAddress ||
-            (wrappingMode === "unwrap" && tokenBalance == viewingKeyErrorString)
+            (wrappingMode === "unwrap" &&
+              tokenBalance === viewingKeyErrorString)
           }
         >
           50%
@@ -345,7 +343,8 @@ export function Wrap() {
           disabled={
             !secretjs ||
             !walletAddress ||
-            (wrappingMode === "unwrap" && tokenBalance == viewingKeyErrorString)
+            (wrappingMode === "unwrap" &&
+              tokenBalance === viewingKeyErrorString)
           }
         >
           75%
@@ -356,7 +355,8 @@ export function Wrap() {
           disabled={
             !secretjs ||
             !walletAddress ||
-            (wrappingMode === "unwrap" && tokenBalance == viewingKeyErrorString)
+            (wrappingMode === "unwrap" &&
+              tokenBalance === viewingKeyErrorString)
           }
         >
           MAX
@@ -401,9 +401,10 @@ export function Wrap() {
   }
 
   function WrappedTokenBalanceUi() {
-    if (loadingTokenBalance || !secretjs || !walletAddress || !tokenBalance) {
+    // if (loadingTokenBalance || !secretjs || !walletAddress || !tokenBalance) {
+    if (!isConnected || !tokenBalance) {
       return <></>;
-    } else if (tokenBalance == viewingKeyErrorString) {
+    } else if (tokenBalance === viewingKeyErrorString) {
       return (
         <>
           <span className="font-semibold">Available:</span>
@@ -563,7 +564,7 @@ export function Wrap() {
                 gasLimit: 150_000,
                 gasPriceInFeeDenom: 0.25,
                 feeDenom: "uscrt",
-                feeGranter: feeGrantStatus === "Success" ? faucetAddress : "",
+                feeGranter: feeGrantStatus === "success" ? faucetAddress : "",
                 broadcastMode: BroadcastMode.Sync,
               }
             )
@@ -631,7 +632,7 @@ export function Wrap() {
                 gasLimit: 150_000,
                 gasPriceInFeeDenom: 0.25,
                 feeDenom: "uscrt",
-                feeGranter: feeGrantStatus === "Success" ? faucetAddress : "",
+                feeGranter: feeGrantStatus === "success" ? faucetAddress : "",
                 broadcastMode: BroadcastMode.Sync,
               }
             )
@@ -684,20 +685,20 @@ export function Wrap() {
           mixpanel.identify("Dashboard-App");
           mixpanel.track("Secret Wrap", {
             "Wrapping Mode": wrappingMode,
-            From: (wrappingMode == "wrap" ? "" : "s") + selectedToken.name,
-            To: (wrappingMode == "wrap" ? "s" : "") + selectedToken.name,
+            From: (wrappingMode === "wrap" ? "" : "s") + selectedToken.name,
+            To: (wrappingMode === "wrap" ? "s" : "") + selectedToken.name,
             // "Amount": amountToWrap,
-            "Fee Grant used": feeGrantStatus === "Success" ? true : false,
+            "Fee Grant used": feeGrantStatus === "success" ? true : false,
           });
         }
         try {
           setLoadingCoinBalance(true);
-          setLoadingTokenBalance(true);
+          // setLoadingTokenBalance(true);
           await sleep(1000); // sometimes query nodes lag
           await updateBalance();
         } finally {
           setLoadingCoinBalance(false);
-          setLoadingTokenBalance(false);
+          // setLoadingTokenBalance(false);
         }
       }
     }
@@ -877,7 +878,7 @@ export function Wrap() {
                         className="w-6 h-6 mr-2 rounded-full"
                       />
                       <span className="font-semibold text-sm">
-                        {wrappingMode == "unwrap" && "s"}
+                        {wrappingMode === "unwrap" && "s"}
                         {token.name}
                       </span>
                     </div>
@@ -944,7 +945,7 @@ export function Wrap() {
                         className="w-6 h-6 mr-2 rounded-full"
                       />
                       <span className="font-semibold text-sm">
-                        {wrappingMode == "wrap" && "s"}
+                        {wrappingMode === "wrap" && "s"}
                         {token.name}
                       </span>
                     </div>
@@ -986,7 +987,7 @@ export function Wrap() {
               </div>
               <div className="flex-initial">
                 {/* Untouched */}
-                {feeGrantStatus === "Untouched" && (
+                {feeGrantStatus === "untouched" && (
                   <>
                     <button
                       id="feeGrantButton"
@@ -999,7 +1000,7 @@ export function Wrap() {
                   </>
                 )}
                 {/* Success */}
-                {feeGrantStatus === "Success" && (
+                {feeGrantStatus === "success" && (
                   <div className="font-semibold text-sm flex items-center h-[1.6rem]">
                     <FontAwesomeIcon
                       icon={faCheckCircle}
@@ -1009,7 +1010,7 @@ export function Wrap() {
                   </div>
                 )}
                 {/* Fail */}
-                {feeGrantStatus === "Fail" && (
+                {feeGrantStatus === "fail" && (
                   <div className="font-semibold text-sm h-[1.6rem]">
                     <FontAwesomeIcon
                       icon={faXmarkCircle}
