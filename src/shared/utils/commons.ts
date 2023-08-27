@@ -2,7 +2,7 @@ import { StdFee } from "@cosmjs/stargate";
 import { Bech32Address } from "@keplr-wallet/cosmos";
 import { sha256 } from "@noble/hashes/sha256";
 import { Wallet, toHex, toUtf8 } from "secretjs";
-import { tokens } from "./config";
+import { tokens, snips, ICSTokens } from "./config";
 import mixpanel from "mixpanel-browser";
 
 export const viewingKeyErrorString = "🧐";
@@ -17,6 +17,8 @@ export const sleep = (ms: number) =>
   new Promise((resolve) => setTimeout(resolve, ms));
 
 export const gasPriceUscrt = 0.25;
+
+export const allTokens = tokens.concat(snips).concat(ICSTokens);
 
 export function gasToFee(gas: number, denom: string): StdFee {
   return {
