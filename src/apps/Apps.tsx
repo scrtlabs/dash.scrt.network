@@ -15,7 +15,7 @@ import React from "react";
 import { APIContext } from "shared/context/APIContext";
 import mixpanel from "mixpanel-browser";
 import { trackMixPanelEvent } from "shared/utils/commons";
-import { useSecretNetworkClientStore } from "zustand/secretNetworkClient";
+import { useSecretNetworkClientStore } from "store/secretNetworkClient";
 
 function Apps() {
   const {

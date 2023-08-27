@@ -1,12 +1,12 @@
 import { createContext, useEffect, useState } from "react";
-
-export type Theme = "light" | "dark";
+import { Nullable } from "shared/types/Nullable";
+import { Theme } from "shared/types/Theme";
 
 const ThemeContext = createContext(null);
 
 const ThemeContextProvider = ({ children }: any) => {
   // the value that will be given to the context
-  const [theme, setTheme] = useState<Theme>(null);
+  const [theme, setTheme] = useState<Nullable<Theme>>(null);
 
   function setThemeClassToBody(theme: Theme) {
     if (theme === "light") {

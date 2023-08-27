@@ -55,7 +55,7 @@ import {
   CHAINS,
   Environment,
 } from "@axelar-network/axelarjs-sdk";
-import { useSecretNetworkClientStore } from "zustand/secretNetworkClient";
+import { useSecretNetworkClientStore } from "store/secretNetworkClient";
 import {
   getWalletViewingKey,
   setWalletViewingKey,

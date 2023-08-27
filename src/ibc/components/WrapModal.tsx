@@ -11,7 +11,7 @@ import { Link } from "react-router-dom";
 import { IbcMode } from "shared/types/IbcMode";
 import { viewingKeyErrorString } from "shared/utils/commons";
 import { Token, tokens } from "shared/utils/config";
-import { useSecretNetworkClientStore } from "zustand/secretNetworkClient";
+import { useSecretNetworkClientStore } from "store/secretNetworkClient";
 
 interface IWrapModalProps {
   open: boolean;

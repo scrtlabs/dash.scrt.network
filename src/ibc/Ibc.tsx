@@ -13,7 +13,7 @@ import {
   ibcPageDescription,
   ibcPageTitle,
 } from "shared/utils/commons";
-import { useSecretNetworkClientStore } from "zustand/secretNetworkClient";
+import { useSecretNetworkClientStore } from "store/secretNetworkClient";
 
 export const IbcContext = createContext(null);
 

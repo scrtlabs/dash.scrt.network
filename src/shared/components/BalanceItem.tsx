@@ -6,7 +6,7 @@ import { viewingKeyErrorString, usdString } from "shared/utils/commons";
 import Tooltip from "@mui/material/Tooltip";
 import { Token } from "shared/utils/config";
 import { faKey, faInfoCircle } from "@fortawesome/free-solid-svg-icons";
-import { useSecretNetworkClientStore } from "zustand/secretNetworkClient";
+import { useSecretNetworkClientStore } from "store/secretNetworkClient";
 import { scrtToken } from "shared/utils/tokens";
 
 type IBalanceProps = {

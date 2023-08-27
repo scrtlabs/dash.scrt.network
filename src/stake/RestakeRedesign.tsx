@@ -14,7 +14,7 @@ import {
   autoRestakePageDescription,
   autoRestakePageTitle,
 } from "shared/utils/commons";
-import { useSecretNetworkClientStore } from "zustand/secretNetworkClient";
+import { useSecretNetworkClientStore } from "store/secretNetworkClient";
 
 function RestakeRedesign() {
   const { secretNetworkClient: secretjs, walletAddress } =

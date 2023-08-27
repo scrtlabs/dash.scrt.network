@@ -1,7 +1,7 @@
 import { faBars, faSun } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Footer from "shared/components/Footer";
-import { KeplrPanel } from "shared/components/Keplr";
+import { Wallet } from "shared/components/Wallet";
 import { Navigation } from "shared/components/Navigation";
 import { useState, createContext, useEffect, useContext } from "react";
 import { Breakpoint } from "react-socks";
@@ -104,7 +104,7 @@ export const DefaultLayout = ({ children }: any) => {
               </div>
 
               <div className="flex-1 sm:flex-initial sm:flex sm:justify-end">
-                <KeplrPanel />
+                <Wallet />
               </div>
             </div>
 

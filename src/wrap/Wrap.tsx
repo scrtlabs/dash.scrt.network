@@ -32,7 +32,7 @@ import mixpanel from "mixpanel-browser";
 import { useSearchParams } from "react-router-dom";
 import { WrappingMode } from "shared/types/WrappingMode";
 import { APIContext } from "shared/context/APIContext";
-import { useSecretNetworkClientStore } from "zustand/secretNetworkClient";
+import { useSecretNetworkClientStore } from "store/secretNetworkClient";
 import { getWalletViewingKey } from "service/walletService";
 
 export const WrapContext = createContext(null);

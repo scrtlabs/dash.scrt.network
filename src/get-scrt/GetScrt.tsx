@@ -15,7 +15,7 @@ import queryString from "query-string";
 import Select from "react-select";
 import mixpanel from "mixpanel-browser";
 import { Nullable } from "shared/types/Nullable";
-import { useSecretNetworkClientStore } from "zustand/secretNetworkClient";
+import { useSecretNetworkClientStore } from "store/secretNetworkClient";
 
 function GetSCRT() {
   const { secretNetworkClient: secretjs, walletAddress } =

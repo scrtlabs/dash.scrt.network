@@ -18,7 +18,7 @@ import {
   autoRestakePageTitle,
 } from "shared/utils/commons";
 import { trackMixPanelEvent } from "shared/utils/commons";
-import { useSecretNetworkClientStore } from "zustand/secretNetworkClient";
+import { useSecretNetworkClientStore } from "store/secretNetworkClient";
 
 export function Restake() {
   const queryParams = new URLSearchParams(window.location.search);

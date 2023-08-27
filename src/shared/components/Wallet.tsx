@@ -5,18 +5,19 @@ import CopyToClipboard from "react-copy-to-clipboard";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCopy, faWallet } from "@fortawesome/free-solid-svg-icons";
 import { toast } from "react-toastify";
-import GetWalletModal from "shared/context/GetWalletModal";
 import { useHoverOutside } from "shared/utils/useHoverOutside";
 import { APIContext } from "shared/context/APIContext";
 import BigNumber from "bignumber.js";
 import { faKey, faInfoCircle } from "@fortawesome/free-solid-svg-icons";
 import BalanceItem from "./BalanceItem";
 import { trackMixPanelEvent } from "shared/utils/commons";
-import { useSecretNetworkClientStore } from "zustand/secretNetworkClient";
+import { useSecretNetworkClientStore } from "store/secretNetworkClient";
 import { setWalletViewingKey } from "service/walletService";
 import { scrtToken } from "shared/utils/tokens";
+import { ConnectWalletModal } from "shared/context/ConnectWalletModal";
+import { GetWalletModal } from "shared/context/GetWalletModal";
 
-export function KeplrPanel() {
+export function Wallet() {
   const {
     isConnected,
     secretNetworkClient: secretjs,
@@ -30,12 +31,14 @@ export function KeplrPanel() {
   const [isMenuVisible, setIsMenuVisible] = useState<boolean>(true);
   const [isGetWalletModalOpen, setIsGetWalletModalOpen] =
     useState<boolean>(false);
+  const [isConnectWalletModalOpen, setIsConnectWalletModalOpen] =
+    useState<boolean>(false);
 
   const { sScrtBalance, setsScrtBalance } = useSecretNetworkClientStore();
 
   function WrappedTokenBalanceUi() {
-    if (!secretjs || !walletAddress || !sScrtBalance) {
-      return <></>;
+    if (!isConnected || !sScrtBalance) {
+      return;
     } else if (sScrtBalance === viewingKeyErrorString) {
       return (
         <>
@@ -63,32 +66,31 @@ export function KeplrPanel() {
       );
     } else if (Number(sScrtBalance) > -1) {
       return (
-        <>
-          <div className="text-xs">
-            <div className="font-bold">
-              {` ${new BigNumber(sScrtBalance!)
-                .dividedBy(`1e${scrtToken.decimals}`)
-                .toFormat()} sSCRT`}
-            </div>
-            {currentPrice && sScrtBalance && (
-              <div className="text-gray-500">
-                ≈{" "}
-                {` ${usdString.format(
-                  new BigNumber(sScrtBalance!)
-                    .dividedBy(`1e${scrtToken.decimals}`)
-                    .multipliedBy(Number(currentPrice))
-                    .toNumber()
-                )}`}
-              </div>
-            )}
+        <div className="text-xs">
+          <div className="font-bold">
+            {` ${new BigNumber(sScrtBalance!)
+              .dividedBy(`1e${scrtToken.decimals}`)
+              .toFormat()} sSCRT`}
           </div>
-        </>
+          {currentPrice && sScrtBalance && (
+            <div className="text-gray-500">
+              ≈{" "}
+              {` ${usdString.format(
+                new BigNumber(sScrtBalance!)
+                  .dividedBy(`1e${scrtToken.decimals}`)
+                  .multipliedBy(Number(currentPrice))
+                  .toNumber()
+              )}`}
+            </div>
+          )}
+        </div>
       );
     }
   }
 
   useEffect(() => {
-    if (localStorage.getItem("keplrAutoConnect") === "true") {
+    let isAutoConnectEnabled = localStorage.getItem("autoConnect") === "true";
+    if (isAutoConnectEnabled) {
       connectWallet();
     }
   }, []);
@@ -131,7 +133,7 @@ export function KeplrPanel() {
 
   const handleConnectWallet = () => {
     if (window.keplr && (window as any).leap) {
-      alert("Two wallets installed! Pls pick"); // TODO: implement wallet picker
+      setIsConnectWalletModalOpen(true);
     } else if (window.keplr && !(window as any).leap) {
       connectWallet("keplr");
     } else if (!window.keplr && (window as any).leap) {
@@ -141,7 +143,7 @@ export function KeplrPanel() {
     }
   };
 
-  const Disconnect = () => {
+  const DisconnectButton = () => {
     return (
       <button
         onClick={disconnectWallet}
@@ -152,7 +154,7 @@ export function KeplrPanel() {
     );
   };
 
-  const KeplrMenu = () => {
+  const ContextMenu = () => {
     return (
       <div className="absolute pt-10 right-4 z-40 top-[3.7rem]">
         <div className="bg-white dark:bg-neutral-800 border text-xs border-neutral-200 dark:border-neutral-700 p-4 w-auto rounded-lg flex-row space-y-4">
@@ -163,13 +165,13 @@ export function KeplrPanel() {
           <Balances />
 
           {/* Disconnect Button */}
-          <Disconnect />
+          <DisconnectButton />
         </div>
       </div>
     );
   };
 
-  const AnimatedDot = () => {
+  const GreenAnimatedDot = () => {
     return (
       <span className="flex relative h-2 w-2">
         <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-1/2"></span>
@@ -178,31 +180,16 @@ export function KeplrPanel() {
     );
   };
 
-  const Content = () => {
-    return (
-      <>
-        <div className="flex items-center font-semibold text-sm">
-          <div className="flex items-center">
-            {/* Animated Dot */}
-            {walletAddress?.length > 0 ? (
-              <span className="mr-3">
-                <AnimatedDot />
-              </span>
-            ) : null}
-            {/* Wallet Icon */}
-            <FontAwesomeIcon icon={faWallet} className="mr-2" />
-            {/* Connect Wallet || Connected */}
-            <span className="flex-1">
-              {walletAddress?.length > 0 ? "Connected" : "Connect Wallet"}
-            </span>
-          </div>
-        </div>
-      </>
-    );
-  };
-
   return (
     <>
+      <ConnectWalletModal
+        open={isConnectWalletModalOpen}
+        onClose={() => {
+          setIsConnectWalletModalOpen(false);
+          document.body.classList.remove("overflow-hidden");
+        }}
+      />
+
       <GetWalletModal
         open={isGetWalletModalOpen}
         onClose={() => {
@@ -213,28 +200,35 @@ export function KeplrPanel() {
       />
 
       {isConnected ? (
-        <>
-          <div ref={keplrRef}>
-            {isMenuVisible ? <KeplrMenu /> : null}
-            <div
-              className="w-full sm:w-auto rounded-lg px-4 py-3 bg-white dark:bg-neutral-700 hover:dark:bg-neutral-600 select-none cursor-pointer transition-colors"
-              onMouseOver={() => setIsMenuVisible(true)}
-              ref={keplrRef}
-            >
-              <Content />
+        <div ref={keplrRef}>
+          {isMenuVisible ? <ContextMenu /> : null}
+          <div
+            className="w-full sm:w-auto rounded-lg px-4 py-3 bg-white dark:bg-neutral-700 hover:dark:bg-neutral-600 select-none cursor-pointer transition-colors"
+            onMouseOver={() => setIsMenuVisible(true)}
+            ref={keplrRef}
+          >
+            <div className="flex items-center font-semibold text-sm">
+              <div className="flex items-center">
+                <GreenAnimatedDot />
+                <FontAwesomeIcon icon={faWallet} className="ml-3 mr-2" />
+                {`Connected`}
+              </div>
             </div>
           </div>
-        </>
+        </div>
       ) : (
-        <>
-          <button
-            id="keplr-button"
-            onClick={handleConnectWallet}
-            className="w-full sm:w-auto rounded-lg px-4 py-3 bg-white dark:bg-neutral-700 hover:dark:bg-neutral-600 select-none cursor-pointer transition-colors"
-          >
-            <Content />
-          </button>
-        </>
+        <button
+          id="keplr-button"
+          onClick={handleConnectWallet}
+          className="w-full sm:w-auto rounded-lg px-4 py-3 bg-white dark:bg-neutral-700 hover:dark:bg-neutral-600 select-none cursor-pointer transition-colors"
+        >
+          <div className="flex items-center font-semibold text-sm">
+            <div className="flex items-center">
+              <FontAwesomeIcon icon={faWallet} className="mr-2" />
+              {`Connect Wallet`}
+            </div>
+          </div>
+        </button>
       )}
     </>
   );
