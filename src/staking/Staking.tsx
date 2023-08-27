@@ -455,6 +455,8 @@ export const Staking = () => {
     setDelegatorDelegations,
     selectedValidator,
     setSelectedValidator,
+    delegationTotalRewards,
+    setDelegationTotalRewards,
     view,
     setView,
   };
@@ -514,111 +516,115 @@ export const Staking = () => {
         ) : null}
 
         {/* My Validators */}
-        {delegatorDelegations?.length != 0 && validators && (
-          <div className="my-validators mb-20 max-w-6xl mx-auto">
-            <div className="font-bold text-xl mb-4 px-4">My Validators</div>
+        {secretjs &&
+          secretAddress &&
+          delegatorDelegations &&
+          delegatorDelegations?.length != 0 &&
+          validators && (
+            <div className="my-validators mb-20 max-w-6xl mx-auto">
+              <div className="font-bold text-xl mb-4 px-4">My Validators</div>
 
-            {/* Claim Rewards*/}
-            {delegationTotalRewards && (
-              <div className="px-4 mb-4 flex items-center flex-col sm:flex-row gap-2 sm:gap-4 text-center sm:text-left">
+              {/* Claim Rewards*/}
+              {delegationTotalRewards && (
+                <div className="px-4 mb-4 flex items-center flex-col sm:flex-row gap-2 sm:gap-4 text-center sm:text-left">
+                  <div className="flex-1">
+                    <span className="font-semibold">{`Total Pending Rewards: `}</span>
+                    <span>{totalPendingRewards()}</span>
+                    <span className="text-xs font-semibold text-neutral-400">
+                      {" "}
+                      SCRT
+                    </span>
+                  </div>
+
+                  <button
+                    onClick={() => setIsClaimRewardsModalOpen(true)}
+                    className="flex-initial text-medium disabled:bg-neutral-600 enabled:bg-green-600 enabled:hover:bg-green-700 disabled:text-neutral-400 enabled:text-white transition-colors font-semibold px-2 py-2 text-sm rounded-md"
+                  >
+                    Claim Pending Rewards
+                  </button>
+                </div>
+              )}
+
+              <div className="my-validators flex flex-col px-4">
+                {delegatorDelegations?.map((delegation: any, i: any) => (
+                  <MyValidatorsItem
+                    name={
+                      validators.find(
+                        (validator: any) =>
+                          validator.operator_address ==
+                          delegation.delegation.validator_address
+                      )?.description?.moniker
+                    }
+                    commissionPercentage={
+                      validators.find(
+                        (validator: any) =>
+                          validator.operator_address ==
+                          delegation.delegation.validator_address
+                      )?.commission.commission_rates?.rate
+                    }
+                    validator={validators.find(
+                      (validator: any) =>
+                        validator.operator_address ==
+                        delegation.delegation.validator_address
+                    )}
+                    identity={
+                      validators.find(
+                        (validator: any) =>
+                          validator.operator_address ==
+                          delegation.delegation.validator_address
+                      )?.description?.identity
+                    }
+                    restakeEntries={restakeEntries}
+                    stakedAmount={delegation?.balance?.amount}
+                    setSelectedValidator={setSelectedValidator}
+                    openModal={setIsValidatorModalOpen}
+                    restakeChoice={restakeChoice}
+                    setRestakeChoice={setRestakeChoice}
+                  />
+                ))}
+              </div>
+              {restakeChoice.length > 0 && (
+                <div className="px-4 pb-2">
+                  <button
+                    onClick={() => doRestake()}
+                    className="text-medium disabled:bg-neutral-600 enabled:bg-green-600 enabled:hover:bg-green-700 disabled:text-neutral-400 enabled:text-white transition-colors font-semibold px-2 py-2 text-sm rounded-md"
+                  >
+                    Set Auto Restake
+                  </button>
+                  <Tooltip
+                    title={
+                      'Automating the process of "claim and restake" for your SCRT. Auto-compounds your staked SCRT for increased staking returns'
+                    }
+                    placement="right"
+                    arrow
+                  >
+                    <FontAwesomeIcon
+                      icon={faInfoCircle}
+                      className="ml-2 text-neutral-400"
+                    />
+                  </Tooltip>
+                </div>
+              )}
+
+              {/* Total Staked | Auto Restake */}
+              <div className="px-4 mt-4 flex flex-col sm:flex-row gap-2 sm:gap-4 text-center sm:text-left">
                 <div className="flex-1">
-                  <span className="font-semibold">
-                    {`Total Pending Rewards: ${totalPendingRewards()}`}
-                  </span>
+                  <span className="font-semibold">{`Total Amount Staked: `}</span>
+                  <span>{totalAmountStaked()}</span>
                   <span className="text-xs font-semibold text-neutral-400">
-                    {" "}
                     SCRT
                   </span>
                 </div>
 
                 <button
-                  onClick={() => setIsClaimRewardsModalOpen(true)}
-                  className="flex-initial text-medium disabled:bg-neutral-600 enabled:bg-green-600 enabled:hover:bg-green-700 disabled:text-neutral-400 enabled:text-white transition-colors font-semibold px-2 py-2 text-sm rounded-md"
+                  onClick={() => alert("Todo!")}
+                  className="flex-initial text-medium disabled:bg-neutral-600 enabled:bg-sky-600 enabled:hover:bg-sky-700 disabled:text-neutral-400 enabled:text-white transition-colors font-semibold px-2 py-2 text-sm rounded-md"
                 >
-                  Claim Pending Rewards
+                  Manage Auto Restake
                 </button>
               </div>
-            )}
-
-            <div className="my-validators flex flex-col px-4">
-              {delegatorDelegations?.map((delegation: any, i: any) => (
-                <MyValidatorsItem
-                  name={
-                    validators.find(
-                      (validator: any) =>
-                        validator.operator_address ==
-                        delegation.delegation.validator_address
-                    )?.description?.moniker
-                  }
-                  commissionPercentage={
-                    validators.find(
-                      (validator: any) =>
-                        validator.operator_address ==
-                        delegation.delegation.validator_address
-                    )?.commission.commission_rates?.rate
-                  }
-                  validator={validators.find(
-                    (validator: any) =>
-                      validator.operator_address ==
-                      delegation.delegation.validator_address
-                  )}
-                  identity={
-                    validators.find(
-                      (validator: any) =>
-                        validator.operator_address ==
-                        delegation.delegation.validator_address
-                    )?.description?.identity
-                  }
-                  restakeEntries={restakeEntries}
-                  stakedAmount={delegation?.balance?.amount}
-                  setSelectedValidator={setSelectedValidator}
-                  openModal={setIsValidatorModalOpen}
-                  restakeChoice={restakeChoice}
-                  setRestakeChoice={setRestakeChoice}
-                />
-              ))}
             </div>
-            {restakeChoice.length > 0 && (
-              <div className="px-4 pb-2">
-                <button
-                  onClick={() => doRestake()}
-                  className="text-medium disabled:bg-neutral-600 enabled:bg-green-600 enabled:hover:bg-green-700 disabled:text-neutral-400 enabled:text-white transition-colors font-semibold px-2 py-2 text-sm rounded-md"
-                >
-                  Set Auto Restake
-                </button>
-                <Tooltip
-                  title={
-                    'Automating the process of "claim and restake" for your SCRT. Auto-compounds your staked SCRT for increased staking returns'
-                  }
-                  placement="right"
-                  arrow
-                >
-                  <FontAwesomeIcon
-                    icon={faInfoCircle}
-                    className="ml-2 text-neutral-400"
-                  />
-                </Tooltip>
-              </div>
-            )}
-
-            {/* Total Staked | Auto Restake */}
-            <div className="px-4 mt-4 flex flex-col sm:flex-row gap-2 sm:gap-4 text-center sm:text-left">
-              <div className="flex-1">
-                <span className="font-semibold">{`Total Amount Staked: ${totalAmountStaked()}`}</span>
-                <span className="text-xs font-semibold text-neutral-400">
-                  SCRT
-                </span>
-              </div>
-
-              <button
-                onClick={() => alert("Todo!")}
-                className="flex-initial text-medium disabled:bg-neutral-600 enabled:bg-sky-600 enabled:hover:bg-sky-700 disabled:text-neutral-400 enabled:text-white transition-colors font-semibold px-2 py-2 text-sm rounded-md"
-              >
-                Manage Auto Restake
-              </button>
-            </div>
-          </div>
-        )}
+          )}
 
         {/* All Validators */}
         <div className="max-w-6xl mx-auto mt-8">

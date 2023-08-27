@@ -5,6 +5,7 @@ import { SecretjsContext } from "shared/context/SecretjsContext";
 import { faucetAddress } from "shared/utils/commons";
 import { StakingContext } from "staking/Staking";
 import FeeGrant from "./validatorModalComponents/FeeGrant";
+import BigNumber from "bignumber.js";
 
 interface IClaimRewardsModalProps {
   open: boolean;
@@ -22,11 +23,81 @@ export function ClaimRewardsModal(props: IClaimRewardsModalProps) {
     requestFeeGrant,
   } = useContext(SecretjsContext);
 
-  const { delegatorDelegations } = useContext(StakingContext);
+  const { delegatorDelegations, delegationTotalRewards } =
+    useContext(StakingContext);
 
   if (!props.open) return null;
 
-  function claimRewards() {}
+  const totalPendingRewards = () => {
+    return BigNumber(delegationTotalRewards?.total[0]?.amount)
+      .dividedBy(`1e${SCRTToken.decimals}`)
+      .toFormat(SCRTToken.decimals);
+  };
+
+  function claimRewards() {
+    async function submit() {
+      if (!secretjs || !secretAddress) return;
+
+      try {
+        const toastId = toast.loading(`Claiming Staking Rewards`);
+        const txs = delegatorDelegations.map((delegation: any) => {
+          console.log(delegation);
+          return new MsgWithdrawDelegationReward({
+            delegator_address: secretAddress,
+            validator_address: delegation?.delegation?.validator_address,
+          });
+        });
+
+        await secretjs.tx
+          .broadcast(txs, {
+            gasLimit: 100_000 * txs.length,
+            gasPriceInFeeDenom: 0.25,
+            feeDenom: "uscrt",
+            feeGranter: feeGrantStatus === "Success" ? faucetAddress : "",
+          })
+          .catch((error: any) => {
+            console.error(error);
+            if (error?.tx?.rawLog) {
+              toast.update(toastId, {
+                render: `Claiming staking rewards failed: ${error.tx.rawLog}`,
+                type: "error",
+                isLoading: false,
+                closeOnClick: true,
+              });
+            } else {
+              toast.update(toastId, {
+                render: `Claiming staking rewards failed: ${error.message}`,
+                type: "error",
+                isLoading: false,
+                closeOnClick: true,
+              });
+            }
+          })
+          .then((tx: any) => {
+            console.log(tx);
+            if (tx) {
+              if (tx.code === 0) {
+                toast.update(toastId, {
+                  render: `Claiming staking rewards successful`,
+                  type: "success",
+                  isLoading: false,
+                  closeOnClick: true,
+                });
+              } else {
+                toast.update(toastId, {
+                  render: `Claiming staking rewards failed: ${tx.rawLog}`,
+                  type: "error",
+                  isLoading: false,
+                  closeOnClick: true,
+                });
+              }
+            }
+          });
+      } finally {
+      }
+    }
+    submit();
+  }
 
   return (
     <>
@@ -68,11 +139,11 @@ export function ClaimRewardsModal(props: IClaimRewardsModalProps) {
                 <FeeGrant />
                 <div className="text-center my-4">
                   <span className="font-bold">{`Claimable Amount: `}</span>
-                  <span>1234.56</span>
+                  <span>{totalPendingRewards()}</span>
                   <span className="text-gray-500 dark:text-gray-400 text-sm">{` SCRT`}</span>
                 </div>
                 <button
-                  onClick={() => {}}
+                  onClick={() => claimRewards()}
                   className="text-medium disabled:bg-neutral-600 enabled:bg-green-600 enabled:hover:bg-green-700 disabled:text-neutral-400 enabled:text-white transition-colors font-semibold px-2 py-2 text-sm rounded-md"
                 >
                   Claim Rewards

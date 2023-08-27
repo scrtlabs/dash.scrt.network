@@ -13,7 +13,7 @@ function FeeGrant() {
     useContext(SecretjsContext);
 
   return (
-    <div className="bg-white/5 rounded-xl px-4 py-8 mt-4 text-center sm:text-left">
+    <div className="bg-white/5 rounded-xl px-2 py-1 mt-4 text-center sm:text-left">
       {/* Fee Grant */}
       <div className="bg-neutral-200 dark:bg-neutral-800 p-4 rounded-lg select-none flex items-center my-4">
         <div className="flex-1 flex items-center">
