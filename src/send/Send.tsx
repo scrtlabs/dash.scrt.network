@@ -228,12 +228,10 @@ export function Send() {
   }
 
   const message = `Send ${
-    selectedToken.address === "native" ||
-    selectedToken.is_ics20 ||
-    selectedToken.is_snip20
-      ? "public "
-      : "privacy preserving s"
-  }${selectedToken.name}`;
+    selectedToken.address === "native" ? "public " : "privacy preserving "
+  }${selectedToken.address === "native" || selectedToken.is_snip20 ? "" : "s"}${
+    selectedToken.name
+  }`;
 
   // handles [25% | 50% | 75% | Max] Button-Group
   function setAmountByPercentage(percentage: number) {
@@ -631,9 +629,7 @@ export function Send() {
           >
             {secretAddress && secretjs && amount ? (
               <>{`Send ${amount} ${
-                selectedToken.address === "native" ||
-                selectedToken.is_ics20 ||
-                selectedToken.is_snip20
+                selectedToken.address === "native" || selectedToken.is_snip20
                   ? nativeCurrency
                   : wrappedCurrency
               }`}</>
@@ -720,11 +716,7 @@ export function Send() {
           <div className="flex items-center mb-4">
             <h1 className="inline text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-500 to-purple-500">
               {`${
-                selectedToken.address === "native" ||
-                selectedToken.is_ics20 ||
-                selectedToken.is_snip20
-                  ? "Public "
-                  : "Secret"
+                selectedToken.address === "native" ? "Public " : "Secret"
               } Send`}
             </h1>
 
@@ -765,9 +757,7 @@ export function Send() {
                       className="w-6 h-6 mr-2 rounded-full"
                     />
                     <span className="font-semibold text-sm">
-                      {token.address === "native" ||
-                      token.is_ics20 ||
-                      token.is_snip20
+                      {token.address === "native" || token.is_snip20
                         ? null
                         : "s"}
                       {token.name}
