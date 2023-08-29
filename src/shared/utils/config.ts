@@ -56,7 +56,7 @@ export const chains: { [chain_name: string]: Chain } = {
     bech32_prefix: "agoric",
     lcd: "https://main.api.agoric.net",
     rpc: "https://main.rpc.agoric.net",
-    chain_image: "/bld.webp",
+    chain_image: "/bld.svg",
     explorer_account: "https://agoric.explorers.guru/account/",
   },
   Akash: {
@@ -98,7 +98,7 @@ export const chains: { [chain_name: string]: Chain } = {
     bech32_prefix: "chihuahua",
     lcd: "https://api-chihuahua-ia.cosmosia.notional.ventures",
     rpc: "https://rpc.chihuahua.wtf",
-    chain_image: "/huahua.jpg",
+    chain_image: "/huahua.svg",
     explorer_account: "https://ping.pub/chihuahua/account/",
   },
   Comdex: {
@@ -140,7 +140,7 @@ export const chains: { [chain_name: string]: Chain } = {
     bech32_prefix: "cosmos",
     lcd: "https://api-cosmoshub-ia.cosmosia.notional.ventures",
     rpc: "https://rpc.cosmoshub.strange.love",
-    chain_image: "/atom.jpg",
+    chain_image: "/atom.svg",
     explorer_account: "https://www.mintscan.io/cosmos/account/",
   },
   /*   Crescent: {
@@ -168,7 +168,7 @@ export const chains: { [chain_name: string]: Chain } = {
     bech32_prefix: "evmos",
     lcd: "https://evmos-api.lavenderfive.com",
     rpc: "https://evmos-rpc.lavenderfive.com",
-    chain_image: "/evmos.jpg",
+    chain_image: "/evmos.svg",
     explorer_account: "https://www.mintscan.io/evmos/account/",
   },
   "Gravity Bridge": {
@@ -238,7 +238,7 @@ export const chains: { [chain_name: string]: Chain } = {
     bech32_prefix: "kujira",
     lcd: "https://kujira-api.lavenderfive.com",
     rpc: "https://kujira-rpc.lavenderfive.com",
-    chain_image: "/kuji.png",
+    chain_image: "/kuji.svg",
     explorer_account: "https://kujira.explorers.guru/account/",
   },
   Osmosis: {
@@ -252,7 +252,7 @@ export const chains: { [chain_name: string]: Chain } = {
     bech32_prefix: "osmo",
     lcd: "https://api-osmosis-ia.cosmosia.notional.ventures",
     rpc: "https://rpc.osmosis.zone",
-    chain_image: "/osmo.jpeg",
+    chain_image: "/osmo.svg",
     explorer_account: "https://www.mintscan.io/osmosis/account/",
   },
   Persistence: {
@@ -294,7 +294,7 @@ export const chains: { [chain_name: string]: Chain } = {
     bech32_prefix: "sent",
     lcd: "https://api-sentinel-ia.cosmosia.notional.ventures",
     rpc: "https://rpc-sentinel-ia.cosmosia.notional.ventures",
-    chain_image: "/dvpn.jpeg",
+    chain_image: "/dvpn.svg",
     explorer_account: "https://www.mintscan.io/sentinel/account/",
   },
   /*   Sifchain: {
@@ -322,7 +322,7 @@ export const chains: { [chain_name: string]: Chain } = {
     bech32_prefix: "stars",
     lcd: "https://rest.stargaze-apis.com",
     rpc: "https://rpc.stargaze-apis.com",
-    chain_image: "/stars.webp",
+    chain_image: "/stars.svg",
     explorer_account: "https://www.mintscan.io/stargaze/account/",
   },
   Stride: {
@@ -811,7 +811,7 @@ export const tokens: Token[] = [
     address: "secret19e75l25r6sa6nhdf4lggjmgpw0vmpfvsw5cnpe",
     code_hash:
       "638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e",
-    image: "/atom.jpg",
+    image: "/atom.svg",
     decimals: 6,
     coingecko_id: "cosmos",
     deposits: [
@@ -840,7 +840,7 @@ export const tokens: Token[] = [
     address: "secret1uxvpq889uxjcpj656yjjexsqa3zqm6ntkyjsjq",
     code_hash:
       "638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e",
-    image: "/bld.webp",
+    image: "/bld.svg",
     decimals: 6,
     coingecko_id: "agoric",
     deposits: [
@@ -986,7 +986,7 @@ export const tokens: Token[] = [
     address: "secret15qtw24mpmwkjessr46dnqruq4s4tstzf74jtkf",
     code_hash:
       "638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e",
-    image: "/dvpn.jpeg",
+    image: "/dvpn.svg",
     decimals: 6,
     coingecko_id: "sentinel",
     deposits: [
@@ -1015,7 +1015,7 @@ export const tokens: Token[] = [
     address: "secret1grg9unv2ue8cf98t50ea45prce7gcrj2n232kq",
     code_hash:
       "5a085bd8ed89de92b35134ddd12505a602c7759ea25fb5c089ba03c8535b3042",
-    image: "/evmos.jpg",
+    image: "/evmos.svg",
     decimals: 18,
     coingecko_id: "evmos",
     deposits: [
@@ -1102,7 +1102,7 @@ export const tokens: Token[] = [
     address: "secret1ntvxnf5hzhzv8g87wn76ch6yswdujqlgmjh32w",
     code_hash:
       "182d7230c396fa8f548220ff88c34cb0291a00046df9ff2686e407c3b55692e9",
-    image: "/huahua.jpg",
+    image: "/huahua.svg",
     decimals: 6,
     coingecko_id: "chihuahua-token",
     deposits: [
@@ -1160,7 +1160,7 @@ export const tokens: Token[] = [
     address: "secret1xmqsk8tnge0atzy4e079h0l2wrgz6splcq0a24",
     code_hash:
       "638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e",
-    image: "/ist.webp",
+    image: "/ist.svg",
     decimals: 6,
     coingecko_id: "inter-stable-token",
     deposits: [
@@ -1247,7 +1247,7 @@ export const tokens: Token[] = [
     address: "secret13hvh0rn0rcf5zr486yxlrucvwpzwqu2dsz6zu8",
     code_hash:
       "638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e",
-    image: "/kuji-token.webp",
+    image: "/kuji.svg",
     decimals: 6,
     coingecko_id: "kujira",
     deposits: [
@@ -1365,7 +1365,7 @@ export const tokens: Token[] = [
     address: "secret150jec8mc2hzyyqak4umv6cfevelr0x9p0mjxgg",
     code_hash:
       "638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e",
-    image: "/osmo.jpeg",
+    image: "/osmo.svg",
     decimals: 6,
     coingecko_id: "osmosis",
     deposits: [
@@ -1540,7 +1540,7 @@ export const tokens: Token[] = [
     address: "secret1x0dqckf2khtxyrjwhlkrx9lwwmz44k24vcv2vv",
     code_hash:
       "5a085bd8ed89de92b35134ddd12505a602c7759ea25fb5c089ba03c8535b3042",
-    image: "/stars.webp",
+    image: "/stars.svg",
     decimals: 6,
     coingecko_id: "stargaze",
     deposits: [
