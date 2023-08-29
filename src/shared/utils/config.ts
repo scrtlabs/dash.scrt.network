@@ -269,6 +269,20 @@ export const chains: { [chain_name: string]: Chain } = {
     chain_image: "/xprt.svg",
     explorer_account: "https://www.mintscan.io/persistence/account/",
   },
+  Quicksilver: {
+    chain_name: "Quicksilver",
+    deposit_channel_id: "channel-52",
+    deposit_gas: 300_000,
+    deposit_gas_denom: "uqck",
+    withdraw_channel_id: "channel-65",
+    withdraw_gas: 30_000,
+    chain_id: "quicksilver-2",
+    bech32_prefix: "quick",
+    lcd: "https://quicksilver-api.lavenderfive.com:443",
+    rpc: "https://quicksilver-rpc.lavenderfive.com:443",
+    chain_image: "/qck.svg",
+    explorer_account: "https://www.mintscan.io/quicksilver/account/",
+  },
   Sentinel: {
     chain_name: "Sentinel",
     deposit_channel_id: "channel-50",
@@ -600,6 +614,18 @@ export const tokens: Token[] = [
         ),
       },
       {
+        chain_name: "Quicksilver",
+        from_denom: ibcDenom(
+          [
+            {
+              incomingChannelId: chains["Quicksilver"].deposit_channel_id,
+              incomingPortId: "transfer",
+            },
+          ],
+          "uscrt"
+        ),
+      },
+      {
         chain_name: "Sentinel",
         from_denom: ibcDenom(
           [
@@ -723,6 +749,10 @@ export const tokens: Token[] = [
       },
       {
         chain_name: "Persistence",
+        from_denom: "uscrt",
+      },
+      {
+        chain_name: "Quicksilver",
         from_denom: "uscrt",
       },
       {
@@ -1385,6 +1415,64 @@ export const tokens: Token[] = [
             },
           ],
           "transfer/channel-38/gravity0xfB5c6815cA3AC72Ce9F5006869AE67f18bF77006"
+        ),
+      },
+    ],
+  },
+  {
+    name: "qATOM",
+    address: "secret120cyurq25uvhkc7qjx7t28deuqslprxkc4rrzc",
+    code_hash:
+      "638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e",
+    image: "/qatom.svg",
+    decimals: 6,
+    coingecko_id: "",
+    deposits: [
+      {
+        chain_name: "Quicksilver",
+        from_denom: "uqatom",
+      },
+    ],
+    withdrawals: [
+      {
+        chain_name: "Quicksilver",
+        from_denom: ibcDenom(
+          [
+            {
+              incomingChannelId: chains["Quicksilver"].withdraw_channel_id,
+              incomingPortId: "transfer",
+            },
+          ],
+          "uqatom"
+        ),
+      },
+    ],
+  },
+  {
+    name: "QCK",
+    address: "secret17d8c96kezszpda3r2c5dtkzlkfxw6mtu7q98ka",
+    code_hash:
+      "638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e",
+    image: "/qck.svg",
+    decimals: 6,
+    coingecko_id: "quicksilver",
+    deposits: [
+      {
+        chain_name: "Quicksilver",
+        from_denom: "uqck",
+      },
+    ],
+    withdrawals: [
+      {
+        chain_name: "Quicksilver",
+        from_denom: ibcDenom(
+          [
+            {
+              incomingChannelId: chains["Quicksilver"].withdraw_channel_id,
+              incomingPortId: "transfer",
+            },
+          ],
+          "uqck"
         ),
       },
     ],

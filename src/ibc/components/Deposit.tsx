@@ -1066,7 +1066,11 @@ function Deposit() {
           }
         } catch (e) {
           toast.update(toastId, {
-            render: `Failed sending ${normalizedAmount} ${selectedToken.name} from Secret Network to ${selectedSource.chain_name}: ${e}`,
+            render: `Failed sending ${normalizedAmount} ${
+              selectedToken.name
+            } from Secret Network to ${selectedSource.chain_name}: ${
+              (e as any).message
+            }`,
             type: "error",
             isLoading: false,
           });
