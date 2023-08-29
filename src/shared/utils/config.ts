@@ -255,6 +255,20 @@ export const chains: { [chain_name: string]: Chain } = {
     chain_image: "/osmo.jpeg",
     explorer_account: "https://www.mintscan.io/osmosis/account/",
   },
+  Persistence: {
+    chain_name: "Persistence",
+    deposit_channel_id: "channel-82",
+    deposit_gas: 300_000,
+    deposit_gas_denom: "uxprt",
+    withdraw_channel_id: "channel-64",
+    withdraw_gas: 30_000,
+    chain_id: "core-1",
+    bech32_prefix: "persistence",
+    lcd: "https://persistence-api.polkachu.com",
+    rpc: "https://persistence-rpc.polkachu.com",
+    chain_image: "/xprt.svg",
+    explorer_account: "https://www.mintscan.io/persistence/account/",
+  },
   Sentinel: {
     chain_name: "Sentinel",
     deposit_channel_id: "channel-50",
@@ -574,6 +588,18 @@ export const tokens: Token[] = [
         ),
       },
       {
+        chain_name: "Persistence",
+        from_denom: ibcDenom(
+          [
+            {
+              incomingChannelId: chains["Persistence"].deposit_channel_id,
+              incomingPortId: "transfer",
+            },
+          ],
+          "uscrt"
+        ),
+      },
+      {
         chain_name: "Sentinel",
         from_denom: ibcDenom(
           [
@@ -693,6 +719,10 @@ export const tokens: Token[] = [
       },
       {
         chain_name: "Osmosis",
+        from_denom: "uscrt",
+      },
+      {
+        chain_name: "Persistence",
         from_denom: "uscrt",
       },
       {
@@ -1330,6 +1360,36 @@ export const tokens: Token[] = [
     ],
   },
   {
+    name: "pSTAKE",
+    address: "secret1umeg3u5y949vz6jkgq0n4rhefsr84ws3duxmnz",
+    code_hash:
+      "638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e",
+    image: "/pstake.svg",
+    decimals: 18,
+    coingecko_id: "pstake-finance",
+    deposits: [
+      {
+        chain_name: "Persistence",
+        from_denom:
+          "ibc/A6E3AF63B3C906416A9AF7A556C59EA4BD50E617EFFE6299B99700CCB780E444",
+      },
+    ],
+    withdrawals: [
+      {
+        chain_name: "Persistence",
+        from_denom: ibcDenom(
+          [
+            {
+              incomingChannelId: chains["Persistence"].withdraw_channel_id,
+              incomingPortId: "transfer",
+            },
+          ],
+          "transfer/channel-38/gravity0xfB5c6815cA3AC72Ce9F5006869AE67f18bF77006"
+        ),
+      },
+    ],
+  },
+  {
     name: "USK",
     address: "secret1cj2fvj4ap79fl9euz8kqn0k5xlvck0pw9z9xhr",
     code_hash:
@@ -1446,6 +1506,35 @@ export const tokens: Token[] = [
     ],
   },
   {
+    name: "stkATOM",
+    address: "secret16vjfe24un4z7d3sp9vd0cmmfmz397nh2njpw3e",
+    code_hash:
+      "638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e",
+    image: "/stkatom.svg",
+    decimals: 6,
+    coingecko_id: "stkatom",
+    deposits: [
+      {
+        chain_name: "Persistence",
+        from_denom: "stk/uatom",
+      },
+    ],
+    withdrawals: [
+      {
+        chain_name: "Persistence",
+        from_denom: ibcDenom(
+          [
+            {
+              incomingChannelId: chains["Persistence"].withdraw_channel_id,
+              incomingPortId: "transfer",
+            },
+          ],
+          "stk/uatom"
+        ),
+      },
+    ],
+  },
+  {
     name: "stOSMO",
     address: "secret1jrp6z8v679yaq65rndsr970mhaxzgfkymvc58g",
     code_hash:
@@ -1528,6 +1617,35 @@ export const tokens: Token[] = [
             },
           ],
           "ustrd"
+        ),
+      },
+    ],
+  },
+  {
+    name: "XPRT",
+    address: "secret1gnrrqjj5e2pwn4g262xjyypptu0ge3z3tps3nn",
+    code_hash:
+      "638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e",
+    image: "/xprt.svg",
+    decimals: 6,
+    coingecko_id: "persistence",
+    deposits: [
+      {
+        chain_name: "Persistence",
+        from_denom: "uxprt",
+      },
+    ],
+    withdrawals: [
+      {
+        chain_name: "Persistence",
+        from_denom: ibcDenom(
+          [
+            {
+              incomingChannelId: chains["Persistence"].withdraw_channel_id,
+              incomingPortId: "transfer",
+            },
+          ],
+          "uxprt"
         ),
       },
     ],
