@@ -7,7 +7,7 @@ import { StakingContext } from "staking/Staking";
 import { toast } from "react-toastify";
 import FeeGrant from "./FeeGrant";
 
-export default function UnstakeForm() {
+export default function UndelegateForm() {
   const { delegatorDelegations, selectedValidator, setView } =
     useContext(StakingContext);
   const { secretjs, secretAddress, SCRTBalance, SCRTToken, feeGrantStatus } =
@@ -59,14 +59,14 @@ export default function UnstakeForm() {
             console.error(error);
             if (error?.tx?.rawLog) {
               toast.update(toastId, {
-                render: `Unstaking failed: ${error.tx.rawLog}`,
+                render: `Undelegation failed: ${error.tx.rawLog}`,
                 type: "error",
                 isLoading: false,
                 closeOnClick: true,
               });
             } else {
               toast.update(toastId, {
-                render: `Unstaking failed: ${error.message}`,
+                render: `Undelegation failed: ${error.message}`,
                 type: "error",
                 isLoading: false,
                 closeOnClick: true,
@@ -78,14 +78,14 @@ export default function UnstakeForm() {
             if (tx) {
               if (tx.code === 0) {
                 toast.update(toastId, {
-                  render: `Unstaked ${amountString} SCRT successfully from validator: ${selectedValidator?.description?.moniker}`,
+                  render: `Undelegated ${amountString} SCRT successfully from validator: ${selectedValidator?.description?.moniker}`,
                   type: "success",
                   isLoading: false,
                   closeOnClick: true,
                 });
               } else {
                 toast.update(toastId, {
-                  render: `Unstaking failed: ${tx.rawLog}`,
+                  render: `Undelegation failed: ${tx.rawLog}`,
                   type: "error",
                   isLoading: false,
                   closeOnClick: true,
@@ -158,7 +158,7 @@ export default function UnstakeForm() {
     <>
       <div className="bg-neutral-200 dark:bg-neutral-800 p-4 rounded-xl my-4">
         <div className="font-bold mb-2 text-center sm:text-left">
-          Amount to Unstake
+          Amount to Undelegate
         </div>
 
         <input
@@ -196,7 +196,7 @@ export default function UnstakeForm() {
           onClick={handleSubmit}
           className="bg-blue-600 hover:bg-blue-500 font-semibold px-4 py-2 rounded-md"
         >
-          Unstake
+          Undelegate
         </button>
         <button
           onClick={() => setView(null)}

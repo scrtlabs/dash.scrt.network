@@ -26,7 +26,7 @@ import { Nullable } from "shared/types/Nullable";
 import { StakingContext } from "staking/Staking";
 import StakingForm from "./validatorModalComponents/StakingForm";
 import { SecretjsContext } from "shared/context/SecretjsContext";
-import UnstakeForm from "./validatorModalComponents/UnstakeForm";
+import UndelegateForm from "./validatorModalComponents/UndelegateForm";
 import RedelegateForm from "./validatorModalComponents/RedelegateForm";
 
 interface IValidatorModalProps {
@@ -612,7 +612,7 @@ const ValidatorModal = (props: IValidatorModalProps) => {
                   {view !== null ? (
                     <div className="col-span-12">
                       {view === "delegate" ? <StakingForm /> : null}
-                      {view === "undelegate" ? <UnstakeForm /> : null}
+                      {view === "undelegate" ? <UndelegateForm /> : null}
                       {view === "redelegate" ? <RedelegateForm /> : null}
                     </div>
                   ) : null}

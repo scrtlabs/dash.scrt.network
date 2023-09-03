@@ -174,3 +174,62 @@ body {
 .remove-arrows {
   -moz-appearance: textfield;
 }
+
+// Inset (Redelegate)
+
+.react-select-container,
+.react-select-inset__control {
+  @apply rounded-lg #{!important};
+}
+
+.react-select-inset__control {
+  cursor: pointer !important;
+  @apply p-2.5 rounded-lg bg-neutral-200 dark:bg-neutral-900 border-0 dark:border-0 text-black dark:text-white hover:bg-neutral-400 dark:hover:bg-neutral-600;
+}
+
+.react-select-inset__single-value {
+  @apply text-black dark:text-white;
+}
+
+.react-select-inset__menu,
+.react-select-inset__option {
+  background-color: #737373 !important;
+}
+
+.react-select-inset__option:hover {
+  background-color: #a3a3a3 !important;
+}
+
+.react-select-wrap-inset__control {
+  cursor: pointer !important;
+  @apply py-1 bg-neutral-200 dark:bg-neutral-800 border-gray-500 dark:border-gray-500;
+  border-radius: 0.5rem 0 0 0.5rem !important;
+  &:hover {
+    background-color: #525252 !important;
+  }
+}
+
+.react-select-wrap-inset__single-value {
+  @apply text-black dark:text-white;
+}
+
+.react-select-wrap-inset__menu,
+.react-select-wrap-inset__option {
+  background-color: #737373 !important;
+}
+
+.react-select-wrap-inset__option:hover {
+  background-color: #a3a3a3 !important;
+}
+
+.react-select-wrap-inset__indicator-separator {
+  display: none;
+}
+
+.react-select-inset__indicator-separator {
+  display: none;
+}
+
+.react-select-inset__value-container img {
+  display: none;
+}

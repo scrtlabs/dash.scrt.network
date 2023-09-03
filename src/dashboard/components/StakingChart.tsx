@@ -109,7 +109,7 @@ export default function StakingChart() {
             (bondedToken / totalSupply) *
             100
           ).toFixed(2)}%)`,
-          `Unstaked: ${formatNumber(notBondedToken, 2)} (${(
+          `Undelegated: ${formatNumber(notBondedToken, 2)} (${(
             (notBondedToken / totalSupply) *
             100
           ).toFixed(2)}%)`,

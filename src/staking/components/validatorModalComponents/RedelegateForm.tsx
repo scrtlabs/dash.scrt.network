@@ -2,12 +2,16 @@ import BigNumber from "bignumber.js";
 import React, { useContext, useEffect, useState } from "react";
 import { APIContext } from "shared/context/APIContext";
 import { SecretjsContext } from "shared/context/SecretjsContext";
-import { formatNumber, usdString, faucetAddress } from "shared/utils/commons";
+import {
+  formatNumber,
+  usdString,
+  faucetAddress,
+  shuffleArray,
+} from "shared/utils/commons";
 import { StakingContext } from "staking/Staking";
 import { toast } from "react-toastify";
 import FeeGrant from "./FeeGrant";
 import Select from "react-select";
-import { ListItem } from "@mui/material";
 
 export default function RedelegateForm() {
   const { delegatorDelegations, validators, selectedValidator, setView } =
@@ -172,9 +176,7 @@ export default function RedelegateForm() {
   return (
     <>
       <div className="bg-neutral-200 dark:bg-neutral-800 p-4 rounded-xl my-4">
-        <div className="font-bold mb-2 text-center sm:text-left">
-          Amount to Redelegate
-        </div>
+        <div className="font-bold mb-2 text-center sm:text-left">Amount</div>
 
         <input
           value={amountString}
@@ -198,43 +200,43 @@ export default function RedelegateForm() {
             <PercentagePicker />
           </div>
         </div>
-        <Select
-          isDisabled={!secretjs || !secretAddress}
-          options={validators?.map((validator: any) => {
-            return {
-              name: validator?.description?.moniker,
-              value: validator?.operator_address,
-            };
-          })}
-          onChange={(item: any) => {
-            console.log(item);
-            setRedelegateValidator(
-              validators.find(
-                (validator: any) => validator.operator_address === item.value
-              )
-            );
-          }}
-          isSearchable={true}
-          filterOption={customFilter}
-          formatOptionLabel={(validator: any) => {
-            return (
-              <div className="flex items-center">
-                <span className="font-semibold text-base">
-                  {validator?.name}
-                </span>
-                {validators.find(
-                  (item: any) => item.operator_address === validator.value
-                ).status === "BOND_STATUS_UNBONDED" && (
-                  <div className="border border-red-500 bg-transparent text-red-500 text-sm rounded px-4 py-2 cursor-not-allowed flex items-center justify-start">
-                    Inactive
-                  </div>
-                )}
-              </div>
-            );
-          }}
-          className="react-select-container"
-          classNamePrefix="react-select"
-        />
+        <div className="mt-4">
+          <div className="font-bold mb-2 text-center sm:text-left">To</div>
+          <Select
+            isDisabled={!secretjs || !secretAddress}
+            options={shuffleArray(
+              validators
+                ?.filter((item: any) => item.status === "BOND_STATUS_BONDED")
+                .map((validator: any) => {
+                  return {
+                    name: validator?.description?.moniker,
+                    value: validator?.operator_address,
+                  };
+                })
+            )}
+            onChange={(item: any) => {
+              console.log(item);
+              setRedelegateValidator(
+                validators.find(
+                  (validator: any) => validator.operator_address === item.value
+                )
+              );
+            }}
+            isSearchable={true}
+            filterOption={customFilter}
+            formatOptionLabel={(validator: any) => {
+              return (
+                <div className="flex items-center">
+                  <span className="font-semibold text-base">
+                    {validator?.name}
+                  </span>
+                </div>
+              );
+            }}
+            className="react-select-container"
+            classNamePrefix="react-select-inset"
+          />
+        </div>
       </div>
 
       {/* Fee Grant */}
