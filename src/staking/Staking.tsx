@@ -36,6 +36,7 @@ import { Nullable } from "shared/types/Nullable";
 import BigNumber from "bignumber.js";
 import { StakingView, isStakingView } from "shared/types/StakingView";
 import ClaimRewardsModal from "./components/ClaimRewardsModal";
+import ManageAutoRestakeModal from "./components/ManageAutoRestakeModal";
 
 // dummy interface for better code readability
 export interface IValidator {
@@ -139,6 +140,9 @@ export const Staking = () => {
     useState<boolean>(false);
 
   const [isClaimRewardsModalOpen, setIsClaimRewardsModalOpen] =
+    useState<boolean>(false);
+
+  const [isManageAutoRestakeModalOpen, setIsManageAutoRestakeModalOpen] =
     useState<boolean>(false);
 
   const getValByAddressStringSnippet = (addressSnippet: String) => {
@@ -296,6 +300,10 @@ export const Staking = () => {
     if (restakeChoice.length > 0) {
       changeRestakeForValidators(restakeChoice);
     }
+  }
+
+  function handleManageAutoRestakeModal() {
+    setIsManageAutoRestakeModalOpen(false);
   }
 
   function changeRestakeForValidators(
@@ -497,6 +505,11 @@ export const Staking = () => {
           </script>
         </Helmet>
 
+        <ManageAutoRestakeModal
+          open={isManageAutoRestakeModalOpen}
+          onClose={handleManageAutoRestakeModal}
+        />
+
         <ClaimRewardsModal
           open={isClaimRewardsModalOpen}
           onClose={handleClaimRewardsModal}
@@ -546,8 +559,9 @@ export const Staking = () => {
               )}
 
               <div className="my-validators flex flex-col px-4">
-                {delegatorDelegations?.map((delegation: any, i: any) => (
+                {delegatorDelegations?.map((delegation: any, i: number) => (
                   <MyValidatorsItem
+                    key={i}
                     name={
                       validators.find(
                         (validator: any) =>
@@ -617,7 +631,7 @@ export const Staking = () => {
                 </div>
 
                 <button
-                  onClick={() => alert("Todo!")}
+                  onClick={() => setIsManageAutoRestakeModalOpen(true)}
                   className="flex-initial text-medium disabled:bg-neutral-600 enabled:bg-sky-600 enabled:hover:bg-sky-700 disabled:text-neutral-400 enabled:text-white transition-colors font-semibold px-2 py-2 text-sm rounded-md"
                 >
                   Manage Auto Restake

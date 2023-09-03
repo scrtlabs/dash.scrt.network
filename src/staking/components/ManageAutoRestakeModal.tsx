@@ -6,15 +6,19 @@ import { faucetAddress } from "shared/utils/commons";
 import { StakingContext } from "staking/Staking";
 import FeeGrant from "./validatorModalComponents/FeeGrant";
 import BigNumber from "bignumber.js";
-import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faXmark } from "@fortawesome/free-solid-svg-icons";
+import MyValidatorsItem from "./MyValidatorsItem";
+import RestakeValidatorItem from "./RestakeValidatorItem";
 
-interface IClaimRewardsModalProps {
+interface IManageAutoRestakeModalProps {
   open: boolean;
   onClose: any;
 }
 
-export function ClaimRewardsModal(props: IClaimRewardsModalProps) {
+export default function ManageAutoRestakeModal(
+  props: IManageAutoRestakeModalProps
+) {
   const {
     secretjs,
     secretAddress,
@@ -25,7 +29,7 @@ export function ClaimRewardsModal(props: IClaimRewardsModalProps) {
     requestFeeGrant,
   } = useContext(SecretjsContext);
 
-  const { delegatorDelegations, delegationTotalRewards } =
+  const { delegatorDelegations, delegationTotalRewards, validators } =
     useContext(StakingContext);
 
   if (!props.open) return null;
@@ -101,6 +105,49 @@ export function ClaimRewardsModal(props: IClaimRewardsModalProps) {
     submit();
   }
 
+  function handleSubmit() {
+    alert("Todo!");
+  }
+
+  const CommitedDelegators = () => {
+    return (
+      <div className="my-validators w-full">
+        {delegatorDelegations.map((delegation: any, i: number) => {
+          return (
+            <RestakeValidatorItem
+              key={i}
+              name={
+                validators.find(
+                  (validator: any) =>
+                    validator.operator_address ==
+                    delegation.delegation.validator_address
+                )?.description?.moniker
+              }
+              validator={validators.find(
+                (validator: any) =>
+                  validator.operator_address ==
+                  delegation.delegation.validator_address
+              )}
+              identity={
+                validators.find(
+                  (validator: any) =>
+                    validator.operator_address ==
+                    delegation.delegation.validator_address
+                )?.description?.identity
+              }
+              // restakeEntries={restakeEntries}
+              stakedAmount={delegation?.balance?.amount}
+              // setSelectedValidator={setSelectedValidator}
+              // openModal={setIsValidatorModalOpen}
+              // restakeChoice={restakeChoice}
+              // setRestakeChoice={setRestakeChoice}
+            />
+          );
+        })}
+      </div>
+    );
+  };
+
   return (
     <>
       {/* Outer */}
@@ -130,25 +177,30 @@ export function ClaimRewardsModal(props: IClaimRewardsModalProps) {
               <div className="mb-8 text-center">
                 <h2 className="text-2xl font-medium mb-2">
                   {/* <FontAwesomeIcon icon={faWallet} className="mr-2" /> */}
-                  Claim Rewards
+                  Manage Auto Restake
                 </h2>
                 <p className="text-neutral-600 dark:text-neutral-400 max-w-sm mx-auto">
-                  Claim your staking rewards!
+                  Automating the process of the 'claim and restake' process!
                 </p>
               </div>
               {/* Body */}
               <div className="flex flex-col">
-                <FeeGrant />
-                <div className="text-center my-4">
-                  <span className="font-bold">{`Claimable Amount: `}</span>
-                  <span>{totalPendingRewards()}</span>
-                  <span className="text-gray-500 dark:text-gray-400 text-sm">{` SCRT`}</span>
-                </div>
+                {/* List of user's delegators */}
+                <CommitedDelegators />
+              </div>
+              {/* Footer */}
+              <div className="flex flex-col sm:flex-row-reverse justify-start mt-4 gap-2">
                 <button
-                  onClick={() => claimRewards()}
-                  className="text-medium disabled:bg-neutral-600 enabled:bg-green-600 enabled:hover:bg-green-700 disabled:text-neutral-400 enabled:text-white transition-colors font-semibold px-2 py-2 text-sm rounded-md"
+                  onClick={handleSubmit}
+                  className="bg-blue-600 hover:bg-blue-500 font-semibold px-4 py-2 rounded-md"
                 >
-                  Claim Rewards
+                  Submit Changes
+                </button>
+                <button
+                  onClick={props.onClose}
+                  className="bg-neutral-800 hover:bg-neutral-700 font-semibold px-4 py-2 rounded-md"
+                >
+                  Cancel
                 </button>
               </div>
             </div>
@@ -158,5 +210,3 @@ export function ClaimRewardsModal(props: IClaimRewardsModalProps) {
     </>
   );
 }
-
-export default ClaimRewardsModal;
