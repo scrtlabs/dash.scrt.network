@@ -13,10 +13,12 @@ export const faucetAddress = "secret1tq6y8waegggp4fv2fcxk3zmpsmlfadyc7lsd69";
 export const dAppsURL =
   "https://secretadmin.scrt.network/api/ecosystem-dapps?populate=deep&pagination[pageSize]=1000";
 
+export const gasPriceUscrt = 0.25;
+
+export const restakeThreshold = 10_000_000;
+
 export const sleep = (ms: number) =>
   new Promise((resolve) => setTimeout(resolve, ms));
-
-export const gasPriceUscrt = 0.25;
 
 export function gasToFee(gas: number, denom: string): StdFee {
   return {

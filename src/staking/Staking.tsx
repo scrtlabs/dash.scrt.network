@@ -43,11 +43,6 @@ export interface IValidator {
   [prop: string]: any;
 }
 
-export interface ValidatorRestakeStatus {
-  validator_address: string;
-  autoRestake: boolean;
-}
-
 export const StakingContext = createContext(null);
 
 export const Staking = () => {
@@ -129,9 +124,6 @@ export const Staking = () => {
   //Auto Restake
 
   const [restakeEntries, setRestakeEntries] = useState<any>();
-  const [restakeChoice, setRestakeChoice] = useState<ValidatorRestakeStatus[]>(
-    []
-  );
 
   //Search Query
   const [searchQuery, setSearchQuery] = useState<string>("");
@@ -296,165 +288,9 @@ export const Staking = () => {
     }
   }, [searchQuery, validatorDisplayStatus]);
 
-  function doRestake() {
-    if (restakeChoice.length > 0) {
-      changeRestakeForValidators(restakeChoice);
-    }
-  }
-
   function handleManageAutoRestakeModal() {
     setIsManageAutoRestakeModalOpen(false);
   }
-
-  function changeRestakeForValidators(
-    validatorRestakeStatuses: ValidatorRestakeStatus[]
-  ) {
-    async function submit() {
-      if (!secretjs || !secretAddress) return;
-
-      const validatorObjects = validators.filter((validator: any) => {
-        return validatorRestakeStatuses.find(
-          (status: ValidatorRestakeStatus) =>
-            validator.operator_address === status.validator_address
-        );
-      });
-
-      try {
-        const toastId = toast.loading(
-          `Setting Auto Restaking for validators: ${validatorObjects
-            .map((validator: any) => {
-              const matchedStatus = validatorRestakeStatuses.find(
-                (status) =>
-                  status.validator_address === validator.operator_address
-              );
-              return `${
-                matchedStatus?.autoRestake ? "Enabling for" : "Disabling for"
-              } ${validator?.description?.moniker}`;
-            })
-            .join(", ")}`,
-          { closeButton: true }
-        );
-        const txs = validatorRestakeStatuses.map(
-          (status: ValidatorRestakeStatus) => {
-            return new MsgSetAutoRestake({
-              delegator_address: secretAddress,
-              validator_address: status.validator_address,
-              enabled: status.autoRestake,
-            });
-          }
-        );
-
-        await secretjs.tx
-          .broadcast(txs, {
-            gasLimit: 100_000 * txs.length,
-            gasPriceInFeeDenom: 0.25,
-            feeDenom: "uscrt",
-            feeGranter: feeGrantStatus === "Success" ? faucetAddress : "",
-          })
-          .catch((error: any) => {
-            console.error(error);
-            if (error?.tx?.rawLog) {
-              toast.update(toastId, {
-                render: `Setting Auto Restaking failed: ${error.tx.rawLog}`,
-                type: "error",
-                isLoading: false,
-                closeOnClick: true,
-              });
-            } else {
-              toast.update(toastId, {
-                render: `Setting Auto Restaking failed: ${error.message}`,
-                type: "error",
-                isLoading: false,
-                closeOnClick: true,
-              });
-            }
-          })
-          .then((tx: any) => {
-            console.log(tx);
-            if (tx) {
-              if (tx.code === 0) {
-                toast.update(toastId, {
-                  render: `Setting Auto Restaking successfully for validators ${validatorObjects
-                    .map((validator: any) => {
-                      return validator?.description?.moniker;
-                    })
-                    .join(", ")}`,
-                  type: "success",
-                  isLoading: false,
-                  closeOnClick: true,
-                });
-              } else {
-                toast.update(toastId, {
-                  render: `Setting Auto Restaking failed: ${tx.rawLog}`,
-                  type: "error",
-                  isLoading: false,
-                  closeOnClick: true,
-                });
-              }
-            }
-          });
-      } finally {
-      }
-    }
-    submit();
-  }
-
-  const FeeGrant = () => {
-    return (
-      <>
-        {/* Fee Grant */}
-        <div className="bg-neutral-200 dark:bg-neutral-800 p-4 rounded-lg select-none flex items-center my-4">
-          <div className="flex-1 flex items-center">
-            <span className="font-semibold text-sm">Fee Grant</span>
-            <Tooltip
-              title={`Request Fee Grant so that you don't have to pay gas fees (up to 0.1 SCRT)`}
-              placement="right"
-              arrow
-            >
-              <span className="ml-2 mt-1 text-neutral-600 dark:text-neutral-400 hover:text-black dark:hover:text-white transition-colors cursor-pointer">
-                <FontAwesomeIcon icon={faInfoCircle} />
-              </span>
-            </Tooltip>
-          </div>
-          <div className="flex-initial">
-            {/* Untouched */}
-            {feeGrantStatus === "Untouched" && (
-              <>
-                <button
-                  id="feeGrantButton"
-                  onClick={requestFeeGrant}
-                  className="font-semibold text-xs bg-neutral-100 dark:bg-neutral-900 px-1.5 py-1 rounded-md transition-colors hover:bg-neutral-300 dark:hover:bg-neutral-700 cursor-pointer disabled:text-neutral-500 dark:disabled:text-neutral-500 disabled:hover:bg-neutral-100 dark:disabled:hover:bg-neutral-900 disabled:cursor-default focus:outline-0 focus:ring-2 ring-sky-500/40"
-                  disabled={!secretjs || !secretAddress}
-                >
-                  Request Fee Grant
-                </button>
-              </>
-            )}
-            {/* Success */}
-            {feeGrantStatus === "Success" && (
-              <div className="font-semibold text-sm flex items-center h-[1.6rem]">
-                <FontAwesomeIcon
-                  icon={faCheckCircle}
-                  className="text-green-500 mr-1.5"
-                />
-                Fee Granted
-              </div>
-            )}
-            {/* Fail */}
-            {feeGrantStatus === "Fail" && (
-              <div className="font-semibold text-sm h-[1.6rem]">
-                <FontAwesomeIcon
-                  icon={faXmarkCircle}
-                  className="text-red-500 mr-1.5"
-                />
-                Request failed
-              </div>
-            )}
-          </div>
-        </div>
-      </>
-    );
-  };
 
   const providerValue = {
     validators,
@@ -592,33 +428,9 @@ export const Staking = () => {
                     stakedAmount={delegation?.balance?.amount}
                     setSelectedValidator={setSelectedValidator}
                     openModal={setIsValidatorModalOpen}
-                    restakeChoice={restakeChoice}
-                    setRestakeChoice={setRestakeChoice}
                   />
                 ))}
               </div>
-              {restakeChoice.length > 0 && (
-                <div className="px-4 pb-2">
-                  <button
-                    onClick={() => doRestake()}
-                    className="text-medium disabled:bg-neutral-600 enabled:bg-green-600 enabled:hover:bg-green-700 disabled:text-neutral-400 enabled:text-white transition-colors font-semibold px-2 py-2 text-sm rounded-md"
-                  >
-                    Set Auto Restake
-                  </button>
-                  <Tooltip
-                    title={
-                      'Automating the process of "claim and restake" for your SCRT. Auto-compounds your staked SCRT for increased staking returns'
-                    }
-                    placement="right"
-                    arrow
-                  >
-                    <FontAwesomeIcon
-                      icon={faInfoCircle}
-                      className="ml-2 text-neutral-400"
-                    />
-                  </Tooltip>
-                </div>
-              )}
 
               {/* Total Staked | Auto Restake */}
               <div className="px-4 mt-4 flex flex-col sm:flex-row gap-2 sm:gap-4 text-center sm:text-left">

@@ -11,10 +11,10 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Tooltip from "@mui/material/Tooltip";
 import { APIContext } from "shared/context/APIContext";
-import { usdString } from "shared/utils/commons";
+import { restakeThreshold, usdString } from "shared/utils/commons";
 import BigNumber from "bignumber.js";
 import { formatNumber } from "shared/utils/commons";
-import { IValidator, ValidatorRestakeStatus } from "../Staking";
+import { IValidator } from "../Staking";
 import {
   getWalletViewingKey,
   isViewingKeyAvailable,
@@ -31,8 +31,6 @@ interface IMyValidatorsItemProps {
   restakeEntries: any;
   validator: any;
   openModal: any;
-  restakeChoice: any;
-  setRestakeChoice: any;
 }
 
 const MyValidatorsItem = (props: IMyValidatorsItemProps) => {
@@ -47,8 +45,6 @@ const MyValidatorsItem = (props: IMyValidatorsItemProps) => {
   const [imgUrl, setImgUrl] = useState<any>();
 
   const identityRef = useRef(props.identity);
-
-  const restakeThreshold = 10_000_000;
 
   useEffect(() => {
     identityRef.current = props.identity;

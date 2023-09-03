@@ -1,19 +1,25 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { toast } from "react-toastify";
-import { MsgWithdrawDelegationReward } from "secretjs";
+import { MsgSetAutoRestake } from "secretjs";
 import { SecretjsContext } from "shared/context/SecretjsContext";
-import { faucetAddress } from "shared/utils/commons";
+import { faucetAddress, restakeThreshold } from "shared/utils/commons";
 import { StakingContext } from "staking/Staking";
 import FeeGrant from "./validatorModalComponents/FeeGrant";
 import BigNumber from "bignumber.js";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faXmark } from "@fortawesome/free-solid-svg-icons";
+import { faInfoCircle, faXmark } from "@fortawesome/free-solid-svg-icons";
 import MyValidatorsItem from "./MyValidatorsItem";
 import RestakeValidatorItem from "./RestakeValidatorItem";
+import Tooltip from "@mui/material/Tooltip";
 
 interface IManageAutoRestakeModalProps {
   open: boolean;
   onClose: any;
+}
+
+export interface ValidatorRestakeStatus {
+  validator_address: string;
+  autoRestake: boolean;
 }
 
 export default function ManageAutoRestakeModal(
@@ -34,25 +40,53 @@ export default function ManageAutoRestakeModal(
 
   if (!props.open) return null;
 
-  const totalPendingRewards = () => {
-    return BigNumber(delegationTotalRewards?.total[0]?.amount)
-      .dividedBy(`1e${SCRTToken.decimals}`)
-      .toFormat(SCRTToken.decimals);
-  };
+  const [restakeChoice, setRestakeChoice] = useState<ValidatorRestakeStatus[]>(
+    []
+  );
 
-  function claimRewards() {
+  function doRestake() {
+    if (restakeChoice.length > 0) {
+      changeRestakeForValidators(restakeChoice);
+    }
+  }
+
+  function changeRestakeForValidators(
+    validatorRestakeStatuses: ValidatorRestakeStatus[]
+  ) {
     async function submit() {
       if (!secretjs || !secretAddress) return;
 
+      const validatorObjects = validators.filter((validator: any) => {
+        return validatorRestakeStatuses.find(
+          (status: ValidatorRestakeStatus) =>
+            validator.operator_address === status.validator_address
+        );
+      });
+
       try {
-        const toastId = toast.loading(`Claiming Staking Rewards`);
-        const txs = delegatorDelegations.map((delegation: any) => {
-          console.log(delegation);
-          return new MsgWithdrawDelegationReward({
-            delegator_address: secretAddress,
-            validator_address: delegation?.delegation?.validator_address,
-          });
-        });
+        const toastId = toast.loading(
+          `Setting Auto Restaking for validators: ${validatorObjects
+            .map((validator: any) => {
+              const matchedStatus = validatorRestakeStatuses.find(
+                (status) =>
+                  status.validator_address === validator.operator_address
+              );
+              return `${
+                matchedStatus?.autoRestake ? "Enabling for" : "Disabling for"
+              } ${validator?.description?.moniker}`;
+            })
+            .join(", ")}`,
+          { closeButton: true }
+        );
+        const txs = validatorRestakeStatuses.map(
+          (status: ValidatorRestakeStatus) => {
+            return new MsgSetAutoRestake({
+              delegator_address: secretAddress,
+              validator_address: status.validator_address,
+              enabled: status.autoRestake,
+            });
+          }
+        );
 
         await secretjs.tx
           .broadcast(txs, {
@@ -65,14 +99,14 @@ export default function ManageAutoRestakeModal(
             console.error(error);
             if (error?.tx?.rawLog) {
               toast.update(toastId, {
-                render: `Claiming staking rewards failed: ${error.tx.rawLog}`,
+                render: `Setting Auto Restaking failed: ${error.tx.rawLog}`,
                 type: "error",
                 isLoading: false,
                 closeOnClick: true,
               });
             } else {
               toast.update(toastId, {
-                render: `Claiming staking rewards failed: ${error.message}`,
+                render: `Setting Auto Restaking failed: ${error.message}`,
                 type: "error",
                 isLoading: false,
                 closeOnClick: true,
@@ -84,14 +118,18 @@ export default function ManageAutoRestakeModal(
             if (tx) {
               if (tx.code === 0) {
                 toast.update(toastId, {
-                  render: `Claiming staking rewards successful`,
+                  render: `Setting Auto Restaking successfully for validators ${validatorObjects
+                    .map((validator: any) => {
+                      return validator?.description?.moniker;
+                    })
+                    .join(", ")}`,
                   type: "success",
                   isLoading: false,
                   closeOnClick: true,
                 });
               } else {
                 toast.update(toastId, {
-                  render: `Claiming staking rewards failed: ${tx.rawLog}`,
+                  render: `Setting Auto Restaking failed: ${tx.rawLog}`,
                   type: "error",
                   isLoading: false,
                   closeOnClick: true,
@@ -105,11 +143,7 @@ export default function ManageAutoRestakeModal(
     submit();
   }
 
-  function handleSubmit() {
-    alert("Todo!");
-  }
-
-  const CommitedDelegators = () => {
+  const CommittedDelegators = () => {
     return (
       <div className="my-validators w-full">
         {delegatorDelegations.map((delegation: any, i: number) => {
@@ -135,12 +169,9 @@ export default function ManageAutoRestakeModal(
                     delegation.delegation.validator_address
                 )?.description?.identity
               }
-              // restakeEntries={restakeEntries}
               stakedAmount={delegation?.balance?.amount}
-              // setSelectedValidator={setSelectedValidator}
-              // openModal={setIsValidatorModalOpen}
-              // restakeChoice={restakeChoice}
-              // setRestakeChoice={setRestakeChoice}
+              restakeChoice={restakeChoice}
+              setRestakeChoice={setRestakeChoice}
             />
           );
         })}
@@ -186,16 +217,20 @@ export default function ManageAutoRestakeModal(
               {/* Body */}
               <div className="flex flex-col">
                 {/* List of user's delegators */}
-                <CommitedDelegators />
+                <CommittedDelegators />
               </div>
               {/* Footer */}
               <div className="flex flex-col sm:flex-row-reverse justify-start mt-4 gap-2">
-                <button
-                  onClick={handleSubmit}
-                  className="bg-blue-600 hover:bg-blue-500 font-semibold px-4 py-2 rounded-md"
-                >
-                  Submit Changes
-                </button>
+                {restakeChoice.length > 0 && (
+                  <div className="px-4 pb-2">
+                    <button
+                      onClick={() => doRestake()}
+                      className="bg-blue-600 hover:bg-blue-500 font-semibold px-4 py-2 rounded-md"
+                    >
+                      Set Auto Restake
+                    </button>
+                  </div>
+                )}
                 <button
                   onClick={props.onClose}
                   className="bg-neutral-800 hover:bg-neutral-700 font-semibold px-4 py-2 rounded-md"
