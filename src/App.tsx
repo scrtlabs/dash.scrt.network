@@ -15,7 +15,7 @@ import DefaultLayout from "shared/layouts/DefaultLayout";
 import { Dashboard } from "dashboard/Dashboard";
 import Bridge from "bridge/Bridge";
 import Apps from "apps/Apps";
-import { Restake } from "staking/Restake";
+import { Staking } from "staking/Staking";
 
 // Contexts
 import { ThemeContextProvider } from "shared/context/ThemeContext";
@@ -25,7 +25,6 @@ import { APIContextProvider } from "shared/context/APIContext";
 // mixpanel
 import mixpanel from "mixpanel-browser";
 import GetSCRT from "get-scrt/GetScrt";
-import { Staking } from "staking/Staking";
 
 if (import.meta.env.VITE_MIXPANEL_ENABLED === "true") {
   mixpanel.init(import.meta.env.VITE_MIXPANEL_PROJECT_TOKEN, { debug: true });
