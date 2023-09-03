@@ -42,9 +42,13 @@ const MyValidatorsItem = (props: IMyValidatorsItemProps) => {
 
   const { currentPrice, setCurrentPrice } = useContext(APIContext);
 
+  const { SCRTToken } = useContext(SecretjsContext);
+
   const [imgUrl, setImgUrl] = useState<any>();
 
   const identityRef = useRef(props.identity);
+
+  const restakeThreshold = 10_000_000;
 
   useEffect(() => {
     identityRef.current = props.identity;
@@ -77,6 +81,10 @@ const MyValidatorsItem = (props: IMyValidatorsItemProps) => {
     );
   };
 
+  const isAboveRestakeThreshold = (stakedAmount: number) => {
+    return stakedAmount > restakeThreshold;
+  };
+
   return (
     <>
       {/* Item */}
@@ -91,16 +99,24 @@ const MyValidatorsItem = (props: IMyValidatorsItemProps) => {
         <div className="auto-restake">
           <Tooltip
             title={`Auto restake is ${
-              isRestakeEnabled(props.validator) ? "enabled" : "disabled"
+              isAboveRestakeThreshold(props.stakedAmount)
+                ? isRestakeEnabled(props.validator)
+                  ? "enabled"
+                  : "disabled"
+                : `unavailable (below threshold of ${BigNumber(restakeThreshold)
+                    .dividedBy(`1e${SCRTToken.decimals}`)
+                    .toFormat()} SCRT)`
             }!`}
             placement="bottom"
             arrow
           >
             <span
               className={`font-bold text-xs p-1 rounded-full ${
-                isRestakeEnabled(props.validator)
-                  ? "text-green-200 bg-green-800"
-                  : "text-red-200 bg-red-800"
+                isAboveRestakeThreshold(props.stakedAmount)
+                  ? isRestakeEnabled(props.validator)
+                    ? "text-green-200 bg-green-800"
+                    : "text-red-200 bg-red-800"
+                  : "text-gray-200 bg-gray-800"
               }`}
             >
               <FontAwesomeIcon icon={faRepeat} className="fa-fw" />

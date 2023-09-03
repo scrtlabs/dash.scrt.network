@@ -21,26 +21,8 @@ interface IValidatorProps {
 
 export const Validator = (props: IValidatorProps) => {
   const {
-    dappsData,
-    setDappsData,
-    dappsDataSorted,
-    setDappsDataSorted,
-    tags,
-    setTags,
-    coingeckoApiData_Day,
-    setCoinGeckoApiData_Day,
-    coingeckoApiData_Month,
-    setCoinGeckoApiData_Month,
-    coingeckoApiData_Year,
-    setCoinGeckoApiData_Year,
-    defiLamaApiData_Year,
-    setDefiLamaApiData_Year,
-    spartanApiData,
-    setSpartanApiData,
     currentPrice,
     setCurrentPrice,
-    volume,
-    setVolume,
     blockHeight,
     inflation,
     communityTax,
@@ -126,7 +108,7 @@ export const Validator = (props: IValidatorProps) => {
           props.openModal(true);
           props.setSelectedValidator(props.validator);
         }}
-        className="group flex flex-col sm:flex-row items-center text-left even:bg-white dark:even:bg-neutral-800 dark:odd:bg-neutral-700 py-8 sm:py-4 gap-4 pl-4 pr-8"
+        className="group flex flex-col sm:flex-row items-center text-left even:bg-white dark:even:bg-neutral-800 dark:odd:bg-neutral-700 py-8 sm:py-4 gap-4 pl-4 pr-8  w-full min-w-full "
       >
         {/* Image */}
         <div className="relative">
@@ -154,7 +136,7 @@ export const Validator = (props: IValidatorProps) => {
               <div className="relative bg-blue-500 rounded-full sm:w-10 w-20 sm:h-10 h-20">
                 <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 font-semibold">
                   {/* .charAt(0) or .slice(0,1) won't work here with emojis! */}
-                  {[...props.name][0].toUpperCase()}
+                  {[...props.name][0]?.toUpperCase()}
                 </div>
               </div>
             </>
@@ -180,7 +162,7 @@ export const Validator = (props: IValidatorProps) => {
           )}
         </div>
 
-        {props.validator.status === "BOND_STATUS_UNBONDED" && (
+        {props.validator?.status === "BOND_STATUS_UNBONDED" && (
           <div className="border border-red-500 bg-transparent text-red-500 text-sm rounded px-4 py-2 cursor-not-allowed flex items-center justify-start">
             Inactive
           </div>
@@ -189,19 +171,36 @@ export const Validator = (props: IValidatorProps) => {
           <div className="description text-xs text-gray-500 mb-2">
             Voting Power
           </div>
-          <div className="voting-power font-semibold">
-            <span className="">{votingPowerString}</span>{" "}
-            <span className="text-neutral-400 text-xs">SCRT</span>
-          </div>
+
+          {props.votingPower && (
+            <>
+              <div className="voting-power font-semibold">
+                <span className="">{votingPowerString}</span>
+                <span className="text-neutral-400 text-xs"> SCRT</span>
+              </div>
+            </>
+          )}
+          {!props.votingPower && (
+            <div className="animate-pulse">
+              <div className="bg-neutral-300/40 dark:bg-neutral-700/40 rounded col-span-2 w-16 h-7 mx-auto"></div>
+            </div>
+          )}
         </div>
         <div className="flex flex-col items-center">
           <div className="description text-xs text-gray-500 mb-2">
             Commission
           </div>
-          <div className="commission font-semibold">
-            <span className="sm:hidden">Commission: </span>
-            {formatNumber(props.commissionPercentage * 100, 2)}%
-          </div>
+          {props.commissionPercentage && (
+            <div className="commission font-semibold">
+              <span className="sm:hidden">Commission: </span>
+              {formatNumber(props.commissionPercentage * 100, 2)}%
+            </div>
+          )}
+          {!props.commissionPercentage && (
+            <div className="animate-pulse">
+              <div className="bg-neutral-300/40 dark:bg-neutral-700/40 rounded col-span-2 w-16 h-7 mx-auto"></div>
+            </div>
+          )}
         </div>
         <div className="flex flex-col items-center">
           <div className="description text-xs text-gray-500 mb-2">

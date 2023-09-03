@@ -610,7 +610,7 @@ export const Staking = () => {
               <div className="px-4 mt-4 flex flex-col sm:flex-row gap-2 sm:gap-4 text-center sm:text-left">
                 <div className="flex-1">
                   <span className="font-semibold">{`Total Amount Staked: `}</span>
-                  <span>{totalAmountStaked()}</span>
+                  <span>{`${totalAmountStaked()} `}</span>
                   <span className="text-xs font-semibold text-neutral-400">
                     SCRT
                   </span>
@@ -692,26 +692,44 @@ export const Staking = () => {
           </div>
 
           <div className="all-validators flex flex-col px-4">
-            {(validatorsBySearch
-              ? validatorsBySearch
-              : validatorDisplayStatus == "active"
-              ? shuffledActiveValidators
-              : inactiveValidators
-            )?.map((validator: any, i: any) => (
-              <Validator
-                position={i}
-                validator={validator}
-                name={validator?.description?.moniker}
-                commissionPercentage={
-                  validator?.commission.commission_rates?.rate
-                }
-                votingPower={validator?.tokens}
-                identity={validator?.description?.identity}
-                website={validator?.description?.website}
-                setSelectedValidator={setSelectedValidator}
-                openModal={setIsValidatorModalOpen}
-              />
-            ))}
+            {validatorsBySearch ||
+            shuffledActiveValidators ||
+            inactiveValidators ? (
+              (validatorsBySearch
+                ? validatorsBySearch
+                : validatorDisplayStatus == "active"
+                ? shuffledActiveValidators
+                : inactiveValidators
+              )?.map((validator: any, i: any) => (
+                <Validator
+                  position={i}
+                  validator={validator}
+                  name={validator?.description?.moniker}
+                  commissionPercentage={
+                    validator?.commission.commission_rates?.rate
+                  }
+                  votingPower={validator?.tokens}
+                  identity={validator?.description?.identity}
+                  website={validator?.description?.website}
+                  setSelectedValidator={setSelectedValidator}
+                  openModal={setIsValidatorModalOpen}
+                />
+              ))
+            ) : (
+              <div className="animate-pulse flex">
+                <Validator
+                  position={0}
+                  validator={undefined}
+                  name={""}
+                  commissionPercentage={undefined}
+                  votingPower={undefined}
+                  identity={undefined}
+                  website={undefined}
+                  setSelectedValidator={null}
+                  openModal={null}
+                />
+              </div>
+            )}
           </div>
 
           {validators ? (
