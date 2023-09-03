@@ -10,6 +10,7 @@ import {
   wrapPageTitle,
   wrapPageDescription,
   wrapJsonLdSchema,
+  randomPadding,
 } from "shared/utils/commons";
 import BigNumber from "bignumber.js";
 import { toast } from "react-toastify";
@@ -556,7 +557,11 @@ export function Wrap() {
                   sent_funds: [
                     { denom: selectedToken.withdrawals[0].from_denom, amount },
                   ],
-                  msg: { deposit: {} },
+                  msg: {
+                    deposit: {
+                      padding: randomPadding(),
+                    },
+                  },
                 } as any),
               ],
               {
@@ -623,6 +628,7 @@ export function Wrap() {
                         selectedToken.name === "SCRT"
                           ? undefined
                           : selectedToken.withdrawals[0].from_denom,
+                      padding: randomPadding(),
                     },
                   },
                 } as any),

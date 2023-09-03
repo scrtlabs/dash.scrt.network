@@ -32,6 +32,25 @@ export function gasToFee(gas: number, denom: string): StdFee {
   };
 }
 
+/**
+ * Generates random string of characters, used to add entropy to TX data
+ * */
+export const randomPadding = (): string => {
+  enum length {
+    MAX = 15,
+    MIN = 8,
+  }
+  const paddingLength =
+    Math.floor(Math.random() * (length.MAX - length.MIN + 1)) + length.MIN;
+  let result = "";
+  const characters =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  for (let i = 0; i < paddingLength; i += 1) {
+    result += characters.charAt(Math.floor(Math.random() * characters.length));
+  }
+  return result;
+};
+
 export function trackMixPanelEvent(event: string) {
   if (import.meta.env.VITE_MIXPANEL_ENABLED === "true" && event) {
     mixpanel.init(import.meta.env.VITE_MIXPANEL_PROJECT_TOKEN, {

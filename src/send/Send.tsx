@@ -16,6 +16,7 @@ import {
   wrapPageDescription,
   wrapJsonLdSchema,
   allTokens,
+  randomPadding,
 } from "shared/utils/commons";
 import BigNumber from "bignumber.js";
 import { toast } from "react-toastify";
@@ -542,6 +543,7 @@ export function Send() {
                       transfer: {
                         recipient: destinationAddress,
                         amount: amount,
+                        padding: randomPadding(),
                       },
                     },
                   } as any),
