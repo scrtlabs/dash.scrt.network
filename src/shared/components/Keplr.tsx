@@ -1,12 +1,4 @@
-import {
-  FunctionComponent,
-  useContext,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
-import { sleep, viewingKeyErrorString, usdString } from "shared/utils/commons";
-import Tooltip from "@mui/material/Tooltip";
+import { useContext, useEffect, useRef, useState } from "react";
 import CopyToClipboard from "react-copy-to-clipboard";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -18,13 +10,7 @@ import { toast } from "react-toastify";
 import GetWalletModal from "shared/context/GetWalletModal";
 import { useHoverOutside } from "shared/utils/useHoverOutside";
 import { APIContext } from "shared/context/APIContext";
-import { Token } from "shared/utils/config";
-import BigNumber from "bignumber.js";
-import { faKey, faInfoCircle } from "@fortawesome/free-solid-svg-icons";
-import {
-  SecretjsContext,
-  setWalletViewingKey,
-} from "shared/context/SecretjsContext";
+import { SecretjsContext } from "shared/context/SecretjsContext";
 import BalanceItem from "./BalanceItem";
 import { trackMixPanelEvent } from "shared/utils/commons";
 
@@ -46,60 +32,6 @@ export function KeplrPanel() {
   const { currentPrice } = useContext(APIContext);
 
   const [isMenuVisible, setIsMenuVisible] = useState<boolean>(false); // set to true for debugging menu
-
-  function WrappedTokenBalanceUi() {
-    if (!secretjs || !secretAddress || !sSCRTBalance) {
-      return <></>;
-    } else if (sSCRTBalance == viewingKeyErrorString) {
-      return (
-        <>
-          <button
-            className="ml-2 font-semibold bg-neutral-100 dark:bg-neutral-900 px-1.5 py-0.5 rounded-md border-neutral-300 dark:border-neutral-700 transition-colors hover:bg-neutral-300 dark:hover:bg-neutral-700 focus:bg-neutral-500 dark:focus:bg-neutral-500 cursor-pointer disabled:text-neutral-500 dark:disabled:text-neutral-500 disabled:hover:bg-neutral-100 dark:disabled:hover:bg-neutral-900 disabled:cursor-default"
-            onClick={async () => {
-              await setWalletViewingKey(SCRTToken.address);
-              try {
-                await sleep(1000); // sometimes query nodes lag
-                await updateTokenBalance();
-              } finally {
-                console.log("sdgfbydsjhg");
-              }
-            }}
-          >
-            <FontAwesomeIcon icon={faKey} className="mr-2" />
-            Set Viewing Key
-          </button>
-          <Tooltip title={"tsgdfdgshdgf"} placement="right" arrow>
-            <span className="ml-2 mt-1 text-neutral-600 dark:text-neutral-400 hover:text-black dark:hover:text-white transition-colors cursor-pointer">
-              <FontAwesomeIcon icon={faInfoCircle} />
-            </span>
-          </Tooltip>
-        </>
-      );
-    } else if (Number(sSCRTBalance) > -1) {
-      return (
-        <>
-          <div className="text-xs">
-            <div className="font-bold">
-              {` ${new BigNumber(sSCRTBalance!)
-                .dividedBy(`1e${SCRTToken.decimals}`)
-                .toFormat()} sSCRT`}
-            </div>
-            {currentPrice && sSCRTBalance && (
-              <div className="text-gray-500">
-                ≈{" "}
-                {` ${usdString.format(
-                  new BigNumber(sSCRTBalance!)
-                    .dividedBy(`1e${SCRTToken.decimals}`)
-                    .multipliedBy(Number(currentPrice))
-                    .toNumber()
-                )}`}
-              </div>
-            )}
-          </div>
-        </>
-      );
-    }
-  }
 
   useEffect(() => {
     if (localStorage.getItem("keplrAutoConnect") === "true") {

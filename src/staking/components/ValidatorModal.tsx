@@ -461,33 +461,36 @@ const ValidatorModal = (props: IValidatorModalProps) => {
                   ) : null}
 
                   {/* Available to Stake */}
-                  <div className="col-span-12 md:col-span-6">
-                    <div className="bg-white/5 rounded-xl px-4 py-8 mt-4 text-center sm:text-left">
-                      <div className="font-bold mb-2">Available to Stake</div>
-                      <div className="font-semibold">
-                        {new BigNumber(SCRTBalance!)
-                          .dividedBy(`1e${SCRTToken.decimals}`)
-                          .toFormat()}
-                        <span className="text-neutral-400 text-xs">{` SCRT`}</span>
-                      </div>
-                      <div className="font-semibold text-neutral-400 mt-0.5 text-sm">
-                        {usdString.format(
-                          new BigNumber(SCRTBalance!)
+                  {secretjs && secretAddress && (
+                    <div className="col-span-12 md:col-span-6">
+                      <div className="bg-white/5 rounded-xl px-4 py-8 mt-4 text-center sm:text-left">
+                        <div className="font-bold mb-2">Available to Stake</div>
+                        <div className="font-semibold">
+                          {new BigNumber(SCRTBalance!)
                             .dividedBy(`1e${SCRTToken.decimals}`)
-                            .multipliedBy(Number(currentPrice))
-                            .toNumber()
-                        )}
+                            .toFormat()}
+                          <span className="text-neutral-400 text-xs">{` SCRT`}</span>
+                        </div>
+                        <div className="font-semibold text-neutral-400 mt-0.5 text-sm">
+                          {usdString.format(
+                            new BigNumber(SCRTBalance!)
+                              .dividedBy(`1e${SCRTToken.decimals}`)
+                              .multipliedBy(Number(currentPrice))
+                              .toNumber()
+                          )}
+                        </div>
                       </div>
                     </div>
-                  </div>
+                  )}
 
-                  {delegatorDelegations?.find(
-                    (delegatorDelegation: any) =>
-                      selectedValidator?.operator_address ==
-                      delegatorDelegation.delegation.validator_address
-                  ) ? (
-                    <>
-                      {/* Your Delegation */}
+                  {/* Your Delegation */}
+                  {secretjs &&
+                    secretAddress &&
+                    (delegatorDelegations?.find(
+                      (delegatorDelegation: any) =>
+                        selectedValidator?.operator_address ==
+                        delegatorDelegation.delegation.validator_address
+                    ) ? (
                       <div className="col-span-12 md:col-span-6">
                         <div className="bg-white/5 rounded-xl px-4 py-8 mt-4 text-center sm:text-left">
                           <div className="font-bold mb-2">Your Delegation</div>
@@ -516,10 +519,7 @@ const ValidatorModal = (props: IValidatorModalProps) => {
                           </div>
                         </div>
                       </div>
-                    </>
-                  ) : (
-                    <>
-                      {/* Your Delegation */}
+                    ) : (
                       <div className="col-span-12 md:col-span-6">
                         <div className="bg-white/5 rounded-xl px-4 py-8 mt-4 text-center sm:text-left">
                           <div className="font-bold mb-2">Your Delegation</div>
@@ -529,8 +529,7 @@ const ValidatorModal = (props: IValidatorModalProps) => {
                           </div>
                         </div>
                       </div>
-                    </>
-                  )}
+                    ))}
 
                   {view !== null ? (
                     <div className="col-span-12">
@@ -540,16 +539,11 @@ const ValidatorModal = (props: IValidatorModalProps) => {
                     </div>
                   ) : null}
 
-                  {view === null ? (
+                  {view === null && secretjs && secretAddress ? (
                     <>
                       <div className="col-span-12">
                         {/* Navigation */}
                         <div className="flex flex-col sm:flex-row-reverse justify-start mt-4 gap-2">
-                          {/* <div className="py-4">
-                      <button className="bg-neutral-800 hover:bg-neutral-700 font-semibold px-3 py-2 rounded-md">
-                        <FontAwesomeIcon icon={faLink} className="fa-fw" />
-                      </button>
-                    </div> */}
                           <button
                             onClick={() => setView("delegate")}
                             className="bg-sky-600 hover:bg-sky-700  font-semibold px-4 py-2 rounded-md"
