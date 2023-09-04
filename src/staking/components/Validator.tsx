@@ -206,7 +206,6 @@ export const Validator = (props: IValidatorProps) => {
           </div>
           {props.commissionPercentage && (
             <div className="commission font-semibold">
-              <span className="sm:hidden">Commission: </span>
               {formatNumber(props.commissionPercentage * 100, 2)}%
             </div>
           )}
@@ -218,11 +217,10 @@ export const Validator = (props: IValidatorProps) => {
         </div>
         <div className="flex flex-col items-center">
           <div className="description text-xs text-gray-500 mb-2">
-            Real Yield
+            Staking APR
           </div>
           {realYield && (
             <div className="apr font-semibold">
-              <span className="sm:hidden">Yield: </span>
               {realYield || realYield != 0
                 ? `${formatNumber(realYield, 2)} %`
                 : ""}
@@ -234,11 +232,6 @@ export const Validator = (props: IValidatorProps) => {
             </div>
           )}
         </div>
-        {/*         <FontAwesomeIcon
-          icon={faChevronRight}
-          size="sm"
-          className="hidden sm:inline-block"
-        /> */}
       </button>
     </>
   );

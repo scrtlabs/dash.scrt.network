@@ -137,11 +137,13 @@ export function ClaimRewardsModal(props: IClaimRewardsModalProps) {
               </div>
               {/* Body */}
               <div className="flex flex-col">
-                <FeeGrant />
                 <div className="text-center my-4">
                   <span className="font-bold">{`Claimable Amount: `}</span>
                   <span>{totalPendingRewards()}</span>
                   <span className="text-gray-500 dark:text-gray-400 text-sm">{` SCRT`}</span>
+                </div>
+                <div className="py-2">
+                  <FeeGrant />
                 </div>
                 <button
                   onClick={() => claimRewards()}
