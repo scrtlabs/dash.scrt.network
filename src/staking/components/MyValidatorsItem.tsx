@@ -11,7 +11,7 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Tooltip from "@mui/material/Tooltip";
 import { APIContext } from "shared/context/APIContext";
-import { restakeThreshold, usdString } from "shared/utils/commons";
+import { restakeThreshold, sleep, usdString } from "shared/utils/commons";
 import BigNumber from "bignumber.js";
 import { formatNumber } from "shared/utils/commons";
 import { IValidator } from "../Staking";
@@ -49,20 +49,34 @@ const MyValidatorsItem = (props: IMyValidatorsItemProps) => {
   useEffect(() => {
     identityRef.current = props.identity;
     const fetchKeybaseImgUrl = async () => {
-      const url = `https://keybase.io/_/api/1.0/user/lookup.json?key_suffix=${props.identity}&fields=pictures`;
-      await fetch(url)
-        .then((response) => response.json())
-        .catch((e) => {})
-        .then((response) => {
-          if (identityRef.current === props.identity) {
-            if (response?.them[0]) {
-              setImgUrl(response?.them[0].pictures?.primary?.url);
-            } else {
-              setImgUrl(undefined);
-            }
+      try {
+        const url = `https://keybase.io/_/api/1.0/user/lookup.json?key_suffix=${props.identity}&fields=pictures`;
+
+        // Introduce a delay here (e.g., 1000ms or 1 second)
+        const randomDelay = (min: any, max: any) => {
+          return Math.floor(Math.random() * (max - min + 1)) + min;
+        };
+
+        await sleep(randomDelay(0, 2000));
+
+        const response = await fetch(url);
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        const data = await response.json();
+
+        if (identityRef.current === props.identity) {
+          if (data?.them[0]) {
+            setImgUrl(data.them[0].pictures?.primary?.url);
+          } else {
+            setImgUrl(undefined);
           }
-        })
-        .catch((e) => {});
+        }
+      } catch (e) {
+        console.error(e); // handle error appropriately
+      }
     };
     if (props.identity) {
       setImgUrl(undefined);

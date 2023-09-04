@@ -188,9 +188,9 @@ export default function StakingForm() {
       <div className="flex flex-col sm:flex-row-reverse justify-start mt-4 gap-2">
         <button
           onClick={handleSubmit}
-          className="bg-blue-600 hover:bg-blue-500 font-semibold px-4 py-2 rounded-md"
+          className="bg-sky-600 hover:bg-sky-700 font-semibold px-4 py-2 rounded-md"
         >
-          Stake
+          Delegate
         </button>
         <button
           onClick={() => setView(null)}

@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useContext, useRef } from "react";
 import { faChevronRight, faGlobe } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { formatNumber } from "shared/utils/commons";
+import { formatNumber, sleep } from "shared/utils/commons";
 import { APIContext } from "shared/context/APIContext";
 import { IValidator } from "staking/Staking";
 import { Nullable } from "shared/types/Nullable";
@@ -72,20 +72,34 @@ export const Validator = (props: IValidatorProps) => {
   useEffect(() => {
     identityRef.current = props.identity;
     const fetchKeybaseImgUrl = async () => {
-      const url = `https://keybase.io/_/api/1.0/user/lookup.json?key_suffix=${props.identity}&fields=pictures`;
-      await fetch(url)
-        .then((response) => response.json())
-        .catch((e) => {})
-        .then((response) => {
-          if (identityRef.current === props.identity) {
-            if (response?.them[0]) {
-              setImgUrl(response?.them[0].pictures?.primary?.url);
-            } else {
-              setImgUrl(undefined);
-            }
+      try {
+        const url = `https://keybase.io/_/api/1.0/user/lookup.json?key_suffix=${props.identity}&fields=pictures`;
+
+        // Introduce a delay here (e.g., 1000ms or 1 second)
+        const randomDelay = (min: any, max: any) => {
+          return Math.floor(Math.random() * (max - min + 1)) + min;
+        };
+
+        await sleep(randomDelay(0, 2500));
+
+        const response = await fetch(url);
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        const data = await response.json();
+
+        if (identityRef.current === props.identity) {
+          if (data?.them[0]) {
+            setImgUrl(data.them[0].pictures?.primary?.url);
+          } else {
+            setImgUrl(undefined);
           }
-        })
-        .catch((e) => {});
+        }
+      } catch (e) {
+        console.error(e); // handle error appropriately
+      }
     };
     if (props.identity) {
       setImgUrl(undefined);
