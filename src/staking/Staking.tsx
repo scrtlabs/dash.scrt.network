@@ -118,9 +118,9 @@ export const Staking = () => {
     useState<ValidatorDisplayStatus>("active");
 
   //Auto Restake
-  const [restakeChoice, setRestakeChoice] = useState<ValidatorRestakeStatus[]>(
-    []
-  );
+  const [restakeChoices, setRestakeChoices] = useState<
+    ValidatorRestakeStatus[]
+  >([]);
   const [restakeEntries, setRestakeEntries] = useState<any>();
 
   //Search Query
@@ -222,15 +222,12 @@ export const Staking = () => {
             "pagination.limit": 1000,
           });
         setRestakeEntries(validators);
-
-        setRestakeChoice(
+        setRestakeChoices(
           delegation_responses.map((validator: any) => ({
             validatorAddress: validator?.delegation?.validator_address,
-            autoRestake: validators.some(
-              (item: any) =>
-                item.validator_address ===
-                validator?.delegation?.validator_address
-            ),
+            autoRestake: validators.some((item: any) => {
+              return item === validator?.delegation?.validator_address;
+            }),
             stakedAmount: validator?.balance?.amount,
           }))
         );
@@ -245,7 +242,7 @@ export const Staking = () => {
       }
     };
     fetchDelegatorValidators();
-  }, [secretjs, secretAddress]);
+  }, [secretjs, secretAddress, reload]);
 
   useEffect(() => {
     const fetchValidators = async () => {
@@ -312,8 +309,10 @@ export const Staking = () => {
     setDelegationTotalRewards,
     view,
     setView,
-    restakeChoice,
-    setRestakeChoice,
+    reload,
+    setReload,
+    restakeChoices,
+    setRestakeChoices,
   };
 
   return (

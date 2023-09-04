@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { MsgSetAutoRestake } from "secretjs";
 import { SecretjsContext } from "shared/context/SecretjsContext";
@@ -25,14 +25,16 @@ export default function ManageAutoRestakeModal(
     delegatorDelegations,
     delegationTotalRewards,
     validators,
-    restakeChoice,
-    setRestakeChoice,
+    restakeChoices,
+    setRestakeChoices,
+    reload,
+    setReload,
   } = useContext(StakingContext);
 
   if (!props.open) return null;
 
   function doRestake() {
-    const filteredRestakeChoices = restakeChoice.filter(
+    const filteredRestakeChoices = restakeChoices.filter(
       (validator: ValidatorRestakeStatus) =>
         Number(validator.stakedAmount) >= restakeThreshold
     );
@@ -109,7 +111,7 @@ export default function ManageAutoRestakeModal(
             if (tx) {
               if (tx.code === 0) {
                 toast.update(toastId, {
-                  render: `Setting Auto Restaking successfully for validators ${validatorObjects
+                  render: `Set Auto Restaking successfully for validators ${validatorObjects
                     .map((validator: any) => {
                       return validator?.description?.moniker;
                     })
@@ -129,6 +131,7 @@ export default function ManageAutoRestakeModal(
             }
           });
       } finally {
+        setReload(!reload);
       }
     }
     submit();
@@ -210,7 +213,7 @@ export default function ManageAutoRestakeModal(
               </div>
               {/* Footer */}
               <div className="flex flex-col sm:flex-row-reverse justify-start mt-4 gap-2">
-                {restakeChoice.length > 0 && (
+                {restakeChoices.length > 0 && (
                   <button
                     onClick={() => doRestake()}
                     className="bg-sky-600 hover:bg-sky-700 font-semibold px-4 py-2 rounded-md"

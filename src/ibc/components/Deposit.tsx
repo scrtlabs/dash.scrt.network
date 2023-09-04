@@ -453,7 +453,6 @@ function Deposit() {
       ) {
         await sleep(100);
       }
-      console.log(selectedSource.chain_name);
       if (selectedSource.chain_name === "Terra") {
         await suggestTerratoWallet((window as any).wallet);
       } else if (selectedSource.chain_name === "Injective") {
@@ -875,8 +874,6 @@ function Deposit() {
 
         withdraw_channel_id = withdrawalChain.channel_id || withdraw_channel_id;
         withdraw_gas = withdrawalChain.gas || withdraw_gas;
-
-        console.log(withdrawalChain);
 
         const toastId = toast.loading(
           `Sending ${normalizedAmount} ${selectedToken.name} from Secret Network to ${selectedSource.chain_name}`,

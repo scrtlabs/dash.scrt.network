@@ -20,7 +20,7 @@ const RestakeValidatorItem = (props: IRestakeValidatorItemProps) => {
     .dividedBy(`1e6`)
     .toString();
 
-  const { restakeChoice, setRestakeChoice } = useContext(StakingContext);
+  const { restakeChoices, setRestakeChoices } = useContext(StakingContext);
 
   const { SCRTToken } = useContext(SecretjsContext);
 
@@ -58,10 +58,19 @@ const RestakeValidatorItem = (props: IRestakeValidatorItemProps) => {
     }
   }, [props.identity, identityRef]);
 
+  useEffect(() => {
+    const existingEntry = restakeChoices?.find(
+      (item: any) => item.validatorAddress === props.validator.operator_address
+    );
+    if (existingEntry?.autoRestake) {
+      setIsChecked(existingEntry?.autoRestake);
+    }
+  }, [restakeChoices]);
+
   function handleButtonClick() {
     const currentValue = !isChecked;
 
-    const existingEntry = restakeChoice?.find(
+    const existingEntry = restakeChoices?.find(
       (item: any) => item.validatorAddress === props.validator.operator_address
     );
 

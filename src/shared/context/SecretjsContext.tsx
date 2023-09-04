@@ -287,7 +287,6 @@ const SecretjsContextProvider = ({ children }: any) => {
       })
         .then(async (result) => {
           const textBody = await result.text();
-          // console.log(textBody);
           if (result.ok == true) {
             setFeeGrantStatus("Success");
             toast.success(

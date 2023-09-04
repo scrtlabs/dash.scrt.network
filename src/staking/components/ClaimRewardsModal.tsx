@@ -43,7 +43,6 @@ export function ClaimRewardsModal(props: IClaimRewardsModalProps) {
       try {
         const toastId = toast.loading(`Claiming Staking Rewards`);
         const txs = delegatorDelegations.map((delegation: any) => {
-          console.log(delegation);
           return new MsgWithdrawDelegationReward({
             delegator_address: secretAddress,
             validator_address: delegation?.delegation?.validator_address,

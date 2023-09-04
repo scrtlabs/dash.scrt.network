@@ -14,8 +14,14 @@ import FeeGrant from "./FeeGrant";
 import Select from "react-select";
 
 export default function RedelegateForm() {
-  const { delegatorDelegations, validators, selectedValidator, setView } =
-    useContext(StakingContext);
+  const {
+    delegatorDelegations,
+    validators,
+    selectedValidator,
+    setView,
+    reload,
+    setReload,
+  } = useContext(StakingContext);
   const { secretjs, secretAddress, SCRTBalance, SCRTToken, feeGrantStatus } =
     useContext(SecretjsContext);
   const { currentPrice } = useContext(APIContext);
@@ -103,6 +109,7 @@ export default function RedelegateForm() {
             }
           });
       } finally {
+        setReload(!reload);
       }
     }
     submit();
@@ -165,7 +172,6 @@ export default function RedelegateForm() {
 
   const customFilter = (option: any, searchText: any) => {
     if (searchText.length == 0) return true;
-    console.log(option);
     if (!option || !option?.data?.name) return false;
     const name = option?.data?.name.toLowerCase();
     const search = searchText.toLowerCase();
@@ -217,7 +223,6 @@ export default function RedelegateForm() {
                 })
             )}
             onChange={(item: any) => {
-              console.log(item);
               setRedelegateValidator(
                 validators.find(
                   (validator: any) => validator.operator_address === item.value
