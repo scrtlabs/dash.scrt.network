@@ -94,17 +94,28 @@ const RestakeValidatorItem = (props: IRestakeValidatorItemProps) => {
           }`}
         >
           {/* Image */}
-          <div>
-            <span
-              className={`font-bold text-xs p-1 rounded-full ${
-                isChecked
-                  ? "text-green-200 bg-green-800"
-                  : "text-red-200 bg-red-800"
+          <span
+            className={`border rounded-full border-gray-400 relative ${
+              isChecked
+                ? "text-green-200 bg-green-800"
+                : "text-red-200 bg-red-800"
+            }`}
+          >
+            {/* Adjust width and height for the outer container */}
+            <div
+              className={`box block h-6 w-12 rounded-full ${
+                isChecked ? "bg-primary" : "bg-dark"
               }`}
-            >
-              <FontAwesomeIcon icon={faRepeat} className="fa-fw" />
-            </span>
-          </div>
+            ></div>
+
+            {/* Adjust width, height, and position for the inner circle */}
+            <div
+              className={`absolute left-0.5 top-0.5 flex h-5 w-5 items-center justify-center rounded-full bg-white transition ${
+                isChecked ? "translate-x-[1.5rem]" : ""
+              }`}
+            ></div>
+          </span>
+
           <div className="image">
             {imgUrl ? (
               <>
@@ -158,9 +169,21 @@ const RestakeValidatorItem = (props: IRestakeValidatorItemProps) => {
             className={`w-full flex items-center text-left py-8 sm:py-4 gap-4 px-4 bg-gray-500/30 dark:bg-gray-500/30 opacity-60`}
           >
             <span
-              className={`font-bold text-xs p-1 rounded-full text-gray-200 bg-gray-800`}
+              className={`border rounded-full border-gray-400 relative rounded-full text-gray-200 bg-gray-800`}
             >
-              <FontAwesomeIcon icon={faRepeat} className="fa-fw" />
+              {/* Adjust width and height for the outer container */}
+              <div
+                className={`box block h-6 w-12 rounded-full ${
+                  isChecked ? "bg-primary" : "bg-dark"
+                }`}
+              ></div>
+
+              {/* Adjust width, height, and position for the inner circle */}
+              <div
+                className={`absolute left-0.5 top-0.5 flex h-5 w-5 items-center justify-center rounded-full bg-white transition ${
+                  isChecked ? "translate-x-[1.5rem]" : ""
+                }`}
+              ></div>
             </span>
 
             {/* Image */}
