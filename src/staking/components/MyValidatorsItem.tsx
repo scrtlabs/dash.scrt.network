@@ -78,7 +78,7 @@ const MyValidatorsItem = (props: IMyValidatorsItemProps) => {
   };
 
   const isAboveRestakeThreshold = (stakedAmount: number) => {
-    return stakedAmount > restakeThreshold;
+    return Number(stakedAmount) >= restakeThreshold;
   };
 
   return (

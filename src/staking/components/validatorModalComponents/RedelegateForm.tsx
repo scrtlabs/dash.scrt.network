@@ -68,14 +68,14 @@ export default function RedelegateForm() {
             console.error(error);
             if (error?.tx?.rawLog) {
               toast.update(toastId, {
-                render: `Redelgating failed: ${error.tx.rawLog}`,
+                render: `Redelegating failed: ${error.tx.rawLog}`,
                 type: "error",
                 isLoading: false,
                 closeOnClick: true,
               });
             } else {
               toast.update(toastId, {
-                render: `Redelgating failed: ${error.message}`,
+                render: `Redelegating failed: ${error.message}`,
                 type: "error",
                 isLoading: false,
                 closeOnClick: true,
@@ -94,7 +94,7 @@ export default function RedelegateForm() {
                 });
               } else {
                 toast.update(toastId, {
-                  render: `Redelgating failed: ${tx.rawLog}`,
+                  render: `Redelegating failed: ${tx.rawLog}`,
                   type: "error",
                   isLoading: false,
                   closeOnClick: true,
@@ -201,7 +201,9 @@ export default function RedelegateForm() {
           </div>
         </div>
         <div className="mt-4">
-          <div className="font-bold mb-2 text-center sm:text-left">To</div>
+          <div className="font-bold mb-2 text-center sm:text-left">
+            Redelegate to
+          </div>
           <Select
             isDisabled={!secretjs || !secretAddress}
             options={shuffleArray(

@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useContext, useRef } from "react";
 import { APIContext } from "shared/context/APIContext";
 import BigNumber from "bignumber.js";
-import { IValidator } from "../Staking";
+import { IValidator, StakingContext } from "../Staking";
 import { SecretjsContext } from "shared/context/SecretjsContext";
 import { restakeThreshold } from "shared/utils/commons";
 import Tooltip from "@mui/material/Tooltip";
@@ -13,8 +13,6 @@ interface IRestakeValidatorItemProps {
   stakedAmount: number;
   identity?: string;
   validator: any;
-  restakeChoice: any;
-  setRestakeChoice: any;
 }
 
 const RestakeValidatorItem = (props: IRestakeValidatorItemProps) => {
@@ -22,7 +20,7 @@ const RestakeValidatorItem = (props: IRestakeValidatorItemProps) => {
     .dividedBy(`1e6`)
     .toString();
 
-  const { currentPrice, setCurrentPrice } = useContext(APIContext);
+  const { restakeChoice, setRestakeChoice } = useContext(StakingContext);
 
   const { SCRTToken } = useContext(SecretjsContext);
 
@@ -33,7 +31,7 @@ const RestakeValidatorItem = (props: IRestakeValidatorItemProps) => {
   const [isChecked, setIsChecked] = useState<boolean>(false);
 
   const isAboveRestakeThreshold = (stakedAmount: number) => {
-    return stakedAmount > restakeThreshold;
+    return stakedAmount >= restakeThreshold;
   };
 
   useEffect(() => {
@@ -60,37 +58,26 @@ const RestakeValidatorItem = (props: IRestakeValidatorItemProps) => {
     }
   }, [props.identity, identityRef]);
 
+  function handleButtonClick() {
+    const currentValue = !isChecked;
+
+    const existingEntry = restakeChoice?.find(
+      (item: any) => item.validatorAddress === props.validator.operator_address
+    );
+
+    if (existingEntry) {
+      existingEntry.autoRestake = currentValue;
+      setIsChecked(currentValue);
+    }
+  }
+
   return (
     <>
       {/* Item */}
 
       {isAboveRestakeThreshold(props.stakedAmount) ? (
         <button
-          onClick={() => {
-            const existingEntry = props.restakeChoice?.find(
-              (item: any) =>
-                item.validator_address === props.validator.operator_address
-            );
-
-            if (existingEntry) {
-              props.setRestakeChoice((prevChoices: any) =>
-                prevChoices.map((item: any) =>
-                  item.validator_address === props.validator.operator_address
-                    ? { ...item, autoRestake: isChecked }
-                    : item
-                )
-              );
-            } else {
-              props.setRestakeChoice((prevChoices: any) => [
-                ...prevChoices,
-                {
-                  validator_address: props.validator.operator_address,
-                  autoRestake: isChecked,
-                },
-              ]);
-            }
-            setIsChecked(!isChecked);
-          }}
+          onClick={handleButtonClick}
           className={`w-full flex items-center text-left py-8 sm:py-4 gap-4 px-4 ${
             isChecked
               ? "bg-emerald-500/30 dark:bg-emerald-500/30"
@@ -149,65 +136,65 @@ const RestakeValidatorItem = (props: IRestakeValidatorItemProps) => {
           </div>
         </button>
       ) : (
-        <button
-          className={`w-full flex items-center text-left py-8 sm:py-4 gap-4 px-4 bg-gray-500/30 dark:bg-gray-500/30`}
+        <Tooltip
+          title={`Autorestake is unavailable (below threshold of ${BigNumber(
+            restakeThreshold
+          )
+            .dividedBy(`1e${SCRTToken.decimals}`)
+            .toFormat()} SCRT)`}
+          placement="right"
+          arrow
         >
-          <Tooltip
-            title={`Autorestake is unavailable (below threshold of ${BigNumber(
-              restakeThreshold
-            )
-              .dividedBy(`1e${SCRTToken.decimals}`)
-              .toFormat()} SCRT)`}
-            placement="right"
-            arrow
+          <button
+            className={`w-full flex items-center text-left py-8 sm:py-4 gap-4 px-4 bg-gray-500/30 dark:bg-gray-500/30 opacity-60`}
           >
-            <FontAwesomeIcon
-              icon={faInfoCircle}
-              className="ml-2 text-neutral-400"
-            />
-          </Tooltip>
+            <span
+              className={`font-bold text-xs p-1 rounded-full text-gray-200 bg-gray-800`}
+            >
+              <FontAwesomeIcon icon={faRepeat} className="fa-fw" />
+            </span>
 
-          {/* Image */}
-          <div></div>
-          <div className="image">
-            {imgUrl ? (
-              <>
-                <img
-                  src={imgUrl}
-                  alt={`validator logo`}
-                  className="rounded-full w-10"
-                />
-              </>
-            ) : (
-              <>
-                <div className="relative bg-blue-500 rounded-full w-10 h-10">
-                  <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 font-semibold">
-                    {/* .charAt(0) or .slice(0,1) won't work here with emojis! */}
-                    {[...props.name][0].toUpperCase()}
+            {/* Image */}
+            <div className="image">
+              {imgUrl ? (
+                <>
+                  <img
+                    src={imgUrl}
+                    alt={`validator logo`}
+                    className="rounded-full w-10"
+                  />
+                </>
+              ) : (
+                <>
+                  <div className="relative bg-blue-500 rounded-full w-10 h-10">
+                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 font-semibold">
+                      {/* .charAt(0) or .slice(0,1) won't work here with emojis! */}
+                      {[...props.name][0].toUpperCase()}
+                    </div>
                   </div>
-                </div>
-              </>
-            )}
-          </div>
-          {/* Title */}
-          <div className="flex-1">
-            <span className="font-semibold">{props.name}</span>
-          </div>
-          <div className="flex flex-col items-right">
-            <div className="description text-xs text-gray-500 mb-2 text-right">
-              Your stake
+                </>
+              )}
             </div>
-            <div>
+            {/* Title */}
+            <div className="flex-1">
+              <span className="font-semibold">{props.name}</span>
+            </div>
+            <div className="flex flex-col items-right">
+              <div className="description text-xs text-gray-500 mb-2 text-right">
+                Your stake
+              </div>
               <div>
-                <span className="font-semibold">{stakedAmountString}</span>
-                <span className="text-xs font-semibold text-neutral-400">
-                  {" "}
-                  SCRT
-                </span>
+                <div>
+                  <span className="font-semibold">{stakedAmountString}</span>
+                  <span className="text-xs font-semibold text-neutral-400">
+                    {" "}
+                    SCRT
+                  </span>
+                </div>
               </div>
             </div>
-          </div>
-        </button>
+          </button>
+        </Tooltip>
       )}
     </>
   );

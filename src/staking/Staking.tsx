@@ -24,11 +24,7 @@ import { SecretjsContext } from "shared/context/SecretjsContext";
 import NoScrtWarning from "./components/NoScrtWarning";
 import ValidatorModal from "./components/ValidatorModal";
 import { SECRET_LCD, SECRET_CHAIN_ID } from "shared/utils/config";
-import {
-  SecretNetworkClient,
-  MsgSetAutoRestake,
-  MsgWithdrawDelegationReward,
-} from "secretjs";
+import { SecretNetworkClient } from "secretjs";
 import Select from "react-select";
 import Title from "./components/Title";
 import { useSearchParams } from "react-router-dom";
@@ -43,6 +39,12 @@ export interface IValidator {
   [prop: string]: any;
 }
 
+export interface ValidatorRestakeStatus {
+  validatorAddress: string;
+  autoRestake: boolean;
+  stakedAmount: string;
+}
+
 export const StakingContext = createContext(null);
 
 export const Staking = () => {
@@ -52,6 +54,8 @@ export const Staking = () => {
   const viewUrlParam: Nullable<string> = searchParams.get("view"); // "undelegate" | "redelegate" | "delegate"
 
   const [view, setView] = useState<Nullable<StakingView>>(null);
+
+  const [reload, setReload] = useState(false);
 
   const handleStakingModalClose = () => {
     setIsValidatorModalOpen(false);
@@ -72,17 +76,13 @@ export const Staking = () => {
     document.body.classList.remove("overflow-hidden");
   };
 
-  const {
-    secretjs,
-    secretAddress,
-    SCRTBalance,
-    SCRTToken,
-    feeGrantStatus,
-    setFeeGrantStatus,
-    requestFeeGrant,
-  } = useContext(SecretjsContext);
+  const { secretjs, secretAddress, SCRTBalance, SCRTToken } =
+    useContext(SecretjsContext);
 
   const [validators, setValidators] = useState<IValidator[]>(null);
+  const [activeValidators, setActiveValidators] = useState<IValidator[]>(null);
+  const [inactiveValidators, setInactiveValidators] =
+    useState<IValidator[]>(null);
 
   //Delegations that a Delegetor has
   const [delegatorDelegations, setDelegatorDelegations] = useState<any>();
@@ -108,10 +108,6 @@ export const Staking = () => {
 
   const [selectedValidator, setSelectedValidator] = useState<IValidator>(null);
 
-  const [activeValidators, setActiveValidators] = useState<IValidator[]>(null);
-  const [inactiveValidators, setInactiveValidators] =
-    useState<IValidator[]>(null);
-
   const [shuffledActiveValidators, setShuffledActiveValidators] =
     useState<IValidator[]>(null);
   const [validatorsBySearch, setValidatorsBySearch] =
@@ -122,7 +118,9 @@ export const Staking = () => {
     useState<ValidatorDisplayStatus>("active");
 
   //Auto Restake
-
+  const [restakeChoice, setRestakeChoice] = useState<ValidatorRestakeStatus[]>(
+    []
+  );
   const [restakeEntries, setRestakeEntries] = useState<any>();
 
   //Search Query
@@ -224,6 +222,18 @@ export const Staking = () => {
             "pagination.limit": 1000,
           });
         setRestakeEntries(validators);
+
+        setRestakeChoice(
+          delegation_responses.map((validator: any) => ({
+            validatorAddress: validator?.delegation?.validator_address,
+            autoRestake: validators.some(
+              (item: any) =>
+                item.validator_address ===
+                validator?.delegation?.validator_address
+            ),
+            stakedAmount: validator?.balance?.amount,
+          }))
+        );
         setDelegatorDelegations(delegation_responses);
 
         const result = await secretjs.query.distribution.delegationTotalRewards(
@@ -232,7 +242,6 @@ export const Staking = () => {
           }
         );
         setDelegationTotalRewards(result);
-        console.log(result);
       }
     };
     fetchDelegatorValidators();
@@ -303,6 +312,8 @@ export const Staking = () => {
     setDelegationTotalRewards,
     view,
     setView,
+    restakeChoice,
+    setRestakeChoice,
   };
 
   return (

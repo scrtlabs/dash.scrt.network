@@ -39,27 +39,8 @@ const ValidatorModal = (props: IValidatorModalProps) => {
   const [imgUrl, setImgUrl] = useState<Nullable<string>>(null);
 
   const {
-    dappsData,
-    setDappsData,
-    dappsDataSorted,
-    setDappsDataSorted,
-    tags,
-    setTags,
-    coingeckoApiData_Day,
-    setCoinGeckoApiData_Day,
-    coingeckoApiData_Month,
-    setCoinGeckoApiData_Month,
-    coingeckoApiData_Year,
-    setCoinGeckoApiData_Year,
-    defiLamaApiData_Year,
-    setDefiLamaApiData_Year,
-    spartanApiData,
-    setSpartanApiData,
     currentPrice,
     setCurrentPrice,
-    volume,
-    setVolume,
-    blockHeight,
     inflation,
     communityTax,
     communityPool,
@@ -68,8 +49,6 @@ const ValidatorModal = (props: IValidatorModalProps) => {
     bondedToken,
     notBondedToken,
     secretFoundationTax,
-    marketCap,
-    setMarketCap,
   } = useContext(APIContext);
 
   const {
@@ -81,63 +60,6 @@ const ValidatorModal = (props: IValidatorModalProps) => {
     secretjs,
     secretAddress,
   } = useContext(SecretjsContext);
-
-  const FeeGrant = () => {
-    return (
-      <>
-        {/* Fee Grant */}
-        <div className="bg-neutral-200 dark:bg-neutral-800 p-4 rounded-lg select-none flex items-center my-4">
-          <div className="flex-1 flex items-center">
-            <span className="font-semibold text-sm">Fee Grant</span>
-            <Tooltip
-              title={`Request Fee Grant so that you don't have to pay gas fees (up to 0.1 SCRT)`}
-              placement="right"
-              arrow
-            >
-              <span className="ml-2 mt-1 text-neutral-600 dark:text-neutral-400 hover:text-black dark:hover:text-white transition-colors cursor-pointer">
-                <FontAwesomeIcon icon={faInfoCircle} />
-              </span>
-            </Tooltip>
-          </div>
-          <div className="flex-initial">
-            {/* Untouched */}
-            {feeGrantStatus === "Untouched" && (
-              <>
-                <button
-                  id="feeGrantButton"
-                  onClick={requestFeeGrant}
-                  className="font-semibold text-xs bg-neutral-100 dark:bg-neutral-900 px-1.5 py-1 rounded-md transition-colors hover:bg-neutral-300 dark:hover:bg-neutral-700 cursor-pointer disabled:text-neutral-500 dark:disabled:text-neutral-500 disabled:hover:bg-neutral-100 dark:disabled:hover:bg-neutral-900 disabled:cursor-default focus:outline-0 focus:ring-2 ring-sky-500/40"
-                  disabled={!secretjs || !secretAddress}
-                >
-                  Request Fee Grant
-                </button>
-              </>
-            )}
-            {/* Success */}
-            {feeGrantStatus === "Success" && (
-              <div className="font-semibold text-sm flex items-center h-[1.6rem]">
-                <FontAwesomeIcon
-                  icon={faCheckCircle}
-                  className="text-green-500 mr-1.5"
-                />
-                Fee Granted
-              </div>
-            )}
-            {/* Fail */}
-            {feeGrantStatus === "Fail" && (
-              <div className="font-semibold text-sm h-[1.6rem]">
-                <FontAwesomeIcon
-                  icon={faXmarkCircle}
-                  className="text-red-500 mr-1.5"
-                />
-                Request failed
-              </div>
-            )}
-          </div>
-        </div>
-      </>
-    );
-  };
 
   const [realYield, setRealYield] = useState<Nullable<number>>(null);
 
@@ -552,6 +474,7 @@ const ValidatorModal = (props: IValidatorModalProps) => {
                         {usdString.format(
                           new BigNumber(SCRTBalance!)
                             .dividedBy(`1e${SCRTToken.decimals}`)
+                            .multipliedBy(Number(currentPrice))
                             .toNumber()
                         )}
                       </div>
@@ -586,7 +509,7 @@ const ValidatorModal = (props: IValidatorModalProps) => {
                                       .validator_address
                                 )?.balance?.amount
                               )
-                                .dividedBy(`1e6`)
+                                .dividedBy(`1e${SCRTToken.decimals}`)
                                 .multipliedBy(Number(currentPrice))
                                 .toNumber()
                             )}
@@ -629,9 +552,9 @@ const ValidatorModal = (props: IValidatorModalProps) => {
                     </div> */}
                           <button
                             onClick={() => setView("delegate")}
-                            className="bg-blue-600 hover:bg-blue-500 font-semibold px-4 py-2 rounded-md"
+                            className="bg-sky-600 hover:bg-sky-700  font-semibold px-4 py-2 rounded-md"
                           >
-                            Stake
+                            Delegate
                           </button>
                           {delegatorDelegations?.find(
                             (delegatorDelegation: any) =>
@@ -649,7 +572,7 @@ const ValidatorModal = (props: IValidatorModalProps) => {
                                 onClick={() => setView("undelegate")}
                                 className="bg-neutral-800 hover:bg-neutral-700 font-semibold px-4 py-2 rounded-md"
                               >
-                                Unstake
+                                Undelegate
                               </button>
                             </>
                           ) : null}

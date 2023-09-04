@@ -2,51 +2,43 @@ import React, { useContext, useState } from "react";
 import { toast } from "react-toastify";
 import { MsgSetAutoRestake } from "secretjs";
 import { SecretjsContext } from "shared/context/SecretjsContext";
-import { faucetAddress, restakeThreshold } from "shared/utils/commons";
-import { StakingContext } from "staking/Staking";
+import { StakingContext, ValidatorRestakeStatus } from "staking/Staking";
 import FeeGrant from "./validatorModalComponents/FeeGrant";
 import BigNumber from "bignumber.js";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faInfoCircle, faXmark } from "@fortawesome/free-solid-svg-icons";
-import MyValidatorsItem from "./MyValidatorsItem";
 import RestakeValidatorItem from "./RestakeValidatorItem";
 import Tooltip from "@mui/material/Tooltip";
+import { restakeThreshold } from "shared/utils/commons";
 
 interface IManageAutoRestakeModalProps {
   open: boolean;
   onClose: any;
 }
 
-export interface ValidatorRestakeStatus {
-  validator_address: string;
-  autoRestake: boolean;
-}
-
 export default function ManageAutoRestakeModal(
   props: IManageAutoRestakeModalProps
 ) {
-  const {
-    secretjs,
-    secretAddress,
-    SCRTBalance,
-    SCRTToken,
-    feeGrantStatus,
-    setFeeGrantStatus,
-    requestFeeGrant,
-  } = useContext(SecretjsContext);
+  const { secretjs, secretAddress } = useContext(SecretjsContext);
 
-  const { delegatorDelegations, delegationTotalRewards, validators } =
-    useContext(StakingContext);
+  const {
+    delegatorDelegations,
+    delegationTotalRewards,
+    validators,
+    restakeChoice,
+    setRestakeChoice,
+  } = useContext(StakingContext);
 
   if (!props.open) return null;
 
-  const [restakeChoice, setRestakeChoice] = useState<ValidatorRestakeStatus[]>(
-    []
-  );
-
   function doRestake() {
-    if (restakeChoice.length > 0) {
-      changeRestakeForValidators(restakeChoice);
+    const filteredRestakeChoices = restakeChoice.filter(
+      (validator: ValidatorRestakeStatus) =>
+        Number(validator.stakedAmount) >= restakeThreshold
+    );
+
+    if (filteredRestakeChoices.length > 0) {
+      changeRestakeForValidators(filteredRestakeChoices);
     }
   }
 
@@ -59,7 +51,7 @@ export default function ManageAutoRestakeModal(
       const validatorObjects = validators.filter((validator: any) => {
         return validatorRestakeStatuses.find(
           (status: ValidatorRestakeStatus) =>
-            validator.operator_address === status.validator_address
+            validator.operator_address === status.validatorAddress
         );
       });
 
@@ -69,7 +61,7 @@ export default function ManageAutoRestakeModal(
             .map((validator: any) => {
               const matchedStatus = validatorRestakeStatuses.find(
                 (status) =>
-                  status.validator_address === validator.operator_address
+                  status.validatorAddress === validator.operator_address
               );
               return `${
                 matchedStatus?.autoRestake ? "Enabling for" : "Disabling for"
@@ -82,7 +74,7 @@ export default function ManageAutoRestakeModal(
           (status: ValidatorRestakeStatus) => {
             return new MsgSetAutoRestake({
               delegator_address: secretAddress,
-              validator_address: status.validator_address,
+              validator_address: status.validatorAddress,
               enabled: status.autoRestake,
             });
           }
@@ -93,7 +85,6 @@ export default function ManageAutoRestakeModal(
             gasLimit: 100_000 * txs.length,
             gasPriceInFeeDenom: 0.25,
             feeDenom: "uscrt",
-            feeGranter: feeGrantStatus === "Success" ? faucetAddress : "",
           })
           .catch((error: any) => {
             console.error(error);
@@ -170,8 +161,6 @@ export default function ManageAutoRestakeModal(
                 )?.description?.identity
               }
               stakedAmount={delegation?.balance?.amount}
-              restakeChoice={restakeChoice}
-              setRestakeChoice={setRestakeChoice}
             />
           );
         })}
@@ -188,7 +177,7 @@ export default function ManageAutoRestakeModal(
       >
         {/* Inner */}
         <div className="absolute top-[10%] w-full onEnter_fadeInDown">
-          <div className="mx-auto max-w-xl px-4">
+          <div className="mx-auto max-w-4xl px-4">
             <div
               className="bg-white dark:bg-neutral-900 p-8 rounded-2xl"
               onClick={(e) => {
@@ -222,14 +211,12 @@ export default function ManageAutoRestakeModal(
               {/* Footer */}
               <div className="flex flex-col sm:flex-row-reverse justify-start mt-4 gap-2">
                 {restakeChoice.length > 0 && (
-                  <div className="px-4 pb-2">
-                    <button
-                      onClick={() => doRestake()}
-                      className="bg-blue-600 hover:bg-blue-500 font-semibold px-4 py-2 rounded-md"
-                    >
-                      Set Auto Restake
-                    </button>
-                  </div>
+                  <button
+                    onClick={() => doRestake()}
+                    className="bg-sky-600 hover:bg-sky-700 font-semibold px-4 py-2 rounded-md"
+                  >
+                    Submit Changes
+                  </button>
                 )}
                 <button
                   onClick={props.onClose}
