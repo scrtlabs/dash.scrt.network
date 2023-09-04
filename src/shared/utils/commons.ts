@@ -2,7 +2,7 @@ import { StdFee } from "@cosmjs/stargate";
 import { Bech32Address } from "@keplr-wallet/cosmos";
 import { sha256 } from "@noble/hashes/sha256";
 import { Wallet, toHex, toUtf8 } from "secretjs";
-import { tokens } from "./config";
+import { tokens, snips, ICSTokens } from "./config";
 import mixpanel from "mixpanel-browser";
 
 export const viewingKeyErrorString = "🧐";
@@ -20,6 +20,8 @@ export const restakeThreshold = 10_000_000;
 export const sleep = (ms: number) =>
   new Promise((resolve) => setTimeout(resolve, ms));
 
+export const allTokens = tokens.concat(snips).concat(ICSTokens);
+
 export function gasToFee(gas: number, denom: string): StdFee {
   return {
     amount: [
@@ -31,6 +33,25 @@ export function gasToFee(gas: number, denom: string): StdFee {
     gas: String(gas),
   };
 }
+
+/**
+ * Generates random string of characters, used to add entropy to TX data
+ * */
+export const randomPadding = (): string => {
+  enum length {
+    MAX = 15,
+    MIN = 8,
+  }
+  const paddingLength =
+    Math.floor(Math.random() * (length.MAX - length.MIN + 1)) + length.MIN;
+  let result = "";
+  const characters =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  for (let i = 0; i < paddingLength; i += 1) {
+    result += characters.charAt(Math.floor(Math.random() * characters.length));
+  }
+  return result;
+};
 
 export function trackMixPanelEvent(event: string) {
   if (import.meta.env.VITE_MIXPANEL_ENABLED === "true" && event) {

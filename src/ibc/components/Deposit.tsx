@@ -23,6 +23,7 @@ import {
   toBase64,
   TxResponse,
   toUtf8,
+  BroadcastMode,
 } from "secretjs";
 import {
   chains,
@@ -478,9 +479,14 @@ function Deposit() {
         },
       };
 
-      const sourceOfflineSigner = (
-        window as any
-      ).wallet.getOfflineSignerOnlyAmino(chain_id);
+      let sourceOfflineSigner;
+      if (selectedSource.chain_name === "Composable") {
+        sourceOfflineSigner = (window as any).wallet.getOfflineSigner(chain_id);
+      } else {
+        sourceOfflineSigner = (window as any).wallet.getOfflineSignerOnlyAmino(
+          chain_id
+        );
+      }
       const depositFromAccounts = await sourceOfflineSigner.getAccounts();
       setSourceAddress(depositFromAccounts[0].address);
 
@@ -614,6 +620,7 @@ function Deposit() {
                   resolveResponsesCheckIntervalMs: 10_000,
                   resolveResponsesTimeoutMs: 12 * 60 * 1000,
                 },
+                broadcastMode: BroadcastMode.Sync,
               }
             );
           } else if (
@@ -653,6 +660,7 @@ function Deposit() {
                   resolveResponsesCheckIntervalMs: 10_000,
                   resolveResponsesTimeoutMs: 10.25 * 60 * 1000,
                 },
+                broadcastMode: BroadcastMode.Sync,
               }
             );
           } else {
@@ -919,23 +927,41 @@ function Deposit() {
                   resolveResponsesCheckIntervalMs: 10_000,
                   resolveResponsesTimeoutMs: 12 * 60 * 1000,
                 },
+                broadcastMode: BroadcastMode.Sync,
               }
             );
           } else if (
             selectedToken.is_ics20 &&
-            withdrawalChain?.axelar_chain_name !== CHAINS.MAINNET.AXELAR
+            !(
+              withdrawalChain?.axelar_chain_name === CHAINS.MAINNET.AXELAR &&
+              selectedToken.name === "SCRT"
+            )
           ) {
             const fromChain = "secret-snip",
               toChain = withdrawalChain.axelar_chain_name,
               destinationAddress = sourceAddress,
               asset = selectedToken.axelar_denom;
 
-            const depositAddress = await sdk.getDepositAddress({
-              fromChain,
-              toChain,
-              destinationAddress,
-              asset,
-            });
+            let depositAddress = "";
+
+            if (withdrawalChain?.axelar_chain_name === CHAINS.MAINNET.AXELAR) {
+              depositAddress = destinationAddress;
+            } else {
+              depositAddress = await sdk.getDepositAddress({
+                fromChain,
+                toChain,
+                destinationAddress,
+                asset,
+              });
+            }
+
+            console.log(
+              JSON.stringify({
+                channel: withdraw_channel_id,
+                remote_address: depositAddress,
+                timeout: 600, // 10 minute timeout
+              })
+            );
             tx = await secretjs.tx.compute.executeContract(
               {
                 contract_address: selectedToken.address,
@@ -960,7 +986,7 @@ function Deposit() {
                 },
               },
               {
-                gasLimit: 300_000,
+                gasLimit: withdraw_gas,
                 gasPriceInFeeDenom: 0.1,
                 feeDenom: "uscrt",
                 feeGranter: feeGrantStatus === "Success" ? faucetAddress : "",
@@ -969,6 +995,7 @@ function Deposit() {
                   resolveResponsesCheckIntervalMs: 10_000,
                   resolveResponsesTimeoutMs: 12 * 60 * 1000,
                 },
+                broadcastMode: BroadcastMode.Sync,
               }
             );
           } else {
@@ -1001,6 +1028,7 @@ function Deposit() {
                   resolveResponsesCheckIntervalMs: 10_000,
                   resolveResponsesTimeoutMs: 12 * 60 * 1000,
                 },
+                broadcastMode: BroadcastMode.Sync,
               }
             );
           }
@@ -1035,7 +1063,11 @@ function Deposit() {
           }
         } catch (e) {
           toast.update(toastId, {
-            render: `Failed sending ${normalizedAmount} ${selectedToken.name} from Secret Network to ${selectedSource.chain_name}: ${e}`,
+            render: `Failed sending ${normalizedAmount} ${
+              selectedToken.name
+            } from Secret Network to ${selectedSource.chain_name}: ${
+              (e as any).message
+            }`,
             type: "error",
             isLoading: false,
           });
@@ -1222,9 +1254,7 @@ function Deposit() {
             )}
             {ibcMode === "withdrawal" && secretjs && secretAddress && (
               <a
-                href={`${
-                  chains[selectedSource.chain_name].explorer_account
-                }${secretAddress}`}
+                href={`${chains["Secret Network"].explorer_account}${secretAddress}`}
                 target="_blank"
               >
                 {secretAddress.slice(0, 19) + "..." + secretAddress.slice(-19)}

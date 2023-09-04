@@ -1,5 +1,5 @@
 import { useEffect, useState, useContext, createContext } from "react";
-import { MsgExecuteContract } from "secretjs";
+import { MsgExecuteContract, BroadcastMode } from "secretjs";
 import { Token, tokens } from "shared/utils/config";
 import {
   sleep,
@@ -10,6 +10,7 @@ import {
   wrapPageTitle,
   wrapPageDescription,
   wrapJsonLdSchema,
+  randomPadding,
 } from "shared/utils/commons";
 import BigNumber from "bignumber.js";
 import { toast } from "react-toastify";
@@ -47,10 +48,6 @@ export function Wrap() {
     loadingTokenBalance,
     setLoadingTokenBalance,
     setViewingKey,
-    SCRTBalance,
-    setSCRTBalance,
-    sSCRTBalance,
-    setSSCRTBalance,
     secretjs,
     secretAddress,
     connectWallet,
@@ -63,6 +60,9 @@ export function Wrap() {
   const [selectedTokenPrice, setSelectedTokenPrice] = useState<number>(0);
   const [amountString, setAmountString] = useState<string>("");
   const [wrappingMode, setWrappingMode] = useState<WrappingMode>("wrap");
+
+  const [nativeBalance, setNativeBalance] = useState<any>();
+  const [tokenBalance, setTokenBalance] = useState<any>();
 
   useEffect(() => {
     setSelectedTokenPrice(
@@ -137,7 +137,7 @@ export function Wrap() {
   function validateForm() {
     let isValid = false;
     const availableAmount = new BigNumber(
-      wrappingMode === "wrap" ? SCRTBalance : sSCRTBalance
+      wrappingMode === "wrap" ? nativeBalance : tokenBalance
     ).dividedBy(`1e${selectedToken.decimals}`);
 
     const numberRegex = /^(?:[1-9]\d*|0)?(?:\.\d+)?$/;
@@ -151,7 +151,7 @@ export function Wrap() {
       new BigNumber(amountString).isGreaterThan(
         new BigNumber(availableAmount)
       ) &&
-      !(sSCRTBalance == viewingKeyErrorString && wrappingMode === "unwrap") &&
+      !(tokenBalance == viewingKeyErrorString && wrappingMode === "unwrap") &&
       amountString !== ""
     ) {
       setValidationMessage("Not enough balance");
@@ -170,15 +170,15 @@ export function Wrap() {
     // setting amountToWrap to max. value, if entered value is > available
     const availableAmount =
       wrappingMode === "wrap"
-        ? new BigNumber(SCRTBalance).dividedBy(`1e${selectedToken.decimals}`)
-        : new BigNumber(sSCRTBalance).dividedBy(`1e${selectedToken.decimals}`);
+        ? new BigNumber(nativeBalance).dividedBy(`1e${selectedToken.decimals}`)
+        : new BigNumber(tokenBalance).dividedBy(`1e${selectedToken.decimals}`);
     if (
       !new BigNumber(amountString).isNaN() &&
       availableAmount.isGreaterThan(new BigNumber(0)) &&
       new BigNumber(amountString).isGreaterThan(
         new BigNumber(availableAmount)
       ) &&
-      !(sSCRTBalance == viewingKeyErrorString && wrappingMode === "unwrap") &&
+      !(tokenBalance == viewingKeyErrorString && wrappingMode === "unwrap") &&
       amountString !== ""
     ) {
       setAmountString(availableAmount.toString());
@@ -217,7 +217,7 @@ export function Wrap() {
       : `Converting privacy-preserving s${selectedToken.name} into its publicly visible equivalent ${selectedToken.name}!`;
 
   {
-    new BigNumber(sSCRTBalance!)
+    new BigNumber(tokenBalance!)
       .dividedBy(`1e${selectedToken.decimals}`)
       .toFormat();
   }
@@ -226,9 +226,9 @@ export function Wrap() {
   function setAmountByPercentage(percentage: number) {
     let maxValue = "0";
     if (wrappingMode === "wrap") {
-      maxValue = SCRTBalance;
+      maxValue = nativeBalance;
     } else {
-      maxValue = sSCRTBalance;
+      maxValue = tokenBalance;
     }
 
     if (maxValue) {
@@ -243,7 +243,7 @@ export function Wrap() {
       ) {
         potentialInput = potentialInput - 0.05;
       }
-      if (Number(potentialInput) == 0) {
+      if (Number(potentialInput) < 0) {
         setAmountString("");
       } else {
         setAmountString(potentialInput.toFixed(selectedToken.decimals));
@@ -281,7 +281,7 @@ export function Wrap() {
 
     const key = await getWalletViewingKey(selectedToken.address);
     if (!key) {
-      setSSCRTBalance(viewingKeyErrorString);
+      setTokenBalance(viewingKeyErrorString);
       return;
     }
 
@@ -300,15 +300,15 @@ export function Wrap() {
       });
 
       if (result.viewing_key_error) {
-        setSSCRTBalance(viewingKeyErrorString);
+        setTokenBalance(viewingKeyErrorString);
         return;
       }
 
-      setSSCRTBalance(result.balance.amount);
+      setTokenBalance(result.balance.amount);
     } catch (e) {
       console.error(`Error getting balance for s${selectedToken.name}`, e);
 
-      setSSCRTBalance(viewingKeyErrorString);
+      setTokenBalance(viewingKeyErrorString);
     }
   };
 
@@ -321,7 +321,7 @@ export function Wrap() {
           disabled={
             !secretjs ||
             !secretAddress ||
-            (wrappingMode === "unwrap" && sSCRTBalance == viewingKeyErrorString)
+            (wrappingMode === "unwrap" && tokenBalance == viewingKeyErrorString)
           }
         >
           25%
@@ -332,7 +332,7 @@ export function Wrap() {
           disabled={
             !secretjs ||
             !secretAddress ||
-            (wrappingMode === "unwrap" && sSCRTBalance == viewingKeyErrorString)
+            (wrappingMode === "unwrap" && tokenBalance == viewingKeyErrorString)
           }
         >
           50%
@@ -343,7 +343,7 @@ export function Wrap() {
           disabled={
             !secretjs ||
             !secretAddress ||
-            (wrappingMode === "unwrap" && sSCRTBalance == viewingKeyErrorString)
+            (wrappingMode === "unwrap" && tokenBalance == viewingKeyErrorString)
           }
         >
           75%
@@ -354,7 +354,7 @@ export function Wrap() {
           disabled={
             !secretjs ||
             !secretAddress ||
-            (wrappingMode === "unwrap" && sSCRTBalance == viewingKeyErrorString)
+            (wrappingMode === "unwrap" && tokenBalance == viewingKeyErrorString)
           }
         >
           MAX
@@ -364,18 +364,18 @@ export function Wrap() {
   }
 
   function NativeTokenBalanceUi() {
-    if (!loadingCoinBalance && secretjs && secretAddress && SCRTBalance) {
+    if (!loadingCoinBalance && secretjs && secretAddress && nativeBalance) {
       return (
         <>
           <span className="font-semibold">Available:</span>
           <span className="font-medium">
             {" " +
-              new BigNumber(SCRTBalance!)
+              new BigNumber(nativeBalance!)
                 .dividedBy(`1e${selectedToken.decimals}`)
                 .toFormat()}{" "}
             {selectedToken.name} (
             {usdString.format(
-              new BigNumber(SCRTBalance!)
+              new BigNumber(nativeBalance!)
                 .dividedBy(`1e${selectedToken.decimals}`)
                 .multipliedBy(Number(selectedTokenPrice))
                 .toNumber()
@@ -399,9 +399,9 @@ export function Wrap() {
   }
 
   function WrappedTokenBalanceUi() {
-    if (loadingTokenBalance || !secretjs || !secretAddress || !sSCRTBalance) {
+    if (loadingTokenBalance || !secretjs || !secretAddress || !tokenBalance) {
       return <></>;
-    } else if (sSCRTBalance == viewingKeyErrorString) {
+    } else if (tokenBalance == viewingKeyErrorString) {
       return (
         <>
           <span className="font-semibold">Available:</span>
@@ -425,18 +425,18 @@ export function Wrap() {
           </Tooltip>
         </>
       );
-    } else if (Number(sSCRTBalance) > -1) {
+    } else if (Number(tokenBalance) > -1) {
       return (
         <>
           {/* Available: 0.123456 sSCRT () */}
           <span className="font-semibold">Available:</span>
           <span className="font-medium">
-            {` ${new BigNumber(sSCRTBalance!)
+            {` ${new BigNumber(tokenBalance!)
               .dividedBy(`1e${selectedToken.decimals}`)
               .toFormat()} s` +
               selectedToken.name +
               ` (${usdString.format(
-                new BigNumber(sSCRTBalance!)
+                new BigNumber(tokenBalance!)
                   .dividedBy(`1e${selectedToken.decimals}`)
                   .multipliedBy(Number(selectedTokenPrice))
                   .toNumber()
@@ -554,7 +554,11 @@ export function Wrap() {
                   sent_funds: [
                     { denom: selectedToken.withdrawals[0].from_denom, amount },
                   ],
-                  msg: { deposit: {} },
+                  msg: {
+                    deposit: {
+                      padding: randomPadding(),
+                    },
+                  },
                 } as any),
               ],
               {
@@ -562,6 +566,7 @@ export function Wrap() {
                 gasPriceInFeeDenom: 0.25,
                 feeDenom: "uscrt",
                 feeGranter: feeGrantStatus === "Success" ? faucetAddress : "",
+                broadcastMode: BroadcastMode.Sync,
               }
             )
             .catch((error: any) => {
@@ -620,6 +625,7 @@ export function Wrap() {
                         selectedToken.name === "SCRT"
                           ? undefined
                           : selectedToken.withdrawals[0].from_denom,
+                      padding: randomPadding(),
                     },
                   },
                 } as any),
@@ -629,6 +635,7 @@ export function Wrap() {
                 gasPriceInFeeDenom: 0.25,
                 feeDenom: "uscrt",
                 feeGranter: feeGrantStatus === "Success" ? faucetAddress : "",
+                broadcastMode: BroadcastMode.Sync,
               }
             )
             .catch((error: any) => {
@@ -744,7 +751,7 @@ export function Wrap() {
         address: secretAddress,
         denom: selectedToken.withdrawals[0]?.from_denom,
       });
-      setSCRTBalance(amount);
+      setNativeBalance(amount);
     } catch (e) {
       console.error(`Error while trying to query ${selectedToken.name}:`, e);
     }

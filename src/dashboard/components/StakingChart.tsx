@@ -113,10 +113,10 @@ export default function StakingChart() {
             (notBondedToken / totalSupply) *
             100
           ).toFixed(2)}%)`,
-          `Operational: ${formatNumber(operationalToken, 2)} (${(
+          /*  `Operational: ${formatNumber(operationalToken, 2)} (${(
             (operationalToken / totalSupply) *
             100
-          ).toFixed(2)}%)`,
+          ).toFixed(2)}%)`, */
           `Community Pool: ${formatNumber(communityPool, 2)} (${(
             (communityPool / totalSupply) *
             100
@@ -127,11 +127,13 @@ export default function StakingChart() {
             data: [
               bondedToken,
               notBondedToken,
-              operationalToken,
+              /*               operationalToken, */
               communityPool,
             ],
-            backgroundColor: ["#06b6d4", "#8b5cf6", "#008080", "#ff8800"],
-            hoverBackgroundColor: ["#06b6d4", "#8b5cf6", "#008080", "#ff8800"],
+            /*          backgroundColor: ["#06b6d4", "#8b5cf6", "#008080", "#ff8800"],
+            hoverBackgroundColor: ["#06b6d4", "#8b5cf6", "#008080", "#ff8800"], */
+            backgroundColor: ["#06b6d4", "#8b5cf6", "#ff8800"],
+            hoverBackgroundColor: ["#06b6d4", "#8b5cf6", "#ff8800"],
           },
         ],
       });
@@ -164,7 +166,7 @@ export default function StakingChart() {
       ctx.fillStyle = theme === "dark" ? "#fff" : "#000";
       ctx.textAlign = "center";
       ctx.fillText(
-        `${formatNumber(totalSupply, 2)}`,
+        `${formatNumber(bondedToken + notBondedToken, 2)}`,
         width / 2,
         height / 1.75 + top
       );

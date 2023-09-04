@@ -56,7 +56,7 @@ export const chains: { [chain_name: string]: Chain } = {
     bech32_prefix: "agoric",
     lcd: "https://main.api.agoric.net",
     rpc: "https://main.rpc.agoric.net",
-    chain_image: "/bld.webp",
+    chain_image: "/bld.svg",
     explorer_account: "https://agoric.explorers.guru/account/",
   },
   Akash: {
@@ -98,7 +98,7 @@ export const chains: { [chain_name: string]: Chain } = {
     bech32_prefix: "chihuahua",
     lcd: "https://api-chihuahua-ia.cosmosia.notional.ventures",
     rpc: "https://rpc.chihuahua.wtf",
-    chain_image: "/huahua.jpg",
+    chain_image: "/huahua.svg",
     explorer_account: "https://ping.pub/chihuahua/account/",
   },
   Comdex: {
@@ -140,7 +140,7 @@ export const chains: { [chain_name: string]: Chain } = {
     bech32_prefix: "cosmos",
     lcd: "https://api-cosmoshub-ia.cosmosia.notional.ventures",
     rpc: "https://rpc.cosmoshub.strange.love",
-    chain_image: "/atom.jpg",
+    chain_image: "/atom.svg",
     explorer_account: "https://www.mintscan.io/cosmos/account/",
   },
   /*   Crescent: {
@@ -168,7 +168,7 @@ export const chains: { [chain_name: string]: Chain } = {
     bech32_prefix: "evmos",
     lcd: "https://evmos-api.lavenderfive.com",
     rpc: "https://evmos-rpc.lavenderfive.com",
-    chain_image: "/evmos.jpg",
+    chain_image: "/evmos.svg",
     explorer_account: "https://www.mintscan.io/evmos/account/",
   },
   "Gravity Bridge": {
@@ -236,9 +236,9 @@ export const chains: { [chain_name: string]: Chain } = {
     withdraw_gas: 30_000,
     chain_id: "kaiyo-1",
     bech32_prefix: "kujira",
-    lcd: "https://lcd.kaiyo.kujira.setten.io",
-    rpc: "https://rpc.kaiyo.kujira.setten.io",
-    chain_image: "/kuji.png",
+    lcd: "https://kujira-api.lavenderfive.com",
+    rpc: "https://kujira-rpc.lavenderfive.com",
+    chain_image: "/kuji.svg",
     explorer_account: "https://kujira.explorers.guru/account/",
   },
   Osmosis: {
@@ -252,8 +252,36 @@ export const chains: { [chain_name: string]: Chain } = {
     bech32_prefix: "osmo",
     lcd: "https://api-osmosis-ia.cosmosia.notional.ventures",
     rpc: "https://rpc.osmosis.zone",
-    chain_image: "/osmo.jpeg",
+    chain_image: "/osmo.svg",
     explorer_account: "https://www.mintscan.io/osmosis/account/",
+  },
+  Persistence: {
+    chain_name: "Persistence",
+    deposit_channel_id: "channel-82",
+    deposit_gas: 300_000,
+    deposit_gas_denom: "uxprt",
+    withdraw_channel_id: "channel-64",
+    withdraw_gas: 30_000,
+    chain_id: "core-1",
+    bech32_prefix: "persistence",
+    lcd: "https://persistence-api.polkachu.com",
+    rpc: "https://persistence-rpc.polkachu.com",
+    chain_image: "/xprt.svg",
+    explorer_account: "https://www.mintscan.io/persistence/account/",
+  },
+  Quicksilver: {
+    chain_name: "Quicksilver",
+    deposit_channel_id: "channel-52",
+    deposit_gas: 300_000,
+    deposit_gas_denom: "uqck",
+    withdraw_channel_id: "channel-65",
+    withdraw_gas: 30_000,
+    chain_id: "quicksilver-2",
+    bech32_prefix: "quick",
+    lcd: "https://quicksilver-api.lavenderfive.com:443",
+    rpc: "https://quicksilver-rpc.lavenderfive.com:443",
+    chain_image: "/qck.svg",
+    explorer_account: "https://www.mintscan.io/quicksilver/account/",
   },
   Sentinel: {
     chain_name: "Sentinel",
@@ -266,7 +294,7 @@ export const chains: { [chain_name: string]: Chain } = {
     bech32_prefix: "sent",
     lcd: "https://api-sentinel-ia.cosmosia.notional.ventures",
     rpc: "https://rpc-sentinel-ia.cosmosia.notional.ventures",
-    chain_image: "/dvpn.jpeg",
+    chain_image: "/dvpn.svg",
     explorer_account: "https://www.mintscan.io/sentinel/account/",
   },
   /*   Sifchain: {
@@ -294,7 +322,7 @@ export const chains: { [chain_name: string]: Chain } = {
     bech32_prefix: "stars",
     lcd: "https://rest.stargaze-apis.com",
     rpc: "https://rpc.stargaze-apis.com",
-    chain_image: "/stars.webp",
+    chain_image: "/stars.svg",
     explorer_account: "https://www.mintscan.io/stargaze/account/",
   },
   Stride: {
@@ -574,6 +602,30 @@ export const tokens: Token[] = [
         ),
       },
       {
+        chain_name: "Persistence",
+        from_denom: ibcDenom(
+          [
+            {
+              incomingChannelId: chains["Persistence"].deposit_channel_id,
+              incomingPortId: "transfer",
+            },
+          ],
+          "uscrt"
+        ),
+      },
+      {
+        chain_name: "Quicksilver",
+        from_denom: ibcDenom(
+          [
+            {
+              incomingChannelId: chains["Quicksilver"].deposit_channel_id,
+              incomingPortId: "transfer",
+            },
+          ],
+          "uscrt"
+        ),
+      },
+      {
         chain_name: "Sentinel",
         from_denom: ibcDenom(
           [
@@ -696,6 +748,14 @@ export const tokens: Token[] = [
         from_denom: "uscrt",
       },
       {
+        chain_name: "Persistence",
+        from_denom: "uscrt",
+      },
+      {
+        chain_name: "Quicksilver",
+        from_denom: "uscrt",
+      },
+      {
         chain_name: "Sentinel",
         from_denom: "uscrt",
       },
@@ -751,7 +811,7 @@ export const tokens: Token[] = [
     address: "secret19e75l25r6sa6nhdf4lggjmgpw0vmpfvsw5cnpe",
     code_hash:
       "638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e",
-    image: "/atom.jpg",
+    image: "/atom.svg",
     decimals: 6,
     coingecko_id: "cosmos",
     deposits: [
@@ -780,7 +840,7 @@ export const tokens: Token[] = [
     address: "secret1uxvpq889uxjcpj656yjjexsqa3zqm6ntkyjsjq",
     code_hash:
       "638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e",
-    image: "/bld.webp",
+    image: "/bld.svg",
     decimals: 6,
     coingecko_id: "agoric",
     deposits: [
@@ -916,7 +976,7 @@ export const tokens: Token[] = [
               incomingPortId: "transfer",
             },
           ],
-          "ibc/3CC19CEC7E5A3E90E78A5A9ECC5A0E2F8F826A375CF1E096F4515CF09DA3E366"
+          "transfer/channel-2/transfer/channel-15/79228162514264337593543950342"
         ),
       },
     ],
@@ -926,7 +986,7 @@ export const tokens: Token[] = [
     address: "secret15qtw24mpmwkjessr46dnqruq4s4tstzf74jtkf",
     code_hash:
       "638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e",
-    image: "/dvpn.jpeg",
+    image: "/dvpn.svg",
     decimals: 6,
     coingecko_id: "sentinel",
     deposits: [
@@ -955,7 +1015,7 @@ export const tokens: Token[] = [
     address: "secret1grg9unv2ue8cf98t50ea45prce7gcrj2n232kq",
     code_hash:
       "5a085bd8ed89de92b35134ddd12505a602c7759ea25fb5c089ba03c8535b3042",
-    image: "/evmos.jpg",
+    image: "/evmos.svg",
     decimals: 18,
     coingecko_id: "evmos",
     deposits: [
@@ -1042,7 +1102,7 @@ export const tokens: Token[] = [
     address: "secret1ntvxnf5hzhzv8g87wn76ch6yswdujqlgmjh32w",
     code_hash:
       "182d7230c396fa8f548220ff88c34cb0291a00046df9ff2686e407c3b55692e9",
-    image: "/huahua.jpg",
+    image: "/huahua.svg",
     decimals: 6,
     coingecko_id: "chihuahua-token",
     deposits: [
@@ -1100,7 +1160,7 @@ export const tokens: Token[] = [
     address: "secret1xmqsk8tnge0atzy4e079h0l2wrgz6splcq0a24",
     code_hash:
       "638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e",
-    image: "/ist.webp",
+    image: "/ist.svg",
     decimals: 6,
     coingecko_id: "inter-stable-token",
     deposits: [
@@ -1187,7 +1247,7 @@ export const tokens: Token[] = [
     address: "secret13hvh0rn0rcf5zr486yxlrucvwpzwqu2dsz6zu8",
     code_hash:
       "638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e",
-    image: "/kuji-token.webp",
+    image: "/kuji.svg",
     decimals: 6,
     coingecko_id: "kujira",
     deposits: [
@@ -1236,7 +1296,7 @@ export const tokens: Token[] = [
               incomingPortId: "transfer",
             },
           ],
-          "ibc/EE9046745AEC0E8302CB7ED9D5AD67F528FB3B7AE044B247FB0FB293DBDA35E9"
+          "transfer/channel-2/4"
         ),
       },
     ],
@@ -1271,11 +1331,41 @@ export const tokens: Token[] = [
     ],
   },
   {
+    name: "MNTA",
+    address: "secret15rxfz2w2tallu9gr9zjxj8wav2lnz4gl9pjccj",
+    code_hash:
+      "5a085bd8ed89de92b35134ddd12505a602c7759ea25fb5c089ba03c8535b3042",
+    image: "/mnta.svg",
+    decimals: 6,
+    coingecko_id: "mantadao",
+    deposits: [
+      {
+        chain_name: "Kujira",
+        from_denom:
+          "factory/kujira1643jxg8wasy5cfcn7xm8rd742yeazcksqlg4d7/umnta",
+      },
+    ],
+    withdrawals: [
+      {
+        chain_name: "Kujira",
+        from_denom: ibcDenom(
+          [
+            {
+              incomingChannelId: chains["Kujira"].withdraw_channel_id,
+              incomingPortId: "transfer",
+            },
+          ],
+          "factory:kujira1643jxg8wasy5cfcn7xm8rd742yeazcksqlg4d7:umnta"
+        ),
+      },
+    ],
+  },
+  {
     name: "OSMO",
     address: "secret150jec8mc2hzyyqak4umv6cfevelr0x9p0mjxgg",
     code_hash:
       "638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e",
-    image: "/osmo.jpeg",
+    image: "/osmo.svg",
     decimals: 6,
     coingecko_id: "osmosis",
     deposits: [
@@ -1295,6 +1385,94 @@ export const tokens: Token[] = [
             },
           ],
           "uosmo"
+        ),
+      },
+    ],
+  },
+  {
+    name: "pSTAKE",
+    address: "secret1umeg3u5y949vz6jkgq0n4rhefsr84ws3duxmnz",
+    code_hash:
+      "638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e",
+    image: "/pstake.svg",
+    decimals: 18,
+    coingecko_id: "pstake-finance",
+    deposits: [
+      {
+        chain_name: "Persistence",
+        from_denom:
+          "ibc/A6E3AF63B3C906416A9AF7A556C59EA4BD50E617EFFE6299B99700CCB780E444",
+      },
+    ],
+    withdrawals: [
+      {
+        chain_name: "Persistence",
+        from_denom: ibcDenom(
+          [
+            {
+              incomingChannelId: chains["Persistence"].withdraw_channel_id,
+              incomingPortId: "transfer",
+            },
+          ],
+          "transfer/channel-38/gravity0xfB5c6815cA3AC72Ce9F5006869AE67f18bF77006"
+        ),
+      },
+    ],
+  },
+  {
+    name: "qATOM",
+    address: "secret120cyurq25uvhkc7qjx7t28deuqslprxkc4rrzc",
+    code_hash:
+      "638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e",
+    image: "/qatom.svg",
+    decimals: 6,
+    coingecko_id: "",
+    deposits: [
+      {
+        chain_name: "Quicksilver",
+        from_denom: "uqatom",
+      },
+    ],
+    withdrawals: [
+      {
+        chain_name: "Quicksilver",
+        from_denom: ibcDenom(
+          [
+            {
+              incomingChannelId: chains["Quicksilver"].withdraw_channel_id,
+              incomingPortId: "transfer",
+            },
+          ],
+          "uqatom"
+        ),
+      },
+    ],
+  },
+  {
+    name: "QCK",
+    address: "secret17d8c96kezszpda3r2c5dtkzlkfxw6mtu7q98ka",
+    code_hash:
+      "638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e",
+    image: "/qck.svg",
+    decimals: 6,
+    coingecko_id: "quicksilver",
+    deposits: [
+      {
+        chain_name: "Quicksilver",
+        from_denom: "uqck",
+      },
+    ],
+    withdrawals: [
+      {
+        chain_name: "Quicksilver",
+        from_denom: ibcDenom(
+          [
+            {
+              incomingChannelId: chains["Quicksilver"].withdraw_channel_id,
+              incomingPortId: "transfer",
+            },
+          ],
+          "uqck"
         ),
       },
     ],
@@ -1362,7 +1540,7 @@ export const tokens: Token[] = [
     address: "secret1x0dqckf2khtxyrjwhlkrx9lwwmz44k24vcv2vv",
     code_hash:
       "5a085bd8ed89de92b35134ddd12505a602c7759ea25fb5c089ba03c8535b3042",
-    image: "/stars.webp",
+    image: "/stars.svg",
     decimals: 6,
     coingecko_id: "stargaze",
     deposits: [
@@ -1416,17 +1594,17 @@ export const tokens: Token[] = [
     ],
   },
   {
-    name: "stOSMO",
-    address: "secret1jrp6z8v679yaq65rndsr970mhaxzgfkymvc58g",
+    name: "stINJ",
+    address: "secret1eurddal3m0tphtapad9awgzcuxwz8ptrdx7h4n",
     code_hash:
       "638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e",
-    image: "/stosmo.svg",
-    decimals: 6,
-    coingecko_id: "stride-staked-osmo",
+    image: "/stinj.svg",
+    decimals: 18,
+    coingecko_id: "stride-staked-injective",
     deposits: [
       {
         chain_name: "Stride",
-        from_denom: "stuosmo",
+        from_denom: "stinj",
       },
     ],
     withdrawals: [
@@ -1439,7 +1617,7 @@ export const tokens: Token[] = [
               incomingPortId: "transfer",
             },
           ],
-          "stuosmo"
+          "stinj"
         ),
       },
     ],
@@ -1474,6 +1652,93 @@ export const tokens: Token[] = [
     ],
   },
   {
+    name: "stkATOM",
+    address: "secret16vjfe24un4z7d3sp9vd0cmmfmz397nh2njpw3e",
+    code_hash:
+      "638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e",
+    image: "/stkatom.svg",
+    decimals: 6,
+    coingecko_id: "stkatom",
+    deposits: [
+      {
+        chain_name: "Persistence",
+        from_denom: "stk/uatom",
+      },
+    ],
+    withdrawals: [
+      {
+        chain_name: "Persistence",
+        from_denom: ibcDenom(
+          [
+            {
+              incomingChannelId: chains["Persistence"].withdraw_channel_id,
+              incomingPortId: "transfer",
+            },
+          ],
+          "stk/uatom"
+        ),
+      },
+    ],
+  },
+  {
+    name: "stLUNA",
+    address: "secret1rkgvpck36v2splc203sswdr0fxhyjcng7099a9",
+    code_hash:
+      "638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e",
+    image: "/stluna.svg",
+    decimals: 6,
+    coingecko_id: "stride-staked-luna",
+    deposits: [
+      {
+        chain_name: "Stride",
+        from_denom: "stuluna",
+      },
+    ],
+    withdrawals: [
+      {
+        chain_name: "Stride",
+        from_denom: ibcDenom(
+          [
+            {
+              incomingChannelId: chains["Stride"].withdraw_channel_id,
+              incomingPortId: "transfer",
+            },
+          ],
+          "stuluna"
+        ),
+      },
+    ],
+  },
+  {
+    name: "stOSMO",
+    address: "secret1jrp6z8v679yaq65rndsr970mhaxzgfkymvc58g",
+    code_hash:
+      "638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e",
+    image: "/stosmo.svg",
+    decimals: 6,
+    coingecko_id: "stride-staked-osmo",
+    deposits: [
+      {
+        chain_name: "Stride",
+        from_denom: "stuosmo",
+      },
+    ],
+    withdrawals: [
+      {
+        chain_name: "Stride",
+        from_denom: ibcDenom(
+          [
+            {
+              incomingChannelId: chains["Stride"].withdraw_channel_id,
+              incomingPortId: "transfer",
+            },
+          ],
+          "stuosmo"
+        ),
+      },
+    ],
+  },
+  {
     name: "STRD",
     address: "secret1rfhgs3ryqt7makakr2qw9zsqq4h5wdqawfa2aa",
     code_hash:
@@ -1498,6 +1763,35 @@ export const tokens: Token[] = [
             },
           ],
           "ustrd"
+        ),
+      },
+    ],
+  },
+  {
+    name: "XPRT",
+    address: "secret1gnrrqjj5e2pwn4g262xjyypptu0ge3z3tps3nn",
+    code_hash:
+      "638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e",
+    image: "/xprt.svg",
+    decimals: 6,
+    coingecko_id: "persistence",
+    deposits: [
+      {
+        chain_name: "Persistence",
+        from_denom: "uxprt",
+      },
+    ],
+    withdrawals: [
+      {
+        chain_name: "Persistence",
+        from_denom: ibcDenom(
+          [
+            {
+              incomingChannelId: chains["Persistence"].withdraw_channel_id,
+              incomingPortId: "transfer",
+            },
+          ],
+          "uxprt"
         ),
       },
     ],
@@ -1694,6 +1988,15 @@ export const snips: Token[] = [
     coingecko_id: "shade-protocol",
     deposits: [
       {
+        chain_name: "Composable",
+        from_denom: ibcDenom(
+          [{ incomingChannelId: "channel-26", incomingPortId: "transfer" }],
+          "cw20:secret153wu605vvp934xhd4k9dtd640zsep5jkesstdm"
+        ),
+        channel_id: "channel-26",
+        gas: 300_000,
+      },
+      {
         chain_name: "Osmosis",
         from_denom: ibcDenom(
           [{ incomingChannelId: "channel-476", incomingPortId: "transfer" }],
@@ -1722,6 +2025,12 @@ export const snips: Token[] = [
       },
     ],
     withdrawals: [
+      {
+        chain_name: "Composable",
+        from_denom: "secret153wu605vvp934xhd4k9dtd640zsep5jkesstdm",
+        channel_id: "channel-83",
+        gas: 350_000,
+      },
       {
         chain_name: "Osmosis",
         from_denom: "secret153wu605vvp934xhd4k9dtd640zsep5jkesstdm",
@@ -1802,6 +2111,65 @@ export const snips: Token[] = [
     ],
   },
   {
+    name: "SHILL",
+    is_snip20: true,
+    address: "secret197dvnt9yjxwn8sjdlx05f7zuk27lsdxtfnwxse",
+    code_hash:
+      "fe182fe93db6702b189537ea1ff6abf01b91d9b467e3d569981295497b861a1f",
+    image: "/shill.svg",
+    decimals: 6,
+    coingecko_id: "",
+    deposits: [
+      {
+        chain_name: "Osmosis",
+        from_denom: ibcDenom(
+          [{ incomingChannelId: "channel-476", incomingPortId: "transfer" }],
+          "cw20:secret197dvnt9yjxwn8sjdlx05f7zuk27lsdxtfnwxse"
+        ),
+        channel_id: "channel-476",
+        gas: 300_000,
+      },
+      {
+        chain_name: "Kujira",
+        from_denom: ibcDenom(
+          [{ incomingChannelId: "channel-44", incomingPortId: "transfer" }],
+          "cw20:secret197dvnt9yjxwn8sjdlx05f7zuk27lsdxtfnwxse"
+        ),
+        channel_id: "channel-44",
+        gas: 300_000,
+      },
+      {
+        chain_name: "Juno",
+        from_denom: ibcDenom(
+          [{ incomingChannelId: "channel-163", incomingPortId: "transfer" }],
+          "cw20:secret197dvnt9yjxwn8sjdlx05f7zuk27lsdxtfnwxse"
+        ),
+        channel_id: "channel-163",
+        gas: 300_000,
+      },
+    ],
+    withdrawals: [
+      {
+        chain_name: "Osmosis",
+        from_denom: "secret197dvnt9yjxwn8sjdlx05f7zuk27lsdxtfnwxse",
+        channel_id: "channel-44",
+        gas: 350_000,
+      },
+      {
+        chain_name: "Kujira",
+        from_denom: "secret197dvnt9yjxwn8sjdlx05f7zuk27lsdxtfnwxse",
+        channel_id: "channel-46",
+        gas: 350_000,
+      },
+      {
+        chain_name: "Juno",
+        from_denom: "secret197dvnt9yjxwn8sjdlx05f7zuk27lsdxtfnwxse",
+        channel_id: "channel-45",
+        gas: 350_000,
+      },
+    ],
+  },
+  {
     name: "SIENNA",
     is_snip20: true,
     address: "secret1rgm2m5t530tdzyd99775n6vzumxa5luxcllml4",
@@ -1871,6 +2239,15 @@ export const snips: Token[] = [
     coingecko_id: "",
     deposits: [
       {
+        chain_name: "Composable",
+        from_denom: ibcDenom(
+          [{ incomingChannelId: "channel-26", incomingPortId: "transfer" }],
+          "cw20:secret1fl449muk5yq8dlad7a22nje4p5d2pnsgymhjfd"
+        ),
+        channel_id: "channel-26",
+        gas: 300_000,
+      },
+      {
         chain_name: "Osmosis",
         from_denom: ibcDenom(
           [{ incomingChannelId: "channel-476", incomingPortId: "transfer" }],
@@ -1899,6 +2276,12 @@ export const snips: Token[] = [
       },
     ],
     withdrawals: [
+      {
+        chain_name: "Composable",
+        from_denom: "secret1fl449muk5yq8dlad7a22nje4p5d2pnsgymhjfd",
+        channel_id: "channel-83",
+        gas: 350_000,
+      },
       {
         chain_name: "Osmosis",
         from_denom: "secret1fl449muk5yq8dlad7a22nje4p5d2pnsgymhjfd",
