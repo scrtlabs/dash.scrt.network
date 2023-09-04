@@ -169,7 +169,7 @@ const RestakeValidatorItem = (props: IRestakeValidatorItemProps) => {
             className={`w-full flex items-center text-left py-8 sm:py-4 gap-4 px-4 bg-gray-500/30 dark:bg-gray-500/30 opacity-60`}
           >
             <span
-              className={`border rounded-full border-gray-400 relative rounded-full text-gray-200 bg-gray-800`}
+              className={`border rounded-full border-gray-400 relative text-gray-200 bg-gray-800`}
             >
               {/* Adjust width and height for the outer container */}
               <div

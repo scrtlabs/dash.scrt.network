@@ -153,7 +153,7 @@ const ValidatorModal = (props: IValidatorModalProps) => {
         <div className="absolute top-[10%] w-full onEnter_fadeInDown">
           <div className="mx-auto max-w-4xl px-4">
             <div
-              className="bg-neutral-900 p-8 rounded-2xl"
+              className="bg-white dark:bg-neutral-900 p-8 rounded-2xl"
               onClick={(e) => {
                 e.stopPropagation();
               }}
@@ -162,7 +162,7 @@ const ValidatorModal = (props: IValidatorModalProps) => {
               <div className="mb-0 text-right">
                 <button
                   onClick={props.onClose}
-                  className="text-neutral-500 hover:bg-neutral-800 transition-colors px-1.5 py-1 rounded-lg text-xl"
+                  className="text-neutral-500 dark:text-neutral-500 hover:bg-neutral-200 dark:hover:bg-neutral-800 transition-colors px-1.5 py-1 rounded-lg text-xl"
                 >
                   <FontAwesomeIcon icon={faXmark} className="fa-fw" />
                 </button>
@@ -199,7 +199,7 @@ const ValidatorModal = (props: IValidatorModalProps) => {
                           </>
                         ) : (
                           <>
-                            <div className="relative bg-blue-500 rounded-full w-10 h-10">
+                            <div className="relative bg-blue-500 dark:bg-blue-500 rounded-full w-10 h-10">
                               <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 font-semibold">
                                 {/* .charAt(0) or .slice(0,1) won't work here with emojis! */}
                                 {[
@@ -262,10 +262,10 @@ const ValidatorModal = (props: IValidatorModalProps) => {
                   {selectedValidator?.description?.details ? (
                     <div className="col-span-12">
                       <div className="text-sm border dark:border-neutral-600 rounded-md p-4 text-center sm:text-left">
-                        <div className="font-semibold text-white mb-1">
+                        <div className="font-semibold text-black dark:text-white mb-1">
                           Description
                         </div>
-                        <div className="italic text-neutral-400">
+                        <div className="italic text-neutral-600 dark:text-neutral-400">
                           {selectedValidator?.description?.details}
                         </div>
                       </div>
@@ -279,66 +279,70 @@ const ValidatorModal = (props: IValidatorModalProps) => {
                         <div className="bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 p-8 rounded-md grid grid-cols-12 gap-6">
                           {/* First Item */}
                           {selectedValidator?.description?.identity && (
-                            <CopyToClipboard
-                              text={selectedValidator?.description?.identity}
-                              onCopy={() => {
-                                toast.success(
-                                  "Validator identity copied to clipboard!"
-                                );
-                              }}
-                            >
-                              <div className="col-span-12 sm:col-span-6 flex flex-col gap-0.5 text-neutral-400 dark:text-neutral-500 font-semibold">
-                                <div className="text-xs">Identity</div>
-                                <div className="text-sm">
-                                  {`${selectedValidator?.description?.identity}  `}
+                            <div className="col-span-12 sm:col-span-6 flex flex-col gap-0.5 text-neutral-800 dark:text-neutral-300 font-semibold">
+                              <div className="text-xs">Identity</div>
+                              <div className="text-sm">
+                                {`${selectedValidator?.description?.identity}  `}
+
+                                <CopyToClipboard
+                                  text={
+                                    selectedValidator?.description?.identity
+                                  }
+                                  onCopy={() => {
+                                    toast.success(
+                                      "Validator identity copied to clipboard!"
+                                    );
+                                  }}
+                                >
                                   <Tooltip
                                     title={"Copy to clipboard"}
                                     placement="bottom"
                                     arrow
                                   >
-                                    <button className="text-neutral-500 enabled:hover:text-white enabled:active:text-neutral-500 transition-colors">
+                                    <button className="text-neutral-500 hover:text-neutral-800 dark:text-neutral-400 dark:hover:text-neutral-300 transition-colors">
                                       <FontAwesomeIcon icon={faCopy} />
                                     </button>
                                   </Tooltip>
-                                </div>
+                                </CopyToClipboard>
                               </div>
-                            </CopyToClipboard>
+                            </div>
                           )}
+
                           {/* Second Item */}
                           {selectedValidator?.description?.security_contact && (
-                            <CopyToClipboard
-                              text={
-                                selectedValidator?.description?.security_contact
-                              }
-                              onCopy={() => {
-                                toast.success(
-                                  "Validator security contact copied to clipboard!"
-                                );
-                              }}
-                            >
-                              <div className="col-span-12 sm:col-span-6 flex flex-col gap-0.5 text-neutral-400 dark:text-neutral-500 font-semibold">
-                                <div className="text-xs">Contact</div>
-                                <div className="text-sm">
-                                  {`${selectedValidator?.description?.security_contact}  `}
+                            <div className="col-span-12 sm:col-span-6 flex flex-col gap-0.5 text-neutral-800 dark:text-neutral-300 font-semibold">
+                              <div className="text-xs">Contact</div>
+                              <div className="text-sm">
+                                {`${selectedValidator?.description?.security_contact}  `}
+
+                                <CopyToClipboard
+                                  text={
+                                    selectedValidator?.description
+                                      ?.security_contact
+                                  }
+                                  onCopy={() => {
+                                    toast.success(
+                                      "Validator security contact copied to clipboard!"
+                                    );
+                                  }}
+                                >
                                   <Tooltip
                                     title={"Copy to clipboard"}
                                     placement="bottom"
                                     arrow
                                   >
-                                    <button className="text-neutral-500 enabled:hover:text-white enabled:active:text-neutral-500 transition-colors">
+                                    <button className="text-neutral-500 hover:text-neutral-800 dark:text-neutral-400 dark:hover:text-neutral-300 transition-colors">
                                       <FontAwesomeIcon icon={faCopy} />
                                     </button>
                                   </Tooltip>
-                                </div>
+                                </CopyToClipboard>
                               </div>
-                            </CopyToClipboard>
+                            </div>
                           )}
                           {/* Third Item */}
-                          <div className="col-span-12 sm:col-span-6 flex flex-col gap-0.5">
-                            <div className="text-neutral-400 dark:text-neutral-500 text-xs font-semibold">
-                              Staked Tokens
-                            </div>
-                            <div className="text-neutral-400 dark:text-neutral-500 text-sm font-semibold">
+                          <div className="col-span-12 sm:col-span-6 flex flex-col gap-0.5 text-neutral-800 dark:text-neutral-300 font-semibold">
+                            <div className="text-xs">Staked Tokens</div>
+                            <div className="text-sm">
                               {`${formatNumber(
                                 selectedValidator?.tokens / 1e6,
                                 2
@@ -356,11 +360,9 @@ const ValidatorModal = (props: IValidatorModalProps) => {
                     </div>*/}
                           {/* Fourth Item */}
 
-                          <div className="col-span-12 sm:col-span-6 flex flex-col gap-0.5">
-                            <div className="text-neutral-400 dark:text-neutral-500 text-xs font-semibold">
-                              Self Delegation
-                            </div>
-                            <div className="text-neutral-400 dark:text-neutral-500 text-sm font-semibold">
+                          <div className="col-span-12 sm:col-span-6 flex flex-col gap-0.5 text-neutral-800 dark:text-neutral-300 font-semibold">
+                            <div className="text-xs">Self Delegation</div>
+                            <div className="text-sm">
                               {" "}
                               {validatorSelfDelegation &&
                                 `${formatNumber(
@@ -375,86 +377,82 @@ const ValidatorModal = (props: IValidatorModalProps) => {
                             </div>
                           </div>
                           {/* Fifth Item */}
-                          <CopyToClipboard
-                            text={selectedValidator?.operator_address}
-                            onCopy={() => {
-                              toast.success(
-                                "Operator address copied to clipboard!"
-                              );
-                            }}
-                          >
-                            <div className="col-span-12 sm:col-span-6 flex flex-col gap-0.5">
-                              <div className="text-neutral-400 dark:text-neutral-500 text-xs font-semibold">
-                                Operator Address
-                              </div>
-                              <div className="text-neutral-400 dark:text-neutral-500 text-sm font-semibold">
-                                {`${
-                                  selectedValidator?.operator_address.slice(
-                                    0,
-                                    15
-                                  ) +
-                                  "..." +
-                                  selectedValidator?.operator_address.slice(-15)
-                                } `}
+                          <div className="col-span-12 sm:col-span-6 flex flex-col gap-0.5 text-neutral-800 dark:text-neutral-300 font-semibold">
+                            <div className="text-xs">Operator Address</div>
+                            <div className="text-sm">
+                              {`${
+                                selectedValidator?.operator_address.slice(
+                                  0,
+                                  15
+                                ) +
+                                "..." +
+                                selectedValidator?.operator_address.slice(-15)
+                              } `}
+                              <CopyToClipboard
+                                text={selectedValidator?.operator_address}
+                                onCopy={() => {
+                                  toast.success(
+                                    "Operator address copied to clipboard!"
+                                  );
+                                }}
+                              >
                                 <Tooltip
                                   title={"Copy to clipboard"}
                                   placement="bottom"
                                   arrow
                                 >
-                                  <button className="text-neutral-500 enabled:hover:text-white enabled:active:text-neutral-500 transition-colors">
+                                  <button className="text-neutral-500 hover:text-neutral-800 dark:text-neutral-400 dark:hover:text-neutral-300 transition-colors">
                                     <FontAwesomeIcon icon={faCopy} />
                                   </button>
                                 </Tooltip>
-                              </div>
+                              </CopyToClipboard>
                             </div>
-                          </CopyToClipboard>
+                          </div>
                           {/* Sixth Item */}
-                          <CopyToClipboard
-                            text={validatorAddressToSelfDelegatorAddress(
-                              selectedValidator?.operator_address
-                            )}
-                            onCopy={() => {
-                              toast.success(
-                                "Validator address copied to clipboard!"
-                              );
-                            }}
-                          >
-                            <div className="col-span-12 sm:col-span-6 flex flex-col gap-0.5">
-                              <div className="text-neutral-400 dark:text-neutral-500 text-xs font-semibold">
-                                Validator Address
-                              </div>
+                          <div className="col-span-12 sm:col-span-6 flex flex-col gap-0.5 text-neutral-800 dark:text-neutral-300 font-semibold">
+                            <div className="text-xs">Validator Address</div>
 
-                              <div className="text-neutral-400 dark:text-neutral-500 text-sm font-semibold">
-                                <a
-                                  href={`${
-                                    chains["Secret Network"].explorer_account
-                                  }${validatorAddressToSelfDelegatorAddress(
+                            <div className="text-sm">
+                              <a
+                                href={`${
+                                  chains["Secret Network"].explorer_account
+                                }${validatorAddressToSelfDelegatorAddress(
+                                  selectedValidator?.operator_address
+                                )}`}
+                                target="_blank"
+                              >
+                                {`${
+                                  validatorAddressToSelfDelegatorAddress(
                                     selectedValidator?.operator_address
-                                  )}`}
-                                  target="_blank"
-                                >
-                                  {`${
-                                    validatorAddressToSelfDelegatorAddress(
-                                      selectedValidator?.operator_address
-                                    ).slice(0, 15) +
-                                    "..." +
-                                    validatorAddressToSelfDelegatorAddress(
-                                      selectedValidator?.operator_address
-                                    ).slice(-15)
-                                  } `}
-                                </a>
+                                  ).slice(0, 15) +
+                                  "..." +
+                                  validatorAddressToSelfDelegatorAddress(
+                                    selectedValidator?.operator_address
+                                  ).slice(-15)
+                                } `}
+                              </a>
+                              <CopyToClipboard
+                                text={validatorAddressToSelfDelegatorAddress(
+                                  selectedValidator?.operator_address
+                                )}
+                                onCopy={() => {
+                                  toast.success(
+                                    "Validator address copied to clipboard!"
+                                  );
+                                }}
+                              >
                                 <Tooltip
                                   title={"Copy to clipboard"}
                                   placement="bottom"
                                   arrow
                                 >
-                                  <button className="text-neutral-500 enabled:hover:text-white enabled:active:text-neutral-500 transition-colors">
+                                  <button className="text-neutral-500 hover:text-neutral-800 dark:text-neutral-400 dark:hover:text-neutral-300 transition-colors">
                                     <FontAwesomeIcon icon={faCopy} />
                                   </button>
                                 </Tooltip>
-                              </div>
+                              </CopyToClipboard>
                             </div>
-                          </CopyToClipboard>
+                          </div>
                         </div>
                       </div>
                     </>
@@ -546,7 +544,7 @@ const ValidatorModal = (props: IValidatorModalProps) => {
                         <div className="flex flex-col sm:flex-row-reverse justify-start mt-4 gap-2">
                           <button
                             onClick={() => setView("delegate")}
-                            className="bg-sky-600 hover:bg-sky-700  font-semibold px-4 py-2 rounded-md"
+                            className="text-white dark:text-white bg-sky-600 dark:bg-sky-600 hover:bg-sky-700 dark:hover:bg-sky-700 font-semibold px-4 py-2 rounded-md transition-colors"
                           >
                             Delegate
                           </button>
@@ -558,13 +556,13 @@ const ValidatorModal = (props: IValidatorModalProps) => {
                             <>
                               <button
                                 onClick={() => setView("redelegate")}
-                                className="bg-neutral-800 hover:bg-neutral-700 font-semibold px-4 py-2 rounded-md"
+                                className="text-black dark:text-white bg-neutral-200 dark:bg-neutral-800 hover:bg-neutral-300 dark:hover:bg-neutral-700 transition-colors font-semibold px-4 py-2 rounded-md"
                               >
                                 Redelegate
                               </button>
                               <button
                                 onClick={() => setView("undelegate")}
-                                className="bg-neutral-800 hover:bg-neutral-700 font-semibold px-4 py-2 rounded-md"
+                                className="text-black dark:text-white bg-neutral-200 dark:bg-neutral-800 hover:bg-neutral-300 dark:hover:bg-neutral-700 transition-colors font-semibold px-4 py-2 rounded-md"
                               >
                                 Undelegate
                               </button>

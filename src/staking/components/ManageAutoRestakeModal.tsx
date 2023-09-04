@@ -216,14 +216,14 @@ export default function ManageAutoRestakeModal(
                 {restakeChoices.length > 0 && (
                   <button
                     onClick={() => doRestake()}
-                    className="bg-sky-600 hover:bg-sky-700 font-semibold px-4 py-2 rounded-md"
+                    className="text-white dark:text-white bg-sky-600 dark:bg-sky-600 hover:bg-sky-700 dark:hover:bg-sky-700 font-semibold px-4 py-2 rounded-md transition-colors"
                   >
                     Submit Changes
                   </button>
                 )}
                 <button
                   onClick={props.onClose}
-                  className="bg-neutral-800 hover:bg-neutral-700 font-semibold px-4 py-2 rounded-md"
+                  className="bg-neutral-200 dark:bg-neutral-800 hover:bg-neutral-300 dark:hover:bg-neutral-700 font-semibold px-4 py-2 rounded-md transition-colors"
                 >
                   Cancel
                 </button>
