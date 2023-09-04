@@ -15,18 +15,17 @@ import DefaultLayout from "shared/layouts/DefaultLayout";
 import { Dashboard } from "dashboard/Dashboard";
 import Bridge from "bridge/Bridge";
 import Apps from "apps/Apps";
-import { Restake } from "stake/Restake";
+import { Staking } from "staking/Staking";
 import { Send } from "send/Send";
+import GetSCRT from "get-scrt/GetScrt";
 
 // Contexts
 import { ThemeContextProvider } from "shared/context/ThemeContext";
 import { SecretjsContextProvider } from "shared/context/SecretjsContext";
 import { APIContextProvider } from "shared/context/APIContext";
-import RestakeRedesign from "stake/RestakeRedesign";
 
 // mixpanel
 import mixpanel from "mixpanel-browser";
-import GetSCRT from "get-scrt/GetScrt";
 
 if (import.meta.env.VITE_MIXPANEL_ENABLED === "true") {
   mixpanel.init(import.meta.env.VITE_MIXPANEL_PROJECT_TOKEN, { debug: true });
@@ -37,6 +36,8 @@ if (import.meta.env.VITE_MIXPANEL_ENABLED === "true") {
 } else {
   console.log("Mixpanel is disabled!");
 }
+
+export const websiteName = "Secret Dashboard";
 
 globalThis.Buffer = Buffer;
 declare global {
@@ -108,8 +109,7 @@ export default function App() {
         <Route path="/wrap" element={<Wrap />} />
         <Route path="/bridge" element={<Bridge />} />
         <Route path="/get-scrt" element={<GetSCRT />} />
-        <Route path="/restake" element={<Restake />} />
-        <Route path="/restake-redesign" element={<RestakeRedesign />} />
+        <Route path="/staking" element={<Staking />} />
         <Route path="/send" element={<Send />} />
         <Route path="/apps" element={<Apps />} />
       </Routes>

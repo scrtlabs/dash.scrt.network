@@ -109,7 +109,7 @@ export default function StakingChart() {
             (bondedToken / totalSupply) *
             100
           ).toFixed(2)}%)`,
-          `Unstaked: ${formatNumber(notBondedToken, 2)} (${(
+          `Undelegated: ${formatNumber(notBondedToken, 2)} (${(
             (notBondedToken / totalSupply) *
             100
           ).toFixed(2)}%)`,
@@ -263,7 +263,7 @@ export default function StakingChart() {
         </div>
 
         <a
-          href="https://wallet.keplr.app/chains/secret-network"
+          href="/staking"
           target="_blank"
           className="block bg-cyan-500 dark:bg-cyan-500/20 text-white dark:text-cyan-200 dark:hover:text-cyan-100 hover:bg-cyan-400 dark:hover:bg-cyan-500/50 w-full text-center transition-colors py-2.5 rounded-xl mt-4 font-semibold text-sm"
           onClick={() => {

@@ -13,10 +13,12 @@ export const faucetAddress = "secret1tq6y8waegggp4fv2fcxk3zmpsmlfadyc7lsd69";
 export const dAppsURL =
   "https://secretadmin.scrt.network/api/ecosystem-dapps?populate=deep&pagination[pageSize]=1000";
 
+export const gasPriceUscrt = 0.25;
+
+export const restakeThreshold = 10_000_000;
+
 export const sleep = (ms: number) =>
   new Promise((resolve) => setTimeout(resolve, ms));
-
-export const gasPriceUscrt = 0.25;
 
 export const allTokens = tokens.concat(snips).concat(ICSTokens);
 
@@ -439,6 +441,20 @@ export const autoRestakeJsonLdSchema = [
     url: "https://dash.scrt.network/restake",
     name: autoRestakePageTitle,
     description: autoRestakePageDescription,
+    creator: "Secret Jupiter, Secret Saturn",
+  },
+];
+
+// Staking
+export const stakingPageTitle = `${pageTitle} | Staking`;
+export const stakingPageDescription = `A staking panel for scrt! Delegate, undelegate, or auto-delegate your assets! Automate the process of "claim and restake" for your SCRT!`;
+export const stakingJsonLdSchema = [
+  {
+    "@context": "http://schema.org",
+    "@type": "WebPage",
+    url: "https://dash.scrt.network/staking",
+    name: stakingPageTitle,
+    description: stakingPageDescription,
     creator: "Secret Jupiter, Secret Saturn",
   },
 ];

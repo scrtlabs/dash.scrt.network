@@ -35,7 +35,7 @@ import {
 } from "shared/context/SecretjsContext";
 import mixpanel from "mixpanel-browser";
 import { useSearchParams } from "react-router-dom";
-import { WrappingMode } from "shared/types/WrappingMode";
+import { WrappingMode, isWrappingMode } from "shared/types/WrappingMode";
 import { APIContext } from "shared/context/APIContext";
 
 export const WrapContext = createContext(null);
@@ -97,10 +97,7 @@ export function Wrap() {
   };
 
   useEffect(() => {
-    if (
-      modeUrlParam?.toLowerCase() === "wrap" ||
-      modeUrlParam?.toLowerCase() === "unwrap"
-    ) {
+    if (isWrappingMode(modeUrlParam?.toLowerCase())) {
       setWrappingMode(modeUrlParam.toLowerCase() as WrappingMode);
     }
   }, []);
@@ -898,7 +895,7 @@ export function Wrap() {
                   min="0"
                   step="0.000001"
                   className={
-                    "text-right focus:z-10 block flex-1 min-w-0 w-full bg-neutral-100 dark:bg-neutral-900 text-black dark:text-white px-4 rounded-r-lg disabled:placeholder-neutral-300 dark:disabled:placeholder-neutral-700 transition-colors font-medium focus:outline-0 focus:ring-2 ring-sky-500/40" +
+                    "remove-arrows text-right focus:z-10 block flex-1 min-w-0 w-full bg-neutral-100 dark:bg-neutral-900 text-black dark:text-white px-4 rounded-r-lg disabled:placeholder-neutral-300 dark:disabled:placeholder-neutral-700 transition-colors font-medium focus:outline-0 focus:ring-2 ring-sky-500/40" +
                     (!isValidAmount && isValidationActive
                       ? "  border border-red-500 dark:border-red-500"
                       : "")
@@ -965,7 +962,7 @@ export function Wrap() {
                   min="0"
                   step="0.000001"
                   className={
-                    "text-right focus:z-10 block flex-1 min-w-0 w-full bg-neutral-100 dark:bg-neutral-900 text-black dark:text-white px-4 rounded-r-lg disabled:placeholder-neutral-300 dark:disabled:placeholder-neutral-700 transition-colors font-medium focus:outline-0 focus:ring-2 ring-sky-500/40"
+                    "remove-arrows text-right focus:z-10 block flex-1 min-w-0 w-full bg-neutral-100 dark:bg-neutral-900 text-black dark:text-white px-4 rounded-r-lg disabled:placeholder-neutral-300 dark:disabled:placeholder-neutral-700 transition-colors font-medium focus:outline-0 focus:ring-2 ring-sky-500/40"
                   }
                   name="toValue"
                   id="toValue"
