@@ -405,41 +405,28 @@ export const Staking = () => {
               )}
 
               <div className="my-validators flex flex-col px-4">
-                {delegatorDelegations?.map((delegation: any, i: number) => (
-                  <MyValidatorsItem
-                    key={i}
-                    name={
-                      validators.find(
-                        (validator: any) =>
-                          validator.operator_address ==
-                          delegation.delegation.validator_address
-                      )?.description?.moniker
-                    }
-                    commissionPercentage={
-                      validators.find(
-                        (validator: any) =>
-                          validator.operator_address ==
-                          delegation.delegation.validator_address
-                      )?.commission.commission_rates?.rate
-                    }
-                    validator={validators.find(
-                      (validator: any) =>
-                        validator.operator_address ==
-                        delegation.delegation.validator_address
-                    )}
-                    identity={
-                      validators.find(
-                        (validator: any) =>
-                          validator.operator_address ==
-                          delegation.delegation.validator_address
-                      )?.description?.identity
-                    }
-                    restakeEntries={restakeEntries}
-                    stakedAmount={delegation?.balance?.amount}
-                    setSelectedValidator={setSelectedValidator}
-                    openModal={setIsValidatorModalOpen}
-                  />
-                ))}
+                {delegatorDelegations?.map((delegation: any, i: number) => {
+                  const validator = validators.find(
+                    (item: any) =>
+                      item.operator_address ==
+                      delegation.delegation.validator_address
+                  );
+                  return (
+                    <MyValidatorsItem
+                      key={i}
+                      name={validator?.description?.moniker}
+                      commissionPercentage={
+                        validator?.commission.commission_rates?.rate
+                      }
+                      validator={validator}
+                      identity={validator?.description?.identity}
+                      restakeEntries={restakeEntries}
+                      stakedAmount={delegation?.balance?.amount}
+                      setSelectedValidator={setSelectedValidator}
+                      openModal={setIsValidatorModalOpen}
+                    />
+                  );
+                })}
               </div>
 
               {/* Total Staked | Auto Restake */}

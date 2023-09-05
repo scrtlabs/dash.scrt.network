@@ -141,28 +141,16 @@ export default function ManageAutoRestakeModal(
     return (
       <div className="my-validators w-full">
         {delegatorDelegations.map((delegation: any, i: number) => {
+          const validator = validators.find(
+            (item: any) =>
+              item.operator_address == delegation.delegation.validator_address
+          );
           return (
             <RestakeValidatorItem
               key={i}
-              name={
-                validators.find(
-                  (validator: any) =>
-                    validator.operator_address ==
-                    delegation.delegation.validator_address
-                )?.description?.moniker
-              }
-              validator={validators.find(
-                (validator: any) =>
-                  validator.operator_address ==
-                  delegation.delegation.validator_address
-              )}
-              identity={
-                validators.find(
-                  (validator: any) =>
-                    validator.operator_address ==
-                    delegation.delegation.validator_address
-                )?.description?.identity
-              }
+              name={validator?.description?.moniker}
+              validator={validator}
+              identity={validator?.description?.identity}
               stakedAmount={delegation?.balance?.amount}
             />
           );

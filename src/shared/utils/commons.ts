@@ -431,20 +431,6 @@ export const bridgeJsonLdSchema = [
   },
 ];
 
-// Auto Restake
-export const autoRestakePageTitle = `${pageTitle} | Auto Restake`;
-export const autoRestakePageDescription = `Automating the process of "claim and restake" for your SCRT! Your normal SCRT balance is not affected. Only pending staking reward will be affected!`;
-export const autoRestakeJsonLdSchema = [
-  {
-    "@context": "http://schema.org",
-    "@type": "WebPage",
-    url: "https://dash.scrt.network/restake",
-    name: autoRestakePageTitle,
-    description: autoRestakePageDescription,
-    creator: "Secret Jupiter, Secret Saturn",
-  },
-];
-
 // Staking
 export const stakingPageTitle = `${pageTitle} | Staking`;
 export const stakingPageDescription = `A staking panel for scrt! Delegate, undelegate, or auto-delegate your assets! Automate the process of "claim and restake" for your SCRT!`;

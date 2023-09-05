@@ -21,9 +21,6 @@ interface IValidatorProps {
 
 export const Validator = (props: IValidatorProps) => {
   const {
-    currentPrice,
-    setCurrentPrice,
-    blockHeight,
     inflation,
     communityTax,
     communityPool,
@@ -32,13 +29,11 @@ export const Validator = (props: IValidatorProps) => {
     bondedToken,
     notBondedToken,
     secretFoundationTax,
-    marketCap,
-    setMarketCap,
   } = useContext(APIContext);
 
   const [imgUrl, setImgUrl] = useState<any>();
-  const [realYield, setRealYield] = useState<any>();
-  const votingPowerString = formatNumber(props.votingPower / 1e6);
+  const [stakingAPR, setStakingAPR] = useState<any>();
+  const votingPowerString = `${formatNumber(props.votingPower / 1e6)}`;
 
   const maxVPThreshold = 0.1;
 
@@ -56,7 +51,7 @@ export const Validator = (props: IValidatorProps) => {
       const C = props.commissionPercentage; // validator commision rate; median is 5%
       const T = parseFloat(communityTax); // community tax
       const R = bondedToken / totalSupply; // bonded ratio
-      setRealYield((I / R) * (1 - F - T) * (1 - C) * 100);
+      setStakingAPR((I / R) * (1 - F - T) * (1 - C) * 100);
     }
   }, [
     inflation,
@@ -219,14 +214,14 @@ export const Validator = (props: IValidatorProps) => {
           <div className="description text-xs text-gray-500 mb-2">
             Staking APR
           </div>
-          {realYield && (
+          {stakingAPR && (
             <div className="apr font-semibold">
-              {realYield || realYield != 0
-                ? `${formatNumber(realYield, 2)} %`
+              {stakingAPR || stakingAPR != 0
+                ? `${formatNumber(stakingAPR, 2)} %`
                 : ""}
             </div>
           )}
-          {realYield === undefined && (
+          {stakingAPR === undefined && (
             <div className="animate-pulse">
               <div className="bg-neutral-300/40 dark:bg-neutral-700/40 rounded col-span-2 w-16 h-7 mx-auto"></div>
             </div>

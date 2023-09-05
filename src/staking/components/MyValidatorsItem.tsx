@@ -190,14 +190,6 @@ const MyValidatorsItem = (props: IMyValidatorsItemProps) => {
                 SCRT
               </span>
             </div>
-            {/*           <div className="text-sm font-semibold text-neutral-400">
-            {usdString.format(
-              new BigNumber(props.stakedAmount!)
-                .dividedBy(`1e6`)
-                .multipliedBy(Number(currentPrice))
-                .toNumber()
-            )}
-          </div> */}
           </div>
         </div>
         <div className="flex flex-col items-center">
