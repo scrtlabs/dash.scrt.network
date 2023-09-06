@@ -445,6 +445,21 @@ export const stakingJsonLdSchema = [
   },
 ];
 
+// Send
+export const sendPageTitle = `${pageTitle} | Send`;
+export const sendPageDescription = `Send public (SCRT) or privacy preserving tokens!`;
+export const sendJsonLdSchema = [
+  {
+    "@context": "http://schema.org",
+    "@type": "WebPage",
+    url: "https://dash.scrt.network/send",
+    name: `${pageTitle} | Send`,
+    alternateName: `${alternatePageTitle} | Send`,
+    description: sendPageDescription,
+    creator: "Secret Jupiter, Secret Saturn",
+  },
+];
+
 // Apps
 export const appsPageTitle = `${pageTitle} | Apps`;
 export const appsPageDescription = `A curation of applications running on Secret Network Mainnet!`;

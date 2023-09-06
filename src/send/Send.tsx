@@ -12,9 +12,9 @@ import {
   faucetAddress,
   viewingKeyErrorString,
   usdString,
-  wrapPageTitle,
-  wrapPageDescription,
-  wrapJsonLdSchema,
+  sendPageTitle,
+  sendPageDescription,
+  sendJsonLdSchema,
   allTokens,
   randomPadding,
 } from "shared/utils/commons";
@@ -45,8 +45,6 @@ import FeeGrant from "shared/components/FeeGrant";
 export function Send() {
   const {
     feeGrantStatus,
-    setFeeGrantStatus,
-    requestFeeGrant,
     loadingTokenBalance,
     setLoadingTokenBalance,
     setViewingKey,
@@ -682,26 +680,26 @@ export function Send() {
   return (
     <>
       <Helmet>
-        <title>{wrapPageTitle}</title>
+        <title>{sendPageTitle}</title>
 
         <meta charSet="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-        <meta name="title" content={wrapPageTitle} />
-        <meta name="application-name" content={wrapPageTitle} />
-        <meta name="description" content={wrapPageDescription} />
+        <meta name="title" content={sendPageTitle} />
+        <meta name="application-name" content={sendPageTitle} />
+        <meta name="description" content={sendPageDescription} />
         <meta name="robots" content="index,follow" />
 
-        <meta property="og:title" content={wrapPageTitle} />
-        <meta property="og:description" content={wrapPageDescription} />
+        <meta property="og:title" content={sendPageTitle} />
+        <meta property="og:description" content={sendPageDescription} />
         {/* <meta property="og:image" content="Image URL Here"/> */}
 
-        <meta name="twitter:title" content={wrapPageTitle} />
-        <meta name="twitter:description" content={wrapPageDescription} />
+        <meta name="twitter:title" content={sendPageTitle} />
+        <meta name="twitter:description" content={sendPageDescription} />
         {/* <meta name="twitter:image" content="Image URL Here"/> */}
 
         <script type="application/ld+json">
-          {JSON.stringify(wrapJsonLdSchema)}
+          {JSON.stringify(sendJsonLdSchema)}
         </script>
       </Helmet>
 
