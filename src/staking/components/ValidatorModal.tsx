@@ -168,20 +168,7 @@ const ValidatorModal = (props: IValidatorModalProps) => {
                 </button>
               </div>
               <div className="max-h-[80vh] overflow-y-auto">
-                {/* Your content goes here */}
                 {/* Header */}
-                {/* <div className="mb-4 text-center">
-                 <h2 className="text-2xl font-medium mb-4">Lorem Ipsum</h2>
-                 <p className="text-neutral-400 mx-auto mb-6">
-                   Lorem, ipsum dolor sit amet consectetur adipisicing elit
-                 </p>
-                 <button
-                   onClick={props.onClose}
-                   className="sm:max-w-[225px] w-full md:px-4 bg-cyan-600 text-cyan-00 hover:text-cyan-100 hover:bg-cyan-500 text-center transition-colors py-2.5 rounded-xl font-semibold text-sm"
-                 >
-                   Close
-                 </button>
-               </div> */}
 
                 {/* Body */}
                 <div className="grid grid-cols-12 gap-4">
@@ -233,11 +220,6 @@ const ValidatorModal = (props: IValidatorModalProps) => {
                           )}
                         </div>
                         <div className="flex gap-4 items-center">
-                          {/*                       {selectedValidator?.status === "BOND_STATUS_BONDED" && (
-                        <div className="border border-green-500 bg-transparent text-green-500 text-sm rounded px-4 py-2 flex items-center justify-start">
-                          Active Set
-                        </div>
-                      )} */}
                           {selectedValidator?.status ===
                             "BOND_STATUS_UNBONDED" && (
                             <div className="border border-red-500 bg-transparent text-red-500 text-sm rounded px-4 py-2 flex items-center justify-start">
@@ -261,7 +243,7 @@ const ValidatorModal = (props: IValidatorModalProps) => {
 
                   {selectedValidator?.description?.details ? (
                     <div className="col-span-12">
-                      <div className="text-sm border dark:border-neutral-600 rounded-md p-4 text-center sm:text-left">
+                      <div className="text-sm border dark:border-neutral-700 rounded-md p-4 text-center sm:text-left">
                         <div className="font-semibold text-black dark:text-white mb-1">
                           Description
                         </div>
@@ -349,15 +331,6 @@ const ValidatorModal = (props: IValidatorModalProps) => {
                               )} SCRT`}
                             </div>
                           </div>
-                          {/*
-                    <div className="col-span-12 sm:col-span-6 flex flex-col gap-0.5">
-                      <div className="text-neutral-400 dark:text-neutral-500 text-xs font-semibold">
-                        Minimum Self Delegation
-                      </div>
-                      <div className="text-neutral-400 dark:text-neutral-500 text-sm font-semibold">
-                        {`${selectedValidator?.min_self_delegation} SCRT`}
-                      </div>
-                    </div>*/}
                           {/* Fourth Item */}
 
                           <div className="col-span-12 sm:col-span-6 flex flex-col gap-0.5 text-neutral-800 dark:text-neutral-300 font-semibold">
@@ -460,23 +433,21 @@ const ValidatorModal = (props: IValidatorModalProps) => {
 
                   {/* Available to Stake */}
                   {secretjs && secretAddress && (
-                    <div className="col-span-12 md:col-span-6">
-                      <div className="bg-white/5 rounded-xl px-4 py-8 mt-4 text-center sm:text-left">
-                        <div className="font-bold mb-2">Available to Stake</div>
-                        <div className="font-semibold">
-                          {new BigNumber(SCRTBalance!)
+                    <div className="bg-white/5 col-span-12 border border-neutral-200 dark:border-neutral-700 md:col-span-6 rounded-xl px-4 py-8 mt-4 text-center sm:text-left">
+                      <div className="font-bold mb-2">Available to Stake</div>
+                      <div className="font-semibold">
+                        {new BigNumber(SCRTBalance!)
+                          .dividedBy(`1e${SCRTToken.decimals}`)
+                          .toFormat()}
+                        <span className="text-neutral-400 text-xs">{` SCRT`}</span>
+                      </div>
+                      <div className="font-semibold text-neutral-400 mt-0.5 text-sm">
+                        {usdString.format(
+                          new BigNumber(SCRTBalance!)
                             .dividedBy(`1e${SCRTToken.decimals}`)
-                            .toFormat()}
-                          <span className="text-neutral-400 text-xs">{` SCRT`}</span>
-                        </div>
-                        <div className="font-semibold text-neutral-400 mt-0.5 text-sm">
-                          {usdString.format(
-                            new BigNumber(SCRTBalance!)
-                              .dividedBy(`1e${SCRTToken.decimals}`)
-                              .multipliedBy(Number(currentPrice))
-                              .toNumber()
-                          )}
-                        </div>
+                            .multipliedBy(Number(currentPrice))
+                            .toNumber()
+                        )}
                       </div>
                     </div>
                   )}
@@ -489,42 +460,38 @@ const ValidatorModal = (props: IValidatorModalProps) => {
                         selectedValidator?.operator_address ==
                         delegatorDelegation.delegation.validator_address
                     ) ? (
-                      <div className="col-span-12 md:col-span-6">
-                        <div className="bg-white/5 rounded-xl px-4 py-8 mt-4 text-center sm:text-left">
-                          <div className="font-bold mb-2">Your Delegation</div>
-                          <div className="font-semibold">
-                            {delegatorDelegations?.find(
-                              (delegatorDelegation: any) =>
-                                selectedValidator?.operator_address ==
-                                delegatorDelegation.delegation.validator_address
-                            )?.balance?.amount / 1e6}
-                            <span className="text-neutral-400 text-xs">{` SCRT`}</span>
-                          </div>
-                          <div className="font-semibold text-neutral-400 mt-0.5 text-sm">
-                            {usdString.format(
-                              new BigNumber(
-                                delegatorDelegations?.find(
-                                  (delegatorDelegation: any) =>
-                                    selectedValidator?.operator_address ==
-                                    delegatorDelegation.delegation
-                                      .validator_address
-                                )?.balance?.amount
-                              )
-                                .dividedBy(`1e${SCRTToken.decimals}`)
-                                .multipliedBy(Number(currentPrice))
-                                .toNumber()
-                            )}
-                          </div>
+                      <div className="bg-white/5 col-span-12 border border-neutral-200 dark:border-neutral-700 md:col-span-6 rounded-xl px-4 py-8 mt-4 text-center sm:text-left">
+                        <div className="font-bold mb-2">Your Delegation</div>
+                        <div className="font-semibold">
+                          {delegatorDelegations?.find(
+                            (delegatorDelegation: any) =>
+                              selectedValidator?.operator_address ==
+                              delegatorDelegation.delegation.validator_address
+                          )?.balance?.amount / 1e6}
+                          <span className="text-neutral-400 text-xs">{` SCRT`}</span>
+                        </div>
+                        <div className="font-semibold text-neutral-400 mt-0.5 text-sm">
+                          {usdString.format(
+                            new BigNumber(
+                              delegatorDelegations?.find(
+                                (delegatorDelegation: any) =>
+                                  selectedValidator?.operator_address ==
+                                  delegatorDelegation.delegation
+                                    .validator_address
+                              )?.balance?.amount
+                            )
+                              .dividedBy(`1e${SCRTToken.decimals}`)
+                              .multipliedBy(Number(currentPrice))
+                              .toNumber()
+                          )}
                         </div>
                       </div>
                     ) : (
-                      <div className="col-span-12 md:col-span-6">
-                        <div className="bg-white/5 rounded-xl px-4 py-8 mt-4 text-center sm:text-left">
-                          <div className="font-bold mb-2">Your Delegation</div>
-                          <div className="font-semibold">
-                            {0}
-                            <span className="text-neutral-400 text-xs">{` SCRT`}</span>
-                          </div>
+                      <div className="bg-white/5 col-span-12 md:col-span-6 rounded-xl px-4 py-8 mt-4 text-center sm:text-left">
+                        <div className="font-bold mb-2">Your Delegation</div>
+                        <div className="font-semibold">
+                          {0}
+                          <span className="text-neutral-400 text-xs">{` SCRT`}</span>
                         </div>
                       </div>
                     ))}
