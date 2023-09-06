@@ -3,7 +3,7 @@ import { toast } from "react-toastify";
 import { MsgSetAutoRestake } from "secretjs";
 import { SecretjsContext } from "shared/context/SecretjsContext";
 import { StakingContext, ValidatorRestakeStatus } from "staking/Staking";
-import FeeGrant from "./validatorModalComponents/FeeGrant";
+import FeeGrant from "../../shared/components/FeeGrant";
 import BigNumber from "bignumber.js";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faInfoCircle, faXmark } from "@fortawesome/free-solid-svg-icons";

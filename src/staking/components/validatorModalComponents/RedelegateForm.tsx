@@ -10,7 +10,7 @@ import {
 } from "shared/utils/commons";
 import { StakingContext } from "staking/Staking";
 import { toast } from "react-toastify";
-import FeeGrant from "./FeeGrant";
+import FeeGrant from "../../../shared/components/FeeGrant";
 import Select from "react-select";
 
 export default function RedelegateForm() {

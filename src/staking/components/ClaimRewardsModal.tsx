@@ -4,7 +4,7 @@ import { MsgWithdrawDelegationReward } from "secretjs";
 import { SecretjsContext } from "shared/context/SecretjsContext";
 import { faucetAddress } from "shared/utils/commons";
 import { StakingContext } from "staking/Staking";
-import FeeGrant from "./validatorModalComponents/FeeGrant";
+import FeeGrant from "../../shared/components/FeeGrant";
 import BigNumber from "bignumber.js";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";

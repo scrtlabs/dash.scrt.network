@@ -5,7 +5,7 @@ import { SecretjsContext } from "shared/context/SecretjsContext";
 import { formatNumber, usdString, faucetAddress } from "shared/utils/commons";
 import { StakingContext } from "staking/Staking";
 import { toast } from "react-toastify";
-import FeeGrant from "./FeeGrant";
+import FeeGrant from "../../../shared/components/FeeGrant";
 
 export default function StakingForm() {
   const { selectedValidator, setView } = useContext(StakingContext);
