@@ -129,7 +129,7 @@ export function Wrap() {
   const [isFeeGrantInfoModalOpen, setIsFeeGrantInfoModalOpen] = useState(false);
 
   // UI
-  const [isValidAmount, setisValidAmount] = useState<boolean>(false);
+  const [isValidAmount, setIsValidAmount] = useState<boolean>(false);
   const [validationMessage, setValidationMessage] = useState<string>("");
   const [isValidationActive, setIsValidationActive] = useState<boolean>(false);
 
@@ -156,12 +156,12 @@ export function Wrap() {
       amountString !== ""
     ) {
       setValidationMessage("Not enough balance");
-      setisValidAmount(false);
+      setIsValidAmount(false);
     } else if (!matchExact(numberRegex, amountString) || amountString === "") {
       setValidationMessage("Please enter a valid amount");
-      setisValidAmount(false);
+      setIsValidAmount(false);
     } else {
-      setisValidAmount(true);
+      setIsValidAmount(true);
       isValid = true;
     }
     return isValid;
@@ -852,16 +852,14 @@ export function Wrap() {
             {/* *** From *** */}
             <div className="bg-neutral-200 dark:bg-neutral-800 p-4 rounded-xl">
               {/* Title Bar */}
-              <div className="flex flex-col sm:flex-row">
-                <div className="flex-1 font-semibold mb-2 text-center sm:text-left">
+              <div className="flex justify-between items-center mb-2">
+                <span className="font-semibold text-center sm:text-left">
                   From
-                </div>
+                </span>
                 {!isValidAmount && isValidationActive && (
-                  <div className="flex-initial">
-                    <div className="text-red-500 dark:text-red-500 text-xs text-center sm:text-right mb-2">
-                      {validationMessage}
-                    </div>
-                  </div>
+                  <span className="text-red-500 dark:text-red-500 text-xs font-normal">
+                    {validationMessage}
+                  </span>
                 )}
               </div>
 

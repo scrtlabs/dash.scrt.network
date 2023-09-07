@@ -145,17 +145,23 @@ export function Send() {
   }, []);
 
   // UI
-  const [isValidAmount, setisValidAmount] = useState<boolean>(false);
-  const [validationMessage, setValidationMessage] = useState<string>("");
+  const [isValidAmount, setIsValidAmount] = useState<boolean>(false);
+  const [isValidDestination, setIsValidDestination] = useState<boolean>(false);
+  const [amountValidationMessage, setAmountValidationMessage] =
+    useState<string>("");
+  const [destinationValidationMessage, setDestinationValidationMessage] =
+    useState<string>("");
   const [isValidationActive, setIsValidationActive] = useState<boolean>(false);
 
   const [loadingCoinBalance, setLoadingCoinBalance] = useState<boolean>(true);
 
   function validateForm() {
-    let isValid = false;
-    const availableAmount = new BigNumber(tokenBalance).dividedBy(
-      `1e${selectedToken.decimals}`
-    );
+    let isValidAmount = false;
+    let isValidDestination = false;
+
+    const availableAmount = new BigNumber(
+      selectedToken.address === "native" ? nativeBalance : tokenBalance
+    ).dividedBy(`1e${selectedToken.decimals}`);
 
     const numberRegex = /^(?:[1-9]\d*|0)?(?:\.\d+)?$/;
 
@@ -171,25 +177,22 @@ export function Send() {
       !(tokenBalance == viewingKeyErrorString) &&
       amountString !== ""
     ) {
-      setValidationMessage("Not enough balance");
-      setisValidAmount(false);
+      setAmountValidationMessage("Not enough balance");
     } else if (!matchExact(numberRegex, amountString) || amountString === "") {
-      setValidationMessage("Please enter a valid amount");
-      setisValidAmount(false);
+      setAmountValidationMessage("Please enter a valid amount");
     } else {
-      setisValidAmount(true);
-      isValid = true;
+      isValidAmount = true;
     }
-    if (validateAddress(destinationAddress).isValid) {
-      setisValidAmount(true);
-      isValid = true;
-    } else {
-      setValidationMessage("Please enter a valid address");
-      setisValidAmount(false);
-      isValid = false;
-    }
+    setIsValidAmount(isValidAmount);
 
-    return isValid;
+    if (validateAddress(destinationAddress).isValid) {
+      isValidDestination = true;
+    } else {
+      setDestinationValidationMessage("Please enter a valid address");
+    }
+    setIsValidDestination(isValidDestination);
+
+    return isValidAmount && isValidDestination;
   }
 
   useEffect(() => {
@@ -493,7 +496,7 @@ export function Send() {
 
     async function submit() {
       setIsValidationActive(true);
-      let isValidForm = validateForm();
+      const isValidForm = validateForm();
 
       if (!secretjs || !secretAddress) return;
 
@@ -580,7 +583,7 @@ export function Send() {
               if (tx.code === 0) {
                 setAmountString("");
                 toast.update(toastId, {
-                  render: `Sending s${selectedToken.name} successfully`,
+                  render: `Sent s${selectedToken.name} to ${destinationAddress} successfully`,
                   type: "success",
                   isLoading: false,
                   closeOnClick: true,
@@ -588,7 +591,7 @@ export function Send() {
                 setIsValidationActive(false);
               } else {
                 toast.update(toastId, {
-                  render: `Unwrapping of s${selectedToken.name} failed: ${tx.rawLog}`,
+                  render: `Sending of s${selectedToken.name} failed: ${tx.rawLog}`,
                   type: "error",
                   isLoading: false,
                   closeOnClick: true,
@@ -732,11 +735,14 @@ export function Send() {
           <div className="bg-neutral-200 dark:bg-neutral-800 p-4 rounded-xl mb-4">
             {/* Title Bar */}
 
-            <div className="flex justify-end">
+            <div className="flex justify-between items-center mb-2">
+              <span className="font-semibold text-center sm:text-left">
+                Amount
+              </span>
               {!isValidAmount && isValidationActive && (
-                <div className="text-red-500 dark:text-red-500 text-xs text-right mb-2">
-                  {validationMessage}
-                </div>
+                <span className="text-red-500 dark:text-red-500 text-xs font-normal">
+                  {amountValidationMessage}
+                </span>
               )}
             </div>
 
@@ -805,18 +811,18 @@ export function Send() {
           {/* *** Destination Address *** */}
           <div className="bg-neutral-200 dark:bg-neutral-800 p-4 rounded-xl mb-4">
             {/* Title Bar */}
-            <div className="flex flex-col sm:flex-row">
-              <div className="flex-1 font-semibold mb-2 text-center sm:text-left">
+            <div className="flex justify-between items-center mb-2">
+              <span className="font-semibold text-center sm:text-left">
                 Destination Address
-              </div>
+              </span>
+              {!isValidDestination && isValidationActive && (
+                <span className="text-red-500 dark:text-red-500 text-xs font-normal">
+                  {destinationValidationMessage}
+                </span>
+              )}
             </div>
 
             {/* Input Field */}
-            {!isValidAmount && isValidationActive && (
-              <div className="text-red-500 dark:text-red-500 text-xs text-right mb-2">
-                {validationMessage}
-              </div>
-            )}
             <div className="flex" id="destinationInputWrapper">
               <input
                 value={destinationAddress}
@@ -824,7 +830,7 @@ export function Send() {
                 type="text"
                 className={
                   "py-2 text-left focus:z-10 block flex-1 min-w-0 w-full bg-neutral-100 dark:bg-neutral-900 text-black dark:text-white px-4 rounded-md disabled:placeholder-neutral-300 dark:disabled:placeholder-neutral-700 transition-colors font-medium focus:outline-0 focus:ring-2 ring-sky-500/40" +
-                  (!isValidAmount && isValidationActive
+                  (!isValidDestination && isValidationActive
                     ? "  border border-red-500 dark:border-red-500"
                     : "")
                 }
@@ -852,10 +858,7 @@ export function Send() {
                 onChange={(e) => setMemo(e.target.value)}
                 type="text"
                 className={
-                  "py-2 text-left focus:z-10 block flex-1 min-w-0 w-full bg-neutral-100 dark:bg-neutral-900 text-black dark:text-white px-4 rounded-md disabled:placeholder-neutral-300 dark:disabled:placeholder-neutral-700 transition-colors font-medium focus:outline-0 focus:ring-2 ring-sky-500/40" +
-                  (!isValidAmount && isValidationActive
-                    ? "  border border-red-500 dark:border-red-500"
-                    : "")
+                  "py-2 text-left focus:z-10 block flex-1 min-w-0 w-full bg-neutral-100 dark:bg-neutral-900 text-black dark:text-white px-4 rounded-md disabled:placeholder-neutral-300 dark:disabled:placeholder-neutral-700 transition-colors font-medium focus:outline-0 focus:ring-2 ring-sky-500/40"
                 }
                 name="memo"
                 id="memo"
