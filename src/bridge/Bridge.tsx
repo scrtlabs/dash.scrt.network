@@ -131,7 +131,7 @@ function Bridge() {
             Go to IBC Transfers
           </Link>
         </p>
-        <p>
+        {/*  <p>
           Use the{" "}
           <a
             href="https://ipfs.trivium.network/ipns/k51qzi5uqu5dhovcugri8aul3itkct8lvnodtnv2y3o1saotkjsa7ao1aq0dqa/"
@@ -154,7 +154,7 @@ function Bridge() {
             Go to Monero Bridge
             <FontAwesomeIcon icon={faArrowUpRightFromSquare} className="ml-2" />
           </a>
-        </p>
+        </p> */}
       </div>
     </>
   );
