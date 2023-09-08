@@ -17,6 +17,8 @@ import { useEffect, useState, useContext } from "react";
 import { trackMixPanelEvent } from "shared/utils/commons";
 import SquidModal from "./SquidModal";
 import { ThemeContext } from "shared/context/ThemeContext";
+import HoudiniModal from "./HoudiniModal";
+import { SecretjsContext } from "shared/context/SecretjsContext";
 
 function Bridge() {
   useEffect(() => {
@@ -25,6 +27,10 @@ function Bridge() {
 
   const { theme, toggleTheme } = useContext(ThemeContext);
   const [isSquidModalOpen, setIsSquidModalOpen] = useState(false);
+  const [isHoudiniModalOpen, setIsHoudiniModalOpen] = useState(false);
+
+  const { secretjs, secretAddress, connectWallet } =
+    useContext(SecretjsContext);
 
   return (
     <>
@@ -94,6 +100,9 @@ function Bridge() {
             target="_blank"
             className="text-white block my-6 p-3 w-full text-center font-semibold bg-cyan-600 dark:bg-cyan-600 rounded-lg text-sm hover:bg-cyan-500 dark:hover:bg-cyan-500 focus:bg-cyan-600 dark:focus:bg-cyan-600 transition-colors"
             onClick={() => {
+              trackMixPanelEvent(
+                "Clicked Squid Router Modal (from Bridge page)"
+              );
               setIsSquidModalOpen(true);
             }}
           >
@@ -107,6 +116,31 @@ function Bridge() {
             document.body.classList.remove("overflow-hidden");
           }}
           theme={theme}
+          secretAddress={secretAddress}
+        />
+        <p>
+          Or anonymously bridge your assets into SCRT using Houdini Swap.
+          <a
+            target="_blank"
+            className="text-white block my-6 p-3 w-full text-center font-semibold bg-cyan-600 dark:bg-cyan-600 rounded-lg text-sm hover:bg-cyan-500 dark:hover:bg-cyan-500 focus:bg-cyan-600 dark:focus:bg-cyan-600 transition-colors"
+            onClick={() => {
+              trackMixPanelEvent(
+                "Clicked Houdini Swap Modal (from Bridge page)"
+              );
+              setIsHoudiniModalOpen(true);
+            }}
+          >
+            Use Houdini Swap
+          </a>
+        </p>
+        <HoudiniModal
+          open={isHoudiniModalOpen}
+          onClose={() => {
+            setIsHoudiniModalOpen(false);
+            document.body.classList.remove("overflow-hidden");
+          }}
+          theme={theme}
+          secretAddress={secretAddress}
         />
         <p>
           <span className="select-none">

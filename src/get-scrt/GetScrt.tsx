@@ -175,9 +175,7 @@ function GetSCRT() {
             >
               {/* Loading */}
               {loading && (
-                <div className="animate-pulse">
-                  <div className="bg-neutral-300/40 dark:bg-neutral-700/40 w-screen h-screen"></div>
-                </div>
+                <div className="animate-pulse bg-neutral-300/40 dark:bg-neutral-700/40 w-screen h-screen"></div>
               )}
               <iframe
                 src={`https://app.kado.money/?apiKey=acd1e5a5-8a25-4b2d-b303-b5e113457ef1&onRevCurrency=SCRT&product=BUY&network=SECRET&=onToAddress=${secretAddress}`}
