@@ -27,9 +27,7 @@ const BlockInfo = (props: IBlockInfoProps) => {
               <If condition={props.blockHeight}>
                 <Then>{props.blockHeight}</Then>
                 <Else>
-                  <div className="animate-pulse">
-                    <div className="bg-neutral-700/40 rounded col-span-2 w-16 h-8 mx-auto"></div>
-                  </div>
+                  <div className="animate-pulse bg-neutral-700/40 rounded col-span-2 w-16 h-8 mx-auto"></div>
                 </Else>
               </If>
             </div>
@@ -46,9 +44,7 @@ const BlockInfo = (props: IBlockInfoProps) => {
                   {/* 5.77 is a possible value... Needs to be formatted in seconds */}
                 </Then>
                 <Else>
-                  <div className="animate-pulse">
-                    <div className="bg-neutral-700/40 rounded col-span-2 w-16 h-8 mx-auto"></div>
-                  </div>
+                  <div className="animate-pulse bg-neutral-700/40 rounded col-span-2 w-16 h-8 mx-auto"></div>
                 </Else>
               </If>
             </div>
@@ -61,9 +57,7 @@ const BlockInfo = (props: IBlockInfoProps) => {
             <If condition={formattedCirculatingSupply}>
               <Then>{formattedCirculatingSupply}</Then>
               <Else>
-                <div className="animate-pulse">
-                  <div className="bg-neutral-700/40 rounded col-span-2 w-16 h-8 mx-auto"></div>
-                </div>
+                <div className="animate-pulse bg-neutral-700/40 rounded col-span-2 w-16 h-8 mx-auto"></div>
               </Else>
             </If>
           </div>
@@ -76,9 +70,7 @@ const BlockInfo = (props: IBlockInfoProps) => {
               <If condition={formattedInflation}>
                 <Then>{formattedInflation}</Then>
                 <Else>
-                  <div className="animate-pulse">
-                    <div className="bg-neutral-700/40 rounded col-span-2 w-12 h-8 mx-auto"></div>
-                  </div>
+                  <div className="animate-pulse bg-neutral-700/40 rounded col-span-2 w-12 h-8 mx-auto"></div>
                 </Else>
               </If>
             </div>
