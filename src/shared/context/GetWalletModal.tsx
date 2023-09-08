@@ -25,7 +25,7 @@ class GetWalletModal extends React.Component<IGetWalletModalProps> {
           onClick={this.props.onClose}
         >
           {/* Inner */}
-          <div className="relative py-[6rem] w-full onEnter_fadeInDown h-full overflow-auto scrollbar-hide">
+          <div className="relative py-[6rem] w-full onEnter_fadeInDown h-full overflow-scroll scrollbar-hide">
             <div className="mx-auto max-w-xl px-4">
               <div
                 className="bg-white dark:bg-neutral-900 p-8 rounded-2xl"

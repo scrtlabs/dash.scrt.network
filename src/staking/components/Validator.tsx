@@ -164,7 +164,7 @@ export const Validator = (props: IValidatorProps) => {
               <FontAwesomeIcon
                 icon={faGlobe}
                 size="sm"
-                className="ml-3 mr-1 text-neutral-500 group-hover:text-white"
+                className="ml-3 mr-1 text-neutral-500 dark:group-hover:text-white group-hover:text-black"
               />
               <span className="hidden group-hover:inline-block">Website</span>
             </a>
@@ -210,11 +210,9 @@ export const Validator = (props: IValidatorProps) => {
           <div className="description text-xs text-gray-500 mb-2">
             Staking APR
           </div>
-          {stakingAPR && (
+          {stakingAPR !== undefined && (
             <div className="apr font-semibold">
-              {stakingAPR || stakingAPR != 0
-                ? `${formatNumber(stakingAPR, 2)} %`
-                : ""}
+              {`${formatNumber(stakingAPR, 2)} %`}
             </div>
           )}
           {stakingAPR === undefined && (

@@ -167,7 +167,7 @@ const MyValidatorsItem = (props: IMyValidatorsItemProps) => {
               <FontAwesomeIcon
                 icon={faGlobe}
                 size="sm"
-                className="ml-3 mr-1 text-neutral-500 group-hover:text-white"
+                className="ml-3 mr-1 text-neutral-500 dark:group-hover:text-white group-hover:text-black"
               />
               <span className="hidden group-hover:inline-block">Website</span>
             </a>

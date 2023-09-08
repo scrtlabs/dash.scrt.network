@@ -131,7 +131,7 @@ const SquidModal: React.FC<ISquidModalProps> = ({
         onClick={onClose}
       >
         {/* Inner */}
-        <div className="relative w-full onEnter_fadeInDown h-full overflow-auto scrollbar-hide flex items-center justify-center">
+        <div className="relative w-full onEnter_fadeInDown h-full overflow-scroll scrollbar-hide flex items-center justify-center">
           <div className="mx-auto max-w-xl px-4">
             <div
               className="bg-white dark:bg-neutral-900 rounded-2xl p-6 relative"

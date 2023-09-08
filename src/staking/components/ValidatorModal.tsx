@@ -211,9 +211,9 @@ const ValidatorModal = (props: IValidatorModalProps) => {
                               <FontAwesomeIcon
                                 icon={faGlobe}
                                 size="sm"
-                                className="ml-3 mr-1 text-neutral-500 group-hover:text-white"
+                                className="ml-3 mr-1 text-neutral-500 dark:group-hover:text-white group-hover:text-black"
                               />
-                              <span className="hidden group-hover:inline-block">
+                              <span className="text-neutral-500 dark:group-hover:text-white group-hover:text-black">
                                 Website
                               </span>
                             </a>
@@ -343,9 +343,7 @@ const ValidatorModal = (props: IValidatorModalProps) => {
                                   2
                                 )} SCRT`}{" "}
                               {!validatorSelfDelegation && (
-                                <div className="animate-pulse">
-                                  <div className="bg-neutral-700/40 rounded col-span-2 w-16 h-8"></div>
-                                </div>
+                                <div className="animate-pulse bg-neutral-700/40 rounded col-span-2 w-16 h-8"></div>
                               )}
                             </div>
                           </div>
@@ -487,11 +485,14 @@ const ValidatorModal = (props: IValidatorModalProps) => {
                         </div>
                       </div>
                     ) : (
-                      <div className="bg-white/5 col-span-12 md:col-span-6 rounded-xl px-4 py-8 mt-4 text-center sm:text-left">
+                      <div className="bg-white/5 col-span-12 border border-neutral-200 dark:border-neutral-700 md:col-span-6 rounded-xl px-4 py-8 mt-4 text-center sm:text-left">
                         <div className="font-bold mb-2">Your Delegation</div>
                         <div className="font-semibold">
                           {0}
                           <span className="text-neutral-400 text-xs">{` SCRT`}</span>
+                        </div>
+                        <div className="font-semibold text-neutral-400 mt-0.5 text-sm">
+                          {usdString.format(0)}
                         </div>
                       </div>
                     ))}
