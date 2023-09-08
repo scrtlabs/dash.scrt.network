@@ -27,9 +27,7 @@ class CurrentPrice extends React.Component<ICurrentPriceProps> {
                   })}
                 </Then>
                 <Else>
-                  <div className="animate-pulse">
-                    <div className="bg-neutral-300/40 dark:bg-neutral-700/40 rounded col-span-2 w-20 h-8 mx-auto"></div>
-                  </div>
+                  <div className="animate-pulse bg-neutral-300/40 dark:bg-neutral-700/40 rounded col-span-2 w-20 h-8 mx-auto"></div>
                 </Else>
               </If>
             </div>

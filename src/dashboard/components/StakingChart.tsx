@@ -256,9 +256,7 @@ export default function StakingChart() {
             options != undefined &&
             centerText != undefined
           ) && (
-            <div className="animate-pulse">
-              <div className="bg-neutral-300/40 dark:bg-neutral-700/40 rounded col-span-2 w-full h-full min-h-[250px] xl:min-h-[300px] mx-auto"></div>
-            </div>
+            <div className="animate-pulse bg-neutral-300/40 dark:bg-neutral-700/40 rounded col-span-2 w-full h-full min-h-[250px] xl:min-h-[300px] mx-auto"></div>
           )}
         </div>
 

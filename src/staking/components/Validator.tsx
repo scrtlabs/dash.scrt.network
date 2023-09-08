@@ -190,9 +190,7 @@ export const Validator = (props: IValidatorProps) => {
             </>
           )}
           {!props.votingPower && (
-            <div className="animate-pulse">
-              <div className="bg-neutral-300/40 dark:bg-neutral-700/40 rounded col-span-2 w-16 h-7 mx-auto"></div>
-            </div>
+            <div className="animate-pulse bg-neutral-300/40 dark:bg-neutral-700/40 rounded col-span-2 w-16 h-7 mx-auto"></div>
           )}
         </div>
         <div className="flex flex-col items-center">
@@ -205,9 +203,7 @@ export const Validator = (props: IValidatorProps) => {
             </div>
           )}
           {!props.commissionPercentage && (
-            <div className="animate-pulse">
-              <div className="bg-neutral-300/40 dark:bg-neutral-700/40 rounded col-span-2 w-16 h-7 mx-auto"></div>
-            </div>
+            <div className="animate-pulse bg-neutral-300/40 dark:bg-neutral-700/40 rounded col-span-2 w-16 h-7 mx-auto"></div>
           )}
         </div>
         <div className="flex flex-col items-center">
@@ -222,9 +218,7 @@ export const Validator = (props: IValidatorProps) => {
             </div>
           )}
           {stakingAPR === undefined && (
-            <div className="animate-pulse">
-              <div className="bg-neutral-300/40 dark:bg-neutral-700/40 rounded col-span-2 w-16 h-7 mx-auto"></div>
-            </div>
+            <div className="animate-pulse bg-neutral-300/40 dark:bg-neutral-700/40 rounded col-span-2 w-16 h-7 mx-auto"></div>
           )}
         </div>
       </button>

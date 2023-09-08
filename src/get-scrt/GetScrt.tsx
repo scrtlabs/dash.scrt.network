@@ -136,9 +136,7 @@ function GetSCRT() {
             >
               {/* Loading */}
               {loading && (
-                <div className="animate-pulse">
-                  <div className="bg-neutral-300/40 dark:bg-neutral-700/40 w-screen h-screen"></div>
-                </div>
+                <div className="animate-pulse bg-neutral-300/40 dark:bg-neutral-700/40 w-screen h-screen"></div>
               )}
 
               <iframe

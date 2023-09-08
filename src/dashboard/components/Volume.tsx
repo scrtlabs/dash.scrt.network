@@ -18,9 +18,7 @@ class Volume extends React.Component<IVolumeProps> {
               <If condition={this.props.volume}>
                 <Then>{this.props.volume}</Then>
                 <Else>
-                  <div className="animate-pulse">
-                    <div className="bg-neutral-300/40 dark:bg-neutral-700/40 rounded col-span-2 w-32 h-8 mx-auto"></div>
-                  </div>
+                  <div className="animate-pulse bg-neutral-300/40 dark:bg-neutral-700/40 rounded col-span-2 w-32 h-8 mx-auto"></div>
                 </Else>
               </If>
             </div>
