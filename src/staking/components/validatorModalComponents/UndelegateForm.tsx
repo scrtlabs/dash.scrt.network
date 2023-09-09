@@ -14,7 +14,7 @@ export default function UndelegateForm() {
     useContext(SecretjsContext);
   const { currentPrice } = useContext(APIContext);
 
-  const [amountString, setAmountString] = useState<string>("");
+  const [amountString, setAmountString] = useState<string>("0");
   const [amountInDollarString, setAmountInDollarString] = useState<string>("");
 
   const handleInputChange = (e: any) => {
@@ -194,7 +194,7 @@ export default function UndelegateForm() {
       <div className="flex flex-col sm:flex-row-reverse justify-start mt-4 gap-2">
         <button
           onClick={handleSubmit}
-          className="text-white dark:text-white bg-sky-600 dark:bg-sky-600 hover:bg-sky-700 dark:hover:bg-sky-700 font-semibold px-4 py-2 rounded-md transition-colors"
+          className="enabled:bg-gradient-to-r enabled:from-cyan-600 enabled:to-purple-600 enabled:hover:from-cyan-500 enabled:hover:to-purple-500 transition-colors text-white font-semibold px-4 py-2 rounded-lg disabled:bg-neutral-500 focus:outline-none focus-visible:ring-4 ring-sky-500/40"
         >
           Undelegate
         </button>

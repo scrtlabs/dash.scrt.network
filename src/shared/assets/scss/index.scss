@@ -40,6 +40,10 @@ body {
   background-color: #737373 !important;
 }
 
+.react-select__option:is-selected {
+  background-color: #a3a3a3 !important;
+}
+
 .react-select__option:hover {
   background-color: #a3a3a3 !important;
 }
@@ -184,7 +188,7 @@ body {
 
 .react-select-inset__control {
   cursor: pointer !important;
-  @apply p-2.5 rounded-lg bg-neutral-200 dark:bg-neutral-900 border-0 dark:border-0 text-black dark:text-white hover:bg-neutral-400 dark:hover:bg-neutral-600;
+  @apply rounded-lg p-1 bg-neutral-200 dark:bg-neutral-900 border-0 dark:border-0 text-black dark:text-white hover:bg-neutral-400 dark:hover:bg-neutral-600;
 }
 
 .react-select-inset__single-value {
@@ -193,7 +197,7 @@ body {
 
 .react-select-inset__menu,
 .react-select-inset__option {
-  background-color: #737373 !important;
+  @apply bg-neutral-200 dark:bg-neutral-900 border-0 dark:border-0 text-black dark:text-white;
 }
 
 .react-select-inset__option:hover {

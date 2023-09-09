@@ -94,7 +94,7 @@ export function Send() {
   );
   const [selectedToken, setSelectedToken] = useState<Token>(secretToken);
   const [selectedTokenPrice, setSelectedTokenPrice] = useState<number>(0);
-  const [amountString, setAmountString] = useState<string>("");
+  const [amountString, setAmountString] = useState<string>("0");
 
   const [destinationAddress, setDestinationAddress] = useState<string>("");
   const [memo, setMemo] = useState<string>("");
@@ -163,13 +163,6 @@ export function Send() {
       selectedToken.address === "native" ? nativeBalance : tokenBalance
     ).dividedBy(`1e${selectedToken.decimals}`);
 
-    const numberRegex = /^(?:[1-9]\d*|0)?(?:\.\d+)?$/;
-
-    function matchExact(r: any, str: any) {
-      const match = str.match(r);
-      return match && str === match[0];
-    }
-
     if (
       new BigNumber(amountString).isGreaterThan(
         new BigNumber(availableAmount)
@@ -178,7 +171,7 @@ export function Send() {
       amountString !== ""
     ) {
       setAmountValidationMessage("Not enough balance");
-    } else if (!matchExact(numberRegex, amountString) || amountString === "") {
+    } else if (amountString === "") {
       setAmountValidationMessage("Please enter a valid amount");
     } else {
       isValidAmount = true;

@@ -2,6 +2,7 @@ import BigNumber from "bignumber.js";
 import React, { useContext, useEffect, useState } from "react";
 import { APIContext } from "shared/context/APIContext";
 import { SecretjsContext } from "shared/context/SecretjsContext";
+import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import {
   formatNumber,
   usdString,
@@ -11,7 +12,9 @@ import {
 import { StakingContext } from "staking/Staking";
 import { toast } from "react-toastify";
 import FeeGrant from "../../../shared/components/FeeGrant";
-import Select from "react-select";
+import Select, { components } from "react-select";
+import { ThemeContext } from "shared/context/ThemeContext";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 export default function RedelegateForm() {
   const {
@@ -22,13 +25,17 @@ export default function RedelegateForm() {
     reload,
     setReload,
   } = useContext(StakingContext);
+
   const { secretjs, secretAddress, SCRTBalance, SCRTToken, feeGrantStatus } =
     useContext(SecretjsContext);
+
   const { currentPrice } = useContext(APIContext);
+
+  const { theme, setTheme } = useContext(ThemeContext);
 
   const [redelegateValidator, setRedelegateValidator] = useState<any>();
 
-  const [amountString, setAmountString] = useState<string>("");
+  const [amountString, setAmountString] = useState<string>("0");
   const [amountInDollarString, setAmountInDollarString] = useState<string>("");
 
   const handleInputChange = (e: any) => {
@@ -179,6 +186,15 @@ export default function RedelegateForm() {
     return name.includes(search);
   };
 
+  const CustomInput = (props: any) => {
+    return (
+      <div style={{ display: "flex", alignItems: "left" }}>
+        <FontAwesomeIcon icon={faSearch} style={{ marginRight: "8px" }} />
+        <components.Input {...props} />
+      </div>
+    );
+  };
+
   return (
     <>
       <div className="bg-neutral-200 dark:bg-neutral-800 p-4 rounded-xl my-4">
@@ -240,6 +256,13 @@ export default function RedelegateForm() {
                 </div>
               );
             }}
+            styles={{
+              input: (base) => ({
+                ...base,
+                color: theme === "light" ? "black" : "white",
+                fontWeight: "bold",
+              }),
+            }}
             className="react-select-container"
             classNamePrefix="react-select-inset"
           />
@@ -255,7 +278,7 @@ export default function RedelegateForm() {
       <div className="flex flex-col sm:flex-row-reverse justify-start mt-4 gap-2">
         <button
           onClick={handleSubmit}
-          className="text-white dark:text-white bg-sky-600 dark:bg-sky-600 hover:bg-sky-700 dark:hover:bg-sky-700 font-semibold px-4 py-2 rounded-md transition-colors"
+          className="enabled:bg-gradient-to-r enabled:from-cyan-600 enabled:to-purple-600 enabled:hover:from-cyan-500 enabled:hover:to-purple-500 transition-colors text-white font-semibold px-4 py-2 rounded-lg disabled:bg-neutral-500 focus:outline-none focus-visible:ring-4 ring-sky-500/40"
         >
           Redelegate
         </button>
