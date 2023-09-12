@@ -11,7 +11,12 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Tooltip from "@mui/material/Tooltip";
 import { APIContext } from "shared/context/APIContext";
-import { restakeThreshold, sleep, usdString } from "shared/utils/commons";
+import {
+  randomDelay,
+  restakeThreshold,
+  sleep,
+  usdString,
+} from "shared/utils/commons";
 import BigNumber from "bignumber.js";
 import { formatNumber } from "shared/utils/commons";
 import { IValidator } from "../Staking";
@@ -53,9 +58,6 @@ const MyValidatorsItem = (props: IMyValidatorsItemProps) => {
         const url = `https://keybase.io/_/api/1.0/user/lookup.json?key_suffix=${props.identity}&fields=pictures`;
 
         // Introduce a delay here (e.g., 1000ms or 1 second)
-        const randomDelay = (min: any, max: any) => {
-          return Math.floor(Math.random() * (max - min + 1)) + min;
-        };
 
         await sleep(randomDelay(0, 2000));
 

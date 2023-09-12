@@ -14,6 +14,7 @@ import {
   faRecycle,
   faCreditCard,
   faPaperPlane,
+  faChartPie,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useState } from "react";
@@ -153,7 +154,7 @@ export function Navigation({
                 : "text-neutral-700 dark:text-neutral-300 cursor-pointer hover:text-black dark:hover:text-white block w-full px-8 py-3 rounded-xl transition-colors"
             }
           >
-            <FontAwesomeIcon icon={faCoins} className="mr-2" />
+            <FontAwesomeIcon icon={faChartPie} className="mr-2" />
             <span>Balances</span>
           </NavLink>
         </li>

@@ -41,6 +41,10 @@ import mixpanel from "mixpanel-browser";
 import { useSearchParams } from "react-router-dom";
 import { APIContext } from "shared/context/APIContext";
 import FeeGrant from "shared/components/FeeGrant";
+import {
+  NativeTokenBalanceUi,
+  WrappedTokenBalanceUi,
+} from "shared/components/BalanceUI";
 
 export function Send() {
   const {
@@ -68,8 +72,6 @@ export function Send() {
       token.name === "SCRT" &&
       token.address === "secret1k0jntykt7e4g3y88ltc60czgjuqdy4c9e8fzek"
   );
-
-  const [loadingTokenBalance, setLoadingTokenBalance] = useState<boolean>(true);
 
   const [selectedToken, setSelectedToken] = useState<Token>(secretToken);
   const [selectedTokenPrice, setSelectedTokenPrice] = useState<number>(0);
@@ -131,8 +133,6 @@ export function Send() {
   const [destinationValidationMessage, setDestinationValidationMessage] =
     useState<string>("");
   const [isValidationActive, setIsValidationActive] = useState<boolean>(false);
-
-  const [loadingCoinBalance, setLoadingCoinBalance] = useState<boolean>(true);
 
   function validateForm() {
     let isValidAmount = false;
@@ -241,18 +241,6 @@ export function Send() {
 
   async function setBalance() {
     try {
-      setLoadingCoinBalance(true);
-      setLoadingTokenBalance(true);
-      await updateCoinBalance();
-      await updateTokenBalance();
-    } finally {
-      setLoadingCoinBalance(false);
-      setLoadingTokenBalance(false);
-    }
-  }
-
-  async function updateBalance() {
-    try {
       await updateCoinBalance();
       await updateTokenBalance();
     } catch (e) {
@@ -351,96 +339,6 @@ export function Send() {
         </button>
       </div>
     );
-  }
-
-  function NativeTokenBalanceUi() {
-    if (!loadingCoinBalance && secretjs && secretAddress && nativeBalance) {
-      return (
-        <>
-          <span className="font-semibold">Available:</span>
-          <span className="font-medium">
-            {" " +
-              new BigNumber(nativeBalance!)
-                .dividedBy(`1e${selectedToken.decimals}`)
-                .toFormat()}{" "}
-            {selectedToken.name} (
-            {usdString.format(
-              new BigNumber(nativeBalance!)
-                .dividedBy(`1e${selectedToken.decimals}`)
-                .multipliedBy(Number(selectedTokenPrice))
-                .toNumber()
-            )}
-            )
-          </span>
-
-          <Tooltip title={`IBC Transfer`} placement="bottom" arrow>
-            <Link
-              to="/ibc"
-              className="ml-2 hover:text-w dark:hover:text-white transition-colors hover:bg-neutral-100 dark:hover:bg-neutral-900 px-1.5 py-0.5 rounded focus:outline-0 focus:ring-2 ring-sky-500/40"
-            >
-              <FontAwesomeIcon icon={faArrowRightArrowLeft} />
-            </Link>
-          </Tooltip>
-        </>
-      );
-    } else {
-      return <></>;
-    }
-  }
-
-  function WrappedTokenBalanceUi() {
-    if (loadingTokenBalance || !secretjs || !secretAddress || !tokenBalance) {
-      return <></>;
-    } else if (tokenBalance == viewingKeyErrorString) {
-      return (
-        <>
-          <span className="font-semibold">Available:</span>
-          <button
-            className="ml-2 font-semibold bg-neutral-100 dark:bg-neutral-900 px-1.5 py-0.5 rounded-md border-neutral-300 dark:border-neutral-700 transition-colors hover:bg-neutral-300 dark:hover:bg-neutral-700 cursor-pointer disabled:text-neutral-500 dark:disabled:text-neutral-500 disabled:hover:bg-neutral-100 dark:disabled:hover:bg-neutral-900 disabled:cursor-default focus:outline-0 focus:ring-2 ring-sky-500/40"
-            onClick={() => setViewingKey(selectedToken)}
-          >
-            <FontAwesomeIcon icon={faKey} className="mr-2" />
-            Set Viewing Key
-          </button>
-          <Tooltip
-            title={
-              "Balances on Secret Network are private by default. Create a viewing key to view your encrypted balances."
-            }
-            placement="right"
-            arrow
-          >
-            <span className="ml-2 mt-1 text-neutral-600 dark:text-neutral-400 hover:text-black dark:hover:text-white transition-colors cursor-pointer">
-              <FontAwesomeIcon icon={faInfoCircle} />
-            </span>
-          </Tooltip>
-        </>
-      );
-    } else if (Number(tokenBalance) > -1) {
-      return (
-        <>
-          {/* Available: 0.123456 sSCRT () */}
-          <span className="font-semibold">Available:</span>
-          <span className="font-medium">
-            {` ${new BigNumber(tokenBalance!)
-              .dividedBy(`1e${selectedToken.decimals}`)
-              .toFormat()} ${
-              selectedToken.address === "native" || selectedToken.is_snip20
-                ? ""
-                : "s"
-            }${selectedToken.name} ${
-              selectedTokenPrice
-                ? ` (${usdString.format(
-                    new BigNumber(tokenBalance!)
-                      .dividedBy(`1e${selectedToken.decimals}`)
-                      .multipliedBy(Number(selectedTokenPrice))
-                      .toNumber()
-                  )})`
-                : ""
-            }`}
-          </span>
-        </>
-      );
-    }
   }
 
   function SubmitButton(props: {
@@ -585,13 +483,9 @@ export function Send() {
           });
         }
         try {
-          setLoadingCoinBalance(true);
-          setLoadingTokenBalance(true);
           await sleep(1000); // sometimes query nodes lag
-          await updateBalance();
+          await setBalance();
         } finally {
-          setLoadingCoinBalance(false);
-          setLoadingTokenBalance(false);
         }
       }
     }
@@ -639,7 +533,7 @@ export function Send() {
       setBalance();
     })();
 
-    const interval = setInterval(updateBalance, 10000);
+    const interval = setInterval(setBalance, 10000);
     return () => {
       clearInterval(interval);
     };
@@ -767,11 +661,17 @@ export function Send() {
             {/* Balance | [25%|50%|75%|Max] */}
             <div className="flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 mt-2">
               <div className="flex-1 text-xs">
-                {selectedToken.address === "native" ? (
-                  <NativeTokenBalanceUi />
-                ) : (
-                  <WrappedTokenBalanceUi />
-                )}
+                {selectedToken.address === "native"
+                  ? NativeTokenBalanceUi(
+                      tokenBalance,
+                      selectedToken,
+                      selectedTokenPrice
+                    )
+                  : WrappedTokenBalanceUi(
+                      tokenBalance,
+                      selectedToken,
+                      selectedTokenPrice
+                    )}
               </div>
               <div className="sm:flex-initial text-xs">
                 <PercentagePicker />
