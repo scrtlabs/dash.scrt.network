@@ -1,6 +1,11 @@
 import { createContext, useEffect, useRef, useState } from "react";
 import { SecretNetworkClient } from "secretjs";
-import { dAppsURL, shuffleArray, sortDAppsArray } from "shared/utils/commons";
+import {
+  allTokens,
+  dAppsURL,
+  shuffleArray,
+  sortDAppsArray,
+} from "shared/utils/commons";
 import { tokens } from "shared/utils/config";
 import { SECRET_LCD, SECRET_CHAIN_ID } from "shared/utils/config";
 
@@ -26,7 +31,7 @@ const APIContextProvider = ({ children }: any) => {
   const [prices, setPrices] = useState<any>([]);
 
   let coinGeckoIdsString: string = "";
-  tokens.forEach((token, index) => {
+  allTokens.forEach((token, index) => {
     coinGeckoIdsString = coinGeckoIdsString.concat(token.coingecko_id);
     if (index !== tokens.length - 1) {
       coinGeckoIdsString = coinGeckoIdsString.concat(",");

@@ -40,7 +40,7 @@ export const chains: { [chain_name: string]: Chain } = {
     withdraw_gas: 0,
     chain_id: "secret-4",
     bech32_prefix: "secret",
-    lcd: "https://1rpc.io/scrt-lcd",
+    lcd: "https://lcd.secret.express",
     rpc: "https://wgrpc.secret.express", // gRPC-web
     chain_image: "img/assets/scrt.svg",
     explorer_account: "https://www.mintscan.io/secret/account/",
@@ -1075,7 +1075,7 @@ export const tokens: Token[] = [
       "638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e",
     image: "/harbor.svg",
     decimals: 6,
-    coingecko_id: "harbor",
+    coingecko_id: "harbor-2",
     deposits: [
       {
         chain_name: "Comdex",
@@ -1808,7 +1808,7 @@ export const snips: Token[] = [
       "d4f32c1bca133f15f69d557bd0722da10f45e31e5475a12900ca1e62e63e8f76",
     image: "/alter.jpg",
     decimals: 6,
-    coingecko_id: "alter",
+    coingecko_id: "",
     deposits: [
       {
         chain_name: "Osmosis",
@@ -1926,7 +1926,7 @@ export const snips: Token[] = [
       "f8b27343ff08290827560a1ba358eece600c9ea7f403b02684ad87ae7af0f288",
     image: "/butt.png",
     decimals: 6,
-    coingecko_id: "button",
+    coingecko_id: "",
     deposits: [
       {
         chain_name: "Osmosis",
@@ -2177,7 +2177,7 @@ export const snips: Token[] = [
       "638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e",
     image: "/silk.svg",
     decimals: 6,
-    coingecko_id: "",
+    coingecko_id: "silk-bcec1136-561c-4706-a42c-8b67d0d7f7d2",
     deposits: [
       {
         chain_name: "Composable",
@@ -2313,7 +2313,7 @@ export const ICSTokens: Token[] = [
       "638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e",
     image: "/ausdc.svg",
     decimals: 6,
-    coingecko_id: "usdc",
+    coingecko_id: "usd-coin",
     axelar_denom: "uusdc",
     deposits: [
       {
@@ -2427,7 +2427,7 @@ export const ICSTokens: Token[] = [
       "638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e",
     image: "/axl.svg",
     decimals: 6,
-    coingecko_id: "axl",
+    coingecko_id: "axelar",
     axelar_denom: "uaxl",
     deposits: [
       {
@@ -2456,7 +2456,7 @@ export const ICSTokens: Token[] = [
       "638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e",
     image: "/weth.svg",
     decimals: 18,
-    coingecko_id: "eth",
+    coingecko_id: "ethereum",
     axelar_denom: "weth-wei",
     deposits: [
       {
@@ -2563,7 +2563,7 @@ export const ICSTokens: Token[] = [
       "638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e",
     image: "/wbtc.svg",
     decimals: 8,
-    coingecko_id: "btc",
+    coingecko_id: "bitcoin",
     axelar_denom: "wbtc-satoshi",
     deposits: [
       {
@@ -2670,7 +2670,7 @@ export const ICSTokens: Token[] = [
       "638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e",
     image: "/wbnb.svg",
     decimals: 18,
-    coingecko_id: "bnb",
+    coingecko_id: "binancecoin",
     axelar_denom: "wbnb-wei",
     deposits: [
       {
@@ -2991,7 +2991,7 @@ export const ICSTokens: Token[] = [
       "638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e",
     image: "/auni.svg",
     decimals: 18,
-    coingecko_id: "uni",
+    coingecko_id: "uniswap",
     axelar_denom: "uni-wei",
     deposits: [
       {
@@ -3098,7 +3098,7 @@ export const ICSTokens: Token[] = [
       "638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e",
     image: "/ausdt.svg",
     decimals: 6,
-    coingecko_id: "usdt",
+    coingecko_id: "tether",
     axelar_denom: "uusdt",
     deposits: [
       {

@@ -22,6 +22,7 @@ import {
   faXmarkCircle,
   faMagnifyingGlass,
 } from "@fortawesome/free-solid-svg-icons";
+import "./Balances.scss";
 import { Link } from "react-router-dom";
 import Select from "react-select";
 import Tooltip from "@mui/material/Tooltip";
@@ -51,6 +52,22 @@ function Balances() {
 
   //Search Query
   const [searchQuery, setSearchQuery] = useState<string>("");
+
+  const [assetsBySearch, setAssetsBySearch] = useState<Token[]>();
+
+  useEffect(() => {
+    if (!searchQuery) {
+      setAssetsBySearch(null);
+      return;
+    }
+    setAssetsBySearch(
+      allTokens.filter(
+        (token: any) =>
+          token.name?.toLowerCase().includes(searchQuery?.toLowerCase()) ||
+          ("s" + token.name)?.toLowerCase().includes(searchQuery?.toLowerCase())
+      )
+    );
+  }, [searchQuery]);
 
   let tokens = JSON.parse(JSON.stringify(allTokens));
   const tokenToModify = tokens.find((token: any) => token.name === "SCRT");
@@ -86,11 +103,11 @@ function Balances() {
           </div>
         </div>
 
-        <div className="all-validators flex flex-col px-4">
-          {tokens ? (
-            tokens.map((token: any, i: any) => (
-              <BalanceItem position={i} asset={token} />
-            ))
+        <div className="balance-item flex flex-col px-4">
+          {tokens || assetsBySearch ? (
+            (assetsBySearch ? assetsBySearch : tokens).map(
+              (token: any, i: any) => <BalanceItem position={i} asset={token} />
+            )
           ) : (
             <div className="animate-pulse flex">
               <BalanceItem position={0} asset={undefined} />

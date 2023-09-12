@@ -27,6 +27,7 @@ import { Link } from "react-router-dom";
 
 interface IBalanceItemProps {
   asset: Token;
+  position: number;
 }
 
 export const BalanceItem = (props: IBalanceItemProps) => {
@@ -87,7 +88,7 @@ export const BalanceItem = (props: IBalanceItemProps) => {
       setBalance();
     })();
 
-    const interval = setInterval(updateBalance, 10000);
+    const interval = setInterval(updateBalance, 100000);
     return () => {
       clearInterval(interval);
     };
@@ -149,7 +150,6 @@ export const BalanceItem = (props: IBalanceItemProps) => {
     if (secretjs && secretAddress && nativeBalance) {
       return (
         <>
-          <span className="font-semibold">Available:</span>
           <span className="font-medium">
             {" " +
               new BigNumber(nativeBalance!)
@@ -165,14 +165,14 @@ export const BalanceItem = (props: IBalanceItemProps) => {
             )
           </span>
 
-          <Tooltip title={`IBC Transfer`} placement="bottom" arrow>
+          {/* <Tooltip title={`IBC Transfer`} placement="bottom" arrow>
             <Link
               to="/ibc"
               className="ml-2 hover:text-w dark:hover:text-white transition-colors hover:bg-neutral-100 dark:hover:bg-neutral-900 px-1.5 py-0.5 rounded focus:outline-0 focus:ring-2 ring-sky-500/40"
             >
               <FontAwesomeIcon icon={faArrowRightArrowLeft} />
             </Link>
-          </Tooltip>
+          </Tooltip> */}
         </>
       );
     } else {
@@ -186,7 +186,6 @@ export const BalanceItem = (props: IBalanceItemProps) => {
     } else if (tokenBalance == viewingKeyErrorString) {
       return (
         <>
-          <span className="font-semibold">Available:</span>
           <button
             className="ml-2 font-semibold bg-neutral-100 dark:bg-neutral-900 px-1.5 py-0.5 rounded-md border-neutral-300 dark:border-neutral-700 transition-colors hover:bg-neutral-300 dark:hover:bg-neutral-700 cursor-pointer disabled:text-neutral-500 dark:disabled:text-neutral-500 disabled:hover:bg-neutral-100 dark:disabled:hover:bg-neutral-900 disabled:cursor-default focus:outline-0 focus:ring-2 ring-sky-500/40"
             onClick={() => setViewingKey(props.asset)}
@@ -211,7 +210,6 @@ export const BalanceItem = (props: IBalanceItemProps) => {
       return (
         <>
           {/* Available: 0.123456 sSCRT () */}
-          <span className="font-semibold">Available:</span>
           <span className="font-medium">
             {` ${new BigNumber(tokenBalance!)
               .dividedBy(`1e${props.asset.decimals}`)
@@ -248,7 +246,7 @@ export const BalanceItem = (props: IBalanceItemProps) => {
               <img
                 src={`/img/assets/${props.asset?.image}`}
                 alt={`${props.asset?.name} logo`}
-                className="w-10 h-10 mr-2 rounded-full"
+                className="w-10 h-10 mr-1 rounded-full"
               />
             </>
           ) : null}
@@ -263,13 +261,34 @@ export const BalanceItem = (props: IBalanceItemProps) => {
           </span>
         </div>
 
-        {props.asset.address === "native" ? (
-          <NativeTokenBalanceUi />
-        ) : (
-          <WrappedTokenBalanceUi />
+        {props.asset.coingecko_id !== "" && (
+          <div className="flex flex-col items-center">
+            <div className="description text-xs text-gray-500 mb-2">Price</div>
+            {assetPrice !== undefined && (
+              <div className="font-semibold">
+                {usdString.format(Number(assetPrice))}
+              </div>
+            )}
+            {assetPrice === undefined && (
+              <div className="animate-pulse bg-neutral-300/40 dark:bg-neutral-700/40 rounded col-span-2 w-16 h-7 mx-auto"></div>
+            )}
+          </div>
         )}
-
-        <div className="flex flex-col items-center"></div>
+        <div className="flex flex-col items-center">
+          <div className="description text-xs text-gray-500 mb-2">Balance</div>
+          {nativeBalance !== undefined || tokenBalance !== undefined ? (
+            <div className="font-semibold">
+              {props.asset.address === "native" ? (
+                <NativeTokenBalanceUi />
+              ) : (
+                <WrappedTokenBalanceUi />
+              )}
+            </div>
+          ) : null}
+          {nativeBalance === undefined && tokenBalance === undefined ? (
+            <div className="animate-pulse bg-neutral-300/40 dark:bg-neutral-700/40 rounded col-span-2 w-16 h-7 mx-auto"></div>
+          ) : null}
+        </div>
       </div>
     </>
   );
