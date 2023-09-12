@@ -9,6 +9,7 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   formatNumber,
+  randomDelay,
   sleep,
   usdString,
   viewingKeyErrorString,
@@ -120,6 +121,7 @@ export const BalanceItem = (props: IBalanceItemProps) => {
     }
 
     try {
+      await sleep(randomDelay(0, 1500));
       const result: {
         viewing_key_error: any;
         balance: {

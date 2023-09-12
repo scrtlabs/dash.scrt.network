@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useContext, useRef } from "react";
 import { faChevronRight, faGlobe } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { formatNumber, sleep } from "shared/utils/commons";
+import { formatNumber, randomDelay, sleep } from "shared/utils/commons";
 import { APIContext } from "shared/context/APIContext";
 import { IValidator } from "staking/Staking";
 import { Nullable } from "shared/types/Nullable";
@@ -71,9 +71,6 @@ export const Validator = (props: IValidatorProps) => {
         const url = `https://keybase.io/_/api/1.0/user/lookup.json?key_suffix=${props.identity}&fields=pictures`;
 
         // Introduce a delay here (e.g., 1000ms or 1 second)
-        const randomDelay = (min: any, max: any) => {
-          return Math.floor(Math.random() * (max - min + 1)) + min;
-        };
 
         await sleep(randomDelay(0, 2500));
 

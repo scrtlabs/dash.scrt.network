@@ -61,7 +61,7 @@ export function Send() {
 
   const SCRT = allTokens[0];
 
-  tokens = tokens.concat(SCRT);
+  tokens = [SCRT, ...tokens];
 
   const secretToken: Token = tokens.find(
     (token: any) =>

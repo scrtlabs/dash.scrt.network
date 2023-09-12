@@ -20,6 +20,10 @@ export const restakeThreshold = 10_000_000;
 export const sleep = (ms: number) =>
   new Promise((resolve) => setTimeout(resolve, ms));
 
+export const randomDelay = (min: any, max: any) => {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+};
+
 export const allTokens = tokens.concat(snips).concat(ICSTokens);
 
 export function gasToFee(gas: number, denom: string): StdFee {
@@ -441,6 +445,21 @@ export const stakingJsonLdSchema = [
     url: "https://dash.scrt.network/staking",
     name: stakingPageTitle,
     description: stakingPageDescription,
+    creator: "Secret Jupiter, Secret Saturn",
+  },
+];
+
+// Balances
+export const balancesPageTitle = `${pageTitle} | Balances`;
+export const balancesPageDescription = `View of all your balances on Secret Network! `;
+export const balancesJsonLdSchema = [
+  {
+    "@context": "http://schema.org",
+    "@type": "WebPage",
+    url: "https://dash.scrt.network/balances",
+    name: `${pageTitle} | Balances`,
+    alternateName: `${alternatePageTitle} | Balances`,
+    description: balancesPageDescription,
     creator: "Secret Jupiter, Secret Saturn",
   },
 ];

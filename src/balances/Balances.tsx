@@ -8,6 +8,9 @@ import {
   viewingKeyErrorString,
   usdString,
   randomPadding,
+  balancesPageTitle,
+  balancesPageDescription,
+  balancesJsonLdSchema,
   allTokens,
 } from "shared/utils/commons";
 import BigNumber from "bignumber.js";
@@ -36,6 +39,7 @@ import { useSearchParams } from "react-router-dom";
 import { APIContext } from "shared/context/APIContext";
 import FeeGrant from "shared/components/FeeGrant";
 import { BalanceItem } from "./components/BalanceItem";
+import Title from "staking/components/Title";
 
 function Balances() {
   const {
@@ -77,13 +81,37 @@ function Balances() {
 
   const SCRT = allTokens[0];
 
-  tokens = tokens.concat(SCRT);
+  tokens = [SCRT, ...tokens];
 
   return (
     <>
-      {/* All Validators */}
+      <Helmet>
+        <title>{balancesPageTitle}</title>
+
+        <meta charSet="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+        <meta name="title" content={balancesPageTitle} />
+        <meta name="application-name" content={balancesPageTitle} />
+        <meta name="description" content={balancesPageDescription} />
+        <meta name="robots" content="index,follow" />
+
+        <meta property="og:title" content={balancesPageTitle} />
+        <meta property="og:description" content={balancesPageDescription} />
+        {/* <meta property="og:image" content="Image URL Here"/> */}
+
+        <meta name="twitter:title" content={balancesPageTitle} />
+        <meta name="twitter:description" content={balancesPageDescription} />
+        {/* <meta name="twitter:image" content="Image URL Here"/> */}
+
+        <script type="application/ld+json">
+          {JSON.stringify(balancesJsonLdSchema)}
+        </script>
+      </Helmet>
+
+      <Title title={"Balances"} />
+      {/* All Balances */}
       <div className="max-w-6xl mx-auto mt-8">
-        <div className="font-bold text-xl mb-4 px-4">All Balances</div>
         <div className="flex flex-col gap-4 sm:flex-row items-center px-4 mb-4">
           {/* Search */}
           <div className="flex-1 w-full xs:w-auto">
