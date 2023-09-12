@@ -45,8 +45,6 @@ import FeeGrant from "shared/components/FeeGrant";
 export function Send() {
   const {
     feeGrantStatus,
-    loadingTokenBalance,
-    setLoadingTokenBalance,
     setViewingKey,
     secretjs,
     secretAddress,
@@ -61,37 +59,18 @@ export function Send() {
     tokenToModify.address = "native";
   }
 
-  const sSCRT = [
-    {
-      name: "SCRT",
-      address: "secret1k0jntykt7e4g3y88ltc60czgjuqdy4c9e8fzek",
-      code_hash:
-        "af74387e276be8874f07bec3a87023ee49b0e7ebe08178c49d0a49c3c98ed60e",
-      image: "/scrt.svg",
-      decimals: 6,
-      coingecko_id: "secret",
-      deposits: [
-        {
-          chain_name: "Secret",
-          from_denom: "uscrt",
-        },
-      ],
-      withdrawals: [
-        {
-          chain_name: "Secret",
-          from_denom: "uscrt",
-        },
-      ],
-    },
-  ];
+  const SCRT = allTokens[0];
 
-  tokens = tokens.concat(sSCRT);
+  tokens = tokens.concat(SCRT);
 
   const secretToken: Token = tokens.find(
     (token: any) =>
       token.name === "SCRT" &&
       token.address === "secret1k0jntykt7e4g3y88ltc60czgjuqdy4c9e8fzek"
   );
+
+  const [loadingTokenBalance, setLoadingTokenBalance] = useState<boolean>(true);
+
   const [selectedToken, setSelectedToken] = useState<Token>(secretToken);
   const [selectedTokenPrice, setSelectedTokenPrice] = useState<number>(0);
   const [amountString, setAmountString] = useState<string>("0");
@@ -444,14 +423,20 @@ export function Send() {
           <span className="font-medium">
             {` ${new BigNumber(tokenBalance!)
               .dividedBy(`1e${selectedToken.decimals}`)
-              .toFormat()} s` +
-              selectedToken.name +
-              ` (${usdString.format(
-                new BigNumber(tokenBalance!)
-                  .dividedBy(`1e${selectedToken.decimals}`)
-                  .multipliedBy(Number(selectedTokenPrice))
-                  .toNumber()
-              )})`}
+              .toFormat()} ${
+              selectedToken.address === "native" || selectedToken.is_snip20
+                ? ""
+                : "s"
+            }${selectedToken.name} ${
+              selectedTokenPrice
+                ? ` (${usdString.format(
+                    new BigNumber(tokenBalance!)
+                      .dividedBy(`1e${selectedToken.decimals}`)
+                      .multipliedBy(Number(selectedTokenPrice))
+                      .toNumber()
+                  )})`
+                : ""
+            }`}
           </span>
         </>
       );
@@ -461,14 +446,11 @@ export function Send() {
   function SubmitButton(props: {
     disabled: boolean;
     amount: string | undefined;
-    nativeCurrency: string;
-    wrappedAmount: string | undefined;
-    wrappedCurrency: string;
+    currency: string;
   }) {
     const disabled = props.disabled;
     const amount = props.amount;
-    const nativeCurrency = props.nativeCurrency;
-    const wrappedCurrency = props.wrappedCurrency;
+    const currency = props.currency;
 
     function uiFocusInput() {
       document
@@ -625,11 +607,7 @@ export function Send() {
             onClick={() => submit()}
           >
             {secretAddress && secretjs && amount ? (
-              <>{`Send ${amount} ${
-                selectedToken.address === "native" || selectedToken.is_snip20
-                  ? nativeCurrency
-                  : wrappedCurrency
-              }`}</>
+              <>{`Send ${amount} ${currency}`}</>
             ) : null}
 
             {/* general text without value */}
@@ -868,9 +846,11 @@ export function Send() {
           <SubmitButton
             disabled={!secretjs || !selectedToken.address || !secretAddress}
             amount={amountString}
-            nativeCurrency={selectedToken.name}
-            wrappedAmount={amountString}
-            wrappedCurrency={"s" + selectedToken.name}
+            currency={
+              selectedToken.address === "native" || selectedToken.is_snip20
+                ? null
+                : "s" + selectedToken.name
+            }
           />
         </div>
       </div>

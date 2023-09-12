@@ -46,8 +46,6 @@ export function Wrap() {
     feeGrantStatus,
     setFeeGrantStatus,
     requestFeeGrant,
-    loadingTokenBalance,
-    setLoadingTokenBalance,
     setViewingKey,
     secretjs,
     secretAddress,
@@ -134,6 +132,7 @@ export function Wrap() {
   const [isValidationActive, setIsValidationActive] = useState<boolean>(false);
 
   const [loadingCoinBalance, setLoadingCoinBalance] = useState<boolean>(true);
+  const [loadingTokenBalance, setLoadingTokenBalance] = useState<boolean>(true);
 
   function validateForm() {
     let isValid = false;
@@ -427,14 +426,16 @@ export function Wrap() {
           <span className="font-medium">
             {` ${new BigNumber(tokenBalance!)
               .dividedBy(`1e${selectedToken.decimals}`)
-              .toFormat()} s` +
-              selectedToken.name +
-              ` (${usdString.format(
-                new BigNumber(tokenBalance!)
-                  .dividedBy(`1e${selectedToken.decimals}`)
-                  .multipliedBy(Number(selectedTokenPrice))
-                  .toNumber()
-              )})`}
+              .toFormat()} s${selectedToken.name} ${
+              selectedTokenPrice
+                ? ` (${usdString.format(
+                    new BigNumber(tokenBalance!)
+                      .dividedBy(`1e${selectedToken.decimals}`)
+                      .multipliedBy(Number(selectedTokenPrice))
+                      .toNumber()
+                  )})`
+                : ""
+            }`}
           </span>
         </>
       );
