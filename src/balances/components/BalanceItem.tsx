@@ -31,15 +31,7 @@ interface IBalanceItemProps {
 }
 
 export const BalanceItem = (props: IBalanceItemProps) => {
-  const {
-    feeGrantStatus,
-    setFeeGrantStatus,
-    requestFeeGrant,
-    setViewingKey,
-    secretjs,
-    secretAddress,
-    connectWallet,
-  } = useContext(SecretjsContext);
+  const { secretjs } = useContext(SecretjsContext);
 
   const { prices } = useContext(APIContext);
 
@@ -70,7 +62,7 @@ export const BalanceItem = (props: IBalanceItemProps) => {
   }
 
   useEffect(() => {
-    if (!secretjs || !secretAddress) return;
+    if (!secretjs || !secretjs?.address) return;
 
     (async () => {
       setBalance();
@@ -80,14 +72,14 @@ export const BalanceItem = (props: IBalanceItemProps) => {
     return () => {
       clearInterval(interval);
     };
-  }, [secretAddress, secretjs]);
+  }, [secretjs?.address, secretjs]);
 
   const updateCoinBalance = async () => {
     try {
       const {
         balance: { amount },
       } = await secretjs.query.bank.balance({
-        address: secretAddress,
+        address: secretjs?.address,
         denom: props.asset.withdrawals[0]?.from_denom,
       });
       setNativeBalance(amount);
@@ -118,7 +110,7 @@ export const BalanceItem = (props: IBalanceItemProps) => {
         contract_address: props.asset.address,
         code_hash: props.asset.code_hash,
         query: {
-          balance: { address: secretAddress, key },
+          balance: { address: secretjs?.address, key },
         },
       });
 
@@ -176,9 +168,11 @@ export const BalanceItem = (props: IBalanceItemProps) => {
             )}
           </div>
         )}
-        <div className="flex flex-col items-center">
-          <div className="description text-xs text-gray-500 mb-2">Balance</div>
-          {nativeBalance !== undefined || tokenBalance !== undefined ? (
+        {nativeBalance !== undefined || tokenBalance !== undefined ? (
+          <div className="flex flex-col items-center">
+            <div className="description text-xs text-gray-500 mb-2">
+              Balance
+            </div>
             <div className="font-semibold">
               {props.asset.address === "native"
                 ? NativeTokenBalanceUi(
@@ -194,11 +188,8 @@ export const BalanceItem = (props: IBalanceItemProps) => {
                     true
                   )}
             </div>
-          ) : null}
-          {nativeBalance === undefined && tokenBalance === undefined ? (
-            <div className="animate-pulse bg-neutral-300/40 dark:bg-neutral-700/40 rounded col-span-2 w-16 h-7 mx-auto"></div>
-          ) : null}
-        </div>
+          </div>
+        ) : null}
       </div>
     </>
   );

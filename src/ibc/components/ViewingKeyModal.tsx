@@ -16,7 +16,7 @@ interface IWrapModalProps {
 const ViewingKeyModal = (props: IWrapModalProps) => {
   if (!props.open) return null;
 
-  const { selectedTokenName } = useContext(IbcContext);
+  const { selectedToken } = useContext(IbcContext);
 
   return (
     <>
@@ -55,12 +55,12 @@ const ViewingKeyModal = (props: IWrapModalProps) => {
                 </h2>
                 <p className="text-neutral-600 dark:text-neutral-400 max-w-sm mx-auto mb-6">
                   Now that you have (publicly visible){" "}
-                  {selectedTokenName || "SCRT"} in Secret Network, make sure to
+                  {selectedToken.name || "SCRT"} in Secret Network, make sure to
                   wrap your assets into the privacy-preserving equivalent s
-                  {selectedTokenName || "SCRT"}.
+                  {selectedToken.name || "SCRT"}.
                 </p>
                 <Link
-                  to={"/wrap?token=" + selectedTokenName}
+                  to={"/wrap?token=" + selectedToken.name}
                   className="sm:max-w-[200px] w-full md:px-4 inline-block bg-cyan-500 dark:bg-cyan-600 text-cyan-100 hover:text-white hover:bg-cyan-400 dark:hover:bg-cyan-600 text-center transition-colors py-2.5 rounded-xl font-semibold text-sm"
                 >
                   <FontAwesomeIcon icon={faShuffle} className="mr-2" />

@@ -17,7 +17,6 @@ import { trackMixPanelEvent } from "shared/utils/commons";
 export function KeplrPanel() {
   const {
     secretjs,
-    secretAddress,
     connectWallet,
     disconnectWallet,
     isModalOpen,
@@ -45,13 +44,15 @@ export function KeplrPanel() {
   const CopyableAddress = () => {
     return (
       <CopyToClipboard
-        text={secretAddress}
+        text={secretjs?.address}
         onCopy={() => {
           toast.success("Address copied to clipboard!");
         }}
       >
         <button className="px-2 py-1 mb-2 rounded-lg flex gap-2 items-center group bg-neutral-100 dark:bg-neutral-900 hover:bg-neutral-200 dark:hover:bg-black transition-colors">
-          {secretAddress.slice(0, 14) + "..." + secretAddress.slice(-14)}
+          {secretjs?.address.slice(0, 14) +
+            "..." +
+            secretjs?.address.slice(-14)}
           <FontAwesomeIcon
             icon={faCopy}
             className="block text-neutral-500 dark:text-neutral-500 transition-colors"
@@ -118,7 +119,7 @@ export function KeplrPanel() {
         <div className="flex items-center font-semibold text-sm">
           <div className="flex items-center">
             {/* Animated Dot */}
-            {secretAddress.length > 0 ? (
+            {secretjs?.address.length > 0 ? (
               <span className="mr-3">
                 <AnimatedDot />
               </span>
@@ -127,7 +128,7 @@ export function KeplrPanel() {
             <FontAwesomeIcon icon={faWallet} className="mr-2" />
             {/* Connect Wallet || Connected */}
             <span className="flex-1">
-              {secretAddress.length > 0 ? "Connected" : "Connect Wallet"}
+              {secretjs?.address.length > 0 ? "Connected" : "Connect Wallet"}
             </span>
           </div>
         </div>

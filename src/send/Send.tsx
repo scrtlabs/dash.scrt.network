@@ -47,13 +47,8 @@ import {
 } from "shared/components/BalanceUI";
 
 export function Send() {
-  const {
-    feeGrantStatus,
-    setViewingKey,
-    secretjs,
-    secretAddress,
-    connectWallet,
-  } = useContext(SecretjsContext);
+  const { feeGrantStatus, secretjs, connectWallet } =
+    useContext(SecretjsContext);
 
   const { prices } = useContext(APIContext);
 
@@ -269,7 +264,7 @@ export function Send() {
         contract_address: selectedToken.address,
         code_hash: selectedToken.code_hash,
         query: {
-          balance: { address: secretAddress, key },
+          balance: { address: secretjs?.address, key },
         },
       });
 
@@ -294,7 +289,7 @@ export function Send() {
           className="bg-neutral-100 dark:bg-neutral-900 px-1.5 py-0.5 rounded-l-md transition-colors hover:bg-neutral-300 dark:hover:bg-neutral-700 cursor-pointer disabled:text-neutral-500 dark:disabled:text-neutral-500 disabled:hover:bg-neutral-900 dark:disabled:hover:bg-neutral-900 disabled:cursor-default focus:outline-0 focus:ring-2 ring-sky-500/40 focus:z-10"
           disabled={
             !secretjs ||
-            !secretAddress ||
+            !secretjs?.address ||
             (tokenBalance == viewingKeyErrorString &&
               selectedToken.address !== "native")
           }
@@ -306,7 +301,7 @@ export function Send() {
           className="bg-neutral-100 dark:bg-neutral-900 px-1.5 py-0.5 border-l border-neutral-300 dark:border-neutral-700 transition-colors hover:bg-neutral-300 dark:hover:bg-neutral-700 cursor-pointer disabled:text-neutral-500 dark:disabled:text-neutral-500 disabled:hover:bg-neutral-900 dark:disabled:hover:bg-neutral-900 disabled:cursor-default focus:outline-0 focus:ring-2 ring-sky-500/40 focus:z-10"
           disabled={
             !secretjs ||
-            !secretAddress ||
+            !secretjs?.address ||
             (tokenBalance == viewingKeyErrorString &&
               selectedToken.address !== "native")
           }
@@ -318,7 +313,7 @@ export function Send() {
           className="bg-neutral-100 dark:bg-neutral-900 px-1.5 py-0.5 border-l border-neutral-300 dark:border-neutral-700 transition-colors hover:bg-neutral-300 dark:hover:bg-neutral-700 cursor-pointer disabled:text-neutral-500 dark:disabled:text-neutral-500 disabled:hover:bg-neutral-900 dark:disabled:hover:bg-neutral-900 disabled:cursor-default focus:outline-0 focus:ring-2 ring-sky-500/40 focus:z-10"
           disabled={
             !secretjs ||
-            !secretAddress ||
+            !secretjs?.address ||
             (tokenBalance == viewingKeyErrorString &&
               selectedToken.address !== "native")
           }
@@ -330,7 +325,7 @@ export function Send() {
           className="bg-neutral-100 dark:bg-neutral-900 px-1.5 py-0.5 rounded-r-md border-l border-neutral-300 dark:border-neutral-700 transition-colors hover:bg-neutral-300 dark:hover:bg-neutral-700 cursor-pointer disabled:text-neutral-500 dark:disabled:text-neutral-500 disabled:hover:bg-neutral-900 dark:disabled:hover:bg-neutral-900 disabled:cursor-default focus:outline-0 focus:ring-2 ring-sky-500/40 focus:z-10"
           disabled={
             !secretjs ||
-            !secretAddress ||
+            !secretjs?.address ||
             (tokenBalance == viewingKeyErrorString &&
               selectedToken.address !== "native")
           }
@@ -371,7 +366,7 @@ export function Send() {
       setIsValidationActive(true);
       const isValidForm = validateForm();
 
-      if (!secretjs || !secretAddress) return;
+      if (!secretjs || !secretjs?.address) return;
 
       if (!isValidForm || amountString === "") {
         uiFocusInput();
@@ -392,7 +387,7 @@ export function Send() {
         const toastId = toast.loading(`Sending s${selectedToken.name}`, {
           closeButton: true,
         });
-        secretAddress;
+        secretjs?.address;
         destinationAddress;
         amount;
         await secretjs.tx
@@ -400,7 +395,7 @@ export function Send() {
             [
               selectedToken.address === "native"
                 ? new MsgSend({
-                    from_address: secretAddress,
+                    from_address: secretjs?.address,
                     to_address: destinationAddress,
                     amount: [
                       {
@@ -410,7 +405,7 @@ export function Send() {
                     ],
                   } as any)
                 : new MsgExecuteContract({
-                    sender: secretAddress,
+                    sender: secretjs?.address,
                     contract_address: selectedToken.address,
                     code_hash: selectedToken.code_hash,
                     sent_funds: [],
@@ -500,12 +495,12 @@ export function Send() {
             disabled={disabled}
             onClick={() => submit()}
           >
-            {secretAddress && secretjs && amount ? (
+            {secretjs?.address && secretjs && amount ? (
               <>{`Send ${amount} ${currency}`}</>
             ) : null}
 
             {/* general text without value */}
-            {!amount || !secretAddress || !secretAddress ? "Send" : null}
+            {!amount || !secretjs?.address ? "Send" : null}
           </button>
         </div>
       </>
@@ -517,7 +512,7 @@ export function Send() {
       const {
         balance: { amount },
       } = await secretjs.query.bank.balance({
-        address: secretAddress,
+        address: secretjs?.address,
         denom: selectedToken.withdrawals[0]?.from_denom,
       });
       setNativeBalance(amount);
@@ -527,7 +522,7 @@ export function Send() {
   };
 
   useEffect(() => {
-    if (!secretjs || !secretAddress) return;
+    if (!secretjs || !secretjs?.address) return;
 
     (async () => {
       setBalance();
@@ -537,10 +532,10 @@ export function Send() {
     return () => {
       clearInterval(interval);
     };
-  }, [secretAddress, secretjs, selectedToken, feeGrantStatus]);
+  }, [secretjs?.address, secretjs, selectedToken, feeGrantStatus]);
 
   const handleClick = () => {
-    if (!secretAddress || !secretjs) {
+    if (!secretjs?.address || !secretjs) {
       connectWallet();
     }
   };
@@ -572,7 +567,7 @@ export function Send() {
       </Helmet>
 
       <div className="w-full max-w-xl mx-auto px-4 onEnter_fadeInDown relative">
-        {!secretjs && !secretAddress ? (
+        {!secretjs && !secretjs?.address ? (
           // Overlay to connect on click
           <div
             className="absolute block top-0 left-0 right-0 bottom-0 z-10"
@@ -614,7 +609,7 @@ export function Send() {
             {/* Input Field */}
             <div className="flex mt-2" id="destinationInputWrapper">
               <Select
-                isDisabled={!selectedToken.address || !secretAddress}
+                isDisabled={!selectedToken.address || !secretjs?.address}
                 options={tokens.sort((a: any, b: any) =>
                   a.name.localeCompare(b.name)
                 )}
@@ -654,7 +649,7 @@ export function Send() {
                 name="fromValue"
                 id="fromValue"
                 placeholder="0"
-                disabled={!secretjs || !secretAddress}
+                disabled={!secretjs || !secretjs?.address}
               />
             </div>
 
@@ -708,7 +703,7 @@ export function Send() {
                 name="destinationAddress"
                 id="destinationAddress"
                 placeholder="Destination Address (secret1 ...)"
-                disabled={!secretjs || !secretAddress}
+                disabled={!secretjs || !secretjs?.address}
               />
             </div>
           </div>
@@ -734,7 +729,7 @@ export function Send() {
                 name="memo"
                 id="memo"
                 placeholder="Memo"
-                disabled={!secretjs || !secretAddress}
+                disabled={!secretjs || !secretjs?.address}
               />
             </div>
           </div>
@@ -744,7 +739,7 @@ export function Send() {
 
           {/* Submit Button */}
           <SubmitButton
-            disabled={!secretjs || !selectedToken.address || !secretAddress}
+            disabled={!secretjs || !selectedToken.address || !secretjs?.address}
             amount={amountString}
             currency={
               selectedToken.address === "native" || selectedToken.is_snip20

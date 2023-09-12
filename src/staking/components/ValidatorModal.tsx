@@ -58,7 +58,6 @@ const ValidatorModal = (props: IValidatorModalProps) => {
     setFeeGrantStatus,
     requestFeeGrant,
     secretjs,
-    secretAddress,
   } = useContext(SecretjsContext);
 
   const [realYield, setRealYield] = useState<Nullable<number>>(null);
@@ -430,7 +429,7 @@ const ValidatorModal = (props: IValidatorModalProps) => {
                   ) : null}
 
                   {/* Available to Stake */}
-                  {secretjs && secretAddress && (
+                  {secretjs && secretjs?.address && (
                     <div className="bg-white/5 col-span-12 border border-neutral-200 dark:border-neutral-700 md:col-span-6 rounded-xl px-4 py-8 mt-4 text-center sm:text-left">
                       <div className="font-bold mb-2">Available to Stake</div>
                       <div className="font-semibold">
@@ -452,7 +451,7 @@ const ValidatorModal = (props: IValidatorModalProps) => {
 
                   {/* Your Delegation */}
                   {secretjs &&
-                    secretAddress &&
+                    secretjs?.address &&
                     (delegatorDelegations?.find(
                       (delegatorDelegation: any) =>
                         selectedValidator?.operator_address ==
@@ -505,7 +504,7 @@ const ValidatorModal = (props: IValidatorModalProps) => {
                     </div>
                   ) : null}
 
-                  {view === null && secretjs && secretAddress ? (
+                  {view === null && secretjs && secretjs?.address ? (
                     <>
                       <div className="col-span-12">
                         {/* Navigation */}

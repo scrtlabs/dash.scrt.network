@@ -9,7 +9,7 @@ import { SecretjsContext } from "shared/context/SecretjsContext";
 import Tooltip from "@mui/material/Tooltip";
 
 function FeeGrant() {
-  const { feeGrantStatus, requestFeeGrant, secretjs, secretAddress } =
+  const { feeGrantStatus, requestFeeGrant, secretjs } =
     useContext(SecretjsContext);
 
   return (
@@ -35,7 +35,7 @@ function FeeGrant() {
                 id="feeGrantButton"
                 onClick={requestFeeGrant}
                 className="font-semibold text-xs bg-neutral-100 dark:bg-neutral-900 px-1.5 py-1 rounded-md transition-colors hover:bg-neutral-300 dark:hover:bg-neutral-700 cursor-pointer disabled:text-neutral-500 dark:disabled:text-neutral-500 disabled:hover:bg-neutral-100 dark:disabled:hover:bg-neutral-900 disabled:cursor-default focus:outline-0 focus:ring-2 ring-sky-500/40"
-                disabled={!secretjs || !secretAddress}
+                disabled={!secretjs || !secretjs?.address}
               >
                 Request Fee Grant
               </button>

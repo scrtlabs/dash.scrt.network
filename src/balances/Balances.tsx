@@ -48,7 +48,6 @@ function Balances() {
     requestFeeGrant,
     setViewingKey,
     secretjs,
-    secretAddress,
     connectWallet,
   } = useContext(SecretjsContext);
 
@@ -59,20 +58,6 @@ function Balances() {
 
   const [assetsBySearch, setAssetsBySearch] = useState<Token[]>();
 
-  useEffect(() => {
-    if (!searchQuery) {
-      setAssetsBySearch(null);
-      return;
-    }
-    setAssetsBySearch(
-      allTokens.filter(
-        (token: any) =>
-          token.name?.toLowerCase().includes(searchQuery?.toLowerCase()) ||
-          ("s" + token.name)?.toLowerCase().includes(searchQuery?.toLowerCase())
-      )
-    );
-  }, [searchQuery]);
-
   let tokens = JSON.parse(JSON.stringify(allTokens));
   const tokenToModify = tokens.find((token: any) => token.name === "SCRT");
   if (tokenToModify) {
@@ -82,6 +67,20 @@ function Balances() {
   const SCRT = allTokens[0];
 
   tokens = [SCRT, ...tokens];
+
+  useEffect(() => {
+    if (!searchQuery) {
+      setAssetsBySearch(null);
+      return;
+    }
+    setAssetsBySearch(
+      tokens.filter(
+        (token: any) =>
+          token.name?.toLowerCase().includes(searchQuery?.toLowerCase()) ||
+          ("s" + token.name)?.toLowerCase().includes(searchQuery?.toLowerCase())
+      )
+    );
+  }, [searchQuery]);
 
   return (
     <>

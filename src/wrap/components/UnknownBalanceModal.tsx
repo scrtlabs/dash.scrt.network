@@ -26,9 +26,9 @@ const UnknownBalanceModal = (props: any) => {
   if (!props.open) return null;
 
   const {
-    selectedTokenName,
     amount: amountToWrap,
     hasEnoughBalanceForUnwrapping,
+    selectedToken,
   } = useContext(WrapContext);
 
   return (
@@ -67,9 +67,9 @@ const UnknownBalanceModal = (props: any) => {
                   No Viewing Key found!
                 </h2>
                 <p className="text-neutral-400 max-w-sm mx-auto mb-6">
-                  You're trying to unwrap {amountToWrap} s{selectedTokenName}{" "}
+                  You're trying to unwrap {amountToWrap} s{selectedToken.name}{" "}
                   without having a Viewing Key set. Make sure you definitely
-                  have {amountToWrap} s{selectedTokenName} in this wallet,
+                  have {amountToWrap} s{selectedToken.name} in this wallet,
                   otherwise this action will fail!
                   {/* Now that you have (publicly visible) {selectedTokenName || "SCRT"} in Secret Network, make sure to wrap your assets into the privacy-preserving equivalent s{selectedTokenName || "SCRT"}. */}
                 </p>

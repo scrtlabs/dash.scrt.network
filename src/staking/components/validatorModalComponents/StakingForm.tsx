@@ -9,7 +9,7 @@ import FeeGrant from "../../../shared/components/FeeGrant";
 
 export default function StakingForm() {
   const { selectedValidator, setView } = useContext(StakingContext);
-  const { secretjs, secretAddress, SCRTBalance, SCRTToken, feeGrantStatus } =
+  const { secretjs, SCRTBalance, SCRTToken, feeGrantStatus } =
     useContext(SecretjsContext);
   const { currentPrice } = useContext(APIContext);
 
@@ -29,7 +29,7 @@ export default function StakingForm() {
 
   const handleSubmit = () => {
     async function submit() {
-      if (!secretjs || !secretAddress) return;
+      if (!secretjs || !secretjs?.address) return;
 
       try {
         const toastId = toast.loading(
@@ -38,7 +38,7 @@ export default function StakingForm() {
         await secretjs.tx.staking
           .delegate(
             {
-              delegator_address: secretAddress,
+              delegator_address: secretjs?.address,
               validator_address: selectedValidator?.operator_address,
               amount: {
                 amount: BigNumber(amountString)
@@ -104,28 +104,28 @@ export default function StakingForm() {
         <button
           onClick={() => setAmountByPercentage(25)}
           className="bg-neutral-100 dark:bg-neutral-900 px-1.5 py-0.5 rounded-l-md transition-colors hover:bg-neutral-300 dark:hover:bg-neutral-700 cursor-pointer disabled:text-neutral-500 dark:disabled:text-neutral-500 disabled:hover:bg-neutral-900 dark:disabled:hover:bg-neutral-900 disabled:cursor-default focus:outline-0 focus:ring-2 ring-sky-500/40 focus:z-10"
-          disabled={!secretjs || !secretAddress}
+          disabled={!secretjs || !secretjs?.address}
         >
           25%
         </button>
         <button
           onClick={() => setAmountByPercentage(50)}
           className="bg-neutral-100 dark:bg-neutral-900 px-1.5 py-0.5 border-l border-neutral-300 dark:border-neutral-700 transition-colors hover:bg-neutral-300 dark:hover:bg-neutral-700 cursor-pointer disabled:text-neutral-500 dark:disabled:text-neutral-500 disabled:hover:bg-neutral-900 dark:disabled:hover:bg-neutral-900 disabled:cursor-default focus:outline-0 focus:ring-2 ring-sky-500/40 focus:z-10"
-          disabled={!secretjs || !secretAddress}
+          disabled={!secretjs || !secretjs?.address}
         >
           50%
         </button>
         <button
           onClick={() => setAmountByPercentage(75)}
           className="bg-neutral-100 dark:bg-neutral-900 px-1.5 py-0.5 border-l border-neutral-300 dark:border-neutral-700 transition-colors hover:bg-neutral-300 dark:hover:bg-neutral-700 cursor-pointer disabled:text-neutral-500 dark:disabled:text-neutral-500 disabled:hover:bg-neutral-900 dark:disabled:hover:bg-neutral-900 disabled:cursor-default focus:outline-0 focus:ring-2 ring-sky-500/40 focus:z-10"
-          disabled={!secretjs || !secretAddress}
+          disabled={!secretjs || !secretjs?.address}
         >
           75%
         </button>
         <button
           onClick={() => setAmountByPercentage(100)}
           className="bg-neutral-100 dark:bg-neutral-900 px-1.5 py-0.5 rounded-r-md border-l border-neutral-300 dark:border-neutral-700 transition-colors hover:bg-neutral-300 dark:hover:bg-neutral-700 cursor-pointer disabled:text-neutral-500 dark:disabled:text-neutral-500 disabled:hover:bg-neutral-900 dark:disabled:hover:bg-neutral-900 disabled:cursor-default focus:outline-0 focus:ring-2 ring-sky-500/40 focus:z-10"
-          disabled={!secretjs || !secretAddress}
+          disabled={!secretjs || !secretjs?.address}
         >
           MAX
         </button>
@@ -167,7 +167,7 @@ export default function StakingForm() {
           name="toValue"
           id="toValue"
           placeholder="0"
-          disabled={!secretjs || !secretAddress}
+          disabled={!secretjs || !secretjs?.address}
         />
         <div className="mt-2 flex flex-col sm:flex-row gap-2">
           <div className="flex-1 text-sm text-center sm:text-left">

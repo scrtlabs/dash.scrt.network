@@ -22,9 +22,9 @@ export function NativeTokenBalanceUi(
   selectedTokenPrice: any,
   disableAvailable: boolean = false
 ) {
-  const { secretjs, secretAddress } = useContext(SecretjsContext);
+  const { secretjs } = useContext(SecretjsContext);
 
-  if (secretjs && secretAddress && nativeBalance !== undefined) {
+  if (secretjs && secretjs?.address && nativeBalance !== undefined) {
     return (
       <>
         {!disableAvailable && <span className="font-semibold">Available:</span>}
@@ -42,18 +42,9 @@ export function NativeTokenBalanceUi(
               : ""
           }`}
         </span>
-
-        <Tooltip title={`IBC Transfer`} placement="bottom" arrow>
-          <Link
-            to="/ibc"
-            className="ml-2 hover:text-w dark:hover:text-white transition-colors hover:bg-neutral-100 dark:hover:bg-neutral-900 px-1.5 py-0.5 rounded focus:outline-0 focus:ring-2 ring-sky-500/40"
-          >
-            <FontAwesomeIcon icon={faArrowRightArrowLeft} />
-          </Link>
-        </Tooltip>
       </>
     );
-  } else if (secretjs && secretAddress && nativeBalance === undefined) {
+  } else if (secretjs && secretjs?.address && nativeBalance === undefined) {
     return (
       <div className="flex items-center">
         {!disableAvailable && <span className="font-semibold">Available:</span>}
@@ -71,12 +62,9 @@ export function WrappedTokenBalanceUi(
   selectedTokenPrice: any,
   disableAvailable: boolean = false
 ) {
-  const { setViewingKey, secretjs, secretAddress } =
-    useContext(SecretjsContext);
+  const { setViewingKey, secretjs } = useContext(SecretjsContext);
 
-  if ((!secretjs || !secretAddress) && tokenBalance === undefined) {
-    return <></>;
-  } else if (secretjs && secretAddress && tokenBalance === undefined) {
+  if (secretjs && secretjs?.address && tokenBalance === undefined) {
     return (
       <div className="flex items-center">
         {!disableAvailable && <span className="font-semibold">Available:</span>}
@@ -130,5 +118,7 @@ export function WrappedTokenBalanceUi(
         </span>
       </>
     );
+  } else {
+    return <></>;
   }
 }

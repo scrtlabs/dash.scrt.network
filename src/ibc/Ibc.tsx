@@ -21,8 +21,6 @@ export const IbcContext = createContext(null);
 export function Ibc() {
   const [isWrapModalOpen, setIsWrapModalOpen] = useState(false);
 
-  const [selectedTokenName, setSelectedTokenName] = useState("");
-
   const [selectedToken, setSelectedToken] = useState<Token>(
     tokens.filter((token) => token.name === "SCRT")[0]
   );
@@ -31,8 +29,7 @@ export function Ibc() {
 
   const [ibcMode, setIbcMode] = useState<IbcMode>("deposit");
 
-  const { secretjs, secretAddress, connectWallet } =
-    useContext(SecretjsContext);
+  const { secretjs, connectWallet } = useContext(SecretjsContext);
 
   // URL params
   const [searchParams, setSearchParams] = useSearchParams();
@@ -110,7 +107,7 @@ export function Ibc() {
   }
 
   const handleClick = () => {
-    if (!secretAddress || !secretjs) {
+    if (!secretjs?.address || !secretjs) {
       connectWallet();
     }
   };
@@ -118,8 +115,6 @@ export function Ibc() {
   const ibcContextProviderValue = {
     isWrapModalOpen,
     setIsWrapModalOpen,
-    selectedTokenName,
-    setSelectedTokenName,
     ibcMode,
     setIbcMode,
     toggleIbcMode,
@@ -186,8 +181,8 @@ export function Ibc() {
               <Tooltip
                 title={
                   ibcMode === "deposit"
-                    ? `Deposit your ${selectedTokenName} via IBC transfer from any chain to Secret Network`
-                    : `Withdraw your ${selectedTokenName} via IBC transfer from Secret Network to any chain`
+                    ? `Deposit your ${selectedToken?.name} via IBC transfer from any chain to Secret Network`
+                    : `Withdraw your ${selectedToken?.name} via IBC transfer from Secret Network to any chain`
                 }
                 placement="right"
                 arrow

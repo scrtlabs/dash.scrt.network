@@ -52,7 +52,6 @@ export function Wrap() {
     requestFeeGrant,
     setViewingKey,
     secretjs,
-    secretAddress,
     connectWallet,
   } = useContext(SecretjsContext);
 
@@ -279,7 +278,7 @@ export function Wrap() {
         contract_address: selectedToken.address,
         code_hash: selectedToken.code_hash,
         query: {
-          balance: { address: secretAddress, key },
+          balance: { address: secretjs?.address, key },
         },
       });
 
@@ -304,7 +303,7 @@ export function Wrap() {
           className="bg-neutral-100 dark:bg-neutral-900 px-1.5 py-0.5 rounded-l-md transition-colors hover:bg-neutral-300 dark:hover:bg-neutral-700 cursor-pointer disabled:text-neutral-500 dark:disabled:text-neutral-500 disabled:hover:bg-neutral-900 dark:disabled:hover:bg-neutral-900 disabled:cursor-default focus:outline-0 focus:ring-2 ring-sky-500/40 focus:z-10"
           disabled={
             !secretjs ||
-            !secretAddress ||
+            !secretjs?.address ||
             (wrappingMode === "unwrap" && tokenBalance == viewingKeyErrorString)
           }
         >
@@ -315,7 +314,7 @@ export function Wrap() {
           className="bg-neutral-100 dark:bg-neutral-900 px-1.5 py-0.5 border-l border-neutral-300 dark:border-neutral-700 transition-colors hover:bg-neutral-300 dark:hover:bg-neutral-700 cursor-pointer disabled:text-neutral-500 dark:disabled:text-neutral-500 disabled:hover:bg-neutral-900 dark:disabled:hover:bg-neutral-900 disabled:cursor-default focus:outline-0 focus:ring-2 ring-sky-500/40 focus:z-10"
           disabled={
             !secretjs ||
-            !secretAddress ||
+            !secretjs?.address ||
             (wrappingMode === "unwrap" && tokenBalance == viewingKeyErrorString)
           }
         >
@@ -326,7 +325,7 @@ export function Wrap() {
           className="bg-neutral-100 dark:bg-neutral-900 px-1.5 py-0.5 border-l border-neutral-300 dark:border-neutral-700 transition-colors hover:bg-neutral-300 dark:hover:bg-neutral-700 cursor-pointer disabled:text-neutral-500 dark:disabled:text-neutral-500 disabled:hover:bg-neutral-900 dark:disabled:hover:bg-neutral-900 disabled:cursor-default focus:outline-0 focus:ring-2 ring-sky-500/40 focus:z-10"
           disabled={
             !secretjs ||
-            !secretAddress ||
+            !secretjs?.address ||
             (wrappingMode === "unwrap" && tokenBalance == viewingKeyErrorString)
           }
         >
@@ -337,7 +336,7 @@ export function Wrap() {
           className="bg-neutral-100 dark:bg-neutral-900 px-1.5 py-0.5 rounded-r-md border-l border-neutral-300 dark:border-neutral-700 transition-colors hover:bg-neutral-300 dark:hover:bg-neutral-700 cursor-pointer disabled:text-neutral-500 dark:disabled:text-neutral-500 disabled:hover:bg-neutral-900 dark:disabled:hover:bg-neutral-900 disabled:cursor-default focus:outline-0 focus:ring-2 ring-sky-500/40 focus:z-10"
           disabled={
             !secretjs ||
-            !secretAddress ||
+            !secretjs?.address ||
             (wrappingMode === "unwrap" && tokenBalance == viewingKeyErrorString)
           }
         >
@@ -417,7 +416,7 @@ export function Wrap() {
       setIsValidationActive(true);
       let isValidForm = validateForm();
 
-      if (!secretjs || !secretAddress) return;
+      if (!secretjs || !secretjs?.address) return;
 
       if (!isValidForm || amountString === "") {
         uiFocusInput();
@@ -448,7 +447,7 @@ export function Wrap() {
             .broadcast(
               [
                 new MsgExecuteContract({
-                  sender: secretAddress,
+                  sender: secretjs?.address,
                   contract_address: selectedToken.address,
                   code_hash: selectedToken.code_hash,
                   sent_funds: [
@@ -514,7 +513,7 @@ export function Wrap() {
             .broadcast(
               [
                 new MsgExecuteContract({
-                  sender: secretAddress,
+                  sender: secretjs?.address,
                   contract_address: selectedToken.address,
                   code_hash: selectedToken.code_hash,
                   sent_funds: [],
@@ -611,14 +610,17 @@ export function Wrap() {
             disabled={disabled}
             onClick={() => submit()}
           >
-            {secretAddress && secretjs && wrappingMode === "wrap" && amount ? (
+            {secretjs?.address &&
+            secretjs &&
+            wrappingMode === "wrap" &&
+            amount ? (
               <>
                 {`Wrap ${amount} ${nativeCurrency} into ${amount} ${wrappedCurrency}`}
               </>
             ) : null}
 
             {/* text for unwrapping with value */}
-            {secretAddress &&
+            {secretjs?.address &&
             secretjs &&
             wrappingMode === "unwrap" &&
             amount ? (
@@ -628,7 +630,7 @@ export function Wrap() {
             ) : null}
 
             {/* general text without value */}
-            {!amount || !secretAddress || !secretAddress
+            {!amount || !secretjs?.address
               ? wrappingMode === "wrap"
                 ? "Wrap"
                 : "Unwrap"
@@ -645,7 +647,7 @@ export function Wrap() {
       const {
         balance: { amount },
       } = await secretjs.query.bank.balance({
-        address: secretAddress,
+        address: secretjs?.address,
         denom: selectedToken.withdrawals[0]?.from_denom,
       });
       setNativeBalance(amount);
@@ -655,7 +657,7 @@ export function Wrap() {
   };
 
   useEffect(() => {
-    if (!secretjs || !secretAddress) return;
+    if (!secretjs || !secretjs?.address) return;
 
     (async () => {
       setBalance();
@@ -665,10 +667,10 @@ export function Wrap() {
     return () => {
       clearInterval(interval);
     };
-  }, [secretAddress, secretjs, selectedToken, feeGrantStatus]);
+  }, [secretjs?.address, secretjs, selectedToken, feeGrantStatus]);
 
   const handleClick = () => {
-    if (!secretAddress || !secretjs) {
+    if (!secretjs?.address || !secretjs) {
       connectWallet();
     }
   };
@@ -703,7 +705,7 @@ export function Wrap() {
         value={{
           isUnknownBalanceModalOpen,
           setIsUnknownBalanceModalOpen,
-          selectedTokenName: selectedToken.name,
+          selectedToken: selectedToken,
           amountToWrap: amountString,
           hasEnoughBalanceForUnwrapping: false,
         }}
@@ -723,7 +725,7 @@ export function Wrap() {
           }}
         />
         <div className="w-full max-w-xl mx-auto px-4 onEnter_fadeInDown relative">
-          {!secretjs && !secretAddress ? (
+          {!secretjs && !secretjs?.address ? (
             // Overlay to connect on click
             <div
               className="absolute block top-0 left-0 right-0 bottom-0 z-10"
@@ -762,7 +764,7 @@ export function Wrap() {
               {/* Input Field */}
               <div className="flex" id="fromInputWrapper">
                 <Select
-                  isDisabled={!selectedToken.address || !secretAddress}
+                  isDisabled={!selectedToken.address || !secretjs?.address}
                   options={tokens.sort((a, b) => a.name.localeCompare(b.name))}
                   value={selectedToken}
                   onChange={setSelectedToken}
@@ -798,7 +800,7 @@ export function Wrap() {
                   name="fromValue"
                   id="fromValue"
                   placeholder="0"
-                  disabled={!secretjs || !secretAddress}
+                  disabled={!secretjs || !secretjs?.address}
                 />
               </div>
 
@@ -827,7 +829,7 @@ export function Wrap() {
             {/* Wrapping Mode Switch */}
             <WrappingModeSwitch
               wrappingMode={wrappingMode}
-              disabled={!secretAddress || !secretjs}
+              disabled={!secretjs?.address || !secretjs}
             />
 
             <div className="bg-neutral-200 dark:bg-neutral-800 p-4 rounded-xl mb-5">
@@ -839,7 +841,7 @@ export function Wrap() {
 
               <div className="flex">
                 <Select
-                  isDisabled={!selectedToken.address || !secretAddress}
+                  isDisabled={!selectedToken.address || !secretjs?.address}
                   options={tokens.sort((a, b) => a.name.localeCompare(b.name))}
                   value={selectedToken}
                   onChange={setSelectedToken}
@@ -872,7 +874,7 @@ export function Wrap() {
                   name="toValue"
                   id="toValue"
                   placeholder="0"
-                  disabled={!secretjs || !secretAddress}
+                  disabled={!secretjs || !secretjs?.address}
                 />
               </div>
               <div className="flex-1 text-xs mt-3 text-center sm:text-left h-[1rem]">
@@ -896,7 +898,9 @@ export function Wrap() {
 
             {/* Submit Button */}
             <SubmitButton
-              disabled={!secretjs || !selectedToken.address || !secretAddress}
+              disabled={
+                !secretjs || !selectedToken.address || !secretjs?.address
+              }
               amount={amountString}
               nativeCurrency={selectedToken.name}
               wrappedAmount={amountString}

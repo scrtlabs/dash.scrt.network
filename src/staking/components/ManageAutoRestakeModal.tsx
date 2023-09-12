@@ -19,7 +19,7 @@ interface IManageAutoRestakeModalProps {
 export default function ManageAutoRestakeModal(
   props: IManageAutoRestakeModalProps
 ) {
-  const { secretjs, secretAddress } = useContext(SecretjsContext);
+  const { secretjs } = useContext(SecretjsContext);
 
   const {
     delegatorDelegations,
@@ -48,7 +48,7 @@ export default function ManageAutoRestakeModal(
     validatorRestakeStatuses: ValidatorRestakeStatus[]
   ) {
     async function submit() {
-      if (!secretjs || !secretAddress) return;
+      if (!secretjs || !secretjs?.address) return;
 
       const validatorObjects = validators.filter((validator: any) => {
         return validatorRestakeStatuses.find(
@@ -75,7 +75,7 @@ export default function ManageAutoRestakeModal(
         const txs = validatorRestakeStatuses.map(
           (status: ValidatorRestakeStatus) => {
             return new MsgSetAutoRestake({
-              delegator_address: secretAddress,
+              delegator_address: secretjs?.address,
               validator_address: status.validatorAddress,
               enabled: status.autoRestake,
             });
