@@ -65,7 +65,7 @@ export function KeplrPanel() {
   const Balances = () => {
     return (
       <div>
-        <div className="font-bold mb-2">Balances</div>
+        <div className="font-semibold mb-2">Balances</div>
         <div className="flex flex-col gap-2 mb-2">
           <BalanceItem token={SCRTToken} isSecretToken={false} /> {/* SCRT */}
           <BalanceItem token={SCRTToken} isSecretToken={true} /> {/* sSCRT */}

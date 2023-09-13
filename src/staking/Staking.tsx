@@ -380,7 +380,9 @@ export const Staking = () => {
           delegatorDelegations?.length != 0 &&
           validators && (
             <div className="my-validators mb-20 max-w-6xl mx-auto">
-              <div className="font-bold text-xl mb-4 px-4">My Validators</div>
+              <div className="font-semibold text-xl mb-4 px-4">
+                My Validators
+              </div>
 
               {/* Claim Rewards*/}
               {delegationTotalRewards && (
@@ -450,7 +452,7 @@ export const Staking = () => {
 
         {/* All Validators */}
         <div className="max-w-6xl mx-auto mt-8">
-          <div className="font-bold text-xl mb-4 px-4">
+          <div className="font-semibold text-xl mb-4 px-4">
             All Validators
             <Tooltip
               title={

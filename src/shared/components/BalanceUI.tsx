@@ -28,7 +28,7 @@ export function NativeTokenBalanceUi(
     return (
       <>
         {!disableAvailable && <span className="font-semibold">Available:</span>}
-        <span className="font-medium">
+        <span className="">
           {` ${new BigNumber(nativeBalance!)
             .dividedBy(`1e${selectedToken.decimals}`)
             .toFormat()} ${selectedToken.name} ${
@@ -64,14 +64,7 @@ export function WrappedTokenBalanceUi(
 ) {
   const { setViewingKey, secretjs } = useContext(SecretjsContext);
 
-  if (secretjs && secretjs?.address && tokenBalance === undefined) {
-    return (
-      <div className="flex items-center">
-        {!disableAvailable && <span className="font-semibold">Available:</span>}
-        <span className="animate-pulse bg-neutral-300/40 dark:bg-neutral-700/40 rounded w-20 h-5 ml-2"></span>
-      </div>
-    );
-  } else if (tokenBalance == viewingKeyErrorString) {
+  if (tokenBalance === viewingKeyErrorString) {
     return (
       <>
         {!disableAvailable && <span className="font-semibold">Available:</span>}
@@ -100,7 +93,7 @@ export function WrappedTokenBalanceUi(
       <>
         {/* Available: 0.123456 sSCRT () */}
         {!disableAvailable && <span className="font-semibold">Available:</span>}
-        <span className="font-medium">
+        <span className="">
           {` ${new BigNumber(tokenBalance!)
             .dividedBy(`1e${selectedToken.decimals}`)
             .toFormat()} ${selectedToken.is_snip20 ? "" : "s"}${
@@ -117,6 +110,13 @@ export function WrappedTokenBalanceUi(
           }`}
         </span>
       </>
+    );
+  } else if (secretjs && secretjs?.address && tokenBalance === undefined) {
+    return (
+      <div className="flex items-center">
+        {!disableAvailable && <span className="font-semibold">Available:</span>}
+        <span className="animate-pulse bg-neutral-300/40 dark:bg-neutral-700/40 rounded w-20 h-5 ml-2"></span>
+      </div>
     );
   } else {
     return <></>;

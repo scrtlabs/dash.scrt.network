@@ -100,7 +100,7 @@ export default function StakingForm() {
 
   function PercentagePicker() {
     return (
-      <div className="inline-flex rounded-full text-xs font-bold">
+      <div className="inline-flex rounded-full text-xs font-semibold">
         <button
           onClick={() => setAmountByPercentage(25)}
           className="bg-neutral-100 dark:bg-neutral-900 px-1.5 py-0.5 rounded-l-md transition-colors hover:bg-neutral-300 dark:hover:bg-neutral-700 cursor-pointer disabled:text-neutral-500 dark:disabled:text-neutral-500 disabled:hover:bg-neutral-900 dark:disabled:hover:bg-neutral-900 disabled:cursor-default focus:outline-0 focus:ring-2 ring-sky-500/40 focus:z-10"
@@ -151,7 +151,7 @@ export default function StakingForm() {
   return (
     <>
       <div className="bg-neutral-200 dark:bg-neutral-800 p-4 rounded-xl my-4">
-        <div className="font-bold mb-2 text-center sm:text-left">
+        <div className="font-semibold mb-2 text-center sm:text-left">
           Amount to Stake
         </div>
 

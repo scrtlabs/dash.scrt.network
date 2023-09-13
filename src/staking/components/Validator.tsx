@@ -150,7 +150,9 @@ export const Validator = (props: IValidatorProps) => {
         </div>
         {/* Title */}
         <div className="flex-1">
-          <span className="font-bold text-lg sm:text-base">{props.name}</span>
+          <span className="font-semibold text-lg sm:text-base">
+            {props.name}
+          </span>
           {props.website && (
             <a
               onClick={(e) => e.stopPropagation()}

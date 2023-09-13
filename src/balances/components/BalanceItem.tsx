@@ -37,8 +37,8 @@ export const BalanceItem = (props: IBalanceItemProps) => {
 
   const [assetPrice, setAssetPrice] = useState<number>(0);
 
-  const [nativeBalance, setNativeBalance] = useState<any>();
-  const [tokenBalance, setTokenBalance] = useState<any>();
+  const [nativeBalance, setNativeBalance] = useState<any>(undefined);
+  const [tokenBalance, setTokenBalance] = useState<any>(undefined);
 
   useEffect(() => {
     setAssetPrice(
@@ -52,8 +52,10 @@ export const BalanceItem = (props: IBalanceItemProps) => {
   async function setBalance() {
     try {
       if (props.asset.address === "native") {
+        setNativeBalance(undefined);
         await updateCoinBalance();
       } else {
+        setTokenBalance(undefined);
         await updateTokenBalance();
       }
     } catch (e) {
@@ -100,7 +102,7 @@ export const BalanceItem = (props: IBalanceItemProps) => {
     }
 
     try {
-      await sleep(randomDelay(0, 1500));
+      await sleep(randomDelay(0, 1000));
       const result: {
         viewing_key_error: any;
         balance: {
@@ -147,11 +149,20 @@ export const BalanceItem = (props: IBalanceItemProps) => {
         </div>
         {/* Title */}
         <div className="flex-1">
-          <span className="font-bold text-lg sm:text-base">
+          <span className="font-semibold text-lg sm:text-base">
             {props.asset.address === "native" || props.asset.is_snip20
               ? null
               : "s"}
             {props.asset.name}
+            {props.asset.description ? (
+              <div className="text-xs text-gray-500 mb-2">
+                {(props.asset.address !== "native" ||
+                props.asset.is_ics20 ||
+                props.asset.is_snip20
+                  ? "Private "
+                  : "Public ") + props.asset.description}
+              </div>
+            ) : null}
           </span>
         </div>
 
@@ -168,7 +179,7 @@ export const BalanceItem = (props: IBalanceItemProps) => {
             )}
           </div>
         )}
-        {nativeBalance !== undefined || tokenBalance !== undefined ? (
+        {secretjs && secretjs?.address ? (
           <div className="flex flex-col items-center">
             <div className="description text-xs text-gray-500 mb-2">
               Balance

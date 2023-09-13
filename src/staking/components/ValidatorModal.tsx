@@ -431,7 +431,9 @@ const ValidatorModal = (props: IValidatorModalProps) => {
                   {/* Available to Stake */}
                   {secretjs && secretjs?.address && (
                     <div className="bg-white/5 col-span-12 border border-neutral-200 dark:border-neutral-700 md:col-span-6 rounded-xl px-4 py-8 mt-4 text-center sm:text-left">
-                      <div className="font-bold mb-2">Available to Stake</div>
+                      <div className="font-semibold mb-2">
+                        Available to Stake
+                      </div>
                       <div className="font-semibold">
                         {new BigNumber(SCRTBalance!)
                           .dividedBy(`1e${SCRTToken.decimals}`)
@@ -458,7 +460,9 @@ const ValidatorModal = (props: IValidatorModalProps) => {
                         delegatorDelegation.delegation.validator_address
                     ) ? (
                       <div className="bg-white/5 col-span-12 border border-neutral-200 dark:border-neutral-700 md:col-span-6 rounded-xl px-4 py-8 mt-4 text-center sm:text-left">
-                        <div className="font-bold mb-2">Your Delegation</div>
+                        <div className="font-semibold mb-2">
+                          Your Delegation
+                        </div>
                         <div className="font-semibold">
                           {delegatorDelegations?.find(
                             (delegatorDelegation: any) =>
@@ -485,7 +489,9 @@ const ValidatorModal = (props: IValidatorModalProps) => {
                       </div>
                     ) : (
                       <div className="bg-white/5 col-span-12 border border-neutral-200 dark:border-neutral-700 md:col-span-6 rounded-xl px-4 py-8 mt-4 text-center sm:text-left">
-                        <div className="font-bold mb-2">Your Delegation</div>
+                        <div className="font-semibold mb-2">
+                          Your Delegation
+                        </div>
                         <div className="font-semibold">
                           {0}
                           <span className="text-neutral-400 text-xs">{` SCRT`}</span>

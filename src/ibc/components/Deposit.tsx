@@ -1082,7 +1082,7 @@ function Deposit() {
               </div>
             </div>
             <div
-              className="absolute left-1/2 -translate-x-1/2 text-center text-sm font-bold text-black dark:text-white"
+              className="absolute left-1/2 -translate-x-1/2 text-center text-sm font-semibold text-black dark:text-white"
               style={{ bottom: "10%" }}
             >
               From
@@ -1168,7 +1168,7 @@ function Deposit() {
               </div>
             </div>
             <div
-              className="absolute left-0 right-0 text-center text-sm font-bold text-black dark:text-white"
+              className="absolute left-0 right-0 text-center text-sm font-semibold text-black dark:text-white"
               style={{ bottom: "10%" }}
             >
               To

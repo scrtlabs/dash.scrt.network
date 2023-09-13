@@ -94,7 +94,7 @@ function GetSCRT() {
       <div className="max-w-2xl mx-auto px-6">
         {/* Title */}
         <div className="text-center mb-4">
-          <h1 className="font-bold text-4xl inline text-transparent bg-clip-text bg-gradient-to-r from-cyan-500 to-purple-500">
+          <h1 className="font-semibold text-4xl inline text-transparent bg-clip-text bg-gradient-to-r from-cyan-500 to-purple-500">
             Get SCRT
           </h1>
         </div>
