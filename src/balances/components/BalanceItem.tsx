@@ -136,26 +136,26 @@ export const BalanceItem = (props: IBalanceItemProps) => {
         className="group flex flex-col sm:flex-row items-center text-left even:bg-white odd:bg-neutral-200 dark:even:bg-neutral-800 dark:odd:bg-neutral-700 py-8 sm:py-4 gap-4 pl-4 pr-8  w-full min-w-full "
       >
         {/* Image */}
-        <div className="relative">
+        <div className="relative flex items-center">
           {props.asset?.image ? (
             <>
               <img
                 src={`/img/assets/${props.asset?.image}`}
                 alt={`${props.asset?.name} logo`}
-                className="w-10 h-10 mr-1 rounded-full"
+                className="w-10 h-10 rounded-full"
               />
             </>
           ) : null}
         </div>
         {/* Title */}
-        <div className="flex-1">
+        <div className="flex-1 flex items-center">
           <span className="font-semibold text-lg sm:text-base">
             {props.asset.address === "native" || props.asset.is_snip20
               ? null
               : "s"}
             {props.asset.name}
             {props.asset.description ? (
-              <div className="text-xs text-gray-500 mb-2">
+              <div className="text-xs text-gray-500">
                 {(props.asset.address !== "native" ||
                 props.asset.is_ics20 ||
                 props.asset.is_snip20
