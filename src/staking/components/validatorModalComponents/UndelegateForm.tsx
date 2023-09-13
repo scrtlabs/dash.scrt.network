@@ -157,7 +157,7 @@ export default function UndelegateForm() {
   return (
     <>
       <div className="bg-neutral-200 dark:bg-neutral-800 p-4 rounded-xl my-4">
-        <div className="font-bold mb-2 text-center sm:text-left">
+        <div className="font-semibold mb-2 text-center sm:text-left">
           Amount to Undelegate
         </div>
 

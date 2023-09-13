@@ -312,7 +312,7 @@ const SecretjsContextProvider = ({ children }: any) => {
     try {
       await sleep(1000); // sometimes query nodes lag
       await updateTokenBalance();
-    } catch (e) {
+    } catch (e: any) {
       console.error(e);
     }
   }
@@ -400,7 +400,7 @@ async function getWalletViewingKey(token: string): Promise<string | null> {
       SECRET_CHAIN_ID,
       token
     );
-  } catch (e) {
+  } catch (e: any) {
     console.log(e);
     return null;
   }

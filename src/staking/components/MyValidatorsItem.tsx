@@ -123,7 +123,7 @@ const MyValidatorsItem = (props: IMyValidatorsItemProps) => {
             arrow
           >
             <span
-              className={`font-bold text-xs p-1 rounded-full ${
+              className={`font-semibold text-xs p-1 rounded-full ${
                 isAboveRestakeThreshold(props.stakedAmount)
                   ? isRestakeEnabled(props.validator)
                     ? "text-green-200 bg-green-800"
