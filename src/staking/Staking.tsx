@@ -26,7 +26,7 @@ import ValidatorModal from "./components/ValidatorModal";
 import { SECRET_LCD, SECRET_CHAIN_ID } from "shared/utils/config";
 import { SecretNetworkClient } from "secretjs";
 import Select from "react-select";
-import Title from "./components/Title";
+import Title from "../shared/components/Title";
 import { useSearchParams } from "react-router-dom";
 import { Nullable } from "shared/types/Nullable";
 import BigNumber from "bignumber.js";

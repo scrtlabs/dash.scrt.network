@@ -780,7 +780,7 @@ export const tokens: Token[] = [
   },
   {
     name: "AKT",
-    description: "Akash",
+    description: "Akash Governance Token",
     address: "secret168j5f78magfce5r2j4etaytyuy7ftjkh4cndqw",
     code_hash:
       "5a085bd8ed89de92b35134ddd12505a602c7759ea25fb5c089ba03c8535b3042",
@@ -810,7 +810,7 @@ export const tokens: Token[] = [
   },
   {
     name: "ATOM",
-    description: "Atom",
+    description: "Cosmos Hub Governance Token",
     address: "secret19e75l25r6sa6nhdf4lggjmgpw0vmpfvsw5cnpe",
     code_hash:
       "638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e",
@@ -840,7 +840,7 @@ export const tokens: Token[] = [
   },
   {
     name: "BLD",
-    description: "Agoric",
+    description: "Agoric Governance Token",
     address: "secret1uxvpq889uxjcpj656yjjexsqa3zqm6ntkyjsjq",
     code_hash:
       "638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e",
@@ -870,7 +870,7 @@ export const tokens: Token[] = [
   },
   {
     name: "CMDX",
-    description: "Comdex",
+    description: "Comdex Governance Token",
     address: "secret1mndng80tqppllk0qclgcnvccf9urak08e9w2fl",
     code_hash:
       "638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e",
@@ -959,7 +959,7 @@ export const tokens: Token[] = [
   }, */
   {
     name: "DOT",
-    description: "Polkadot",
+    description: "Polkadot Governance Token",
     address: "secret1h5d3555tz37crrgl5rppu2np2fhaugq3q8yvv9",
     code_hash:
       "5a085bd8ed89de92b35134ddd12505a602c7759ea25fb5c089ba03c8535b3042",
@@ -990,7 +990,7 @@ export const tokens: Token[] = [
   },
   {
     name: "DVPN",
-    description: "Sentinel Token",
+    description: "Sentinel Governance Token",
     address: "secret15qtw24mpmwkjessr46dnqruq4s4tstzf74jtkf",
     code_hash:
       "638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e",
@@ -1020,7 +1020,7 @@ export const tokens: Token[] = [
   },
   {
     name: "EVMOS",
-    description: "Evmos Token",
+    description: "Evmos Governance Token",
     address: "secret1grg9unv2ue8cf98t50ea45prce7gcrj2n232kq",
     code_hash:
       "5a085bd8ed89de92b35134ddd12505a602c7759ea25fb5c089ba03c8535b3042",
@@ -1050,7 +1050,7 @@ export const tokens: Token[] = [
   },
   {
     name: "GRAV",
-    description: "Gravity Bridge Token",
+    description: "Gravity Bridge Governance Token",
     address: "secret1dtghxvrx35nznt8es3fwxrv4qh56tvxv22z79d",
     code_hash:
       "5a085bd8ed89de92b35134ddd12505a602c7759ea25fb5c089ba03c8535b3042",
@@ -1080,7 +1080,7 @@ export const tokens: Token[] = [
   },
   {
     name: "HARBOR",
-    description: "Harbor Governance Token",
+    description: "Harbor Protocol Governance Token",
     address: "secret1lrlkqhmwkh5y4326akn3hwn6j69f8l5656m43e",
     code_hash:
       "638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e",
@@ -1110,7 +1110,7 @@ export const tokens: Token[] = [
   },
   {
     name: "HUAHUA",
-    description: "Chihuahua",
+    description: "Chihuahua Governance Token",
     address: "secret1ntvxnf5hzhzv8g87wn76ch6yswdujqlgmjh32w",
     code_hash:
       "182d7230c396fa8f548220ff88c34cb0291a00046df9ff2686e407c3b55692e9",
@@ -1140,7 +1140,7 @@ export const tokens: Token[] = [
   },
   {
     name: "INJ",
-    description: "Injective",
+    description: "Injective Governance Token",
     address: "secret16cwf53um7hgdvepfp3jwdzvwkt5qe2f9vfkuwv",
     code_hash:
       "5a085bd8ed89de92b35134ddd12505a602c7759ea25fb5c089ba03c8535b3042",
@@ -1170,7 +1170,7 @@ export const tokens: Token[] = [
   },
   {
     name: "IST",
-    description: "Interprotocol USD Stablecoin",
+    description: "Inter Protocol USD Stablecoin",
     address: "secret1xmqsk8tnge0atzy4e079h0l2wrgz6splcq0a24",
     code_hash:
       "638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e",
@@ -1200,7 +1200,7 @@ export const tokens: Token[] = [
   },
   {
     name: "JKL",
-    description: "Jackal",
+    description: "Jackal Governance Token",
     address: "secret1sgaz455pmtgld6dequqayrdseq8vy2fc48n8y3",
     code_hash:
       "638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e",
@@ -1230,7 +1230,7 @@ export const tokens: Token[] = [
   },
   {
     name: "JUNO",
-    description: "Juno",
+    description: "Juno Governance Token",
     address: "secret1z6e4skg5g9w65u5sqznrmagu05xq8u6zjcdg4a",
     code_hash:
       "638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e",
@@ -1260,7 +1260,7 @@ export const tokens: Token[] = [
   },
   {
     name: "KUJI",
-    description: "Kujira",
+    description: "Kujira Governance Token",
     address: "secret13hvh0rn0rcf5zr486yxlrucvwpzwqu2dsz6zu8",
     code_hash:
       "638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e",
@@ -1290,7 +1290,7 @@ export const tokens: Token[] = [
   },
   {
     name: "KSM",
-    description: "Kusama",
+    description: "Kusama Governance Token",
     address: "secret1n4dp5dk6fufqmaalu9y7pnmk2r0hs7kc66a55f",
     code_hash:
       "5a085bd8ed89de92b35134ddd12505a602c7759ea25fb5c089ba03c8535b3042",
@@ -1321,7 +1321,7 @@ export const tokens: Token[] = [
   },
   {
     name: "LUNA",
-    description: "Terra",
+    description: "Terra Governance Token",
     address: "secret149e7c5j7w24pljg6em6zj2p557fuyhg8cnk7z8",
     code_hash:
       "638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e",
@@ -1351,7 +1351,7 @@ export const tokens: Token[] = [
   },
   {
     name: "MNTA",
-    description: "Manta DAO",
+    description: "Manta DAO Governance Token",
     address: "secret15rxfz2w2tallu9gr9zjxj8wav2lnz4gl9pjccj",
     code_hash:
       "5a085bd8ed89de92b35134ddd12505a602c7759ea25fb5c089ba03c8535b3042",
@@ -1382,7 +1382,7 @@ export const tokens: Token[] = [
   },
   {
     name: "OSMO",
-    description: "Osmosis",
+    description: "Osmosis Governance Token",
     address: "secret150jec8mc2hzyyqak4umv6cfevelr0x9p0mjxgg",
     code_hash:
       "638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e",
@@ -1473,7 +1473,7 @@ export const tokens: Token[] = [
   },
   {
     name: "QCK",
-    description: "Quicksilver Token",
+    description: "Quicksilver Governance Token",
     address: "secret17d8c96kezszpda3r2c5dtkzlkfxw6mtu7q98ka",
     code_hash:
       "638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e",
@@ -1562,7 +1562,7 @@ export const tokens: Token[] = [
   }, */
   {
     name: "STARS",
-    description: "Stargaze Token",
+    description: "Stargaze Governance Token",
     address: "secret1x0dqckf2khtxyrjwhlkrx9lwwmz44k24vcv2vv",
     code_hash:
       "5a085bd8ed89de92b35134ddd12505a602c7759ea25fb5c089ba03c8535b3042",
@@ -1772,7 +1772,7 @@ export const tokens: Token[] = [
   },
   {
     name: "STRD",
-    description: "Stride Token",
+    description: "Stride Governance Token",
     address: "secret1rfhgs3ryqt7makakr2qw9zsqq4h5wdqawfa2aa",
     code_hash:
       "638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e",
@@ -1802,7 +1802,7 @@ export const tokens: Token[] = [
   },
   {
     name: "XPRT",
-    description: "Persistance",
+    description: "Persistance Governance Token",
     address: "secret1gnrrqjj5e2pwn4g262xjyypptu0ge3z3tps3nn",
     code_hash:
       "638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e",
@@ -1836,7 +1836,7 @@ export const tokens: Token[] = [
 export const snips: Token[] = [
   {
     name: "ALTER",
-    description: "ALTER Dapp Token",
+    description: "ALTER dApp Token",
     is_snip20: true,
     address: "secret12rcvz0umvk875kd6a803txhtlu7y0pnd73kcej",
     code_hash:
@@ -1896,7 +1896,7 @@ export const snips: Token[] = [
   },
   {
     name: "AMBER",
-    description: "Amber Dapp Token (very rare)",
+    description: "Amber DAO Token (very rare)",
     is_snip20: true,
     address: "secret1s09x2xvfd2lp2skgzm29w2xtena7s8fq98v852",
     code_hash:
@@ -2091,7 +2091,7 @@ export const snips: Token[] = [
   },
   {
     name: "SHILL",
-    description: "Shillstake Token",
+    description: "Shillstake Governance Token",
     is_snip20: true,
     address: "secret197dvnt9yjxwn8sjdlx05f7zuk27lsdxtfnwxse",
     code_hash:
@@ -2151,7 +2151,7 @@ export const snips: Token[] = [
   },
   {
     name: "SIENNA",
-    description: "Sienna Network Token",
+    description: "Sienna Network Governance Token",
     is_snip20: true,
     address: "secret1rgm2m5t530tdzyd99775n6vzumxa5luxcllml4",
     code_hash:
@@ -2286,7 +2286,7 @@ export const snips: Token[] = [
   },
   {
     name: "stkd-SCRT",
-    description: "SCRT Staking Derivative",
+    description: "Shade Protocol SCRT Staking Derivative",
     is_snip20: true,
     address: "secret1k6u0cy4feepm6pehnz804zmwakuwdapm69tuc4",
     code_hash:
@@ -2349,7 +2349,7 @@ export const snips: Token[] = [
 export const ICSTokens: Token[] = [
   {
     name: "aUSDC",
-    description: "Bridged USDC from Axelar",
+    description: "Bridged USDC stablecoin from Axelar",
     is_ics20: true,
     address: "secret1vkq022x4q8t8kx9de3r84u669l65xnwf2lg3e6",
     code_hash:
@@ -2464,7 +2464,7 @@ export const ICSTokens: Token[] = [
   },
   {
     name: "AXL",
-    description: "Axelar Token",
+    description: "Axelar Governance Token",
     is_ics20: true,
     address: "secret1vcau4rkn7mvfwl8hf0dqa9p0jr59983e3qqe3z",
     code_hash:
@@ -2602,7 +2602,7 @@ export const ICSTokens: Token[] = [
   },
   {
     name: "aWBTC",
-    description: "Bridged WBTC from Axelar",
+    description: "Bridged Wrapped Bitcoin from Axelar",
     is_ics20: true,
     address: "secret1guyayjwg5f84daaxl7w84skd8naxvq8vz9upqx",
     code_hash:
@@ -2710,7 +2710,7 @@ export const ICSTokens: Token[] = [
   },
   {
     name: "aWBNB",
-    description: "Bridged WBNB from Axelar",
+    description: "Bridged Wrapped Binance Coin from Axelar",
     is_ics20: true,
     address: "secret19xsac2kstky8nhgvvz257uszt44g0cu6ycd5e4",
     code_hash:
@@ -2818,7 +2818,7 @@ export const ICSTokens: Token[] = [
   },
   {
     name: "aBUSD",
-    description: "Bridged BUSD from Axelar",
+    description: "Bridged Binance USD from Axelar",
     is_ics20: true,
     address: "secret1t642ayn9rhl5q9vuh4n2jkx0gpa9r6c3sl96te",
     code_hash:
@@ -3034,7 +3034,7 @@ export const ICSTokens: Token[] = [
   },
   {
     name: "aUNI",
-    description: "Bridged UNI from Axelar",
+    description: "Bridged Uniswap Governance Token from Axelar",
     is_ics20: true,
     address: "secret1egqlkasa6xe6efmfp9562sfj07lq44z7jngu5k",
     code_hash:
@@ -3142,7 +3142,7 @@ export const ICSTokens: Token[] = [
   },
   {
     name: "aUSDT",
-    description: "Bridged USDT from Axelar",
+    description: "Bridged USDT stablecoin from Axelar",
     is_ics20: true,
     address: "secret1wk5j2cntwg2fgklf0uta3tlkvt87alfj7kepuw",
     code_hash:

@@ -142,13 +142,13 @@ export const BalanceItem = (props: IBalanceItemProps) => {
               <img
                 src={`/img/assets/${props.asset?.image}`}
                 alt={`${props.asset?.name} logo`}
-                className="w-10 h-10 rounded-full"
+                className="w-10 h-10 mr-1 rounded-full"
               />
             </>
           ) : null}
         </div>
         {/* Title */}
-        <div className="flex-1 flex items-center">
+        <div className="flex-1">
           <span className="font-semibold text-lg sm:text-base">
             {props.asset.address === "native" || props.asset.is_snip20
               ? null

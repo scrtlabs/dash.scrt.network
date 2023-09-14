@@ -45,6 +45,7 @@ import {
   NativeTokenBalanceUi,
   WrappedTokenBalanceUi,
 } from "shared/components/BalanceUI";
+import Title from "shared/components/Title";
 
 export function Send() {
   const { feeGrantStatus, secretjs, connectWallet } =
@@ -574,23 +575,22 @@ export function Send() {
             onClick={handleClick}
           ></div>
         ) : null}
+
+        {/* Title */}
+        <Title
+          title={`${
+            selectedToken.address === "native" ? "Public " : "Secret"
+          } Send`}
+        >
+          <Tooltip title={message} placement="right" arrow>
+            <span className="ml-2 mt-1 text-neutral-600 dark:text-neutral-400 hover:text-black dark:hover:text-white transition-colors cursor-pointer">
+              <FontAwesomeIcon icon={faInfoCircle} />
+            </span>
+          </Tooltip>
+        </Title>
+
         {/* Content */}
         <div className="border border-neutral-200 dark:border-neutral-700 rounded-2xl p-8 w-full text-neutral-800 dark:text-neutral-200 bg-white dark:bg-neutral-900">
-          {/* Header */}
-          <div className="flex items-center mb-4">
-            <h1 className="inline text-3xl font-semibold text-transparent bg-clip-text bg-gradient-to-r from-cyan-500 to-purple-500">
-              {`${
-                selectedToken.address === "native" ? "Public " : "Secret"
-              } Send`}
-            </h1>
-
-            <Tooltip title={message} placement="right" arrow>
-              <span className="ml-2 mt-1 text-neutral-600 dark:text-neutral-400 hover:text-black dark:hover:text-white transition-colors cursor-pointer">
-                <FontAwesomeIcon icon={faInfoCircle} />
-              </span>
-            </Tooltip>
-          </div>
-
           {/* *** From *** */}
           <div className="bg-neutral-200 dark:bg-neutral-800 p-4 rounded-xl mb-4">
             {/* Title Bar */}

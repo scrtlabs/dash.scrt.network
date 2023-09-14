@@ -39,7 +39,7 @@ import { useSearchParams } from "react-router-dom";
 import { APIContext } from "shared/context/APIContext";
 import FeeGrant from "shared/components/FeeGrant";
 import { BalanceItem } from "./components/BalanceItem";
-import Title from "staking/components/Title";
+import Title from "shared/components/Title";
 
 function Balances() {
   const {
@@ -77,7 +77,10 @@ function Balances() {
       tokens.filter(
         (token: any) =>
           token.name?.toLowerCase().includes(searchQuery?.toLowerCase()) ||
-          ("s" + token.name)?.toLowerCase().includes(searchQuery?.toLowerCase())
+          ("s" + token.name)
+            ?.toLowerCase()
+            .includes(searchQuery?.toLowerCase()) ||
+          token.description?.toLowerCase().includes(searchQuery?.toLowerCase())
       )
     );
   }, [searchQuery]);
