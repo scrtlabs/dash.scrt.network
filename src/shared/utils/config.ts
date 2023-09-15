@@ -1390,6 +1390,34 @@ export const tokens: Token[] = [
     ],
   },
   {
+    name: "PICA",
+    address: "XXXX",
+    code_hash: "XXX",
+    image: "/pica.svg",
+    decimals: 12,
+    coingecko_id: "picasso",
+    deposits: [
+      {
+        chain_name: "Composable",
+        from_denom: "ppica",
+      },
+    ],
+    withdrawals: [
+      {
+        chain_name: "Composable",
+        from_denom: ibcDenom(
+          [
+            {
+              incomingChannelId: chains["Composable"].withdraw_channel_id,
+              incomingPortId: "transfer",
+            },
+          ],
+          "ppica"
+        ),
+      },
+    ],
+  },
+  {
     name: "pSTAKE",
     address: "secret1umeg3u5y949vz6jkgq0n4rhefsr84ws3duxmnz",
     code_hash:
