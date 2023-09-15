@@ -170,30 +170,27 @@ export function Ibc() {
           }}
         />
 
-        {/* Title */}
-        <Title title={"IBC Transfer"}>
-          <Tooltip
-            title={
-              ibcMode === "deposit"
-                ? `Deposit your ${selectedToken?.name} via IBC transfer from any chain to Secret Network`
-                : `Withdraw your ${selectedToken?.name} via IBC transfer from Secret Network to any chain`
-            }
-            placement="right"
-            arrow
-          >
-            <span className="ml-2 mt-1 text-neutral-600 dark:text-neutral-400 hover:text-black dark:hover:text-white transition-colors cursor-pointer">
-              <FontAwesomeIcon icon={faInfoCircle} />
-            </span>
-          </Tooltip>
-        </Title>
-
         <div className="w-full max-w-xl mx-auto px-4 onEnter_fadeInDown">
+          {/* Title */}
+          <Title title={"IBC Transfer"}>
+            <Tooltip
+              title={
+                ibcMode === "deposit"
+                  ? `Deposit your ${selectedToken?.name} via IBC transfer from any chain to Secret Network`
+                  : `Withdraw your ${selectedToken?.name} via IBC transfer from Secret Network to any chain`
+              }
+              placement="right"
+              arrow
+            >
+              <span className="ml-2 mt-1 text-neutral-600 dark:text-neutral-400 hover:text-black dark:hover:text-white transition-colors cursor-pointer">
+                <FontAwesomeIcon icon={faInfoCircle} />
+              </span>
+            </Tooltip>
+          </Title>
           <div
             className="rounded-2xl p-8 border border-neutral-200 dark:border-neutral-700 w-full text-neutral-800 dark:text-neutral-200 bg-white dark:bg-neutral-900"
             onClick={handleClick}
           >
-            {/* Header */}
-
             {/* Deposit */}
             <Deposit />
           </div>
