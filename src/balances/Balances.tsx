@@ -36,23 +36,10 @@ import {
 } from "shared/context/SecretjsContext";
 import mixpanel from "mixpanel-browser";
 import { useSearchParams } from "react-router-dom";
-import { APIContext } from "shared/context/APIContext";
-import FeeGrant from "shared/components/FeeGrant";
 import { BalanceItem } from "./components/BalanceItem";
 import Title from "shared/components/Title";
 
 function Balances() {
-  const {
-    feeGrantStatus,
-    setFeeGrantStatus,
-    requestFeeGrant,
-    setViewingKey,
-    secretjs,
-    connectWallet,
-  } = useContext(SecretjsContext);
-
-  const { prices } = useContext(APIContext);
-
   //Search Query
   const [searchQuery, setSearchQuery] = useState<string>("");
 

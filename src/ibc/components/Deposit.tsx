@@ -67,6 +67,7 @@ import {
   WrappedTokenBalanceUi,
 } from "shared/components/BalanceUI";
 import { APIContext } from "shared/context/APIContext";
+import PercentagePicker from "shared/components/PercentagePicker";
 
 function Deposit() {
   const { feeGrantStatus, setFeeGrantStatus, requestFeeGrant } =
@@ -122,6 +123,7 @@ function Deposit() {
   useEffect(() => {
     trackMixPanelEvent("Open IBC Tab");
   }, []);
+
   const message =
     ibcMode === "deposit"
       ? `Deposit your SCRT via IBC transfer from ${selectedSource.chain_name} to Secret Network`
@@ -1357,36 +1359,10 @@ function Deposit() {
                 )}
           </div>
           <div className="sm:flex-initial text-xs">
-            <div className="inline-flex rounded-full text-xs font-semibold">
-              <button
-                onClick={() => setAmountByPercentage(25)}
-                className="bg-neutral-100 dark:bg-neutral-900 px-1.5 py-0.5 rounded-l-md transition-colors hover:bg-neutral-300 dark:hover:bg-neutral-700 cursor-pointer disabled:text-neutral-500 dark:disabled:text-neutral-500 disabled:hover:bg-neutral-900 dark:disabled:hover:bg-neutral-900 disabled:cursor-default focus:outline-0 focus:ring-2 ring-sky-500/40 focus:z-10"
-                disabled={!secretjs?.address}
-              >
-                25%
-              </button>
-              <button
-                onClick={() => setAmountByPercentage(50)}
-                className="bg-neutral-100 dark:bg-neutral-900 px-1.5 py-0.5 transition-colors hover:bg-neutral-300 dark:hover:bg-neutral-700 cursor-pointer disabled:text-neutral-500 dark:disabled:text-neutral-500 disabled:hover:bg-neutral-900 dark:disabled:hover:bg-neutral-900 disabled:cursor-default focus:outline-0 focus:ring-2 ring-sky-500/40 focus:z-10"
-                disabled={!secretjs?.address}
-              >
-                50%
-              </button>
-              <button
-                onClick={() => setAmountByPercentage(75)}
-                className="bg-neutral-100 dark:bg-neutral-900 px-1.5 py-0.5 transition-colors hover:bg-neutral-300 dark:hover:bg-neutral-700 cursor-pointer disabled:text-neutral-500 dark:disabled:text-neutral-500 disabled:hover:bg-neutral-900 dark:disabled:hover:bg-neutral-900 disabled:cursor-default focus:outline-0 focus:ring-2 ring-sky-500/40 focus:z-10"
-                disabled={!secretjs?.address}
-              >
-                75%
-              </button>
-              <button
-                onClick={() => setAmountByPercentage(100)}
-                className="bg-neutral-100 dark:bg-neutral-900 px-1.5 py-0.5 rounded-r-md transition-colors hover:bg-neutral-300 dark:hover:bg-neutral-700 cursor-pointer disabled:text-neutral-500 dark:disabled:text-neutral-500 disabled:hover:bg-neutral-900 dark:disabled:hover:bg-neutral-900 disabled:cursor-default focus:outline-0 focus:ring-2 ring-sky-500/40 focus:z-10"
-                disabled={!secretjs?.address}
-              >
-                MAX
-              </button>
-            </div>
+            {PercentagePicker(
+              setAmountByPercentage,
+              !secretjs || !secretjs?.address
+            )}
           </div>
         </div>
       </div>
