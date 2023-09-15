@@ -2349,7 +2349,7 @@ export const snips: Token[] = [
 export const ICSTokens: Token[] = [
   {
     name: "aUSDC",
-    description: "Bridged USDC stablecoin from Axelar",
+    description: "USDC stablecoin from Axelar",
     is_ics20: true,
     address: "secret1vkq022x4q8t8kx9de3r84u669l65xnwf2lg3e6",
     code_hash:
@@ -2494,7 +2494,7 @@ export const ICSTokens: Token[] = [
   },
   {
     name: "aWETH",
-    description: "Bridged ETH from Axelar",
+    description: "ETH from Axelar",
     is_ics20: true,
     address: "secret139qfh3nmuzfgwsx2npnmnjl4hrvj3xq5rmq8a0",
     code_hash:
@@ -2602,7 +2602,7 @@ export const ICSTokens: Token[] = [
   },
   {
     name: "aWBTC",
-    description: "Bridged Wrapped Bitcoin from Axelar",
+    description: "Wrapped Bitcoin from Axelar",
     is_ics20: true,
     address: "secret1guyayjwg5f84daaxl7w84skd8naxvq8vz9upqx",
     code_hash:
@@ -2710,7 +2710,7 @@ export const ICSTokens: Token[] = [
   },
   {
     name: "aWBNB",
-    description: "Bridged Wrapped Binance Coin from Axelar",
+    description: "Wrapped Binance Coin from Axelar",
     is_ics20: true,
     address: "secret19xsac2kstky8nhgvvz257uszt44g0cu6ycd5e4",
     code_hash:
@@ -2818,7 +2818,7 @@ export const ICSTokens: Token[] = [
   },
   {
     name: "aBUSD",
-    description: "Bridged Binance USD from Axelar",
+    description: "Binance USD from Axelar",
     is_ics20: true,
     address: "secret1t642ayn9rhl5q9vuh4n2jkx0gpa9r6c3sl96te",
     code_hash:
@@ -2926,7 +2926,7 @@ export const ICSTokens: Token[] = [
   },
   {
     name: "aDAI",
-    description: "Bridged DAI from Axelar",
+    description: "DAI from Axelar",
     is_ics20: true,
     address: "secret1c2prkwd8e6ratk42l4vrnwz34knfju6hmp7mg7",
     code_hash:
@@ -3034,7 +3034,7 @@ export const ICSTokens: Token[] = [
   },
   {
     name: "aUNI",
-    description: "Bridged Uniswap Governance Token from Axelar",
+    description: "UNI from Axelar",
     is_ics20: true,
     address: "secret1egqlkasa6xe6efmfp9562sfj07lq44z7jngu5k",
     code_hash:
@@ -3142,7 +3142,7 @@ export const ICSTokens: Token[] = [
   },
   {
     name: "aUSDT",
-    description: "Bridged USDT stablecoin from Axelar",
+    description: "USDT stablecoin from Axelar",
     is_ics20: true,
     address: "secret1wk5j2cntwg2fgklf0uta3tlkvt87alfj7kepuw",
     code_hash:
@@ -3250,7 +3250,7 @@ export const ICSTokens: Token[] = [
   },
   {
     name: "aFRAX",
-    description: "Bridged FRAX from Axelar",
+    description: "FRAX from Axelar",
     is_ics20: true,
     address: "secret16e230j6qm5u5q30pcc6qv726ae30ak6lzq0zvf",
     code_hash:
