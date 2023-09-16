@@ -689,7 +689,7 @@ export function Wrap() {
             title={`Secret ${wrappingMode === "wrap" ? "Wrap" : "Unwrap"}`}
           >
             <Tooltip title={message} placement="right" arrow>
-              <span className="ml-2 mt-1 text-neutral-600 dark:text-neutral-400 hover:text-black dark:hover:text-white transition-colors cursor-pointer">
+              <span className="ml-2 relative -top-1.5 text-neutral-600 dark:text-neutral-400 hover:text-black dark:hover:text-white transition-colors cursor-pointer">
                 <FontAwesomeIcon icon={faInfoCircle} />
               </span>
             </Tooltip>

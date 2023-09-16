@@ -199,12 +199,6 @@ export function Send() {
     setAmountString(filteredValue);
   }
 
-  const message = `Send ${
-    selectedToken.address === "native" ? "public " : "privacy preserving "
-  }${selectedToken.address === "native" || selectedToken.is_snip20 ? "" : "s"}${
-    selectedToken.name
-  }`;
-
   // handles [25% | 50% | 75% | Max] Button-Group
   function setAmountByPercentage(percentage: number) {
     let maxValue = "0";
@@ -523,13 +517,13 @@ export function Send() {
         ) : null}
 
         {/* Title */}
-        <Title
-          title={`${
-            selectedToken.address === "native" ? "Public " : "Secret"
-          } Send`}
-        >
-          <Tooltip title={message} placement="right" arrow>
-            <span className="ml-2 mt-1 text-neutral-600 dark:text-neutral-400 hover:text-black dark:hover:text-white transition-colors cursor-pointer">
+        <Title title={`Send`}>
+          <Tooltip
+            title={`Transfer your assets to a given address`}
+            placement="right"
+            arrow
+          >
+            <span className="ml-2 relative -top-1.5 text-neutral-600 dark:text-neutral-400 hover:text-black dark:hover:text-white transition-colors cursor-pointer">
               <FontAwesomeIcon icon={faInfoCircle} />
             </span>
           </Tooltip>
@@ -630,8 +624,17 @@ export function Send() {
           <div className="bg-neutral-200 dark:bg-neutral-800 p-4 rounded-xl mb-4">
             {/* Title Bar */}
             <div className="flex justify-between items-center mb-2">
-              <span className="font-semibold text-center sm:text-left">
+              <span className="flex-1 font-semibold mb-2 text-center sm:text-left">
                 Destination Address
+                <Tooltip
+                  title={`The wallet address you want to transfer to`}
+                  placement="right"
+                  arrow
+                >
+                  <span className="ml-2 mt-1 text-neutral-600 dark:text-neutral-400 hover:text-black dark:hover:text-white transition-colors cursor-pointer">
+                    <FontAwesomeIcon icon={faInfoCircle} />
+                  </span>
+                </Tooltip>
               </span>
               {!isValidDestination && isValidationActive && (
                 <span className="text-red-500 dark:text-red-500 text-xs font-normal">
@@ -666,6 +669,15 @@ export function Send() {
             <div className="flex flex-col sm:flex-row">
               <div className="flex-1 font-semibold mb-2 text-center sm:text-left">
                 Memo (optional)
+                <Tooltip
+                  title={`Add a message to your transaction`}
+                  placement="right"
+                  arrow
+                >
+                  <span className="ml-2 mt-1 text-neutral-600 dark:text-neutral-400 hover:text-black dark:hover:text-white transition-colors cursor-pointer">
+                    <FontAwesomeIcon icon={faInfoCircle} />
+                  </span>
+                </Tooltip>
               </div>
             </div>
 
