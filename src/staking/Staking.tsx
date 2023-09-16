@@ -26,7 +26,7 @@ import ValidatorModal from "./components/ValidatorModal";
 import { SECRET_LCD, SECRET_CHAIN_ID } from "shared/utils/config";
 import { SecretNetworkClient } from "secretjs";
 import Select from "react-select";
-import Title from "./components/Title";
+import Title from "../shared/components/Title";
 import { useSearchParams } from "react-router-dom";
 import { Nullable } from "shared/types/Nullable";
 import BigNumber from "bignumber.js";
@@ -76,8 +76,7 @@ export const Staking = () => {
     document.body.classList.remove("overflow-hidden");
   };
 
-  const { secretjs, secretAddress, SCRTBalance, SCRTToken } =
-    useContext(SecretjsContext);
+  const { secretjs, SCRTBalance, SCRTToken } = useContext(SecretjsContext);
 
   const [validators, setValidators] = useState<IValidator[]>(null);
   const [activeValidators, setActiveValidators] = useState<IValidator[]>(null);
@@ -210,15 +209,15 @@ export const Staking = () => {
 
   useEffect(() => {
     const fetchDelegatorValidators = async () => {
-      if (secretjs && secretAddress) {
+      if (secretjs && secretjs?.address) {
         const { delegation_responses } =
           await secretjs.query.staking.delegatorDelegations({
-            delegator_addr: secretAddress,
+            delegator_addr: secretjs?.address,
             "pagination.limit": 1000,
           });
         const { validators } =
           await secretjs.query.distribution.restakingEntries({
-            delegator: secretAddress,
+            delegator: secretjs?.address,
             "pagination.limit": 1000,
           });
         setRestakeEntries(validators);
@@ -235,14 +234,14 @@ export const Staking = () => {
 
         const result = await secretjs.query.distribution.delegationTotalRewards(
           {
-            delegator_address: secretAddress,
+            delegator_address: secretjs?.address,
           }
         );
         setDelegationTotalRewards(result);
       }
     };
     fetchDelegatorValidators();
-  }, [secretjs, secretAddress, reload]);
+  }, [secretjs, secretjs?.address, reload]);
 
   useEffect(() => {
     const fetchValidators = async () => {
@@ -370,18 +369,20 @@ export const Staking = () => {
         {/* Title */}
         <Title title={"Staking"} />
 
-        {secretjs && secretAddress && SCRTBalance === 0 ? (
+        {secretjs && secretjs?.address && SCRTBalance === 0 ? (
           <NoScrtWarning />
         ) : null}
 
         {/* My Validators */}
         {secretjs &&
-          secretAddress &&
+          secretjs?.address &&
           delegatorDelegations &&
           delegatorDelegations?.length != 0 &&
           validators && (
             <div className="my-validators mb-20 max-w-6xl mx-auto">
-              <div className="font-bold text-xl mb-4 px-4">My Validators</div>
+              <div className="font-semibold text-xl mb-4 px-4">
+                My Validators
+              </div>
 
               {/* Claim Rewards*/}
               {delegationTotalRewards && (
@@ -451,7 +452,7 @@ export const Staking = () => {
 
         {/* All Validators */}
         <div className="max-w-6xl mx-auto mt-8">
-          <div className="font-bold text-xl mb-4 px-4">
+          <div className="font-semibold text-xl mb-4 px-4">
             All Validators
             <Tooltip
               title={

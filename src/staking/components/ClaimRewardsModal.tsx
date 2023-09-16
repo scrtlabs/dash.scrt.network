@@ -17,7 +17,6 @@ interface IClaimRewardsModalProps {
 export function ClaimRewardsModal(props: IClaimRewardsModalProps) {
   const {
     secretjs,
-    secretAddress,
     SCRTBalance,
     SCRTToken,
     feeGrantStatus,
@@ -38,13 +37,13 @@ export function ClaimRewardsModal(props: IClaimRewardsModalProps) {
 
   function claimRewards() {
     async function submit() {
-      if (!secretjs || !secretAddress) return;
+      if (!secretjs || !secretjs?.address) return;
 
       try {
         const toastId = toast.loading(`Claiming Staking Rewards`);
         const txs = delegatorDelegations.map((delegation: any) => {
           return new MsgWithdrawDelegationReward({
-            delegator_address: secretAddress,
+            delegator_address: secretjs?.address,
             validator_address: delegation?.delegation?.validator_address,
           });
         });
@@ -138,7 +137,7 @@ export function ClaimRewardsModal(props: IClaimRewardsModalProps) {
               {/* Body */}
               <div className="flex flex-col">
                 <div className="text-center my-4">
-                  <span className="font-bold">{`Claimable Amount: `}</span>
+                  <span className="font-semibold">{`Claimable Amount: `}</span>
                   <span>{totalPendingRewards()}</span>
                   <span className="text-gray-500 dark:text-gray-400 text-sm">{` SCRT`}</span>
                 </div>

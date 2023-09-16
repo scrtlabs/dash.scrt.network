@@ -29,8 +29,7 @@ function Bridge() {
   const [isSquidModalOpen, setIsSquidModalOpen] = useState(false);
   const [isHoudiniModalOpen, setIsHoudiniModalOpen] = useState(false);
 
-  const { secretjs, secretAddress, connectWallet } =
-    useContext(SecretjsContext);
+  const { secretjs, connectWallet } = useContext(SecretjsContext);
 
   return (
     <>
@@ -60,7 +59,7 @@ function Bridge() {
       <div className="max-w-2xl mx-auto px-6 text-neutral-600 dark:text-neutral-400 leading-7 text-justify">
         {/* Title */}
         <div className="text-center mb-4">
-          <h1 className="font-bold text-4xl inline text-transparent bg-clip-text bg-gradient-to-r from-cyan-500 to-purple-500">
+          <h1 className="font-semibold text-4xl inline text-transparent bg-clip-text bg-gradient-to-r from-cyan-500 to-purple-500">
             Bridge
           </h1>
         </div>
@@ -116,7 +115,7 @@ function Bridge() {
             document.body.classList.remove("overflow-hidden");
           }}
           theme={theme}
-          secretAddress={secretAddress}
+          secretAddress={secretjs?.address}
         />
         <p>
           Or anonymously bridge your assets into SCRT using Houdini Swap.
@@ -140,7 +139,7 @@ function Bridge() {
             document.body.classList.remove("overflow-hidden");
           }}
           theme={theme}
-          secretAddress={secretAddress}
+          secretAddress={secretjs?.address}
         />
         <p>
           <span className="select-none">

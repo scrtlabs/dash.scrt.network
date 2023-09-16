@@ -24,7 +24,6 @@ export type FeeGrantStatus = "Success" | "Fail" | "Untouched";
 
 const SecretjsContextProvider = ({ children }: any) => {
   const [secretjs, setSecretjs] = useState<SecretNetworkClient | null>(null);
-  const [secretAddress, setSecretAddress] = useState<string>("");
   const [isGetWalletModalOpen, setIsGetWalletModalOpen] = useState(false);
   const [isConnectModalOpen, setIsConnectModalOpen] = useState(false);
   const [feeGrantStatus, setFeeGrantStatus] =
@@ -52,10 +51,10 @@ const SecretjsContextProvider = ({ children }: any) => {
   }, [preferedWalletApi]);
 
   useEffect(() => {
-    if (preferedWalletApi && !secretjs && !secretAddress) {
+    if (preferedWalletApi && !secretjs && !secretjs?.address) {
       connectWallet();
     }
-  }, [secretjs, secretAddress, preferedWalletApi]);
+  }, [secretjs, secretjs?.address, preferedWalletApi]);
 
   // Balances
   const [SCRTToken, setSCRTToken] = useState<Token>(
@@ -65,7 +64,7 @@ const SecretjsContextProvider = ({ children }: any) => {
   const [sSCRTBalance, setSSCRTBalance] = useState<any>();
 
   const updateTokenBalance = async () => {
-    if (!secretjs || !secretAddress) {
+    if (!secretjs || !secretjs?.address) {
       return;
     }
     const key = await getWalletViewingKey(SCRTToken.address);
@@ -84,7 +83,7 @@ const SecretjsContextProvider = ({ children }: any) => {
         contract_address: SCRTToken.address,
         code_hash: SCRTToken.code_hash,
         query: {
-          balance: { address: secretAddress, key },
+          balance: { address: secretjs?.address, key },
         },
       });
       if (result.viewing_key_error) {
@@ -105,7 +104,7 @@ const SecretjsContextProvider = ({ children }: any) => {
     const {
       balance: { amount },
     } = await secretjs.query.bank.balance({
-      address: secretAddress,
+      address: secretjs?.address,
       denom: "uscrt",
     });
     setSCRTBalance(amount);
@@ -113,30 +112,30 @@ const SecretjsContextProvider = ({ children }: any) => {
       try {
         const response = await fetch(faucetURL, {
           method: "POST",
-          body: JSON.stringify({ Address: secretAddress }),
+          body: JSON.stringify({ Address: secretjs?.address }),
           headers: { "Content-Type": "application/json" },
         });
         const result = await response;
         const textBody = await result.text();
         if (result.ok == true) {
           toast.success(
-            `Your wallet does not have any SCRT to pay for transaction costs. Successfully sent new fee grant (0.1 SCRT) to address ${secretAddress}.`
+            `Your wallet does not have any SCRT to pay for transaction costs. Successfully sent new fee grant (0.1 SCRT) to address ${secretjs?.address}.`
           );
           setFeeGrantStatus("Success");
         } else if (textBody == "Existing Fee Grant did not expire\n") {
           toast.success(
-            `Your wallet does not have any SCRT to pay for transaction costs. Your address ${secretAddress} however does already have an existing fee grant.`
+            `Your wallet does not have any SCRT to pay for transaction costs. Your address ${secretjs?.address} however does already have an existing fee grant.`
           );
           setFeeGrantStatus("Success");
         } else {
           toast.error(
-            `Fee Grant for address ${secretAddress} failed with status code: ${result.status}`
+            `Fee Grant for address ${secretjs?.address} failed with status code: ${result.status}`
           );
           setFeeGrantStatus("Fail");
         }
       } catch (e) {
         toast.error(
-          `Fee Grant for address ${secretAddress} failed with error: ${e}`
+          `Fee Grant for address ${secretjs?.address} failed with error: ${e}`
         );
         setFeeGrantStatus("Fail");
       }
@@ -144,12 +143,12 @@ const SecretjsContextProvider = ({ children }: any) => {
   };
 
   useEffect(() => {
-    if (!secretjs || !secretAddress) {
+    if (!secretjs || !secretjs?.address) {
       return;
     }
     fetchBalance();
     updateTokenBalance();
-  }, [secretjs, secretAddress]);
+  }, [secretjs, secretjs?.address]);
 
   async function connectWallet() {
     if (!window.keplr && !(window as any).leap) {
@@ -225,7 +224,6 @@ const SecretjsContextProvider = ({ children }: any) => {
     localStorage.setItem("preferedWalletApi", preferedApiForLocalStorage);
     window.dispatchEvent(new Event("storage"));
 
-    setSecretAddress(secretAddress);
     setSecretjs(secretjs);
   }
 
@@ -265,7 +263,6 @@ const SecretjsContextProvider = ({ children }: any) => {
 
       (window as any).wallet = (window as any).leap;
 
-      setSecretAddress(secretAddress);
       setSecretjs(secretjs);
 
       localStorage.setItem("preferedWalletApi", "Leap");
@@ -279,7 +276,7 @@ const SecretjsContextProvider = ({ children }: any) => {
     if (feeGrantStatus !== "Success") {
       fetch(faucetURL, {
         method: "POST",
-        body: JSON.stringify({ Address: secretAddress }),
+        body: JSON.stringify({ Address: secretjs?.address }),
         headers: { "Content-Type": "application/json" },
       })
         .then(async (result) => {
@@ -287,47 +284,41 @@ const SecretjsContextProvider = ({ children }: any) => {
           if (result.ok == true) {
             setFeeGrantStatus("Success");
             toast.success(
-              `Successfully sent new fee grant (0.1 SCRT) to address ${secretAddress}`
+              `Successfully sent new fee grant (0.1 SCRT) to address ${secretjs?.address}`
             );
           } else if (textBody == "Existing Fee Grant did not expire\n") {
             setFeeGrantStatus("Success");
             toast.success(
-              `Your address ${secretAddress} already has an existing fee grant`
+              `Your address ${secretjs?.address} already has an existing fee grant`
             );
           } else {
             setFeeGrantStatus("Fail");
             toast.error(
-              `Fee Grant for address ${secretAddress} failed with status code: ${result.status}`
+              `Fee Grant for address ${secretjs?.address} failed with status code: ${result.status}`
             );
           }
         })
         .catch((error) => {
           setFeeGrantStatus("Fail");
           toast.error(
-            `Fee Grant for address ${secretAddress} failed with error: ${error}`
+            `Fee Grant for address ${secretjs?.address} failed with error: ${error}`
           );
         });
     }
   }
 
-  const [loadingTokenBalance, setLoadingTokenBalance] = useState<boolean>(true);
-
   async function setViewingKey(token: Token) {
     await setWalletViewingKey(token.address);
     try {
-      setLoadingTokenBalance(true);
       await sleep(1000); // sometimes query nodes lag
       await updateTokenBalance();
-    } catch (e) {
+    } catch (e: any) {
       console.error(e);
-    } finally {
-      setLoadingTokenBalance(false);
     }
   }
 
   function disconnectWallet() {
     // reset secretjs and secretAddress
-    setSecretAddress("");
     setSecretjs(null);
 
     // reset wallet name
@@ -349,8 +340,6 @@ const SecretjsContextProvider = ({ children }: any) => {
       value={{
         secretjs,
         setSecretjs,
-        secretAddress,
-        setSecretAddress,
         connectWallet,
         disconnectWallet,
         isGetWalletModalOpen,
@@ -369,8 +358,6 @@ const SecretjsContextProvider = ({ children }: any) => {
         updateTokenBalance,
         SCRTToken,
         setSCRTToken,
-        loadingTokenBalance,
-        setLoadingTokenBalance,
         setViewingKey,
       }}
     >
@@ -413,7 +400,7 @@ async function getWalletViewingKey(token: string): Promise<string | null> {
       SECRET_CHAIN_ID,
       token
     );
-  } catch (e) {
+  } catch (e: any) {
     console.log(e);
     return null;
   }

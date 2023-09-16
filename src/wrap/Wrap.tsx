@@ -38,6 +38,12 @@ import { useSearchParams } from "react-router-dom";
 import { WrappingMode, isWrappingMode } from "shared/types/WrappingMode";
 import { APIContext } from "shared/context/APIContext";
 import FeeGrant from "shared/components/FeeGrant";
+import {
+  NativeTokenBalanceUi,
+  WrappedTokenBalanceUi,
+} from "shared/components/BalanceUI";
+import Title from "shared/components/Title";
+import PercentagePicker from "shared/components/PercentagePicker";
 
 export const WrapContext = createContext(null);
 
@@ -46,11 +52,8 @@ export function Wrap() {
     feeGrantStatus,
     setFeeGrantStatus,
     requestFeeGrant,
-    loadingTokenBalance,
-    setLoadingTokenBalance,
     setViewingKey,
     secretjs,
-    secretAddress,
     connectWallet,
   } = useContext(SecretjsContext);
 
@@ -132,8 +135,6 @@ export function Wrap() {
   const [isValidAmount, setIsValidAmount] = useState<boolean>(false);
   const [validationMessage, setValidationMessage] = useState<string>("");
   const [isValidationActive, setIsValidationActive] = useState<boolean>(false);
-
-  const [loadingCoinBalance, setLoadingCoinBalance] = useState<boolean>(true);
 
   function validateForm() {
     let isValid = false;
@@ -249,18 +250,8 @@ export function Wrap() {
 
   async function setBalance() {
     try {
-      setLoadingCoinBalance(true);
-      setLoadingTokenBalance(true);
-      await updateCoinBalance();
-      await updateTokenBalance();
-    } finally {
-      setLoadingCoinBalance(false);
-      setLoadingTokenBalance(false);
-    }
-  }
-
-  async function updateBalance() {
-    try {
+      setNativeBalance(undefined);
+      setTokenBalance(undefined);
       await updateCoinBalance();
       await updateTokenBalance();
     } catch (e) {
@@ -289,7 +280,7 @@ export function Wrap() {
         contract_address: selectedToken.address,
         code_hash: selectedToken.code_hash,
         query: {
-          balance: { address: secretAddress, key },
+          balance: { address: secretjs?.address, key },
         },
       });
 
@@ -305,141 +296,6 @@ export function Wrap() {
       setTokenBalance(viewingKeyErrorString);
     }
   };
-
-  function PercentagePicker() {
-    return (
-      <div className="inline-flex rounded-full text-xs font-bold">
-        <button
-          onClick={() => setAmountByPercentage(25)}
-          className="bg-neutral-100 dark:bg-neutral-900 px-1.5 py-0.5 rounded-l-md transition-colors hover:bg-neutral-300 dark:hover:bg-neutral-700 cursor-pointer disabled:text-neutral-500 dark:disabled:text-neutral-500 disabled:hover:bg-neutral-900 dark:disabled:hover:bg-neutral-900 disabled:cursor-default focus:outline-0 focus:ring-2 ring-sky-500/40 focus:z-10"
-          disabled={
-            !secretjs ||
-            !secretAddress ||
-            (wrappingMode === "unwrap" && tokenBalance == viewingKeyErrorString)
-          }
-        >
-          25%
-        </button>
-        <button
-          onClick={() => setAmountByPercentage(50)}
-          className="bg-neutral-100 dark:bg-neutral-900 px-1.5 py-0.5 border-l border-neutral-300 dark:border-neutral-700 transition-colors hover:bg-neutral-300 dark:hover:bg-neutral-700 cursor-pointer disabled:text-neutral-500 dark:disabled:text-neutral-500 disabled:hover:bg-neutral-900 dark:disabled:hover:bg-neutral-900 disabled:cursor-default focus:outline-0 focus:ring-2 ring-sky-500/40 focus:z-10"
-          disabled={
-            !secretjs ||
-            !secretAddress ||
-            (wrappingMode === "unwrap" && tokenBalance == viewingKeyErrorString)
-          }
-        >
-          50%
-        </button>
-        <button
-          onClick={() => setAmountByPercentage(75)}
-          className="bg-neutral-100 dark:bg-neutral-900 px-1.5 py-0.5 border-l border-neutral-300 dark:border-neutral-700 transition-colors hover:bg-neutral-300 dark:hover:bg-neutral-700 cursor-pointer disabled:text-neutral-500 dark:disabled:text-neutral-500 disabled:hover:bg-neutral-900 dark:disabled:hover:bg-neutral-900 disabled:cursor-default focus:outline-0 focus:ring-2 ring-sky-500/40 focus:z-10"
-          disabled={
-            !secretjs ||
-            !secretAddress ||
-            (wrappingMode === "unwrap" && tokenBalance == viewingKeyErrorString)
-          }
-        >
-          75%
-        </button>
-        <button
-          onClick={() => setAmountByPercentage(100)}
-          className="bg-neutral-100 dark:bg-neutral-900 px-1.5 py-0.5 rounded-r-md border-l border-neutral-300 dark:border-neutral-700 transition-colors hover:bg-neutral-300 dark:hover:bg-neutral-700 cursor-pointer disabled:text-neutral-500 dark:disabled:text-neutral-500 disabled:hover:bg-neutral-900 dark:disabled:hover:bg-neutral-900 disabled:cursor-default focus:outline-0 focus:ring-2 ring-sky-500/40 focus:z-10"
-          disabled={
-            !secretjs ||
-            !secretAddress ||
-            (wrappingMode === "unwrap" && tokenBalance == viewingKeyErrorString)
-          }
-        >
-          MAX
-        </button>
-      </div>
-    );
-  }
-
-  function NativeTokenBalanceUi() {
-    if (!loadingCoinBalance && secretjs && secretAddress && nativeBalance) {
-      return (
-        <>
-          <span className="font-semibold">Available:</span>
-          <span className="font-medium">
-            {" " +
-              new BigNumber(nativeBalance!)
-                .dividedBy(`1e${selectedToken.decimals}`)
-                .toFormat()}{" "}
-            {selectedToken.name} (
-            {usdString.format(
-              new BigNumber(nativeBalance!)
-                .dividedBy(`1e${selectedToken.decimals}`)
-                .multipliedBy(Number(selectedTokenPrice))
-                .toNumber()
-            )}
-            )
-          </span>
-
-          <Tooltip title={`IBC Transfer`} placement="bottom" arrow>
-            <Link
-              to="/ibc"
-              className="ml-2 hover:text-w dark:hover:text-white transition-colors hover:bg-neutral-100 dark:hover:bg-neutral-900 px-1.5 py-0.5 rounded focus:outline-0 focus:ring-2 ring-sky-500/40"
-            >
-              <FontAwesomeIcon icon={faArrowRightArrowLeft} />
-            </Link>
-          </Tooltip>
-        </>
-      );
-    } else {
-      return <></>;
-    }
-  }
-
-  function WrappedTokenBalanceUi() {
-    if (loadingTokenBalance || !secretjs || !secretAddress || !tokenBalance) {
-      return <></>;
-    } else if (tokenBalance == viewingKeyErrorString) {
-      return (
-        <>
-          <span className="font-semibold">Available:</span>
-          <button
-            className="ml-2 font-semibold bg-neutral-100 dark:bg-neutral-900 px-1.5 py-0.5 rounded-md border-neutral-300 dark:border-neutral-700 transition-colors hover:bg-neutral-300 dark:hover:bg-neutral-700 cursor-pointer disabled:text-neutral-500 dark:disabled:text-neutral-500 disabled:hover:bg-neutral-100 dark:disabled:hover:bg-neutral-900 disabled:cursor-default focus:outline-0 focus:ring-2 ring-sky-500/40"
-            onClick={() => setViewingKey(selectedToken)}
-          >
-            <FontAwesomeIcon icon={faKey} className="mr-2" />
-            Set Viewing Key
-          </button>
-          <Tooltip
-            title={
-              "Balances on Secret Network are private by default. Create a viewing key to view your encrypted balances."
-            }
-            placement="right"
-            arrow
-          >
-            <span className="ml-2 mt-1 text-neutral-600 dark:text-neutral-400 hover:text-black dark:hover:text-white transition-colors cursor-pointer">
-              <FontAwesomeIcon icon={faInfoCircle} />
-            </span>
-          </Tooltip>
-        </>
-      );
-    } else if (Number(tokenBalance) > -1) {
-      return (
-        <>
-          {/* Available: 0.123456 sSCRT () */}
-          <span className="font-semibold">Available:</span>
-          <span className="font-medium">
-            {` ${new BigNumber(tokenBalance!)
-              .dividedBy(`1e${selectedToken.decimals}`)
-              .toFormat()} s` +
-              selectedToken.name +
-              ` (${usdString.format(
-                new BigNumber(tokenBalance!)
-                  .dividedBy(`1e${selectedToken.decimals}`)
-                  .multipliedBy(Number(selectedTokenPrice))
-                  .toNumber()
-              )})`}
-          </span>
-        </>
-      );
-    }
-  }
 
   interface IWrappingModeSwitchProps {
     wrappingMode: WrappingMode;
@@ -511,7 +367,7 @@ export function Wrap() {
       setIsValidationActive(true);
       let isValidForm = validateForm();
 
-      if (!secretjs || !secretAddress) return;
+      if (!secretjs || !secretjs?.address) return;
 
       if (!isValidForm || amountString === "") {
         uiFocusInput();
@@ -542,7 +398,7 @@ export function Wrap() {
             .broadcast(
               [
                 new MsgExecuteContract({
-                  sender: secretAddress,
+                  sender: secretjs?.address,
                   contract_address: selectedToken.address,
                   code_hash: selectedToken.code_hash,
                   sent_funds: [
@@ -608,7 +464,7 @@ export function Wrap() {
             .broadcast(
               [
                 new MsgExecuteContract({
-                  sender: secretAddress,
+                  sender: secretjs?.address,
                   contract_address: selectedToken.address,
                   code_hash: selectedToken.code_hash,
                   sent_funds: [],
@@ -688,13 +544,9 @@ export function Wrap() {
           });
         }
         try {
-          setLoadingCoinBalance(true);
-          setLoadingTokenBalance(true);
           await sleep(1000); // sometimes query nodes lag
-          await updateBalance();
+          await setBalance();
         } finally {
-          setLoadingCoinBalance(false);
-          setLoadingTokenBalance(false);
         }
       }
     }
@@ -709,14 +561,17 @@ export function Wrap() {
             disabled={disabled}
             onClick={() => submit()}
           >
-            {secretAddress && secretjs && wrappingMode === "wrap" && amount ? (
+            {secretjs?.address &&
+            secretjs &&
+            wrappingMode === "wrap" &&
+            amount ? (
               <>
                 {`Wrap ${amount} ${nativeCurrency} into ${amount} ${wrappedCurrency}`}
               </>
             ) : null}
 
             {/* text for unwrapping with value */}
-            {secretAddress &&
+            {secretjs?.address &&
             secretjs &&
             wrappingMode === "unwrap" &&
             amount ? (
@@ -726,7 +581,7 @@ export function Wrap() {
             ) : null}
 
             {/* general text without value */}
-            {!amount || !secretAddress || !secretAddress
+            {!amount || !secretjs?.address
               ? wrappingMode === "wrap"
                 ? "Wrap"
                 : "Unwrap"
@@ -738,11 +593,12 @@ export function Wrap() {
   }
 
   const updateCoinBalance = async () => {
+    setNativeBalance(undefined);
     try {
       const {
         balance: { amount },
       } = await secretjs.query.bank.balance({
-        address: secretAddress,
+        address: secretjs?.address,
         denom: selectedToken.withdrawals[0]?.from_denom,
       });
       setNativeBalance(amount);
@@ -752,20 +608,20 @@ export function Wrap() {
   };
 
   useEffect(() => {
-    if (!secretjs || !secretAddress) return;
+    if (!secretjs || !secretjs?.address) return;
 
     (async () => {
       setBalance();
     })();
 
-    const interval = setInterval(updateBalance, 10000);
+    const interval = setInterval(setBalance, 10000);
     return () => {
       clearInterval(interval);
     };
-  }, [secretAddress, secretjs, selectedToken, feeGrantStatus]);
+  }, [secretjs?.address, secretjs, selectedToken, feeGrantStatus]);
 
   const handleClick = () => {
-    if (!secretAddress || !secretjs) {
+    if (!secretjs?.address || !secretjs) {
       connectWallet();
     }
   };
@@ -800,7 +656,7 @@ export function Wrap() {
         value={{
           isUnknownBalanceModalOpen,
           setIsUnknownBalanceModalOpen,
-          selectedTokenName: selectedToken.name,
+          selectedToken: selectedToken,
           amountToWrap: amountString,
           hasEnoughBalanceForUnwrapping: false,
         }}
@@ -820,28 +676,27 @@ export function Wrap() {
           }}
         />
         <div className="w-full max-w-xl mx-auto px-4 onEnter_fadeInDown relative">
-          {!secretjs && !secretAddress ? (
+          {!secretjs && !secretjs?.address ? (
             // Overlay to connect on click
             <div
               className="absolute block top-0 left-0 right-0 bottom-0 z-10"
               onClick={handleClick}
             ></div>
           ) : null}
+
+          {/* Title */}
+          <Title
+            title={`Secret ${wrappingMode === "wrap" ? "Wrap" : "Unwrap"}`}
+          >
+            <Tooltip title={message} placement="right" arrow>
+              <span className="ml-2 relative -top-1.5 text-neutral-600 dark:text-neutral-400 hover:text-black dark:hover:text-white transition-colors cursor-pointer">
+                <FontAwesomeIcon icon={faInfoCircle} />
+              </span>
+            </Tooltip>
+          </Title>
+
           {/* Content */}
           <div className="border border-neutral-200 dark:border-neutral-700 rounded-2xl p-8 w-full text-neutral-800 dark:text-neutral-200 bg-white dark:bg-neutral-900">
-            {/* Header */}
-            <div className="flex items-center mb-4">
-              <h1 className="inline text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-500 to-purple-500">
-                Secret {wrappingMode === "wrap" ? "Wrap" : "Unwrap"}
-              </h1>
-
-              <Tooltip title={message} placement="right" arrow>
-                <span className="ml-2 mt-1 text-neutral-600 dark:text-neutral-400 hover:text-black dark:hover:text-white transition-colors cursor-pointer">
-                  <FontAwesomeIcon icon={faInfoCircle} />
-                </span>
-              </Tooltip>
-            </div>
-
             {/* *** From *** */}
             <div className="bg-neutral-200 dark:bg-neutral-800 p-4 rounded-xl">
               {/* Title Bar */}
@@ -859,7 +714,7 @@ export function Wrap() {
               {/* Input Field */}
               <div className="flex" id="fromInputWrapper">
                 <Select
-                  isDisabled={!selectedToken.address || !secretAddress}
+                  isDisabled={!selectedToken.address || !secretjs?.address}
                   options={tokens.sort((a, b) => a.name.localeCompare(b.name))}
                   value={selectedToken}
                   onChange={setSelectedToken}
@@ -895,18 +750,34 @@ export function Wrap() {
                   name="fromValue"
                   id="fromValue"
                   placeholder="0"
-                  disabled={!secretjs || !secretAddress}
+                  disabled={!secretjs || !secretjs?.address}
                 />
               </div>
 
               {/* Balance | [25%|50%|75%|Max] */}
               <div className="flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 mt-2">
                 <div className="flex-1 text-xs">
-                  {wrappingMode === "wrap" && <NativeTokenBalanceUi />}
-                  {wrappingMode === "unwrap" && <WrappedTokenBalanceUi />}
+                  {wrappingMode === "unwrap" &&
+                    WrappedTokenBalanceUi(
+                      tokenBalance,
+                      selectedToken,
+                      selectedTokenPrice
+                    )}
+                  {wrappingMode === "wrap" &&
+                    NativeTokenBalanceUi(
+                      nativeBalance,
+                      selectedToken,
+                      selectedTokenPrice
+                    )}
                 </div>
                 <div className="sm:flex-initial text-xs">
-                  <PercentagePicker />
+                  {PercentagePicker(
+                    setAmountByPercentage,
+                    !secretjs ||
+                      !secretjs?.address ||
+                      (wrappingMode === "unwrap" &&
+                        tokenBalance == viewingKeyErrorString)
+                  )}
                 </div>
               </div>
             </div>
@@ -914,7 +785,7 @@ export function Wrap() {
             {/* Wrapping Mode Switch */}
             <WrappingModeSwitch
               wrappingMode={wrappingMode}
-              disabled={!secretAddress || !secretjs}
+              disabled={!secretjs?.address || !secretjs}
             />
 
             <div className="bg-neutral-200 dark:bg-neutral-800 p-4 rounded-xl mb-5">
@@ -926,7 +797,7 @@ export function Wrap() {
 
               <div className="flex">
                 <Select
-                  isDisabled={!selectedToken.address || !secretAddress}
+                  isDisabled={!selectedToken.address || !secretjs?.address}
                   options={tokens.sort((a, b) => a.name.localeCompare(b.name))}
                   value={selectedToken}
                   onChange={setSelectedToken}
@@ -959,12 +830,22 @@ export function Wrap() {
                   name="toValue"
                   id="toValue"
                   placeholder="0"
-                  disabled={!secretjs || !secretAddress}
+                  disabled={!secretjs || !secretjs?.address}
                 />
               </div>
               <div className="flex-1 text-xs mt-3 text-center sm:text-left h-[1rem]">
-                {wrappingMode === "wrap" && <WrappedTokenBalanceUi />}
-                {wrappingMode === "unwrap" && <NativeTokenBalanceUi />}
+                {wrappingMode === "wrap" &&
+                  WrappedTokenBalanceUi(
+                    tokenBalance,
+                    selectedToken,
+                    selectedTokenPrice
+                  )}
+                {wrappingMode === "unwrap" &&
+                  NativeTokenBalanceUi(
+                    nativeBalance,
+                    selectedToken,
+                    selectedTokenPrice
+                  )}
               </div>
             </div>
 
@@ -973,7 +854,9 @@ export function Wrap() {
 
             {/* Submit Button */}
             <SubmitButton
-              disabled={!secretjs || !selectedToken.address || !secretAddress}
+              disabled={
+                !secretjs || !selectedToken.address || !secretjs?.address
+              }
               amount={amountString}
               nativeCurrency={selectedToken.name}
               wrappedAmount={amountString}

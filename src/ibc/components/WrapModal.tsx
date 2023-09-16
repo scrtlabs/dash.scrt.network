@@ -29,8 +29,6 @@ const WrapModal = (props: IWrapModalProps) => {
   const {
     isWrapModalOpen,
     setIsWrapModalOpen,
-    selectedTokenName,
-    setSelectedTokenName,
     ibcMode,
     setIbcMode,
     toggleIbcMode,
@@ -41,7 +39,6 @@ const WrapModal = (props: IWrapModalProps) => {
   const [assetViewingKey, setAssetViewingKey] = useState<any>();
 
   useEffect(() => {
-    setSelectedTokenName(selectedToken.name);
     const updateCoinBalance = async () => {
       const key = await getWalletViewingKey(selectedToken.address);
       if (!key) {

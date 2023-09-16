@@ -18,8 +18,7 @@ import mixpanel from "mixpanel-browser";
 import { Nullable } from "shared/types/Nullable";
 
 function GetSCRT() {
-  const { secretjs, secretAddress, connectWallet } =
-    useContext(SecretjsContext);
+  const { secretjs, connectWallet } = useContext(SecretjsContext);
 
   const [loading, setLoading] = useState(false);
 
@@ -68,7 +67,7 @@ function GetSCRT() {
     transakQueryStrings.environment = "PRODUCTION";
   }
   transakQueryStrings.cryptoCurrencyList = "SCRT";
-  transakQueryStrings.walletAddress = secretAddress;
+  transakQueryStrings.walletAddress = secretjs?.address;
   transakQueryStrings.disableWalletAddressForm = false;
   transakQueryStrings.themeColor = "000000";
   transakQueryStrings.defaultCryptoCurrency = "SCRT";
@@ -95,7 +94,7 @@ function GetSCRT() {
       <div className="max-w-2xl mx-auto px-6">
         {/* Title */}
         <div className="text-center mb-4">
-          <h1 className="font-bold text-4xl inline text-transparent bg-clip-text bg-gradient-to-r from-cyan-500 to-purple-500">
+          <h1 className="font-semibold text-4xl inline text-transparent bg-clip-text bg-gradient-to-r from-cyan-500 to-purple-500">
             Get SCRT
           </h1>
         </div>
@@ -176,7 +175,7 @@ function GetSCRT() {
                 <div className="animate-pulse bg-neutral-300/40 dark:bg-neutral-700/40 w-screen h-screen"></div>
               )}
               <iframe
-                src={`https://app.kado.money/?apiKey=acd1e5a5-8a25-4b2d-b303-b5e113457ef1&onRevCurrency=SCRT&product=BUY&network=SECRET&=onToAddress=${secretAddress}`}
+                src={`https://app.kado.money/?apiKey=acd1e5a5-8a25-4b2d-b303-b5e113457ef1&onRevCurrency=SCRT&product=BUY&network=SECRET&=onToAddress=${secretjs?.address}`}
                 width="100%"
                 height="100%"
                 onLoad={() => setLoading(false)}

@@ -218,7 +218,7 @@ export default function StakingChart() {
       <div>
         {/* Title */}
         {/* <div className='flex items-center mb-4'>
-          <h1 className='text-2xl font-bold'>Staking</h1>
+          <h1 className='text-2xl font-semibold'>Staking</h1>
           <Tooltip
             title={`Earn rewards for holding SCRT (currently ~24.66% p.a.)`}
             placement='right'

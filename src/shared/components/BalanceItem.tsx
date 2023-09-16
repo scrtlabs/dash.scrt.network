@@ -89,7 +89,7 @@ const BalanceItem: FunctionComponent<IBalanceProps> = ({
         />
       </div>
       {isSecretToken && sSCRTBalance == viewingKeyErrorString ? (
-        <div className="font-bold">
+        <div className="font-semibold">
           {" "}
           sSCRT
           <SetViewingKeyButton token={token} />
@@ -97,7 +97,7 @@ const BalanceItem: FunctionComponent<IBalanceProps> = ({
       ) : (
         <div className="text-xs">
           {/* Balance as native token */}
-          <div className="font-bold">
+          <div className="font-semibold">
             {!isSecretToken
               ? new BigNumber(SCRTBalance!)
                   .dividedBy(`1e${SCRTToken.decimals}`)

@@ -15,13 +15,12 @@ import {
   ibcPageDescription,
   ibcPageTitle,
 } from "shared/utils/commons";
+import Title from "shared/components/Title";
 
 export const IbcContext = createContext(null);
 
 export function Ibc() {
   const [isWrapModalOpen, setIsWrapModalOpen] = useState(false);
-
-  const [selectedTokenName, setSelectedTokenName] = useState("");
 
   const [selectedToken, setSelectedToken] = useState<Token>(
     tokens.filter((token) => token.name === "SCRT")[0]
@@ -31,8 +30,7 @@ export function Ibc() {
 
   const [ibcMode, setIbcMode] = useState<IbcMode>("deposit");
 
-  const { secretjs, secretAddress, connectWallet } =
-    useContext(SecretjsContext);
+  const { secretjs, connectWallet } = useContext(SecretjsContext);
 
   // URL params
   const [searchParams, setSearchParams] = useSearchParams();
@@ -110,7 +108,7 @@ export function Ibc() {
   }
 
   const handleClick = () => {
-    if (!secretAddress || !secretjs) {
+    if (!secretjs?.address || !secretjs) {
       connectWallet();
     }
   };
@@ -118,8 +116,6 @@ export function Ibc() {
   const ibcContextProviderValue = {
     isWrapModalOpen,
     setIsWrapModalOpen,
-    selectedTokenName,
-    setSelectedTokenName,
     ibcMode,
     setIbcMode,
     toggleIbcMode,
@@ -173,31 +169,28 @@ export function Ibc() {
             document.body.classList.remove("overflow-hidden");
           }}
         />
+
         <div className="w-full max-w-xl mx-auto px-4 onEnter_fadeInDown">
+          {/* Title */}
+          <Title title={"IBC Transfer"}>
+            <Tooltip
+              title={
+                ibcMode === "deposit"
+                  ? `Deposit your ${selectedToken?.name} via IBC transfer from any chain to Secret Network`
+                  : `Withdraw your ${selectedToken?.name} via IBC transfer from Secret Network to any chain`
+              }
+              placement="right"
+              arrow
+            >
+              <span className="ml-2 relative -top-1.5 text-neutral-600 dark:text-neutral-400 hover:text-black dark:hover:text-white transition-colors cursor-pointer">
+                <FontAwesomeIcon icon={faInfoCircle} />
+              </span>
+            </Tooltip>
+          </Title>
           <div
             className="rounded-2xl p-8 border border-neutral-200 dark:border-neutral-700 w-full text-neutral-800 dark:text-neutral-200 bg-white dark:bg-neutral-900"
             onClick={handleClick}
           >
-            {/* Header */}
-            <div className="flex items-center mb-4">
-              <h1 className="inline text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-500 to-purple-500">
-                IBC Transfer
-              </h1>
-              <Tooltip
-                title={
-                  ibcMode === "deposit"
-                    ? `Deposit your ${selectedTokenName} via IBC transfer from any chain to Secret Network`
-                    : `Withdraw your ${selectedTokenName} via IBC transfer from Secret Network to any chain`
-                }
-                placement="right"
-                arrow
-              >
-                <span className="ml-2 mt-1 text-neutral-600 dark:text-neutral-400 hover:text-black dark:hover:text-white transition-colors cursor-pointer">
-                  <FontAwesomeIcon icon={faInfoCircle} />
-                </span>
-              </Tooltip>
-            </div>
-
             {/* Deposit */}
             <Deposit />
           </div>

@@ -22,7 +22,7 @@ class Footer extends React.Component {
             <a
               href="https://scrt.network/"
               target="_blank"
-              className="transition-colors hover:text-black dark:hover:text-white font-bold"
+              className="transition-colors hover:text-black dark:hover:text-white font-semibold"
             >
               Secret Network
             </a>

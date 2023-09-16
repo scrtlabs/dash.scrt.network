@@ -18,6 +18,7 @@ import Apps from "apps/Apps";
 import { Staking } from "staking/Staking";
 import { Send } from "send/Send";
 import GetSCRT from "get-scrt/GetScrt";
+import Balances from "balances/Balances";
 
 // Contexts
 import { ThemeContextProvider } from "shared/context/ThemeContext";
@@ -110,6 +111,7 @@ export default function App() {
         <Route path="/bridge" element={<Bridge />} />
         <Route path="/get-scrt" element={<GetSCRT />} />
         <Route path="/staking" element={<Staking />} />
+        <Route path="/balances" element={<Balances />} />
         <Route path="/send" element={<Send />} />
         <Route path="/apps" element={<Apps />} />
       </Routes>

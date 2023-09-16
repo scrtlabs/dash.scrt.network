@@ -41,17 +41,16 @@ import mixpanel from "mixpanel-browser";
 import { useSearchParams } from "react-router-dom";
 import { APIContext } from "shared/context/APIContext";
 import FeeGrant from "shared/components/FeeGrant";
+import {
+  NativeTokenBalanceUi,
+  WrappedTokenBalanceUi,
+} from "shared/components/BalanceUI";
+import Title from "shared/components/Title";
+import PercentagePicker from "shared/components/PercentagePicker";
 
 export function Send() {
-  const {
-    feeGrantStatus,
-    loadingTokenBalance,
-    setLoadingTokenBalance,
-    setViewingKey,
-    secretjs,
-    secretAddress,
-    connectWallet,
-  } = useContext(SecretjsContext);
+  const { feeGrantStatus, secretjs, connectWallet } =
+    useContext(SecretjsContext);
 
   const { prices } = useContext(APIContext);
 
@@ -61,37 +60,16 @@ export function Send() {
     tokenToModify.address = "native";
   }
 
-  const sSCRT = [
-    {
-      name: "SCRT",
-      address: "secret1k0jntykt7e4g3y88ltc60czgjuqdy4c9e8fzek",
-      code_hash:
-        "af74387e276be8874f07bec3a87023ee49b0e7ebe08178c49d0a49c3c98ed60e",
-      image: "/scrt.svg",
-      decimals: 6,
-      coingecko_id: "secret",
-      deposits: [
-        {
-          chain_name: "Secret",
-          from_denom: "uscrt",
-        },
-      ],
-      withdrawals: [
-        {
-          chain_name: "Secret",
-          from_denom: "uscrt",
-        },
-      ],
-    },
-  ];
+  const SCRT = allTokens[0];
 
-  tokens = tokens.concat(sSCRT);
+  tokens = [SCRT, ...tokens];
 
   const secretToken: Token = tokens.find(
     (token: any) =>
       token.name === "SCRT" &&
       token.address === "secret1k0jntykt7e4g3y88ltc60czgjuqdy4c9e8fzek"
   );
+
   const [selectedToken, setSelectedToken] = useState<Token>(secretToken);
   const [selectedTokenPrice, setSelectedTokenPrice] = useState<number>(0);
   const [amountString, setAmountString] = useState<string>("0");
@@ -152,8 +130,6 @@ export function Send() {
   const [destinationValidationMessage, setDestinationValidationMessage] =
     useState<string>("");
   const [isValidationActive, setIsValidationActive] = useState<boolean>(false);
-
-  const [loadingCoinBalance, setLoadingCoinBalance] = useState<boolean>(true);
 
   function validateForm() {
     let isValidAmount = false;
@@ -223,12 +199,6 @@ export function Send() {
     setAmountString(filteredValue);
   }
 
-  const message = `Send ${
-    selectedToken.address === "native" ? "public " : "privacy preserving "
-  }${selectedToken.address === "native" || selectedToken.is_snip20 ? "" : "s"}${
-    selectedToken.name
-  }`;
-
   // handles [25% | 50% | 75% | Max] Button-Group
   function setAmountByPercentage(percentage: number) {
     let maxValue = "0";
@@ -262,18 +232,6 @@ export function Send() {
 
   async function setBalance() {
     try {
-      setLoadingCoinBalance(true);
-      setLoadingTokenBalance(true);
-      await updateCoinBalance();
-      await updateTokenBalance();
-    } finally {
-      setLoadingCoinBalance(false);
-      setLoadingTokenBalance(false);
-    }
-  }
-
-  async function updateBalance() {
-    try {
       await updateCoinBalance();
       await updateTokenBalance();
     } catch (e) {
@@ -302,7 +260,7 @@ export function Send() {
         contract_address: selectedToken.address,
         code_hash: selectedToken.code_hash,
         query: {
-          balance: { address: secretAddress, key },
+          balance: { address: secretjs?.address, key },
         },
       });
 
@@ -319,156 +277,14 @@ export function Send() {
     }
   };
 
-  function PercentagePicker() {
-    return (
-      <div className="inline-flex rounded-full text-xs font-bold">
-        <button
-          onClick={() => setAmountByPercentage(25)}
-          className="bg-neutral-100 dark:bg-neutral-900 px-1.5 py-0.5 rounded-l-md transition-colors hover:bg-neutral-300 dark:hover:bg-neutral-700 cursor-pointer disabled:text-neutral-500 dark:disabled:text-neutral-500 disabled:hover:bg-neutral-900 dark:disabled:hover:bg-neutral-900 disabled:cursor-default focus:outline-0 focus:ring-2 ring-sky-500/40 focus:z-10"
-          disabled={
-            !secretjs ||
-            !secretAddress ||
-            (tokenBalance == viewingKeyErrorString &&
-              selectedToken.address !== "native")
-          }
-        >
-          25%
-        </button>
-        <button
-          onClick={() => setAmountByPercentage(50)}
-          className="bg-neutral-100 dark:bg-neutral-900 px-1.5 py-0.5 border-l border-neutral-300 dark:border-neutral-700 transition-colors hover:bg-neutral-300 dark:hover:bg-neutral-700 cursor-pointer disabled:text-neutral-500 dark:disabled:text-neutral-500 disabled:hover:bg-neutral-900 dark:disabled:hover:bg-neutral-900 disabled:cursor-default focus:outline-0 focus:ring-2 ring-sky-500/40 focus:z-10"
-          disabled={
-            !secretjs ||
-            !secretAddress ||
-            (tokenBalance == viewingKeyErrorString &&
-              selectedToken.address !== "native")
-          }
-        >
-          50%
-        </button>
-        <button
-          onClick={() => setAmountByPercentage(75)}
-          className="bg-neutral-100 dark:bg-neutral-900 px-1.5 py-0.5 border-l border-neutral-300 dark:border-neutral-700 transition-colors hover:bg-neutral-300 dark:hover:bg-neutral-700 cursor-pointer disabled:text-neutral-500 dark:disabled:text-neutral-500 disabled:hover:bg-neutral-900 dark:disabled:hover:bg-neutral-900 disabled:cursor-default focus:outline-0 focus:ring-2 ring-sky-500/40 focus:z-10"
-          disabled={
-            !secretjs ||
-            !secretAddress ||
-            (tokenBalance == viewingKeyErrorString &&
-              selectedToken.address !== "native")
-          }
-        >
-          75%
-        </button>
-        <button
-          onClick={() => setAmountByPercentage(100)}
-          className="bg-neutral-100 dark:bg-neutral-900 px-1.5 py-0.5 rounded-r-md border-l border-neutral-300 dark:border-neutral-700 transition-colors hover:bg-neutral-300 dark:hover:bg-neutral-700 cursor-pointer disabled:text-neutral-500 dark:disabled:text-neutral-500 disabled:hover:bg-neutral-900 dark:disabled:hover:bg-neutral-900 disabled:cursor-default focus:outline-0 focus:ring-2 ring-sky-500/40 focus:z-10"
-          disabled={
-            !secretjs ||
-            !secretAddress ||
-            (tokenBalance == viewingKeyErrorString &&
-              selectedToken.address !== "native")
-          }
-        >
-          MAX
-        </button>
-      </div>
-    );
-  }
-
-  function NativeTokenBalanceUi() {
-    if (!loadingCoinBalance && secretjs && secretAddress && nativeBalance) {
-      return (
-        <>
-          <span className="font-semibold">Available:</span>
-          <span className="font-medium">
-            {" " +
-              new BigNumber(nativeBalance!)
-                .dividedBy(`1e${selectedToken.decimals}`)
-                .toFormat()}{" "}
-            {selectedToken.name} (
-            {usdString.format(
-              new BigNumber(nativeBalance!)
-                .dividedBy(`1e${selectedToken.decimals}`)
-                .multipliedBy(Number(selectedTokenPrice))
-                .toNumber()
-            )}
-            )
-          </span>
-
-          <Tooltip title={`IBC Transfer`} placement="bottom" arrow>
-            <Link
-              to="/ibc"
-              className="ml-2 hover:text-w dark:hover:text-white transition-colors hover:bg-neutral-100 dark:hover:bg-neutral-900 px-1.5 py-0.5 rounded focus:outline-0 focus:ring-2 ring-sky-500/40"
-            >
-              <FontAwesomeIcon icon={faArrowRightArrowLeft} />
-            </Link>
-          </Tooltip>
-        </>
-      );
-    } else {
-      return <></>;
-    }
-  }
-
-  function WrappedTokenBalanceUi() {
-    if (loadingTokenBalance || !secretjs || !secretAddress || !tokenBalance) {
-      return <></>;
-    } else if (tokenBalance == viewingKeyErrorString) {
-      return (
-        <>
-          <span className="font-semibold">Available:</span>
-          <button
-            className="ml-2 font-semibold bg-neutral-100 dark:bg-neutral-900 px-1.5 py-0.5 rounded-md border-neutral-300 dark:border-neutral-700 transition-colors hover:bg-neutral-300 dark:hover:bg-neutral-700 cursor-pointer disabled:text-neutral-500 dark:disabled:text-neutral-500 disabled:hover:bg-neutral-100 dark:disabled:hover:bg-neutral-900 disabled:cursor-default focus:outline-0 focus:ring-2 ring-sky-500/40"
-            onClick={() => setViewingKey(selectedToken)}
-          >
-            <FontAwesomeIcon icon={faKey} className="mr-2" />
-            Set Viewing Key
-          </button>
-          <Tooltip
-            title={
-              "Balances on Secret Network are private by default. Create a viewing key to view your encrypted balances."
-            }
-            placement="right"
-            arrow
-          >
-            <span className="ml-2 mt-1 text-neutral-600 dark:text-neutral-400 hover:text-black dark:hover:text-white transition-colors cursor-pointer">
-              <FontAwesomeIcon icon={faInfoCircle} />
-            </span>
-          </Tooltip>
-        </>
-      );
-    } else if (Number(tokenBalance) > -1) {
-      return (
-        <>
-          {/* Available: 0.123456 sSCRT () */}
-          <span className="font-semibold">Available:</span>
-          <span className="font-medium">
-            {` ${new BigNumber(tokenBalance!)
-              .dividedBy(`1e${selectedToken.decimals}`)
-              .toFormat()} s` +
-              selectedToken.name +
-              ` (${usdString.format(
-                new BigNumber(tokenBalance!)
-                  .dividedBy(`1e${selectedToken.decimals}`)
-                  .multipliedBy(Number(selectedTokenPrice))
-                  .toNumber()
-              )})`}
-          </span>
-        </>
-      );
-    }
-  }
-
   function SubmitButton(props: {
     disabled: boolean;
     amount: string | undefined;
-    nativeCurrency: string;
-    wrappedAmount: string | undefined;
-    wrappedCurrency: string;
+    currency: string;
   }) {
     const disabled = props.disabled;
     const amount = props.amount;
-    const nativeCurrency = props.nativeCurrency;
-    const wrappedCurrency = props.wrappedCurrency;
+    const currency = props.currency;
 
     function uiFocusInput() {
       document
@@ -491,7 +307,7 @@ export function Send() {
       setIsValidationActive(true);
       const isValidForm = validateForm();
 
-      if (!secretjs || !secretAddress) return;
+      if (!secretjs || !secretjs?.address) return;
 
       if (!isValidForm || amountString === "") {
         uiFocusInput();
@@ -512,7 +328,7 @@ export function Send() {
         const toastId = toast.loading(`Sending s${selectedToken.name}`, {
           closeButton: true,
         });
-        secretAddress;
+        secretjs?.address;
         destinationAddress;
         amount;
         await secretjs.tx
@@ -520,7 +336,7 @@ export function Send() {
             [
               selectedToken.address === "native"
                 ? new MsgSend({
-                    from_address: secretAddress,
+                    from_address: secretjs?.address,
                     to_address: destinationAddress,
                     amount: [
                       {
@@ -530,7 +346,7 @@ export function Send() {
                     ],
                   } as any)
                 : new MsgExecuteContract({
-                    sender: secretAddress,
+                    sender: secretjs?.address,
                     contract_address: selectedToken.address,
                     code_hash: selectedToken.code_hash,
                     sent_funds: [],
@@ -603,13 +419,9 @@ export function Send() {
           });
         }
         try {
-          setLoadingCoinBalance(true);
-          setLoadingTokenBalance(true);
           await sleep(1000); // sometimes query nodes lag
-          await updateBalance();
+          await setBalance();
         } finally {
-          setLoadingCoinBalance(false);
-          setLoadingTokenBalance(false);
         }
       }
     }
@@ -624,16 +436,12 @@ export function Send() {
             disabled={disabled}
             onClick={() => submit()}
           >
-            {secretAddress && secretjs && amount ? (
-              <>{`Send ${amount} ${
-                selectedToken.address === "native" || selectedToken.is_snip20
-                  ? nativeCurrency
-                  : wrappedCurrency
-              }`}</>
+            {secretjs?.address && secretjs && amount ? (
+              <>{`Send ${amount} ${currency}`}</>
             ) : null}
 
             {/* general text without value */}
-            {!amount || !secretAddress || !secretAddress ? "Send" : null}
+            {!amount || !secretjs?.address ? "Send" : null}
           </button>
         </div>
       </>
@@ -645,7 +453,7 @@ export function Send() {
       const {
         balance: { amount },
       } = await secretjs.query.bank.balance({
-        address: secretAddress,
+        address: secretjs?.address,
         denom: selectedToken.withdrawals[0]?.from_denom,
       });
       setNativeBalance(amount);
@@ -655,20 +463,20 @@ export function Send() {
   };
 
   useEffect(() => {
-    if (!secretjs || !secretAddress) return;
+    if (!secretjs || !secretjs?.address) return;
 
     (async () => {
       setBalance();
     })();
 
-    const interval = setInterval(updateBalance, 10000);
+    const interval = setInterval(setBalance, 10000);
     return () => {
       clearInterval(interval);
     };
-  }, [secretAddress, secretjs, selectedToken, feeGrantStatus]);
+  }, [secretjs?.address, secretjs, selectedToken, feeGrantStatus]);
 
   const handleClick = () => {
-    if (!secretAddress || !secretjs) {
+    if (!secretjs?.address || !secretjs) {
       connectWallet();
     }
   };
@@ -700,30 +508,29 @@ export function Send() {
       </Helmet>
 
       <div className="w-full max-w-xl mx-auto px-4 onEnter_fadeInDown relative">
-        {!secretjs && !secretAddress ? (
+        {!secretjs && !secretjs?.address ? (
           // Overlay to connect on click
           <div
             className="absolute block top-0 left-0 right-0 bottom-0 z-10"
             onClick={handleClick}
           ></div>
         ) : null}
+
+        {/* Title */}
+        <Title title={`Send`}>
+          <Tooltip
+            title={`Transfer your assets to a given address`}
+            placement="right"
+            arrow
+          >
+            <span className="ml-2 relative -top-1.5 text-neutral-600 dark:text-neutral-400 hover:text-black dark:hover:text-white transition-colors cursor-pointer">
+              <FontAwesomeIcon icon={faInfoCircle} />
+            </span>
+          </Tooltip>
+        </Title>
+
         {/* Content */}
         <div className="border border-neutral-200 dark:border-neutral-700 rounded-2xl p-8 w-full text-neutral-800 dark:text-neutral-200 bg-white dark:bg-neutral-900">
-          {/* Header */}
-          <div className="flex items-center mb-4">
-            <h1 className="inline text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-500 to-purple-500">
-              {`${
-                selectedToken.address === "native" ? "Public " : "Secret"
-              } Send`}
-            </h1>
-
-            <Tooltip title={message} placement="right" arrow>
-              <span className="ml-2 mt-1 text-neutral-600 dark:text-neutral-400 hover:text-black dark:hover:text-white transition-colors cursor-pointer">
-                <FontAwesomeIcon icon={faInfoCircle} />
-              </span>
-            </Tooltip>
-          </div>
-
           {/* *** From *** */}
           <div className="bg-neutral-200 dark:bg-neutral-800 p-4 rounded-xl mb-4">
             {/* Title Bar */}
@@ -742,7 +549,7 @@ export function Send() {
             {/* Input Field */}
             <div className="flex mt-2" id="destinationInputWrapper">
               <Select
-                isDisabled={!selectedToken.address || !secretAddress}
+                isDisabled={!selectedToken.address || !secretjs?.address}
                 options={tokens.sort((a: any, b: any) =>
                   a.name.localeCompare(b.name)
                 )}
@@ -782,21 +589,33 @@ export function Send() {
                 name="fromValue"
                 id="fromValue"
                 placeholder="0"
-                disabled={!secretjs || !secretAddress}
+                disabled={!secretjs || !secretjs?.address}
               />
             </div>
 
             {/* Balance | [25%|50%|75%|Max] */}
             <div className="flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 mt-2">
               <div className="flex-1 text-xs">
-                {selectedToken.address === "native" ? (
-                  <NativeTokenBalanceUi />
-                ) : (
-                  <WrappedTokenBalanceUi />
-                )}
+                {selectedToken.address === "native"
+                  ? NativeTokenBalanceUi(
+                      nativeBalance,
+                      selectedToken,
+                      selectedTokenPrice
+                    )
+                  : WrappedTokenBalanceUi(
+                      tokenBalance,
+                      selectedToken,
+                      selectedTokenPrice
+                    )}
               </div>
               <div className="sm:flex-initial text-xs">
-                <PercentagePicker />
+                {PercentagePicker(
+                  setAmountByPercentage,
+                  !secretjs ||
+                    !secretjs?.address ||
+                    (tokenBalance == viewingKeyErrorString &&
+                      selectedToken.address !== "native")
+                )}
               </div>
             </div>
           </div>
@@ -805,8 +624,17 @@ export function Send() {
           <div className="bg-neutral-200 dark:bg-neutral-800 p-4 rounded-xl mb-4">
             {/* Title Bar */}
             <div className="flex justify-between items-center mb-2">
-              <span className="font-semibold text-center sm:text-left">
+              <span className="flex-1 font-semibold mb-2 text-center sm:text-left">
                 Destination Address
+                <Tooltip
+                  title={`The wallet address you want to transfer to`}
+                  placement="right"
+                  arrow
+                >
+                  <span className="ml-2 mt-1 text-neutral-600 dark:text-neutral-400 hover:text-black dark:hover:text-white transition-colors cursor-pointer">
+                    <FontAwesomeIcon icon={faInfoCircle} />
+                  </span>
+                </Tooltip>
               </span>
               {!isValidDestination && isValidationActive && (
                 <span className="text-red-500 dark:text-red-500 text-xs font-normal">
@@ -830,7 +658,7 @@ export function Send() {
                 name="destinationAddress"
                 id="destinationAddress"
                 placeholder="Destination Address (secret1 ...)"
-                disabled={!secretjs || !secretAddress}
+                disabled={!secretjs || !secretjs?.address}
               />
             </div>
           </div>
@@ -841,6 +669,15 @@ export function Send() {
             <div className="flex flex-col sm:flex-row">
               <div className="flex-1 font-semibold mb-2 text-center sm:text-left">
                 Memo (optional)
+                <Tooltip
+                  title={`Add a message to your transaction`}
+                  placement="right"
+                  arrow
+                >
+                  <span className="ml-2 mt-1 text-neutral-600 dark:text-neutral-400 hover:text-black dark:hover:text-white transition-colors cursor-pointer">
+                    <FontAwesomeIcon icon={faInfoCircle} />
+                  </span>
+                </Tooltip>
               </div>
             </div>
 
@@ -856,7 +693,7 @@ export function Send() {
                 name="memo"
                 id="memo"
                 placeholder="Memo"
-                disabled={!secretjs || !secretAddress}
+                disabled={!secretjs || !secretjs?.address}
               />
             </div>
           </div>
@@ -866,11 +703,13 @@ export function Send() {
 
           {/* Submit Button */}
           <SubmitButton
-            disabled={!secretjs || !selectedToken.address || !secretAddress}
+            disabled={!secretjs || !selectedToken.address || !secretjs?.address}
             amount={amountString}
-            nativeCurrency={selectedToken.name}
-            wrappedAmount={amountString}
-            wrappedCurrency={"s" + selectedToken.name}
+            currency={
+              selectedToken.address === "native" || selectedToken.is_snip20
+                ? null
+                : "s" + selectedToken.name
+            }
           />
         </div>
       </div>
