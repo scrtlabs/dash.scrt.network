@@ -598,7 +598,7 @@ export function Send() {
               <div className="flex-1 text-xs">
                 {selectedToken.address === "native"
                   ? NativeTokenBalanceUi(
-                      tokenBalance,
+                      nativeBalance,
                       selectedToken,
                       selectedTokenPrice
                     )
