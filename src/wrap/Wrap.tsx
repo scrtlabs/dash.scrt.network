@@ -55,6 +55,7 @@ export function Wrap() {
     setViewingKey,
     secretjs,
     connectWallet,
+    SCRTBalance,
   } = useContext(SecretjsContext);
 
   const { prices } = useContext(APIContext);
@@ -758,11 +759,13 @@ export function Wrap() {
               <div className="flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 mt-2">
                 <div className="flex-1 text-xs">
                   {wrappingMode === "unwrap" &&
-                    WrappedTokenBalanceUi(
-                      tokenBalance,
-                      selectedToken,
-                      selectedTokenPrice
-                    )}
+                  (SCRTBalance != 0 || SCRTBalance === undefined)
+                    ? WrappedTokenBalanceUi(
+                        tokenBalance,
+                        selectedToken,
+                        selectedTokenPrice
+                      )
+                    : null}
                   {wrappingMode === "wrap" &&
                     NativeTokenBalanceUi(
                       nativeBalance,
@@ -835,11 +838,13 @@ export function Wrap() {
               </div>
               <div className="flex-1 text-xs mt-3 text-center sm:text-left h-[1rem]">
                 {wrappingMode === "wrap" &&
-                  WrappedTokenBalanceUi(
-                    tokenBalance,
-                    selectedToken,
-                    selectedTokenPrice
-                  )}
+                (SCRTBalance != 0 || SCRTBalance === undefined)
+                  ? WrappedTokenBalanceUi(
+                      tokenBalance,
+                      selectedToken,
+                      selectedTokenPrice
+                    )
+                  : null}
                 {wrappingMode === "unwrap" &&
                   NativeTokenBalanceUi(
                     nativeBalance,

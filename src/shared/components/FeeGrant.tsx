@@ -17,15 +17,17 @@ function FeeGrant() {
       <div className="bg-neutral-200 dark:bg-neutral-800 p-4 rounded-lg select-none flex items-center my-4">
         <div className="flex-1 flex items-center">
           <span className="font-semibold text-sm">Fee Grant</span>
-          <Tooltip
-            title={`Request Fee Grant so that you don't have to pay gas fees (up to 0.1 SCRT)`}
-            placement="right"
-            arrow
-          >
-            <span className="ml-2 relative -top-1.5 text-neutral-600 dark:text-neutral-400 hover:text-black dark:hover:text-white transition-colors cursor-pointer">
-              <FontAwesomeIcon icon={faInfoCircle} />
-            </span>
-          </Tooltip>
+          <div className="flex items-center ml-2">
+            <Tooltip
+              title={`Request Fee Grant so that you don't have to pay gas fees (up to 0.1 SCRT)`}
+              placement="right"
+              arrow
+            >
+              <span className="text-neutral-600 dark:text-neutral-400 hover:text-black dark:hover:text-white transition-colors cursor-pointer">
+                <FontAwesomeIcon icon={faInfoCircle} />
+              </span>
+            </Tooltip>
+          </div>
         </div>
         <div className="flex-initial">
           {/* Untouched */}
