@@ -9,15 +9,16 @@ import ReactDOM from 'react-dom/client'
 import { Helmet, HelmetProvider } from 'react-helmet-async'
 
 // Pages
-import { Ibc } from 'ibc/Ibc'
+import { Ibc } from 'ibc/Ibc.1'
 import { Wrap } from 'wrap/Wrap'
 import DefaultLayout from 'shared/layouts/DefaultLayout'
 import { Dashboard } from 'dashboard/Dashboard'
 import Bridge from 'bridge/Bridge'
 import Apps from 'apps/Apps'
 import { Staking } from 'staking/Staking'
-import { Send } from 'send/Send'
+import { Send } from 'send/Send.1'
 import GetSCRT from 'get-scrt/GetScrt'
+import Balances from 'balances/Balances'
 
 // Contexts
 import { ThemeContextProvider } from 'shared/context/ThemeContext'
@@ -105,6 +106,7 @@ export default function App() {
         <Route path="/bridge" element={<Bridge />} />
         <Route path="/get-scrt" element={<GetSCRT />} />
         <Route path="/staking" element={<Staking />} />
+        <Route path="/balances" element={<Balances />} />
         <Route path="/send" element={<Send />} />
         <Route path="/apps" element={<Apps />} />
       </Routes>

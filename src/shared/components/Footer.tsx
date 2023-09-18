@@ -4,13 +4,13 @@ import {
   faInstagram,
   faTelegram,
   faTwitter,
-  faYoutube,
-} from "@fortawesome/free-brands-svg-icons";
-import { faComments } from "@fortawesome/free-regular-svg-icons";
-import { faArrowUpRightFromSquare } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import React from "react";
-import { trackMixPanelEvent } from "shared/utils/commons";
+  faYoutube
+} from '@fortawesome/free-brands-svg-icons'
+import { faComments } from '@fortawesome/free-regular-svg-icons'
+import { faArrowUpRightFromSquare } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import React from 'react'
+import { trackMixPanelEvent } from 'shared/utils/commons'
 
 class Footer extends React.Component {
   render() {
@@ -18,17 +18,17 @@ class Footer extends React.Component {
       <>
         <div className="grid grid-cols-12 items-center px-6 py-8 mt-12 text-center gap-4">
           <div className="col-span-12 text-sm text-neutral-600 dark:text-neutral-400 font-medium">
-            {"⚡️ Powered by "}
+            {'⚡️ Powered by '}
             <a
               href="https://scrt.network/"
               target="_blank"
-              className="transition-colors hover:text-black dark:hover:text-white font-bold"
+              className="transition-colors hover:text-black dark:hover:text-white font-semibold"
             >
               Secret Network
             </a>
           </div>
           <div className="col-span-12 text-xs font-medium text-neutral-600 dark:text-neutral-400">
-            {"Developed by "}
+            {'Developed by '}
             <a
               href="https://x.com/secretjupiter_"
               target="_blank"
@@ -36,7 +36,7 @@ class Footer extends React.Component {
             >
               Secret Jupiter
             </a>
-            {", "}
+            {', '}
             <a
               href="https://x.com/Secret_Saturn_"
               target="_blank"
@@ -51,7 +51,7 @@ class Footer extends React.Component {
               href="https://forum.scrt.network/"
               target="_blank"
               onClick={() => {
-                trackMixPanelEvent("Clicked Forum link on Footer");
+                trackMixPanelEvent('Clicked Forum link on Footer')
               }}
             >
               <FontAwesomeIcon icon={faComments} />
@@ -61,7 +61,7 @@ class Footer extends React.Component {
               href="https://github.com/SecretFoundation"
               target="_blank"
               onClick={() => {
-                trackMixPanelEvent("Clicked Github link on Footer");
+                trackMixPanelEvent('Clicked Github link on Footer')
               }}
             >
               <FontAwesomeIcon icon={faGithub} />
@@ -71,7 +71,7 @@ class Footer extends React.Component {
               href="https://discord.com/invite/SJK32GY"
               target="_blank"
               onClick={() => {
-                trackMixPanelEvent("Clicked Discord link on Footer");
+                trackMixPanelEvent('Clicked Discord link on Footer')
               }}
             >
               <FontAwesomeIcon icon={faDiscord} />
@@ -81,7 +81,7 @@ class Footer extends React.Component {
               href="https://t.me/SCRTcommunity"
               target="_blank"
               onClick={() => {
-                trackMixPanelEvent("Clicked Telegram link on Footer");
+                trackMixPanelEvent('Clicked Telegram link on Footer')
               }}
             >
               <FontAwesomeIcon icon={faTelegram} />
@@ -91,7 +91,7 @@ class Footer extends React.Component {
               href="https://twitter.com/SecretNetwork"
               target="_blank"
               onClick={() => {
-                trackMixPanelEvent("Clicked Twitter link on Footer");
+                trackMixPanelEvent('Clicked Twitter link on Footer')
               }}
             >
               <FontAwesomeIcon icon={faTwitter} />
@@ -101,7 +101,7 @@ class Footer extends React.Component {
               href="https://www.instagram.com/scrtnetwork/"
               target="_blank"
               onClick={() => {
-                trackMixPanelEvent("Clicked Instagram link on Footer");
+                trackMixPanelEvent('Clicked Instagram link on Footer')
               }}
             >
               <FontAwesomeIcon icon={faInstagram} />
@@ -111,7 +111,7 @@ class Footer extends React.Component {
               href="https://www.youtube.com/channel/UCZPqj7h7mzjwuSfw_UWxQPw"
               target="_blank"
               onClick={() => {
-                trackMixPanelEvent("Clicked Youtube link on Footer");
+                trackMixPanelEvent('Clicked Youtube link on Footer')
               }}
             >
               <FontAwesomeIcon icon={faYoutube} />
@@ -119,8 +119,8 @@ class Footer extends React.Component {
           </div>
         </div>
       </>
-    );
+    )
   }
 }
 
-export default Footer;
+export default Footer

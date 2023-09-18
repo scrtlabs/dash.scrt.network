@@ -1,22 +1,22 @@
 import {
   faCircleCheck,
   faShuffle,
-  faXmark,
-} from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { IbcContext } from "ibc/Ibc";
-import { useContext } from "react";
-import { Link } from "react-router-dom";
+  faXmark
+} from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { IbcContext } from 'ibc/Ibc'
+import { useContext } from 'react'
+import { Link } from 'react-router-dom'
 
 interface IWrapModalProps {
-  open: boolean;
-  onClose: any;
+  open: boolean
+  onClose: any
 }
 
 const ViewingKeyModal = (props: IWrapModalProps) => {
-  if (!props.open) return null;
+  if (!props.open) return null
 
-  const { selectedTokenName } = useContext(IbcContext);
+  const { selectedToken } = useContext(IbcContext)
 
   return (
     <>
@@ -31,7 +31,7 @@ const ViewingKeyModal = (props: IWrapModalProps) => {
             <div
               className="bg-neutral-100 dark:bg-neutral-900 p-8 rounded-2xl"
               onClick={(e) => {
-                e.stopPropagation();
+                e.stopPropagation()
               }}
             >
               {/* Header */}
@@ -54,13 +54,13 @@ const ViewingKeyModal = (props: IWrapModalProps) => {
                   Transaction Successful
                 </h2>
                 <p className="text-neutral-600 dark:text-neutral-400 max-w-sm mx-auto mb-6">
-                  Now that you have (publicly visible){" "}
-                  {selectedTokenName || "SCRT"} in Secret Network, make sure to
+                  Now that you have (publicly visible){' '}
+                  {selectedToken.name || 'SCRT'} in Secret Network, make sure to
                   wrap your assets into the privacy-preserving equivalent s
-                  {selectedTokenName || "SCRT"}.
+                  {selectedToken.name || 'SCRT'}.
                 </p>
                 <Link
-                  to={"/wrap?token=" + selectedTokenName}
+                  to={'/wrap?token=' + selectedToken.name}
                   className="sm:max-w-[200px] w-full md:px-4 inline-block bg-cyan-500 dark:bg-cyan-600 text-cyan-100 hover:text-white hover:bg-cyan-400 dark:hover:bg-cyan-600 text-center transition-colors py-2.5 rounded-xl font-semibold text-sm"
                 >
                   <FontAwesomeIcon icon={faShuffle} className="mr-2" />
@@ -75,7 +75,7 @@ const ViewingKeyModal = (props: IWrapModalProps) => {
         </div>
       </div>
     </>
-  );
-};
+  )
+}
 
-export default ViewingKeyModal;
+export default ViewingKeyModal

@@ -1,7 +1,6 @@
 import React, { useContext } from 'react'
 import { toast } from 'react-toastify'
 import { MsgWithdrawDelegationReward } from 'secretjs'
-import { SecretjsContext } from 'shared/context/SecretjsContext'
 import { faucetAddress } from 'shared/utils/commons'
 import { StakingContext } from 'staking/Staking'
 import FeeGrant from '../../shared/components/FeeGrant'
@@ -19,7 +18,6 @@ interface IClaimRewardsModalProps {
 export function ClaimRewardsModal(props: IClaimRewardsModalProps) {
   const {
     secretNetworkClient,
-    walletAddress,
     scrtBalance,
     feeGrantStatus,
     requestFeeGrant,
@@ -39,13 +37,13 @@ export function ClaimRewardsModal(props: IClaimRewardsModalProps) {
 
   function claimRewards() {
     async function submit() {
-      if (!isConnected) return
+      if (!secretNetworkClient?.address) return
 
       try {
         const toastId = toast.loading(`Claiming Staking Rewards`)
         const txs = delegatorDelegations.map((delegation: any) => {
           return new MsgWithdrawDelegationReward({
-            delegator_address: walletAddress,
+            delegator_address: secretNetworkClient?.address,
             validator_address: delegation?.delegation?.validator_address
           })
         })
@@ -139,7 +137,7 @@ export function ClaimRewardsModal(props: IClaimRewardsModalProps) {
               {/* Body */}
               <div className="flex flex-col">
                 <div className="text-center my-4">
-                  <span className="font-bold">{`Claimable Amount: `}</span>
+                  <span className="font-semibold">{`Claimable Amount: `}</span>
                   <span>{totalPendingRewards()}</span>
                   <span className="text-gray-500 dark:text-gray-400 text-sm">{` SCRT`}</span>
                 </div>

@@ -3,16 +3,15 @@ import { faGlobe, faRepeat } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import Tooltip from '@mui/material/Tooltip'
 import { APIContext } from 'shared/context/APIContext'
-import { restakeThreshold, sleep, usdString } from 'shared/utils/commons'
+import {
+  randomDelay,
+  restakeThreshold,
+  sleep,
+  usdString
+} from 'shared/utils/commons'
 import BigNumber from 'bignumber.js'
 import { formatNumber } from 'shared/utils/commons'
 import { IValidator } from '../Staking'
-import {
-  getWalletViewingKey,
-  isViewingKeyAvailable,
-  SecretjsContext,
-  setWalletViewingKey
-} from 'shared/context/SecretjsContext'
 import { scrtToken } from 'shared/utils/tokens'
 
 interface IMyValidatorsItemProps {
@@ -44,9 +43,6 @@ const MyValidatorsItem = (props: IMyValidatorsItemProps) => {
         const url = `https://keybase.io/_/api/1.0/user/lookup.json?key_suffix=${props.identity}&fields=pictures`
 
         // Introduce a delay here (e.g., 1000ms or 1 second)
-        const randomDelay = (min: any, max: any) => {
-          return Math.floor(Math.random() * (max - min + 1)) + min
-        }
 
         await sleep(randomDelay(0, 2000))
 
@@ -112,7 +108,7 @@ const MyValidatorsItem = (props: IMyValidatorsItemProps) => {
             arrow
           >
             <span
-              className={`font-bold text-xs p-1 rounded-full ${
+              className={`font-semibold text-xs p-1 rounded-full ${
                 isAboveRestakeThreshold(props.stakedAmount)
                   ? isRestakeEnabled(props.validator)
                     ? 'text-green-200 bg-green-800'

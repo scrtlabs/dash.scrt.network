@@ -1,8 +1,8 @@
-import React from "react";
+import React from 'react'
 
 interface IHeaderProps {
-  title: string;
-  description?: string;
+  title: string
+  description?: string
 }
 
 class Header extends React.Component<IHeaderProps> {
@@ -11,7 +11,7 @@ class Header extends React.Component<IHeaderProps> {
       <>
         {/* Title */}
         <div className="text-center mb-4">
-          <h1 className="font-bold text-4xl inline text-transparent bg-clip-text bg-gradient-to-r from-cyan-500 to-purple-500">
+          <h1 className="font-semibold text-4xl inline text-transparent bg-clip-text bg-gradient-to-r from-cyan-500 to-purple-500">
             {this.props.title}
           </h1>
         </div>
@@ -22,8 +22,8 @@ class Header extends React.Component<IHeaderProps> {
           </p>
         )}
       </>
-    );
+    )
   }
 }
 
-export default Header;
+export default Header

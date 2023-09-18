@@ -5,31 +5,31 @@ import {
   faMobileScreen,
   faShuffle,
   faTriangleExclamation,
-  faXmark,
-} from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import React, { useContext, useEffect, useState } from "react";
-import { If } from "react-if";
-import { Link } from "react-router-dom";
-import { WrapContext } from "wrap/Wrap";
+  faXmark
+} from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import React, { useContext, useEffect, useState } from 'react'
+import { If } from 'react-if'
+import { Link } from 'react-router-dom'
+import { WrapContext } from 'wrap/Wrap'
 
 const UnknownBalanceModal = (props: any) => {
   // disable body scroll on open
   useEffect(() => {
     if (props.open) {
-      document.body.classList.add("overflow-hidden");
+      document.body.classList.add('overflow-hidden')
     } else {
-      document.body.classList.remove("overflow-hidden");
+      document.body.classList.remove('overflow-hidden')
     }
-  }, [props.open]);
+  }, [props.open])
 
-  if (!props.open) return null;
+  if (!props.open) return null
 
   const {
-    selectedTokenName,
     amount: amountToWrap,
     hasEnoughBalanceForUnwrapping,
-  } = useContext(WrapContext);
+    selectedToken
+  } = useContext(WrapContext)
 
   return (
     <>
@@ -44,7 +44,7 @@ const UnknownBalanceModal = (props: any) => {
             <div
               className="bg-neutral-900 p-8 rounded-2xl"
               onClick={(e) => {
-                e.stopPropagation();
+                e.stopPropagation()
               }}
             >
               {/* Header */}
@@ -67,9 +67,9 @@ const UnknownBalanceModal = (props: any) => {
                   No Viewing Key found!
                 </h2>
                 <p className="text-neutral-400 max-w-sm mx-auto mb-6">
-                  You're trying to unwrap {amountToWrap} s{selectedTokenName}{" "}
+                  You're trying to unwrap {amountToWrap} s{selectedToken.name}{' '}
                   without having a Viewing Key set. Make sure you definitely
-                  have {amountToWrap} s{selectedTokenName} in this wallet,
+                  have {amountToWrap} s{selectedToken.name} in this wallet,
                   otherwise this action will fail!
                   {/* Now that you have (publicly visible) {selectedTokenName || "SCRT"} in Secret Network, make sure to wrap your assets into the privacy-preserving equivalent s{selectedTokenName || "SCRT"}. */}
                 </p>
@@ -100,7 +100,7 @@ const UnknownBalanceModal = (props: any) => {
         </div>
       </div>
     </>
-  );
-};
+  )
+}
 
-export default UnknownBalanceModal;
+export default UnknownBalanceModal

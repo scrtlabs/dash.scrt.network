@@ -1,14 +1,10 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext } from 'react'
 import { toast } from 'react-toastify'
 import { MsgSetAutoRestake } from 'secretjs'
-import { SecretjsContext } from 'shared/context/SecretjsContext'
 import { StakingContext, ValidatorRestakeStatus } from 'staking/Staking'
-import FeeGrant from '../../shared/components/FeeGrant'
-import BigNumber from 'bignumber.js'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faInfoCircle, faXmark } from '@fortawesome/free-solid-svg-icons'
 import RestakeValidatorItem from './RestakeValidatorItem'
-import Tooltip from '@mui/material/Tooltip'
 import { restakeThreshold } from 'shared/utils/commons'
 import { useSecretNetworkClientStore } from 'store/secretNetworkClient'
 
@@ -77,7 +73,7 @@ export default function ManageAutoRestakeModal(
         const txs = validatorRestakeStatuses.map(
           (status: ValidatorRestakeStatus) => {
             return new MsgSetAutoRestake({
-              delegator_address: walletAddress,
+              delegator_address: secretNetworkClient?.address,
               validator_address: status.validatorAddress,
               enabled: status.autoRestake
             })

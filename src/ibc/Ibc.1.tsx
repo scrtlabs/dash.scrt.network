@@ -1,4 +1,4 @@
-import { useState, createContext, useContext, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faInfoCircle } from '@fortawesome/free-solid-svg-icons'
 import Tooltip from '@mui/material/Tooltip'
@@ -14,9 +14,7 @@ import {
 } from 'shared/utils/commons'
 import { useSecretNetworkClientStore } from 'store/secretNetworkClient'
 import Title from 'shared/components/Title'
-import Deposit from './components/Deposit'
-
-export const IbcContext = createContext(null)
+import { IbcContext } from './Ibc'
 
 export function Ibc() {
   const [isWrapModalOpen, setIsWrapModalOpen] = useState(false)

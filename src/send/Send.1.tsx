@@ -1,4 +1,4 @@
-import { useEffect, useState, useContext, createContext } from 'react'
+import { useEffect, useState, useContext } from 'react'
 import {
   MsgExecuteContract,
   BroadcastMode,
@@ -10,7 +10,6 @@ import {
   sleep,
   faucetAddress,
   viewingKeyErrorString,
-  usdString,
   sendPageTitle,
   sendPageDescription,
   sendJsonLdSchema,
@@ -20,12 +19,7 @@ import {
 import BigNumber from 'bignumber.js'
 import { toast } from 'react-toastify'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import {
-  faKey,
-  faArrowRightArrowLeft,
-  faInfoCircle
-} from '@fortawesome/free-solid-svg-icons'
-import { Link } from 'react-router-dom'
+import { faInfoCircle } from '@fortawesome/free-solid-svg-icons'
 import Select from 'react-select'
 import Tooltip from '@mui/material/Tooltip'
 import { Helmet } from 'react-helmet-async'
@@ -40,6 +34,7 @@ import {
   WrappedTokenBalanceUi
 } from 'shared/components/BalanceUI'
 import PercentagePicker from 'shared/components/PercentagePicker'
+import { getWalletViewingKey } from 'service/walletService'
 
 export function Send() {
   const { feeGrantStatus, secretNetworkClient, connectWallet, isConnected } =
@@ -351,7 +346,7 @@ export function Send() {
                   } as any)
             ],
             {
-              gasLimit: 150_000,
+              gasLimit: 150000,
               gasPriceInFeeDenom: 0.25,
               feeDenom: 'uscrt',
               feeGranter: feeGrantStatus === 'success' ? faucetAddress : '',

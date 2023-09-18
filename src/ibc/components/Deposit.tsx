@@ -58,7 +58,12 @@ import {
 import { useSecretNetworkClientStore } from 'store/secretNetworkClient'
 import { getWalletViewingKey, setWalletViewingKey } from 'service/walletService'
 import { Nullable } from 'shared/types/Nullable'
-import FeeGrant from 'shared/components/FeeGrant'
+import {
+  NativeTokenBalanceUi,
+  WrappedTokenBalanceUi
+} from 'shared/components/BalanceUI'
+import PercentagePicker from 'shared/components/PercentagePicker'
+import { APIContext } from 'shared/context/APIContext'
 
 function Deposit() {
   const {
@@ -71,7 +76,6 @@ function Deposit() {
 
   const {
     setIsWrapModalOpen,
-    setSelectedTokenName,
     ibcMode,
     toggleIbcMode,
     selectedToken,
@@ -80,6 +84,8 @@ function Deposit() {
     selectedSource,
     setSelectedSource
   } = useContext(IbcContext)
+
+  const { prices } = useContext(APIContext)
 
   const [sourceAddress, setSourceAddress] = useState<string>('')
   const [availableBalance, setAvailableBalance] = useState<string>('')
@@ -90,6 +96,10 @@ function Deposit() {
   const [amountToTransfer, setAmountToTransfer] = useState<string>('')
   const [axelarTransferFee, setAxelarTransferFee] = useState<any>()
 
+  const [selectedTokenPrice, setSelectedTokenPrice] = useState<number>(0)
+
+  const targetChain = chains['Secret Network']
+
   const sdk = new AxelarAssetTransfer({
     environment: Environment.MAINNET
   })
@@ -98,8 +108,13 @@ function Deposit() {
   })
 
   useEffect(() => {
-    setSelectedTokenName(selectedToken.name)
-  }, [selectedToken])
+    setSelectedTokenPrice(
+      prices.find(
+        (price: { coingecko_id: string }) =>
+          price.coingecko_id === selectedToken.coingecko_id
+      )?.priceUsd
+    )
+  }, [selectedToken, prices])
 
   function handleInputChange(e: any) {
     setAmountToTransfer(e.target.value)
@@ -263,7 +278,7 @@ function Deposit() {
               placement="right"
               arrow
             >
-              <span className="ml-2 mt-1 text-neutral-600 dark:text-neutral-400 hover:text-black dark:hover:text-white transition-colors cursor-pointer">
+              <span className="ml-2 relative -top-1.5 text-neutral-600 dark:text-neutral-400 hover:text-black dark:hover:text-white transition-colors cursor-pointer">
                 <FontAwesomeIcon icon={faInfoCircle} />
               </span>
             </Tooltip>
@@ -302,6 +317,7 @@ function Deposit() {
 
   const updateCoinBalance = async () => {
     if (isConnected) {
+      setAvailableBalance(undefined)
       if (selectedToken.is_snip20 || selectedToken.is_ics20) {
         const key = await getWalletViewingKey(selectedToken.address)
         if (!key) {
@@ -319,7 +335,7 @@ function Deposit() {
             contract_address: selectedToken.address,
             code_hash: selectedToken.code_hash,
             query: {
-              balance: { address: walletAddress, key }
+              balance: { address: secretNetworkClient?.address, key }
             }
           })
 
@@ -339,7 +355,7 @@ function Deposit() {
           const {
             balance: { amount }
           } = await secretNetworkClient.query.bank.balance({
-            address: walletAddress as string,
+            address: secretNetworkClient?.address,
             denom: selectedToken.withdrawals[0]?.from_denom
           })
           setAvailableBalance(amount)
@@ -350,10 +366,8 @@ function Deposit() {
     }
   }
 
-  const targetChain = chains['Secret Network']
-
-  const fetchSourceBalance = async (newAddress: Nullable<string>) => {
-    if (secretNetworkClient && walletAddress) {
+  const fetchSourceBalance = async (newAddress: String | null) => {
+    if (secretNetworkClient?.address) {
       if (ibcMode === 'deposit') {
         const url = `${
           chains[selectedSource.chain_name].lcd
@@ -388,8 +402,8 @@ function Deposit() {
   }
 
   useEffect(() => {
-    setAvailableBalance('')
-    if (!isConnected) {
+    setAvailableBalance(undefined)
+    if (!secretNetworkClient?.address) {
       return
     }
     if (!sourceAddress) {
@@ -412,12 +426,12 @@ function Deposit() {
     selectedToken,
     sourceAddress,
     ibcMode,
-    walletAddress,
+    secretNetworkClient?.address,
     secretNetworkClient
   ])
 
   useEffect(() => {
-    if (!isConnected) {
+    if (!secretNetworkClient?.address) {
       return
     }
     const possibleICS20 = ICSTokens.filter(
@@ -550,9 +564,6 @@ function Deposit() {
           console.error(`${normalizedAmount} not bigger than 0`)
           return
         }
-
-        setLoadingTx(true)
-
         const amount = new BigNumber(normalizedAmount)
           .multipliedBy(`1e${selectedToken.decimals}`)
           .toFixed(0, BigNumber.ROUND_DOWN)
@@ -594,7 +605,7 @@ function Deposit() {
             tx = await sourceChainSecretjs.tx.ibc.transfer(
               {
                 sender: sourceAddress,
-                receiver: walletAddress as string,
+                receiver: secretNetworkClient?.address,
                 source_channel: deposit_channel_id,
                 source_port: 'transfer',
                 token: {
@@ -625,7 +636,7 @@ function Deposit() {
           ) {
             const fromChain = depositChain.axelar_chain_name,
               toChain = 'secret-snip',
-              destinationAddress = walletAddress as string,
+              destinationAddress = secretNetworkClient?.address,
               asset = selectedToken.axelar_denom // denom of asset. See note (2) below
 
             const depositAddress = await sdk.getDepositAddress({
@@ -718,7 +729,7 @@ function Deposit() {
                   (deposit: Deposit) =>
                     deposit.chain_name === selectedSource.chain_name
                 )[0].from_denom,
-                receiver: walletAddress as string,
+                receiver: secretNetworkClient?.address,
                 revisionNumber: 0,
                 revisionHeight: 0,
                 timeoutTimestamp: `${
@@ -837,8 +848,6 @@ function Deposit() {
             type: 'error',
             isLoading: false
           })
-        } finally {
-          setLoadingTx(false)
         }
       }
       if (ibcMode === 'withdrawal') {
@@ -858,9 +867,6 @@ function Deposit() {
           console.error(`${normalizedAmount} not bigger than 0`)
           return
         }
-
-        setLoadingTx(true)
-
         const amount = new BigNumber(normalizedAmount)
           .multipliedBy(`1e${selectedToken.decimals}`)
           .toFixed(0, BigNumber.ROUND_DOWN)
@@ -894,7 +900,7 @@ function Deposit() {
               {
                 contract_address: selectedToken.address,
                 code_hash: selectedToken.code_hash,
-                sender: walletAddress as string,
+                sender: secretNetworkClient?.address,
                 msg: {
                   send: {
                     recipient: 'secret1tqmms5awftpuhalcv5h5mg76fa0tkdz4jv9ex4', // cw20-ics20
@@ -962,7 +968,7 @@ function Deposit() {
               {
                 contract_address: selectedToken.address,
                 code_hash: selectedToken.code_hash,
-                sender: walletAddress as string,
+                sender: secretNetworkClient?.address,
                 msg: {
                   send: {
                     recipient: 'secret1yxjmepvyl2c25vnt53cr2dpn8amknwausxee83', // ics20
@@ -1002,7 +1008,7 @@ function Deposit() {
                 : withdraw_channel_id
             tx = await secretNetworkClient.tx.ibc.transfer(
               {
-                sender: walletAddress as string,
+                sender: secretNetworkClient?.address,
                 receiver: sourceAddress,
                 source_channel: source_channel_id,
                 source_port: 'transfer',
@@ -1067,8 +1073,6 @@ function Deposit() {
             type: 'error',
             isLoading: false
           })
-        } finally {
-          setLoadingTx(false)
         }
       }
     }
@@ -1078,7 +1082,7 @@ function Deposit() {
         className={
           'enabled:bg-gradient-to-r enabled:from-cyan-600 enabled:to-purple-600 enabled:hover:from-cyan-500 enabled:hover:to-purple-500 transition-colors text-white font-semibold py-3 w-full rounded-lg disabled:bg-neutral-500 focus:outline-none focus-visible:ring-4 ring-sky-500/40'
         }
-        disabled={!isConnected}
+        disabled={!secretNetworkClient.address}
         onClick={() => submit()}
       >
         Execute Transfer
@@ -1102,7 +1106,9 @@ function Deposit() {
                 <div className="relative">
                   <div
                     className={`absolute inset-0 bg-cyan-500 blur-md rounded-full overflow-hidden ${
-                      isConnected ? 'fadeInAndOutLoop' : 'opacity-40'
+                      secretNetworkClient?.address
+                        ? 'fadeInAndOutLoop'
+                        : 'opacity-40'
                     }`}
                   ></div>
                   <img
@@ -1123,7 +1129,7 @@ function Deposit() {
               </div>
             </div>
             <div
-              className="absolute left-1/2 -translate-x-1/2 text-center text-sm font-bold text-black dark:text-white"
+              className="absolute left-1/2 -translate-x-1/2 text-center text-sm font-semibold text-black dark:text-white"
               style={{ bottom: '10%' }}
             >
               From
@@ -1151,7 +1157,7 @@ function Deposit() {
               <Tooltip
                 title={`Switch chains`}
                 placement="bottom"
-                disableHoverListener={!isConnected}
+                disableHoverListener={!secretNetworkClient?.address}
                 arrow
               >
                 <span>
@@ -1159,11 +1165,11 @@ function Deposit() {
                     onClick={toggleIbcMode}
                     className={
                       'focus:outline-none focus-visible:ring-2 ring-sky-500/40 inline-block bg-neutral-200 dark:bg-neutral-800 px-3 py-2 text-cyan-500 dark:text-cyan-500 transition-colors rounded-xl disabled:text-neutral-500 dark:disabled:text-neutral-500' +
-                      (isConnected
+                      (secretNetworkClient?.address
                         ? 'hover:text-cyan-700 dark:hover:text-cyan-300'
                         : '')
                     }
-                    disabled={!isConnected}
+                    disabled={!secretNetworkClient?.address}
                   >
                     <FontAwesomeIcon
                       icon={faRightLeft}
@@ -1186,7 +1192,9 @@ function Deposit() {
                 <div className="relative">
                   <div
                     className={`absolute inset-0 bg-violet-500 blur-md rounded-full overflow-hidden ${
-                      isConnected ? 'fadeInAndOutLoop' : 'opacity-40'
+                      secretNetworkClient?.address
+                        ? 'fadeInAndOutLoop'
+                        : 'opacity-40'
                     }`}
                   ></div>
                   <img
@@ -1207,7 +1215,7 @@ function Deposit() {
               </div>
             </div>
             <div
-              className="absolute left-0 right-0 text-center text-sm font-bold text-black dark:text-white"
+              className="absolute left-0 right-0 text-center text-sm font-semibold text-black dark:text-white"
               style={{ bottom: '10%' }}
             >
               To
@@ -1234,7 +1242,7 @@ function Deposit() {
         <div className="flex items-center">
           <div className="font-semibold mr-4 w-10">From:</div>
           <div className="flex-1 truncate font-medium text-sm">
-            {ibcMode === 'deposit' && isConnected && (
+            {ibcMode === 'deposit' && secretNetworkClient?.address && (
               <a
                 href={`${
                   chains[selectedSource.chain_name].explorer_account
@@ -1244,12 +1252,14 @@ function Deposit() {
                 {sourceAddress.slice(0, 19) + '...' + sourceAddress.slice(-19)}
               </a>
             )}
-            {ibcMode === 'withdrawal' && isConnected && (
+            {ibcMode === 'withdrawal' && secretNetworkClient?.address && (
               <a
-                href={`${chains['Secret Network'].explorer_account}${walletAddress}`}
+                href={`${chains['Secret Network'].explorer_account}${secretNetworkClient?.address}`}
                 target="_blank"
               >
-                {walletAddress.slice(0, 19) + '...' + walletAddress.slice(-19)}
+                {secretNetworkClient?.address.slice(0, 19) +
+                  '...' +
+                  secretNetworkClient?.address.slice(-19)}
               </a>
             )}
           </div>
@@ -1258,7 +1268,7 @@ function Deposit() {
               text={
                 ibcMode === 'deposit'
                   ? sourceAddress
-                  : (walletAddress as string)
+                  : secretNetworkClient?.address
               }
               onCopy={() => {
                 setIsCopied(true)
@@ -1269,13 +1279,13 @@ function Deposit() {
               <Tooltip
                 title={'Copy to clipboard'}
                 placement="bottom"
-                disableHoverListener={!isConnected}
+                disableHoverListener={!secretNetworkClient?.address}
                 arrow
               >
                 <span>
                   <button
                     className="text-neutral-500 enabled:hover:text-white enabled:active:text-neutral-500 transition-colors"
-                    disabled={!isConnected}
+                    disabled={!secretNetworkClient?.address}
                   >
                     <FontAwesomeIcon icon={faCopy} />
                   </button>
@@ -1288,7 +1298,7 @@ function Deposit() {
         <div className="flex items-center">
           <div className="flex-initial font-semibold mr-4 w-10">To:</div>
           <div className="flex-1 truncate font-medium text-sm">
-            {ibcMode === 'withdrawal' && isConnected && (
+            {ibcMode === 'withdrawal' && secretNetworkClient?.address && (
               <a
                 href={`${
                   chains[selectedSource.chain_name].explorer_account
@@ -1298,12 +1308,14 @@ function Deposit() {
                 {sourceAddress.slice(0, 19) + '...' + sourceAddress.slice(-19)}
               </a>
             )}
-            {ibcMode === 'deposit' && isConnected && (
+            {ibcMode === 'deposit' && secretNetworkClient?.address && (
               <a
-                href={`${targetChain.explorer_account}${walletAddress}`}
+                href={`${targetChain.explorer_account}${secretNetworkClient?.address}`}
                 target="_blank"
               >
-                {walletAddress.slice(0, 19) + '...' + walletAddress.slice(-19)}
+                {secretNetworkClient?.address.slice(0, 19) +
+                  '...' +
+                  secretNetworkClient?.address.slice(-19)}
               </a>
             )}
           </div>
@@ -1312,7 +1324,7 @@ function Deposit() {
               text={
                 ibcMode === 'withdrawal'
                   ? sourceAddress
-                  : (walletAddress as string)
+                  : secretNetworkClient?.address
               }
               onCopy={() => {
                 setIsCopied(true)
@@ -1323,13 +1335,13 @@ function Deposit() {
               <Tooltip
                 title={'Copy to clipboard'}
                 placement="bottom"
-                disableHoverListener={!isConnected}
+                disableHoverListener={!secretNetworkClient?.address}
                 arrow
               >
                 <span>
                   <button
                     className="text-neutral-500 enabled:hover:text-white enabled:active:text-neutral-500 transition-colors"
-                    disabled={!isConnected}
+                    disabled={!secretNetworkClient?.address}
                   >
                     <FontAwesomeIcon icon={faCopy} />
                   </button>
@@ -1347,7 +1359,7 @@ function Deposit() {
             value={selectedToken}
             onChange={setSelectedToken}
             isSearchable={false}
-            isDisabled={!isConnected}
+            isDisabled={!secretNetworkClient?.address}
             formatOptionLabel={(token) => (
               <div className="flex items-center">
                 <img
@@ -1377,106 +1389,31 @@ function Deposit() {
             name="amount"
             id="amount"
             placeholder="0"
-            disabled={!isConnected}
+            disabled={!secretNetworkClient?.address}
           />
         </div>
 
         {/* Balance | [25%|50%|75%|Max] */}
         <div className="flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 mt-3">
           <div className="flex-1 text-xs">
-            <span className="font-semibold">Available: </span>
-            <span className="font-medium">
-              {(() => {
-                if (
-                  availableBalance === '' &&
-                  sourceAddress &&
-                  secretNetworkClient
-                ) {
-                  return <CircularProgress size="0.6em" />
-                }
-                const prettyBalance = new BigNumber(availableBalance)
-                  .dividedBy(`1e${selectedToken.decimals}`)
-                  .toFormat()
-                if (
-                  prettyBalance === 'NaN' &&
-                  availableBalance === viewingKeyErrorString
-                ) {
-                  return (
-                    <>
-                      <button
-                        className="ml-2 font-semibold bg-neutral-100 dark:bg-neutral-900 px-1.5 py-0.5 rounded-md border-neutral-300 dark:border-neutral-700 transition-colors hover:bg-neutral-300 dark:hover:bg-neutral-700 cursor-pointer disabled:text-neutral-500 dark:disabled:text-neutral-500 disabled:hover:bg-neutral-100 dark:disabled:hover:bg-neutral-900 disabled:cursor-default"
-                        onClick={async () => {
-                          await setWalletViewingKey(selectedToken.address)
-                          try {
-                            setAvailableBalance('')
-                            // setLoadingTokenBalance(true);
-                            await sleep(1000) // sometimes query nodes lag
-                            await updateCoinBalance()
-                          } finally {
-                            //setLoadingTokenBalance(false);
-                          }
-                        }}
-                      >
-                        <FontAwesomeIcon icon={faKey} className="mr-2" />
-                        Set Viewing Key
-                      </button>
-                      <Tooltip
-                        title={
-                          'Balances on Secret Network are private by default. Create a viewing key to view your encrypted balances.'
-                        }
-                        placement="right"
-                        arrow
-                      >
-                        <span className="ml-2 mt-1 text-neutral-600 dark:text-neutral-400 hover:text-black dark:hover:text-white transition-colors cursor-pointer">
-                          <FontAwesomeIcon icon={faInfoCircle} />
-                        </span>
-                      </Tooltip>
-                    </>
-                  )
-                }
-                if (!walletAddress && !secretNetworkClient) {
-                  return ''
-                }
-                if (prettyBalance === 'NaN') {
-                  return 'Error'
-                }
-                return `${prettyBalance} ${
-                  selectedToken.is_ics20 && ibcMode === 'withdrawal' ? 's' : ''
-                }${selectedToken.name}`
-              })()}
-            </span>
+            {(selectedToken.is_ics20 || selectedToken.is_snip20) &&
+            ibcMode == 'withdrawal'
+              ? WrappedTokenBalanceUi(
+                  availableBalance,
+                  selectedToken,
+                  selectedTokenPrice
+                )
+              : NativeTokenBalanceUi(
+                  availableBalance,
+                  selectedToken,
+                  selectedTokenPrice
+                )}
           </div>
           <div className="sm:flex-initial text-xs">
-            <div className="inline-flex rounded-full text-xs font-semibold">
-              <button
-                onClick={() => setAmountByPercentage(25)}
-                className="bg-neutral-100 dark:bg-neutral-900 px-1.5 py-0.5 rounded-l-md transition-colors hover:bg-neutral-300 dark:hover:bg-neutral-700 cursor-pointer disabled:text-neutral-500 dark:disabled:text-neutral-500 disabled:hover:bg-neutral-900 dark:disabled:hover:bg-neutral-900 disabled:cursor-default focus:outline-0 focus:ring-2 ring-sky-500/40 focus:z-10"
-                disabled={!walletAddress}
-              >
-                25%
-              </button>
-              <button
-                onClick={() => setAmountByPercentage(50)}
-                className="bg-neutral-100 dark:bg-neutral-900 px-1.5 py-0.5 transition-colors hover:bg-neutral-300 dark:hover:bg-neutral-700 cursor-pointer disabled:text-neutral-500 dark:disabled:text-neutral-500 disabled:hover:bg-neutral-900 dark:disabled:hover:bg-neutral-900 disabled:cursor-default focus:outline-0 focus:ring-2 ring-sky-500/40 focus:z-10"
-                disabled={!walletAddress}
-              >
-                50%
-              </button>
-              <button
-                onClick={() => setAmountByPercentage(75)}
-                className="bg-neutral-100 dark:bg-neutral-900 px-1.5 py-0.5 transition-colors hover:bg-neutral-300 dark:hover:bg-neutral-700 cursor-pointer disabled:text-neutral-500 dark:disabled:text-neutral-500 disabled:hover:bg-neutral-900 dark:disabled:hover:bg-neutral-900 disabled:cursor-default focus:outline-0 focus:ring-2 ring-sky-500/40 focus:z-10"
-                disabled={!walletAddress}
-              >
-                75%
-              </button>
-              <button
-                onClick={() => setAmountByPercentage(100)}
-                className="bg-neutral-100 dark:bg-neutral-900 px-1.5 py-0.5 rounded-r-md transition-colors hover:bg-neutral-300 dark:hover:bg-neutral-700 cursor-pointer disabled:text-neutral-500 dark:disabled:text-neutral-500 disabled:hover:bg-neutral-900 dark:disabled:hover:bg-neutral-900 disabled:cursor-default focus:outline-0 focus:ring-2 ring-sky-500/40 focus:z-10"
-                disabled={!walletAddress}
-              >
-                MAX
-              </button>
-            </div>
+            {PercentagePicker(
+              setAmountByPercentage,
+              !secretNetworkClient?.address
+            )}
           </div>
         </div>
       </div>

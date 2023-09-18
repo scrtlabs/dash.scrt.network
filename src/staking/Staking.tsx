@@ -20,15 +20,15 @@ import ValidatorModal from './components/ValidatorModal'
 import { SECRET_LCD, SECRET_CHAIN_ID } from 'shared/utils/config'
 import { SecretNetworkClient } from 'secretjs'
 import Select from 'react-select'
-import Title from './components/Title'
+import Title from '../shared/components/Title'
 import { useSearchParams } from 'react-router-dom'
 import { Nullable } from 'shared/types/Nullable'
 import BigNumber from 'bignumber.js'
 import { StakingView, isStakingView } from 'shared/types/StakingView'
 import ClaimRewardsModal from './components/ClaimRewardsModal'
 import ManageAutoRestakeModal from './components/ManageAutoRestakeModal'
-import { useSecretNetworkClientStore } from 'store/secretNetworkClient'
 import { scrtToken } from 'shared/utils/tokens'
+import { useSecretNetworkClientStore } from 'store/secretNetworkClient'
 
 // dummy interface for better code readability
 export interface IValidator {
@@ -205,16 +205,16 @@ export const Staking = () => {
 
   useEffect(() => {
     const fetchDelegatorValidators = async () => {
-      if (isConnected) {
+      if (secretNetworkClient?.address) {
         const { delegation_responses } =
           await secretNetworkClient.query.staking.delegatorDelegations({
-            delegator_addr: walletAddress,
-            'pagination.limit': 1000
+            delegator_addr: secretNetworkClient?.address
+            // 'pagination.limit': 1000 // TODO: Check if needed
           })
         const { validators } =
           await secretNetworkClient.query.distribution.restakingEntries({
-            delegator: walletAddress,
-            'pagination.limit': 1000
+            delegator: secretNetworkClient?.address
+            // 'pagination.limit': 1000 // TODO: Check if needed
           })
         setRestakeEntries(validators)
         setRestakeChoices(
@@ -227,16 +227,15 @@ export const Staking = () => {
           }))
         )
         setDelegatorDelegations(delegation_responses)
-
         const result =
           await secretNetworkClient.query.distribution.delegationTotalRewards({
-            delegator_address: walletAddress
+            delegator_address: secretNetworkClient?.address
           })
         setDelegationTotalRewards(result)
       }
     }
     fetchDelegatorValidators()
-  }, [secretNetworkClient, walletAddress, reload])
+  }, [secretNetworkClient?.address, reload])
 
   useEffect(() => {
     const fetchValidators = async () => {
@@ -364,16 +363,19 @@ export const Staking = () => {
         {/* Title */}
         <Title title={'Staking'} />
 
-        {isConnected && scrtBalance === '0' ? <NoScrtWarning /> : null}
+        {secretNetworkClient?.address && scrtBalance === '0' ? (
+          <NoScrtWarning />
+        ) : null}
 
         {/* My Validators */}
-        {secretNetworkClient &&
-          walletAddress &&
+        {secretNetworkClient?.address &&
           delegatorDelegations &&
           delegatorDelegations?.length != 0 &&
           validators && (
             <div className="my-validators mb-20 max-w-6xl mx-auto">
-              <div className="font-bold text-xl mb-4 px-4">My Validators</div>
+              <div className="font-semibold text-xl mb-4 px-4">
+                My Validators
+              </div>
 
               {/* Claim Rewards*/}
               {delegationTotalRewards && (
@@ -443,7 +445,7 @@ export const Staking = () => {
 
         {/* All Validators */}
         <div className="max-w-6xl mx-auto mt-8">
-          <div className="font-bold text-xl mb-4 px-4">
+          <div className="font-semibold text-xl mb-4 px-4">
             All Validators
             <Tooltip
               title={

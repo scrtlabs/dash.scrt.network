@@ -25,7 +25,6 @@ import {
 import { Nullable } from 'shared/types/Nullable'
 import { StakingContext } from 'staking/Staking'
 import StakingForm from './validatorModalComponents/StakingForm'
-import { SecretjsContext } from 'shared/context/SecretjsContext'
 import UndelegateForm from './validatorModalComponents/UndelegateForm'
 import RedelegateForm from './validatorModalComponents/RedelegateForm'
 import { useSecretNetworkClientStore } from 'store/secretNetworkClient'
@@ -433,7 +432,9 @@ const ValidatorModal = (props: IValidatorModalProps) => {
                   {/* Available to Stake */}
                   {isConnected && (
                     <div className="bg-white/5 col-span-12 border border-neutral-200 dark:border-neutral-700 md:col-span-6 rounded-xl px-4 py-8 mt-4 text-center sm:text-left">
-                      <div className="font-bold mb-2">Available to Stake</div>
+                      <div className="font-semibold mb-2">
+                        Available to Stake
+                      </div>
                       <div className="font-semibold">
                         {new BigNumber(scrtBalance!)
                           .dividedBy(`1e${scrtToken.decimals}`)
@@ -460,7 +461,9 @@ const ValidatorModal = (props: IValidatorModalProps) => {
                         delegatorDelegation.delegation.validator_address
                     ) ? (
                       <div className="bg-white/5 col-span-12 border border-neutral-200 dark:border-neutral-700 md:col-span-6 rounded-xl px-4 py-8 mt-4 text-center sm:text-left">
-                        <div className="font-bold mb-2">Your Delegation</div>
+                        <div className="font-semibold mb-2">
+                          Your Delegation
+                        </div>
                         <div className="font-semibold">
                           {delegatorDelegations?.find(
                             (delegatorDelegation: any) =>
@@ -487,7 +490,9 @@ const ValidatorModal = (props: IValidatorModalProps) => {
                       </div>
                     ) : (
                       <div className="bg-white/5 col-span-12 border border-neutral-200 dark:border-neutral-700 md:col-span-6 rounded-xl px-4 py-8 mt-4 text-center sm:text-left">
-                        <div className="font-bold mb-2">Your Delegation</div>
+                        <div className="font-semibold mb-2">
+                          Your Delegation
+                        </div>
                         <div className="font-semibold">
                           {0}
                           <span className="text-neutral-400 text-xs">{` SCRT`}</span>
@@ -506,7 +511,7 @@ const ValidatorModal = (props: IValidatorModalProps) => {
                     </div>
                   ) : null}
 
-                  {isConnected && view === null ? (
+                  {view === null && secretNetworkClient?.address ? (
                     <>
                       <div className="col-span-12">
                         {/* Navigation */}

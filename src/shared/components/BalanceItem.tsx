@@ -90,21 +90,18 @@ const BalanceItem: FunctionComponent<IBalanceProps> = ({
           className="h-7"
         />
       </div>
-      {viewingkeyMissing ? (
-        <div className="text-xs">
-          <div className="font-bold">
-            {' ' + (isSecretToken ? 's' : '') + token.name}
-          </div>
-          <div className="text-gray-500 mt-0.5">
-            <SetViewingKeyButton token={token} />
-          </div>
+      {isSecretToken && sScrtBalance == viewingKeyErrorString ? (
+        <div className="font-semibold">
+          {' '}
+          sSCRT
+          <SetViewingKeyButton token={token} />
         </div>
       ) : (
         <div className="text-xs">
           {/* Balance as native token */}
-          <div className="font-bold">
-            {isSecretToken
-              ? new BigNumber(sScrtBalance!)
+          <div className="font-semibold">
+            {!isSecretToken
+              ? new BigNumber(scrtBalance!)
                   .dividedBy(`1e${scrtToken.decimals}`)
                   .toFormat()
               : new BigNumber(scrtBalance!)

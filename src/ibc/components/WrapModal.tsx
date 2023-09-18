@@ -1,54 +1,51 @@
 import {
   faCircleCheck,
   faShuffle,
-  faXmark,
-} from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { getWalletViewingKey } from "service/walletService";
-import { IbcContext } from "ibc/Ibc";
-import { useContext, useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-import { IbcMode } from "shared/types/IbcMode";
-import { viewingKeyErrorString } from "shared/utils/commons";
-import { Token, tokens } from "shared/utils/config";
-import { useSecretNetworkClientStore } from "store/secretNetworkClient";
+  faXmark
+} from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { getWalletViewingKey } from 'service/walletService'
+import { IbcContext } from 'ibc/Ibc'
+import { useContext, useEffect, useState } from 'react'
+import { Link } from 'react-router-dom'
+import { IbcMode } from 'shared/types/IbcMode'
+import { viewingKeyErrorString } from 'shared/utils/commons'
+import { Token, tokens } from 'shared/utils/config'
+import { useSecretNetworkClientStore } from 'store/secretNetworkClient'
 
 interface IWrapModalProps {
-  open: boolean;
-  onClose: any;
-  selectedToken: Token;
-  ibcMode: IbcMode;
+  open: boolean
+  onClose: any
+  selectedToken: Token
+  ibcMode: IbcMode
 }
 
 const WrapModal = (props: IWrapModalProps) => {
   const {
     isWrapModalOpen,
     setIsWrapModalOpen,
-    selectedTokenName,
-    setSelectedTokenName,
     ibcMode,
     setIbcMode,
     toggleIbcMode,
     selectedToken,
-    setSelectedToken,
-  } = useContext(IbcContext);
+    setSelectedToken
+  } = useContext(IbcContext)
 
-  const { setViewingKey } = useSecretNetworkClientStore();
+  const { setViewingKey } = useSecretNetworkClientStore()
 
-  const [assetViewingKey, setAssetViewingKey] = useState<any>();
+  const [assetViewingKey, setAssetViewingKey] = useState<any>()
 
   useEffect(() => {
-    setSelectedTokenName(selectedToken.name);
     const updateCoinBalance = async () => {
-      const key = await getWalletViewingKey(selectedToken.address);
+      const key = await getWalletViewingKey(selectedToken.address)
       if (!key) {
-        setAssetViewingKey(viewingKeyErrorString);
+        setAssetViewingKey(viewingKeyErrorString)
       }
-    };
-    updateCoinBalance();
-  }, [selectedToken, assetViewingKey, isWrapModalOpen]);
+    }
+    updateCoinBalance()
+  }, [selectedToken, assetViewingKey, isWrapModalOpen])
 
-  if (!props.open) return null;
+  if (!props.open) return null
 
   return (
     <>
@@ -63,7 +60,7 @@ const WrapModal = (props: IWrapModalProps) => {
             <div
               className="bg-neutral-100 dark:bg-neutral-900 p-8 rounded-2xl"
               onClick={(e) => {
-                e.stopPropagation();
+                e.stopPropagation()
               }}
             >
               {/* Header */}
@@ -90,7 +87,7 @@ const WrapModal = (props: IWrapModalProps) => {
               {/* Body */}
               <div className="text-center">
                 {(selectedToken.is_ics20 || selectedToken.is_snip20) &&
-                  ibcMode === "deposit" &&
+                  ibcMode === 'deposit' &&
                   assetViewingKey === viewingKeyErrorString && (
                     <>
                       <p className="text-neutral-600 dark:text-neutral-400 max-w-sm mx-auto mb-6">
@@ -104,20 +101,20 @@ const WrapModal = (props: IWrapModalProps) => {
                         Set viewing key
                       </button>
                     </>
-                  )}{" "}
-                {ibcMode === "deposit" &&
+                  )}{' '}
+                {ibcMode === 'deposit' &&
                   !selectedToken.is_ics20 &&
                   !selectedToken.is_snip20 && (
                     <>
                       <p className="text-neutral-600 dark:text-neutral-400 max-w-sm mx-auto mb-6">
-                        Now that you have (publicly visible){" "}
-                        {props.selectedToken.name || "SCRT"} in Secret Network,
+                        Now that you have (publicly visible){' '}
+                        {props.selectedToken.name || 'SCRT'} in Secret Network,
                         make sure to wrap your assets into the
                         privacy-preserving equivalent s
-                        {props.selectedToken.name || "SCRT"}.
+                        {props.selectedToken.name || 'SCRT'}.
                       </p>
                       <Link
-                        to={"/wrap?token=" + props.selectedToken.name}
+                        to={'/wrap?token=' + props.selectedToken.name}
                         className="sm:max-w-[200px] w-full md:px-4 inline-block bg-cyan-500 dark:bg-cyan-600 text-cyan-100 hover:text-white hover:bg-cyan-400 dark:hover:bg-cyan-600 text-center transition-colors py-2.5 rounded-xl font-semibold text-sm"
                       >
                         <FontAwesomeIcon icon={faShuffle} className="mr-2" />
@@ -131,7 +128,7 @@ const WrapModal = (props: IWrapModalProps) => {
         </div>
       </div>
     </>
-  );
-};
+  )
+}
 
-export default WrapModal;
+export default WrapModal

@@ -1,13 +1,13 @@
 import BigNumber from 'bignumber.js'
 import React, { useContext, useEffect, useState } from 'react'
 import { APIContext } from 'shared/context/APIContext'
-import { SecretjsContext } from 'shared/context/SecretjsContext'
 import { formatNumber, usdString, faucetAddress } from 'shared/utils/commons'
 import { StakingContext } from 'staking/Staking'
 import { toast } from 'react-toastify'
 import FeeGrant from '../../../shared/components/FeeGrant'
 import { useSecretNetworkClientStore } from 'store/secretNetworkClient'
 import { scrtToken } from 'shared/utils/tokens'
+import PercentagePicker from 'shared/components/PercentagePicker'
 
 export default function StakingForm() {
   const { selectedValidator, setView } = useContext(StakingContext)
@@ -105,41 +105,6 @@ export default function StakingForm() {
     submit()
   }
 
-  function PercentagePicker() {
-    return (
-      <div className="inline-flex rounded-full text-xs font-bold">
-        <button
-          onClick={() => setAmountByPercentage(25)}
-          className="bg-neutral-100 dark:bg-neutral-900 px-1.5 py-0.5 rounded-l-md transition-colors hover:bg-neutral-300 dark:hover:bg-neutral-700 cursor-pointer disabled:text-neutral-500 dark:disabled:text-neutral-500 disabled:hover:bg-neutral-900 dark:disabled:hover:bg-neutral-900 disabled:cursor-default focus:outline-0 focus:ring-2 ring-sky-500/40 focus:z-10"
-          disabled={!isConnected}
-        >
-          25%
-        </button>
-        <button
-          onClick={() => setAmountByPercentage(50)}
-          className="bg-neutral-100 dark:bg-neutral-900 px-1.5 py-0.5 border-l border-neutral-300 dark:border-neutral-700 transition-colors hover:bg-neutral-300 dark:hover:bg-neutral-700 cursor-pointer disabled:text-neutral-500 dark:disabled:text-neutral-500 disabled:hover:bg-neutral-900 dark:disabled:hover:bg-neutral-900 disabled:cursor-default focus:outline-0 focus:ring-2 ring-sky-500/40 focus:z-10"
-          disabled={!isConnected}
-        >
-          50%
-        </button>
-        <button
-          onClick={() => setAmountByPercentage(75)}
-          className="bg-neutral-100 dark:bg-neutral-900 px-1.5 py-0.5 border-l border-neutral-300 dark:border-neutral-700 transition-colors hover:bg-neutral-300 dark:hover:bg-neutral-700 cursor-pointer disabled:text-neutral-500 dark:disabled:text-neutral-500 disabled:hover:bg-neutral-900 dark:disabled:hover:bg-neutral-900 disabled:cursor-default focus:outline-0 focus:ring-2 ring-sky-500/40 focus:z-10"
-          disabled={!isConnected}
-        >
-          75%
-        </button>
-        <button
-          onClick={() => setAmountByPercentage(100)}
-          className="bg-neutral-100 dark:bg-neutral-900 px-1.5 py-0.5 rounded-r-md border-l border-neutral-300 dark:border-neutral-700 transition-colors hover:bg-neutral-300 dark:hover:bg-neutral-700 cursor-pointer disabled:text-neutral-500 dark:disabled:text-neutral-500 disabled:hover:bg-neutral-900 dark:disabled:hover:bg-neutral-900 disabled:cursor-default focus:outline-0 focus:ring-2 ring-sky-500/40 focus:z-10"
-          disabled={!isConnected}
-        >
-          MAX
-        </button>
-      </div>
-    )
-  }
-
   function setAmountByPercentage(percentage: number) {
     if (scrtBalance) {
       let availableAmount = new BigNumber(scrtBalance).dividedBy(
@@ -158,7 +123,7 @@ export default function StakingForm() {
   return (
     <>
       <div className="bg-neutral-200 dark:bg-neutral-800 p-4 rounded-xl my-4">
-        <div className="font-bold mb-2 text-center sm:text-left">
+        <div className="font-semibold mb-2 text-center sm:text-left">
           Amount to Stake
         </div>
 
@@ -181,7 +146,10 @@ export default function StakingForm() {
             {amountInDollarString !== '$NaN' ? amountInDollarString : '$ -'}
           </div>
           <div className="text-center sm:text-left flex-initial">
-            <PercentagePicker />
+            {PercentagePicker(
+              setAmountByPercentage,
+              !secretNetworkClient?.address
+            )}
           </div>
         </div>
       </div>
