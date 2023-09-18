@@ -1,47 +1,47 @@
-import { faBars, faSun } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import Footer from "shared/components/Footer";
-import { Wallet } from "shared/components/Wallet";
-import { Navigation } from "shared/components/Navigation";
-import { useState, createContext, useEffect, useContext } from "react";
-import { Breakpoint } from "react-socks";
-import { Flip, ToastContainer } from "react-toastify";
-import { useLocation } from "react-router-dom";
-import FloatingCTAButton from "shared/components/FloatingCTAButton";
-import FeedbackButton from "shared/components/FeedbackButton";
-import { ThemeSwitch } from "shared/components/ThemeSwitch";
-import { Nullable } from "shared/types/Nullable";
+import { faBars, faSun } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import Footer from 'shared/components/Footer'
+import { Wallet } from 'shared/components/Wallet'
+import { Navigation } from 'shared/components/Navigation'
+import { useState, createContext, useEffect, useContext } from 'react'
+import { Breakpoint } from 'react-socks'
+import { Flip, ToastContainer } from 'react-toastify'
+import { useLocation } from 'react-router-dom'
+import FloatingCTAButton from 'shared/components/FloatingCTAButton'
+import FeedbackButton from 'shared/components/FeedbackButton'
+import { ThemeSwitch } from 'shared/components/ThemeSwitch'
+import { Nullable } from 'shared/types/Nullable'
 
-export const NavigationContext = createContext<Nullable<boolean>>(null);
+export const NavigationContext = createContext<Nullable<boolean>>(null)
 
 export const DefaultLayout = ({ children }: any) => {
   /**
    * Mobile Menu Handler
    */
-  const [showMobileMenu, setShowMobileMenu] = useState<boolean>(false);
+  const [showMobileMenu, setShowMobileMenu] = useState<boolean>(false)
 
   // auto close menu
-  const location = useLocation();
+  const location = useLocation()
   useEffect(() => {
     if (showMobileMenu) {
-      setShowMobileMenu(false);
+      setShowMobileMenu(false)
     }
-  }, [location]);
+  }, [location])
 
   useEffect(() => {
     function handleResize() {
       if (window.innerWidth >= 1024 && setShowMobileMenu) {
-        setShowMobileMenu(false);
+        setShowMobileMenu(false)
       }
     }
-    window.addEventListener("resize", handleResize);
-  }, []);
+    window.addEventListener('resize', handleResize)
+  }, [])
 
   return (
     <>
       {/* Fixed Feedback Button */}
       <FeedbackButton
-        url={"https://github.com/scrtlabs/dash.scrt.network/issues/new"}
+        url={'https://github.com/scrtlabs/dash.scrt.network/issues/new'}
       />
 
       {/* Fixed Help Button */}
@@ -55,10 +55,10 @@ export const DefaultLayout = ({ children }: any) => {
         <aside
           className={
             (showMobileMenu
-              ? "z-50 left-0 right-0 w-full lg:w-auto min-h-screen bg-white dark:bg-neutral-900"
-              : "hidden lg:block") +
-            " " +
-            "lg:w-[17rem] fixed left-0 top-0 h-screen p-6 overflow-x-hidden"
+              ? 'z-50 left-0 right-0 w-full lg:w-auto min-h-screen bg-white dark:bg-neutral-900'
+              : 'hidden lg:block') +
+            ' ' +
+            'lg:w-[17rem] fixed left-0 top-0 h-screen p-6 overflow-x-hidden'
           }
         >
           <NavigationContext.Provider value={showMobileMenu}>
@@ -70,7 +70,7 @@ export const DefaultLayout = ({ children }: any) => {
         </aside>
         <main className="flex flex-col min-h-screen flex-1 lg:ml-[17rem]">
           {/* Info Box */}
-          <div className="bg-orange-500 dark:bg-orange-600 px-4 py-1.5 text-sm text-center">
+          {/* <div className="bg-orange-500 dark:bg-orange-600 px-4 py-1.5 text-sm text-center">
             <b>
               <a
                 href="https://scrt.network/blog/secret-surge"
@@ -84,7 +84,7 @@ export const DefaultLayout = ({ children }: any) => {
             </b>
             , bringing up to <b>$4 MILLION in rewards</b> to Secret DeFi dApps!{" "}
             {" ⚡️"}
-          </div>
+          </div> */}
 
           <div className="flex-1">
             {/* Top Bar [Burger Menu | Socials | Keplr] */}
@@ -133,17 +133,17 @@ export const DefaultLayout = ({ children }: any) => {
       </Breakpoint>
       <Breakpoint small down>
         <ToastContainer
-          position={"bottom-left"}
+          position={'bottom-left'}
           autoClose={false}
           hideProgressBar={true}
           closeOnClick={true}
           draggable={false}
-          theme={"dark"}
+          theme={'dark'}
           transition={Flip}
         />
       </Breakpoint>
     </>
-  );
-};
+  )
+}
 
-export default DefaultLayout;
+export default DefaultLayout

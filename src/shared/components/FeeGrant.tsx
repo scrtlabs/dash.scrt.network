@@ -13,7 +13,7 @@ function FeeGrant() {
 
   return (
     <>
-      <div className="bg-neutral-200 dark:bg-neutral-800 p-4 rounded-lg select-none flex items-center my-4">
+      <div className="bg-neutral-200 dark:bg-neutral-800 p-4 rounded-lg select-none flex items-center">
         <div className="flex-1 flex items-center">
           <span className="font-semibold text-sm">Fee Grant</span>
           <div className="flex items-center ml-2">

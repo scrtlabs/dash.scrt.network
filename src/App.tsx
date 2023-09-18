@@ -16,7 +16,7 @@ import { Dashboard } from 'dashboard/Dashboard'
 import Bridge from 'bridge/Bridge'
 import Apps from 'apps/Apps'
 import { Staking } from 'staking/Staking'
-import { Send } from 'send/Send.1'
+import { Send } from 'send/Send'
 import GetSCRT from 'get-scrt/GetScrt'
 import Balances from 'balances/Balances'
 

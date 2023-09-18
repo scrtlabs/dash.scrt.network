@@ -1,13 +1,16 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useFormik } from 'formik'
 import { wrapSchema } from './wrapSchema'
+import { Token, tokens } from 'shared/utils/config'
 
 function WrapForm() {
   const [generalErrorMessage, setGeneralErrorMessage] = useState<String>('')
 
   const formik = useFormik({
     initialValues: {
-      amount: '12'
+      amount: '',
+      token: '',
+      wrappingMode: 'wrap'
     },
     validationSchema: wrapSchema,
     validateOnBlur: false,
@@ -39,6 +42,10 @@ function WrapForm() {
     >
       {/* Source */}
       <div className="col-span-12">
+        {/* Validation Error MSG */}
+        {formik.errors.amount ? (
+          <div className="text-red-500">{formik.errors.amount}</div>
+        ) : null}
         <input
           name="amount"
           type="text"
@@ -55,6 +62,43 @@ function WrapForm() {
           type="text"
           className="text-black"
           value={formik.values.amount}
+          onChange={formik.handleChange}
+          onBlur={formik.handleBlur}
+        />
+      </div>
+      {/* Token */}
+      {/* Validation Error MSG */}
+      {formik.errors.token ? (
+        <div className="text-red-500">{formik.errors.token}</div>
+      ) : null}
+      <div className="col-span-12 text-black">
+        <select
+          name="token"
+          value={formik.values.token}
+          onChange={formik.handleChange}
+          onBlur={formik.handleBlur}
+        >
+          {tokens.map((token: Token) => {
+            return (
+              <option value={token.name} key={token.name}>
+                {token.name}
+              </option>
+            )
+          })}
+        </select>
+      </div>
+
+      {/* WrappingMode */}
+      <div className="col-span-12">
+        {/* Validation Error MSG */}
+        {formik.errors.wrappingMode ? (
+          <div className="text-red-500">{formik.errors.wrappingMode}</div>
+        ) : null}
+        <input
+          name="wrappingMode"
+          type="text"
+          className="text-black bg-red-500"
+          value={formik.values.wrappingMode}
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
         />
