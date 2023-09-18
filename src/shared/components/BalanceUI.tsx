@@ -1,15 +1,9 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import BigNumber from 'bignumber.js'
-import React, { FunctionComponent, useContext } from 'react'
-import { sleep, viewingKeyErrorString, usdString } from 'shared/utils/commons'
+import { viewingKeyErrorString, usdString } from 'shared/utils/commons'
 import Tooltip from '@mui/material/Tooltip'
 import { Token } from 'shared/utils/config'
-import {
-  faKey,
-  faInfoCircle,
-  faArrowRightArrowLeft
-} from '@fortawesome/free-solid-svg-icons'
-import { Link } from 'react-router-dom'
+import { faKey, faInfoCircle } from '@fortawesome/free-solid-svg-icons'
 import { useSecretNetworkClientStore } from 'store/secretNetworkClient'
 
 export function NativeTokenBalanceUi(

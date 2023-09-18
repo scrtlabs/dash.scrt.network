@@ -15,12 +15,12 @@ import {
 import FeeGrant from 'shared/components/FeeGrant'
 import PercentagePicker from 'shared/components/PercentagePicker'
 import { WrappingMode } from 'shared/types/WrappingMode'
-import { viewingKeyErrorString } from 'shared/utils/commons'
 import { Token, tokens } from 'shared/utils/config'
 import { useSecretNetworkClientStore } from 'store/secretNetworkClient'
 import { wrapSchema } from 'wrap/wrapSchema'
 import Tooltip from '@mui/material/Tooltip'
 import { WrapService } from 'shared/services/wrap.service'
+import NewBalanceUI from 'shared/components/NewBalanceUI'
 
 function WrapForm() {
   const {
@@ -214,20 +214,12 @@ function WrapForm() {
           {/* Balance | [25%|50%|75%|Max] */}
           <div className="flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 mt-2">
             <div className="flex-1 text-xs">
-              {wrappingMode === 'unwrap' &&
-              (scrtBalance != '0' || scrtBalance === undefined)
-                ? WrappedTokenBalanceUi(
-                    tokenBalance,
-                    selectedToken,
-                    selectedTokenPrice
-                  )
-                : null}
-              {wrappingMode === 'wrap' &&
-                NativeTokenBalanceUi(
-                  nativeBalance,
-                  selectedToken,
-                  selectedTokenPrice
+              <NewBalanceUI
+                token={tokens.find(
+                  (token) => token.name.toLowerCase() === 'scrt'
                 )}
+                secureSecret
+              />
             </div>
             <div className="sm:flex-initial text-xs">
               <PercentagePicker
