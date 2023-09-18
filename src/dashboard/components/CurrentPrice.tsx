@@ -1,12 +1,12 @@
-import { faArrowUpRightFromSquare } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import React from "react";
-import { Else, If, Then } from "react-if";
-import { trackMixPanelEvent } from "shared/utils/commons";
-import { Link } from "react-router-dom";
+import { faArrowUpRightFromSquare } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import React from 'react'
+import { Else, If, Then } from 'react-if'
+import { trackMixPanelEvent } from 'shared/utils/commons'
+import { Link } from 'react-router-dom'
 
 interface ICurrentPriceProps {
-  price?: number;
+  price?: number
 }
 
 class CurrentPrice extends React.Component<ICurrentPriceProps> {
@@ -22,14 +22,12 @@ class CurrentPrice extends React.Component<ICurrentPriceProps> {
               <If condition={this.props.price}>
                 <Then>
                   {this.props.price?.toLocaleString(undefined, {
-                    style: "currency",
-                    currency: "USD",
+                    style: 'currency',
+                    currency: 'USD'
                   })}
                 </Then>
                 <Else>
-                  <div className="animate-pulse">
-                    <div className="bg-neutral-300/40 dark:bg-neutral-700/40 rounded col-span-2 w-20 h-8 mx-auto"></div>
-                  </div>
+                  <div className="animate-pulse bg-neutral-300/40 dark:bg-neutral-700/40 rounded col-span-2 w-20 h-8 mx-auto"></div>
                 </Else>
               </If>
             </div>
@@ -40,7 +38,7 @@ class CurrentPrice extends React.Component<ICurrentPriceProps> {
             to="/get-scrt"
             className="w-full md:w-auto md:px-4 inline-block bg-cyan-500 dark:bg-cyan-500/20 text-white dark:text-cyan-200 dark:hover:text-cyan-100 hover:bg-cyan-400 dark:hover:bg-cyan-500/50 text-center transition-colors py-2.5 rounded-xl font-semibold text-sm"
             onClick={() => {
-              trackMixPanelEvent("Clicked buy SCRT on current price");
+              trackMixPanelEvent('Clicked buy SCRT on current price')
             }}
           >
             Get SCRT
@@ -51,8 +49,8 @@ class CurrentPrice extends React.Component<ICurrentPriceProps> {
           </Link>
         </div>
       </div>
-    );
+    )
   }
 }
 
-export default CurrentPrice;
+export default CurrentPrice

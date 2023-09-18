@@ -1,21 +1,21 @@
-import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useContext, useEffect, useState } from "react";
-import { Helmet } from "react-helmet-async";
-import Header from "./components/Header";
-import AppTile from "./components/AppTile";
+import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { useContext, useEffect, useState } from 'react'
+import { Helmet } from 'react-helmet-async'
+import Header from './components/Header'
+import AppTile from './components/AppTile'
 import {
   sortDAppsArray,
   dAppsURL,
   appsPageTitle,
   appsPageDescription,
-  appsJsonLdSchema,
-} from "shared/utils/commons";
-import React from "react";
-import { APIContext } from "shared/context/APIContext";
-import mixpanel from "mixpanel-browser";
-import { trackMixPanelEvent } from "shared/utils/commons";
-import { useSecretNetworkClientStore } from "store/secretNetworkClient";
+  appsJsonLdSchema
+} from 'shared/utils/commons'
+import React from 'react'
+import { APIContext } from 'shared/context/APIContext'
+import mixpanel from 'mixpanel-browser'
+import { trackMixPanelEvent } from 'shared/utils/commons'
+import { useSecretNetworkClientStore } from 'store/secretNetworkClient'
 
 function Apps() {
   const {
@@ -24,26 +24,24 @@ function Apps() {
     dappsDataSorted,
     setDappsDataSorted,
     tags,
-    setTags,
-  } = useContext(APIContext);
+    setTags
+  } = useContext(APIContext)
 
   useEffect(() => {
-    trackMixPanelEvent("Open Apps Tab");
-  }, []);
+    trackMixPanelEvent('Open Apps Tab')
+  }, [])
 
   // Filter + Search
-  const [tagsToBeFilteredBy, setTagsToBeFilteredBy] = useState<string[]>([]);
+  const [tagsToBeFilteredBy, setTagsToBeFilteredBy] = useState<string[]>([])
   function isTagInFilterList(tag: string) {
-    return tagsToBeFilteredBy.find((e) => e === tag);
+    return tagsToBeFilteredBy.find((e) => e === tag)
   }
 
   function toggleTagFilter(tagName: string) {
     if (tagsToBeFilteredBy.includes(tagName)) {
-      setTagsToBeFilteredBy(
-        tagsToBeFilteredBy.filter((tag) => tag !== tagName)
-      );
+      setTagsToBeFilteredBy(tagsToBeFilteredBy.filter((tag) => tag !== tagName))
     } else {
-      setTagsToBeFilteredBy(tagsToBeFilteredBy.concat(tagName));
+      setTagsToBeFilteredBy(tagsToBeFilteredBy.concat(tagName))
     }
   }
 
@@ -53,30 +51,30 @@ function Apps() {
         <button
           onClick={() => toggleTagFilter(this.props.name)}
           className={
-            "inline-block text-sm px-1.5 py-0.5 rounded-md overflow-hidden transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-500 dark:focus-visible:ring-cyan-500" +
+            'inline-block text-sm px-1.5 py-0.5 rounded-md overflow-hidden transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-500 dark:focus-visible:ring-cyan-500' +
             (isTagInFilterList(this.props.name)
-              ? "  text-white dark:text-white font-semibold bg-gradient-to-r from-cyan-600 to-purple-600 hover:from-cyan-500 hover:to-purple-500"
-              : " bg-white dark:bg-neutral-800 hover:bg-neutral-300 dark:hover:bg-neutral-700 font-medium")
+              ? '  text-white dark:text-white font-semibold bg-gradient-to-r from-cyan-600 to-purple-600 hover:from-cyan-500 hover:to-purple-500'
+              : ' bg-white dark:bg-neutral-800 hover:bg-neutral-300 dark:hover:bg-neutral-700 font-medium')
           }
         >
           {this.props.name}
         </button>
-      );
+      )
     }
   }
 
-  const { walletAddress, connectWallet } = useSecretNetworkClientStore();
+  const { walletAddress, connectWallet } = useSecretNetworkClientStore()
 
   // Search
-  const [searchText, setSearchText] = useState<string>("");
+  const [searchText, setSearchText] = useState<string>('')
 
   // results apps that match on the search input and chosen tags
   function filteredDappsData() {
-    let items = dappsDataSorted;
-    if (searchText !== "") {
+    let items = dappsDataSorted
+    if (searchText !== '') {
       items = items.filter((app: any) =>
         app.attributes.name.toLowerCase().includes(searchText.toLowerCase())
-      );
+      )
     }
 
     if (tagsToBeFilteredBy?.length > 0) {
@@ -84,9 +82,9 @@ function Apps() {
         item.attributes.type
           .map((item: any) => item.name)
           .find((tag: any) => tagsToBeFilteredBy.includes(tag))
-      );
+      )
     }
-    return items;
+    return items
   }
 
   return (
@@ -137,7 +135,9 @@ function Apps() {
         {/* Tag-Filter */}
         <div className="mb-4 sm:mb-8 flex gap-2 flex-wrap justify-center">
           {tags?.length > 0 &&
-            tags.map((tag: any) => <>{tag && <Tag key={tag} name={tag} />}</>)}
+            tags.map((tag: any, index: number) => (
+              <>{tag && <Tag key={tag + index} name={tag} />}</>
+            ))}
           {tags?.length === 0 && <div className="h-6"></div>}
         </div>
         {/* App-Items */}
@@ -212,7 +212,7 @@ function Apps() {
         </div>
       </div>
     </>
-  );
+  )
 }
 
-export default Apps;
+export default Apps

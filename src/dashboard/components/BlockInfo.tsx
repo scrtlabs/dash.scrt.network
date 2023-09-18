@@ -1,18 +1,18 @@
-import React from "react";
-import { Else, If, Then } from "react-if";
+import React from 'react'
+import { Else, If, Then } from 'react-if'
 
 interface IBlockInfoProps {
-  blockHeight: number;
-  blockTime: number;
-  circulatingSupply: number;
-  inflation: number;
+  blockHeight: number
+  blockTime: number
+  circulatingSupply: number
+  inflation: number
 }
 
 const BlockInfo = (props: IBlockInfoProps) => {
   const formattedInflation = props.inflation
-    ? props.inflation * 100 + "%"
-    : null;
-  const formattedCirculatingSupply = props.circulatingSupply;
+    ? props.inflation * 100 + '%'
+    : null
+  const formattedCirculatingSupply = props.circulatingSupply
 
   return (
     <>
@@ -27,9 +27,7 @@ const BlockInfo = (props: IBlockInfoProps) => {
               <If condition={props.blockHeight}>
                 <Then>{props.blockHeight}</Then>
                 <Else>
-                  <div className="animate-pulse">
-                    <div className="bg-neutral-700/40 rounded col-span-2 w-16 h-8 mx-auto"></div>
-                  </div>
+                  <div className="animate-pulse bg-neutral-700/40 rounded col-span-2 w-16 h-8 mx-auto"></div>
                 </Else>
               </If>
             </div>
@@ -42,13 +40,11 @@ const BlockInfo = (props: IBlockInfoProps) => {
             <div className="text-2xl">
               <If condition={props.blockTime}>
                 <Then>
-                  {props.blockTime}s{" "}
+                  {props.blockTime}s{' '}
                   {/* 5.77 is a possible value... Needs to be formatted in seconds */}
                 </Then>
                 <Else>
-                  <div className="animate-pulse">
-                    <div className="bg-neutral-700/40 rounded col-span-2 w-16 h-8 mx-auto"></div>
-                  </div>
+                  <div className="animate-pulse bg-neutral-700/40 rounded col-span-2 w-16 h-8 mx-auto"></div>
                 </Else>
               </If>
             </div>
@@ -61,9 +57,7 @@ const BlockInfo = (props: IBlockInfoProps) => {
             <If condition={formattedCirculatingSupply}>
               <Then>{formattedCirculatingSupply}</Then>
               <Else>
-                <div className="animate-pulse">
-                  <div className="bg-neutral-700/40 rounded col-span-2 w-16 h-8 mx-auto"></div>
-                </div>
+                <div className="animate-pulse bg-neutral-700/40 rounded col-span-2 w-16 h-8 mx-auto"></div>
               </Else>
             </If>
           </div>
@@ -76,9 +70,7 @@ const BlockInfo = (props: IBlockInfoProps) => {
               <If condition={formattedInflation}>
                 <Then>{formattedInflation}</Then>
                 <Else>
-                  <div className="animate-pulse">
-                    <div className="bg-neutral-700/40 rounded col-span-2 w-12 h-8 mx-auto"></div>
-                  </div>
+                  <div className="animate-pulse bg-neutral-700/40 rounded col-span-2 w-12 h-8 mx-auto"></div>
                 </Else>
               </If>
             </div>
@@ -87,7 +79,7 @@ const BlockInfo = (props: IBlockInfoProps) => {
         <div>Data provioded</div>
       </div>
     </>
-  );
-};
+  )
+}
 
-export default BlockInfo;
+export default BlockInfo

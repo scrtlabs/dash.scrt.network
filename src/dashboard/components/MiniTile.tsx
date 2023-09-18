@@ -1,9 +1,9 @@
-import React from "react";
-import { Else, If, Then } from "react-if";
+import React from 'react'
+import { Else, If, Then } from 'react-if'
 
 interface IMarketCapProps {
-  name: string;
-  value?: string;
+  name: string
+  value?: string
 }
 
 class MiniTile extends React.Component<IMarketCapProps> {
@@ -19,17 +19,15 @@ class MiniTile extends React.Component<IMarketCapProps> {
               <If condition={this.props.value}>
                 <Then>{this.props.value}</Then>
                 <Else>
-                  <div className="animate-pulse">
-                    <div className="bg-neutral-300/40 dark:bg-neutral-700/40 rounded col-span-2 w-20 h-7 mx-auto"></div>
-                  </div>
+                  <div className="animate-pulse bg-neutral-300/40 dark:bg-neutral-700/40 rounded col-span-2 w-20 h-7 mx-auto"></div>
                 </Else>
               </If>
             </div>
           </div>
         </div>
       </>
-    );
+    )
   }
 }
 
-export default MiniTile;
+export default MiniTile

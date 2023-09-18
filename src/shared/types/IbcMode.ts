@@ -1,5 +1,5 @@
-export type IbcMode = "deposit" | "withdrawal";
+export type IbcMode = 'deposit' | 'withdrawal'
 
 export function isIbcMode(x: String): boolean {
-  return x === "deposit" || x === "withdrawal";
+  return x === 'deposit' || x === 'withdrawal'
 }

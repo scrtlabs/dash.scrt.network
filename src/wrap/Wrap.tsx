@@ -9,7 +9,8 @@ import {
   usdString,
   wrapPageTitle,
   wrapPageDescription,
-  wrapJsonLdSchema
+  wrapJsonLdSchema,
+  randomPadding
 } from 'shared/utils/commons'
 import BigNumber from 'bignumber.js'
 import { toast } from 'react-toastify'
@@ -18,9 +19,7 @@ import {
   faKey,
   faArrowRightArrowLeft,
   faRightLeft,
-  faInfoCircle,
-  faCheckCircle,
-  faXmarkCircle
+  faInfoCircle
 } from '@fortawesome/free-solid-svg-icons'
 import { Link } from 'react-router-dom'
 import Select from 'react-select'
@@ -30,11 +29,12 @@ import UnknownBalanceModal from './components/UnknownBalanceModal'
 import FeeGrantInfoModal from './components/FeeGrantInfoModal'
 import mixpanel from 'mixpanel-browser'
 import { useSearchParams } from 'react-router-dom'
-import { WrappingMode } from 'shared/types/WrappingMode'
+import { WrappingMode, isWrappingMode } from 'shared/types/WrappingMode'
 import { APIContext } from 'shared/context/APIContext'
 import { useSecretNetworkClientStore } from 'store/secretNetworkClient'
 import { getWalletViewingKey } from 'service/walletService'
 import WrapForm from './WrapForm'
+import FeeGrant from 'shared/components/FeeGrant'
 
 export const WrapContext = createContext(null)
 
@@ -55,7 +55,7 @@ export function Wrap() {
   const secretToken: Token = tokens.find((token) => token.name === 'SCRT')
   const [selectedToken, setSelectedToken] = useState<Token>(secretToken)
   const [selectedTokenPrice, setSelectedTokenPrice] = useState<number>(0)
-  const [amountString, setAmountString] = useState<string>('')
+  const [amountString, setAmountString] = useState<string>('0')
   const [wrappingMode, setWrappingMode] = useState<WrappingMode>('wrap')
 
   const [nativeBalance, setNativeBalance] = useState<any>()
@@ -94,10 +94,7 @@ export function Wrap() {
   }
 
   useEffect(() => {
-    if (
-      modeUrlParam?.toLowerCase() === 'wrap' ||
-      modeUrlParam?.toLowerCase() === 'unwrap'
-    ) {
+    if (isWrappingMode(modeUrlParam?.toLowerCase())) {
       setWrappingMode(modeUrlParam.toLowerCase() as WrappingMode)
     }
   }, [])
@@ -558,7 +555,11 @@ export function Wrap() {
                   sent_funds: [
                     { denom: selectedToken.withdrawals[0].from_denom, amount }
                   ],
-                  msg: { deposit: {} }
+                  msg: {
+                    deposit: {
+                      padding: randomPadding()
+                    }
+                  }
                 } as any)
               ],
               {
@@ -624,7 +625,8 @@ export function Wrap() {
                       denom:
                         selectedToken.name === 'SCRT'
                           ? undefined
-                          : selectedToken.withdrawals[0].from_denom
+                          : selectedToken.withdrawals[0].from_denom,
+                      padding: randomPadding()
                     }
                   }
                 } as any)
@@ -855,16 +857,14 @@ export function Wrap() {
             {/* *** From *** */}
             <div className="bg-neutral-200 dark:bg-neutral-800 p-4 rounded-xl">
               {/* Title Bar */}
-              <div className="flex flex-col sm:flex-row">
-                <div className="flex-1 font-semibold mb-2 text-center sm:text-left">
+              <div className="flex justify-between items-center mb-2">
+                <span className="font-semibold text-center sm:text-left">
                   From
-                </div>
+                </span>
                 {!isValidAmount && isValidationActive && (
-                  <div className="flex-initial">
-                    <div className="text-red-500 dark:text-red-500 text-xs text-center sm:text-right mb-2">
-                      {validationMessage}
-                    </div>
-                  </div>
+                  <span className="text-red-500 dark:text-red-500 text-xs font-normal">
+                    {validationMessage}
+                  </span>
                 )}
               </div>
 
@@ -899,7 +899,7 @@ export function Wrap() {
                   min="0"
                   step="0.000001"
                   className={
-                    'text-right focus:z-10 block flex-1 min-w-0 w-full bg-neutral-100 dark:bg-neutral-900 text-black dark:text-white px-4 rounded-r-lg disabled:placeholder-neutral-300 dark:disabled:placeholder-neutral-700 transition-colors font-medium focus:outline-0 focus:ring-2 ring-sky-500/40' +
+                    'remove-arrows text-right focus:z-10 block flex-1 min-w-0 w-full bg-neutral-100 dark:bg-neutral-900 text-black dark:text-white px-4 rounded-r-lg disabled:placeholder-neutral-300 dark:disabled:placeholder-neutral-700 transition-colors font-medium focus:outline-0 focus:ring-2 ring-sky-500/40' +
                     (!isValidAmount && isValidationActive
                       ? '  border border-red-500 dark:border-red-500'
                       : '')
@@ -966,7 +966,7 @@ export function Wrap() {
                   min="0"
                   step="0.000001"
                   className={
-                    'text-right focus:z-10 block flex-1 min-w-0 w-full bg-neutral-100 dark:bg-neutral-900 text-black dark:text-white px-4 rounded-r-lg disabled:placeholder-neutral-300 dark:disabled:placeholder-neutral-700 transition-colors font-medium focus:outline-0 focus:ring-2 ring-sky-500/40'
+                    'remove-arrows text-right focus:z-10 block flex-1 min-w-0 w-full bg-neutral-100 dark:bg-neutral-900 text-black dark:text-white px-4 rounded-r-lg disabled:placeholder-neutral-300 dark:disabled:placeholder-neutral-700 transition-colors font-medium focus:outline-0 focus:ring-2 ring-sky-500/40'
                   }
                   name="toValue"
                   id="toValue"
@@ -980,53 +980,7 @@ export function Wrap() {
               </div>
             </div>
             {/* Fee Grant */}
-            <div className="bg-neutral-200 dark:bg-neutral-800 p-4 rounded-lg select-none flex items-center my-4">
-              <div className="flex-1 flex items-center">
-                <span className="font-semibold text-sm">Fee Grant</span>
-                <Tooltip
-                  title={`Request Fee Grant so that you don't have to pay gas fees (up to 0.1 SCRT)`}
-                  placement="right"
-                  arrow
-                >
-                  <FontAwesomeIcon icon={faInfoCircle} className="ml-2" />
-                </Tooltip>
-              </div>
-              <div className="flex-initial">
-                {/* Untouched */}
-                {feeGrantStatus === 'untouched' && (
-                  <>
-                    <button
-                      id="feeGrantButton"
-                      onClick={requestFeeGrant}
-                      className="font-semibold text-xs bg-neutral-100 dark:bg-neutral-900 px-1.5 py-1 rounded-md transition-colors hover:bg-neutral-300 dark:hover:bg-neutral-700 cursor-pointer disabled:text-neutral-500 dark:disabled:text-neutral-500 disabled:hover:bg-neutral-100 dark:disabled:hover:bg-neutral-900 disabled:cursor-default focus:outline-0 focus:ring-2 ring-sky-500/40"
-                      disabled={!isConnected}
-                    >
-                      Request Fee Grant
-                    </button>
-                  </>
-                )}
-                {/* Success */}
-                {feeGrantStatus === 'success' && (
-                  <div className="font-semibold text-sm flex items-center h-[1.6rem]">
-                    <FontAwesomeIcon
-                      icon={faCheckCircle}
-                      className="text-green-500 dark:text-green-500 mr-1.5"
-                    />
-                    Fee Granted
-                  </div>
-                )}
-                {/* Fail */}
-                {feeGrantStatus === 'fail' && (
-                  <div className="font-semibold text-sm h-[1.6rem]">
-                    <FontAwesomeIcon
-                      icon={faXmarkCircle}
-                      className="text-red-500 dark:text-red-500 mr-1.5"
-                    />
-                    Request failed
-                  </div>
-                )}
-              </div>
-            </div>
+            <FeeGrant />
 
             {/* Submit Button */}
             <SubmitButton

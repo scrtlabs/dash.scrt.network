@@ -1,17 +1,17 @@
-import { faSnowflake } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import React from "react";
-import { Else, If, Then } from "react-if";
+import { faSnowflake } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import React from 'react'
+import { Else, If, Then } from 'react-if'
 
 interface IQuadTileProps {
-  item1_key?: string;
-  item1_value?: string;
-  item2_key?: string;
-  item2_value?: string;
-  item3_key?: string;
-  item3_value?: string;
-  item4_key?: string;
-  item4_value?: string;
+  item1_key?: string
+  item1_value?: string
+  item2_key?: string
+  item2_value?: string
+  item3_key?: string
+  item3_value?: string
+  item4_key?: string
+  item4_value?: string
 }
 
 class QuadTile extends React.Component<IQuadTileProps> {
@@ -31,9 +31,7 @@ class QuadTile extends React.Component<IQuadTileProps> {
                     <If condition={this.props.item1_value}>
                       <Then>{this.props.item1_value}</Then>
                       <Else>
-                        <div className="animate-pulse">
-                          <div className="bg-neutral-300/40 dark:bg-neutral-700/40 rounded col-span-2 w-16 h-7 mx-auto"></div>
-                        </div>
+                        <div className="animate-pulse bg-neutral-300/40 dark:bg-neutral-700/40 rounded col-span-2 w-16 h-7 mx-auto"></div>
                       </Else>
                     </If>
                   </div>
@@ -49,9 +47,7 @@ class QuadTile extends React.Component<IQuadTileProps> {
                     <If condition={this.props.item2_value}>
                       <Then>{this.props.item2_value}</Then>
                       <Else>
-                        <div className="animate-pulse">
-                          <div className="bg-neutral-300/40 dark:bg-neutral-700/40 rounded col-span-2 w-16 h-7 mx-auto"></div>
-                        </div>
+                        <div className="animate-pulse bg-neutral-300/40 dark:bg-neutral-700/40 rounded col-span-2 w-16 h-7 mx-auto"></div>
                       </Else>
                     </If>
                   </div>
@@ -69,9 +65,7 @@ class QuadTile extends React.Component<IQuadTileProps> {
                     <If condition={this.props.item3_value}>
                       <Then>{this.props.item3_value}</Then>
                       <Else>
-                        <div className="animate-pulse">
-                          <div className="bg-neutral-300/40 dark:bg-neutral-700/40 rounded col-span-2 w-16 h-7 mx-auto"></div>
-                        </div>
+                        <div className="animate-pulse bg-neutral-300/40 dark:bg-neutral-700/40 rounded col-span-2 w-16 h-7 mx-auto"></div>
                       </Else>
                     </If>
                   </div>
@@ -87,9 +81,7 @@ class QuadTile extends React.Component<IQuadTileProps> {
                     <If condition={this.props.item4_value}>
                       <Then>{this.props.item4_value}</Then>
                       <Else>
-                        <div className="animate-pulse">
-                          <div className="bg-neutral-300/40 dark:bg-neutral-700/40 rounded col-span-2 w-16 h-7 mx-auto"></div>
-                        </div>
+                        <div className="animate-pulse bg-neutral-300/40 dark:bg-neutral-700/40 rounded col-span-2 w-16 h-7 mx-auto"></div>
                       </Else>
                     </If>
                   </div>
@@ -99,8 +91,8 @@ class QuadTile extends React.Component<IQuadTileProps> {
           </div>
         </div>
       </>
-    );
+    )
   }
 }
 
-export default QuadTile;
+export default QuadTile

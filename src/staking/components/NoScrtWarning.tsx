@@ -1,8 +1,8 @@
 import {
   faArrowUpRightFromSquare,
-  faTriangleExclamation,
-} from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+  faTriangleExclamation
+} from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 function NoScrtWarning() {
   return (
@@ -20,7 +20,7 @@ function NoScrtWarning() {
                 <FontAwesomeIcon
                   icon={faArrowUpRightFromSquare}
                   className="text-xs ml-2"
-                  size={"xs"}
+                  size={'xs'}
                 />
               </a>
             </li>
@@ -30,7 +30,7 @@ function NoScrtWarning() {
                 <FontAwesomeIcon
                   icon={faArrowUpRightFromSquare}
                   className="text-xs ml-2"
-                  size={"xs"}
+                  size={'xs'}
                 />
               </a>
             </li>
@@ -38,7 +38,7 @@ function NoScrtWarning() {
         </div>
       </div>
     </>
-  );
+  )
 }
 
-export default NoScrtWarning;
+export default NoScrtWarning

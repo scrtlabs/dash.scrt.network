@@ -1,88 +1,88 @@
 import {
   faArrowUpRightFromSquare,
-  faShuffle,
-} from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Link } from "react-router-dom";
-import { Helmet } from "react-helmet-async";
+  faShuffle
+} from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { Link } from 'react-router-dom'
+import { Helmet } from 'react-helmet-async'
 import {
   formatNumber,
   pageTitle,
-  trackMixPanelEvent,
-} from "shared/utils/commons";
-import { useState, createContext, useContext, useEffect } from "react";
-import queryString from "query-string";
-import Select from "react-select";
-import mixpanel from "mixpanel-browser";
-import { Nullable } from "shared/types/Nullable";
-import { useSecretNetworkClientStore } from "store/secretNetworkClient";
+  trackMixPanelEvent
+} from 'shared/utils/commons'
+import { useState, createContext, useContext, useEffect } from 'react'
+import queryString from 'query-string'
+import Select from 'react-select'
+import mixpanel from 'mixpanel-browser'
+import { Nullable } from 'shared/types/Nullable'
+import { useSecretNetworkClientStore } from 'store/secretNetworkClient'
 
 function GetSCRT() {
   const { secretNetworkClient: secretjs, walletAddress } =
-    useSecretNetworkClientStore();
+    useSecretNetworkClientStore()
 
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(false)
 
-  const [showKado, setShowKado] = useState(false);
-  const [showTransak, setShowTransak] = useState(false);
-  const [showExternal, setShowExternal] = useState(false);
+  const [showKado, setShowKado] = useState(false)
+  const [showTransak, setShowTransak] = useState(false)
+  const [showExternal, setShowExternal] = useState(false)
 
-  type SelectValue = "transak" | "kado" | "external";
+  type SelectValue = 'transak' | 'kado' | 'external'
   const [selectedValue, setSelectedValue] =
-    useState<Nullable<SelectValue>>(null);
+    useState<Nullable<SelectValue>>(null)
 
-  let transakQueryStrings: { [key: string]: any } = {};
+  let transakQueryStrings: { [key: string]: any } = {}
 
   useEffect(() => {
-    if (selectedValue === "transak") {
-      setShowKado(false);
-      setShowTransak(true);
-      setShowExternal(false);
-    } else if (selectedValue === "kado") {
-      setShowKado(true);
-      setShowTransak(false);
-      setShowExternal(false);
-    } else if (selectedValue === "external") {
-      setShowKado(false);
-      setShowTransak(false);
-      setShowExternal(true);
+    if (selectedValue === 'transak') {
+      setShowKado(false)
+      setShowTransak(true)
+      setShowExternal(false)
+    } else if (selectedValue === 'kado') {
+      setShowKado(true)
+      setShowTransak(false)
+      setShowExternal(false)
+    } else if (selectedValue === 'external') {
+      setShowKado(false)
+      setShowTransak(false)
+      setShowExternal(true)
     }
 
-    if (import.meta.env.VITE_MIXPANEL_ENABLED === "true") {
+    if (import.meta.env.VITE_MIXPANEL_ENABLED === 'true') {
       mixpanel.init(import.meta.env.VITE_MIXPANEL_PROJECT_TOKEN, {
-        debug: false,
-      });
-      mixpanel.identify("Dashboard-App");
+        debug: false
+      })
+      mixpanel.identify('Dashboard-App')
       mixpanel.track("User selected in 'Get SCRT'!", {
-        "Selected Mode": selectedValue,
-      });
+        'Selected Mode': selectedValue
+      })
     }
-  }, [selectedValue]);
+  }, [selectedValue])
 
   useEffect(() => {
-    setLoading(true);
-  }, [showKado, showTransak]);
+    setLoading(true)
+  }, [showKado, showTransak])
 
   if (import.meta.env.TRANSAK_API_KEY) {
-    transakQueryStrings.apiKey = import.meta.env.TRANSAK_API_KEY;
-    transakQueryStrings.environment = "PRODUCTION";
+    transakQueryStrings.apiKey = import.meta.env.TRANSAK_API_KEY
+    transakQueryStrings.environment = 'PRODUCTION'
   }
-  transakQueryStrings.cryptoCurrencyList = "SCRT";
-  transakQueryStrings.walletAddress = walletAddress;
-  transakQueryStrings.disableWalletAddressForm = false;
-  transakQueryStrings.themeColor = "000000";
-  transakQueryStrings.defaultCryptoCurrency = "SCRT";
+  transakQueryStrings.cryptoCurrencyList = 'SCRT'
+  transakQueryStrings.walletAddress = walletAddress
+  transakQueryStrings.disableWalletAddressForm = false
+  transakQueryStrings.themeColor = '000000'
+  transakQueryStrings.defaultCryptoCurrency = 'SCRT'
 
   interface Option {
-    value: SelectValue;
-    label: String;
+    value: SelectValue
+    label: String
   }
 
   const options: Option[] = [
-    { value: "kado", label: "Kado" },
-    { value: "transak", label: "Transak" },
-    { value: "external", label: "More..." },
-  ];
+    { value: 'kado', label: 'Kado' },
+    { value: 'transak', label: 'Transak' },
+    { value: 'external', label: 'More...' }
+  ]
 
   return (
     <>
@@ -119,7 +119,7 @@ function GetSCRT() {
             value={options.find((option) => option.value === selectedValue)}
             isSearchable={false}
             onChange={(option) => {
-              setSelectedValue(option.value);
+              setSelectedValue(option.value)
             }}
             classNamePrefix="react-select"
           />
@@ -130,15 +130,13 @@ function GetSCRT() {
             <div
               className="overflow-hidden w-full h-[80vh] rounded-md"
               style={{
-                MozAnimation: "relative",
-                alignItems: "center",
+                MozAnimation: 'relative',
+                alignItems: 'center'
               }}
             >
               {/* Loading */}
               {loading && (
-                <div className="animate-pulse">
-                  <div className="bg-neutral-300/40 dark:bg-neutral-700/40 w-screen h-screen"></div>
-                </div>
+                <div className="animate-pulse bg-neutral-300/40 dark:bg-neutral-700/40 w-screen h-screen"></div>
               )}
 
               <iframe
@@ -148,10 +146,10 @@ function GetSCRT() {
                 onLoad={() => setLoading(false)}
                 allow="camera;microphone;fullscreen;payment"
                 style={{
-                  height: "100%",
-                  width: "100%",
-                  border: "none",
-                  margin: "auto",
+                  height: '100%',
+                  width: '100%',
+                  border: 'none',
+                  margin: 'auto'
                 }}
               ></iframe>
             </div>
@@ -162,22 +160,20 @@ function GetSCRT() {
             <div
               className="overflow-hidden w-full h-[80vh] rounded-md"
               style={{
-                MozAnimation: "relative",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                width: "100%",
-                height: "80vh",
-                overflow: "hidden",
-                position: "relative",
-                margin: "auto",
+                MozAnimation: 'relative',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                width: '100%',
+                height: '80vh',
+                overflow: 'hidden',
+                position: 'relative',
+                margin: 'auto'
               }}
             >
               {/* Loading */}
               {loading && (
-                <div className="animate-pulse">
-                  <div className="bg-neutral-300/40 dark:bg-neutral-700/40 w-screen h-screen"></div>
-                </div>
+                <div className="animate-pulse bg-neutral-300/40 dark:bg-neutral-700/40 w-screen h-screen"></div>
               )}
               <iframe
                 src={`https://app.kado.money/?apiKey=acd1e5a5-8a25-4b2d-b303-b5e113457ef1&onRevCurrency=SCRT&product=BUY&network=SECRET&=onToAddress=${walletAddress}`}
@@ -209,7 +205,7 @@ function GetSCRT() {
                 target="_blank"
                 className="text-white mx-auto my-6 p-3 text-center font-semibold bg-cyan-600 dark:bg-cyan-600 rounded-lg text-sm hover:bg-cyan-500 dark:hover:bg-cyan-500 focus:bg-cyan-600 dark:focus:bg-cyan-600 transition-colors"
               >
-                Open external{" "}
+                Open external{' '}
                 <FontAwesomeIcon
                   icon={faArrowUpRightFromSquare}
                   className="ml-1.5"
@@ -220,7 +216,7 @@ function GetSCRT() {
         )}
       </div>
     </>
-  );
+  )
 }
 
-export default GetSCRT;
+export default GetSCRT

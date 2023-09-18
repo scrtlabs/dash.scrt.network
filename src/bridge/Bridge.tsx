@@ -1,30 +1,35 @@
 import {
   faArrowUpRightFromSquare,
-  faShuffle,
-} from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Link } from "react-router-dom";
-import { Helmet } from "react-helmet-async";
+  faShuffle
+} from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { Link } from 'react-router-dom'
+import { Helmet } from 'react-helmet-async'
 import {
   bridgeJsonLdSchema,
   bridgePageDescription,
   bridgePageTitle,
   formatNumber,
-  pageTitle,
-} from "shared/utils/commons";
-import mixpanel from "mixpanel-browser";
-import { useEffect, useState, useContext } from "react";
-import { trackMixPanelEvent } from "shared/utils/commons";
-import SquidModal from "./SquidModal";
-import { ThemeContext } from "shared/context/ThemeContext";
+  pageTitle
+} from 'shared/utils/commons'
+import mixpanel from 'mixpanel-browser'
+import { useEffect, useState, useContext } from 'react'
+import { trackMixPanelEvent } from 'shared/utils/commons'
+import SquidModal from './SquidModal'
+import { ThemeContext } from 'shared/context/ThemeContext'
+import HoudiniModal from './HoudiniModal'
+import { useSecretNetworkClientStore } from 'store/secretNetworkClient'
 
 function Bridge() {
   useEffect(() => {
-    trackMixPanelEvent("Open Bridge Tab");
-  }, []);
+    trackMixPanelEvent('Open Bridge Tab')
+  }, [])
 
-  const { theme, toggleTheme } = useContext(ThemeContext);
-  const [isSquidModalOpen, setIsSquidModalOpen] = useState(false);
+  const { theme, toggleTheme } = useContext(ThemeContext)
+  const [isSquidModalOpen, setIsSquidModalOpen] = useState(false)
+  const [isHoudiniModalOpen, setIsHoudiniModalOpen] = useState(false)
+
+  const { walletAddress } = useSecretNetworkClientStore()
 
   return (
     <>
@@ -60,19 +65,19 @@ function Bridge() {
         </div>
 
         <p>
-          Use the{" "}
+          Use the{' '}
           <a
             href="https://tunnel.scrt.network"
             target="_blank"
             className="pb-0.5 border-b border-neutral-400 dark:border-neutral-600 hover:text-black dark:hover:text-white hover:border-black dark:hover:border-white transition-colors"
             onClick={() => {
               trackMixPanelEvent(
-                "Clicked Secret Tunnel link (from Bridge page)"
-              );
+                'Clicked Secret Tunnel link (from Bridge page)'
+              )
             }}
           >
             Secret Tunnel
-          </a>{" "}
+          </a>{' '}
           to bridge your assets from blockchains such as Ethereum, Binance Smart
           Chain (BSC) and Axelar to Secret Network.
         </p>
@@ -81,7 +86,7 @@ function Bridge() {
           target="_blank"
           className="text-white block my-6 p-3 w-full text-center font-semibold bg-cyan-600 dark:bg-cyan-600 rounded-lg text-sm hover:bg-cyan-500 dark:hover:bg-cyan-500 focus:bg-cyan-600 dark:focus:bg-cyan-600 transition-colors"
           onClick={() => {
-            trackMixPanelEvent("Clicked Secret Tunnel link (from Bridge page)");
+            trackMixPanelEvent('Clicked Secret Tunnel link (from Bridge page)')
           }}
         >
           Go to Secret Tunnel
@@ -94,7 +99,10 @@ function Bridge() {
             target="_blank"
             className="text-white block my-6 p-3 w-full text-center font-semibold bg-cyan-600 dark:bg-cyan-600 rounded-lg text-sm hover:bg-cyan-500 dark:hover:bg-cyan-500 focus:bg-cyan-600 dark:focus:bg-cyan-600 transition-colors"
             onClick={() => {
-              setIsSquidModalOpen(true);
+              trackMixPanelEvent(
+                'Clicked Squid Router Modal (from Bridge page)'
+              )
+              setIsSquidModalOpen(true)
             }}
           >
             Use Squid Router
@@ -103,35 +111,58 @@ function Bridge() {
         <SquidModal
           open={isSquidModalOpen}
           onClose={() => {
-            setIsSquidModalOpen(false);
-            document.body.classList.remove("overflow-hidden");
+            setIsSquidModalOpen(false)
+            document.body.classList.remove('overflow-hidden')
           }}
           theme={theme}
+          secretAddress={walletAddress}
+        />
+        <p>
+          Or anonymously bridge your assets into SCRT using Houdini Swap.
+          <a
+            target="_blank"
+            className="text-white block my-6 p-3 w-full text-center font-semibold bg-cyan-600 dark:bg-cyan-600 rounded-lg text-sm hover:bg-cyan-500 dark:hover:bg-cyan-500 focus:bg-cyan-600 dark:focus:bg-cyan-600 transition-colors"
+            onClick={() => {
+              trackMixPanelEvent(
+                'Clicked Houdini Swap Modal (from Bridge page)'
+              )
+              setIsHoudiniModalOpen(true)
+            }}
+          >
+            Use Houdini Swap
+          </a>
+        </p>
+        <HoudiniModal
+          open={isHoudiniModalOpen}
+          onClose={() => {
+            setIsHoudiniModalOpen(false)
+            document.body.classList.remove('overflow-hidden')
+          }}
+          theme={theme}
+          secretAddress={walletAddress}
         />
         <p>
           <span className="select-none">
             <span className="inline-block bg-emerald-500 dark:bg-green-800 text-white text-xs py-0.5 px-1.5 rounded uppercase font-semibold">
               Protip
-            </span>{" "}
-            –{" "}
+            </span>{' '}
+            –{' '}
           </span>
           If you want to bridge Axelar Assets (such as USDC, USDT) from other
           Cosmos based chains (Osmosis, Kujira) to Secret, please use the IBC
           tab:
           <Link
-            to={"/ibc"}
+            to={'/ibc'}
             className="text-white block my-6 p-3 w-full text-center font-semibold bg-cyan-600 dark:bg-cyan-600 rounded-lg text-sm hover:bg-cyan-500 dark:hover:bg-cyan-500 focus:bg-cyan-600 dark:focus:bg-cyan-600 transition-colors"
             onClick={() => {
-              trackMixPanelEvent(
-                "Clicked IBC transfer link (from Bridge page)"
-              );
+              trackMixPanelEvent('Clicked IBC transfer link (from Bridge page)')
             }}
           >
             <FontAwesomeIcon icon={faShuffle} className="mr-2" />
             Go to IBC Transfers
           </Link>
         </p>
-        <p>
+        {/*  <p>
           Use the{" "}
           <a
             href="https://ipfs.trivium.network/ipns/k51qzi5uqu5dhovcugri8aul3itkct8lvnodtnv2y3o1saotkjsa7ao1aq0dqa/"
@@ -154,10 +185,10 @@ function Bridge() {
             Go to Monero Bridge
             <FontAwesomeIcon icon={faArrowUpRightFromSquare} className="ml-2" />
           </a>
-        </p>
+        </p> */}
       </div>
     </>
-  );
+  )
 }
 
-export default Bridge;
+export default Bridge
