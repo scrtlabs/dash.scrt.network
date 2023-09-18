@@ -1,6 +1,6 @@
-import { useEffect, useState, useContext, createContext } from "react";
-import { MsgExecuteContract, BroadcastMode } from "secretjs";
-import { Token, tokens } from "shared/utils/config";
+import { useEffect, useState, useContext, createContext } from 'react'
+import { MsgExecuteContract, BroadcastMode } from 'secretjs'
+import { Token, tokens } from 'shared/utils/config'
 import {
   sleep,
   faucetURL,
@@ -9,36 +9,37 @@ import {
   usdString,
   wrapPageTitle,
   wrapPageDescription,
-  wrapJsonLdSchema,
-} from "shared/utils/commons";
-import BigNumber from "bignumber.js";
-import { toast } from "react-toastify";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+  wrapJsonLdSchema
+} from 'shared/utils/commons'
+import BigNumber from 'bignumber.js'
+import { toast } from 'react-toastify'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
   faKey,
   faArrowRightArrowLeft,
   faRightLeft,
   faInfoCircle,
   faCheckCircle,
-  faXmarkCircle,
-} from "@fortawesome/free-solid-svg-icons";
-import { Link } from "react-router-dom";
-import Select from "react-select";
-import Tooltip from "@mui/material/Tooltip";
-import { Helmet } from "react-helmet-async";
-import UnknownBalanceModal from "./components/UnknownBalanceModal";
-import FeeGrantInfoModal from "./components/FeeGrantInfoModal";
-import mixpanel from "mixpanel-browser";
-import { useSearchParams } from "react-router-dom";
-import { WrappingMode } from "shared/types/WrappingMode";
-import { APIContext } from "shared/context/APIContext";
-import { useSecretNetworkClientStore } from "store/secretNetworkClient";
-import { getWalletViewingKey } from "service/walletService";
+  faXmarkCircle
+} from '@fortawesome/free-solid-svg-icons'
+import { Link } from 'react-router-dom'
+import Select from 'react-select'
+import Tooltip from '@mui/material/Tooltip'
+import { Helmet } from 'react-helmet-async'
+import UnknownBalanceModal from './components/UnknownBalanceModal'
+import FeeGrantInfoModal from './components/FeeGrantInfoModal'
+import mixpanel from 'mixpanel-browser'
+import { useSearchParams } from 'react-router-dom'
+import { WrappingMode } from 'shared/types/WrappingMode'
+import { APIContext } from 'shared/context/APIContext'
+import { useSecretNetworkClientStore } from 'store/secretNetworkClient'
+import { getWalletViewingKey } from 'service/walletService'
+import WrapForm from './WrapForm'
 
-export const WrapContext = createContext(null);
+export const WrapContext = createContext(null)
 
 export function Wrap() {
-  const { setViewingKey } = useSecretNetworkClientStore();
+  const { setViewingKey } = useSecretNetworkClientStore()
 
   const {
     secretNetworkClient: secretjs,
@@ -46,19 +47,19 @@ export function Wrap() {
     feeGrantStatus,
     requestFeeGrant,
     isConnected,
-    connectWallet,
-  } = useSecretNetworkClientStore();
+    connectWallet
+  } = useSecretNetworkClientStore()
 
-  const { prices } = useContext(APIContext);
+  const { prices } = useContext(APIContext)
 
-  const secretToken: Token = tokens.find((token) => token.name === "SCRT");
-  const [selectedToken, setSelectedToken] = useState<Token>(secretToken);
-  const [selectedTokenPrice, setSelectedTokenPrice] = useState<number>(0);
-  const [amountString, setAmountString] = useState<string>("");
-  const [wrappingMode, setWrappingMode] = useState<WrappingMode>("wrap");
+  const secretToken: Token = tokens.find((token) => token.name === 'SCRT')
+  const [selectedToken, setSelectedToken] = useState<Token>(secretToken)
+  const [selectedTokenPrice, setSelectedTokenPrice] = useState<number>(0)
+  const [amountString, setAmountString] = useState<string>('')
+  const [wrappingMode, setWrappingMode] = useState<WrappingMode>('wrap')
 
-  const [nativeBalance, setNativeBalance] = useState<any>();
-  const [tokenBalance, setTokenBalance] = useState<any>();
+  const [nativeBalance, setNativeBalance] = useState<any>()
+  const [tokenBalance, setTokenBalance] = useState<any>()
 
   useEffect(() => {
     setSelectedTokenPrice(
@@ -66,40 +67,40 @@ export function Wrap() {
         (price: { coingecko_id: string }) =>
           price.coingecko_id === selectedToken.coingecko_id
       )?.priceUsd
-    );
-  }, [selectedToken, prices]);
+    )
+  }, [selectedToken, prices])
 
   useEffect(() => {
-    if (import.meta.env.VITE_MIXPANEL_ENABLED === "true") {
+    if (import.meta.env.VITE_MIXPANEL_ENABLED === 'true') {
       mixpanel.init(import.meta.env.VITE_MIXPANEL_PROJECT_TOKEN, {
-        debug: false,
-      });
-      mixpanel.identify("Dashboard-App");
-      mixpanel.track("Open Wrap Tab");
+        debug: false
+      })
+      mixpanel.identify('Dashboard-App')
+      mixpanel.track('Open Wrap Tab')
     }
-  }, []);
+  }, [])
 
   // URL params
-  const [searchParams, setSearchParams] = useSearchParams();
-  const modeUrlParam = searchParams.get("mode");
-  const tokenUrlParam = searchParams.get("token");
+  const [searchParams, setSearchParams] = useSearchParams()
+  const modeUrlParam = searchParams.get('mode')
+  const tokenUrlParam = searchParams.get('token')
 
   const isValidTokenParam = () => {
     return tokens.find(
       (token) => token.name.toLowerCase() === tokenUrlParam.toLowerCase()
     )
       ? true
-      : false;
-  };
+      : false
+  }
 
   useEffect(() => {
     if (
-      modeUrlParam?.toLowerCase() === "wrap" ||
-      modeUrlParam?.toLowerCase() === "unwrap"
+      modeUrlParam?.toLowerCase() === 'wrap' ||
+      modeUrlParam?.toLowerCase() === 'unwrap'
     ) {
-      setWrappingMode(modeUrlParam.toLowerCase() as WrappingMode);
+      setWrappingMode(modeUrlParam.toLowerCase() as WrappingMode)
     }
-  }, []);
+  }, [])
 
   useEffect(() => {
     if (tokenUrlParam && isValidTokenParam()) {
@@ -107,209 +108,209 @@ export function Wrap() {
         tokens.find(
           (token) => token.name.toLowerCase() === tokenUrlParam.toLowerCase()
         )
-      );
+      )
     }
-  }, []);
+  }, [])
 
   useEffect(() => {
-    var params = {};
+    var params = {}
     if (wrappingMode) {
-      params = { ...params, mode: wrappingMode.toLowerCase() };
+      params = { ...params, mode: wrappingMode.toLowerCase() }
     }
     if (selectedToken) {
-      params = { ...params, token: selectedToken.name.toLowerCase() };
+      params = { ...params, token: selectedToken.name.toLowerCase() }
     }
-    setSearchParams(params);
-  }, [wrappingMode, selectedToken]);
+    setSearchParams(params)
+  }, [wrappingMode, selectedToken])
 
   const [isUnknownBalanceModalOpen, setIsUnknownBalanceModalOpen] =
-    useState(false);
-  const [isFeeGrantInfoModalOpen, setIsFeeGrantInfoModalOpen] = useState(false);
+    useState(false)
+  const [isFeeGrantInfoModalOpen, setIsFeeGrantInfoModalOpen] = useState(false)
 
   // UI
-  const [isValidAmount, setisValidAmount] = useState<boolean>(false);
-  const [validationMessage, setValidationMessage] = useState<string>("");
-  const [isValidationActive, setIsValidationActive] = useState<boolean>(false);
+  const [isValidAmount, setisValidAmount] = useState<boolean>(false)
+  const [validationMessage, setValidationMessage] = useState<string>('')
+  const [isValidationActive, setIsValidationActive] = useState<boolean>(false)
 
-  const [loadingCoinBalance, setLoadingCoinBalance] = useState<boolean>(true);
+  const [loadingCoinBalance, setLoadingCoinBalance] = useState<boolean>(true)
 
   function validateForm() {
-    let isValid = false;
+    let isValid = false
     const availableAmount = new BigNumber(
-      wrappingMode === "wrap" ? nativeBalance : tokenBalance
-    ).dividedBy(`1e${selectedToken.decimals}`);
+      wrappingMode === 'wrap' ? nativeBalance : tokenBalance
+    ).dividedBy(`1e${selectedToken.decimals}`)
 
-    const numberRegex = /^(?:[1-9]\d*|0)?(?:\.\d+)?$/;
+    const numberRegex = /^(?:[1-9]\d*|0)?(?:\.\d+)?$/
 
     function matchExact(r: any, str: any) {
-      const match = str.match(r);
-      return match && str === match[0];
+      const match = str.match(r)
+      return match && str === match[0]
     }
 
     if (
       new BigNumber(amountString).isGreaterThan(
         new BigNumber(availableAmount)
       ) &&
-      !(tokenBalance === viewingKeyErrorString && wrappingMode === "unwrap") &&
-      amountString !== ""
+      !(tokenBalance === viewingKeyErrorString && wrappingMode === 'unwrap') &&
+      amountString !== ''
     ) {
-      setValidationMessage("Not enough balance");
-      setisValidAmount(false);
-    } else if (!matchExact(numberRegex, amountString) || amountString === "") {
-      setValidationMessage("Please enter a valid amount");
-      setisValidAmount(false);
+      setValidationMessage('Not enough balance')
+      setisValidAmount(false)
+    } else if (!matchExact(numberRegex, amountString) || amountString === '') {
+      setValidationMessage('Please enter a valid amount')
+      setisValidAmount(false)
     } else {
-      setisValidAmount(true);
-      isValid = true;
+      setisValidAmount(true)
+      isValid = true
     }
-    return isValid;
+    return isValid
   }
 
   useEffect(() => {
     // setting amountToWrap to max. value, if entered value is > available
     const availableAmount =
-      wrappingMode === "wrap"
+      wrappingMode === 'wrap'
         ? new BigNumber(nativeBalance).dividedBy(`1e${selectedToken.decimals}`)
-        : new BigNumber(tokenBalance).dividedBy(`1e${selectedToken.decimals}`);
+        : new BigNumber(tokenBalance).dividedBy(`1e${selectedToken.decimals}`)
     if (
       !new BigNumber(amountString).isNaN() &&
       availableAmount.isGreaterThan(new BigNumber(0)) &&
       new BigNumber(amountString).isGreaterThan(
         new BigNumber(availableAmount)
       ) &&
-      !(tokenBalance === viewingKeyErrorString && wrappingMode === "unwrap") &&
-      amountString !== ""
+      !(tokenBalance === viewingKeyErrorString && wrappingMode === 'unwrap') &&
+      amountString !== ''
     ) {
-      setAmountString(availableAmount.toString());
+      setAmountString(availableAmount.toString())
     }
 
     if (isValidationActive) {
-      validateForm();
+      validateForm()
     }
-  }, [amountString, wrappingMode, isValidationActive]);
+  }, [amountString, wrappingMode, isValidationActive])
 
   useEffect(() => {
-    setAmountString("");
-  }, [selectedToken, wrappingMode]);
+    setAmountString('')
+  }, [selectedToken, wrappingMode])
 
   function handleInputChange(e: any) {
-    const filteredValue = e.target.value.replace(/[^0-9.]+/g, "");
-    setAmountString(filteredValue);
+    const filteredValue = e.target.value.replace(/[^0-9.]+/g, '')
+    setAmountString(filteredValue)
   }
 
   function showModal() {
-    setIsUnknownBalanceModalOpen(true);
-    document.body.classList.add("overflow-hidden");
+    setIsUnknownBalanceModalOpen(true)
+    document.body.classList.add('overflow-hidden')
   }
 
   function toggleWrappingMode() {
-    if (wrappingMode === "wrap") {
-      setWrappingMode("unwrap");
-    } else if (wrappingMode === "unwrap") {
-      setWrappingMode("wrap");
+    if (wrappingMode === 'wrap') {
+      setWrappingMode('unwrap')
+    } else if (wrappingMode === 'unwrap') {
+      setWrappingMode('wrap')
     }
   }
 
   const message =
-    wrappingMode === "wrap"
+    wrappingMode === 'wrap'
       ? `Converting publicly visible ${selectedToken.name} into its privacy-preserving equivalent s${selectedToken.name}. These tokens are not publicly visible and require a viewing key!`
-      : `Converting privacy-preserving s${selectedToken.name} into its publicly visible equivalent ${selectedToken.name}!`;
+      : `Converting privacy-preserving s${selectedToken.name} into its publicly visible equivalent ${selectedToken.name}!`
 
   {
     new BigNumber(tokenBalance!)
       .dividedBy(`1e${selectedToken.decimals}`)
-      .toFormat();
+      .toFormat()
   }
 
   // handles [25% | 50% | 75% | Max] Button-Group
   function setAmountByPercentage(percentage: number) {
-    let maxValue = "0";
-    if (wrappingMode === "wrap") {
-      maxValue = nativeBalance;
+    let maxValue = '0'
+    if (wrappingMode === 'wrap') {
+      maxValue = nativeBalance
     } else {
-      maxValue = tokenBalance;
+      maxValue = tokenBalance
     }
 
     if (maxValue) {
       let availableAmount = new BigNumber(maxValue).dividedBy(
         `1e${selectedToken.decimals}`
-      );
-      let potentialInput = availableAmount.toNumber() * (percentage * 0.01);
+      )
+      let potentialInput = availableAmount.toNumber() * (percentage * 0.01)
       if (
         percentage === 100 &&
         potentialInput > 0.05 &&
-        selectedToken.name === "SCRT"
+        selectedToken.name === 'SCRT'
       ) {
-        potentialInput = potentialInput - 0.05;
+        potentialInput = potentialInput - 0.05
       }
       if (Number(potentialInput) < 0) {
-        setAmountString("");
+        setAmountString('')
       } else {
-        setAmountString(potentialInput.toFixed(selectedToken.decimals));
+        setAmountString(potentialInput.toFixed(selectedToken.decimals))
       }
 
-      validateForm();
+      validateForm()
     }
   }
 
   async function setBalance() {
     try {
-      setLoadingCoinBalance(true);
+      setLoadingCoinBalance(true)
       // setLoadingTokenBalance(true);
-      await updateCoinBalance();
-      await updateTokenBalance();
+      await updateCoinBalance()
+      await updateTokenBalance()
     } finally {
-      setLoadingCoinBalance(false);
+      setLoadingCoinBalance(false)
       // setLoadingTokenBalance(false);
     }
   }
 
   async function updateBalance() {
     try {
-      await updateCoinBalance();
-      await updateTokenBalance();
+      await updateCoinBalance()
+      await updateTokenBalance()
     } catch (e) {
-      console.log(e);
+      console.log(e)
     }
   }
 
   const updateTokenBalance = async () => {
     if (!selectedToken.address || !secretjs) {
-      return;
+      return
     }
 
-    const key = await getWalletViewingKey(selectedToken.address);
+    const key = await getWalletViewingKey(selectedToken.address)
     if (!key) {
-      setTokenBalance(viewingKeyErrorString);
-      return;
+      setTokenBalance(viewingKeyErrorString)
+      return
     }
 
     try {
       const result: {
-        viewing_key_error: any;
+        viewing_key_error: any
         balance: {
-          amount: string;
-        };
+          amount: string
+        }
       } = await secretjs.query.compute.queryContract({
         contract_address: selectedToken.address,
         code_hash: selectedToken.code_hash,
         query: {
-          balance: { address: walletAddress, key },
-        },
-      });
+          balance: { address: walletAddress, key }
+        }
+      })
 
       if (result.viewing_key_error) {
-        setTokenBalance(viewingKeyErrorString);
-        return;
+        setTokenBalance(viewingKeyErrorString)
+        return
       }
 
-      setTokenBalance(result.balance.amount);
+      setTokenBalance(result.balance.amount)
     } catch (e) {
-      console.error(`Error getting balance for s${selectedToken.name}`, e);
+      console.error(`Error getting balance for s${selectedToken.name}`, e)
 
-      setTokenBalance(viewingKeyErrorString);
+      setTokenBalance(viewingKeyErrorString)
     }
-  };
+  }
 
   function PercentagePicker() {
     return (
@@ -319,7 +320,7 @@ export function Wrap() {
           className="bg-neutral-100 dark:bg-neutral-900 px-1.5 py-0.5 rounded-l-md transition-colors hover:bg-neutral-300 dark:hover:bg-neutral-700 cursor-pointer disabled:text-neutral-500 dark:disabled:text-neutral-500 disabled:hover:bg-neutral-900 dark:disabled:hover:bg-neutral-900 disabled:cursor-default focus:outline-0 focus:ring-2 ring-sky-500/40 focus:z-10"
           disabled={
             !isConnected ||
-            (wrappingMode === "unwrap" &&
+            (wrappingMode === 'unwrap' &&
               tokenBalance === viewingKeyErrorString)
           }
         >
@@ -331,7 +332,7 @@ export function Wrap() {
           disabled={
             !secretjs ||
             !walletAddress ||
-            (wrappingMode === "unwrap" &&
+            (wrappingMode === 'unwrap' &&
               tokenBalance === viewingKeyErrorString)
           }
         >
@@ -343,7 +344,7 @@ export function Wrap() {
           disabled={
             !secretjs ||
             !walletAddress ||
-            (wrappingMode === "unwrap" &&
+            (wrappingMode === 'unwrap' &&
               tokenBalance === viewingKeyErrorString)
           }
         >
@@ -355,14 +356,14 @@ export function Wrap() {
           disabled={
             !secretjs ||
             !walletAddress ||
-            (wrappingMode === "unwrap" &&
+            (wrappingMode === 'unwrap' &&
               tokenBalance === viewingKeyErrorString)
           }
         >
           MAX
         </button>
       </div>
-    );
+    )
   }
 
   function NativeTokenBalanceUi() {
@@ -371,10 +372,10 @@ export function Wrap() {
         <>
           <span className="font-semibold">Available:</span>
           <span className="font-medium">
-            {" " +
+            {' ' +
               new BigNumber(nativeBalance!)
                 .dividedBy(`1e${selectedToken.decimals}`)
-                .toFormat()}{" "}
+                .toFormat()}{' '}
             {selectedToken.name} (
             {usdString.format(
               new BigNumber(nativeBalance!)
@@ -394,16 +395,16 @@ export function Wrap() {
             </Link>
           </Tooltip>
         </>
-      );
+      )
     } else {
-      return <></>;
+      return <></>
     }
   }
 
   function WrappedTokenBalanceUi() {
     // if (loadingTokenBalance || !secretjs || !walletAddress || !tokenBalance) {
     if (!isConnected || !tokenBalance) {
-      return <></>;
+      return <></>
     } else if (tokenBalance === viewingKeyErrorString) {
       return (
         <>
@@ -417,7 +418,7 @@ export function Wrap() {
           </button>
           <Tooltip
             title={
-              "Balances on Secret Network are private by default. Create a viewing key to view your encrypted balances."
+              'Balances on Secret Network are private by default. Create a viewing key to view your encrypted balances.'
             }
             placement="right"
             arrow
@@ -427,7 +428,7 @@ export function Wrap() {
             </span>
           </Tooltip>
         </>
-      );
+      )
     } else if (Number(tokenBalance) > -1) {
       return (
         <>
@@ -446,13 +447,13 @@ export function Wrap() {
               )})`}
           </span>
         </>
-      );
+      )
     }
   }
 
   interface IWrappingModeSwitchProps {
-    wrappingMode: WrappingMode;
-    disabled: boolean;
+    wrappingMode: WrappingMode
+    disabled: boolean
   }
 
   function WrappingModeSwitch(props: IWrappingModeSwitchProps) {
@@ -461,7 +462,7 @@ export function Wrap() {
         <Tooltip
           disableHoverListener={props.disabled}
           title={`Switch to ${
-            wrappingMode === "wrap" ? "Unwrapping" : "Wrapping"
+            wrappingMode === 'wrap' ? 'Unwrapping' : 'Wrapping'
           }`}
           placement="right"
           arrow
@@ -471,10 +472,10 @@ export function Wrap() {
               onClick={toggleWrappingMode}
               disabled={props.disabled}
               className={
-                "inline-block bg-neutral-200 dark:bg-neutral-800 px-3 py-2 text-cyan-500 dark:text-cyan-500 transition-colors rounded-xl disabled:text-neutral-500 dark:disabled:text-neutral-500 focus:outline-0 focus:ring-2 ring-sky-500/40" +
+                'inline-block bg-neutral-200 dark:bg-neutral-800 px-3 py-2 text-cyan-500 dark:text-cyan-500 transition-colors rounded-xl disabled:text-neutral-500 dark:disabled:text-neutral-500 focus:outline-0 focus:ring-2 ring-sky-500/40' +
                 (!props.disabled
-                  ? " hover:text-cyan-600 dark:hover:text-cyan-300"
-                  : "")
+                  ? ' hover:text-cyan-600 dark:hover:text-cyan-300'
+                  : '')
               }
             >
               <FontAwesomeIcon icon={faRightLeft} className="fa-rotate-90" />
@@ -482,71 +483,71 @@ export function Wrap() {
           </span>
         </Tooltip>
       </div>
-    );
+    )
   }
 
   function SubmitButton(props: {
-    disabled: boolean;
-    amount: string | undefined;
-    nativeCurrency: string;
-    wrappedAmount: string | undefined;
-    wrappedCurrency: string;
-    wrappingMode: WrappingMode;
+    disabled: boolean
+    amount: string | undefined
+    nativeCurrency: string
+    wrappedAmount: string | undefined
+    wrappedCurrency: string
+    wrappingMode: WrappingMode
   }) {
-    const disabled = props.disabled;
-    const amount = props.amount;
-    const nativeCurrency = props.nativeCurrency;
-    const wrappedCurrency = props.wrappedCurrency;
-    const wrappingMode = props.wrappingMode;
+    const disabled = props.disabled
+    const amount = props.amount
+    const nativeCurrency = props.nativeCurrency
+    const wrappedCurrency = props.wrappedCurrency
+    const wrappingMode = props.wrappingMode
 
     function uiFocusInput() {
       document
-        .getElementById("fromInputWrapper")
-        ?.classList.add("animate__animated");
+        .getElementById('fromInputWrapper')
+        ?.classList.add('animate__animated')
       document
-        .getElementById("fromInputWrapper")
-        ?.classList.add("animate__headShake");
+        .getElementById('fromInputWrapper')
+        ?.classList.add('animate__headShake')
       setTimeout(() => {
         document
-          .getElementById("fromInputWrapper")
-          ?.classList.remove("animate__animated");
+          .getElementById('fromInputWrapper')
+          ?.classList.remove('animate__animated')
         document
-          .getElementById("fromInputWrapper")
-          ?.classList.remove("animate__headShake");
-      }, 1000);
+          .getElementById('fromInputWrapper')
+          ?.classList.remove('animate__headShake')
+      }, 1000)
     }
 
     async function submit() {
-      setIsValidationActive(true);
-      let isValidForm = validateForm();
+      setIsValidationActive(true)
+      let isValidForm = validateForm()
 
-      if (!secretjs || !walletAddress) return;
+      if (!secretjs || !walletAddress) return
 
-      if (!isValidForm || amountString === "") {
-        uiFocusInput();
-        return;
+      if (!isValidForm || amountString === '') {
+        uiFocusInput()
+        return
       }
 
-      const baseAmount = amountString;
+      const baseAmount = amountString
       const amount = new BigNumber(Number(baseAmount))
         .multipliedBy(`1e${selectedToken.decimals}`)
-        .toFixed(0, BigNumber.ROUND_DOWN);
+        .toFixed(0, BigNumber.ROUND_DOWN)
 
-      if (amount === "NaN") {
-        console.error("NaN amount", baseAmount);
-        return;
+      if (amount === 'NaN') {
+        console.error('NaN amount', baseAmount)
+        return
       }
 
-      var errorMessage = "";
+      var errorMessage = ''
 
       try {
         const toastId = toast.loading(
-          wrappingMode === "wrap"
+          wrappingMode === 'wrap'
             ? `Wrapping ${selectedToken.name}`
             : `Unwrapping s${selectedToken.name}`,
           { closeButton: true }
-        );
-        if (wrappingMode === "wrap") {
+        )
+        if (wrappingMode === 'wrap') {
           await secretjs.tx
             .broadcast(
               [
@@ -555,59 +556,59 @@ export function Wrap() {
                   contract_address: selectedToken.address,
                   code_hash: selectedToken.code_hash,
                   sent_funds: [
-                    { denom: selectedToken.withdrawals[0].from_denom, amount },
+                    { denom: selectedToken.withdrawals[0].from_denom, amount }
                   ],
-                  msg: { deposit: {} },
-                } as any),
+                  msg: { deposit: {} }
+                } as any)
               ],
               {
                 gasLimit: 150_000,
                 gasPriceInFeeDenom: 0.25,
-                feeDenom: "uscrt",
-                feeGranter: feeGrantStatus === "success" ? faucetAddress : "",
-                broadcastMode: BroadcastMode.Sync,
+                feeDenom: 'uscrt',
+                feeGranter: feeGrantStatus === 'success' ? faucetAddress : '',
+                broadcastMode: BroadcastMode.Sync
               }
             )
             .catch((error: any) => {
-              console.error(error);
+              console.error(error)
               if (error?.tx?.rawLog) {
                 toast.update(toastId, {
                   render: `Wrapping of ${selectedToken.name} failed: ${error.tx.rawLog}`,
-                  type: "error",
+                  type: 'error',
                   isLoading: false,
-                  closeOnClick: true,
-                });
+                  closeOnClick: true
+                })
               } else {
                 toast.update(toastId, {
                   render: `Wrapping of ${selectedToken.name} failed: ${error.message}`,
-                  type: "error",
+                  type: 'error',
                   isLoading: false,
-                  closeOnClick: true,
-                });
+                  closeOnClick: true
+                })
               }
             })
             .then((tx: any) => {
-              console.log(tx);
+              console.log(tx)
               if (tx) {
                 if (tx.code === 0) {
-                  setAmountString("");
+                  setAmountString('')
                   toast.update(toastId, {
                     render: `Wrapped ${selectedToken.name} successfully`,
-                    type: "success",
+                    type: 'success',
                     isLoading: false,
-                    closeOnClick: true,
-                  });
-                  setIsValidationActive(false);
+                    closeOnClick: true
+                  })
+                  setIsValidationActive(false)
                 } else {
                   toast.update(toastId, {
                     render: `Wrapping of ${selectedToken.name} failed: ${tx.rawLog}`,
-                    type: "error",
+                    type: 'error',
                     isLoading: false,
-                    closeOnClick: true,
-                  });
+                    closeOnClick: true
+                  })
                 }
               }
-            });
+            })
         } else {
           await secretjs.tx
             .broadcast(
@@ -621,83 +622,83 @@ export function Wrap() {
                     redeem: {
                       amount,
                       denom:
-                        selectedToken.name === "SCRT"
+                        selectedToken.name === 'SCRT'
                           ? undefined
-                          : selectedToken.withdrawals[0].from_denom,
-                    },
-                  },
-                } as any),
+                          : selectedToken.withdrawals[0].from_denom
+                    }
+                  }
+                } as any)
               ],
               {
                 gasLimit: 150_000,
                 gasPriceInFeeDenom: 0.25,
-                feeDenom: "uscrt",
-                feeGranter: feeGrantStatus === "success" ? faucetAddress : "",
-                broadcastMode: BroadcastMode.Sync,
+                feeDenom: 'uscrt',
+                feeGranter: feeGrantStatus === 'success' ? faucetAddress : '',
+                broadcastMode: BroadcastMode.Sync
               }
             )
             .catch((error: any) => {
-              console.error(error);
+              console.error(error)
               if (error?.tx?.rawLog) {
                 toast.update(toastId, {
                   render: `Unwrapping of s${selectedToken.name} failed: ${error.tx.rawLog}`,
-                  type: "error",
+                  type: 'error',
                   isLoading: false,
-                  closeOnClick: true,
-                });
+                  closeOnClick: true
+                })
               } else {
                 toast.update(toastId, {
                   render: `Unwrapping of s${selectedToken.name} failed: ${error.message}`,
-                  type: "error",
+                  type: 'error',
                   isLoading: false,
-                  closeOnClick: true,
-                });
+                  closeOnClick: true
+                })
               }
             })
             .then((tx: any) => {
-              console.log(tx);
+              console.log(tx)
               if (tx) {
                 if (tx.code === 0) {
-                  setAmountString("");
+                  setAmountString('')
                   toast.update(toastId, {
                     render: `Unwrapped s${selectedToken.name} successfully`,
-                    type: "success",
+                    type: 'success',
                     isLoading: false,
-                    closeOnClick: true,
-                  });
-                  setIsValidationActive(false);
+                    closeOnClick: true
+                  })
+                  setIsValidationActive(false)
                 } else {
                   toast.update(toastId, {
                     render: `Unwrapping of s${selectedToken.name} failed: ${tx.rawLog}`,
-                    type: "error",
+                    type: 'error',
                     isLoading: false,
-                    closeOnClick: true,
-                  });
+                    closeOnClick: true
+                  })
                 }
               }
-            });
+            })
         }
       } finally {
-        if (import.meta.env.VITE_MIXPANEL_ENABLED === "true") {
+        if (import.meta.env.VITE_MIXPANEL_ENABLED === 'true') {
           mixpanel.init(import.meta.env.VITE_MIXPANEL_PROJECT_TOKEN, {
-            debug: false,
-          });
-          mixpanel.identify("Dashboard-App");
-          mixpanel.track("Secret Wrap", {
-            "Wrapping Mode": wrappingMode,
-            From: (wrappingMode === "wrap" ? "" : "s") + selectedToken.name,
-            To: (wrappingMode === "wrap" ? "s" : "") + selectedToken.name,
+            debug: false
+          })
+          mixpanel.identify('Dashboard-App')
+          mixpanel.track('Secret Wrap', {
+            'Wrapping Mode': wrappingMode,
+            From: (wrappingMode === 'wrap' ? '' : 's') + selectedToken.name,
+            To: (wrappingMode === 'wrap' ? 's' : '') + selectedToken.name,
             // "Amount": amountToWrap,
-            "Fee Grant used": feeGrantStatus === "success" ? true : false,
-          });
+            'Fee Grant used': feeGrantStatus === 'success' ? true : false
+          })
         }
         try {
-          setLoadingCoinBalance(true);
+          setLoadingCoinBalance(true)
           // setLoadingTokenBalance(true);
-          await sleep(1000); // sometimes query nodes lag
-          await updateBalance();
+          await sleep(1000) // sometimes query nodes lag
+          await updateBalance()
         } finally {
-          setLoadingCoinBalance(false);
+          setLoadingCoinBalance(false)
           // setLoadingTokenBalance(false);
         }
       }
@@ -708,12 +709,12 @@ export function Wrap() {
         <div className="flex flex-col gap-4 items-center">
           <button
             className={
-              "enabled:bg-gradient-to-r enabled:from-cyan-600 enabled:to-purple-600 enabled:hover:from-cyan-500 enabled:hover:to-purple-500 transition-colors text-white font-semibold py-3 w-full rounded-lg disabled:bg-neutral-500 focus:outline-none focus-visible:ring-4 ring-sky-500/40"
+              'enabled:bg-gradient-to-r enabled:from-cyan-600 enabled:to-purple-600 enabled:hover:from-cyan-500 enabled:hover:to-purple-500 transition-colors text-white font-semibold py-3 w-full rounded-lg disabled:bg-neutral-500 focus:outline-none focus-visible:ring-4 ring-sky-500/40'
             }
             disabled={disabled}
             onClick={() => submit()}
           >
-            {walletAddress && secretjs && wrappingMode === "wrap" && amount ? (
+            {walletAddress && secretjs && wrappingMode === 'wrap' && amount ? (
               <>
                 {`Wrap ${amount} ${nativeCurrency} into ${amount} ${wrappedCurrency}`}
               </>
@@ -722,7 +723,7 @@ export function Wrap() {
             {/* text for unwrapping with value */}
             {walletAddress &&
             secretjs &&
-            wrappingMode === "unwrap" &&
+            wrappingMode === 'unwrap' &&
             amount ? (
               <>
                 {`Unwrap ${amount} ${wrappedCurrency} into ${amount} ${nativeCurrency}`}
@@ -731,48 +732,47 @@ export function Wrap() {
 
             {/* general text without value */}
             {!amount || !walletAddress || !walletAddress
-              ? wrappingMode === "wrap"
-                ? "Wrap"
-                : "Unwrap"
+              ? wrappingMode === 'wrap'
+                ? 'Wrap'
+                : 'Unwrap'
               : null}
           </button>
         </div>
       </>
-    );
+    )
   }
 
   const updateCoinBalance = async () => {
     try {
       const {
-        balance: { amount },
+        balance: { amount }
       } = await secretjs.query.bank.balance({
         address: walletAddress as string,
-        denom: selectedToken.withdrawals[0]?.from_denom,
-      });
-      setNativeBalance(amount);
+        denom: selectedToken.withdrawals[0]?.from_denom
+      })
+      setNativeBalance(amount)
     } catch (e) {
-      console.error(`Error while trying to query ${selectedToken.name}:`, e);
+      console.error(`Error while trying to query ${selectedToken.name}:`, e)
     }
-  };
+  }
 
   useEffect(() => {
-    if (!secretjs || !walletAddress) return;
+    if (!secretjs || !walletAddress) return
+    ;(async () => {
+      setBalance()
+    })()
 
-    (async () => {
-      setBalance();
-    })();
-
-    const interval = setInterval(updateBalance, 10000);
+    const interval = setInterval(updateBalance, 10000)
     return () => {
-      clearInterval(interval);
-    };
-  }, [walletAddress, secretjs, selectedToken, feeGrantStatus]);
+      clearInterval(interval)
+    }
+  }, [walletAddress, secretjs, selectedToken, feeGrantStatus])
 
   const handleClick = () => {
     if (!isConnected) {
-      connectWallet();
+      connectWallet()
     }
-  };
+  }
 
   return (
     <>
@@ -806,23 +806,29 @@ export function Wrap() {
           setIsUnknownBalanceModalOpen,
           selectedTokenName: selectedToken.name,
           amountToWrap: amountString,
-          hasEnoughBalanceForUnwrapping: false,
+          hasEnoughBalanceForUnwrapping: false
         }}
       >
         <FeeGrantInfoModal
           open={isFeeGrantInfoModalOpen}
           onClose={() => {
-            setIsFeeGrantInfoModalOpen(false);
-            document.body.classList.remove("overflow-hidden");
+            setIsFeeGrantInfoModalOpen(false)
+            document.body.classList.remove('overflow-hidden')
           }}
         />
         <UnknownBalanceModal
           open={isUnknownBalanceModalOpen}
           onClose={() => {
-            setIsUnknownBalanceModalOpen(false);
-            document.body.classList.remove("overflow-hidden");
+            setIsUnknownBalanceModalOpen(false)
+            document.body.classList.remove('overflow-hidden')
           }}
         />
+
+        {/* new */}
+        <div>
+          <WrapForm />
+        </div>
+        {/* old */}
         <div className="w-full max-w-xl mx-auto px-4 onEnter_fadeInDown relative">
           {!secretjs && !walletAddress ? (
             // Overlay to connect on click
@@ -836,7 +842,7 @@ export function Wrap() {
             {/* Header */}
             <div className="flex items-center mb-4">
               <h1 className="inline text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-500 to-purple-500">
-                Secret {wrappingMode === "wrap" ? "Wrap" : "Unwrap"}
+                Secret {wrappingMode === 'wrap' ? 'Wrap' : 'Unwrap'}
               </h1>
 
               <Tooltip title={message} placement="right" arrow>
@@ -878,7 +884,7 @@ export function Wrap() {
                         className="w-6 h-6 mr-2 rounded-full"
                       />
                       <span className="font-semibold text-sm">
-                        {wrappingMode === "unwrap" && "s"}
+                        {wrappingMode === 'unwrap' && 's'}
                         {token.name}
                       </span>
                     </div>
@@ -893,10 +899,10 @@ export function Wrap() {
                   min="0"
                   step="0.000001"
                   className={
-                    "text-right focus:z-10 block flex-1 min-w-0 w-full bg-neutral-100 dark:bg-neutral-900 text-black dark:text-white px-4 rounded-r-lg disabled:placeholder-neutral-300 dark:disabled:placeholder-neutral-700 transition-colors font-medium focus:outline-0 focus:ring-2 ring-sky-500/40" +
+                    'text-right focus:z-10 block flex-1 min-w-0 w-full bg-neutral-100 dark:bg-neutral-900 text-black dark:text-white px-4 rounded-r-lg disabled:placeholder-neutral-300 dark:disabled:placeholder-neutral-700 transition-colors font-medium focus:outline-0 focus:ring-2 ring-sky-500/40' +
                     (!isValidAmount && isValidationActive
-                      ? "  border border-red-500 dark:border-red-500"
-                      : "")
+                      ? '  border border-red-500 dark:border-red-500'
+                      : '')
                   }
                   name="fromValue"
                   id="fromValue"
@@ -908,8 +914,8 @@ export function Wrap() {
               {/* Balance | [25%|50%|75%|Max] */}
               <div className="flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 mt-2">
                 <div className="flex-1 text-xs">
-                  {wrappingMode === "wrap" && <NativeTokenBalanceUi />}
-                  {wrappingMode === "unwrap" && <WrappedTokenBalanceUi />}
+                  {wrappingMode === 'wrap' && <NativeTokenBalanceUi />}
+                  {wrappingMode === 'unwrap' && <WrappedTokenBalanceUi />}
                 </div>
                 <div className="sm:flex-initial text-xs">
                   <PercentagePicker />
@@ -945,7 +951,7 @@ export function Wrap() {
                         className="w-6 h-6 mr-2 rounded-full"
                       />
                       <span className="font-semibold text-sm">
-                        {wrappingMode === "wrap" && "s"}
+                        {wrappingMode === 'wrap' && 's'}
                         {token.name}
                       </span>
                     </div>
@@ -960,7 +966,7 @@ export function Wrap() {
                   min="0"
                   step="0.000001"
                   className={
-                    "text-right focus:z-10 block flex-1 min-w-0 w-full bg-neutral-100 dark:bg-neutral-900 text-black dark:text-white px-4 rounded-r-lg disabled:placeholder-neutral-300 dark:disabled:placeholder-neutral-700 transition-colors font-medium focus:outline-0 focus:ring-2 ring-sky-500/40"
+                    'text-right focus:z-10 block flex-1 min-w-0 w-full bg-neutral-100 dark:bg-neutral-900 text-black dark:text-white px-4 rounded-r-lg disabled:placeholder-neutral-300 dark:disabled:placeholder-neutral-700 transition-colors font-medium focus:outline-0 focus:ring-2 ring-sky-500/40'
                   }
                   name="toValue"
                   id="toValue"
@@ -969,8 +975,8 @@ export function Wrap() {
                 />
               </div>
               <div className="flex-1 text-xs mt-3 text-center sm:text-left h-[1rem]">
-                {wrappingMode === "wrap" && <WrappedTokenBalanceUi />}
-                {wrappingMode === "unwrap" && <NativeTokenBalanceUi />}
+                {wrappingMode === 'wrap' && <WrappedTokenBalanceUi />}
+                {wrappingMode === 'unwrap' && <NativeTokenBalanceUi />}
               </div>
             </div>
             {/* Fee Grant */}
@@ -987,7 +993,7 @@ export function Wrap() {
               </div>
               <div className="flex-initial">
                 {/* Untouched */}
-                {feeGrantStatus === "untouched" && (
+                {feeGrantStatus === 'untouched' && (
                   <>
                     <button
                       id="feeGrantButton"
@@ -1000,7 +1006,7 @@ export function Wrap() {
                   </>
                 )}
                 {/* Success */}
-                {feeGrantStatus === "success" && (
+                {feeGrantStatus === 'success' && (
                   <div className="font-semibold text-sm flex items-center h-[1.6rem]">
                     <FontAwesomeIcon
                       icon={faCheckCircle}
@@ -1010,7 +1016,7 @@ export function Wrap() {
                   </div>
                 )}
                 {/* Fail */}
-                {feeGrantStatus === "fail" && (
+                {feeGrantStatus === 'fail' && (
                   <div className="font-semibold text-sm h-[1.6rem]">
                     <FontAwesomeIcon
                       icon={faXmarkCircle}
@@ -1028,12 +1034,12 @@ export function Wrap() {
               amount={amountString}
               nativeCurrency={selectedToken.name}
               wrappedAmount={amountString}
-              wrappedCurrency={"s" + selectedToken.name}
+              wrappedCurrency={'s' + selectedToken.name}
               wrappingMode={wrappingMode}
             />
           </div>
         </div>
       </WrapContext.Provider>
     </>
-  );
+  )
 }

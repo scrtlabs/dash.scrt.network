@@ -1,21 +1,21 @@
-import { useContext, useEffect, useRef, useState } from "react";
-import { sleep, viewingKeyErrorString, usdString } from "shared/utils/commons";
-import Tooltip from "@mui/material/Tooltip";
-import CopyToClipboard from "react-copy-to-clipboard";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCopy, faWallet } from "@fortawesome/free-solid-svg-icons";
-import { toast } from "react-toastify";
-import { useHoverOutside } from "shared/utils/useHoverOutside";
-import { APIContext } from "shared/context/APIContext";
-import BigNumber from "bignumber.js";
-import { faKey, faInfoCircle } from "@fortawesome/free-solid-svg-icons";
-import BalanceItem from "./BalanceItem";
-import { trackMixPanelEvent } from "shared/utils/commons";
-import { useSecretNetworkClientStore } from "store/secretNetworkClient";
-import { setWalletViewingKey } from "service/walletService";
-import { scrtToken } from "shared/utils/tokens";
-import { ConnectWalletModal } from "shared/context/ConnectWalletModal";
-import { GetWalletModal } from "shared/context/GetWalletModal";
+import { useContext, useEffect, useRef, useState } from 'react'
+import { sleep, viewingKeyErrorString, usdString } from 'shared/utils/commons'
+import Tooltip from '@mui/material/Tooltip'
+import CopyToClipboard from 'react-copy-to-clipboard'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faCopy, faWallet } from '@fortawesome/free-solid-svg-icons'
+import { toast } from 'react-toastify'
+import { useHoverOutside } from 'shared/utils/useHoverOutside'
+import { APIContext } from 'shared/context/APIContext'
+import BigNumber from 'bignumber.js'
+import { faKey, faInfoCircle } from '@fortawesome/free-solid-svg-icons'
+import BalanceItem from './BalanceItem'
+import { trackMixPanelEvent } from 'shared/utils/commons'
+import { useSecretNetworkClientStore } from 'store/secretNetworkClient'
+import { setWalletViewingKey } from 'service/walletService'
+import { scrtToken } from 'shared/utils/tokens'
+import { ConnectWalletModal } from 'shared/context/ConnectWalletModal'
+import { GetWalletModal } from 'shared/context/GetWalletModal'
 
 export function Wallet() {
   const {
@@ -23,47 +23,51 @@ export function Wallet() {
     secretNetworkClient: secretjs,
     walletAddress,
     connectWallet,
-    disconnectWallet,
-  } = useSecretNetworkClientStore();
+    disconnectWallet
+  } = useSecretNetworkClientStore()
 
-  const { currentPrice } = useContext(APIContext);
+  const { currentPrice } = useContext(APIContext)
 
-  const [isMenuVisible, setIsMenuVisible] = useState<boolean>(true);
+  const [isMenuVisible, setIsMenuVisible] = useState<boolean>(true)
   const [isGetWalletModalOpen, setIsGetWalletModalOpen] =
-    useState<boolean>(false);
+    useState<boolean>(false)
   const [isConnectWalletModalOpen, setIsConnectWalletModalOpen] =
-    useState<boolean>(false);
+    useState<boolean>(false)
 
-  const { sScrtBalance, setsScrtBalance } = useSecretNetworkClientStore();
+  const { sScrtBalance, setsScrtBalance } = useSecretNetworkClientStore()
+
+  useEffect(() => {
+    connectWallet()
+  }, [])
 
   function WrappedTokenBalanceUi() {
     if (!isConnected || !sScrtBalance) {
-      return;
+      return
     } else if (sScrtBalance === viewingKeyErrorString) {
       return (
         <>
           <button
             className="ml-2 font-semibold bg-neutral-100 dark:bg-neutral-900 px-1.5 py-0.5 rounded-md border-neutral-300 dark:border-neutral-700 transition-colors hover:bg-neutral-300 dark:hover:bg-neutral-700 focus:bg-neutral-500 dark:focus:bg-neutral-500 cursor-pointer disabled:text-neutral-500 dark:disabled:text-neutral-500 disabled:hover:bg-neutral-100 dark:disabled:hover:bg-neutral-900 disabled:cursor-default"
             onClick={async () => {
-              await setWalletViewingKey(scrtToken.address);
+              await setWalletViewingKey(scrtToken.address)
               try {
-                await sleep(1000); // sometimes query nodes lag
-                await setsScrtBalance();
+                await sleep(1000) // sometimes query nodes lag
+                await setsScrtBalance()
               } finally {
-                console.log("sdgfbydsjhg");
+                console.log('sdgfbydsjhg')
               }
             }}
           >
             <FontAwesomeIcon icon={faKey} className="mr-2" />
             Set Viewing Key
           </button>
-          <Tooltip title={"tsgdfdgshdgf"} placement="right" arrow>
+          <Tooltip title={'tsgdfdgshdgf'} placement="right" arrow>
             <span className="ml-2 mt-1 text-neutral-600 dark:text-neutral-400 hover:text-black dark:hover:text-white transition-colors cursor-pointer">
               <FontAwesomeIcon icon={faInfoCircle} />
             </span>
           </Tooltip>
         </>
-      );
+      )
     } else if (Number(sScrtBalance) > -1) {
       return (
         <div className="text-xs">
@@ -74,7 +78,7 @@ export function Wallet() {
           </div>
           {currentPrice && sScrtBalance && (
             <div className="text-gray-500">
-              ≈{" "}
+              ≈{' '}
               {` ${usdString.format(
                 new BigNumber(sScrtBalance!)
                   .dividedBy(`1e${scrtToken.decimals}`)
@@ -84,64 +88,64 @@ export function Wallet() {
             </div>
           )}
         </div>
-      );
+      )
     }
   }
 
   useEffect(() => {
-    let isAutoConnectEnabled = localStorage.getItem("autoConnect") === "true";
+    let isAutoConnectEnabled = localStorage.getItem('autoConnect') === 'true'
     if (isAutoConnectEnabled) {
-      connectWallet();
+      connectWallet()
     }
-  }, []);
+  }, [])
 
-  const keplrRef = useRef();
-  useHoverOutside(keplrRef, () => setIsMenuVisible(false));
+  const keplrRef = useRef()
+  useHoverOutside(keplrRef, () => setIsMenuVisible(false))
 
   const CopyableAddress = () => {
     return (
       <CopyToClipboard
         text={walletAddress as string}
         onCopy={() => {
-          toast.success("Address copied to clipboard!");
+          toast.success('Address copied to clipboard!')
         }}
       >
         <button className="px-2 py-1 mb-2 rounded-lg flex gap-2 items-center group bg-neutral-100 dark:bg-neutral-900 hover:bg-neutral-200 dark:hover:bg-black transition-colors">
-          {walletAddress.slice(0, 14) + "..." + walletAddress.slice(-14)}
+          {walletAddress.slice(0, 14) + '...' + walletAddress.slice(-14)}
           <FontAwesomeIcon
             icon={faCopy}
             className="block text-neutral-500 dark:text-neutral-500 transition-colors"
           />
         </button>
       </CopyToClipboard>
-    );
-  };
+    )
+  }
 
   const Balances = () => {
     return (
       <div>
         <div className="font-bold mb-2">Balances</div>
         <div className="flex flex-col gap-2 mb-2">
-          <BalanceItem token={scrtToken} isSecretToken={false} /> {/* SCRT */}
-          <BalanceItem token={scrtToken} isSecretToken={true} /> {/* sSCRT */}
+          <BalanceItem token={scrtToken} isSecretToken={false} />
+          <BalanceItem token={scrtToken} isSecretToken={true} />
         </div>
         {/* TODO: implement viewing key manager */}
         {/* <button className="inline-block border border-neutral-300 dark:border-neutral-600 hover:bg-neutral-300 dark:hover:bg-neutral-600 transition-colors text-black dark:text-white font-semibold py-1.5 w-full rounded-lg">Manage Viewing Keys</button> */}
       </div>
-    );
-  };
+    )
+  }
 
   const handleConnectWallet = () => {
     if (window.keplr && (window as any).leap) {
-      setIsConnectWalletModalOpen(true);
+      setIsConnectWalletModalOpen(true)
     } else if (window.keplr && !(window as any).leap) {
-      connectWallet("keplr");
+      connectWallet('keplr')
     } else if (!window.keplr && (window as any).leap) {
-      connectWallet("leap");
+      connectWallet('leap')
     } else {
-      setIsGetWalletModalOpen(true);
+      setIsGetWalletModalOpen(true)
     }
-  };
+  }
 
   const DisconnectButton = () => {
     return (
@@ -151,8 +155,8 @@ export function Wallet() {
       >
         Disconnect Wallet
       </button>
-    );
-  };
+    )
+  }
 
   const ContextMenu = () => {
     return (
@@ -168,8 +172,8 @@ export function Wallet() {
           <DisconnectButton />
         </div>
       </div>
-    );
-  };
+    )
+  }
 
   const GreenAnimatedDot = () => {
     return (
@@ -177,25 +181,25 @@ export function Wallet() {
         <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-1/2"></span>
         <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
       </span>
-    );
-  };
+    )
+  }
 
   return (
     <>
       <ConnectWalletModal
         open={isConnectWalletModalOpen}
         onClose={() => {
-          setIsConnectWalletModalOpen(false);
-          document.body.classList.remove("overflow-hidden");
+          setIsConnectWalletModalOpen(false)
+          document.body.classList.remove('overflow-hidden')
         }}
       />
 
       <GetWalletModal
         open={isGetWalletModalOpen}
         onClose={() => {
-          trackMixPanelEvent("Closed Get Wallet Modal");
-          setIsGetWalletModalOpen(false);
-          document.body.classList.remove("overflow-hidden");
+          trackMixPanelEvent('Closed Get Wallet Modal')
+          setIsGetWalletModalOpen(false)
+          document.body.classList.remove('overflow-hidden')
         }}
       />
 
@@ -231,5 +235,5 @@ export function Wallet() {
         </button>
       )}
     </>
-  );
+  )
 }

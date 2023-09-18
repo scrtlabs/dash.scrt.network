@@ -1,41 +1,41 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import BigNumber from "bignumber.js";
-import { FunctionComponent, useContext, useEffect } from "react";
-import { APIContext } from "shared/context/APIContext";
-import { viewingKeyErrorString, usdString } from "shared/utils/commons";
-import Tooltip from "@mui/material/Tooltip";
-import { Token } from "shared/utils/config";
-import { faKey, faInfoCircle } from "@fortawesome/free-solid-svg-icons";
-import { useSecretNetworkClientStore } from "store/secretNetworkClient";
-import { scrtToken } from "shared/utils/tokens";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import BigNumber from 'bignumber.js'
+import { FunctionComponent, useContext, useEffect, useState } from 'react'
+import { APIContext } from 'shared/context/APIContext'
+import { viewingKeyErrorString, usdString } from 'shared/utils/commons'
+import Tooltip from '@mui/material/Tooltip'
+import { Token } from 'shared/utils/config'
+import { faKey, faInfoCircle } from '@fortawesome/free-solid-svg-icons'
+import { useSecretNetworkClientStore } from 'store/secretNetworkClient'
+import { scrtToken } from 'shared/utils/tokens'
 
 type IBalanceProps = {
-  token: Token;
-  isSecretToken?: boolean;
-};
+  token: Token
+  isSecretToken?: boolean
+}
 
 const BalanceItem: FunctionComponent<IBalanceProps> = ({
   isSecretToken = false,
-  token,
+  token
 }) => {
   const { scrtBalance, sScrtBalance, setViewingKey } =
-    useSecretNetworkClientStore();
+    useSecretNetworkClientStore()
 
-  const { currentPrice } = useContext(APIContext);
+  const { currentPrice } = useContext(APIContext)
 
   const SetViewingKeyButton = (props: { token: Token }) => {
     return (
       <>
         <button
           onClick={() => setViewingKey(props.token)}
-          className="ml-2 font-semibold bg-neutral-100 dark:bg-neutral-900 px-1.5 py-0.5 rounded-md border-neutral-300 dark:border-neutral-700 transition-colors hover:bg-neutral-300 dark:hover:bg-neutral-700 focus:bg-neutral-500 dark:focus:bg-neutral-500 cursor-pointer disabled:text-neutral-500 dark:disabled:text-neutral-500 disabled:hover:bg-neutral-100 dark:disabled:hover:bg-neutral-900 disabled:cursor-default"
+          className="font-semibold bg-neutral-100 dark:bg-neutral-900 px-1.5 py-0.5 rounded-md border-neutral-300 dark:border-neutral-700 transition-colors hover:bg-neutral-300 dark:hover:bg-neutral-700 focus:bg-neutral-500 dark:focus:bg-neutral-500 cursor-pointer disabled:text-neutral-500 dark:disabled:text-neutral-500 disabled:hover:bg-neutral-100 dark:disabled:hover:bg-neutral-900 disabled:cursor-default"
         >
           <FontAwesomeIcon icon={faKey} className="mr-2" />
           Set Viewing Key
         </button>
         <Tooltip
           title={
-            "Balances on Secret Network are private by default. Create a viewing key to view your encrypted balances."
+            'Balances on Secret Network are private by default. Create a viewing key to view your encrypted balances.'
           }
           placement="right"
           arrow
@@ -45,8 +45,8 @@ const BalanceItem: FunctionComponent<IBalanceProps> = ({
           </span>
         </Tooltip>
       </>
-    );
-  };
+    )
+  }
 
   //  e.g. "$1.23"
   const scrtBalanceUsdString = usdString.format(
@@ -54,54 +54,76 @@ const BalanceItem: FunctionComponent<IBalanceProps> = ({
       .dividedBy(`1e${scrtToken.decimals}`)
       .multipliedBy(Number(currentPrice))
       .toNumber()
-  );
+  )
+
   //  e.g. "$1.23"
   const sScrtBalanceUsdString = usdString.format(
     new BigNumber(sScrtBalance!)
       .dividedBy(`1e${scrtToken.decimals}`)
       .multipliedBy(Number(currentPrice))
       .toNumber()
-  );
+  )
+
+  const viewingkeyMissing =
+    isSecretToken &&
+    (sScrtBalance === viewingKeyErrorString || sScrtBalance === null)
+  const balanceIsNaN = new BigNumber(sScrtBalance!).toString() === 'NaN'
+  const isLoading =
+    (isSecretToken && !viewingkeyMissing && balanceIsNaN) ||
+    (!isSecretToken && balanceIsNaN)
+
+  if (isLoading) {
+    return (
+      <div role="status" className="w-full animate-pulse">
+        <div className="h-8 bg-neutral-200 rounded-full dark:bg-neutral-700 mr-2"></div>
+        <span className="sr-only">Loading...</span>
+      </div>
+    )
+  }
 
   return (
     <div className="flex items-center gap-3">
       <div>
         <img
-          src={"/img/assets" + token.image}
-          alt={token.name + " logo"}
+          src={'/img/assets' + token.image}
+          alt={token.name + ' logo'}
           className="h-7"
         />
       </div>
-      {isSecretToken && sScrtBalance === viewingKeyErrorString ? (
-        <div className="font-bold">
-          {` sSCRT`}
-          <SetViewingKeyButton token={token} />
+      {viewingkeyMissing ? (
+        <div className="text-xs">
+          <div className="font-bold">
+            {' ' + (isSecretToken ? 's' : '') + token.name}
+          </div>
+          <div className="text-gray-500 mt-0.5">
+            <SetViewingKeyButton token={token} />
+          </div>
         </div>
       ) : (
         <div className="text-xs">
           {/* Balance as native token */}
           <div className="font-bold">
-            {!isSecretToken
-              ? new BigNumber(scrtBalance!)
+            {isSecretToken
+              ? new BigNumber(sScrtBalance!)
                   .dividedBy(`1e${scrtToken.decimals}`)
                   .toFormat()
-              : new BigNumber(sScrtBalance!)
+              : new BigNumber(scrtBalance!)
                   .dividedBy(`1e${scrtToken.decimals}`)
                   .toFormat()}
             {/* Token name */}
-            {" " + (isSecretToken ? "s" : "") + token.name}
+            {' ' + (isSecretToken ? 's' : '') + token.name}
           </div>
           {/* Balance in USD */}
           {currentPrice && scrtBalance && (
             <div className="text-gray-500">
-              {"≈ " +
+              {'≈ ' +
                 (isSecretToken ? sScrtBalanceUsdString : scrtBalanceUsdString)}
             </div>
           )}
         </div>
       )}
     </div>
-  );
-};
+  )
+}
 
-export default BalanceItem;
+export default BalanceItem
