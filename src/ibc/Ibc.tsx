@@ -7,7 +7,8 @@ import WrapModal from "./components/WrapModal";
 import Deposit from "./components/Deposit";
 import { SecretjsContext } from "shared/context/SecretjsContext";
 import ViewingKeyModal from "./components/ViewingKeyModal";
-import { Token, tokens } from "shared/utils/config";
+import { Token } from "shared/utils/config";
+import { allTokens } from "shared/utils/commons";
 import { IbcMode } from "shared/types/IbcMode";
 import { useSearchParams } from "react-router-dom";
 import {
@@ -22,8 +23,18 @@ export const IbcContext = createContext(null);
 export function Ibc() {
   const [isWrapModalOpen, setIsWrapModalOpen] = useState(false);
 
+  let tokens = JSON.parse(JSON.stringify(allTokens));
+  const tokenToModify = tokens.find((token: any) => token.name === "SCRT");
+  if (tokenToModify) {
+    tokenToModify.address = "native";
+  }
+
+  const SCRT = allTokens[0];
+
+  tokens = [SCRT, ...tokens];
+
   const [selectedToken, setSelectedToken] = useState<Token>(
-    tokens.filter((token) => token.name === "SCRT")[0]
+    tokens.filter((token: any) => token.name === "SCRT")[0]
   );
 
   const [supportedTokens, setSupportedTokens] = useState<Token[]>([]);
@@ -39,7 +50,7 @@ export function Ibc() {
   const tokenUrlParam = searchParams.get("token");
 
   const selectableChains = tokens.find(
-    (token) => token.name === "SCRT"
+    (token: any) => token.name === "SCRT"
   ).deposits;
 
   const [selectedSource, setSelectedSource] = useState<any>(
@@ -82,7 +93,8 @@ export function Ibc() {
     if (tokenUrlParam && isValidTokenUrlParam()) {
       setSelectedToken(
         tokens.find(
-          (token) => token.name.toLowerCase() === tokenUrlParam.toLowerCase()
+          (token: any) =>
+            token.name.toLowerCase() === tokenUrlParam.toLowerCase()
         )
       );
     }

@@ -16,6 +16,8 @@ import {
   suggestComposabletoWallet,
   faucetAddress,
   viewingKeyErrorString,
+  allTokens,
+  randomPadding,
 } from "shared/utils/commons";
 import {
   fromBase64,
@@ -24,15 +26,10 @@ import {
   TxResponse,
   toUtf8,
   BroadcastMode,
+  MsgExecuteContract,
+  MsgTransfer,
 } from "secretjs";
-import {
-  chains,
-  Token,
-  tokens,
-  snips,
-  ICSTokens,
-  Deposit,
-} from "shared/utils/config";
+import { chains, Token, snips, ICSTokens, Deposit } from "shared/utils/config";
 import { TxRaw } from "secretjs/dist/protobuf/cosmos/tx/v1beta1/tx";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -82,6 +79,8 @@ function Deposit() {
     selectedSource,
     setSelectedSource,
   } = useContext(IbcContext);
+
+  const tokens = allTokens;
 
   const { secretjs } = useContext(SecretjsContext);
 
@@ -262,7 +261,7 @@ function Deposit() {
   const updateCoinBalance = async () => {
     if (secretjs && secretjs?.address) {
       setAvailableBalance(undefined);
-      if (selectedToken.is_snip20 || selectedToken.is_ics20) {
+      if (selectedToken != "SCRT") {
         const key = await getWalletViewingKey(selectedToken.address);
         if (!key) {
           setAvailableBalance(viewingKeyErrorString);
@@ -381,27 +380,12 @@ function Deposit() {
     if (!(secretjs && secretjs?.address)) {
       return;
     }
-    const possibleICS20 = ICSTokens.filter(
-      (token) =>
+    const supportedTokens = tokens.filter(
+      (token: any) =>
         token.deposits.find(
-          (token) => token.chain_name == selectedSource.chain_name
+          (token: any) => token.chain_name == selectedSource.chain_name
         )!
     );
-    const possibleSnips = snips.filter(
-      (token) =>
-        token.deposits.find(
-          (token) => token.chain_name == selectedSource.chain_name
-        )!
-    );
-    const possibleTokens = tokens.filter(
-      (token) =>
-        token.deposits.find(
-          (token) => token.chain_name == selectedSource.chain_name
-        )!
-    );
-    const supportedTokens = possibleTokens
-      .concat(possibleICS20)
-      .concat(possibleSnips);
 
     setSupportedTokens(supportedTokens);
 
@@ -576,7 +560,7 @@ function Deposit() {
                 feeDenom: deposit_gas_denom,
                 ibcTxsOptions: {
                   resolveResponses: true,
-                  resolveResponsesCheckIntervalMs: 10_000,
+                  resolveResponsesCheckIntervalMs: 6_000,
                   resolveResponsesTimeoutMs: 12 * 60 * 1000,
                 },
                 broadcastMode: BroadcastMode.Sync,
@@ -589,7 +573,7 @@ function Deposit() {
             const fromChain = depositChain.axelar_chain_name,
               toChain = "secret-snip",
               destinationAddress = secretjs?.address,
-              asset = selectedToken.axelar_denom; // denom of asset. See note (2) below
+              asset = selectedToken.axelar_denom;
 
             const depositAddress = await sdk.getDepositAddress({
               fromChain,
@@ -616,7 +600,7 @@ function Deposit() {
                 feeDenom: deposit_gas_denom,
                 ibcTxsOptions: {
                   resolveResponses: true,
-                  resolveResponsesCheckIntervalMs: 10_000,
+                  resolveResponsesCheckIntervalMs: 6_000,
                   resolveResponsesTimeoutMs: 10.25 * 60 * 1000,
                 },
                 broadcastMode: BroadcastMode.Sync,
@@ -730,12 +714,15 @@ function Deposit() {
               {
                 ibcTxsOptions: {
                   resolveResponses: true,
-                  resolveResponsesCheckIntervalMs: 10_000,
+                  resolveResponsesCheckIntervalMs: 6_000,
                   resolveResponsesTimeoutMs: 10.25 * 60 * 1000,
                 },
               }
             );
           }
+
+          //wait till API catches up
+          sleep(8_000);
 
           if (tx.code !== 0) {
             toast.update(toastId, {
@@ -954,7 +941,7 @@ function Deposit() {
                 broadcastMode: BroadcastMode.Sync,
               }
             );
-          } else {
+          } else if (selectedToken.name === "SCRT") {
             const source_channel_id =
               withdrawalChain?.axelar_chain_name == CHAINS.MAINNET.AXELAR &&
               selectedToken.name !== "SCRT"
@@ -987,7 +974,51 @@ function Deposit() {
                 broadcastMode: BroadcastMode.Sync,
               }
             );
+          } else {
+            tx = await secretjs.tx.broadcast(
+              [
+                new MsgExecuteContract({
+                  sender: secretjs?.address,
+                  contract_address: selectedToken.address,
+                  code_hash: selectedToken.code_hash,
+                  sent_funds: [],
+                  msg: {
+                    redeem: {
+                      amount,
+                      denom: selectedToken.withdrawals[0].from_denom,
+                      padding: randomPadding(),
+                    },
+                  },
+                } as any),
+                new MsgTransfer({
+                  sender: secretjs?.address,
+                  receiver: sourceAddress,
+                  source_channel: withdraw_channel_id,
+                  source_port: "transfer",
+                  token: {
+                    amount,
+                    denom: withdrawalChain.from_denom,
+                  },
+                  timeout_timestamp: String(
+                    Math.floor(Date.now() / 1000) + 10 * 60
+                  ), // 10 minute timeout
+                }),
+              ],
+              {
+                gasLimit: 150_000,
+                gasPriceInFeeDenom: 0.1,
+                feeDenom: "uscrt",
+                feeGranter: feeGrantStatus === "Success" ? faucetAddress : "",
+                ibcTxsOptions: {
+                  resolveResponses: true,
+                  resolveResponsesCheckIntervalMs: 10_000,
+                  resolveResponsesTimeoutMs: 12 * 60 * 1000,
+                },
+                broadcastMode: BroadcastMode.Sync,
+              }
+            );
           }
+
           if (tx.code !== 0) {
             toast.update(toastId, {
               render: `Failed sending ${normalizedAmount} ${selectedToken.name} from Secret Network to ${selectedSource.chain_name}: ${tx.rawLog}`,
@@ -1317,7 +1348,10 @@ function Deposit() {
                   className="w-6 h-6 mr-2 rounded-full"
                 />
                 <span className="font-semibold text-sm">
-                  {token.is_ics20 && ibcMode == "withdrawal" && "s"}
+                  {!(token.is_snip20 || token.name === "SCRT") &&
+                  ibcMode == "withdrawal"
+                    ? "s"
+                    : null}
                   {token.name}
                 </span>
               </div>
@@ -1345,8 +1379,7 @@ function Deposit() {
         {/* Balance | [25%|50%|75%|Max] */}
         <div className="flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 mt-3">
           <div className="flex-1 text-xs">
-            {(selectedToken.is_ics20 || selectedToken.is_snip20) &&
-            ibcMode == "withdrawal"
+            {selectedToken.name != "SCRT" && ibcMode == "withdrawal"
               ? WrappedTokenBalanceUi(
                   availableBalance,
                   selectedToken,
