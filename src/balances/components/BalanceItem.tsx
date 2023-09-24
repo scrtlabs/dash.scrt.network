@@ -40,6 +40,8 @@ export const BalanceItem = (props: IBalanceItemProps) => {
   const [nativeBalance, setNativeBalance] = useState<any>(undefined);
   const [tokenBalance, setTokenBalance] = useState<any>(undefined);
 
+  const identityRef = useRef(props.asset);
+
   useEffect(() => {
     setAssetPrice(
       prices.find(
@@ -66,17 +68,19 @@ export const BalanceItem = (props: IBalanceItemProps) => {
   useEffect(() => {
     if (!secretjs || !secretjs?.address) return;
 
-    (async () => {
-      setBalance();
-    })();
+    setNativeBalance(undefined);
+    setTokenBalance(undefined);
 
-    const interval = setInterval(setBalance, 100000);
+    setBalance();
+
+    const interval = setInterval(setBalance, 60000);
     return () => {
       clearInterval(interval);
     };
-  }, [secretjs?.address, secretjs]);
+  }, [secretjs?.address, secretjs, props.asset]);
 
   const updateCoinBalance = async () => {
+    identityRef.current = props.asset;
     try {
       const {
         balance: { amount },
@@ -84,7 +88,10 @@ export const BalanceItem = (props: IBalanceItemProps) => {
         address: secretjs?.address,
         denom: props.asset.withdrawals[0]?.from_denom,
       });
-      setNativeBalance(amount);
+
+      if (identityRef.current === props.asset) {
+        setNativeBalance(amount);
+      }
     } catch (e) {
       console.error(`Error while trying to query ${props.asset.name}:`, e);
     }
@@ -94,11 +101,14 @@ export const BalanceItem = (props: IBalanceItemProps) => {
     if (!props.asset.address || !secretjs) {
       return;
     }
+    identityRef.current = props.asset;
 
     const key = await getWalletViewingKey(props.asset.address);
     if (!key) {
-      setTokenBalance(viewingKeyErrorString);
-      return;
+      if (identityRef.current === props.asset) {
+        setTokenBalance(viewingKeyErrorString);
+        return;
+      }
     }
 
     try {
@@ -117,11 +127,15 @@ export const BalanceItem = (props: IBalanceItemProps) => {
       });
 
       if (result.viewing_key_error) {
-        setTokenBalance(viewingKeyErrorString);
+        if (identityRef.current === props.asset) {
+          setTokenBalance(viewingKeyErrorString);
+          return;
+        }
+      }
+      if (identityRef.current === props.asset) {
+        setTokenBalance(result.balance.amount);
         return;
       }
-
-      setTokenBalance(result.balance.amount);
     } catch (e) {
       console.error(`Error getting balance for s${props.asset.name}`, e);
 
