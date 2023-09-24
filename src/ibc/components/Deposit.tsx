@@ -532,40 +532,81 @@ function Deposit() {
             (!selectedToken.is_ics20 ||
               depositChain.axelar_chain_name == CHAINS.MAINNET.AXELAR)
           ) {
-            const source_channel_id =
-              depositChain.axelar_chain_name == CHAINS.MAINNET.AXELAR &&
-              selectedToken.name !== "SCRT"
-                ? depositChain.channel_id
-                : deposit_channel_id;
             // Regular cosmos chain (not ethermint signing)
-            tx = await sourceChainSecretjs.tx.ibc.transfer(
-              {
-                sender: sourceAddress,
-                receiver: secretjs?.address,
-                source_channel: deposit_channel_id,
-                source_port: "transfer",
-                token: {
-                  amount,
-                  denom: selectedToken.deposits.filter(
-                    (deposit: any) =>
-                      deposit.chain_name === selectedSource.chain_name
-                  )[0].from_denom,
+            if (
+              selectedToken === "SCRT" ||
+              depositChain.axelar_chain_name == CHAINS.MAINNET.AXELAR
+            ) {
+              tx = await sourceChainSecretjs.tx.ibc.transfer(
+                {
+                  sender: sourceAddress,
+                  receiver: secretjs?.address,
+                  source_channel: deposit_channel_id,
+                  source_port: "transfer",
+                  token: {
+                    amount,
+                    denom: selectedToken.deposits.filter(
+                      (deposit: any) =>
+                        deposit.chain_name === selectedSource.chain_name
+                    )[0].from_denom,
+                  },
+                  timeout_timestamp: String(
+                    Math.floor(Date.now() / 1000) + 10 * 60
+                  ), // 10 minute timeout
                 },
-                timeout_timestamp: String(
-                  Math.floor(Date.now() / 1000) + 10 * 60
-                ), // 10 minute timeout
-              },
-              {
-                gasLimit: deposit_gas,
-                feeDenom: deposit_gas_denom,
-                ibcTxsOptions: {
-                  resolveResponses: true,
-                  resolveResponsesCheckIntervalMs: 6_000,
-                  resolveResponsesTimeoutMs: 12 * 60 * 1000,
+                {
+                  gasLimit: deposit_gas,
+                  feeDenom: deposit_gas_denom,
+                  ibcTxsOptions: {
+                    resolveResponses: true,
+                    resolveResponsesCheckIntervalMs: 6_000,
+                    resolveResponsesTimeoutMs: 12 * 60 * 1000,
+                  },
+                  broadcastMode: BroadcastMode.Sync,
+                }
+              );
+            } else {
+              tx = await sourceChainSecretjs.tx.ibc.transfer(
+                {
+                  sender: sourceAddress,
+                  receiver: "wrapDepositContractAddress",
+                  source_channel: deposit_channel_id,
+                  source_port: "transfer",
+                  token: {
+                    amount,
+                    denom: selectedToken.deposits.filter(
+                      (deposit: any) =>
+                        deposit.chain_name === selectedSource.chain_name
+                    )[0].from_denom,
+                  },
+                  timeout_timestamp: String(
+                    Math.floor(Date.now() / 1000) + 10 * 60
+                  ), // 10 minute timeout
+                  memo: JSON.stringify({
+                    wasm: {
+                      contract: "wrapDepositContractAddress",
+                      msg: {
+                        wrap_deposit: {
+                          snip20_address: selectedToken.address,
+                          snip20_code_hash: selectedToken.code_hash,
+                          recipient_address: secretjs?.address,
+                        },
+                      },
+                    },
+                  }),
                 },
-                broadcastMode: BroadcastMode.Sync,
-              }
-            );
+                {
+                  gasLimit: deposit_gas,
+                  feeDenom: deposit_gas_denom,
+                  ibcTxsOptions: {
+                    resolveResponses: true,
+                    resolveResponsesCheckIntervalMs: 6_000,
+                    resolveResponsesTimeoutMs: 12 * 60 * 1000,
+                  },
+                  broadcastMode: BroadcastMode.Sync,
+                }
+              );
+            }
           } else if (
             selectedToken.is_ics20 &&
             depositChain.axelar_chain_name != CHAINS.MAINNET.AXELAR
