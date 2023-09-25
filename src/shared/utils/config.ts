@@ -241,6 +241,20 @@ export const chains: { [chain_name: string]: Chain } = {
     chain_image: "/kuji.svg",
     explorer_account: "https://kujira.explorers.guru/account/",
   },
+  Noble: {
+    chain_name: "Noble",
+    deposit_channel_id: "channel-17",
+    deposit_gas: 150_000,
+    deposit_gas_denom: "ustake",
+    withdraw_channel_id: "channel-88",
+    withdraw_gas: 30_000,
+    chain_id: "noble-1",
+    bech32_prefix: "noble",
+    lcd: "https://noble-api.polkachu.com",
+    rpc: "https://noble-rpc.polkachu.com",
+    chain_image: "/noble.svg",
+    explorer_account: "https://www.mintscan.io/noble/account/",
+  },
   Osmosis: {
     chain_name: "Osmosis",
     deposit_channel_id: "channel-88",
@@ -591,6 +605,18 @@ export const tokens: Token[] = [
         ),
       },
       {
+        chain_name: "Noble",
+        from_denom: ibcDenom(
+          [
+            {
+              incomingChannelId: chains["Noble"].deposit_channel_id,
+              incomingPortId: "transfer",
+            },
+          ],
+          "uscrt"
+        ),
+      },
+      {
         chain_name: "Osmosis",
         from_denom: ibcDenom(
           [
@@ -742,6 +768,10 @@ export const tokens: Token[] = [
       },
       {
         chain_name: "Kujira",
+        from_denom: "uscrt",
+      },
+      {
+        chain_name: "Noble",
         from_denom: "uscrt",
       },
       {
