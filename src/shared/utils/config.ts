@@ -1391,8 +1391,9 @@ export const tokens: Token[] = [
   },
   {
     name: "PICA",
-    address: "XXXX",
-    code_hash: "XXX",
+    address: "secret1e0y9vf4xr9wffyxsvlz35jzl5st2srkdl8frac",
+    code_hash:
+      "5a085bd8ed89de92b35134ddd12505a602c7759ea25fb5c089ba03c8535b3042",
     image: "/pica.svg",
     decimals: 12,
     coingecko_id: "picasso",
