@@ -765,9 +765,6 @@ function Deposit() {
             );
           }
 
-          //wait till API catches up
-          await sleep(12_000);
-
           if (tx.code !== 0) {
             toast.update(toastId, {
               render: `Failed sending ${normalizedAmount} ${selectedToken.name} from ${selectedSource.chain_name} to Secret Network: ${tx.rawLog}`,
@@ -911,7 +908,7 @@ function Deposit() {
                 feeGranter: feeGrantStatus === "Success" ? faucetAddress : "",
                 ibcTxsOptions: {
                   resolveResponses: true,
-                  resolveResponsesCheckIntervalMs: 10_000,
+                  resolveResponsesCheckIntervalMs: 250,
                   resolveResponsesTimeoutMs: 12 * 60 * 1000,
                 },
                 broadcastMode: BroadcastMode.Sync,
@@ -1014,7 +1011,7 @@ function Deposit() {
                 feeGranter: feeGrantStatus === "Success" ? faucetAddress : "",
                 ibcTxsOptions: {
                   resolveResponses: true,
-                  resolveResponsesCheckIntervalMs: 10_000,
+                  resolveResponsesCheckIntervalMs: 250,
                   resolveResponsesTimeoutMs: 12 * 60 * 1000,
                 },
                 broadcastMode: BroadcastMode.Sync,
@@ -1058,7 +1055,7 @@ function Deposit() {
                 feeGranter: feeGrantStatus === "Success" ? faucetAddress : "",
                 ibcTxsOptions: {
                   resolveResponses: true,
-                  resolveResponsesCheckIntervalMs: 10_000,
+                  resolveResponsesCheckIntervalMs: 250,
                   resolveResponsesTimeoutMs: 12 * 60 * 1000,
                 },
                 broadcastMode: BroadcastMode.Sync,
