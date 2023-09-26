@@ -1561,6 +1561,34 @@ export const tokens: Token[] = [
       },
     ],
   },
+  {
+    name: "USDC (Noble)",
+    address: "XXXX",
+    code_hash: "XXX",
+    image: "/ausdc.svg",
+    decimals: 6,
+    coingecko_id: "usdc",
+    deposits: [
+      {
+        chain_name: "Noble",
+        from_denom: "uusdc",
+      },
+    ],
+    withdrawals: [
+      {
+        chain_name: "Noble",
+        from_denom: ibcDenom(
+          [
+            {
+              incomingChannelId: chains["Noble"].withdraw_channel_id,
+              incomingPortId: "transfer",
+            },
+          ],
+          "uusdc"
+        ),
+      },
+    ],
+  },
   /* {
     name: "ROWAN",
     address: "secret159p22zvq2wzsdtqhm2plp4wg33srxp2hf0qudc",
