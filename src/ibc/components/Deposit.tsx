@@ -261,7 +261,7 @@ function Deposit() {
   const updateCoinBalance = async () => {
     if (secretjs && secretjs?.address) {
       setAvailableBalance(undefined);
-      if (selectedToken != "SCRT") {
+      if (selectedToken.name != "SCRT") {
         const key = await getWalletViewingKey(selectedToken.address);
         if (!key) {
           setAvailableBalance(viewingKeyErrorString);
@@ -555,11 +555,12 @@ function Deposit() {
                   ), // 10 minute timeout
                 },
                 {
+                  broadcastCheckIntervalMs: 10000,
                   gasLimit: deposit_gas,
                   feeDenom: deposit_gas_denom,
                   ibcTxsOptions: {
                     resolveResponses: true,
-                    resolveResponsesCheckIntervalMs: 6_000,
+                    resolveResponsesCheckIntervalMs: 250,
                     resolveResponsesTimeoutMs: 12 * 60 * 1000,
                   },
                   broadcastMode: BroadcastMode.Sync,
@@ -569,7 +570,7 @@ function Deposit() {
               tx = await sourceChainSecretjs.tx.ibc.transfer(
                 {
                   sender: sourceAddress,
-                  receiver: "wrapDepositContractAddress",
+                  receiver: "secret198lmmh2fpj3weqhjczptkzl9pxygs23yn6dsev",
                   source_channel: deposit_channel_id,
                   source_port: "transfer",
                   token: {
@@ -584,7 +585,7 @@ function Deposit() {
                   ), // 10 minute timeout
                   memo: JSON.stringify({
                     wasm: {
-                      contract: "wrapDepositContractAddress",
+                      contract: "secret198lmmh2fpj3weqhjczptkzl9pxygs23yn6dsev",
                       msg: {
                         wrap_deposit: {
                           snip20_address: selectedToken.address,
@@ -596,11 +597,12 @@ function Deposit() {
                   }),
                 },
                 {
+                  broadcastCheckIntervalMs: 10000,
                   gasLimit: deposit_gas,
                   feeDenom: deposit_gas_denom,
                   ibcTxsOptions: {
                     resolveResponses: true,
-                    resolveResponsesCheckIntervalMs: 6_000,
+                    resolveResponsesCheckIntervalMs: 250,
                     resolveResponsesTimeoutMs: 12 * 60 * 1000,
                   },
                   broadcastMode: BroadcastMode.Sync,
@@ -637,11 +639,12 @@ function Deposit() {
                 ), // 10 minute timeout
               },
               {
+                broadcastCheckIntervalMs: 10000,
                 gasLimit: deposit_gas,
                 feeDenom: deposit_gas_denom,
                 ibcTxsOptions: {
                   resolveResponses: true,
-                  resolveResponsesCheckIntervalMs: 6_000,
+                  resolveResponsesCheckIntervalMs: 250,
                   resolveResponsesTimeoutMs: 10.25 * 60 * 1000,
                 },
                 broadcastMode: BroadcastMode.Sync,
@@ -755,7 +758,7 @@ function Deposit() {
               {
                 ibcTxsOptions: {
                   resolveResponses: true,
-                  resolveResponsesCheckIntervalMs: 6_000,
+                  resolveResponsesCheckIntervalMs: 250,
                   resolveResponsesTimeoutMs: 10.25 * 60 * 1000,
                 },
               }
@@ -763,7 +766,7 @@ function Deposit() {
           }
 
           //wait till API catches up
-          sleep(8_000);
+          await sleep(12_000);
 
           if (tx.code !== 0) {
             toast.update(toastId, {
@@ -787,7 +790,6 @@ function Deposit() {
                 isLoading: false,
                 closeOnClick: true,
               });
-              setIsWrapModalOpen(true);
             } else {
               toast.update(toastId, {
                 render: `Timed out while waiting to receive ${normalizedAmount} ${selectedToken.name} on Secret Network from ${selectedSource.chain_name}`,
@@ -902,6 +904,7 @@ function Deposit() {
                 },
               },
               {
+                broadcastCheckIntervalMs: 10000,
                 gasLimit: withdraw_gas,
                 gasPriceInFeeDenom: 0.1,
                 feeDenom: "uscrt",
@@ -970,6 +973,7 @@ function Deposit() {
                 },
               },
               {
+                broadcastCheckIntervalMs: 10000,
                 gasLimit: withdraw_gas,
                 gasPriceInFeeDenom: 0.1,
                 feeDenom: "uscrt",
@@ -1003,6 +1007,7 @@ function Deposit() {
                 ), // 10 minute timeout
               },
               {
+                broadcastCheckIntervalMs: 10000,
                 gasLimit: withdraw_gas,
                 gasPriceInFeeDenom: 0.1,
                 feeDenom: "uscrt",
@@ -1046,6 +1051,7 @@ function Deposit() {
                 }),
               ],
               {
+                broadcastCheckIntervalMs: 10000,
                 gasLimit: 150_000,
                 gasPriceInFeeDenom: 0.1,
                 feeDenom: "uscrt",
