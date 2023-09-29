@@ -245,7 +245,7 @@ export const chains: { [chain_name: string]: Chain } = {
     chain_name: "Noble",
     deposit_channel_id: "channel-17",
     deposit_gas: 150_000,
-    deposit_gas_denom: "ustake",
+    deposit_gas_denom: "uusdc",
     withdraw_channel_id: "channel-88",
     withdraw_gas: 30_000,
     chain_id: "noble-1",
