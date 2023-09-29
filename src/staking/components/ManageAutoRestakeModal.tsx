@@ -26,7 +26,7 @@ export default function ManageAutoRestakeModal(
     delegationTotalRewards,
     validators,
     restakeChoices,
-    setRestakeChoices,
+    restakeEntries,
     reload,
     setReload,
   } = useContext(StakingContext);
@@ -57,6 +57,9 @@ export default function ManageAutoRestakeModal(
         );
       });
 
+      console.log(validatorObjects);
+      console.log(validatorRestakeStatuses);
+
       try {
         const toastId = toast.loading(
           `Setting Auto Restaking for validators: ${validatorObjects
@@ -72,19 +75,25 @@ export default function ManageAutoRestakeModal(
             .join(", ")}`,
           { closeButton: true }
         );
-        const txs = validatorRestakeStatuses.map(
-          (status: ValidatorRestakeStatus) => {
+
+        const txs = validatorRestakeStatuses
+          .filter((status: ValidatorRestakeStatus) => {
+            const isInRestakeEntries = restakeEntries.includes(
+              status.validatorAddress
+            );
+            return isInRestakeEntries !== status.autoRestake;
+          })
+          .map((status: ValidatorRestakeStatus) => {
             return new MsgSetAutoRestake({
               delegator_address: secretjs?.address,
               validator_address: status.validatorAddress,
               enabled: status.autoRestake,
             });
-          }
-        );
+          });
 
         await secretjs.tx
           .broadcast(txs, {
-            gasLimit: 100_000 * txs.length,
+            gasLimit: 20_000 * txs.length,
             gasPriceInFeeDenom: 0.25,
             feeDenom: "uscrt",
           })
@@ -204,7 +213,7 @@ export default function ManageAutoRestakeModal(
                 {restakeChoices.length > 0 && (
                   <button
                     onClick={() => doRestake()}
-                    className="text-white dark:text-white bg-sky-600 dark:bg-sky-600 hover:bg-sky-700 dark:hover:bg-sky-700 font-semibold px-4 py-2 rounded-md transition-colors"
+                    className="enabled:bg-gradient-to-r enabled:from-cyan-600 enabled:to-purple-600 enabled:hover:from-cyan-500 enabled:hover:to-purple-500 transition-colors text-white font-semibold px-4 py-2 rounded-lg disabled:bg-neutral-500 focus:outline-none focus-visible:ring-4 ring-sky-500/40"
                   >
                     Submit Changes
                   </button>

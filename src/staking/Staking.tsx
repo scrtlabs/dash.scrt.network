@@ -312,6 +312,8 @@ export const Staking = () => {
     setReload,
     restakeChoices,
     setRestakeChoices,
+    restakeEntries,
+    setRestakeEntries,
   };
 
   return (

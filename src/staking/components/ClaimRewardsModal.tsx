@@ -50,7 +50,7 @@ export function ClaimRewardsModal(props: IClaimRewardsModalProps) {
 
         await secretjs.tx
           .broadcast(txs, {
-            gasLimit: 100_000 * txs.length,
+            gasLimit: 20_000 * txs.length,
             gasPriceInFeeDenom: 0.25,
             feeDenom: "uscrt",
             feeGranter: feeGrantStatus === "Success" ? faucetAddress : "",
@@ -146,7 +146,7 @@ export function ClaimRewardsModal(props: IClaimRewardsModalProps) {
                 </div>
                 <button
                   onClick={() => claimRewards()}
-                  className="text-medium disabled:bg-neutral-600 enabled:bg-green-600 enabled:hover:bg-green-700 disabled:text-neutral-400 enabled:text-white transition-colors font-semibold px-2 py-2 text-sm rounded-md"
+                  className="enabled:bg-gradient-to-r enabled:from-cyan-600 enabled:to-purple-600 enabled:hover:from-cyan-500 enabled:hover:to-purple-500 transition-colors text-white font-semibold px-4 py-2 rounded-lg disabled:bg-neutral-500 focus:outline-none focus-visible:ring-4 ring-sky-500/40"
                 >
                   Claim Rewards
                 </button>
