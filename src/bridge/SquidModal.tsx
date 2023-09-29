@@ -148,7 +148,7 @@ const SquidModal: React.FC<ISquidModalProps> = ({
               </button>
 
               {loading && (
-                <div className="animate-pulse bg-neutral-300/40 dark:bg-neutral-700/40 absolute top-0 left-0 right-0 bottom-0"></div>
+                <div className="animate-pulse bg-neutral-300/40 dark:bg-neutral-700/40 absolute top-0 left-0 right-0 bottom-0 rounded-2xl"></div>
               )}
 
               {theme === "dark" ? (

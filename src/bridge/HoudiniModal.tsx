@@ -49,13 +49,15 @@ const HoudiniModal: React.FC<IHoudiniModalProps> = ({
               </button>
 
               {loading && (
-                <div className="animate-pulse bg-neutral-300/40 dark:bg-neutral-700/40 absolute top-0 left-0 right-0 bottom-0"></div>
+                <div className="animate-pulse bg-neutral-300/40 dark:bg-neutral-700/40 absolute top-0 left-0 right-0 bottom-0 rounded-2xl"></div>
               )}
 
               <iframe
                 src={`https://houdiniswap.com/?widgetMode=true&theme=${
                   theme === "light" ? "light" : "dark"
-                }&tokenIn=ETH&tokenOut=SCRT&amount=1&anonymous=true&partnerId=64f58fc75abdd6a4df170fda&receiveAddress=${secretAddress}&tokenLockOut=true`}
+                }&tokenIn=ETH&tokenOut=SCRT&amount=1&anonymous=true&partnerId=64f58fc75abdd6a4df170fda${
+                  secretAddress ? `&receiveAddress=${secretAddress}` : ``
+                }&tokenLockOut=true`}
                 width="100%"
                 height="100%"
                 style={{ maxHeight: "800px" }}
