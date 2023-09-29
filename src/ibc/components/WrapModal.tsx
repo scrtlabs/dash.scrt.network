@@ -83,7 +83,7 @@ const WrapModal = (props: IWrapModalProps) => {
                     icon={faCircleCheck}
                     className="mr-2 text-emerald-500 dark:text-emerald-500"
                   />
-                  Transaction Successful
+                  IBC Transfer successful
                 </h2>
               </div>
 
