@@ -809,6 +809,41 @@ export const tokens: Token[] = [
     ],
   },
   {
+    name: "AXL (special)",
+    description: "Axelar Governance Token",
+    address: "secret1vcau4rkn7mvfwl8hf0dqa9p0jr59983e3qqe3z",
+    code_hash:
+      "638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e",
+    image: "/axl.svg",
+    decimals: 6,
+    coingecko_id: "axelar",
+    axelar_denom: "uaxl",
+    deposits: [
+      {
+        chain_name: "Axelar",
+        from_denom: "uaxl",
+        channel_id: "channel-20",
+        gas: 300_000,
+      },
+    ],
+    withdrawals: [
+      {
+        chain_name: "Axelar",
+        from_denom: ibcDenom(
+          [
+            {
+              incomingChannelId: chains["Axelar"].withdraw_channel_id,
+              incomingPortId: "transfer",
+            },
+          ],
+          "uaxl"
+        ),
+        channel_id: "channel-12",
+        gas: 350_000,
+      },
+    ],
+  },
+  {
     name: "AKT",
     description: "Akash Governance Token",
     address: "secret168j5f78magfce5r2j4etaytyuy7ftjkh4cndqw",

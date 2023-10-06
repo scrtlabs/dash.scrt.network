@@ -6,6 +6,8 @@ import { cosmos } from "@tharsis/proto/dist/proto/cosmos/tx/v1beta1/tx";
 import BigNumber from "bignumber.js";
 import Long from "long";
 import { useEffect, useState, useContext, Component } from "react";
+import Web3 from "web3";
+import { ethers } from "ethers";
 import {
   sleep,
   suggestCrescenttoWallet,
@@ -918,7 +920,8 @@ function Deposit() {
             selectedToken.is_ics20 &&
             !(
               withdrawalChain?.axelar_chain_name === CHAINS.MAINNET.AXELAR &&
-              selectedToken.name === "SCRT"
+              (selectedToken.name === "SCRT" ||
+                selectedToken.name === "AXL (special)")
             )
           ) {
             const fromChain = "secret-snip",
@@ -946,6 +949,22 @@ function Deposit() {
                 timeout: 600, // 10 minute timeout
               })
             );
+            let web3 = new Web3();
+            let message_payload = web3.eth.abi.encodeParameters(
+              ["string"],
+              ["Saturn"]
+            );
+            let gmp_message = {
+              destination_chain: "Polygon",
+              destination_address: "0x3dbddfda2e0b7b0186677bf71c219e2303ae49df",
+              payload: message_payload,
+              type: 2,
+              fee: {
+                amount: "1000000",
+                recipient: "axelar1aythygn6z5thymj6tmzfwekzh05ewg3l7d6y89",
+              },
+            };
+
             tx = await secretjs.tx.compute.executeContract(
               {
                 contract_address: selectedToken.address,
@@ -960,9 +979,11 @@ function Deposit() {
                     msg: toBase64(
                       toUtf8(
                         JSON.stringify({
-                          channel: withdraw_channel_id,
-                          remote_address: depositAddress,
+                          channel: "channel-61",
+                          remote_address:
+                            "axelar1dv4u5k73pzqrxlzujxg3qp8kvc3pje7jtdvu72npnt5zhq05ejcsn5qme5",
                           timeout: 600, // 10 minute timeout
+                          memo: gmp_message,
                         })
                       )
                     ),
@@ -983,17 +1004,40 @@ function Deposit() {
                 broadcastMode: BroadcastMode.Sync,
               }
             );
-          } else if (selectedToken.name === "SCRT") {
+          } else if (
+            selectedToken.name === "SCRT" ||
+            selectedToken.name === "AXL (special)"
+          ) {
             const source_channel_id =
               withdrawalChain?.axelar_chain_name == CHAINS.MAINNET.AXELAR &&
               selectedToken.name !== "SCRT"
                 ? withdrawalChain.channel_id
                 : withdraw_channel_id;
+            const payload = ethers.utils.defaultAbiCoder.encode(
+              ["string"],
+              ["Secret Saturn"]
+            );
+            const byteArray = Buffer.from(payload, "hex"); // Remove "0x" and convert hex to bytes
+
+            // Convert byteArray to a regular number array
+            const numberArray = Array.from(byteArray);
+
+            let gmp_message = {
+              destination_chain: "Polygon",
+              destination_address: "0x149fDaC4113a3286182deBfcD1748E39b63440aa",
+              payload: numberArray, // Use number array here
+              type: 1,
+              fee: {
+                amount: amount,
+                recipient: "axelar1aythygn6z5thymj6tmzfwekzh05ewg3l7d6y89",
+              },
+            };
             tx = await secretjs.tx.ibc.transfer(
               {
                 sender: secretjs?.address,
-                receiver: sourceAddress,
-                source_channel: source_channel_id,
+                receiver:
+                  "axelar1dv4u5k73pzqrxlzujxg3qp8kvc3pje7jtdvu72npnt5zhq05ejcsn5qme5",
+                source_channel: "channel-20",
                 source_port: "transfer",
                 token: {
                   amount,
@@ -1002,6 +1046,7 @@ function Deposit() {
                 timeout_timestamp: String(
                   Math.floor(Date.now() / 1000) + 10 * 60
                 ), // 10 minute timeout
+                memo: JSON.stringify(gmp_message),
               },
               {
                 broadcastCheckIntervalMs: 10000,

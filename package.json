@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@0xsquid/widget": "^1.4.81",
-    "@axelar-network/axelarjs-sdk": "^0.12.6",
+    "@axelar-network/axelarjs-sdk": "^0.13.6",
     "@babel/core": "^7.0.0",
     "@cosmjs/stargate": "0.26.5",
     "@emotion/react": "11.10.5",
@@ -36,6 +36,7 @@
     "bignumber.js": "9.1.1",
     "buffer": "6.0.3",
     "chart.js": "^4.3.0",
+    "ethersjs": "^0.0.1-security",
     "formik": "^2.2.9",
     "google-protobuf": "^3.14.0",
     "long": "5.2.1",
@@ -60,6 +61,7 @@
     "tailwindcss": "^3.2.4",
     "vite": "^4.2.3",
     "vite-tsconfig-paths": "^4.0.3",
+    "web3": "^4.1.2",
     "yup": "^1.0.2"
   },
   "devDependencies": {
