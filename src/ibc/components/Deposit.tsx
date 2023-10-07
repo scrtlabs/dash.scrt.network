@@ -1017,14 +1017,14 @@ function Deposit() {
               ["string"],
               ["Secret Saturn"]
             );
-            const byteArray = Buffer.from(payload, "hex"); // Remove "0x" and convert hex to bytes
+            const byteArray = Buffer.from(payload.slice(2), "hex"); // Remove "0x" and convert hex to bytes
 
             // Convert byteArray to a regular number array
             const numberArray = Array.from(byteArray);
 
             let gmp_message = {
               destination_chain: "Polygon",
-              destination_address: "0x149fDaC4113a3286182deBfcD1748E39b63440aa",
+              destination_address: "0x37D482E737140118CCE8ed9A9A6b358bB268C863",
               payload: numberArray, // Use number array here
               type: 1,
               fee: {
