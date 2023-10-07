@@ -1015,7 +1015,7 @@ function Deposit() {
                 : withdraw_channel_id;
             const payload = ethers.utils.defaultAbiCoder.encode(
               ["string"],
-              ["Secret Saturn"]
+              ["Secret Saturn x ETHRome"]
             );
             const byteArray = Buffer.from(payload.slice(2), "hex"); // Remove "0x" and convert hex to bytes
 
