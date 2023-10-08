@@ -93,8 +93,6 @@ function WrapForm() {
     }
   }, [isConnected])
 
-  const [wrappingMode, setWrappingMode] = useState<WrappingMode>('wrap')
-
   const [generalSuccessMessage, setGeneralSuccessMessage] = useState<String>('')
   const [generalErrorMessage, setGeneralErrorMessage] = useState<String>('')
 
@@ -154,8 +152,8 @@ function WrapForm() {
         {/* *** From *** */}
         <div className="bg-neutral-200 dark:bg-neutral-800 p-4 rounded-xl">
           {/* Title Bar */}
-          <div className="flex justify-between items-center mb-2">
-            <span className="font-semibold text-center sm:text-left">From</span>
+          <div className="flex flex-col sm:flex-row justify-between items-center mb-2 text-center sm:text-left">
+            <span className="font-extrabold">From</span>
             {formik.errors.amount && (
               <span className="text-red-500 dark:text-red-500 text-xs font-normal">
                 {formik.errors.amount}
@@ -218,7 +216,7 @@ function WrapForm() {
                 token={tokens.find(
                   (token) => token.name.toLowerCase() === 'scrt'
                 )}
-                secureSecret
+                secureToken={formik.values.wrappingMode === 'unwrap'}
               />
             </div>
             <div className="sm:flex-initial text-xs">
@@ -257,10 +255,8 @@ function WrapForm() {
         </div>
 
         <div className="bg-neutral-200 dark:bg-neutral-800 p-4 rounded-xl">
-          <div className="flex">
-            <div className="flex-1 font-semibold mb-2 text-center sm:text-left">
-              To
-            </div>
+          <div className="mb-2 text-center sm:text-left">
+            <span className="font-extrabold">To</span>
           </div>
 
           <div className="flex">
@@ -306,20 +302,12 @@ function WrapForm() {
             />
           </div>
           <div className="flex-1 text-xs mt-3 text-center sm:text-left h-[1rem]">
-            {wrappingMode === 'wrap' &&
-            (scrtBalance != '0' || scrtBalance === undefined)
-              ? WrappedTokenBalanceUi(
-                  tokenBalance,
-                  selectedToken,
-                  selectedTokenPrice
-                )
-              : null}
-            {wrappingMode === 'unwrap' &&
-              NativeTokenBalanceUi(
-                nativeBalance,
-                selectedToken,
-                selectedTokenPrice
+            <NewBalanceUI
+              token={tokens.find(
+                (token) => token.name.toLowerCase() === 'scrt'
               )}
+              secureToken={formik.values.wrappingMode === 'wrap'}
+            />
           </div>
         </div>
         {/* Fee Grant */}
@@ -369,7 +357,7 @@ function WrapForm() {
         <div className="flex flex-col gap-4 items-center">
           <button
             className={
-              'enabled:bg-gradient-to-r enabled:from-cyan-600 enabled:to-purple-600 enabled:hover:from-cyan-500 enabled:hover:to-purple-500 transition-colors text-white font-semibold py-3 w-full rounded-lg disabled:bg-neutral-500 focus:outline-none focus-visible:ring-4 ring-sky-500/40'
+              'enabled:bg-gradient-to-r enabled:from-cyan-600 enabled:to-purple-600 enabled:hover:from-cyan-500 enabled:hover:to-purple-500 transition-colors text-white font-extrabold py-3 w-full rounded-lg disabled:bg-neutral-500 focus:outline-none focus-visible:ring-4 ring-sky-500/40'
             }
             disabled={!isConnected}
             type="submit"

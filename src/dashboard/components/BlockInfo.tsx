@@ -1,14 +1,13 @@
-import React from 'react'
 import { Else, If, Then } from 'react-if'
 
-interface IBlockInfoProps {
+interface Props {
   blockHeight: number
   blockTime: number
   circulatingSupply: number
   inflation: number
 }
 
-const BlockInfo = (props: IBlockInfoProps) => {
+const BlockInfo = (props: Props) => {
   const formattedInflation = props.inflation
     ? props.inflation * 100 + '%'
     : null

@@ -1,3 +1,3 @@
-import { tokens } from "./config";
+import { Token, tokens } from './config'
 
-export const scrtToken = tokens.find((token) => token.name === "SCRT");
+export const scrtToken: Token = tokens.find((token) => token.name === 'SCRT')

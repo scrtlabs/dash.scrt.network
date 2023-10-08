@@ -1,22 +1,18 @@
-import React, { useEffect, useState, useContext, useRef } from 'react'
-import { APIContext } from 'shared/context/APIContext'
+import { useEffect, useState, useContext, useRef } from 'react'
 import BigNumber from 'bignumber.js'
-import { IValidator, StakingContext } from '../Staking'
-import { SecretjsContext } from 'shared/context/SecretjsContext'
+import { StakingContext } from '../Staking'
 import { restakeThreshold } from 'shared/utils/commons'
 import Tooltip from '@mui/material/Tooltip'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faInfoCircle, faRepeat } from '@fortawesome/free-solid-svg-icons'
 import { scrtToken } from 'shared/utils/tokens'
 
-interface IRestakeValidatorItemProps {
+interface Props {
   name: string
   stakedAmount: number
   identity?: string
   validator: any
 }
 
-const RestakeValidatorItem = (props: IRestakeValidatorItemProps) => {
+const RestakeValidatorItem = (props: Props) => {
   const stakedAmountString = BigNumber(props.stakedAmount!)
     .dividedBy(`1e6`)
     .toString()

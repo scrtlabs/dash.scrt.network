@@ -3,18 +3,13 @@ import { faGlobe, faRepeat } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import Tooltip from '@mui/material/Tooltip'
 import { APIContext } from 'shared/context/APIContext'
-import {
-  randomDelay,
-  restakeThreshold,
-  sleep,
-  usdString
-} from 'shared/utils/commons'
+import { randomDelay, restakeThreshold, sleep } from 'shared/utils/commons'
 import BigNumber from 'bignumber.js'
 import { formatNumber } from 'shared/utils/commons'
 import { IValidator } from '../Staking'
 import { scrtToken } from 'shared/utils/tokens'
 
-interface IMyValidatorsItemProps {
+interface Props {
   name: string
   commissionPercentage: number
   stakedAmount: number
@@ -25,7 +20,7 @@ interface IMyValidatorsItemProps {
   openModal: any
 }
 
-const MyValidatorsItem = (props: IMyValidatorsItemProps) => {
+const MyValidatorsItem = (props: Props) => {
   const stakedAmountString = BigNumber(props.stakedAmount!)
     .dividedBy(`1e6`)
     .toString()

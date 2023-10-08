@@ -1,16 +1,11 @@
-import {
-  faArrowTrendUp,
-  faCircle,
-  faCube,
-} from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import React from "react";
+import { faArrowTrendUp, faCircle } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
-interface IInflationProps {
-  amount: number;
+interface Props {
+  amount: number
 }
 
-const Inflation = (props: IInflationProps) => {
+const Inflation = (props: Props) => {
   return (
     <>
       {/* Title */}
@@ -35,7 +30,7 @@ const Inflation = (props: IInflationProps) => {
         </div>
       )}
     </>
-  );
-};
+  )
+}
 
-export default Inflation;
+export default Inflation

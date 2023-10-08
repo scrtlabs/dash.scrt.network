@@ -1,25 +1,16 @@
-import {
-  faDesktop,
-  faMobileScreen,
-  faWallet,
-  faXmark
-} from '@fortawesome/free-solid-svg-icons'
+import { faXmark } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import React, { useState } from 'react'
+import { useState } from 'react'
+import { Theme } from 'shared/types/Theme'
 
-interface IHoudiniModalProps {
+interface Props {
   open: boolean
   onClose: any
-  theme: any
+  theme: Theme
   secretAddress: string
 }
 
-const HoudiniModal: React.FC<IHoudiniModalProps> = ({
-  open,
-  onClose,
-  theme,
-  secretAddress
-}) => {
+const HoudiniModal = (props: Props) => {
   const [loading, setLoading] = useState(true)
 
   if (!open) return null
@@ -29,7 +20,7 @@ const HoudiniModal: React.FC<IHoudiniModalProps> = ({
       {/* Outer */}
       <div
         className="fixed top-0 left-0 right-0 bottom-0 bg-black/80 dark:bg-black/80 z-50 flex items-center justify-center"
-        onClick={onClose}
+        onClick={props.onClose}
       >
         {/* Inner */}
         <div className="relative w-full onEnter_fadeInDown h-full overflow-scroll scrollbar-hide flex items-center justify-center">
@@ -42,7 +33,7 @@ const HoudiniModal: React.FC<IHoudiniModalProps> = ({
             >
               {/* Close Button */}
               <button
-                onClick={onClose}
+                onClick={props.onClose}
                 className="text-neutral-500 dark:text-neutral-500 hover:bg-neutral-200 dark:hover:bg-neutral-800 transition-colors px-1.5 py-2 rounded-lg text-xl absolute top-3 right-7 z-10"
               >
                 <FontAwesomeIcon icon={faXmark} className="fa-fw" />
@@ -54,8 +45,10 @@ const HoudiniModal: React.FC<IHoudiniModalProps> = ({
 
               <iframe
                 src={`https://houdiniswap.com/?widgetMode=true&theme=${
-                  theme === 'light' ? 'light' : 'dark'
-                }&tokenIn=ETH&tokenOut=SCRT&amount=1&anonymous=true&partnerId=64f58fc75abdd6a4df170fda&receiveAddress=${secretAddress}&tokenLockOut=true`}
+                  props.theme === 'light' ? 'light' : 'dark'
+                }&tokenIn=ETH&tokenOut=SCRT&amount=1&anonymous=true&partnerId=64f58fc75abdd6a4df170fda&receiveAddress=${
+                  props.secretAddress
+                }&tokenLockOut=true`}
                 width="100%"
                 height="100%"
                 style={{ maxHeight: '800px' }}

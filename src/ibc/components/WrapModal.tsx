@@ -10,26 +10,18 @@ import { useContext, useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { IbcMode } from 'shared/types/IbcMode'
 import { viewingKeyErrorString } from 'shared/utils/commons'
-import { Token, tokens } from 'shared/utils/config'
+import { Token } from 'shared/utils/config'
 import { useSecretNetworkClientStore } from 'store/secretNetworkClient'
 
-interface IWrapModalProps {
+interface Props {
   open: boolean
   onClose: any
   selectedToken: Token
   ibcMode: IbcMode
 }
 
-const WrapModal = (props: IWrapModalProps) => {
-  const {
-    isWrapModalOpen,
-    setIsWrapModalOpen,
-    ibcMode,
-    setIbcMode,
-    toggleIbcMode,
-    selectedToken,
-    setSelectedToken
-  } = useContext(IbcContext)
+const WrapModal = (props: Props) => {
+  const { isWrapModalOpen, ibcMode, selectedToken } = useContext(IbcContext)
 
   const { setViewingKey } = useSecretNetworkClientStore()
 

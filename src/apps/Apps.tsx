@@ -2,30 +2,19 @@ import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useContext, useEffect, useState } from 'react'
 import { Helmet } from 'react-helmet-async'
-import Header from './components/Header'
-import AppTile from './components/AppTile'
+import Header from '../shared/components/Header'
+import AppTile from './components/tile/AppTile'
 import {
-  sortDAppsArray,
-  dAppsURL,
   appsPageTitle,
   appsPageDescription,
   appsJsonLdSchema
 } from 'shared/utils/commons'
-import React from 'react'
 import { APIContext } from 'shared/context/APIContext'
-import mixpanel from 'mixpanel-browser'
 import { trackMixPanelEvent } from 'shared/utils/commons'
-import { useSecretNetworkClientStore } from 'store/secretNetworkClient'
+import FilterTag from './components/FilterTag'
 
 function Apps() {
-  const {
-    dappsData,
-    setDappsData,
-    dappsDataSorted,
-    setDappsDataSorted,
-    tags,
-    setTags
-  } = useContext(APIContext)
+  const { dappsData, dappsDataSorted, tags } = useContext(APIContext)
 
   useEffect(() => {
     trackMixPanelEvent('Open Apps Tab')
@@ -44,26 +33,6 @@ function Apps() {
       setTagsToBeFilteredBy(tagsToBeFilteredBy.concat(tagName))
     }
   }
-
-  class Tag extends React.Component<{ name: string }> {
-    render() {
-      return (
-        <button
-          onClick={() => toggleTagFilter(this.props.name)}
-          className={
-            'inline-block text-sm px-1.5 py-0.5 rounded-md overflow-hidden transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-500 dark:focus-visible:ring-cyan-500' +
-            (isTagInFilterList(this.props.name)
-              ? '  text-white dark:text-white font-semibold bg-gradient-to-r from-cyan-600 to-purple-600 hover:from-cyan-500 hover:to-purple-500'
-              : ' bg-white dark:bg-neutral-800 hover:bg-neutral-300 dark:hover:bg-neutral-700 font-medium')
-          }
-        >
-          {this.props.name}
-        </button>
-      )
-    }
-  }
-
-  const { walletAddress, connectWallet } = useSecretNetworkClientStore()
 
   // Search
   const [searchText, setSearchText] = useState<string>('')
@@ -136,7 +105,16 @@ function Apps() {
         <div className="mb-4 sm:mb-8 flex gap-2 flex-wrap justify-center">
           {tags?.length > 0 &&
             tags.map((tag: any, index: number) => (
-              <>{tag && <Tag key={tag + index} name={tag} />}</>
+              <>
+                {tag && (
+                  <FilterTag
+                    key={tag + index}
+                    name={tag}
+                    toggleTagFilter={toggleTagFilter}
+                    isTagInFilterList={isTagInFilterList}
+                  />
+                )}
+              </>
             ))}
           {tags?.length === 0 && <div className="h-6"></div>}
         </div>

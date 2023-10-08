@@ -1,5 +1,5 @@
-import React, { useEffect, useState, useContext, useRef } from 'react'
-import { faChevronRight, faGlobe } from '@fortawesome/free-solid-svg-icons'
+import { useEffect, useState, useContext, useRef } from 'react'
+import { faGlobe } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { formatNumber, randomDelay, sleep } from 'shared/utils/commons'
 import { APIContext } from 'shared/context/APIContext'
@@ -7,7 +7,7 @@ import { IValidator } from 'staking/Staking'
 import { Nullable } from 'shared/types/Nullable'
 import Tooltip from '@mui/material/Tooltip'
 
-interface IValidatorProps {
+interface Props {
   name: string
   commissionPercentage: number
   votingPower: number
@@ -19,7 +19,7 @@ interface IValidatorProps {
   openModal: any
 }
 
-export const Validator = (props: IValidatorProps) => {
+const Validator = (props: Props) => {
   const {
     inflation,
     communityTax,
@@ -222,3 +222,5 @@ export const Validator = (props: IValidatorProps) => {
     </>
   )
 }
+
+export default Validator

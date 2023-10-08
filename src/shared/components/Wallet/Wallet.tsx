@@ -3,19 +3,26 @@ import { sleep, viewingKeyErrorString, usdString } from 'shared/utils/commons'
 import Tooltip from '@mui/material/Tooltip'
 import CopyToClipboard from 'react-copy-to-clipboard'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCopy, faWallet } from '@fortawesome/free-solid-svg-icons'
+import {
+  faCopy,
+  faDesktop,
+  faMobileScreen,
+  faWallet,
+  faXmark
+} from '@fortawesome/free-solid-svg-icons'
 import { toast } from 'react-toastify'
 import { useHoverOutside } from 'shared/utils/useHoverOutside'
 import { APIContext } from 'shared/context/APIContext'
 import BigNumber from 'bignumber.js'
 import { faKey, faInfoCircle } from '@fortawesome/free-solid-svg-icons'
-import BalanceItem from './BalanceItem'
+import BalanceItem from '../BalanceItem'
 import { trackMixPanelEvent } from 'shared/utils/commons'
 import { useSecretNetworkClientStore } from 'store/secretNetworkClient'
 import { setWalletViewingKey } from 'service/walletService'
 import { scrtToken } from 'shared/utils/tokens'
 import { ConnectWalletModal } from 'shared/context/ConnectWalletModal'
-import { GetWalletModal } from 'shared/context/GetWalletModal'
+import Modal from '../Modal'
+import { ManageBalances } from './ManageBalances/ManageBalances'
 
 export function Wallet() {
   const {
@@ -28,7 +35,7 @@ export function Wallet() {
 
   const { currentPrice } = useContext(APIContext)
 
-  const [isMenuVisible, setIsMenuVisible] = useState<boolean>(true)
+  const [isMenuVisible, setIsMenuVisible] = useState<boolean>(false)
   const [isGetWalletModalOpen, setIsGetWalletModalOpen] =
     useState<boolean>(false)
   const [isConnectWalletModalOpen, setIsConnectWalletModalOpen] =
@@ -39,6 +46,10 @@ export function Wallet() {
   useEffect(() => {
     connectWallet()
   }, [])
+
+  const handleManageViewingKeys = () => {
+    setIsManageViewingkeysModalOpen(true)
+  }
 
   function WrappedTokenBalanceUi() {
     if (!isConnected || !sScrtBalance) {
@@ -61,7 +72,7 @@ export function Wallet() {
             <FontAwesomeIcon icon={faKey} className="mr-2" />
             Set Viewing Key
           </button>
-          <Tooltip title={'tsgdfdgshdgf'} placement="right" arrow>
+          <Tooltip title={''} placement="right" arrow>
             <span className="ml-2 mt-1 text-neutral-600 dark:text-neutral-400 hover:text-black dark:hover:text-white transition-colors cursor-pointer">
               <FontAwesomeIcon icon={faInfoCircle} />
             </span>
@@ -124,13 +135,18 @@ export function Wallet() {
   const Balances = () => {
     return (
       <div>
-        <div className="font-bold mb-2">Balances</div>
+        <div className="font-bold mb-2">Your Balances</div>
         <div className="flex flex-col gap-2 mb-2">
           <BalanceItem token={scrtToken} isSecretToken={false} />
           <BalanceItem token={scrtToken} isSecretToken={true} />
         </div>
         {/* TODO: implement viewing key manager */}
-        {/* <button className="inline-block border border-neutral-300 dark:border-neutral-600 hover:bg-neutral-300 dark:hover:bg-neutral-600 transition-colors text-black dark:text-white font-semibold py-1.5 w-full rounded-lg">Manage Viewing Keys</button> */}
+        <button
+          onClick={handleManageViewingKeys}
+          className="inline-block bg-neutral-300 dark:bg-neutral-600 hover:bg-neutral-400 dark:hover:bg-neutral-700 transition-colors text-black dark:text-white font-semibold py-1.5 w-full rounded-lg"
+        >
+          All Balances
+        </button>
       </div>
     )
   }
@@ -184,8 +200,20 @@ export function Wallet() {
     )
   }
 
+  const [isManageViewingkeysModalOpen, setIsManageViewingkeysModalOpen] =
+    useState<boolean>(false)
+
   return (
     <>
+      <Modal
+        isOpen={isManageViewingkeysModalOpen}
+        size={'lg'}
+        title={`Your Balances`}
+        onClose={() => setIsManageViewingkeysModalOpen(false)}
+      >
+        <ManageBalances />
+      </Modal>
+
       <ConnectWalletModal
         open={isConnectWalletModalOpen}
         onClose={() => {
@@ -194,14 +222,92 @@ export function Wallet() {
         }}
       />
 
-      <GetWalletModal
-        open={isGetWalletModalOpen}
+      <Modal
+        title={'Get Wallet'}
+        subTitle={'Install a wallet to interact with the applications!'}
+        isOpen={isGetWalletModalOpen}
         onClose={() => {
           trackMixPanelEvent('Closed Get Wallet Modal')
           setIsGetWalletModalOpen(false)
           document.body.classList.remove('overflow-hidden')
         }}
-      />
+      >
+        {/* Body */}
+        <div className="flex flex-col bg-neutral-200 dark:bg-neutral-800 rounded-xl overflow-hidden">
+          <a
+            href="https://starshell.net"
+            target="_blank"
+            className="group p-5 flex items-center gap-2.5 hover:bg-neutral-300 dark:hover:bg-neutral-700 transition-colors"
+            onClick={() => {
+              trackMixPanelEvent('Clicked Starshell Wallet on Get Wallet Modal')
+            }}
+          >
+            <img
+              src="/img/assets/starshell.svg"
+              className="flex-initial w-7 h-7"
+            />
+            <span className="flex-1 font-medium flex items-center">
+              Starshell{' '}
+              <span className="text-xs ml-2 font-semibold py-0.5 px-1.5 rounded bg-gradient-to-r from-cyan-600 to-purple-600">
+                recommended
+              </span>
+            </span>
+            <span className="text-white dark:text-white bg-blue-500 dark:bg-blue-500 group-hover:bg-blue-600 dark:group-hover:bg-blue-400 transition-colors px-3 py-1.5 rounded text-xs font-semibold">
+              <FontAwesomeIcon icon={faDesktop} className="mr-1" />
+              Desktop /{' '}
+              <FontAwesomeIcon icon={faMobileScreen} className="mr-1" />
+              Mobile
+            </span>
+          </a>
+          <a
+            href="https://www.leapwallet.io"
+            target="_blank"
+            className="group p-5 flex items-center gap-2.5 hover:bg-neutral-300 dark:hover:bg-neutral-700 transition-colors"
+            onClick={() => {
+              trackMixPanelEvent('Clicked Leap Wallet on Get Wallet Modal')
+            }}
+          >
+            <img src="/img/assets/leap.svg" className="flex-initial w-7 h-7" />
+            <span className="flex-1 font-medium">Leap</span>
+            <span className="text-white dark:text-white bg-blue-500 dark:bg-blue-500 group-hover:bg-blue-600 dark:group-hover:bg-blue-400 transition-colors px-3 py-1.5 rounded text-xs font-semibold">
+              <FontAwesomeIcon icon={faDesktop} className="mr-1" />
+              Desktop /{' '}
+              <FontAwesomeIcon icon={faMobileScreen} className="mr-1" />
+              Mobile
+            </span>
+          </a>
+          <a
+            href="https://fina.cash/wallet"
+            target="_blank"
+            className="group p-5 flex items-center gap-2.5 hover:bg-neutral-300 dark:hover:bg-neutral-700 transition-colors"
+            onClick={() => {
+              trackMixPanelEvent('Clicked Fina Wallet on Get Wallet Modal')
+            }}
+          >
+            <img src="/img/assets/fina.webp" className="flex-initial w-7 h-7" />
+            <span className="flex-1 font-medium">Fina</span>
+            <span className="text-white dark:text-white bg-blue-500 dark:bg-blue-500 group-hover:bg-blue-600 dark:group-hover:bg-blue-400 transition-colors px-3 py-1.5 rounded text-xs font-semibold">
+              <FontAwesomeIcon icon={faMobileScreen} className="mr-1" />
+              Mobile
+            </span>
+          </a>
+          <a
+            href="https://chrome.google.com/webstore/detail/keplr/dmkamcknogkgcdfhhbddcghachkejeap?hl=en"
+            target="_blank"
+            className="group p-5 flex items-center gap-2.5 hover:bg-neutral-300 dark:hover:bg-neutral-700 transition-colors"
+            onClick={() => {
+              trackMixPanelEvent('Clicked Keplr Wallet on Get Wallet Modal')
+            }}
+          >
+            <img src="/img/assets/keplr.svg" className="flex-initial w-7 h-7" />
+            <span className="flex-1 font-medium">Keplr</span>
+            <span className="text-white dark:text-white bg-blue-500 dark:bg-blue-500 group-hover:bg-blue-600 dark:group-hover:bg-blue-400 transition-colors px-3 py-1.5 rounded text-xs font-semibold">
+              <FontAwesomeIcon icon={faDesktop} className="mr-1" />
+              Desktop
+            </span>
+          </a>
+        </div>
+      </Modal>
 
       {isConnected ? (
         <div ref={keplrRef}>

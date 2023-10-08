@@ -1,20 +1,18 @@
-import { faArrowUpRightFromSquare } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import React from "react";
-import { Else, If, Then } from "react-if";
+import { faArrowUpRightFromSquare } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
-interface IWideQuadTileProps {
-  item1_key?: string;
-  item1_value?: string;
-  item2_key?: string;
-  item2_value?: string;
-  item3_key?: string;
-  item3_value?: string;
-  item4_key?: string;
-  item4_value?: string;
+interface Props {
+  item1_key?: string
+  item1_value?: string
+  item2_key?: string
+  item2_value?: string
+  item3_key?: string
+  item3_value?: string
+  item4_key?: string
+  item4_value?: string
 }
 
-const WideQuadTile = (props: IWideQuadTileProps) => {
+const WideQuadTile = (props: Props) => {
   return (
     <>
       <div className="bg-neutral-800 p-8 md:p-2 rounded-xl h-full">
@@ -77,7 +75,7 @@ const WideQuadTile = (props: IWideQuadTileProps) => {
         </div>
       </div>
     </>
-  );
-};
+  )
+}
 
-export default WideQuadTile;
+export default WideQuadTile

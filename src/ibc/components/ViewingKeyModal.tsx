@@ -8,12 +8,12 @@ import { IbcContext } from 'ibc/Ibc'
 import { useContext } from 'react'
 import { Link } from 'react-router-dom'
 
-interface IWrapModalProps {
+interface Props {
   open: boolean
   onClose: any
 }
 
-const ViewingKeyModal = (props: IWrapModalProps) => {
+const ViewingKeyModal = (props: Props) => {
   if (!props.open) return null
 
   const { selectedToken } = useContext(IbcContext)

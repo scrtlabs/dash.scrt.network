@@ -1,14 +1,6 @@
-import {
-  faGlobe,
-  faLink,
-  faXmark,
-  faInfoCircle,
-  faMagnifyingGlass,
-  faXmarkCircle,
-  faCheckCircle
-} from '@fortawesome/free-solid-svg-icons'
+import { faGlobe, faXmark } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import React, { useContext, useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { APIContext } from 'shared/context/APIContext'
 import { usdString, formatNumber } from 'shared/utils/commons'
 import BigNumber from 'bignumber.js'
@@ -30,13 +22,13 @@ import RedelegateForm from './validatorModalComponents/RedelegateForm'
 import { useSecretNetworkClientStore } from 'store/secretNetworkClient'
 import { scrtToken } from 'shared/utils/tokens'
 
-interface IValidatorModalProps {
+interface Props {
   open: boolean
   onClose: any
   restakeEntries: any
 }
 
-const ValidatorModal = (props: IValidatorModalProps) => {
+const ValidatorModal = (props: Props) => {
   const [imgUrl, setImgUrl] = useState<Nullable<string>>(null)
 
   const {

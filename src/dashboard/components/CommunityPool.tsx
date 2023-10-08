@@ -1,17 +1,11 @@
-import {
-  faArrowTrendUp,
-  faAward,
-  faCircle,
-  faCube,
-} from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import React from "react";
+import { faAward, faCircle } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
-interface ICommunityPoolProps {
-  amount: number;
+interface Props {
+  amount: number
 }
 
-const CommunityPool = (props: ICommunityPoolProps) => {
+const CommunityPool = (props: Props) => {
   return (
     <>
       {/* Title */}
@@ -29,14 +23,14 @@ const CommunityPool = (props: ICommunityPoolProps) => {
               />
             </span>
             <div className="font-semibold text-lg">
-              {props.amount ? props.amount.toLocaleString() : ""} SCRT
+              {props.amount ? props.amount.toLocaleString() : ''} SCRT
             </div>
             <div className="text-md text-neutral-400">Community Pool</div>
           </div>
         </div>
       )}
     </>
-  );
-};
+  )
+}
 
-export default CommunityPool;
+export default CommunityPool

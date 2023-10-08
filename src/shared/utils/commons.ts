@@ -314,6 +314,10 @@ export const usdString = new Intl.NumberFormat('en-US', {
   maximumFractionDigits: 2
 })
 
+export function formatUsdString(input: string | number) {
+  return usdString.format(Number(input))
+}
+
 const COUNT_ABBRS = [
   '',
   'K',
@@ -443,21 +447,6 @@ export const stakingJsonLdSchema = [
     url: 'https://dash.scrt.network/staking',
     name: stakingPageTitle,
     description: stakingPageDescription,
-    creator: 'Secret Jupiter, Secret Saturn'
-  }
-]
-
-// Balances
-export const balancesPageTitle = `${pageTitle} | Balances`
-export const balancesPageDescription = `View of all your balances on Secret Network! `
-export const balancesJsonLdSchema = [
-  {
-    '@context': 'http://schema.org',
-    '@type': 'WebPage',
-    url: 'https://dash.scrt.network/balances',
-    name: `${pageTitle} | Balances`,
-    alternateName: `${alternatePageTitle} | Balances`,
-    description: balancesPageDescription,
     creator: 'Secret Jupiter, Secret Saturn'
   }
 ]

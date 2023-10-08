@@ -1,14 +1,5 @@
-import React, { useEffect, useState, useContext, useRef } from 'react'
+import { useEffect, useState, useContext } from 'react'
 import {
-  faArrowRightArrowLeft,
-  faChevronRight,
-  faGlobe,
-  faInfoCircle,
-  faKey
-} from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import {
-  formatNumber,
   randomDelay,
   sleep,
   usdString,
@@ -22,34 +13,38 @@ import {
 } from 'shared/components/BalanceUI'
 import { useSecretNetworkClientStore } from 'store/secretNetworkClient'
 import { getWalletViewingKey } from 'service/walletService'
+import { useTokenPricesStore } from 'store/TokenPrices'
+import { Nullable } from 'shared/types/Nullable'
 
-interface IBalanceItemProps {
-  asset: Token
-  position: number
+interface Props {
+  token?: Token
 }
 
-export const BalanceItem = (props: IBalanceItemProps) => {
+const BalanceItem = (props: Props) => {
   const { secretNetworkClient } = useSecretNetworkClientStore()
+  const { getPrice } = useTokenPricesStore()
 
   const { prices } = useContext(APIContext)
 
-  const [assetPrice, setAssetPrice] = useState<number>(0)
+  const assetPrice = getPrice(props.token)
+
+  const tokenName =
+    (props.token?.address === 'native' || props.token?.is_snip20 ? '' : 's') +
+    props.token?.name
+
+  const tokenDescription =
+    (props.token?.address !== 'native' ||
+    props.token?.is_ics20 ||
+    props.token?.is_snip20
+      ? 'Private '
+      : 'Public ') + props.token?.description
 
   const [nativeBalance, setNativeBalance] = useState<any>(undefined)
   const [tokenBalance, setTokenBalance] = useState<any>(undefined)
 
-  useEffect(() => {
-    setAssetPrice(
-      prices.find(
-        (price: { coingecko_id: string }) =>
-          price.coingecko_id === props.asset?.coingecko_id
-      )?.priceUsd
-    )
-  }, [props.asset, prices])
-
   async function setBalance() {
     try {
-      if (props.asset.address === 'native') {
+      if (props.token?.address === 'native') {
         setNativeBalance(undefined)
         await updateCoinBalance()
       } else {
@@ -79,20 +74,20 @@ export const BalanceItem = (props: IBalanceItemProps) => {
         balance: { amount }
       } = await secretNetworkClient.query.bank.balance({
         address: secretNetworkClient?.address,
-        denom: props.asset.withdrawals[0]?.from_denom
+        denom: props.token?.withdrawals[0]?.from_denom
       })
       setNativeBalance(amount)
     } catch (e) {
-      console.error(`Error while trying to query ${props.asset.name}:`, e)
+      console.error(`Error while trying to query ${props.token?.name}:`, e)
     }
   }
 
   const updateTokenBalance = async () => {
-    if (!props.asset.address || !secretNetworkClient) {
+    if (!props.token?.address || !secretNetworkClient) {
       return
     }
 
-    const key = await getWalletViewingKey(props.asset.address)
+    const key = await getWalletViewingKey(props.token?.address)
     if (!key) {
       setTokenBalance(viewingKeyErrorString)
       return
@@ -106,8 +101,8 @@ export const BalanceItem = (props: IBalanceItemProps) => {
           amount: string
         }
       } = await secretNetworkClient.query.compute.queryContract({
-        contract_address: props.asset.address,
-        code_hash: props.asset.code_hash,
+        contract_address: props.token?.address,
+        code_hash: props.token?.code_hash,
         query: {
           balance: { address: secretNetworkClient?.address, key }
         }
@@ -120,7 +115,7 @@ export const BalanceItem = (props: IBalanceItemProps) => {
 
       setTokenBalance(result.balance.amount)
     } catch (e) {
-      console.error(`Error getting balance for s${props.asset.name}`, e)
+      console.error(`Error getting balance for s${props.token?.name}`, e)
 
       setTokenBalance(viewingKeyErrorString)
     }
@@ -128,17 +123,14 @@ export const BalanceItem = (props: IBalanceItemProps) => {
 
   return (
     <>
-      <div
-        onClick={() => {}}
-        className="group flex flex-col sm:flex-row items-center text-center sm:text-left even:bg-white odd:bg-neutral-200 dark:even:bg-neutral-800 dark:odd:bg-neutral-700 py-8 sm:py-4 gap-4 pl-4 pr-8  w-full min-w-full "
-      >
+      <div className="group flex flex-col sm:flex-row items-center text-center sm:text-left even:bg-white odd:bg-neutral-200 dark:even:bg-neutral-800 dark:odd:bg-neutral-950 py-8 sm:py-4 gap-4 pl-4 pr-8  w-full min-w-full ">
         {/* Image */}
         <div className="relative flex items-center">
-          {props.asset?.image ? (
+          {props.token?.image ? (
             <>
               <img
-                src={`/img/assets/${props.asset?.image}`}
-                alt={`${props.asset?.name} logo`}
+                src={`/img/assets/${props.token?.image}`}
+                alt={`${props.token?.name} logo`}
                 className="w-10 h-10 mr-1 rounded-full"
               />
             </>
@@ -146,55 +138,47 @@ export const BalanceItem = (props: IBalanceItemProps) => {
         </div>
         {/* Title */}
         <div className="flex-1">
-          <span className="font-semibold text-lg sm:text-base">
-            {props.asset.address === 'native' || props.asset.is_snip20
-              ? null
-              : 's'}
-            {props.asset.name}
-            {props.asset.description ? (
-              <div className="text-xs text-gray-500">
-                {(props.asset.address !== 'native' ||
-                props.asset.is_ics20 ||
-                props.asset.is_snip20
-                  ? 'Private '
-                  : 'Public ') + props.asset.description}
+          <span className="font-semibold dark:text-white text-black">
+            {tokenName}
+            {props.token?.description ? (
+              <div className="text-xs text-neutral-500 dark:text-neutral-600">
+                {tokenDescription}
               </div>
             ) : null}
           </span>
         </div>
 
-        {props.asset.coingecko_id !== '' && (
+        {props.token?.coingecko_id !== '' && (
           <div className="flex flex-col items-center">
-            <div className="description text-xs text-gray-500 mb-2">Price</div>
-            {assetPrice !== undefined && (
-              <div className="font-semibold">
-                {usdString.format(Number(assetPrice))}
-              </div>
-            )}
-            {assetPrice === undefined && (
+            <div className="description text-xs text-neutral-500 dark:text-neutral-600 mb-2">
+              Price
+            </div>
+            {assetPrice ? (
+              <div className="font-semibold">{assetPrice}</div>
+            ) : (
               <div className="animate-pulse bg-neutral-300/40 dark:bg-neutral-700/40 rounded col-span-2 w-16 h-7 mx-auto"></div>
             )}
           </div>
         )}
         {secretNetworkClient?.address ? (
           <div className="flex flex-col items-center">
-            <div className="description text-xs text-gray-500 mb-2">
+            <div className="description text-xs text-neutral-500 dark:text-neutral-600 mb-2">
               Balance
             </div>
             <div className="font-semibold">
-              {props.asset.address === 'native'
+              {/* {props.token?.address === 'native'
                 ? NativeTokenBalanceUi(
                     nativeBalance,
-                    props.asset,
+                    props.token,
                     assetPrice,
                     true
                   )
                 : WrappedTokenBalanceUi(
                     tokenBalance,
-                    props.asset,
+                    props.token,
                     assetPrice,
                     true
-                  )}
+                  )} */}
             </div>
           </div>
         ) : null}
@@ -202,3 +186,5 @@ export const BalanceItem = (props: IBalanceItemProps) => {
     </>
   )
 }
+
+export default BalanceItem

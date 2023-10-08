@@ -3,19 +3,17 @@ import { toast } from 'react-toastify'
 import { MsgSetAutoRestake } from 'secretjs'
 import { StakingContext, ValidatorRestakeStatus } from 'staking/Staking'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faInfoCircle, faXmark } from '@fortawesome/free-solid-svg-icons'
+import { faXmark } from '@fortawesome/free-solid-svg-icons'
 import RestakeValidatorItem from './RestakeValidatorItem'
 import { restakeThreshold } from 'shared/utils/commons'
 import { useSecretNetworkClientStore } from 'store/secretNetworkClient'
 
-interface IManageAutoRestakeModalProps {
+interface Props {
   open: boolean
   onClose: any
 }
 
-export default function ManageAutoRestakeModal(
-  props: IManageAutoRestakeModalProps
-) {
+const ManageAutoRestakeModal = (props: Props) => {
   const { secretNetworkClient, walletAddress, isConnected } =
     useSecretNetworkClientStore()
 
@@ -221,3 +219,5 @@ export default function ManageAutoRestakeModal(
     </>
   )
 }
+
+export default ManageAutoRestakeModal

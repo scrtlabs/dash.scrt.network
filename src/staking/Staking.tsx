@@ -6,7 +6,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import React, { createContext, useEffect, useState } from 'react'
 import { Helmet } from 'react-helmet-async'
 import MyValidatorsItem from './components/MyValidatorsItem'
-import { Validator } from './components/Validator'
 import {
   shuffleArray,
   stakingPageTitle,
@@ -29,6 +28,7 @@ import ClaimRewardsModal from './components/ClaimRewardsModal'
 import ManageAutoRestakeModal from './components/ManageAutoRestakeModal'
 import { scrtToken } from 'shared/utils/tokens'
 import { useSecretNetworkClientStore } from 'store/secretNetworkClient'
+import Validator from './components/Validator'
 
 // dummy interface for better code readability
 export interface IValidator {

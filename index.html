@@ -12,15 +12,15 @@
   <body>
     <div
       id="root"
-      class="bg-slate-100 dark:bg-neutral-900 text-black dark:text-white"
+      class="bg-slate-50 dark:bg-neutral-950 text-black dark:text-white"
     ></div>
     <script>
       // fix the keplr window type error when there are no node polyfills
-      var global = global || window;
+      var global = global || window
     </script>
     <script type="module">
-      import { Buffer } from "buffer";
-      window.Buffer = Buffer;
+      import { Buffer } from 'buffer'
+      window.Buffer = Buffer
     </script>
     <script type="module" src="/src/App.tsx"></script>
   </body>

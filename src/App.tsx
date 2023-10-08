@@ -12,13 +12,11 @@ import { Helmet, HelmetProvider } from 'react-helmet-async'
 import { Ibc } from 'ibc/Ibc.1'
 import { Wrap } from 'wrap/Wrap'
 import DefaultLayout from 'shared/layouts/DefaultLayout'
-import { Dashboard } from 'dashboard/Dashboard'
 import Bridge from 'bridge/Bridge'
 import Apps from 'apps/Apps'
 import { Staking } from 'staking/Staking'
 import { Send } from 'send/Send'
 import GetSCRT from 'get-scrt/GetScrt'
-import Balances from 'balances/Balances'
 
 // Contexts
 import { ThemeContextProvider } from 'shared/context/ThemeContext'
@@ -26,6 +24,7 @@ import { APIContextProvider } from 'shared/context/APIContext'
 
 // mixpanel
 import mixpanel from 'mixpanel-browser'
+import Dashboard from 'dashboard/Dashboard'
 
 if (import.meta.env.VITE_MIXPANEL_ENABLED === 'true') {
   mixpanel.init(import.meta.env.VITE_MIXPANEL_PROJECT_TOKEN, { debug: true })
@@ -106,7 +105,6 @@ export default function App() {
         <Route path="/bridge" element={<Bridge />} />
         <Route path="/get-scrt" element={<GetSCRT />} />
         <Route path="/staking" element={<Staking />} />
-        <Route path="/balances" element={<Balances />} />
         <Route path="/send" element={<Send />} />
         <Route path="/apps" element={<Apps />} />
       </Routes>

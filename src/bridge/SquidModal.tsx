@@ -1,25 +1,15 @@
-import {
-  faDesktop,
-  faMobileScreen,
-  faWallet,
-  faXmark
-} from '@fortawesome/free-solid-svg-icons'
+import { faXmark } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import React, { useContext, useState } from 'react'
+import React, { useState } from 'react'
+import { Theme } from 'shared/types/Theme'
 
-interface ISquidModalProps {
+interface Props {
   open: boolean
   onClose: any
-  theme: any
-  secretAddress: string
+  theme: Theme
 }
 
-const SquidModal: React.FC<ISquidModalProps> = ({
-  open,
-  onClose,
-  theme,
-  secretAddress
-}) => {
+const SquidModal = (props: Props) => {
   const [loading, setLoading] = useState(true)
 
   const SquidStringsDark = {
@@ -127,7 +117,7 @@ const SquidModal: React.FC<ISquidModalProps> = ({
       {/* Outer */}
       <div
         className="fixed top-0 left-0 right-0 bottom-0 bg-black/80 dark:bg-black/80 z-50 flex items-center justify-center"
-        onClick={onClose}
+        onClick={props.onClose}
       >
         {/* Inner */}
         <div className="relative w-full onEnter_fadeInDown h-full overflow-scroll scrollbar-hide flex items-center justify-center">
@@ -140,7 +130,7 @@ const SquidModal: React.FC<ISquidModalProps> = ({
             >
               {/* Close Button */}
               <button
-                onClick={onClose}
+                onClick={props.onClose}
                 className="text-neutral-500 dark:text-neutral-500 hover:bg-neutral-200 dark:hover:bg-neutral-800 transition-colors px-1.5 py-1 rounded-lg text-xl absolute top-2 right-2 z-10"
               >
                 <FontAwesomeIcon icon={faXmark} className="fa-fw" />
@@ -150,7 +140,7 @@ const SquidModal: React.FC<ISquidModalProps> = ({
                 <div className="animate-pulse bg-neutral-300/40 dark:bg-neutral-700/40 absolute top-0 left-0 right-0 bottom-0"></div>
               )}
 
-              {theme === 'dark' ? (
+              {props.theme === 'dark' ? (
                 <iframe
                   title="squid_widget"
                   className="bg-white dark:bg-neutral-900 mx-auto w-[50vw] h-[84vh]"

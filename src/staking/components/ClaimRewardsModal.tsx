@@ -1,21 +1,20 @@
-import React, { useContext } from 'react'
+import { useContext } from 'react'
 import { toast } from 'react-toastify'
 import { MsgWithdrawDelegationReward } from 'secretjs'
 import { faucetAddress } from 'shared/utils/commons'
 import { StakingContext } from 'staking/Staking'
 import FeeGrant from '../../shared/components/FeeGrant'
 import BigNumber from 'bignumber.js'
-import { faXmark } from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useSecretNetworkClientStore } from 'store/secretNetworkClient'
 import { scrtToken } from 'shared/utils/tokens'
+import Modal from 'shared/components/Modal'
 
-interface IClaimRewardsModalProps {
+interface Props {
   open: boolean
   onClose: any
 }
 
-export function ClaimRewardsModal(props: IClaimRewardsModalProps) {
+const ClaimRewardsModal = (props: Props) => {
   const {
     secretNetworkClient,
     scrtBalance,
@@ -101,60 +100,30 @@ export function ClaimRewardsModal(props: IClaimRewardsModalProps) {
 
   return (
     <>
-      {/* Outer */}
-      <div
-        className="fixed top-0 left-0 right-0 bottom-0 bg-black/80 z-50 flex justify-center items-center"
-        onClick={props.onClose}
+      <Modal
+        isOpen={props.open}
+        onClose={props.onClose}
+        title="Claim Rewards"
+        subTitle="Claim your staking rewards!"
       >
-        {/* Inner */}
-        <div className="absolute top-[10%] w-full onEnter_fadeInDown">
-          <div className="mx-auto max-w-xl px-4">
-            <div
-              className="bg-white dark:bg-neutral-900 p-8 rounded-2xl"
-              onClick={(e) => {
-                e.stopPropagation()
-              }}
-            >
-              {/* Close */}
-              <div className="mb-0 text-right">
-                <button
-                  onClick={props.onClose}
-                  className="text-neutral-500 dark:text-neutral-500 hover:bg-neutral-200 dark:hover:bg-neutral-800 transition-colors px-1.5 py-1 rounded-lg text-xl"
-                >
-                  <FontAwesomeIcon icon={faXmark} className="fa-fw" />
-                </button>
-              </div>
-              {/* Header */}
-              <div className="mb-8 text-center">
-                <h2 className="text-2xl font-medium mb-2">
-                  {/* <FontAwesomeIcon icon={faWallet} className="mr-2" /> */}
-                  Claim Rewards
-                </h2>
-                <p className="text-neutral-600 dark:text-neutral-400 max-w-sm mx-auto">
-                  Claim your staking rewards!
-                </p>
-              </div>
-              {/* Body */}
-              <div className="flex flex-col">
-                <div className="text-center my-4">
-                  <span className="font-semibold">{`Claimable Amount: `}</span>
-                  <span>{totalPendingRewards()}</span>
-                  <span className="text-gray-500 dark:text-gray-400 text-sm">{` SCRT`}</span>
-                </div>
-                <div className="py-2">
-                  <FeeGrant />
-                </div>
-                <button
-                  onClick={() => claimRewards()}
-                  className="text-medium disabled:bg-neutral-600 enabled:bg-green-600 enabled:hover:bg-green-700 disabled:text-neutral-400 enabled:text-white transition-colors font-semibold px-2 py-2 text-sm rounded-md"
-                >
-                  Claim Rewards
-                </button>
-              </div>
-            </div>
+        {/* Body */}
+        <div className="flex flex-col">
+          <div className="text-center my-4">
+            <span className="font-semibold">{`Claimable Amount: `}</span>
+            <span>{totalPendingRewards()}</span>
+            <span className="text-gray-500 dark:text-gray-400 text-sm">{` SCRT`}</span>
           </div>
+          <div className="py-2">
+            <FeeGrant />
+          </div>
+          <button
+            onClick={() => claimRewards()}
+            className="text-medium disabled:bg-neutral-600 enabled:bg-green-600 enabled:hover:bg-green-700 disabled:text-neutral-400 enabled:text-white transition-colors font-semibold px-2 py-2 text-sm rounded-md"
+          >
+            Claim Rewards
+          </button>
         </div>
-      </div>
+      </Modal>
     </>
   )
 }

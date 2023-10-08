@@ -128,36 +128,32 @@ function Deposit() {
       ? `Deposit your SCRT via IBC transfer from ${selectedSource.chain_name} to Secret Network`
       : `Withdraw your SCRT via IBC transfer from Secret Network to ${selectedSource.chain_name}`
 
-  class ChainSelect extends Component {
-    render() {
-      return (
-        <>
-          <Select
-            options={selectableChains}
-            value={selectedSource}
-            onChange={setSelectedSource}
-            isSearchable={false}
-            isDisabled={!isConnected}
-            formatOptionLabel={(option) => (
-              <div className="flex items-center">
-                <img
-                  src={`/img/assets/${chains[option.chain_name].chain_image}`}
-                  alt={`/img/assets/${
-                    chains[option.chain_name].chain_name
-                  } asset logo`}
-                  className="w-6 h-6 mr-2 rounded-full"
-                />
-                <span className="font-semibold text-sm">
-                  {option.chain_name}
-                </span>
-              </div>
-            )}
-            className="react-select-container"
-            classNamePrefix="react-select"
-          />
-        </>
-      )
-    }
+  const ChainSelect = () => {
+    return (
+      <>
+        <Select
+          options={selectableChains}
+          value={selectedSource}
+          onChange={setSelectedSource}
+          isSearchable={false}
+          isDisabled={!isConnected}
+          formatOptionLabel={(option) => (
+            <div className="flex items-center">
+              <img
+                src={`/img/assets/${chains[option.chain_name].chain_image}`}
+                alt={`/img/assets/${
+                  chains[option.chain_name].chain_name
+                } asset logo`}
+                className="w-6 h-6 mr-2 rounded-full"
+              />
+              <span className="font-semibold text-sm">{option.chain_name}</span>
+            </div>
+          )}
+          className="react-select-container"
+          classNamePrefix="react-select"
+        />
+      </>
+    )
   }
 
   // handles [25% | 50% | 75% | Max] Button-Group

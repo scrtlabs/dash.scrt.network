@@ -17,7 +17,7 @@ import {
 } from 'shared/utils/commons'
 import { SecretNetworkClient } from 'secretjs'
 
-export function Dashboard() {
+function Dashboard() {
   const {
     coingeckoApiData_Day,
     setCoinGeckoApiData_Day,
@@ -354,3 +354,5 @@ export function Dashboard() {
     </>
   )
 }
+
+export default Dashboard

@@ -1,31 +1,49 @@
-import { faKey } from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import React from 'react'
-import { usdString } from 'shared/utils/commons'
+import BigNumber from 'bignumber.js'
+import { useEffect, useState } from 'react'
+import { Nullable } from 'shared/types/Nullable'
 import { Token } from 'shared/utils/config'
+import { scrtToken } from 'shared/utils/tokens'
+import { useTokenPricesStore } from 'store/TokenPrices'
+import { useSecretNetworkClientStore } from 'store/secretNetworkClient'
 
 interface IProps {
   token: Token
-  secureSecret?: boolean
+  secureToken?: boolean
 }
 
-function NewBalanceUI({ secureSecret = false, ...props }: IProps) {
+function NewBalanceUI({ secureToken = false, ...props }: IProps) {
   const setViewingKey = () => {
     // TODO: Do something with props.token;
   }
 
-  const balanceString = '0.000134'
-  const usdPriceString = '$5.50'
-  const tokenName = (secureSecret ? 's' : '') + props.token.name
+  const { isConnected, getBalance } = useSecretNetworkClientStore()
+  const { getPrice } = useTokenPricesStore()
+
+  const [balance, setBalance] = useState<Nullable<BigNumber>>(
+    getBalance(props.token)
+  )
+  const usdPriceString: Nullable<string> = getPrice(props.token, balance)
+  const tokenName = (secureToken ? 's' : '') + props.token.name
+
+  useEffect(() => {
+    function setBalance() {}
+
+    setBalance()
+  }, [])
+
+  if (!isConnected) return null
 
   return (
     <>
       <div className="flex items-center gap-1.5">
         <span className="font-bold">Balance: </span>
-        <span className="font-medium">
-          {`${balanceString} ${tokenName} (${usdPriceString})`}
-        </span>
-        {!balanceString || !usdPriceString ? (
+
+        {balance && tokenName && usdPriceString ? (
+          <span className="font-medium">
+            {`${balance} ${tokenName} (${usdPriceString})`}
+          </span>
+        ) : null}
+        {!balance || !tokenName || !usdPriceString ? (
           <span className="animate-pulse bg-neutral-300/40 dark:bg-neutral-700/40 rounded w-20 h-5 ml-2"></span>
         ) : null}
 

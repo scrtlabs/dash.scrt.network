@@ -1,7 +1,7 @@
 import { faBars, faSun } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import Footer from 'shared/components/Footer'
-import { Wallet } from 'shared/components/Wallet'
+import { Wallet } from 'shared/components/Wallet/Wallet'
 import { Navigation } from 'shared/components/Navigation'
 import { useState, createContext, useEffect, useContext } from 'react'
 import { Breakpoint } from 'react-socks'
@@ -11,6 +11,7 @@ import FloatingCTAButton from 'shared/components/FloatingCTAButton'
 import FeedbackButton from 'shared/components/FeedbackButton'
 import { ThemeSwitch } from 'shared/components/ThemeSwitch'
 import { Nullable } from 'shared/types/Nullable'
+import Modal from 'shared/components/Modal'
 
 export const NavigationContext = createContext<Nullable<boolean>>(null)
 
@@ -40,9 +41,9 @@ export const DefaultLayout = ({ children }: any) => {
   return (
     <>
       {/* Fixed Feedback Button */}
-      <FeedbackButton
+      {/* <FeedbackButton
         url={'https://github.com/scrtlabs/dash.scrt.network/issues/new'}
-      />
+      /> */}
 
       {/* Fixed Help Button */}
       <FloatingCTAButton
