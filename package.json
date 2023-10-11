@@ -12,7 +12,7 @@
     "@0xsquid/widget": "^1.4.81",
     "@axelar-network/axelarjs-sdk": "^0.12.6",
     "@babel/core": "^7.0.0",
-    "@cosmjs/stargate": "0.26.5",
+    "@cosmjs/stargate": "0.26.8",
     "@emotion/react": "11.10.5",
     "@emotion/styled": "11.10.5",
     "@fortawesome/fontawesome-free": "^6.2.1",
@@ -63,7 +63,7 @@
     "yup": "^1.0.2"
   },
   "devDependencies": {
-    "@keplr-wallet/types": "0.11.12",
+    "@keplr-wallet/types": "0.11.64",
     "@types/mixpanel-browser": "^2.38.1",
     "@types/react": "18.0.26",
     "@types/react-dom": "18.0.10",
