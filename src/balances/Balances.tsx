@@ -38,6 +38,7 @@ import mixpanel from "mixpanel-browser";
 import { useSearchParams } from "react-router-dom";
 import { BalanceItem } from "./components/BalanceItem";
 import Title from "shared/components/Title";
+import AddressQR from "./components/AddressQR";
 
 function Balances() {
   //Search Query
@@ -99,6 +100,7 @@ function Balances() {
       </Helmet>
 
       <Title title={"Balances"} />
+      <AddressQR />
       {/* All Balances */}
       <div className="max-w-6xl mx-auto mt-8">
         <div className="flex flex-col gap-4 sm:flex-row items-center px-4 mb-4">

@@ -108,6 +108,13 @@ export function Wrap() {
   }, []);
 
   useEffect(() => {
+    if (SCRTBalance == 0) {
+      setSelectedToken(secretToken);
+      setWrappingMode("unwrap");
+    }
+  }, [SCRTBalance]);
+
+  useEffect(() => {
     if (tokenUrlParam && isValidTokenParam()) {
       setSelectedToken(
         tokens.find(
@@ -384,8 +391,6 @@ export function Wrap() {
         console.error("NaN amount", baseAmount);
         return;
       }
-
-      var errorMessage = "";
 
       try {
         const toastId = toast.loading(
