@@ -34,9 +34,9 @@ export default function AddressQR() {
   const secretToken: Token = tokens.find((token) => token.name === "SCRT");
 
   return (
-    <div className="bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 p-4 rounded-xl h-full w-[37vw] mx-left">
-      <div className="flex items-center justify-start">
-        <div className="flex-1 flex flex-col">
+    <div className="bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 p-4 rounded-xl h-full mx-auto flex flex-col">
+      <div className="flex flex-row justify-between items-start">
+        <div className="flex flex-col">
           {/* Address */}
           <div className="truncate font-medium text-sm mb-2">
             {secretjs && secretjs?.address && (
@@ -45,7 +45,7 @@ export default function AddressQR() {
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                {secretjs?.address}
+                {secretjs?.address}{" "}
               </a>
             )}
             <CopyToClipboard
@@ -62,7 +62,7 @@ export default function AddressQR() {
               >
                 <span>
                   <button
-                    className="text-neutral-500 enabled:hover:text-white enabled:active:text-neutral-500 transition-colors"
+                    className="text-neutral-500 hover:text-white active:text-neutral-500 transition-colors"
                     disabled={!secretjs && !secretjs?.address}
                   >
                     <FontAwesomeIcon icon={faCopy} />
@@ -71,22 +71,23 @@ export default function AddressQR() {
               </Tooltip>
             </CopyToClipboard>
           </div>
+
           {/* Send and Get SCRT buttons */}
-          <div className="flex">
+          <div className="flex mt-auto">
             <Link
               to="/send"
-              className="flex-1 md:px-4 inline-block bg-cyan-500 dark:bg-cyan-500/20 text-white dark:text-cyan-200 dark:hover:text-cyan-100 hover:bg-cyan-400 dark:hover:bg-cyan-500/50 text-center transition-colors py-2.5 rounded-xl font-semibold text-sm"
+              className="flex-1 md:px-4 inline-block bg-cyan-500 dark:bg-cyan-500/20 text-white dark:text-cyan-200 hover:text-cyan-100 hover:bg-cyan-400 dark:hover:bg-cyan-500/50 text-center transition-colors py-2.5 rounded-xl font-semibold text-sm"
               onClick={() => {
-                trackMixPanelEvent("Clicked buy SCRT on current price");
+                trackMixPanelEvent("Clicked Send SCRT");
               }}
             >
               Send
             </Link>
             <Link
               to="/get-scrt"
-              className="flex-1 md:px-4 inline-block bg-cyan-500 dark:bg-cyan-500/20 text-white dark:text-cyan-200 dark:hover:text-cyan-100 hover:bg-cyan-400 dark:hover:bg-cyan-500/50 text-center transition-colors py-2.5 rounded-xl font-semibold text-sm ml-2"
+              className="flex-1 md:px-4 inline-block bg-cyan-500 dark:bg-cyan-500/20 text-white dark:text-cyan-200 hover:text-cyan-100 hover:bg-cyan-400 dark:hover:bg-cyan-500/50 text-center transition-colors py-2.5 rounded-xl font-semibold text-sm ml-2"
               onClick={() => {
-                trackMixPanelEvent("Clicked buy SCRT on current price");
+                trackMixPanelEvent("Clicked Get SCRT");
               }}
             >
               Get SCRT
@@ -97,17 +98,16 @@ export default function AddressQR() {
             </Link>
           </div>
         </div>
-
         {/* QR Code */}
         <div className="ml-2">
           <QRCode
             value={secretjs?.address}
             quietZone={0}
             logoImage={`/img/assets/${secretToken.image}`}
-            size={125}
+            size={110}
             logoHeight={25}
             logoWidth={25}
-            ecLevel={"Q"}
+            ecLevel={"L"}
             removeQrCodeBehindLogo={false}
             bgColor={theme === "dark" ? "#262626" : "#FFFFFF"}
             fgColor={theme === "dark" ? "#FFFFFF" : "#000000"}

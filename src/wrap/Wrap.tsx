@@ -23,6 +23,7 @@ import {
   faCheckCircle,
   faXmarkCircle,
   faTriangleExclamation,
+  faArrowUpRightFromSquare,
 } from "@fortawesome/free-solid-svg-icons";
 import { Link } from "react-router-dom";
 import Select from "react-select";
@@ -45,6 +46,7 @@ import {
 } from "shared/components/BalanceUI";
 import Title from "shared/components/Title";
 import PercentagePicker from "shared/components/PercentagePicker";
+import SCRTUnwrapWarning from "./components/SCRTUnwrapWarning";
 
 export const WrapContext = createContext(null);
 
@@ -701,17 +703,10 @@ export function Wrap() {
               </span>
             </Tooltip>
           </Title>
-          <div className="px-4 mb-4 max-w-6xl mx-auto">
-            <div className="inline-block w-full md:w-auto bg-yellow-800/40 border border-yellow-600 text-neutral-300 p-4 rounded-lg">
-              <div className="font-semibold text-yellow-600 flex flex-row items-center">
-                <FontAwesomeIcon
-                  icon={faTriangleExclamation}
-                  className="mr-3"
-                />
-                <span>{`You do not have any SCRT. Please unwrap sSCRT into SCRT using a fee grant. Do NOT try to create a viewing key first, instead unwrap 0.1 sSCRT directly.`}</span>
-              </div>
-            </div>
-          </div>
+
+          {secretjs && secretjs?.address && SCRTBalance == 0 ? (
+            <SCRTUnwrapWarning />
+          ) : null}
 
           {/* Content */}
           <div className="border border-neutral-200 dark:border-neutral-700 rounded-2xl p-8 w-full text-neutral-800 dark:text-neutral-200 bg-white dark:bg-neutral-900">
@@ -855,7 +850,9 @@ export function Wrap() {
               </div>
               <div className="flex-1 text-xs mt-3 text-center sm:text-left h-[1rem]">
                 {wrappingMode === "wrap" &&
-                (SCRTBalance != 0 || SCRTBalance === undefined)
+                (SCRTBalance != 0 || SCRTBalance === undefined) &&
+                secretjs &&
+                secretjs?.address
                   ? WrappedTokenBalanceUi(
                       tokenBalance,
                       selectedToken,
@@ -863,6 +860,8 @@ export function Wrap() {
                     )
                   : null}
                 {wrappingMode === "unwrap" &&
+                  secretjs &&
+                  secretjs?.address &&
                   NativeTokenBalanceUi(
                     nativeBalance,
                     selectedToken,

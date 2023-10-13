@@ -371,7 +371,7 @@ export const Staking = () => {
         {/* Title */}
         <Title title={"Staking"} />
 
-        {secretjs && secretjs?.address && SCRTBalance === 0 ? (
+        {secretjs && secretjs?.address && SCRTBalance == 0 ? (
           <NoScrtWarning />
         ) : null}
 
