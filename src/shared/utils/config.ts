@@ -1171,7 +1171,7 @@ export const tokens: Token[] = [
   {
     name: "INJ",
     description: "Injective Governance Token",
-    address: "secret16cwf53um7hgdvepfp3jwdzvwkt5qe2f9vfkuwv",
+    address: "secret14706vxakdzkz9a36872cs62vpl5qd84kpwvpew",
     code_hash:
       "5a085bd8ed89de92b35134ddd12505a602c7759ea25fb5c089ba03c8535b3042",
     image: "/inj.svg",
