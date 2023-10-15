@@ -32,10 +32,10 @@ const HoudiniModal: React.FC<IHoudiniModalProps> = ({
         onClick={onClose}
       >
         {/* Inner */}
-        <div className="relative w-full onEnter_fadeInDown h-full overflow-scroll scrollbar-hide flex items-center justify-center">
+        <div className="relative onEnter_fadeInDown h-full overflow-scroll scrollbar-hide flex items-center justify-center">
           <div className="mx-auto max-w-xl px-4">
             <div
-              className="bg-white dark:bg-neutral-900 rounded-2xl p-6 relative w-[35vw] h-[80vh]"
+              className="bg-white dark:bg-neutral-900 rounded-2xl p-6 relative min-w-[35vw] h-[80vh]"
               onClick={(e) => {
                 e.stopPropagation();
               }}

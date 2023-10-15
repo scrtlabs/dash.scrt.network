@@ -28,6 +28,7 @@ import {
   BroadcastMode,
   MsgExecuteContract,
   MsgTransfer,
+  fromUtf8,
 } from "secretjs";
 import { chains, Token, snips, ICSTokens, Deposit } from "shared/utils/config";
 import { TxRaw } from "secretjs/dist/protobuf/cosmos/tx/v1beta1/tx";
@@ -753,16 +754,13 @@ function Deposit() {
             // cosmjs can broadcast to Ethermint but cannot handle the response
 
             // Broadcast the tx to Evmos
-            tx = await sourceChainSecretjs.tx.broadcastSignedTx(
-              toBase64(txBytes),
-              {
-                ibcTxsOptions: {
-                  resolveResponses: true,
-                  resolveResponsesCheckIntervalMs: 250,
-                  resolveResponsesTimeoutMs: 10.25 * 60 * 1000,
-                },
-              }
-            );
+            tx = await sourceChainSecretjs.tx.broadcastSignedTx(txBytes, {
+              ibcTxsOptions: {
+                resolveResponses: true,
+                resolveResponsesCheckIntervalMs: 250,
+                resolveResponsesTimeoutMs: 10.25 * 60 * 1000,
+              },
+            });
           }
 
           if (tx.code !== 0) {
@@ -1310,7 +1308,7 @@ function Deposit() {
               >
                 <span>
                   <button
-                    className="text-neutral-500 enabled:hover:text-white enabled:active:text-neutral-500 transition-colors"
+                    className="text-neutral-500 enabled:hover:text-neutral-800 enabled:dark:hover:text-neutral-300 enabled:active:text-neutral-500 transition-colors"
                     disabled={!secretjs && !secretjs?.address}
                   >
                     <FontAwesomeIcon icon={faCopy} />
@@ -1364,7 +1362,7 @@ function Deposit() {
               >
                 <span>
                   <button
-                    className="text-neutral-500 enabled:hover:text-white enabled:active:text-neutral-500 transition-colors"
+                    className="text-neutral-500 enabled:hover:text-neutral-800 enabled:dark:hover:text-neutral-300 enabled:active:text-neutral-500 transition-colors"
                     disabled={!secretjs && !secretjs?.address}
                   >
                     <FontAwesomeIcon icon={faCopy} />
