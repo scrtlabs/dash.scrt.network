@@ -28,6 +28,11 @@ export default function AddressQR() {
           <div className="flex flex-col">
             {/* Address */}
             <div className="truncate font-medium text-sm mb-2">
+              <div className="flex">
+                <div className="flex-1 font-semibold mb-2 text-center sm:text-left">
+                  Your Address:
+                </div>
+              </div>
               {secretjs && secretjs?.address && (
                 <a
                   href={`${chains["Secret Network"].explorer_account}${secretjs?.address}`}
@@ -51,7 +56,7 @@ export default function AddressQR() {
                 >
                   <span>
                     <button
-                      className="text-neutral-500 hover:text-white active:text-neutral-500 transition-colors"
+                      className="text-neutral-500 hover:text-neutral-800 dark:hover:text-neutral-300 active:text-neutral-500 transition-colors"
                       disabled={!secretjs && !secretjs?.address}
                     >
                       <FontAwesomeIcon icon={faCopy} />

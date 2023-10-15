@@ -1308,7 +1308,7 @@ function Deposit() {
               >
                 <span>
                   <button
-                    className="text-neutral-500 enabled:hover:text-white enabled:active:text-neutral-500 transition-colors"
+                    className="text-neutral-500 enabled:hover:text-neutral-800 enabled:dark:hover:text-neutral-300 enabled:active:text-neutral-500 transition-colors"
                     disabled={!secretjs && !secretjs?.address}
                   >
                     <FontAwesomeIcon icon={faCopy} />
@@ -1362,7 +1362,7 @@ function Deposit() {
               >
                 <span>
                   <button
-                    className="text-neutral-500 enabled:hover:text-white enabled:active:text-neutral-500 transition-colors"
+                    className="text-neutral-500 enabled:hover:text-neutral-800 enabled:dark:hover:text-neutral-300 enabled:active:text-neutral-500 transition-colors"
                     disabled={!secretjs && !secretjs?.address}
                   >
                     <FontAwesomeIcon icon={faCopy} />
