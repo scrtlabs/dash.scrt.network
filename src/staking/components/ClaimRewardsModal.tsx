@@ -50,7 +50,7 @@ export function ClaimRewardsModal(props: IClaimRewardsModalProps) {
 
         await secretjs.tx
           .broadcast(txs, {
-            gasLimit: 20_000 * txs.length,
+            gasLimit: 50_000 * txs.length,
             gasPriceInFeeDenom: 0.25,
             feeDenom: "uscrt",
             feeGranter: feeGrantStatus === "Success" ? faucetAddress : "",

@@ -93,7 +93,7 @@ export default function ManageAutoRestakeModal(
 
         await secretjs.tx
           .broadcast(txs, {
-            gasLimit: 20_000 * txs.length,
+            gasLimit: 50_000 * txs.length,
             gasPriceInFeeDenom: 0.25,
             feeDenom: "uscrt",
           })
