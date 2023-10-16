@@ -100,9 +100,12 @@ function Balances() {
       </Helmet>
 
       <Title title={"Balances"} />
-      <AddressQR />
       {/* All Balances */}
       <div className="max-w-6xl mx-auto mt-8">
+        <div className="flex justify-left px-4 mb-4">
+          <AddressQR />
+        </div>
+
         <div className="flex flex-col gap-4 sm:flex-row items-center px-4 mb-4">
           {/* Search */}
           <div className="flex-1 w-full xs:w-auto">
