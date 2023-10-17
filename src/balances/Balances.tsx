@@ -1,13 +1,6 @@
 import { useEffect, useState, useContext, createContext } from "react";
-import { MsgExecuteContract, BroadcastMode } from "secretjs";
 import { Token, tokens } from "shared/utils/config";
 import {
-  sleep,
-  faucetURL,
-  faucetAddress,
-  viewingKeyErrorString,
-  usdString,
-  randomPadding,
   balancesPageTitle,
   balancesPageDescription,
   balancesJsonLdSchema,
@@ -16,35 +9,26 @@ import {
 import BigNumber from "bignumber.js";
 import { toast } from "react-toastify";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faKey,
-  faArrowRightArrowLeft,
-  faRightLeft,
-  faInfoCircle,
-  faCheckCircle,
-  faXmarkCircle,
-  faMagnifyingGlass,
-} from "@fortawesome/free-solid-svg-icons";
+import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 import "./Balances.scss";
 import { Link } from "react-router-dom";
 import Select from "react-select";
 import Tooltip from "@mui/material/Tooltip";
 import { Helmet } from "react-helmet-async";
-import {
-  getWalletViewingKey,
-  SecretjsContext,
-} from "shared/context/SecretjsContext";
 import mixpanel from "mixpanel-browser";
 import { useSearchParams } from "react-router-dom";
 import { BalanceItem } from "./components/BalanceItem";
 import Title from "shared/components/Title";
 import AddressQR from "./components/AddressQR";
+import { SecretjsContext } from "shared/context/SecretjsContext";
 
 function Balances() {
   //Search Query
   const [searchQuery, setSearchQuery] = useState<string>("");
 
   const [assetsBySearch, setAssetsBySearch] = useState<Token[]>();
+
+  const { secretjs } = useContext(SecretjsContext);
 
   let tokens = JSON.parse(JSON.stringify(allTokens));
   const tokenToModify = tokens.find((token: any) => token.name === "SCRT");
@@ -102,9 +86,11 @@ function Balances() {
       <Title title={"Balances"} />
       {/* All Balances */}
       <div className="max-w-6xl mx-auto mt-8">
-        <div className="flex justify-left px-4 mb-4">
-          <AddressQR />
-        </div>
+        {secretjs && secretjs?.address ? (
+          <div className="flex justify-left px-4 mb-4">
+            <AddressQR />
+          </div>
+        ) : null}
 
         <div className="flex flex-col gap-4 sm:flex-row items-center px-4 mb-4">
           {/* Search */}
