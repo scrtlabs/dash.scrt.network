@@ -15,16 +15,7 @@ import {
 import BigNumber from "bignumber.js";
 import { toast } from "react-toastify";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faKey,
-  faArrowRightArrowLeft,
-  faRightLeft,
-  faInfoCircle,
-  faCheckCircle,
-  faXmarkCircle,
-  faTriangleExclamation,
-  faArrowUpRightFromSquare,
-} from "@fortawesome/free-solid-svg-icons";
+import { faRightLeft, faInfoCircle } from "@fortawesome/free-solid-svg-icons";
 import { Link } from "react-router-dom";
 import Select from "react-select";
 import Tooltip from "@mui/material/Tooltip";
@@ -51,15 +42,8 @@ import SCRTUnwrapWarning from "./components/SCRTUnwrapWarning";
 export const WrapContext = createContext(null);
 
 export function Wrap() {
-  const {
-    feeGrantStatus,
-    setFeeGrantStatus,
-    requestFeeGrant,
-    setViewingKey,
-    secretjs,
-    connectWallet,
-    SCRTBalance,
-  } = useContext(SecretjsContext);
+  const { feeGrantStatus, secretjs, connectWallet, SCRTBalance } =
+    useContext(SecretjsContext);
 
   const { prices } = useContext(APIContext);
 

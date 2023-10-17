@@ -33,7 +33,7 @@ export function NativeTokenBalanceUi(
             .dividedBy(`1e${selectedToken.decimals}`)
             .toFormat()} ${selectedToken.name} ${
             selectedToken.coingecko_id && selectedTokenPrice
-              ? ` (${usdString.format(
+              ? ` (${usdString(
                   new BigNumber(nativeBalance!)
                     .dividedBy(`1e${selectedToken.decimals}`)
                     .multipliedBy(Number(selectedTokenPrice))
@@ -100,7 +100,7 @@ export function WrappedTokenBalanceUi(
             selectedToken.name
           } ${
             selectedToken.coingecko_id && selectedTokenPrice
-              ? ` (${usdString.format(
+              ? ` (${usdString(
                   new BigNumber(tokenBalance!)
                     .dividedBy(`1e${selectedToken.decimals}`)
                     .multipliedBy(Number(selectedTokenPrice))

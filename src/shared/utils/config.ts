@@ -1597,7 +1597,7 @@ export const tokens: Token[] = [
       "5a085bd8ed89de92b35134ddd12505a602c7759ea25fb5c089ba03c8535b3042",
     image: "/ausdc.svg",
     decimals: 6,
-    coingecko_id: "usdc",
+    coingecko_id: "usd-coin",
     deposits: [
       {
         chain_name: "Noble",

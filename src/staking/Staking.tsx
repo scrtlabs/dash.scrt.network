@@ -213,12 +213,12 @@ export const Staking = () => {
         const { delegation_responses } =
           await secretjs.query.staking.delegatorDelegations({
             delegator_addr: secretjs?.address,
-            "pagination.limit": 1000,
+            pagination: { limit: "1000" },
           });
         const { validators } =
           await secretjs.query.distribution.restakingEntries({
             delegator: secretjs?.address,
-            "pagination.limit": 1000,
+            pagination: { limit: "1000" },
           });
         setRestakeEntries(validators);
         setRestakeChoices(
@@ -251,9 +251,7 @@ export const Staking = () => {
       });
       const { validators } = await secretjsquery.query.staking.validators({
         status: "",
-        pagination: {
-          limit: "1000",
-        },
+        pagination: { limit: "1000" },
       });
       setValidators(validators);
       const activeValidators = validators.filter(

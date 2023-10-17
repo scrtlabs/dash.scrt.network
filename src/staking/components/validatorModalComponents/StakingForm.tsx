@@ -22,7 +22,7 @@ export default function StakingForm() {
   };
 
   useEffect(() => {
-    const scrtBalanceUsdString = usdString.format(
+    const scrtBalanceUsdString = usdString(
       new BigNumber(amountString!).multipliedBy(Number(currentPrice)).toNumber()
     );
     setAmountInDollarString(scrtBalanceUsdString);

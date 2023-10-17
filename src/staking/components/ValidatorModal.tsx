@@ -422,7 +422,7 @@ const ValidatorModal = (props: IValidatorModalProps) => {
                         <span className="text-neutral-400 text-xs">{` SCRT`}</span>
                       </div>
                       <div className="font-semibold text-neutral-400 mt-0.5 text-sm">
-                        {usdString.format(
+                        {usdString(
                           new BigNumber(SCRTBalance!)
                             .dividedBy(`1e${SCRTToken.decimals}`)
                             .multipliedBy(Number(currentPrice))
@@ -453,7 +453,7 @@ const ValidatorModal = (props: IValidatorModalProps) => {
                           <span className="text-neutral-400 text-xs">{` SCRT`}</span>
                         </div>
                         <div className="font-semibold text-neutral-400 mt-0.5 text-sm">
-                          {usdString.format(
+                          {usdString(
                             new BigNumber(
                               delegatorDelegations?.find(
                                 (delegatorDelegation: any) =>
@@ -478,7 +478,7 @@ const ValidatorModal = (props: IValidatorModalProps) => {
                           <span className="text-neutral-400 text-xs">{` SCRT`}</span>
                         </div>
                         <div className="font-semibold text-neutral-400 mt-0.5 text-sm">
-                          {usdString.format(0)}
+                          {usdString(0)}
                         </div>
                       </div>
                     ))}

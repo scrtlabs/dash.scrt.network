@@ -1,13 +1,14 @@
+import BigNumber from "bignumber.js";
 import { createContext, useEffect, useRef, useState } from "react";
 import { SecretNetworkClient } from "secretjs";
 import {
   allTokens,
   dAppsURL,
-  shuffleArray,
+  randomDelay,
+  sleep,
   sortDAppsArray,
 } from "shared/utils/commons";
-import { tokens } from "shared/utils/config";
-import { SECRET_LCD, SECRET_CHAIN_ID } from "shared/utils/config";
+import { SECRET_LCD, SECRET_CHAIN_ID, chains } from "shared/utils/config";
 
 const APIContext = createContext(null);
 
@@ -20,6 +21,9 @@ const APIContextProvider = ({ children }: any) => {
   const [totalSupply, setTotalSupply] = useState(Number);
   const [bondedToken, setBondedToken] = useState(Number);
   const [notBondedToken, setNotBondedToken] = useState(Number);
+  const [sSCRTTokenSupply, setSSCRTTokenSupply] = useState(Number);
+  const [stkdSCRTTokenSupply, setStkdSCRTTokenSupply] = useState(Number);
+  const [IBCTokenSupply, setIBCTokenSupply] = useState(Number);
 
   const [inflation, setInflation] = useState(0);
 
@@ -30,13 +34,9 @@ const APIContextProvider = ({ children }: any) => {
 
   const [prices, setPrices] = useState<any>([]);
 
-  let coinGeckoIdsString: string = "";
-  allTokens.forEach((token, index) => {
-    coinGeckoIdsString = coinGeckoIdsString.concat(token.coingecko_id);
-    if (index !== tokens.length - 1) {
-      coinGeckoIdsString = coinGeckoIdsString.concat(",");
-    }
-  });
+  let coinGeckoIdsString: string = allTokens
+    .map((token) => token.coingecko_id)
+    .join(",");
 
   function fetchPrices() {
     let pricesApiUrl = `https://api.coingecko.com/api/v3/simple/price?ids=${coinGeckoIdsString}&vs_currencies=USD`;
@@ -78,6 +78,77 @@ const APIContextProvider = ({ children }: any) => {
         ?.then((res) =>
           setCommunityPool(Math.floor((res.pool[1] as any).amount / 10e5))
         );
+
+      secretjsquery?.query?.bank
+        ?.balance({
+          address: allTokens.find((token) => token.name === "SCRT").address,
+          denom: "uscrt",
+        })
+        ?.then((res) => {
+          setSSCRTTokenSupply(Number(res.balance?.amount) / 1e6);
+        });
+
+      secretjsquery?.query?.bank
+        ?.balance({
+          address: allTokens.find((token) => token.name === "stkd-SCRT")
+            .address,
+          denom: "uscrt",
+        })
+        ?.then((res) => {
+          setStkdSCRTTokenSupply(Number(res.balance?.amount) / 1e6);
+          secretjsquery?.query?.staking
+            .delegatorDelegations({
+              delegator_addr: allTokens.find(
+                (token) => token.name === "stkd-SCRT"
+              ).address,
+              pagination: { limit: "1000" },
+            })
+            ?.then((delegatorDelegations) => {
+              const totalDelegations = delegatorDelegations.delegation_responses
+                ?.reduce((sum: any, delegation: any) => {
+                  const amount = new BigNumber(
+                    delegation?.balance?.amount || 0
+                  );
+                  return sum.plus(amount);
+                }, new BigNumber(0))
+                .dividedBy(`1e6`);
+              setStkdSCRTTokenSupply(
+                Number(res.balance?.amount) / 1e6 + Number(totalDelegations)
+              );
+            });
+        });
+
+      let totalAmount = 0;
+
+      allTokens[0].deposits.forEach((deposit, index) => {
+        const chainName = deposit.chain_name;
+        const channelId = chains[chainName].withdraw_channel_id;
+        const isLast = index === allTokens[0].deposits.length - 1;
+        setTimeout(() => {
+          executeQuery(channelId, isLast);
+        }, index * 100);
+      });
+
+      const executeQuery = (channelId: any, isLast: any) => {
+        secretjsquery?.query?.ibc_transfer
+          ?.escrowAddress({
+            channel_id: channelId,
+            port_id: "transfer",
+          })
+          ?.then((escrow) => {
+            secretjsquery?.query?.bank
+              ?.balance({
+                address: escrow.escrow_address,
+                denom: "uscrt",
+              })
+              ?.then((res) => {
+                totalAmount += Number(res.balance?.amount) / 1e6;
+                if (isLast) {
+                  setIBCTokenSupply(totalAmount);
+                }
+              });
+          });
+      };
 
       secretjsquery?.query?.mint
         ?.inflation("")
@@ -241,6 +312,12 @@ const APIContextProvider = ({ children }: any) => {
     setTotalSupply,
     communityPool,
     setCommunityPool,
+    sSCRTTokenSupply,
+    setSSCRTTokenSupply,
+    stkdSCRTTokenSupply,
+    setStkdSCRTTokenSupply,
+    IBCTokenSupply,
+    setIBCTokenSupply,
     inflation,
     setInflation,
     secretFoundationTax,

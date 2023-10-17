@@ -14,11 +14,9 @@ import {
   ArcElement,
 } from "chart.js";
 import { Doughnut } from "react-chartjs-2";
-import { SecretNetworkClient } from "secretjs";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowUpRightFromSquare } from "@fortawesome/free-solid-svg-icons";
 import { ThemeContext } from "shared/context/ThemeContext";
-import { setDatasets } from "react-chartjs-2/dist/utils";
 import { trackMixPanelEvent } from "shared/utils/commons";
 
 ChartJS.register(
@@ -36,45 +34,18 @@ export default function StakingChart() {
   const chartRef = useRef<ChartJS<"doughnut", number[], string>>(null);
 
   const {
-    coingeckoApiData_Day,
-    setCoinGeckoApiData_Day,
-    coingeckoApiData_Month,
-    setCoinGeckoApiData_Month,
-    coingeckoApiData_Year,
-    setCoinGeckoApiData_Year,
-    defiLamaApiData_Year,
-    setDefiLamaApiData_Year,
-    defiLamaApiData_TVL,
-    setDefiLamaApiData_TVL,
-    currentPrice,
-    setCurrentPrice,
-    externalApiData,
-    setExternalApiData,
-    secretAnalyticslApiData,
-    setSecretAnalyticslApiData,
     bondedToken,
-    setBondedToken,
     notBondedToken,
-    setNotBondedToken,
     totalSupply,
-    setTotalSupply,
     communityPool,
-    setCommunityPool,
-    inflation,
-    setInflation,
-    secretFoundationTax,
-    setSecretFoundationTax,
-    communityTax,
-    setCommunityTax,
-    volume,
-    setVolume,
-    marketCap,
-    setMarketCap,
+    stkdSCRTTokenSupply,
+    sSCRTTokenSupply,
+    IBCTokenSupply,
   } = useContext(APIContext);
 
-  const { theme, setTheme } = useContext(ThemeContext);
+  const { theme } = useContext(ThemeContext);
 
-  const [operationalToken, setOperationalToken] = useState(null);
+  const [otherToken, setOtherToken] = useState(null);
 
   const [data, setData] = useState({
     labels: [""],
@@ -88,12 +59,32 @@ export default function StakingChart() {
   });
 
   useEffect(() => {
-    if (bondedToken && notBondedToken && totalSupply && communityPool) {
-      setOperationalToken(
-        totalSupply - bondedToken - notBondedToken - communityPool
+    if (
+      bondedToken &&
+      notBondedToken &&
+      totalSupply &&
+      communityPool &&
+      sSCRTTokenSupply &&
+      stkdSCRTTokenSupply &&
+      IBCTokenSupply
+    ) {
+      setOtherToken(
+        totalSupply -
+          bondedToken -
+          notBondedToken -
+          communityPool -
+          IBCTokenSupply
       );
     }
-  }, [bondedToken, notBondedToken, totalSupply, communityPool]);
+  }, [
+    bondedToken,
+    notBondedToken,
+    totalSupply,
+    communityPool,
+    sSCRTTokenSupply,
+    stkdSCRTTokenSupply,
+    IBCTokenSupply,
+  ]);
 
   useEffect(() => {
     if (
@@ -101,39 +92,74 @@ export default function StakingChart() {
       notBondedToken &&
       totalSupply &&
       communityPool &&
-      operationalToken
+      sSCRTTokenSupply &&
+      stkdSCRTTokenSupply &&
+      IBCTokenSupply &&
+      otherToken
     ) {
       setData({
         labels: [
-          `Staked: ${formatNumber(bondedToken, 2)} (${(
-            (bondedToken / totalSupply) *
+          `Staked: ${formatNumber(bondedToken - stkdSCRTTokenSupply, 2)} (${(
+            ((bondedToken - stkdSCRTTokenSupply) / totalSupply) *
             100
           ).toFixed(2)}%)`,
-          `Undelegated: ${formatNumber(notBondedToken, 2)} (${(
-            (notBondedToken / totalSupply) *
+          `Not staked: ${formatNumber(
+            notBondedToken - sSCRTTokenSupply,
+            2
+          )} (${(
+            ((notBondedToken - sSCRTTokenSupply) / totalSupply) *
             100
           ).toFixed(2)}%)`,
-          /*  `Operational: ${formatNumber(operationalToken, 2)} (${(
-            (operationalToken / totalSupply) *
-            100
-          ).toFixed(2)}%)`, */
           `Community Pool: ${formatNumber(communityPool, 2)} (${(
             (communityPool / totalSupply) *
+            100
+          ).toFixed(2)}%)`,
+          `sSCRT: ${formatNumber(sSCRTTokenSupply, 2)} (${(
+            (sSCRTTokenSupply / totalSupply) *
+            100
+          ).toFixed(2)}%)`,
+          `stkd-SCRT: ${formatNumber(stkdSCRTTokenSupply, 2)} (${(
+            (stkdSCRTTokenSupply / totalSupply) *
+            100
+          ).toFixed(2)}%)`,
+          `IBC out: ${formatNumber(IBCTokenSupply, 2)} (${(
+            (IBCTokenSupply / totalSupply) *
+            100
+          ).toFixed(2)}%)`,
+          `Other: ${formatNumber(otherToken, 2)} (${(
+            (otherToken / totalSupply) *
             100
           ).toFixed(2)}%)`,
         ],
         datasets: [
           {
             data: [
-              bondedToken,
-              notBondedToken,
-              /*               operationalToken, */
+              bondedToken - stkdSCRTTokenSupply,
+              notBondedToken - sSCRTTokenSupply,
               communityPool,
+              sSCRTTokenSupply,
+              stkdSCRTTokenSupply,
+              IBCTokenSupply,
+              otherToken,
             ],
-            /*          backgroundColor: ["#06b6d4", "#8b5cf6", "#008080", "#ff8800"],
-            hoverBackgroundColor: ["#06b6d4", "#8b5cf6", "#008080", "#ff8800"], */
-            backgroundColor: ["#06b6d4", "#8b5cf6", "#ff8800"],
-            hoverBackgroundColor: ["#06b6d4", "#8b5cf6", "#ff8800"],
+            backgroundColor: [
+              "#06b6d4",
+              "#8b5cf6",
+              "#FF4500",
+              "#008080",
+              "#32CD32",
+              "#ff8800",
+              "#FF1493",
+            ],
+            hoverBackgroundColor: [
+              "#06b6d4",
+              "#8b5cf6",
+              "#FF4500",
+              "#008080",
+              "#32CD32",
+              "#ff8800",
+              "#FF1493",
+            ],
           },
         ],
       });
@@ -143,7 +169,10 @@ export default function StakingChart() {
     notBondedToken,
     totalSupply,
     communityPool,
-    operationalToken,
+    sSCRTTokenSupply,
+    stkdSCRTTokenSupply,
+    IBCTokenSupply,
+    otherToken,
   ]);
 
   const centerText = {
@@ -166,7 +195,7 @@ export default function StakingChart() {
       ctx.fillStyle = theme === "dark" ? "#fff" : "#000";
       ctx.textAlign = "center";
       ctx.fillText(
-        `${formatNumber(bondedToken + notBondedToken, 2)}`,
+        `${formatNumber(totalSupply, 2)}`,
         width / 2,
         height / 1.75 + top
       );
@@ -216,46 +245,27 @@ export default function StakingChart() {
   return (
     <>
       <div>
-        {/* Title */}
-        {/* <div className='flex items-center mb-4'>
-          <h1 className='text-2xl font-semibold'>Staking</h1>
-          <Tooltip
-            title={`Earn rewards for holding SCRT (currently ~24.66% p.a.)`}
-            placement='right'
-          >
-            <div className='ml-2 pt-1 text-neutral-400 hover:text-white transition-colors cursor-pointer'>
-              <FontAwesomeIcon icon={faInfoCircle} />
-            </div>
-          </Tooltip>
-        </div> */}
-
         {/* Chart */}
         <div className="w-full h-[250px] xl:h-[300px]">
           {totalSupply != undefined &&
-            bondedToken != undefined &&
-            notBondedToken != undefined &&
-            operationalToken != undefined &&
-            data != undefined &&
-            options != undefined &&
-            centerText != undefined && (
-              <Doughnut
-                id="stakingChartDoughnut"
-                data={data}
-                options={options as any}
-                plugins={[centerText]}
-                ref={chartRef}
-                redraw
-              />
-            )}
-          {!(
-            totalSupply != undefined &&
-            bondedToken != undefined &&
-            notBondedToken != undefined &&
-            operationalToken != undefined &&
-            data != undefined &&
-            options != undefined &&
-            centerText != undefined
-          ) && (
+          bondedToken != undefined &&
+          notBondedToken != undefined &&
+          otherToken != undefined &&
+          sSCRTTokenSupply != undefined &&
+          stkdSCRTTokenSupply != undefined &&
+          otherToken != undefined &&
+          data != undefined &&
+          options != undefined &&
+          centerText != undefined ? (
+            <Doughnut
+              id="stakingChartDoughnut"
+              data={data}
+              options={options as any}
+              plugins={[centerText]}
+              ref={chartRef}
+              redraw
+            />
+          ) : (
             <div className="animate-pulse bg-neutral-300/40 dark:bg-neutral-700/40 rounded col-span-2 w-full h-full min-h-[250px] xl:min-h-[300px] mx-auto"></div>
           )}
         </div>
