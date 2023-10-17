@@ -118,7 +118,7 @@ export default function PriceVolumeTVL(props: any) {
       const ctx = chart.ctx;
       ctx.save();
       (ctx.shadowColor = theme === "dark" ? "#06b6d4" : "#06b6d4"),
-        (ctx.shadowBlur = 8);
+        (ctx.shadowBlur = 4);
       ctx.shadowOffsetX = 0;
       ctx.shadowOffsetY = 0;
     },
