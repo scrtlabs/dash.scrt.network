@@ -1,22 +1,15 @@
-import { useEffect, useState, useContext, createContext } from "react";
-import { Token, tokens } from "shared/utils/config";
+import { useEffect, useState, useContext } from "react";
+import { Token } from "shared/utils/config";
 import {
   balancesPageTitle,
   balancesPageDescription,
   balancesJsonLdSchema,
   allTokens,
 } from "shared/utils/commons";
-import BigNumber from "bignumber.js";
-import { toast } from "react-toastify";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 import "./Balances.scss";
-import { Link } from "react-router-dom";
-import Select from "react-select";
-import Tooltip from "@mui/material/Tooltip";
 import { Helmet } from "react-helmet-async";
-import mixpanel from "mixpanel-browser";
-import { useSearchParams } from "react-router-dom";
 import { BalanceItem } from "./components/BalanceItem";
 import Title from "shared/components/Title";
 import AddressQR from "./components/AddressQR";

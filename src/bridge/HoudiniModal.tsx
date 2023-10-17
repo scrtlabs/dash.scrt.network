@@ -35,7 +35,7 @@ const HoudiniModal: React.FC<IHoudiniModalProps> = ({
         <div className="relative onEnter_fadeInDown h-full overflow-scroll scrollbar-hide flex items-center justify-center">
           <div className="mx-auto max-w-xl px-4">
             <div
-              className="bg-white dark:bg-neutral-900 rounded-2xl p-6 relative min-w-[35vw] h-[80vh]"
+              className="bg-white dark:bg-neutral-900 rounded-2xl p-6 relative w-full h-[80vh]"
               onClick={(e) => {
                 e.stopPropagation();
               }}
@@ -48,9 +48,9 @@ const HoudiniModal: React.FC<IHoudiniModalProps> = ({
                 <FontAwesomeIcon icon={faXmark} className="fa-fw" />
               </button>
 
-              {loading && (
+              {loading ? (
                 <div className="animate-pulse bg-neutral-300/40 dark:bg-neutral-700/40 absolute top-0 left-0 right-0 bottom-0 rounded-2xl"></div>
-              )}
+              ) : null}
 
               <iframe
                 src={`https://houdiniswap.com/?widgetMode=true&theme=${
@@ -58,8 +58,8 @@ const HoudiniModal: React.FC<IHoudiniModalProps> = ({
                 }&tokenIn=ETH&tokenOut=SCRT&amount=1&anonymous=true&partnerId=64f58fc75abdd6a4df170fda${
                   secretAddress ? `&receiveAddress=${secretAddress}` : ``
                 }&tokenLockOut=true`}
-                width="100%"
                 height="100%"
+                width="100%"
                 style={{ maxHeight: "800px" }}
                 onLoad={() => setLoading(false)}
               ></iframe>

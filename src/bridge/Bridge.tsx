@@ -9,16 +9,14 @@ import {
   bridgeJsonLdSchema,
   bridgePageDescription,
   bridgePageTitle,
-  formatNumber,
-  pageTitle,
 } from "shared/utils/commons";
-import mixpanel from "mixpanel-browser";
 import { useEffect, useState, useContext } from "react";
 import { trackMixPanelEvent } from "shared/utils/commons";
 import SquidModal from "./SquidModal";
 import { ThemeContext } from "shared/context/ThemeContext";
 import HoudiniModal from "./HoudiniModal";
 import { SecretjsContext } from "shared/context/SecretjsContext";
+import Title from "shared/components/Title";
 
 function Bridge() {
   useEffect(() => {
@@ -58,11 +56,7 @@ function Bridge() {
       </Helmet>
       <div className="max-w-2xl mx-auto px-6 text-neutral-600 dark:text-neutral-400 leading-7 text-justify">
         {/* Title */}
-        <div className="text-center mb-4">
-          <h1 className="font-semibold text-4xl inline text-transparent bg-clip-text bg-gradient-to-r from-cyan-500 to-purple-500">
-            Bridge
-          </h1>
-        </div>
+        <Title title={"Bridge"} />
 
         <p>
           Use the{" "}

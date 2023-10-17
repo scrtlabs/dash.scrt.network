@@ -1,12 +1,4 @@
-import {
-  faGlobe,
-  faLink,
-  faXmark,
-  faInfoCircle,
-  faMagnifyingGlass,
-  faXmarkCircle,
-  faCheckCircle,
-} from "@fortawesome/free-solid-svg-icons";
+import { faGlobe, faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useContext, useEffect, useState } from "react";
 import { APIContext } from "shared/context/APIContext";
@@ -40,25 +32,14 @@ const ValidatorModal = (props: IValidatorModalProps) => {
 
   const {
     currentPrice,
-    setCurrentPrice,
     inflation,
     communityTax,
-    communityPool,
-    pool,
     totalSupply,
     bondedToken,
-    notBondedToken,
     secretFoundationTax,
   } = useContext(APIContext);
 
-  const {
-    SCRTBalance,
-    SCRTToken,
-    feeGrantStatus,
-    setFeeGrantStatus,
-    requestFeeGrant,
-    secretjs,
-  } = useContext(SecretjsContext);
+  const { SCRTBalance, SCRTToken, secretjs } = useContext(SecretjsContext);
 
   const [realYield, setRealYield] = useState<Nullable<number>>(null);
 

@@ -3,12 +3,9 @@ import { toast } from "react-toastify";
 import { MsgSetAutoRestake } from "secretjs";
 import { SecretjsContext } from "shared/context/SecretjsContext";
 import { StakingContext, ValidatorRestakeStatus } from "staking/Staking";
-import FeeGrant from "../../shared/components/FeeGrant";
-import BigNumber from "bignumber.js";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faInfoCircle, faXmark } from "@fortawesome/free-solid-svg-icons";
 import RestakeValidatorItem from "./RestakeValidatorItem";
-import Tooltip from "@mui/material/Tooltip";
 import { restakeThreshold } from "shared/utils/commons";
 
 interface IManageAutoRestakeModalProps {

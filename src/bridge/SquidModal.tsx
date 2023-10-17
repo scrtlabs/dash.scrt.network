@@ -1,12 +1,6 @@
-import {
-  faDesktop,
-  faMobileScreen,
-  faWallet,
-  faXmark,
-} from "@fortawesome/free-solid-svg-icons";
+import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import React, { useContext, useState } from "react";
-import { SecretjsContext } from "shared/context/SecretjsContext";
+import React, { useState } from "react";
 
 interface ISquidModalProps {
   open: boolean;
@@ -147,9 +141,9 @@ const SquidModal: React.FC<ISquidModalProps> = ({
                 <FontAwesomeIcon icon={faXmark} className="fa-fw" />
               </button>
 
-              {loading && (
+              {loading ? (
                 <div className="animate-pulse bg-neutral-300/40 dark:bg-neutral-700/40 absolute top-0 left-0 right-0 bottom-0 rounded-2xl"></div>
-              )}
+              ) : null}
 
               {theme === "dark" ? (
                 <iframe
@@ -169,6 +163,7 @@ const SquidModal: React.FC<ISquidModalProps> = ({
                   src={`https://widget.squidrouter.com/iframe?config=${encodeURIComponent(
                     JSON.stringify(SquidStringsLight)
                   )}`}
+                  onLoad={() => setLoading(false)}
                 />
               )}
             </div>
