@@ -18,6 +18,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowUpRightFromSquare } from "@fortawesome/free-solid-svg-icons";
 import { ThemeContext } from "shared/context/ThemeContext";
 import { trackMixPanelEvent } from "shared/utils/commons";
+import { Link } from "react-router-dom";
 
 ChartJS.register(
   CategoryScale,
@@ -73,7 +74,8 @@ export default function StakingChart() {
           bondedToken -
           notBondedToken -
           communityPool -
-          IBCTokenSupply
+          IBCTokenSupply -
+          sSCRTTokenSupply
       );
     }
   }, [
@@ -86,6 +88,10 @@ export default function StakingChart() {
     IBCTokenSupply,
   ]);
 
+  const createLabel = (label: string, value: number) => {
+    return `${label}: ${formatNumber(value, 2)}`;
+  };
+
   useEffect(() => {
     if (
       bondedToken &&
@@ -97,69 +103,33 @@ export default function StakingChart() {
       IBCTokenSupply &&
       otherToken
     ) {
+      const dataValues = [
+        { label: "Staked", value: bondedToken - stkdSCRTTokenSupply },
+        { label: "Liquid", value: otherToken },
+        { label: "sSCRT", value: sSCRTTokenSupply },
+        { label: "stkd-SCRT", value: stkdSCRTTokenSupply },
+        { label: "Unbonded", value: notBondedToken },
+        { label: "Community Pool", value: communityPool },
+        { label: "IBC out", value: IBCTokenSupply },
+      ];
+
+      const backgroundColors = [
+        "#06b6d4",
+        "#8b5cf6",
+        "#FF4500",
+        "#008080",
+        "#32CD32",
+        "#ff8800",
+        "#FF1493",
+      ];
+
       setData({
-        labels: [
-          `Staked: ${formatNumber(bondedToken - stkdSCRTTokenSupply, 2)} (${(
-            ((bondedToken - stkdSCRTTokenSupply) / totalSupply) *
-            100
-          ).toFixed(2)}%)`,
-          `Not staked: ${formatNumber(
-            notBondedToken - sSCRTTokenSupply,
-            2
-          )} (${(
-            ((notBondedToken - sSCRTTokenSupply) / totalSupply) *
-            100
-          ).toFixed(2)}%)`,
-          `Community Pool: ${formatNumber(communityPool, 2)} (${(
-            (communityPool / totalSupply) *
-            100
-          ).toFixed(2)}%)`,
-          `sSCRT: ${formatNumber(sSCRTTokenSupply, 2)} (${(
-            (sSCRTTokenSupply / totalSupply) *
-            100
-          ).toFixed(2)}%)`,
-          `stkd-SCRT: ${formatNumber(stkdSCRTTokenSupply, 2)} (${(
-            (stkdSCRTTokenSupply / totalSupply) *
-            100
-          ).toFixed(2)}%)`,
-          `IBC out: ${formatNumber(IBCTokenSupply, 2)} (${(
-            (IBCTokenSupply / totalSupply) *
-            100
-          ).toFixed(2)}%)`,
-          `Other: ${formatNumber(otherToken, 2)} (${(
-            (otherToken / totalSupply) *
-            100
-          ).toFixed(2)}%)`,
-        ],
+        labels: dataValues.map((item) => createLabel(item.label, item.value)),
         datasets: [
           {
-            data: [
-              bondedToken - stkdSCRTTokenSupply,
-              notBondedToken - sSCRTTokenSupply,
-              communityPool,
-              sSCRTTokenSupply,
-              stkdSCRTTokenSupply,
-              IBCTokenSupply,
-              otherToken,
-            ],
-            backgroundColor: [
-              "#06b6d4",
-              "#8b5cf6",
-              "#FF4500",
-              "#008080",
-              "#32CD32",
-              "#ff8800",
-              "#FF1493",
-            ],
-            hoverBackgroundColor: [
-              "#06b6d4",
-              "#8b5cf6",
-              "#FF4500",
-              "#008080",
-              "#32CD32",
-              "#ff8800",
-              "#FF1493",
-            ],
+            data: dataValues.map((item) => item.value),
+            backgroundColor: backgroundColors,
+            hoverBackgroundColor: backgroundColors,
           },
         ],
       });
@@ -270,20 +240,15 @@ export default function StakingChart() {
           )}
         </div>
 
-        <a
-          href="/staking"
-          target="_blank"
+        <Link
+          to={"/staking"}
           className="block bg-cyan-500 dark:bg-cyan-500/20 text-white dark:text-cyan-200 dark:hover:text-cyan-100 hover:bg-cyan-400 dark:hover:bg-cyan-500/50 w-full text-center transition-colors py-2.5 rounded-xl mt-4 font-semibold text-sm"
           onClick={() => {
             trackMixPanelEvent("Clicked Stake on Staking Chart");
           }}
         >
           Stake SCRT
-          <FontAwesomeIcon
-            icon={faArrowUpRightFromSquare}
-            className="text-xs ml-2"
-          />
-        </a>
+        </Link>
       </div>
     </>
   );

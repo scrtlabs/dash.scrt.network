@@ -21,6 +21,8 @@ const APIContextProvider = ({ children }: any) => {
   const [totalSupply, setTotalSupply] = useState(Number);
   const [bondedToken, setBondedToken] = useState(Number);
   const [notBondedToken, setNotBondedToken] = useState(Number);
+  const [distributionRewardToken, setDistributionRewardToken] =
+    useState(Number);
   const [sSCRTTokenSupply, setSSCRTTokenSupply] = useState(Number);
   const [stkdSCRTTokenSupply, setStkdSCRTTokenSupply] = useState(Number);
   const [IBCTokenSupply, setIBCTokenSupply] = useState(Number);
@@ -69,14 +71,14 @@ const APIContextProvider = ({ children }: any) => {
         ?.then((res) => setTotalSupply((res.amount.amount as any) / 1e6));
 
       secretjsquery?.query?.staking?.pool("")?.then((res) => {
-        setBondedToken(parseInt(res.pool.bonded_tokens) / 10e5);
-        setNotBondedToken(parseInt(res.pool.not_bonded_tokens) / 10e4);
+        setBondedToken(parseInt(res.pool.bonded_tokens) / 1e6);
+        setNotBondedToken(parseInt(res.pool.not_bonded_tokens) / 1e6);
       });
 
       secretjsquery?.query?.distribution
         ?.communityPool("")
         ?.then((res) =>
-          setCommunityPool(Math.floor((res.pool[1] as any).amount / 10e5))
+          setCommunityPool(Math.floor((res.pool[1] as any).amount / 1e6))
         );
 
       secretjsquery?.query?.bank
