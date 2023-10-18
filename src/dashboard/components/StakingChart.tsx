@@ -108,7 +108,7 @@ export default function StakingChart() {
         { label: "Liquid", value: otherToken },
         { label: "sSCRT", value: sSCRTTokenSupply },
         { label: "stkd-SCRT", value: stkdSCRTTokenSupply },
-        { label: "Unbonded", value: notBondedToken },
+        { label: "Staked (not bonded)", value: notBondedToken },
         { label: "Community Pool", value: communityPool },
         { label: "IBC out", value: IBCTokenSupply },
       ];
