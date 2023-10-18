@@ -268,19 +268,19 @@ const APIContextProvider = ({ children }: any) => {
         setVolume(response.secret.usd_24h_vol);
       });
 
-    /*let mintscanApiDataUrl = `https://api.mintscan.io/v1/secret/status`;
+    let mintscanApiDataUrl = `https://dev.api.mintscan.io/v1/secret/status`;
     fetch(mintscanApiDataUrl)
       .then((response) => response.json())
       .then((response) => {
         setExternalApiData(response);
-      }); */
+      });
 
-    let secretAnalyticsApiDataUrl = `https://api.secretanalytics.xyz/network`;
+    /*     let secretAnalyticsApiDataUrl = `https://api.secretanalytics.xyz/network`;
     fetch(secretAnalyticsApiDataUrl)
       .then((response) => response.json())
       .then((response) => {
         setSecretAnalyticslApiData(response);
-      });
+      }); */
   }, []);
 
   const providerValue = {

@@ -189,9 +189,12 @@ export default function StakingChart() {
         onClick: null as any,
         labels: {
           color: theme === "dark" ? "#fff" : "#000",
+          font: {
+            size: 11,
+          },
           usePointStyle: true,
           pointStyle: "circle",
-          padding: 10,
+          padding: 7,
         },
       },
       tooltip: {
@@ -239,10 +242,9 @@ export default function StakingChart() {
             <div className="animate-pulse bg-neutral-300/40 dark:bg-neutral-700/40 rounded col-span-2 w-full h-full min-h-[250px] xl:min-h-[300px] mx-auto"></div>
           )}
         </div>
-
         <Link
           to={"/staking"}
-          className="block bg-cyan-500 dark:bg-cyan-500/20 text-white dark:text-cyan-200 dark:hover:text-cyan-100 hover:bg-cyan-400 dark:hover:bg-cyan-500/50 w-full text-center transition-colors py-2.5 rounded-xl mt-4 font-semibold text-sm"
+          className="block bg-cyan-500 dark:bg-cyan-500/20 text-white dark:text-cyan-200 dark:hover:text-cyan-100 hover:bg-cyan-400 dark:hover:bg-cyan-500/50 w-full text-center transition-colors py-2.5 rounded-xl mt-2 font-semibold text-sm"
           onClick={() => {
             trackMixPanelEvent("Clicked Stake on Staking Chart");
           }}

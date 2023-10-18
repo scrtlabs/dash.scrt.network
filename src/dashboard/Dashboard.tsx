@@ -86,9 +86,9 @@ export function Dashboard() {
     }
   }, [blockTime]);
 
-  // daily transactions
+  // # transactions
   const [transactions, setTransactions] = useState("");
-  const [dailyTransactionsFormattedString, setTransactionsFormattedString] =
+  const [transactionsFormattedString, setTransactionsFormattedString] =
     useState("");
 
   useEffect(() => {
@@ -113,14 +113,17 @@ export function Dashboard() {
   }, [communityTax, secretFoundationTax]);
 
   // feesPaid
-  const [gasUsed, setGasUsed] = useState("");
-  const [gasUsedFormattedString, setGasUsedFormattedString] = useState("");
+  const [activeValidators, setActiveValidators] = useState("");
+  const [activeValidatorsFormattedString, setActiveValidatorsFormattedString] =
+    useState("");
 
   useEffect(() => {
-    if (gasUsed) {
-      setGasUsedFormattedString(formatNumber(parseInt(gasUsed), 2));
+    if (activeValidators) {
+      setActiveValidatorsFormattedString(
+        formatNumber(parseInt(activeValidators), 2)
+      );
     }
-  }, [gasUsed]);
+  }, [activeValidators]);
 
   // inflation
   const [inflationFormattedString, setInflationFormattedString] = useState("");
@@ -191,26 +194,16 @@ export function Dashboard() {
 
   const [circulatingSupply, setCirculatingSupply] = useState(0);
 
-  // useEffect(() => {
-  //   if (externalApiData) {
-  //     const queryData = async () => {
-  //       setBlockTime((externalApiData as any).block_time);
-  //     };
-
-  //     queryData();
-  //   }
-  // }, [externalApiData]);
-
   useEffect(() => {
-    if (secretAnalyticslApiData) {
+    if (externalApiData) {
       const queryData = async () => {
-        setTransactions((secretAnalyticslApiData as any).tx_count);
-        setGasUsed((secretAnalyticslApiData as any).gas_used);
+        setTransactions((externalApiData as any).total_txs_num);
+        setActiveValidators((externalApiData as any).unjailed_validator_num);
       };
 
       queryData();
     }
-  }, [secretAnalyticslApiData]);
+  }, [externalApiData]);
 
   useEffect(() => {
     if (
@@ -302,16 +295,15 @@ export function Dashboard() {
 
           {/* Block Info */}
           <div className="col-span-12 md:col-span-6 lg:col-span-12 xl:col-span-6 2xl:col-span-4">
-            {/* <BlockInfo blockHeight={blockHeight || 0} blockTime={blockTime} circulatingSupply={circulatingSupply} inflation={inflation}/> */}
             <QuadTile
               item1_key="Block Height"
               item1_value={blockHeightFormattedString}
               item2_key="Block Time (last block)"
               item2_value={blockTimeFormattedString}
-              item3_key="# Transactions (24h)"
-              item3_value={dailyTransactionsFormattedString}
-              item4_key="Gas Used (24h)"
-              item4_value={gasUsedFormattedString}
+              item3_key="# Transactions (total)"
+              item3_value={transactionsFormattedString}
+              item4_key="# Active Validators"
+              item4_value={activeValidatorsFormattedString}
             />
           </div>
 
