@@ -1173,7 +1173,7 @@ export const tokens: Token[] = [
     description: "Injective Governance Token",
     address: "secret14706vxakdzkz9a36872cs62vpl5qd84kpwvpew",
     code_hash:
-      "5a085bd8ed89de92b35134ddd12505a602c7759ea25fb5c089ba03c8535b3042",
+      "638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e",
     image: "/inj.svg",
     decimals: 18,
     coingecko_id: "injective-protocol",
