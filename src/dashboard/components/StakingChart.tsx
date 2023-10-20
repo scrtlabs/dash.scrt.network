@@ -14,12 +14,11 @@ import {
   ArcElement,
 } from "chart.js";
 import { Doughnut } from "react-chartjs-2";
-import { SecretNetworkClient } from "secretjs";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowUpRightFromSquare } from "@fortawesome/free-solid-svg-icons";
 import { ThemeContext } from "shared/context/ThemeContext";
-import { setDatasets } from "react-chartjs-2/dist/utils";
 import { trackMixPanelEvent } from "shared/utils/commons";
+import { Link } from "react-router-dom";
 
 ChartJS.register(
   CategoryScale,
@@ -36,45 +35,18 @@ export default function StakingChart() {
   const chartRef = useRef<ChartJS<"doughnut", number[], string>>(null);
 
   const {
-    coingeckoApiData_Day,
-    setCoinGeckoApiData_Day,
-    coingeckoApiData_Month,
-    setCoinGeckoApiData_Month,
-    coingeckoApiData_Year,
-    setCoinGeckoApiData_Year,
-    defiLamaApiData_Year,
-    setDefiLamaApiData_Year,
-    defiLamaApiData_TVL,
-    setDefiLamaApiData_TVL,
-    currentPrice,
-    setCurrentPrice,
-    externalApiData,
-    setExternalApiData,
-    secretAnalyticslApiData,
-    setSecretAnalyticslApiData,
     bondedToken,
-    setBondedToken,
     notBondedToken,
-    setNotBondedToken,
     totalSupply,
-    setTotalSupply,
     communityPool,
-    setCommunityPool,
-    inflation,
-    setInflation,
-    secretFoundationTax,
-    setSecretFoundationTax,
-    communityTax,
-    setCommunityTax,
-    volume,
-    setVolume,
-    marketCap,
-    setMarketCap,
+    stkdSCRTTokenSupply,
+    sSCRTTokenSupply,
+    IBCTokenSupply,
   } = useContext(APIContext);
 
-  const { theme, setTheme } = useContext(ThemeContext);
+  const { theme } = useContext(ThemeContext);
 
-  const [operationalToken, setOperationalToken] = useState(null);
+  const [otherToken, setOtherToken] = useState(null);
 
   const [data, setData] = useState({
     labels: [""],
@@ -88,12 +60,37 @@ export default function StakingChart() {
   });
 
   useEffect(() => {
-    if (bondedToken && notBondedToken && totalSupply && communityPool) {
-      setOperationalToken(
-        totalSupply - bondedToken - notBondedToken - communityPool
+    if (
+      bondedToken &&
+      notBondedToken &&
+      totalSupply &&
+      communityPool &&
+      sSCRTTokenSupply &&
+      stkdSCRTTokenSupply &&
+      IBCTokenSupply
+    ) {
+      setOtherToken(
+        totalSupply -
+          bondedToken -
+          notBondedToken -
+          communityPool -
+          IBCTokenSupply -
+          sSCRTTokenSupply
       );
     }
-  }, [bondedToken, notBondedToken, totalSupply, communityPool]);
+  }, [
+    bondedToken,
+    notBondedToken,
+    totalSupply,
+    communityPool,
+    sSCRTTokenSupply,
+    stkdSCRTTokenSupply,
+    IBCTokenSupply,
+  ]);
+
+  const createLabel = (label: string, value: number) => {
+    return `${label}: ${formatNumber(value, 2)}`;
+  };
 
   useEffect(() => {
     if (
@@ -101,39 +98,38 @@ export default function StakingChart() {
       notBondedToken &&
       totalSupply &&
       communityPool &&
-      operationalToken
+      sSCRTTokenSupply &&
+      stkdSCRTTokenSupply &&
+      IBCTokenSupply &&
+      otherToken
     ) {
+      const dataValues = [
+        { label: "Staked", value: bondedToken - stkdSCRTTokenSupply },
+        { label: "Liquid", value: otherToken },
+        { label: "sSCRT", value: sSCRTTokenSupply },
+        { label: "stkd-SCRT", value: stkdSCRTTokenSupply },
+        { label: "Staked (not bonded)", value: notBondedToken },
+        { label: "Community Pool", value: communityPool },
+        { label: "IBC out", value: IBCTokenSupply },
+      ];
+
+      const backgroundColors = [
+        "#06b6d4",
+        "#8b5cf6",
+        "#FF4500",
+        "#008080",
+        "#32CD32",
+        "#ff8800",
+        "#FF1493",
+      ];
+
       setData({
-        labels: [
-          `Staked: ${formatNumber(bondedToken, 2)} (${(
-            (bondedToken / totalSupply) *
-            100
-          ).toFixed(2)}%)`,
-          `Undelegated: ${formatNumber(notBondedToken, 2)} (${(
-            (notBondedToken / totalSupply) *
-            100
-          ).toFixed(2)}%)`,
-          /*  `Operational: ${formatNumber(operationalToken, 2)} (${(
-            (operationalToken / totalSupply) *
-            100
-          ).toFixed(2)}%)`, */
-          `Community Pool: ${formatNumber(communityPool, 2)} (${(
-            (communityPool / totalSupply) *
-            100
-          ).toFixed(2)}%)`,
-        ],
+        labels: dataValues.map((item) => createLabel(item.label, item.value)),
         datasets: [
           {
-            data: [
-              bondedToken,
-              notBondedToken,
-              /*               operationalToken, */
-              communityPool,
-            ],
-            /*          backgroundColor: ["#06b6d4", "#8b5cf6", "#008080", "#ff8800"],
-            hoverBackgroundColor: ["#06b6d4", "#8b5cf6", "#008080", "#ff8800"], */
-            backgroundColor: ["#06b6d4", "#8b5cf6", "#ff8800"],
-            hoverBackgroundColor: ["#06b6d4", "#8b5cf6", "#ff8800"],
+            data: dataValues.map((item) => item.value),
+            backgroundColor: backgroundColors,
+            hoverBackgroundColor: backgroundColors,
           },
         ],
       });
@@ -143,7 +139,10 @@ export default function StakingChart() {
     notBondedToken,
     totalSupply,
     communityPool,
-    operationalToken,
+    sSCRTTokenSupply,
+    stkdSCRTTokenSupply,
+    IBCTokenSupply,
+    otherToken,
   ]);
 
   const centerText = {
@@ -166,7 +165,7 @@ export default function StakingChart() {
       ctx.fillStyle = theme === "dark" ? "#fff" : "#000";
       ctx.textAlign = "center";
       ctx.fillText(
-        `${formatNumber(bondedToken + notBondedToken, 2)}`,
+        `${formatNumber(totalSupply, 2)}`,
         width / 2,
         height / 1.75 + top
       );
@@ -190,9 +189,12 @@ export default function StakingChart() {
         onClick: null as any,
         labels: {
           color: theme === "dark" ? "#fff" : "#000",
+          font: {
+            size: 11,
+          },
           usePointStyle: true,
           pointStyle: "circle",
-          padding: 10,
+          padding: 7,
         },
       },
       tooltip: {
@@ -216,64 +218,39 @@ export default function StakingChart() {
   return (
     <>
       <div>
-        {/* Title */}
-        {/* <div className='flex items-center mb-4'>
-          <h1 className='text-2xl font-semibold'>Staking</h1>
-          <Tooltip
-            title={`Earn rewards for holding SCRT (currently ~24.66% p.a.)`}
-            placement='right'
-          >
-            <div className='ml-2 pt-1 text-neutral-400 hover:text-white transition-colors cursor-pointer'>
-              <FontAwesomeIcon icon={faInfoCircle} />
-            </div>
-          </Tooltip>
-        </div> */}
-
         {/* Chart */}
         <div className="w-full h-[250px] xl:h-[300px]">
           {totalSupply != undefined &&
-            bondedToken != undefined &&
-            notBondedToken != undefined &&
-            operationalToken != undefined &&
-            data != undefined &&
-            options != undefined &&
-            centerText != undefined && (
-              <Doughnut
-                id="stakingChartDoughnut"
-                data={data}
-                options={options as any}
-                plugins={[centerText]}
-                ref={chartRef}
-                redraw
-              />
-            )}
-          {!(
-            totalSupply != undefined &&
-            bondedToken != undefined &&
-            notBondedToken != undefined &&
-            operationalToken != undefined &&
-            data != undefined &&
-            options != undefined &&
-            centerText != undefined
-          ) && (
+          bondedToken != undefined &&
+          notBondedToken != undefined &&
+          otherToken != undefined &&
+          sSCRTTokenSupply != undefined &&
+          stkdSCRTTokenSupply != undefined &&
+          otherToken != undefined &&
+          data != undefined &&
+          options != undefined &&
+          centerText != undefined ? (
+            <Doughnut
+              id="stakingChartDoughnut"
+              data={data}
+              options={options as any}
+              plugins={[centerText]}
+              ref={chartRef}
+              redraw
+            />
+          ) : (
             <div className="animate-pulse bg-neutral-300/40 dark:bg-neutral-700/40 rounded col-span-2 w-full h-full min-h-[250px] xl:min-h-[300px] mx-auto"></div>
           )}
         </div>
-
-        <a
-          href="/staking"
-          target="_blank"
-          className="block bg-cyan-500 dark:bg-cyan-500/20 text-white dark:text-cyan-200 dark:hover:text-cyan-100 hover:bg-cyan-400 dark:hover:bg-cyan-500/50 w-full text-center transition-colors py-2.5 rounded-xl mt-4 font-semibold text-sm"
+        <Link
+          to={"/staking"}
+          className="block bg-cyan-500 dark:bg-cyan-500/20 text-white dark:text-cyan-200 dark:hover:text-cyan-100 hover:bg-cyan-400 dark:hover:bg-cyan-500/50 w-full text-center transition-colors py-2.5 rounded-xl mt-2 font-semibold text-sm"
           onClick={() => {
             trackMixPanelEvent("Clicked Stake on Staking Chart");
           }}
         >
           Stake SCRT
-          <FontAwesomeIcon
-            icon={faArrowUpRightFromSquare}
-            className="text-xs ml-2"
-          />
-        </a>
+        </Link>
       </div>
     </>
   );

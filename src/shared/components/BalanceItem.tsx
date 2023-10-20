@@ -65,14 +65,14 @@ const BalanceItem: FunctionComponent<IBalanceProps> = ({
   };
 
   //  e.g. "$1.23"
-  const scrtBalanceUsdString = usdString.format(
+  const scrtBalanceUsdString = usdString(
     new BigNumber(SCRTBalance!)
       .dividedBy(`1e${SCRTToken.decimals}`)
       .multipliedBy(Number(currentPrice))
       .toNumber()
   );
   //  e.g. "$1.23"
-  const sScrtBalanceUsdString = usdString.format(
+  const sScrtBalanceUsdString = usdString(
     new BigNumber(sSCRTBalance!)
       .dividedBy(`1e${SCRTToken.decimals}`)
       .multipliedBy(Number(currentPrice))

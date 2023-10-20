@@ -185,7 +185,7 @@ export const BalanceItem = (props: IBalanceItemProps) => {
             <div className="description text-xs text-gray-500 mb-2">Price</div>
             {assetPrice !== undefined && (
               <div className="font-semibold">
-                {usdString.format(Number(assetPrice))}
+                {usdString(Number(assetPrice))}
               </div>
             )}
             {assetPrice === undefined && (

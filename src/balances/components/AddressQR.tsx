@@ -85,10 +85,6 @@ export default function AddressQR() {
                 }}
               >
                 Get SCRT
-                <FontAwesomeIcon
-                  icon={faArrowUpRightFromSquare}
-                  className="text-xs ml-2"
-                />
               </Link>
             </div>
           </div>

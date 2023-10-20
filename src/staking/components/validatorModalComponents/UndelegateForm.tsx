@@ -23,7 +23,7 @@ export default function UndelegateForm() {
   };
 
   useEffect(() => {
-    const scrtBalanceUsdString = usdString.format(
+    const scrtBalanceUsdString = usdString(
       new BigNumber(amountString!).multipliedBy(Number(currentPrice)).toNumber()
     );
     setAmountInDollarString(scrtBalanceUsdString);
