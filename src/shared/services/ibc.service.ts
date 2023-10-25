@@ -28,7 +28,7 @@ interface IPropsTokenName extends IBaseProps {
 type TProps = IPropsToken | IPropsTokenName
 
 /**
- * Attempts to perform wrapping via secret.js API
+ * Attempts to perform IBC Transfer via secret.js API
  *
  * @param {TProps} props
  * @returns {Promise<{success: boolean, errorMsg: Nullable<string>}>} A promise that resolves to an object containing:
@@ -37,7 +37,7 @@ type TProps = IPropsToken | IPropsTokenName
  * @async
  */
 
-const performWrapping = async (
+const performIbcTransfer = async (
   props: TProps
 ): Promise<{ success: boolean; errorMsg: Nullable<string> }> => {
   let result: { success: boolean; errorMsg: Nullable<string> } = {
@@ -170,6 +170,6 @@ const performWrapping = async (
   return result
 }
 
-export const WrapService = {
-  performWrapping
+export const IbcService = {
+  performIbcTransfer
 }

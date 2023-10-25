@@ -321,7 +321,7 @@ export function Wallet() {
               <div className="flex items-center">
                 <GreenAnimatedDot />
                 <FontAwesomeIcon icon={faWallet} className="ml-3 mr-2" />
-                {`Connected`}
+                {`My Wallet`}
               </div>
             </div>
           </div>

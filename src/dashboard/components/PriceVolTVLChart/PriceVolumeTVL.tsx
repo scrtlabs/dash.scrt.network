@@ -1,7 +1,7 @@
-import React, { createContext, useContext, useEffect, useState } from "react";
-import { formatNumber } from "shared/utils/commons";
-import { ThemeContext } from "shared/context/ThemeContext";
-import { APIContext } from "shared/context/APIContext";
+import React, { createContext, useContext, useEffect, useState } from 'react'
+import { formatNumber } from 'shared/utils/commons'
+import { ThemeContext } from 'shared/context/ThemeContext'
+import { APIContext } from 'shared/context/APIContext'
 
 import {
   Chart as ChartJS,
@@ -11,11 +11,11 @@ import {
   LineElement,
   Title,
   Tooltip,
-  Legend,
-} from "chart.js";
-import { Line } from "react-chartjs-2";
-import TypeSwitch from "./components/TypeSwitch";
-import RangeSwitch from "./components/RangeSwitch";
+  Legend
+} from 'chart.js'
+import { Line } from 'react-chartjs-2'
+import TypeSwitch from './components/TypeSwitch'
+import RangeSwitch from './components/RangeSwitch'
 
 ChartJS.register(
   CategoryScale,
@@ -25,12 +25,12 @@ ChartJS.register(
   Title,
   Tooltip,
   Legend
-);
+)
 
-type ChartType = "Price" | "Volume" | "TVL";
-type ChartRange = "Day" | "Month" | "Year";
+type ChartType = 'Price' | 'Volume' | 'TVL'
+type ChartRange = 'Day' | 'Month' | 'Year'
 
-export const PriceVolumeHistoryContext = createContext(null);
+export const PriceVolumeHistoryContext = createContext(null)
 
 export default function PriceVolumeTVL(props: any) {
   const {
@@ -47,22 +47,22 @@ export default function PriceVolumeTVL(props: any) {
     volume,
     setVolume,
     marketCap,
-    setMarketCap,
-  } = useContext(APIContext);
+    setMarketCap
+  } = useContext(APIContext)
 
-  const { theme, setTheme } = useContext(ThemeContext);
+  const { theme, setTheme } = useContext(ThemeContext)
 
-  const [marketData, setMarketData] = useState([]);
+  const [marketData, setMarketData] = useState([])
 
-  const [chartType, setChartType] = useState<ChartType>("Price");
-  const [chartRange, setChartRange] = useState<ChartRange>("Month");
-  const [chartData, setChartData] = useState<any>([]);
+  const [chartType, setChartType] = useState<ChartType>('Price')
+  const [chartRange, setChartRange] = useState<ChartRange>('Month')
+  const [chartData, setChartData] = useState<any>([])
 
   let apiDataMapping = new Map<ChartRange, Object>([
-    ["Day", coingeckoApiData_Day],
-    ["Month", coingeckoApiData_Month],
-    ["Year", coingeckoApiData_Year],
-  ]);
+    ['Day', coingeckoApiData_Day],
+    ['Month', coingeckoApiData_Month],
+    ['Year', coingeckoApiData_Year]
+  ])
 
   useEffect(() => {
     if (
@@ -71,15 +71,15 @@ export default function PriceVolumeTVL(props: any) {
       !coingeckoApiData_Year ||
       !defiLamaApiData_Year
     ) {
-      return;
+      return
     }
-    if (chartType === "Price") {
-      setChartData((apiDataMapping.get(chartRange) as any).prices);
-    } else if (chartType === "Volume") {
-      setChartData((apiDataMapping.get(chartRange) as any).total_volumes);
-    } else if (chartType === "TVL") {
-      setChartData(defiLamaApiData_Year);
-      setChartRange("Year");
+    if (chartType === 'Price') {
+      setChartData((apiDataMapping.get(chartRange) as any).prices)
+    } else if (chartType === 'Volume') {
+      setChartData((apiDataMapping.get(chartRange) as any).total_volumes)
+    } else if (chartType === 'TVL') {
+      setChartData(defiLamaApiData_Year)
+      setChartRange('Year')
     }
   }, [
     chartType,
@@ -87,45 +87,45 @@ export default function PriceVolumeTVL(props: any) {
     coingeckoApiData_Day,
     coingeckoApiData_Month,
     coingeckoApiData_Year,
-    defiLamaApiData_Year,
-  ]);
+    defiLamaApiData_Year
+  ])
 
   const data = {
     labels: chartData.map(
       (x: any[]) =>
         ({
           x:
-            chartRange === "Day"
+            chartRange === 'Day'
               ? new Date(x[0]).toLocaleTimeString()
-              : new Date(x[0]).toLocaleDateString(),
+              : new Date(x[0]).toLocaleDateString()
         }.x)
     ),
     datasets: [
       {
         label: chartType,
         data: chartData.map((x: any[]) => ({ x: x[0], y: x[1] })),
-        fill: "start",
-        borderColor: theme === "dark" ? "#06b6d4" : "#06b6d4",
+        fill: 'start',
+        borderColor: theme === 'dark' ? '#06b6d4' : '#06b6d4',
         tension: 0.1,
-        pointHitRadius: "5",
-      },
-    ],
-  };
+        pointHitRadius: '5'
+      }
+    ]
+  }
 
   const glowPlugin = {
-    id: "glow",
+    id: 'glow',
     beforeDatasetsDraw: (chart: any, args: any, options: any) => {
-      const ctx = chart.ctx;
-      ctx.save();
-      (ctx.shadowColor = theme === "dark" ? "#06b6d4" : "#06b6d4"),
-        (ctx.shadowBlur = 8);
-      ctx.shadowOffsetX = 0;
-      ctx.shadowOffsetY = 0;
+      const ctx = chart.ctx
+      ctx.save()
+      ;(ctx.shadowColor = theme === 'dark' ? '#06b6d4' : '#06b6d4'),
+        (ctx.shadowBlur = 8)
+      ctx.shadowOffsetX = 0
+      ctx.shadowOffsetY = 0
     },
     afterDatasetsDraw: (chart: any) => {
-      chart.ctx.restore();
-    },
-  };
+      chart.ctx.restore()
+    }
+  }
 
   const options = {
     responsive: true,
@@ -133,77 +133,77 @@ export default function PriceVolumeTVL(props: any) {
     maintainAspectRatio: false,
     plugins: {
       legend: {
-        display: false,
+        display: false
       },
       tooltip: {
         xAlign: true,
-        color: theme === "dark" ? "#06b6d4" : "#06b6d4",
+        color: theme === 'dark' ? '#06b6d4' : '#06b6d4',
         callbacks: {
           label: function (context: any) {
-            let label = context.dataset.label || "";
+            let label = context.dataset.label || ''
 
             if (label) {
-              label += ": ";
+              label += ': '
             }
             if (context.parsed.y !== null) {
-              label += new Intl.NumberFormat("en-US", {
-                style: "currency",
-                currency: "USD",
-              }).format(context.parsed.y);
+              label += new Intl.NumberFormat('en-US', {
+                style: 'currency',
+                currency: 'USD'
+              }).format(context.parsed.y)
             }
-            return label;
-          },
-        },
-      },
+            return label
+          }
+        }
+      }
     },
     scales: {
       x: {
         ticks: {
-          color: theme === "dark" ? "#fff" : "#000",
+          color: theme === 'dark' ? '#fff' : '#000'
         },
         grid: {
-          color: theme === "dark" ? "#fff" : "#000",
+          color: theme === 'dark' ? '#fff' : '#000',
           alpha: 0.5,
           display: false,
           drawOnChartArea: true,
           drawTicks: true,
-          tickLength: 0,
+          tickLength: 0
         },
         border: {
-          color: theme === "dark" ? "#fff" : "#000",
-        },
+          color: theme === 'dark' ? '#fff' : '#000'
+        }
       },
       y: {
         ticks: {
-          color: theme === "dark" ? "#fff" : "#000",
+          color: theme === 'dark' ? '#fff' : '#000',
           callback: function (value: any, index: any, ticks: any) {
-            return "$" + formatNumber(value, 2);
-          },
+            return '$' + formatNumber(value, 2)
+          }
         },
         border: {
-          color: theme === "dark" ? "#fff" : "#000",
+          color: theme === 'dark' ? '#fff' : '#000'
         },
         grid: {
           color:
-            theme === "dark"
-              ? "rgba(255, 255, 255, 0.2)"
-              : "rgba(0, 0, 0, 0.2)",
+            theme === 'dark'
+              ? 'rgba(255, 255, 255, 0.2)'
+              : 'rgba(0, 0, 0, 0.2)',
           display: true,
           drawOnChartArea: true,
           drawTicks: true,
-          tickLength: 0,
-        },
-      },
+          tickLength: 0
+        }
+      }
     },
-    pointStyle: false,
-  };
+    pointStyle: false
+  }
 
   const providerValue = {
     chartType,
     setChartType,
     chartRange,
-    setChartRange,
-  };
+    setChartRange
+  }
 
   return (
     <>
@@ -233,5 +233,5 @@ export default function PriceVolumeTVL(props: any) {
         </div>
       </PriceVolumeHistoryContext.Provider>
     </>
-  );
+  )
 }

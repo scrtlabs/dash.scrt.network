@@ -16,6 +16,7 @@ import {
   allTokens,
   randomPadding
 } from 'shared/utils/commons'
+import Title from 'shared/components/Title'
 import BigNumber from 'bignumber.js'
 import { toast } from 'react-toastify'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -27,7 +28,6 @@ import mixpanel from 'mixpanel-browser'
 import { useSearchParams } from 'react-router-dom'
 import { APIContext } from 'shared/context/APIContext'
 import FeeGrant from 'shared/components/FeeGrant'
-import Title from 'shared/components/Title'
 import { useSecretNetworkClientStore } from 'store/secretNetworkClient'
 import {
   NativeTokenBalanceUi,
@@ -35,6 +35,7 @@ import {
 } from 'shared/components/BalanceUI'
 import PercentagePicker from 'shared/components/PercentagePicker'
 import { getWalletViewingKey } from 'service/walletService'
+import SendForm from './components/SendForm'
 
 export function Send() {
   const { feeGrantStatus, secretNetworkClient, connectWallet, isConnected } =
@@ -497,216 +498,25 @@ export function Send() {
         </script>
       </Helmet>
 
-      <div className="w-full max-w-xl mx-auto px-4 onEnter_fadeInDown relative">
-        {!secretNetworkClient?.address ? (
-          // Overlay to connect on click
-          <div
-            className="absolute block top-0 left-0 right-0 bottom-0 z-10"
-            onClick={handleClick}
-          ></div>
-        ) : null}
-
-        {/* Title */}
-        <Title title={`Send`}>
-          <Tooltip
-            title={`Transfer your assets to a given address`}
-            placement="right"
-            arrow
-          >
-            <span className="ml-2 relative -top-1.5 text-neutral-600 dark:text-neutral-400 hover:text-black dark:hover:text-white transition-colors cursor-pointer">
-              <FontAwesomeIcon icon={faInfoCircle} />
-            </span>
-          </Tooltip>
-        </Title>
-
+      {/* Content */}
+      <div className="container w-full max-w-xl mx-auto px-4">
         {/* Content */}
-        <div className="border border-neutral-200 dark:border-neutral-700 rounded-2xl p-8 w-full text-neutral-800 dark:text-neutral-200 bg-white dark:bg-neutral-900">
-          {/* *** From *** */}
-          <div className="bg-neutral-200 dark:bg-neutral-800 p-4 rounded-xl mb-4">
-            {/* Title Bar */}
-
-            <div className="flex justify-between items-center mb-2">
-              <span className="font-semibold text-center sm:text-left">
-                Amount
-              </span>
-              {!isValidAmount && isValidationActive && (
-                <span className="text-red-500 dark:text-red-500 text-xs font-normal">
-                  {amountValidationMessage}
+        <div className="rounded-3xl px-6 py-6 text-neutral-800 dark:text-neutral-200 bg-white dark:bg-neutral-900">
+          {/* Title: Secret Wrap / Secret Unwrap */}
+          <div className="mb-8">
+            <Title title={`Send`}>
+              <Tooltip
+                title={'Transfer your assets to a given address'}
+                placement="right"
+                arrow
+              >
+                <span className="ml-2 relative -top-1.5 text-neutral-600 dark:text-neutral-400 hover:text-black dark:hover:text-white transition-colors cursor-pointer">
+                  <FontAwesomeIcon icon={faInfoCircle} />
                 </span>
-              )}
-            </div>
-
-            {/* Input Field */}
-            <div className="flex mt-2" id="destinationInputWrapper">
-              <Select
-                isDisabled={
-                  !selectedToken.address || !secretNetworkClient?.address
-                }
-                options={tokens.sort((a: any, b: any) =>
-                  a.name.localeCompare(b.name)
-                )}
-                value={selectedToken}
-                onChange={setSelectedToken}
-                isSearchable={false}
-                formatOptionLabel={(token) => (
-                  <div className="flex items-center">
-                    <img
-                      src={`/img/assets/${token.image}`}
-                      alt={`${token.name} logo`}
-                      className="w-6 h-6 mr-2 rounded-full"
-                    />
-                    <span className="font-semibold text-sm">
-                      {token.address === 'native' || token.is_snip20
-                        ? null
-                        : 's'}
-                      {token.name}
-                    </span>
-                  </div>
-                )}
-                className="react-select-wrap-container"
-                classNamePrefix="react-select-wrap"
-              />
-              <input
-                value={amountString}
-                onChange={handleInputChange}
-                type="number"
-                min="0"
-                step="0.000001"
-                className={
-                  'text-right focus:z-10 block flex-1 min-w-0 w-full bg-neutral-100 dark:bg-neutral-900 text-black dark:text-white px-4 rounded-r-lg disabled:placeholder-neutral-300 dark:disabled:placeholder-neutral-700 transition-colors font-medium focus:outline-0 focus:ring-2 ring-sky-500/40' +
-                  (!isValidAmount && isValidationActive
-                    ? '  border border-red-500 dark:border-red-500'
-                    : '')
-                }
-                name="fromValue"
-                id="fromValue"
-                placeholder="0"
-                disabled={!secretNetworkClient?.address}
-              />
-            </div>
-
-            {/* Balance | [25%|50%|75%|Max] */}
-            <div className="flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 mt-2">
-              <div className="flex-1 text-xs">
-                {selectedToken.address === 'native'
-                  ? NativeTokenBalanceUi(
-                      nativeBalance,
-                      selectedToken,
-                      selectedTokenPrice
-                    )
-                  : WrappedTokenBalanceUi(
-                      tokenBalance,
-                      selectedToken,
-                      selectedTokenPrice
-                    )}
-              </div>
-              <div className="sm:flex-initial text-xs">
-                {PercentagePicker(
-                  setAmountByPercentage,
-                  !secretNetworkClient ||
-                    !secretNetworkClient?.address ||
-                    (tokenBalance == viewingKeyErrorString &&
-                      selectedToken.address !== 'native')
-                )}
-              </div>
-            </div>
+              </Tooltip>
+            </Title>
           </div>
-
-          {/* *** Destination Address *** */}
-          <div className="bg-neutral-200 dark:bg-neutral-800 p-4 rounded-xl mb-4">
-            {/* Title Bar */}
-            <div className="flex justify-between items-center mb-2">
-              <span className="flex-1 font-semibold mb-2 text-center sm:text-left">
-                Destination Address
-                <Tooltip
-                  title={`The wallet address you want to transfer to`}
-                  placement="right"
-                  arrow
-                >
-                  <span className="ml-2 mt-1 text-neutral-600 dark:text-neutral-400 hover:text-black dark:hover:text-white transition-colors cursor-pointer">
-                    <FontAwesomeIcon icon={faInfoCircle} />
-                  </span>
-                </Tooltip>
-              </span>
-              {!isValidDestination && isValidationActive && (
-                <span className="text-red-500 dark:text-red-500 text-xs font-normal">
-                  {destinationValidationMessage}
-                </span>
-              )}
-            </div>
-
-            {/* Input Field */}
-            <div className="flex" id="destinationInputWrapper">
-              <input
-                value={destinationAddress}
-                onChange={(e) => setDestinationAddress(e.target.value)}
-                type="text"
-                className={
-                  'py-2 text-left focus:z-10 block flex-1 min-w-0 w-full bg-neutral-100 dark:bg-neutral-900 text-black dark:text-white px-4 rounded-md disabled:placeholder-neutral-300 dark:disabled:placeholder-neutral-700 transition-colors font-medium focus:outline-0 focus:ring-2 ring-sky-500/40' +
-                  (!isValidDestination && isValidationActive
-                    ? '  border border-red-500 dark:border-red-500'
-                    : '')
-                }
-                name="destinationAddress"
-                id="destinationAddress"
-                placeholder="Destination Address (secret1 ...)"
-                disabled={!secretNetworkClient?.address}
-              />
-            </div>
-          </div>
-
-          {/* *** Memo *** */}
-          <div className="bg-neutral-200 dark:bg-neutral-800 p-4 rounded-xl">
-            {/* Title Bar */}
-            <div className="flex flex-col sm:flex-row">
-              <div className="flex-1 font-semibold mb-2 text-center sm:text-left">
-                Memo (optional)
-                <Tooltip
-                  title={`Add a message to your transaction`}
-                  placement="right"
-                  arrow
-                >
-                  <span className="ml-2 mt-1 text-neutral-600 dark:text-neutral-400 hover:text-black dark:hover:text-white transition-colors cursor-pointer">
-                    <FontAwesomeIcon icon={faInfoCircle} />
-                  </span>
-                </Tooltip>
-              </div>
-            </div>
-
-            {/* Input Field */}
-            <div className="flex" id="memoInputWrapper">
-              <input
-                value={memo}
-                onChange={(e) => setMemo(e.target.value)}
-                type="text"
-                className={
-                  'py-2 text-left focus:z-10 block flex-1 min-w-0 w-full bg-neutral-100 dark:bg-neutral-900 text-black dark:text-white px-4 rounded-md disabled:placeholder-neutral-300 dark:disabled:placeholder-neutral-700 transition-colors font-medium focus:outline-0 focus:ring-2 ring-sky-500/40'
-                }
-                name="memo"
-                id="memo"
-                placeholder="Memo"
-                disabled={!isConnected}
-              />
-            </div>
-          </div>
-
-          {/* Fee Grant */}
-          <FeeGrant />
-
-          {/* Submit Button */}
-          <SubmitButton
-            disabled={
-              !secretNetworkClient ||
-              !selectedToken.address ||
-              !secretNetworkClient?.address
-            }
-            amount={amountString}
-            currency={
-              selectedToken.address === 'native' || selectedToken.is_snip20
-                ? null
-                : 's' + selectedToken.name
-            }
-          />
+          <SendForm />
         </div>
       </div>
     </>

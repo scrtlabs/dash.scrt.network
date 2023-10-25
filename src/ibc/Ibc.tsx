@@ -1,4 +1,4 @@
-import { useState, createContext, useContext, useEffect } from 'react'
+import { useState, useEffect, createContext } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faInfoCircle } from '@fortawesome/free-solid-svg-icons'
 import Tooltip from '@mui/material/Tooltip'
@@ -15,14 +15,15 @@ import {
 import { useSecretNetworkClientStore } from 'store/secretNetworkClient'
 import Title from 'shared/components/Title'
 import Deposit from './components/Deposit'
+import IbcForm from './components/IbcForm'
 
 export const IbcContext = createContext(null)
 
 export function Ibc() {
-  const [isWrapModalOpen, setIsWrapModalOpen] = useState(false)
+  const [isWrapModalOpen, setIsWrapModalOpen] = useState<boolean>(false)
 
   const [selectedToken, setSelectedToken] = useState<Token>(
-    tokens.filter((token) => token.name === 'SCRT')[0]
+    tokens.filter((token: Token) => token.name === 'SCRT')[0]
   )
 
   const [supportedTokens, setSupportedTokens] = useState<Token[]>([])
@@ -33,15 +34,15 @@ export function Ibc() {
 
   // URL params
   const [searchParams, setSearchParams] = useSearchParams()
-  const modeUrlParam = searchParams.get('mode')
-  const chainUrlParam = searchParams.get('chain')
-  const tokenUrlParam = searchParams.get('token')
+  const modeUrlParam: string = searchParams.get('mode')
+  const chainUrlParam: string = searchParams.get('chain')
+  const tokenUrlParam: string = searchParams.get('token')
 
   const selectableChains = tokens.find(
     (token) => token.name === 'SCRT'
   ).deposits
 
-  const [selectedSource, setSelectedSource] = useState<any>(
+  const [selectedSource, setSelectedSource] = useState<Deposit>(
     selectedToken.deposits.find(
       (deposit: any) => deposit.chain_name.toLowerCase() === 'osmosis'
     )
@@ -127,6 +128,11 @@ export function Ibc() {
     setSupportedTokens
   }
 
+  const message =
+    ibcMode === 'deposit'
+      ? `Deposit your SCRT via IBC transfer from ${selectedSource.chain_name} to Secret Network`
+      : `Withdraw your SCRT via IBC transfer from Secret Network to ${selectedSource.chain_name}`
+
   return (
     <>
       <Helmet>
@@ -159,7 +165,7 @@ export function Ibc() {
         </script>
       </Helmet>
       <IbcContext.Provider value={ibcContextProviderValue}>
-        <WrapModal
+        {/* <WrapModal
           open={isWrapModalOpen}
           selectedToken={selectedToken}
           ibcMode={ibcMode}
@@ -167,31 +173,23 @@ export function Ibc() {
             setIsWrapModalOpen(false)
             document.body.classList.remove('overflow-hidden')
           }}
-        />
+        /> */}
 
-        <div className="w-full max-w-xl mx-auto px-4 onEnter_fadeInDown">
-          {/* Title */}
-          <Title title={'IBC Transfer'}>
-            <Tooltip
-              title={
-                ibcMode === 'deposit'
-                  ? `Deposit your ${selectedToken?.name} via IBC transfer from any chain to Secret Network`
-                  : `Withdraw your ${selectedToken?.name} via IBC transfer from Secret Network to any chain`
-              }
-              placement="right"
-              arrow
-            >
-              <span className="ml-2 relative -top-1.5 text-neutral-600 dark:text-neutral-400 hover:text-black dark:hover:text-white transition-colors cursor-pointer">
-                <FontAwesomeIcon icon={faInfoCircle} />
-              </span>
-            </Tooltip>
-          </Title>
-          <div
-            className="rounded-2xl p-8 border border-neutral-200 dark:border-neutral-700 w-full text-neutral-800 dark:text-neutral-200 bg-white dark:bg-neutral-900"
-            onClick={handleClick}
-          >
-            {/* Deposit */}
-            <Deposit />
+        {/* Content */}
+        <div className="container w-full max-w-xl mx-auto px-4">
+          {/* Content */}
+          <div className="rounded-3xl px-6 py-6 text-neutral-800 dark:text-neutral-200 bg-white dark:bg-neutral-900">
+            {/* Title: Secret Wrap / Secret Unwrap */}
+            <div className="mb-8">
+              <Title title={`IBC Transfer`}>
+                <Tooltip title={message} placement="right" arrow>
+                  <span className="ml-2 relative -top-1.5 text-neutral-600 dark:text-neutral-400 hover:text-black dark:hover:text-white transition-colors cursor-pointer">
+                    <FontAwesomeIcon icon={faInfoCircle} />
+                  </span>
+                </Tooltip>
+              </Title>
+            </div>
+            <IbcForm />
           </div>
         </div>
       </IbcContext.Provider>

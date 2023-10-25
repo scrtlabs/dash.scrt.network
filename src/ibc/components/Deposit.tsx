@@ -31,7 +31,8 @@ import {
   tokens,
   snips,
   ICSTokens,
-  Deposit
+  Deposit,
+  Chain
 } from 'shared/utils/config'
 import { TxRaw } from 'secretjs/dist/protobuf/cosmos/tx/v1beta1/tx'
 import { toast } from 'react-toastify'
@@ -40,7 +41,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
   faCopy,
   faRightLeft,
-  faKey,
   faXmarkCircle,
   faCheckCircle,
   faInfoCircle
@@ -56,7 +56,7 @@ import {
   Environment
 } from '@axelar-network/axelarjs-sdk'
 import { useSecretNetworkClientStore } from 'store/secretNetworkClient'
-import { getWalletViewingKey, setWalletViewingKey } from 'service/walletService'
+import { getWalletViewingKey } from 'service/walletService'
 import { Nullable } from 'shared/types/Nullable'
 import {
   NativeTokenBalanceUi,
@@ -64,6 +64,7 @@ import {
 } from 'shared/components/BalanceUI'
 import PercentagePicker from 'shared/components/PercentagePicker'
 import { APIContext } from 'shared/context/APIContext'
+import IbcSelect from './IbcSelect'
 
 function Deposit() {
   const {
@@ -123,10 +124,6 @@ function Deposit() {
   useEffect(() => {
     trackMixPanelEvent('Open IBC Tab')
   }, [])
-  const message =
-    ibcMode === 'deposit'
-      ? `Deposit your SCRT via IBC transfer from ${selectedSource.chain_name} to Secret Network`
-      : `Withdraw your SCRT via IBC transfer from Secret Network to ${selectedSource.chain_name}`
 
   const ChainSelect = () => {
     return (
@@ -138,16 +135,13 @@ function Deposit() {
           isSearchable={false}
           isDisabled={!isConnected}
           formatOptionLabel={(option) => (
-            <div className="flex items-center">
-              <img
-                src={`/img/assets/${chains[option.chain_name].chain_image}`}
-                alt={`/img/assets/${
-                  chains[option.chain_name].chain_name
-                } asset logo`}
-                className="w-6 h-6 mr-2 rounded-full"
-              />
-              <span className="font-semibold text-sm">{option.chain_name}</span>
-            </div>
+            <IbcSelect
+              imgSrc={`/img/assets/${chains[option.chain_name].chain_image}`}
+              altText={`/img/assets/${
+                chains[option.chain_name].chain_name
+              } asset logo`}
+              optionName={option.chain_name}
+            />
           )}
           className="react-select-container"
           classNamePrefix="react-select"
@@ -231,8 +225,8 @@ function Deposit() {
   useEffect(() => {
     async function getAxelarTransferFee() {
       if (selectedToken.is_ics20) {
-        const chain = (selectedToken as any).deposits.filter(
-          (chain: any) => chain.chain_name === selectedSource.chain_name
+        const chain = selectedToken.deposits.filter(
+          (chain: Chain) => chain.chain_name === selectedSource.chain_name
         )[0]
         const fromChain =
             ibcMode === 'deposit' ? chain.axelar_chain_name : 'secret-snip',
@@ -1078,7 +1072,7 @@ function Deposit() {
         className={
           'enabled:bg-gradient-to-r enabled:from-cyan-600 enabled:to-purple-600 enabled:hover:from-cyan-500 enabled:hover:to-purple-500 transition-colors text-white font-semibold py-3 w-full rounded-lg disabled:bg-neutral-500 focus:outline-none focus-visible:ring-4 ring-sky-500/40'
         }
-        disabled={!secretNetworkClient.address}
+        disabled={!isConnected}
         onClick={() => submit()}
       >
         Execute Transfer
@@ -1422,7 +1416,18 @@ function Deposit() {
         )[0]?.axelar_chain_name !== CHAINS.MAINNET.AXELAR && <FeesInfo />}
 
       <div className="mt-4">
-        <SubmitButton />
+        {/* Submit Button */}
+        <div className="flex flex-col gap-4 items-center">
+          <button
+            className={
+              'enabled:bg-gradient-to-r enabled:from-cyan-600 enabled:to-purple-600 enabled:hover:from-cyan-500 enabled:hover:to-purple-500 transition-colors text-white font-extrabold py-3 w-full rounded-lg disabled:bg-neutral-500 focus:outline-none focus-visible:ring-4 ring-sky-500/40'
+            }
+            disabled={!isConnected}
+            type="submit"
+          >
+            {`Execute Transfer`}
+          </button>
+        </div>
       </div>
     </>
   )

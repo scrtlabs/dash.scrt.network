@@ -9,7 +9,7 @@ import ReactDOM from 'react-dom/client'
 import { Helmet, HelmetProvider } from 'react-helmet-async'
 
 // Pages
-import { Ibc } from 'ibc/Ibc.1'
+import { Ibc } from 'ibc/Ibc'
 import { Wrap } from 'wrap/Wrap'
 import DefaultLayout from 'shared/layouts/DefaultLayout'
 import Bridge from 'bridge/Bridge'
