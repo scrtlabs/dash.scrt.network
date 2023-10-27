@@ -73,6 +73,20 @@ export const chains: { [chain_name: string]: Chain } = {
     chain_image: "/akt.svg",
     explorer_account: "https://www.mintscan.io/akash/account/",
   },
+  Archway: {
+    chain_name: "Archway",
+    deposit_channel_id: "channel-21",
+    deposit_gas: 150_000,
+    deposit_gas_denom: "aarch",
+    withdraw_channel_id: "channel-84",
+    withdraw_gas: 30_000,
+    chain_id: "archway-1",
+    bech32_prefix: "archway",
+    lcd: "https://archway-api.lavenderfive.com:443",
+    rpc: "https://rpc-archway.whispernode.com",
+    chain_image: "/archway.svg",
+    explorer_account: "https://www.mintscan.io/archway/account/",
+  },
   Axelar: {
     chain_name: "Axelar",
     deposit_channel_id: "channel-12",
@@ -461,6 +475,18 @@ export const tokens: Token[] = [
         ),
       },
       {
+        chain_name: "Archway",
+        from_denom: ibcDenom(
+          [
+            {
+              incomingChannelId: chains["Archway"].deposit_channel_id,
+              incomingPortId: "transfer",
+            },
+          ],
+          "uscrt"
+        ),
+      },
+      {
         chain_name: "Axelar",
         from_denom: ibcDenom(
           [
@@ -720,6 +746,10 @@ export const tokens: Token[] = [
       },
       {
         chain_name: "Akash",
+        from_denom: "uscrt",
+      },
+      {
+        chain_name: "Archway",
         from_denom: "uscrt",
       },
       {
@@ -1926,18 +1956,27 @@ export const snips: Token[] = [
     name: "ALTER",
     description: "ALTER dApp Token",
     is_snip20: true,
-    address: "secret12rcvz0umvk875kd6a803txhtlu7y0pnd73kcej",
+    address: "secret17ljp7wwesff85ewt8xlauxjt7zrlr2hh27wgvr",
     code_hash:
-      "d4f32c1bca133f15f69d557bd0722da10f45e31e5475a12900ca1e62e63e8f76",
-    image: "/alter.jpg",
+      "68e859db0840969e4b20b825c2cd2f41c189da83ee703746daf7a658d26f494f",
+    image: "/alter.svg",
     decimals: 6,
-    coingecko_id: "",
+    coingecko_id: "alter",
     deposits: [
+      {
+        chain_name: "Archway",
+        from_denom: ibcDenom(
+          [{ incomingChannelId: "channel-39", incomingPortId: "transfer" }],
+          "cw20:secret17ljp7wwesff85ewt8xlauxjt7zrlr2hh27wgvr"
+        ),
+        channel_id: "channel-39",
+        gas: 300_000,
+      },
       {
         chain_name: "Osmosis",
         from_denom: ibcDenom(
           [{ incomingChannelId: "channel-476", incomingPortId: "transfer" }],
-          "cw20:secret12rcvz0umvk875kd6a803txhtlu7y0pnd73kcej"
+          "cw20:secret17ljp7wwesff85ewt8xlauxjt7zrlr2hh27wgvr"
         ),
         channel_id: "channel-476",
         gas: 300_000,
@@ -1946,7 +1985,7 @@ export const snips: Token[] = [
         chain_name: "Kujira",
         from_denom: ibcDenom(
           [{ incomingChannelId: "channel-44", incomingPortId: "transfer" }],
-          "cw20:secret12rcvz0umvk875kd6a803txhtlu7y0pnd73kcej"
+          "cw20:secret17ljp7wwesff85ewt8xlauxjt7zrlr2hh27wgvr"
         ),
         channel_id: "channel-44",
         gas: 300_000,
@@ -1955,7 +1994,7 @@ export const snips: Token[] = [
         chain_name: "Juno",
         from_denom: ibcDenom(
           [{ incomingChannelId: "channel-163", incomingPortId: "transfer" }],
-          "cw20:secret12rcvz0umvk875kd6a803txhtlu7y0pnd73kcej"
+          "cw20:secret17ljp7wwesff85ewt8xlauxjt7zrlr2hh27wgvr"
         ),
         channel_id: "channel-163",
         gas: 300_000,
@@ -1963,20 +2002,26 @@ export const snips: Token[] = [
     ],
     withdrawals: [
       {
+        chain_name: "Archway",
+        from_denom: "secret17ljp7wwesff85ewt8xlauxjt7zrlr2hh27wgvr",
+        channel_id: "channel-90",
+        gas: 350_000,
+      },
+      {
         chain_name: "Osmosis",
-        from_denom: "secret12rcvz0umvk875kd6a803txhtlu7y0pnd73kcej",
+        from_denom: "secret17ljp7wwesff85ewt8xlauxjt7zrlr2hh27wgvr",
         channel_id: "channel-44",
         gas: 350_000,
       },
       {
         chain_name: "Kujira",
-        from_denom: "secret12rcvz0umvk875kd6a803txhtlu7y0pnd73kcej",
+        from_denom: "secret17ljp7wwesff85ewt8xlauxjt7zrlr2hh27wgvr",
         channel_id: "channel-46",
         gas: 350_000,
       },
       {
         chain_name: "Juno",
-        from_denom: "secret12rcvz0umvk875kd6a803txhtlu7y0pnd73kcej",
+        from_denom: "secret17ljp7wwesff85ewt8xlauxjt7zrlr2hh27wgvr",
         channel_id: "channel-45",
         gas: 350_000,
       },
@@ -2123,6 +2168,15 @@ export const snips: Token[] = [
         gas: 300_000,
       },
       {
+        chain_name: "Archway",
+        from_denom: ibcDenom(
+          [{ incomingChannelId: "channel-39", incomingPortId: "transfer" }],
+          "cw20:secret153wu605vvp934xhd4k9dtd640zsep5jkesstdm"
+        ),
+        channel_id: "channel-39",
+        gas: 300_000,
+      },
+      {
         chain_name: "Osmosis",
         from_denom: ibcDenom(
           [{ incomingChannelId: "channel-476", incomingPortId: "transfer" }],
@@ -2151,6 +2205,12 @@ export const snips: Token[] = [
       },
     ],
     withdrawals: [
+      {
+        chain_name: "Archway",
+        from_denom: "secret153wu605vvp934xhd4k9dtd640zsep5jkesstdm",
+        channel_id: "channel-90",
+        gas: 350_000,
+      },
       {
         chain_name: "Composable",
         from_denom: "secret153wu605vvp934xhd4k9dtd640zsep5jkesstdm",
