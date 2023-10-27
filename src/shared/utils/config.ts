@@ -143,6 +143,20 @@ export const chains: { [chain_name: string]: Chain } = {
     chain_image: "/atom.svg",
     explorer_account: "https://www.mintscan.io/cosmos/account/",
   },
+  dYdX: {
+    chain_name: "dYdX",
+    deposit_channel_id: "channel-2",
+    deposit_gas: 150_000,
+    deposit_gas_denom: "adydx",
+    withdraw_channel_id: "channel-89",
+    withdraw_gas: 50_000,
+    chain_id: "dydx-mainnet-1",
+    bech32_prefix: "dydx",
+    lcd: "https://dydx-api.lavenderfive.com:443",
+    rpc: "https://dydx-rpc.lavenderfive.com:443",
+    chain_image: "/dydx.svg",
+    explorer_account: "https://www.mintscan.io/dydx/account/",
+  },
   /*   Crescent: {
     chain_name: "Crescent",
     deposit_channel_id: "channel-10",
@@ -520,6 +534,18 @@ export const tokens: Token[] = [
           "uscrt"
         ),
       },
+      {
+        chain_name: "dYdX",
+        from_denom: ibcDenom(
+          [
+            {
+              incomingChannelId: chains["dYdX"].deposit_channel_id,
+              incomingPortId: "transfer",
+            },
+          ],
+          "uscrt"
+        ),
+      },
       /*       {
         chain_name: "Crescent",
         from_denom: ibcDenom(
@@ -740,6 +766,10 @@ export const tokens: Token[] = [
       },
       {
         chain_name: "Cosmos Hub",
+        from_denom: "uscrt",
+      },
+      {
+        chain_name: "dYdX",
         from_denom: "uscrt",
       },
       /*       {
@@ -1044,6 +1074,35 @@ export const tokens: Token[] = [
             },
           ],
           "udvpn"
+        ),
+      },
+    ],
+  },
+  {
+    name: "dYdX",
+    description: "dYdX governance token",
+    address: "XXXX",
+    code_hash: "XXXX",
+    image: "/dydx.svg",
+    decimals: 18,
+    coingecko_id: "dydx",
+    deposits: [
+      {
+        chain_name: "dYdX",
+        from_denom: "adydx",
+      },
+    ],
+    withdrawals: [
+      {
+        chain_name: "dYdX",
+        from_denom: ibcDenom(
+          [
+            {
+              incomingChannelId: chains["dYdX"].withdraw_channel_id,
+              incomingPortId: "transfer",
+            },
+          ],
+          "adydx"
         ),
       },
     ],
