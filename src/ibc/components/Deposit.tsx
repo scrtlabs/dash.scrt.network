@@ -535,7 +535,7 @@ function Deposit() {
           ) {
             // Regular cosmos chain (not ethermint signing)
             if (
-              selectedToken === "SCRT" ||
+              selectedToken.name === "SCRT" ||
               depositChain.axelar_chain_name == CHAINS.MAINNET.AXELAR
             ) {
               tx = await sourceChainSecretjs.tx.ibc.transfer(
