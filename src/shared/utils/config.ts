@@ -1081,8 +1081,9 @@ export const tokens: Token[] = [
   {
     name: "dYdX",
     description: "dYdX governance token",
-    address: "XXXX",
-    code_hash: "XXXX",
+    address: "secret13lndcagy53wfzh69rtv0dex3a7cks0dv5emwke",
+    code_hash:
+      "5a085bd8ed89de92b35134ddd12505a602c7759ea25fb5c089ba03c8535b3042",
     image: "/dydx.svg",
     decimals: 18,
     coingecko_id: "dydx",
