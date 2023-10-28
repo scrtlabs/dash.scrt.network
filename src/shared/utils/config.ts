@@ -899,6 +899,36 @@ export const tokens: Token[] = [
     ],
   },
   {
+    name: "ARCH",
+    description: "Archway Governance Token",
+    address: "secret188z7hncvphw4us4h6uy6vlq4qf20jd2vm2vu8c",
+    code_hash:
+      "638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e",
+    image: "/archway.svg",
+    decimals: 18,
+    coingecko_id: "archway",
+    deposits: [
+      {
+        chain_name: "Archway",
+        from_denom: "aarch",
+      },
+    ],
+    withdrawals: [
+      {
+        chain_name: "Archway",
+        from_denom: ibcDenom(
+          [
+            {
+              incomingChannelId: chains["Archway"].withdraw_channel_id,
+              incomingPortId: "transfer",
+            },
+          ],
+          "aarch"
+        ),
+      },
+    ],
+  },
+  {
     name: "ATOM",
     description: "Cosmos Hub Governance Token",
     address: "secret19e75l25r6sa6nhdf4lggjmgpw0vmpfvsw5cnpe",
