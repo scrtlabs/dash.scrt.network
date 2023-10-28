@@ -2752,7 +2752,7 @@ export const ICSTokens: Token[] = [
     name: "awstETH",
     description: "wstETH from Axelar",
     is_ics20: true,
-    address: "secret14mg7qgggl33ujdlj7cnykadfa2mwsmr6r8wun9",
+    address: "secret148jzxkagwe0xulf8jt3sw4nuh2shdh788z3gyd",
     code_hash:
       "638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e",
     image: "/wsteth.svg",
