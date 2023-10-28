@@ -2752,8 +2752,9 @@ export const ICSTokens: Token[] = [
     name: "awstETH",
     description: "wstETH from Axelar",
     is_ics20: true,
-    address: "XXXXX",
-    code_hash: "XXXXX",
+    address: "secret14mg7qgggl33ujdlj7cnykadfa2mwsmr6r8wun9",
+    code_hash:
+      "638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e",
     image: "/wsteth.svg",
     decimals: 18,
     coingecko_id: "wrapped-steth",
