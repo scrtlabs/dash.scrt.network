@@ -304,19 +304,21 @@ function Dashboard() {
           <div className="col-span-12 md:col-span-6 lg:col-span-12 xl:col-span-6 2xl:col-span-4">
             {/* <BlockInfo blockHeight={blockHeight || 0} blockTime={blockTime} circulatingSupply={circulatingSupply} inflation={inflation}/> */}
             <QuadTile
-              item1_key="Block Height"
-              item1_value={blockHeightFormattedString}
-              item2_key="Block Time (last block)"
-              item2_value={blockTimeFormattedString}
-              item3_key="# Transactions (24h)"
-              item3_value={dailyTransactionsFormattedString}
-              item4_key="Gas Used (24h)"
-              item4_value={gasUsedFormattedString}
+              item1={{ key: 'Block Height', value: blockHeightFormattedString }}
+              item2={{
+                key: 'Block Time (last block)',
+                value: blockTimeFormattedString
+              }}
+              item3={{
+                key: '# Transactions (24h)',
+                value: dailyTransactionsFormattedString
+              }}
+              item4={{ key: 'Gas Used (24h)', value: gasUsedFormattedString }}
             />
           </div>
 
           <div className="col-span-12 md:col-span-6 lg:col-span-12 xl:col-span-6 2xl:col-span-4">
-            <div className="bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 px-6 py-8 rounded-xl">
+            <div className="bg-white dark:bg-neutral-900 px-6 py-8 rounded-xl">
               <StakingChart />
             </div>
           </div>
@@ -324,21 +326,23 @@ function Dashboard() {
           {/* Block Info */}
           <div className="col-span-12 md:col-span-12 lg:col-span-12 xl:col-span-12 2xl:col-span-4">
             <QuadTile
-              item1_key="APR/Staking Yield"
-              item1_value={growthRateFormattedString}
-              item2_key="Inflation"
-              item2_value={inflationFormattedString}
-              item3_key="Community Tax/Secret Foundation Tax"
-              item3_value={taxFormattedString}
-              item4_key="Bonded Ratio"
-              item4_value={bondedRatioFormattedString}
+              item1={{
+                key: 'APR/Staking Yield',
+                value: growthRateFormattedString
+              }}
+              item2={{ key: 'Inflation', value: inflationFormattedString }}
+              item3={{
+                key: 'Community Tax/Secret Foundation Tax',
+                value: taxFormattedString
+              }}
+              item4={{ key: 'Bonded Ratio', value: bondedRatioFormattedString }}
             />
           </div>
         </div>
 
         <div className="grid grid-cols-12 gap-4">
           {/* Item */}
-          <div className="col-span-12 bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 p-4 rounded-xl">
+          <div className="col-span-12 bg-white dark:bg-neutral-900 p-4 rounded-xl">
             <PriceVolumeTVL />
           </div>
           {/* Item */}

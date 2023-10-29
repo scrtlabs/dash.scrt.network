@@ -47,7 +47,7 @@ function FeeGrant() {
             <div className="font-semibold text-sm flex items-center h-[1.6rem]">
               <FontAwesomeIcon
                 icon={faCheckCircle}
-                className="text-green-500 mr-1.5"
+                className="text-emerald-500 mr-1.5"
               />
               Fee Granted
             </div>

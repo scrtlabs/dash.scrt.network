@@ -92,7 +92,7 @@ const RestakeValidatorItem = (props: Props) => {
           <span
             className={`border rounded-full border-gray-400 relative ${
               isChecked
-                ? 'text-green-200 bg-green-800'
+                ? 'text-emerald-200 bg-emerald-800'
                 : 'text-red-200 bg-red-800'
             }`}
           >

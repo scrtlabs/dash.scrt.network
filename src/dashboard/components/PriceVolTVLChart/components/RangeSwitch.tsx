@@ -14,7 +14,7 @@ function RangeSwitch() {
             onClick={() => setChartRange('Day')}
             type="button"
             className={
-              'py-1.5 px-3 text-xs font-semibold rounded-l-lg bg-neutral-100 dark:bg-neutral-900 ' +
+              'py-1.5 px-3 text-xs font-semibold rounded-l-lg bg-neutral-100 dark:bg-neutral-800 ' +
               (chartRange === 'Day'
                 ? ' cursor-default bg-neutral-300 dark:bg-cyan-500/20 text-black dark:text-cyan-200 font-semibold'
                 : ' text-neutral-800 dark:text-neutral-200 hover:bg-neutral-300 dark:hover:bg-neutral-700 focus:bg-neutral-500 dark:focus:bg-neutral-500')
@@ -26,7 +26,7 @@ function RangeSwitch() {
             onClick={() => setChartRange('Month')}
             type="button"
             className={
-              'py-1.5 px-3 text-xs font-semibold bg-neutral-100 dark:bg-neutral-900' +
+              'py-1.5 px-3 text-xs font-semibold bg-neutral-100 dark:bg-neutral-800' +
               (chartRange === 'Month'
                 ? ' cursor-default bg-neutral-300 dark:bg-cyan-500/20 text-black dark:text-cyan-200 font-semibold'
                 : ' text-neutral-800 dark:text-neutral-200 hover:bg-neutral-300 dark:hover:bg-neutral-700 focus:bg-neutral-500 dark:focus:bg-neutral-500')
@@ -38,7 +38,7 @@ function RangeSwitch() {
             onClick={() => setChartRange('Year')}
             type="button"
             className={
-              'py-1.5 px-3 text-xs font-semibold rounded-r-lg bg-neutral-100 dark:bg-neutral-900' +
+              'py-1.5 px-3 text-xs font-semibold rounded-r-lg bg-neutral-100 dark:bg-neutral-800' +
               (chartRange === 'Year'
                 ? ' cursor-default bg-neutral-300 dark:bg-cyan-500/20 text-black dark:text-cyan-200 font-semibold'
                 : ' text-neutral-800 dark:text-neutral-200 hover:bg-neutral-300 dark:hover:bg-neutral-700 focus:bg-neutral-500 dark:focus:bg-neutral-500')

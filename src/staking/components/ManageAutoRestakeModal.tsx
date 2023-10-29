@@ -7,6 +7,8 @@ import { faXmark } from '@fortawesome/free-solid-svg-icons'
 import RestakeValidatorItem from './RestakeValidatorItem'
 import { restakeThreshold } from 'shared/utils/commons'
 import { useSecretNetworkClientStore } from 'store/secretNetworkClient'
+import Modal from 'shared/components/UI/Modal/Modal'
+import Button from 'shared/components/UI/Modal/Button/Button'
 
 interface Props {
   open: boolean
@@ -156,67 +158,31 @@ const ManageAutoRestakeModal = (props: Props) => {
   }
 
   return (
-    <>
-      {/* Outer */}
-      <div
-        className="fixed top-0 left-0 right-0 bottom-0 bg-black/80 z-50 flex justify-center items-center"
-        onClick={props.onClose}
-      >
-        {/* Inner */}
-        <div className="absolute top-[10%] w-full onEnter_fadeInDown">
-          <div className="mx-auto max-w-4xl px-4">
-            <div
-              className="bg-white dark:bg-neutral-900 p-8 rounded-2xl"
-              onClick={(e) => {
-                e.stopPropagation()
-              }}
-            >
-              {/* Close */}
-              <div className="mb-0 text-right">
-                <button
-                  onClick={props.onClose}
-                  className="text-neutral-500 dark:text-neutral-500 hover:bg-neutral-200 dark:hover:bg-neutral-800 transition-colors px-1.5 py-1 rounded-lg text-xl"
-                >
-                  <FontAwesomeIcon icon={faXmark} className="fa-fw" />
-                </button>
-              </div>
-              {/* Header */}
-              <div className="mb-8 text-center">
-                <h2 className="text-2xl font-medium mb-2">
-                  {/* <FontAwesomeIcon icon={faWallet} className="mr-2" /> */}
-                  Manage Auto Restake
-                </h2>
-                <p className="text-neutral-600 dark:text-neutral-400 max-w-sm mx-auto">
-                  Automating the process of the 'claim and restake' process!
-                </p>
-              </div>
-              {/* Body */}
-              <div className="flex flex-col">
-                {/* List of user's delegators */}
-                <CommittedDelegators />
-              </div>
-              {/* Footer */}
-              <div className="flex flex-col sm:flex-row-reverse justify-start mt-4 gap-2">
-                {restakeChoices.length > 0 && (
-                  <button
-                    onClick={() => doRestake()}
-                    className="text-white dark:text-white bg-sky-600 dark:bg-sky-600 hover:bg-sky-700 dark:hover:bg-sky-700 font-semibold px-4 py-2 rounded-md transition-colors"
-                  >
-                    Submit Changes
-                  </button>
-                )}
-                <button
-                  onClick={props.onClose}
-                  className="bg-neutral-200 dark:bg-neutral-800 hover:bg-neutral-300 dark:hover:bg-neutral-700 font-semibold px-4 py-2 rounded-md transition-colors"
-                >
-                  Cancel
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
+    <Modal
+      title={`Manage Auto Restake`}
+      subTitle={`Automate the process of claim and restake`}
+      onClose={props.onClose}
+      isOpen={props.open}
+    >
+      <div className="flex flex-col">
+        {/* List of user's delegators */}
+        <CommittedDelegators />
       </div>
-    </>
+      {/* Footer */}
+      <div className="flex flex-col sm:flex-row-reverse justify-start mt-4 gap-2">
+        {restakeChoices.length > 0 && (
+          <>
+            <Button onClick={() => doRestake()} size="large">
+              Submit Changes
+            </Button>
+          </>
+        )}
+
+        <Button onClick={props.onClose} size="large" color="secondary">
+          Cancel
+        </Button>
+      </div>
+    </Modal>
   )
 }
 

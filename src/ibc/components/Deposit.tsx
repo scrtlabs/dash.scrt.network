@@ -201,7 +201,7 @@ function Deposit() {
               <div className="font-semibold text-sm flex items-center h-[1.6rem]">
                 <FontAwesomeIcon
                   icon={faCheckCircle}
-                  className="text-green-500 mr-1.5"
+                  className="text-emerald-500 mr-1.5"
                 />
                 Fee Granted
               </div>
@@ -1373,7 +1373,7 @@ function Deposit() {
             value={amountToTransfer}
             onChange={handleInputChange}
             className={
-              'remove-arrows text-right focus:z-10 block flex-1 min-w-0 w-full bg-neutral-100 dark:bg-neutral-900 text-black dark:text-white px-4 rounded-r-lg disabled:placeholder-neutral-300 dark:disabled:placeholder-neutral-700 transition-colors font-medium focus:outline-0 focus:ring-2 ring-sky-500/40' +
+              'text-right focus:z-10 block flex-1 min-w-0 w-full bg-neutral-100 dark:bg-neutral-900 text-black dark:text-white px-4 rounded-r-lg disabled:placeholder-neutral-300 dark:disabled:placeholder-neutral-700 transition-colors font-medium focus:outline-0 focus:ring-2 ring-sky-500/40' +
               (false ? '  border border-red-500 dark:border-red-500' : '')
             }
             name="amount"

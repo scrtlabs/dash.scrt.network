@@ -21,7 +21,7 @@ import { useSecretNetworkClientStore } from 'store/secretNetworkClient'
 import { setWalletViewingKey } from 'service/walletService'
 import { scrtToken } from 'shared/utils/tokens'
 import { ConnectWalletModal } from 'shared/context/ConnectWalletModal'
-import Modal from '../Modal'
+import Modal from '../UI/Modal/Modal'
 import { ManageBalances } from './ManageBalances/ManageBalances'
 
 export function Wallet() {

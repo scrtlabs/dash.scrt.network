@@ -8,6 +8,7 @@ import FeeGrant from '../../../shared/components/FeeGrant'
 import { useSecretNetworkClientStore } from 'store/secretNetworkClient'
 import { scrtToken } from 'shared/utils/tokens'
 import PercentagePicker from 'shared/components/PercentagePicker'
+import Button from 'shared/components/UI/Modal/Button/Button'
 
 export default function StakingForm() {
   const { selectedValidator, setView } = useContext(StakingContext)
@@ -134,7 +135,7 @@ export default function StakingForm() {
           min="0"
           step="0.000001"
           className={
-            'remove-arrows block flex-1 min-w-0 w-full bg-neutral-100 dark:bg-neutral-900 text-black dark:text-white px-4 py-4 rounded-lg disabled:placeholder-neutral-300 dark:disabled:placeholder-neutral-700 transition-colors font-medium focus:outline-0 focus:ring-2 ring-sky-500/40'
+            'block flex-1 min-w-0 w-full bg-neutral-100 dark:bg-neutral-900 text-black dark:text-white px-4 py-4 rounded-lg disabled:placeholder-neutral-300 dark:disabled:placeholder-neutral-700 transition-colors font-medium focus:outline-0 focus:ring-2 ring-sky-500/40'
           }
           name="toValue"
           id="toValue"

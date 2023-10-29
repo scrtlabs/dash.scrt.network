@@ -25,6 +25,9 @@ export default function IbcForm() {
     isConnected
   } = useSecretNetworkClientStore()
 
+  // handles [25% | 50% | 75% | Max] Button-Group
+  function setAmountByPercentage(percentage: number) {}
+
   const [ibcMode, setIbcMode] = useState<IbcMode>('deposit')
 
   // refactor start
@@ -313,7 +316,7 @@ export default function IbcForm() {
               value={amountToTransfer}
               onChange={handleInputChange}
               className={
-                'remove-arrows text-right focus:z-10 block flex-1 min-w-0 w-full bg-neutral-100 dark:bg-neutral-900 text-black dark:text-white px-4 rounded-r-lg disabled:placeholder-neutral-300 dark:disabled:placeholder-neutral-700 transition-colors font-medium focus:outline-0 focus:ring-2 ring-sky-500/40' +
+                'dark:placeholder-neutral-700 remove-arrows text-right focus:z-10 block flex-1 min-w-0 w-full bg-neutral-100 dark:bg-neutral-900 text-black dark:text-white px-4 rounded-r-lg disabled:placeholder-neutral-300 dark:disabled:placeholder-neutral-700 transition-colors font-medium focus:outline-0 focus:ring-2 ring-sky-500/40' +
                 (false ? '  border border-red-500 dark:border-red-500' : '')
               }
               name="amount"
@@ -340,7 +343,7 @@ export default function IbcForm() {
                   )} */}
             </div>
             <div className="sm:flex-initial text-xs">
-              {/* {PercentagePicker(setAmountByPercentage, !walletAddress)} */}
+              {PercentagePicker(setAmountByPercentage, !walletAddress)}
             </div>
           </div>
         </div>

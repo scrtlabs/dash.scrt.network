@@ -82,7 +82,7 @@ const UnknownBalanceModal = (props: any) => {
                     <div className="text-neutral-400 max-w-sm mx-auto mb-6">
                       <FontAwesomeIcon
                         icon={faCheckCircle}
-                        className="mr-2 text-green-500"
+                        className="mr-2 text-emerald-500"
                       />
                       Fee Granted
                     </div>

@@ -6,8 +6,8 @@ import { APIContext } from 'shared/context/APIContext'
 import { randomDelay, restakeThreshold, sleep } from 'shared/utils/commons'
 import BigNumber from 'bignumber.js'
 import { formatNumber } from 'shared/utils/commons'
-import { IValidator } from '../Staking'
 import { scrtToken } from 'shared/utils/tokens'
+import ValidatorItem from './ValidatorItem'
 
 interface Props {
   name: string
@@ -66,7 +66,7 @@ const MyValidatorsItem = (props: Props) => {
     }
   }, [props.identity, identityRef])
 
-  const isRestakeEnabled = (validator: IValidator) => {
+  const isRestakeEnabled = (validator: Validator) => {
     return props.restakeEntries.find(
       (validatorAddress: string) =>
         validatorAddress === validator.operator_address
@@ -106,7 +106,7 @@ const MyValidatorsItem = (props: Props) => {
               className={`font-semibold text-xs p-1 rounded-full ${
                 isAboveRestakeThreshold(props.stakedAmount)
                   ? isRestakeEnabled(props.validator)
-                    ? 'text-green-200 bg-green-800'
+                    ? 'text-emerald-200 bg-emerald-800'
                     : 'text-red-200 bg-red-800'
                   : 'text-gray-200 bg-gray-800'
               }`}

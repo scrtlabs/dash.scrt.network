@@ -10,14 +10,17 @@ import {
   appsJsonLdSchema
 } from 'shared/utils/commons'
 import { APIContext } from 'shared/context/APIContext'
-import { trackMixPanelEvent } from 'shared/utils/commons'
+import { trackMixPanelEvent as trackEvent } from 'shared/utils/commons'
 import FilterTag from './components/FilterTag'
+import SkeletonLoaders from './components/SkeletonLoaders/SkeletonLoaders'
+import Button from 'shared/components/UI/Modal/Button/Button'
 
 function Apps() {
   const { dappsData, dappsDataSorted, tags } = useContext(APIContext)
 
+  // Mixpanel
   useEffect(() => {
-    trackMixPanelEvent('Open Apps Tab')
+    trackEvent('Open Apps Tab')
   }, [])
 
   // Filter + Search
@@ -134,59 +137,7 @@ function Apps() {
               ))}
             </>
           )}
-
-          {dappsData?.length <= 0 && (
-            <>
-              {/* Skeleton Loader Item */}
-              <div className="animate-pulse col-span-12 sm:col-span-6 lg:col-span-6 xl:col-span-4 2xl:col-span-3">
-                <div className="h-72 bg-white dark:bg-neutral-800 rounded-xl"></div>
-              </div>
-              {/* Skeleton Loader Item */}
-              <div className="animate-pulse col-span-12 sm:col-span-6 lg:col-span-6 xl:col-span-4 2xl:col-span-3">
-                <div className="h-72 bg-white dark:bg-neutral-800 rounded-xl"></div>
-              </div>
-              {/* Skeleton Loader Item */}
-              <div className="animate-pulse col-span-12 sm:col-span-6 lg:col-span-6 xl:col-span-4 2xl:col-span-3">
-                <div className="h-72 bg-white dark:bg-neutral-800 rounded-xl"></div>
-              </div>
-              {/* Skeleton Loader Item */}
-              <div className="animate-pulse col-span-12 sm:col-span-6 lg:col-span-6 xl:col-span-4 2xl:col-span-3">
-                <div className="h-72 bg-white dark:bg-neutral-800 rounded-xl"></div>
-              </div>
-              {/* Skeleton Loader Item */}
-              <div className="animate-pulse col-span-12 sm:col-span-6 lg:col-span-6 xl:col-span-4 2xl:col-span-3">
-                <div className="h-72 bg-white dark:bg-neutral-800 rounded-xl"></div>
-              </div>
-              {/* Skeleton Loader Item */}
-              <div className="animate-pulse col-span-12 sm:col-span-6 lg:col-span-6 xl:col-span-4 2xl:col-span-3">
-                <div className="h-72 bg-white dark:bg-neutral-800 rounded-xl"></div>
-              </div>
-              {/* Skeleton Loader Item */}
-              <div className="animate-pulse col-span-12 sm:col-span-6 lg:col-span-6 xl:col-span-4 2xl:col-span-3">
-                <div className="h-72 bg-white dark:bg-neutral-800 rounded-xl"></div>
-              </div>
-              {/* Skeleton Loader Item */}
-              <div className="animate-pulse col-span-12 sm:col-span-6 lg:col-span-6 xl:col-span-4 2xl:col-span-3">
-                <div className="h-72 bg-white dark:bg-neutral-800 rounded-xl"></div>
-              </div>
-              {/* Skeleton Loader Item */}
-              <div className="animate-pulse col-span-12 sm:col-span-6 lg:col-span-6 xl:col-span-4 2xl:col-span-3">
-                <div className="h-72 bg-white dark:bg-neutral-800 rounded-xl"></div>
-              </div>
-              {/* Skeleton Loader Item */}
-              <div className="animate-pulse col-span-12 sm:col-span-6 lg:col-span-6 xl:col-span-4 2xl:col-span-3">
-                <div className="h-72 bg-white dark:bg-neutral-800 rounded-xl"></div>
-              </div>
-              {/* Skeleton Loader Item */}
-              <div className="animate-pulse col-span-12 sm:col-span-6 lg:col-span-6 xl:col-span-4 2xl:col-span-3">
-                <div className="h-72 bg-white dark:bg-neutral-800 rounded-xl"></div>
-              </div>
-              {/* Skeleton Loader Item */}
-              <div className="animate-pulse col-span-12 sm:col-span-6 lg:col-span-6 xl:col-span-4 2xl:col-span-3">
-                <div className="h-72 bg-white dark:bg-neutral-800 rounded-xl"></div>
-              </div>
-            </>
-          )}
+          {dappsData.length <= 0 && <SkeletonLoaders />}
         </div>
       </div>
     </>

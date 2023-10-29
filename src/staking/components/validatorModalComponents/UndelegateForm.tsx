@@ -8,6 +8,7 @@ import FeeGrant from '../../../shared/components/FeeGrant'
 import { useSecretNetworkClientStore } from 'store/secretNetworkClient'
 import { scrtToken } from 'shared/utils/tokens'
 import PercentagePicker from 'shared/components/PercentagePicker'
+import Button from 'shared/components/UI/Modal/Button/Button'
 
 export default function UndelegateForm() {
   const { delegatorDelegations, selectedValidator, setView } =
@@ -139,7 +140,7 @@ export default function UndelegateForm() {
           min="0"
           step="0.000001"
           className={
-            'remove-arrows block flex-1 min-w-0 w-full bg-neutral-100 dark:bg-neutral-900 text-black dark:text-white px-4 py-4 rounded-lg disabled:placeholder-neutral-300 dark:disabled:placeholder-neutral-700 transition-colors font-medium focus:outline-0 focus:ring-2 ring-sky-500/40'
+            'block flex-1 min-w-0 w-full bg-neutral-100 dark:bg-neutral-900 text-black dark:text-white px-4 py-4 rounded-lg disabled:placeholder-neutral-300 dark:disabled:placeholder-neutral-700 transition-colors font-medium focus:outline-0 focus:ring-2 ring-sky-500/40'
           }
           name="toValue"
           id="toValue"
@@ -166,18 +167,13 @@ export default function UndelegateForm() {
 
       {/* Footer */}
       <div className="flex flex-col sm:flex-row-reverse justify-start mt-4 gap-2">
-        <button
-          onClick={handleSubmit}
-          className="enabled:bg-gradient-to-r enabled:from-cyan-600 enabled:to-purple-600 enabled:hover:from-cyan-500 enabled:hover:to-purple-500 transition-colors text-white font-semibold px-4 py-2 rounded-lg disabled:bg-neutral-500 focus:outline-none focus-visible:ring-4 ring-sky-500/40"
-        >
+        <Button onClick={handleSubmit} color="primary" size="large">
           Undelegate
-        </button>
-        <button
-          onClick={() => setView(null)}
-          className="bg-neutral-200 dark:bg-neutral-800 hover:bg-neutral-300 dark:hover:bg-neutral-700 font-semibold px-4 py-2 rounded-md transition-colors"
-        >
+        </Button>
+
+        <Button onClick={() => setView(null)} color="secondary" size="large">
           Back
-        </button>
+        </Button>
       </div>
     </>
   )

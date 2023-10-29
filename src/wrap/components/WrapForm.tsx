@@ -199,7 +199,7 @@ function WrapForm() {
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
               className={
-                'remove-arrows text-right focus:z-10 block flex-1 min-w-0 w-full bg-neutral-100 dark:bg-neutral-900 text-black dark:text-white px-4 rounded-r-lg disabled:placeholder-neutral-300 dark:disabled:placeholder-neutral-700 transition-colors font-medium focus:outline-0 focus:ring-2 ring-sky-500/40' +
+                'dark:placeholder-neutral-700 text-right focus:z-10 block flex-1 min-w-0 w-full bg-neutral-100 dark:bg-neutral-900 text-black dark:text-white px-4 rounded-r-lg disabled:placeholder-neutral-300 dark:disabled:placeholder-neutral-700 transition-colors font-medium focus:outline-0 focus:ring-2 ring-sky-500/40' +
                 (formik.errors.amount
                   ? '  border border-red-500 dark:border-red-500'
                   : '')
@@ -295,7 +295,7 @@ function WrapForm() {
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
               className={
-                'remove-arrows text-right focus:z-10 block flex-1 min-w-0 w-full bg-neutral-100 dark:bg-neutral-900 text-black dark:text-white px-4 rounded-r-lg disabled:placeholder-neutral-300 dark:disabled:placeholder-neutral-700 transition-colors font-medium focus:outline-0 focus:ring-2 ring-sky-500/40'
+                'dark:placeholder-neutral-700 text-right focus:z-10 block flex-1 min-w-0 w-full bg-neutral-100 dark:bg-neutral-900 text-black dark:text-white px-4 rounded-r-lg disabled:placeholder-neutral-300 dark:disabled:placeholder-neutral-700 transition-colors font-medium focus:outline-0 focus:ring-2 ring-sky-500/40'
               }
               placeholder="0"
               disabled={!isConnected}
@@ -340,7 +340,7 @@ function WrapForm() {
         ) : null}
 
         {generalSuccessMessage && (
-          <div className="text-green-500 dark:text-green-500 text-sm font-normal flex items-center gap-2 justify-center">
+          <div className="text-emerald-500 dark:text-emerald-500 text-sm font-normal flex items-center gap-2 justify-center">
             <FontAwesomeIcon icon={faCircleCheck} />
             <span>{generalSuccessMessage}</span>
           </div>

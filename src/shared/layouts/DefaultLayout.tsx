@@ -11,7 +11,7 @@ import FloatingCTAButton from 'shared/components/FloatingCTAButton'
 import FeedbackButton from 'shared/components/FeedbackButton'
 import { ThemeSwitch } from 'shared/components/ThemeSwitch'
 import { Nullable } from 'shared/types/Nullable'
-import Modal from 'shared/components/Modal'
+import Modal from 'shared/components/UI/Modal/Modal'
 
 export const NavigationContext = createContext<Nullable<boolean>>(null)
 

@@ -1,24 +1,24 @@
 import {
   faInfoCircle,
-  faMagnifyingGlass,
-} from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Helmet } from "react-helmet-async";
-import MyValidatorsItem from "./components/MyValidatorsItem";
-import AllValidatorsItem from "./components/AllValidatorsItem";
-import Tooltip from "@mui/material/Tooltip";
-import "./RestakeRedesign.scss";
-import NoScrtWarning from "./components/NoScrtWarning";
+  faMagnifyingGlass
+} from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { Helmet } from 'react-helmet-async'
+import MyValidatorsItem from './components/MyValidatorsItem'
+import AllValidatorsItem from './components/AllValidatorsItem'
+import Tooltip from '@mui/material/Tooltip'
+import './RestakeRedesign.scss'
+import NoScrtWarning from './components/NoScrtWarning'
 import {
   autoRestakeJsonLdSchema,
   autoRestakePageDescription,
-  autoRestakePageTitle,
-} from "shared/utils/commons";
-import { useSecretNetworkClientStore } from "store/secretNetworkClient";
+  autoRestakePageTitle
+} from 'shared/utils/commons'
+import { useSecretNetworkClientStore } from 'store/secretNetworkClient'
 
 function RestakeRedesign() {
   const { secretNetworkClient: secretjs, walletAddress } =
-    useSecretNetworkClientStore();
+    useSecretNetworkClientStore()
 
   return (
     <>
@@ -62,8 +62,8 @@ function RestakeRedesign() {
         <div className="px-4 pb-2">
           <button
             disabled
-            onClick={() => alert("In implementation")}
-            className="text-medium disabled:bg-neutral-600 enabled:bg-green-600 enabled:hover:bg-green-700 disabled:text-neutral-400 enabled:text-white transition-colors font-semibold px-2 py-2 text-sm rounded-md"
+            onClick={() => alert('In implementation')}
+            className="text-medium disabled:bg-neutral-600 enabled:bg-emerald-600 enabled:hover:bg-emerald-700 disabled:text-neutral-400 enabled:text-white transition-colors font-semibold px-2 py-2 text-sm rounded-md"
           >
             Enable Auto Restake
           </button>
@@ -190,7 +190,7 @@ function RestakeRedesign() {
         </div>
       </div>
     </>
-  );
+  )
 }
 
-export default RestakeRedesign;
+export default RestakeRedesign

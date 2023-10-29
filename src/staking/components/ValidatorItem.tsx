@@ -3,9 +3,9 @@ import { faGlobe } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { formatNumber, randomDelay, sleep } from 'shared/utils/commons'
 import { APIContext } from 'shared/context/APIContext'
-import { IValidator } from 'staking/Staking'
 import { Nullable } from 'shared/types/Nullable'
 import Tooltip from '@mui/material/Tooltip'
+import { Validator } from 'shared/types/Validator'
 
 interface Props {
   name: string
@@ -19,7 +19,7 @@ interface Props {
   openModal: any
 }
 
-const Validator = (props: Props) => {
+const ValidatorItem = (props: Props) => {
   const {
     inflation,
     communityTax,
@@ -99,7 +99,7 @@ const Validator = (props: Props) => {
     }
   }, [props.identity, identityRef])
 
-  const hasTooMuchVotingPower = (validator: Nullable<IValidator>) => {
+  const hasTooMuchVotingPower = (validator: Nullable<Validator>) => {
     return (
       validator?.delegator_shares &&
       bondedToken &&
@@ -223,4 +223,4 @@ const Validator = (props: Props) => {
   )
 }
 
-export default Validator
+export default ValidatorItem

@@ -21,19 +21,12 @@ import BigNumber from 'bignumber.js'
 import { toast } from 'react-toastify'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faInfoCircle } from '@fortawesome/free-solid-svg-icons'
-import Select from 'react-select'
 import Tooltip from '@mui/material/Tooltip'
 import { Helmet } from 'react-helmet-async'
 import mixpanel from 'mixpanel-browser'
 import { useSearchParams } from 'react-router-dom'
 import { APIContext } from 'shared/context/APIContext'
-import FeeGrant from 'shared/components/FeeGrant'
 import { useSecretNetworkClientStore } from 'store/secretNetworkClient'
-import {
-  NativeTokenBalanceUi,
-  WrappedTokenBalanceUi
-} from 'shared/components/BalanceUI'
-import PercentagePicker from 'shared/components/PercentagePicker'
 import { getWalletViewingKey } from 'service/walletService'
 import SendForm from './components/SendForm'
 

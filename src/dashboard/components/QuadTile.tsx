@@ -1,38 +1,33 @@
-import { faSnowflake } from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import React from 'react'
-import { Else, If, Then } from 'react-if'
+interface Item {
+  key: string
+  value: string
+}
 
 interface Props {
-  item1_key?: string
-  item1_value?: string
-  item2_key?: string
-  item2_value?: string
-  item3_key?: string
-  item3_value?: string
-  item4_key?: string
-  item4_value?: string
+  item1?: Item
+  item2?: Item
+  item3?: Item
+  item4?: Item
 }
 
 const QuadTile = (props: Props) => {
   return (
     <>
-      <div className="bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 p-8 rounded-xl h-full">
+      <div className="bg-white dark:bg-neutral-900 p-8 rounded-xl h-full">
         <div className="flex flex-col h-full">
           <div className="flex-1 flex text-center items-center">
             {/* First Item */}
             <div className="flex-1 h-full flex flex-col justify-center border-r border-b border-neutral-200 dark:border-neutral-700">
               <div className="py-4">
                 <div className="text-neutral-400 dark:text-neutral-500 text-sm font-semibold mb-0.5">
-                  {props.item1_key}
+                  {props.item1?.key}
                 </div>
                 <div className="text-xl">
-                  <If condition={props.item1_value}>
-                    <Then>{props.item1_value}</Then>
-                    <Else>
-                      <div className="animate-pulse bg-neutral-300/40 dark:bg-neutral-700/40 rounded col-span-2 w-16 h-7 mx-auto"></div>
-                    </Else>
-                  </If>
+                  {props.item1?.value ? (
+                    <>{props.item1.value}</>
+                  ) : (
+                    <div className="animate-pulse bg-neutral-300/40 dark:bg-neutral-700/40 rounded col-span-2 w-16 h-7 mx-auto"></div>
+                  )}
                 </div>
               </div>
             </div>
@@ -40,15 +35,14 @@ const QuadTile = (props: Props) => {
             <div className="flex-1 h-full flex flex-col justify-center border-b border-neutral-200 dark:border-neutral-700">
               <div className="py-4">
                 <div className="text-neutral-400 dark:text-neutral-500 text-sm font-semibold mb-0.5">
-                  {props.item2_key}
+                  {props.item2?.key}
                 </div>
                 <div className="text-xl">
-                  <If condition={props.item2_value}>
-                    <Then>{props.item2_value}</Then>
-                    <Else>
-                      <div className="animate-pulse bg-neutral-300/40 dark:bg-neutral-700/40 rounded col-span-2 w-16 h-7 mx-auto"></div>
-                    </Else>
-                  </If>
+                  {props.item2?.value ? (
+                    <>{props.item2?.value}</>
+                  ) : (
+                    <div className="animate-pulse bg-neutral-300/40 dark:bg-neutral-700/40 rounded col-span-2 w-16 h-7 mx-auto"></div>
+                  )}
                 </div>
               </div>
             </div>
@@ -58,15 +52,14 @@ const QuadTile = (props: Props) => {
             <div className="flex-1 h-full flex flex-col justify-center border-r border-neutral-200 dark:border-neutral-700">
               <div className="py-4">
                 <div className="text-neutral-400 dark:text-neutral-500 text-sm font-semibold mb-0.5">
-                  {props.item3_key}
+                  {props.item3?.key}
                 </div>
                 <div className="text-xl">
-                  <If condition={props.item3_value}>
-                    <Then>{props.item3_value}</Then>
-                    <Else>
-                      <div className="animate-pulse bg-neutral-300/40 dark:bg-neutral-700/40 rounded col-span-2 w-16 h-7 mx-auto"></div>
-                    </Else>
-                  </If>
+                  {props.item3?.value ? (
+                    <>{props.item3.value}</>
+                  ) : (
+                    <div className="animate-pulse bg-neutral-300/40 dark:bg-neutral-700/40 rounded col-span-2 w-16 h-7 mx-auto"></div>
+                  )}
                 </div>
               </div>
             </div>
@@ -74,15 +67,14 @@ const QuadTile = (props: Props) => {
             <div className="flex-1 h-full flex flex-col justify-center">
               <div className="py-4">
                 <div className="text-neutral-400 dark:text-neutral-500 text-sm font-semibold mb-0.5">
-                  {props.item4_key}
+                  {props.item4?.key}
                 </div>
                 <div className="text-xl">
-                  <If condition={props.item4_value}>
-                    <Then>{props.item4_value}</Then>
-                    <Else>
-                      <div className="animate-pulse bg-neutral-300/40 dark:bg-neutral-700/40 rounded col-span-2 w-16 h-7 mx-auto"></div>
-                    </Else>
-                  </If>
+                  {props.item4?.value ? (
+                    <>{props.item4.value}</>
+                  ) : (
+                    <div className="animate-pulse bg-neutral-300/40 dark:bg-neutral-700/40 rounded col-span-2 w-16 h-7 mx-auto"></div>
+                  )}
                 </div>
               </div>
             </div>

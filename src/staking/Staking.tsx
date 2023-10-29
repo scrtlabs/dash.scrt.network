@@ -28,12 +28,11 @@ import ClaimRewardsModal from './components/ClaimRewardsModal'
 import ManageAutoRestakeModal from './components/ManageAutoRestakeModal'
 import { scrtToken } from 'shared/utils/tokens'
 import { useSecretNetworkClientStore } from 'store/secretNetworkClient'
-import Validator from './components/Validator'
-
-// dummy interface for better code readability
-export interface IValidator {
-  [prop: string]: any
-}
+import ValidatorItem from './components/ValidatorItem'
+import { Validator } from 'shared/types/Validator'
+import MyValidators from './MyValidators'
+import AllValidators from './AllValidators'
+import Button from 'shared/components/UI/Modal/Button/Button'
 
 export interface ValidatorRestakeStatus {
   validatorAddress: string
@@ -75,10 +74,11 @@ export const Staking = () => {
   const { secretNetworkClient, walletAddress, scrtBalance, isConnected } =
     useSecretNetworkClientStore()
 
-  const [validators, setValidators] = useState<IValidator[]>(null)
-  const [activeValidators, setActiveValidators] = useState<IValidator[]>(null)
+  const [validators, setValidators] = useState<Nullable<Validator[]>>(null)
+  const [activeValidators, setActiveValidators] =
+    useState<Nullable<Validator[]>>(null)
   const [inactiveValidators, setInactiveValidators] =
-    useState<IValidator[]>(null)
+    useState<Validator[]>(null)
 
   //Delegations that a Delegetor has
   const [delegatorDelegations, setDelegatorDelegations] = useState<any>()
@@ -86,13 +86,15 @@ export const Staking = () => {
   //Rewards for each delegator
   const [delegationTotalRewards, setDelegationTotalRewards] = useState<any>()
 
-  const totalPendingRewards = () => {
+  function getTotalPendingRewards() {
     return BigNumber(delegationTotalRewards?.total[0]?.amount)
       .dividedBy(`1e${scrtToken.decimals}`)
       .toFormat(scrtToken.decimals)
   }
 
-  const totalAmountStaked = () => {
+  const totalPendingRewards = getTotalPendingRewards()
+
+  const getTotalAmountStaked = () => {
     return delegatorDelegations
       ?.reduce((sum: any, delegation: any) => {
         const amount = new BigNumber(delegation?.balance?.amount || 0)
@@ -102,11 +104,13 @@ export const Staking = () => {
       .toFormat(scrtToken.decimals)
   }
 
-  const [selectedValidator, setSelectedValidator] = useState<IValidator>(null)
+  const [selectedValidator, setSelectedValidator] =
+    useState<Nullable<Validator>>(null)
 
   const [shuffledActiveValidators, setShuffledActiveValidators] =
-    useState<IValidator[]>(null)
-  const [validatorsBySearch, setValidatorsBySearch] = useState<IValidator>(null)
+    useState<Nullable<Validator[]>>(null)
+  const [validatorsBySearch, setValidatorsBySearch] =
+    useState<Nullable<Validator>>(null)
 
   type ValidatorDisplayStatus = 'active' | 'inactive'
   const [validatorDisplayStatus, setValidatorDisplayStatus] =
@@ -368,35 +372,35 @@ export const Staking = () => {
         ) : null}
 
         {/* My Validators */}
+        <MyValidators />
         {secretNetworkClient?.address &&
           delegatorDelegations &&
           delegatorDelegations?.length != 0 &&
           validators && (
             <div className="my-validators mb-20 max-w-6xl mx-auto">
-              <div className="font-semibold text-xl mb-4 px-4">
-                My Validators
-              </div>
-
-              {/* Claim Rewards*/}
-              {delegationTotalRewards && (
+              {/* Claim Rewards */}
+              {delegationTotalRewards ? (
                 <div className="px-4 mb-4 flex items-center flex-col sm:flex-row gap-2 sm:gap-4 text-center sm:text-left">
                   <div className="flex-1">
-                    <span className="font-semibold">{`Total Pending Rewards: `}</span>
-                    <span>{totalPendingRewards()}</span>
-                    <span className="text-xs font-semibold text-neutral-400">
+                    <span className="font-bold">{`Total Pending Rewards: `}</span>
+                    <span>{totalPendingRewards}</span>
+                    <span className="text-xs font-semibold text-neutral-500 dark:text-neutral-500">
                       {' '}
                       SCRT
                     </span>
                   </div>
 
-                  <button
+                  {/* flex-initial text-medium disabled:bg-neutral-600 enabled:bg-emerald-600 enabled:hover:bg-emerald-700 disabled:text-neutral-400 enabled:text-white transition-colors font-semibold px-2 py-2 text-sm rounded-md" */}
+                  <div className="flex-initial"></div>
+                  <Button
                     onClick={() => setIsClaimRewardsModalOpen(true)}
-                    className="flex-initial text-medium disabled:bg-neutral-600 enabled:bg-green-600 enabled:hover:bg-green-700 disabled:text-neutral-400 enabled:text-white transition-colors font-semibold px-2 py-2 text-sm rounded-md"
+                    type={'button'}
+                    color={'emerald'}
                   >
                     Claim Pending Rewards
-                  </button>
+                  </Button>
                 </div>
-              )}
+              ) : null}
 
               <div className="my-validators flex flex-col px-4">
                 {delegatorDelegations?.map((delegation: any, i: number) => {
@@ -427,23 +431,23 @@ export const Staking = () => {
               <div className="px-4 mt-4 flex flex-col sm:flex-row gap-2 sm:gap-4 text-center sm:text-left">
                 <div className="flex-1">
                   <span className="font-semibold">{`Total Amount Staked: `}</span>
-                  <span>{`${totalAmountStaked()} `}</span>
+                  <span>{`${getTotalAmountStaked()} `}</span>
                   <span className="text-xs font-semibold text-neutral-400">
                     SCRT
                   </span>
                 </div>
-
-                <button
-                  onClick={() => setIsManageAutoRestakeModalOpen(true)}
-                  className="flex-initial text-medium disabled:bg-neutral-600 enabled:bg-sky-600 enabled:hover:bg-sky-700 disabled:text-neutral-400 enabled:text-white transition-colors font-semibold px-2 py-2 text-sm rounded-md"
-                >
-                  Manage Auto Restake
-                </button>
+                <div className="flex-initial">
+                  <Button onClick={() => setIsManageAutoRestakeModalOpen(true)}>
+                    Manage Auto Restake
+                  </Button>
+                </div>
               </div>
             </div>
           )}
 
         {/* All Validators */}
+
+        <AllValidators />
         <div className="max-w-6xl mx-auto mt-8">
           <div className="font-semibold text-xl mb-4 px-4">
             All Validators
@@ -484,7 +488,7 @@ export const Staking = () => {
                 className={
                   'px-3 text-xs font-semibold rounded-l-lg py-2' +
                   (validatorDisplayStatus === 'active'
-                    ? ' bg-green-500 text-white'
+                    ? ' bg-emerald-500 text-white'
                     : ' bg-gray-300 text-gray-800 hover:bg-gray-400 focus:bg-gray-400')
                 }
               >
@@ -518,7 +522,7 @@ export const Staking = () => {
                 ? shuffledActiveValidators
                 : inactiveValidators
               )?.map((validator: any, i: any) => (
-                <Validator
+                <ValidatorItem
                   position={i}
                   validator={validator}
                   name={validator?.description?.moniker}
@@ -534,7 +538,7 @@ export const Staking = () => {
               ))
             ) : (
               <div className="animate-pulse flex">
-                <Validator
+                <ValidatorItem
                   position={0}
                   validator={undefined}
                   name={''}
@@ -552,19 +556,7 @@ export const Staking = () => {
           {validators ? (
             <>
               <div className="italic text-center mt-4 px-4 text-sm">
-                Validator order is randomized.
-                <Tooltip
-                  title={
-                    'To promote decentralization, all validators are ordered randomly.'
-                  }
-                  placement="right"
-                  arrow
-                >
-                  <FontAwesomeIcon
-                    icon={faInfoCircle}
-                    className="ml-2 text-neutral-400"
-                  />
-                </Tooltip>
+                all items are ordered randomly to promote decentralization
               </div>
             </>
           ) : null}

@@ -6,10 +6,10 @@ import {
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { trackMixPanelEvent } from 'shared/utils/commons'
 
-const SocialMedia = () => {
+export default function SocialMedia() {
   return (
     <>
-      <div className="bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-xl h-full flex items-center px-4 py-4">
+      <div className="bg-white dark:bg-neutral-900 rounded-xl h-full flex items-center px-4 py-4">
         <div className="flex-1 text-center border-r border-neutral-300 dark:border-neutral-700">
           <a
             href="https://twitter.com/SecretNetwork"
@@ -76,5 +76,3 @@ const SocialMedia = () => {
     </>
   )
 }
-
-export default SocialMedia
