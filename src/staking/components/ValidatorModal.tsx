@@ -214,7 +214,7 @@ const ValidatorModal = (props: Props) => {
 
             {selectedValidator?.description?.details ? (
               <div className="col-span-12">
-                <div className="text-sm border dark:border-neutral-700 rounded-md p-4 text-center sm:text-left">
+                <div className="text-sm dark:bg-neutral-800 rounded-md p-4 text-center sm:text-left">
                   <div className="font-semibold text-black dark:text-white mb-1">
                     Description
                   </div>
@@ -229,7 +229,7 @@ const ValidatorModal = (props: Props) => {
               <>
                 <div className="col-span-12">
                   {/* Properties of the Val */}
-                  <div className="bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 p-8 rounded-md grid grid-cols-12 gap-6">
+                  <div className="bg-white dark:bg-neutral-800 p-8 rounded-md grid grid-cols-12 gap-6">
                     {/* First Item */}
                     {selectedValidator?.description?.identity && (
                       <div className="col-span-12 sm:col-span-6 flex flex-col gap-0.5 text-neutral-800 dark:text-neutral-300 font-semibold">
@@ -396,7 +396,7 @@ const ValidatorModal = (props: Props) => {
 
             {/* Available to Stake */}
             {isConnected && (
-              <div className="bg-white/5 col-span-12 border border-neutral-200 dark:border-neutral-700 md:col-span-6 rounded-xl px-4 py-8 mt-4 text-center sm:text-left">
+              <div className="bg-white/5 col-span-12 md:col-span-6 rounded-xl px-4 py-8 mt-4 text-center sm:text-left">
                 <div className="font-semibold mb-2">Available to Stake</div>
                 <div className="font-semibold">
                   {new BigNumber(scrtBalance!)
@@ -423,7 +423,7 @@ const ValidatorModal = (props: Props) => {
                   selectedValidator?.operator_address ==
                   delegatorDelegation.delegation.validator_address
               ) ? (
-                <div className="bg-white/5 col-span-12 border border-neutral-200 dark:border-neutral-700 md:col-span-6 rounded-xl px-4 py-8 mt-4 text-center sm:text-left">
+                <div className="bg-white/5 col-span-12 md:col-span-6 rounded-xl px-4 py-8 mt-4 text-center sm:text-left">
                   <div className="font-semibold mb-2">Your Delegation</div>
                   <div className="font-semibold">
                     {delegatorDelegations?.find(
@@ -449,7 +449,7 @@ const ValidatorModal = (props: Props) => {
                   </div>
                 </div>
               ) : (
-                <div className="bg-white/5 col-span-12 border border-neutral-200 dark:border-neutral-700 md:col-span-6 rounded-xl px-4 py-8 mt-4 text-center sm:text-left">
+                <div className="bg-white/5 col-span-12 md:col-span-6 rounded-xl px-4 py-8 mt-4 text-center sm:text-left">
                   <div className="font-semibold mb-2">Your Delegation</div>
                   <div className="font-semibold">
                     {0}

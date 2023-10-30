@@ -18,9 +18,9 @@ const colorClasses: Record<Color, string> = {
 }
 
 const sizeClasses: Record<Size, string> = {
-  default: 'py-2 px-4 text-sm',
-  large: 'py-3 px-4 text-sm',
-  small: 'py-2 px-4 text-sm'
+  default: 'py-2 px-4 text-sm sm:w-full',
+  large: 'py-3 px-4 text-sm sm:w-full',
+  small: 'py-1.5 px-2 text-xs sm:w-full'
 }
 
 interface Props {
@@ -30,6 +30,7 @@ interface Props {
   color?: Color
   size?: Size
   disabled?: boolean
+  className?: string
 }
 
 export default function Button(props: Props) {
@@ -39,11 +40,12 @@ export default function Button(props: Props) {
       className={`focus:outline-none focus-visible:ring-4 text-center font-bold rounded transition-colors
       ${colorClasses[props.color || 'primary']}
       ${sizeClasses[props.size || 'default']}
+      ${props.className}
     `}
       type={props.type || 'button'}
       onClick={props.onClick}
     >
-      {props.children}
+      <>{props.children}</>
     </button>
   )
 }

@@ -23,6 +23,7 @@ import { scrtToken } from 'shared/utils/tokens'
 import { ConnectWalletModal } from 'shared/context/ConnectWalletModal'
 import Modal from '../UI/Modal/Modal'
 import { ManageBalances } from './ManageBalances/ManageBalances'
+import Button from '../UI/Modal/Button/Button'
 
 export function Wallet() {
   const {
@@ -140,13 +141,13 @@ export function Wallet() {
           <BalanceItem token={scrtToken} isSecretToken={false} />
           <BalanceItem token={scrtToken} isSecretToken={true} />
         </div>
-        {/* TODO: implement viewing key manager */}
-        <button
+        <Button
+          size="small"
+          color="secondary"
           onClick={handleManageViewingKeys}
-          className="inline-block bg-neutral-300 dark:bg-neutral-600 hover:bg-neutral-400 dark:hover:bg-neutral-700 transition-colors text-black dark:text-white font-semibold py-1.5 w-full rounded-lg"
         >
           All Balances
-        </button>
+        </Button>
       </div>
     )
   }
@@ -163,17 +164,6 @@ export function Wallet() {
     }
   }
 
-  const DisconnectButton = () => {
-    return (
-      <button
-        onClick={disconnectWallet}
-        className="w-full font-semibold px-3 py-1.5 rounded-md text-white dark:text-red-400 bg-red-500 dark:bg-red-500/30 hover:bg-red-400 dark:hover:bg-red-500/50 hover:text-white transition-colors cursor-pointer"
-      >
-        Disconnect Wallet
-      </button>
-    )
-  }
-
   const ContextMenu = () => {
     return (
       <div className="absolute pt-10 right-4 z-40 top-[3.7rem]">
@@ -185,7 +175,14 @@ export function Wallet() {
           <Balances />
 
           {/* Disconnect Button */}
-          <DisconnectButton />
+          <Button
+            onClick={disconnectWallet}
+            color="red"
+            size="small"
+            className="w-full"
+          >
+            Disconnect Wallet
+          </Button>
         </div>
       </div>
     )
