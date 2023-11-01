@@ -22,6 +22,7 @@ export const ibcSchema = yup.object().shape({
     tokens.map((token) => token.name),
     'Please select a valid token'
   ),
+  chainName: yup.string().required('Please select a chain!'),
   ibcMode: yup
     .string()
     .test('isIbcMode', 'Invalid IBC Mode', (value) => isIbcMode(value))

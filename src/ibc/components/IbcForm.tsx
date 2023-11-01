@@ -8,13 +8,18 @@ import { Token, chains, tokens } from 'shared/utils/config'
 import IbcSelect from './IbcSelect'
 import Tooltip from '@mui/material/Tooltip'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faRightLeft } from '@fortawesome/free-solid-svg-icons'
+import {
+  faCircleCheck,
+  faRightLeft,
+  faTriangleExclamation
+} from '@fortawesome/free-solid-svg-icons'
 import AddressInfo from './AddressInfo'
 import {
   NativeTokenBalanceUi,
   WrappedTokenBalanceUi
 } from 'shared/components/BalanceUI'
 import PercentagePicker from 'shared/components/PercentagePicker'
+import { IbcService } from 'shared/services/ibc.service'
 
 export default function IbcForm() {
   const {
@@ -25,10 +30,12 @@ export default function IbcForm() {
     isConnected
   } = useSecretNetworkClientStore()
 
+  const [isLoading, setIsWaiting] = useState<boolean>(false)
+  const [generalSuccessMessage, setGeneralSuccessMessage] = useState<String>('')
+  const [generalErrorMessage, setGeneralErrorMessage] = useState<String>('')
+
   // handles [25% | 50% | 75% | Max] Button-Group
   function setAmountByPercentage(percentage: number) {}
-
-  const [ibcMode, setIbcMode] = useState<IbcMode>('deposit')
 
   // refactor start
   const [srcAddress, setSrcAddress] = useState<string>('')
@@ -40,10 +47,10 @@ export default function IbcForm() {
   // refactor end
 
   function toggleIbcMode() {
-    if (ibcMode === 'deposit') {
-      setIbcMode('withdrawal')
+    if (formik.values.ibcMode === 'deposit') {
+      formik.setFieldValue('ibcMode', 'withdrawal')
     } else {
-      setIbcMode('deposit')
+      formik.setFieldValue('ibcMode', 'deposit')
     }
   }
 
@@ -88,41 +95,37 @@ export default function IbcForm() {
 
   const formik = useFormik({
     initialValues: {
-      amount: '',
+      chainName: 'AKT',
       tokenName: 'AKT',
-      wrappingMode: 'wrap'
+      ibcMode: 'deposit',
+      amount: ''
     },
     validationSchema: ibcSchema,
     validateOnBlur: false,
     validateOnChange: true,
     onSubmit: async (values) => {
-      // try {
-      //   setGeneralErrorMessage('')
-      //   setGeneralSuccessMessage('')
-      //   setIsWaiting(true)
-      //   const res = await WrapService.performWrapping({
-      //     ...values,
-      //     secretNetworkClient,
-      //     feeGrantStatus
-      //   })
-      //   setIsWaiting(false)
-      //   if (res.success) {
-      //     setGeneralSuccessMessage(
-      //       `${
-      //         formik.values.wrappingMode === 'wrap' ? 'Wrapping' : 'Unwrapping'
-      //       } Successful!`
-      //     )
-      //   } else {
-      //     throw new Error()
-      //   }
-      // } catch (error: any) {
-      //   console.error(error)
-      //   setGeneralErrorMessage(
-      //     `${
-      //       formik.values.wrappingMode === 'wrap' ? 'Wrapping' : 'Unwrapping'
-      //     } unsuccessful!`
-      //   )
-      // }
+      try {
+        setGeneralErrorMessage('')
+        setGeneralSuccessMessage('')
+        setIsWaiting(true)
+        const res = await IbcService.performIbcTransfer({
+          secretNetworkClient: secretNetworkClient,
+          chainName: formik.values.chainName,
+          ibcMode: formik.values.ibcMode as IbcMode,
+          tokenName: formik.values.tokenName,
+          amount: formik.values.amount,
+          feeGrantStatus: null
+        })
+        setIsWaiting(false)
+        if (res.success) {
+          setGeneralSuccessMessage(`IBC transfer successful!`)
+        } else {
+          throw new Error()
+        }
+      } catch (error: any) {
+        console.error(error)
+        setGeneralErrorMessage(`IBC transfer failed!`)
+      }
     }
   })
 
@@ -155,13 +158,13 @@ export default function IbcForm() {
                     <img
                       src={
                         '/img/assets/' +
-                        (ibcMode === 'deposit'
+                        (formik.values.ibcMode === 'deposit'
                           ? chains[selectedSource.chain_name].chain_image
                           : 'scrt.svg')
                       }
                       className="w-full relative inline-block rounded-full overflow-hiden"
                       alt={`${
-                        ibcMode === 'deposit'
+                        formik.values.ibcMode === 'deposit'
                           ? chains[selectedSource.chain_name].chain_name
                           : 'SCRT'
                       } logo`}
@@ -179,8 +182,8 @@ export default function IbcForm() {
             {/* Chain Picker */}
             <div className="-mt-3 relative z-10 w-full">
               {/* {value} */}
-              {ibcMode === 'deposit' && <ChainSelect />}
-              {ibcMode === 'withdrawal' && (
+              {formik.values.ibcMode === 'deposit' && <ChainSelect />}
+              {formik.values.ibcMode === 'withdrawal' && (
                 <div
                   style={{ paddingTop: '.76rem', paddingBottom: '.76rem' }}
                   className="flex items-center w-full text-sm font-semibold select-none bg-white dark:bg-neutral-800 rounded text-neutral-800 dark:text-neutral-200 focus:bg-neutral-300 dark:focus:bg-neutral-700 disabled:hover:bg-neutral-200 dark:disabled:hover:bg-neutral-800 border border-neutral-300 dark:border-neutral-600"
@@ -241,13 +244,13 @@ export default function IbcForm() {
                     <img
                       src={
                         '/img/assets/' +
-                        (ibcMode === 'withdrawal'
+                        (formik.values.ibcMode === 'withdrawal'
                           ? chains[selectedSource.chain_name].chain_image
                           : 'scrt.svg')
                       }
                       className="w-full relative inline-block rounded-full overflow-hiden"
                       alt={`${
-                        ibcMode === 'withdrawal'
+                        formik.values.ibcMode === 'withdrawal'
                           ? chains[selectedSource.chain_name].chain_name
                           : 'SCRT'
                       } logo`}
@@ -264,8 +267,8 @@ export default function IbcForm() {
             </div>
             {/* Chain Picker */}
             <div className="md:-mt-3 md:relative z-10 w-full">
-              {ibcMode === 'withdrawal' && <ChainSelect />}
-              {ibcMode === 'deposit' && (
+              {formik.values.ibcMode === 'withdrawal' && <ChainSelect />}
+              {formik.values.ibcMode === 'deposit' && (
                 <div
                   style={{ paddingTop: '.76rem', paddingBottom: '.76rem' }}
                   className="flex items-center w-full text-sm font-semibold select-none bg-neutral-200 dark:bg-neutral-800 rounded text-neutral-800 dark:text-neutral-200 focus:bg-neutral-300 dark:focus:bg-neutral-700 disabled:hover:bg-neutral-200 dark:disabled:hover:bg-neutral-800 border border-neutral-300 dark:border-neutral-600"
@@ -286,6 +289,15 @@ export default function IbcForm() {
         />
 
         <div className="bg-neutral-200 dark:bg-neutral-800 p-4 rounded-xl">
+          {/* Title Bar */}
+          <div className="flex flex-col sm:flex-row justify-between items-center mb-2 text-center sm:text-left">
+            <span className="font-extrabold">Token</span>
+            {!formik.errors.amount && (
+              <span className="text-red-500 dark:text-red-500 text-xs font-normal">
+                {formik.errors.amount}
+              </span>
+            )}
+          </div>
           <div className="flex" id="inputWrapper">
             <Select
               options={tokens} // TODO: was "supportedTokens"
@@ -301,7 +313,9 @@ export default function IbcForm() {
                     className="w-6 h-6 mr-2 rounded-full"
                   />
                   <span className="font-semibold text-sm">
-                    {token.is_ics20 && ibcMode === 'withdrawal' && 's'}
+                    {token.is_ics20 &&
+                      formik.values.ibcMode === 'withdrawal' &&
+                      's'}
                     {token.name}
                   </span>
                 </div>
@@ -310,17 +324,16 @@ export default function IbcForm() {
               classNamePrefix="react-select-wrap"
             />
             <input
-              type="number"
-              min="0"
-              step="0.000001"
-              value={amountToTransfer}
-              onChange={handleInputChange}
+              id="amount"
+              name="amount"
+              type="text"
+              value={formik.values.amount}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
               className={
                 'dark:placeholder-neutral-700 remove-arrows text-right focus:z-10 block flex-1 min-w-0 w-full bg-neutral-100 dark:bg-neutral-900 text-black dark:text-white px-4 rounded-r-lg disabled:placeholder-neutral-300 dark:disabled:placeholder-neutral-700 transition-colors font-medium focus:outline-0 focus:ring-2 ring-sky-500/40' +
                 (false ? '  border border-red-500 dark:border-red-500' : '')
               }
-              name="amount"
-              id="amount"
               placeholder="0"
               disabled={!secretNetworkClient?.address}
             />
@@ -330,7 +343,7 @@ export default function IbcForm() {
           <div className="flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 mt-3">
             <div className="flex-1 text-xs">
               {/* {(selectedToken.is_ics20 || selectedToken.is_snip20) &&
-              ibcMode == 'withdrawal'
+              formik.values.ibcMode === 'withdrawal'
                 ? WrappedTokenBalanceUi(
                     availableBalance,
                     selectedToken,
@@ -347,6 +360,46 @@ export default function IbcForm() {
             </div>
           </div>
         </div>
+
+        {isLoading ? (
+          <div className="text-sm font-normal flex items-center gap-2 justify-center">
+            <svg
+              className="animate-spin h-5 w-5 text-black dark:text-white"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+            >
+              <circle
+                className="opacity-25"
+                cx="12"
+                cy="12"
+                r="10"
+                stroke="currentColor"
+                stroke-width="4"
+              ></circle>
+              <path
+                className="opacity-75"
+                fill="currentColor"
+                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+              ></path>
+            </svg>
+            <span>Processing...</span>
+          </div>
+        ) : null}
+
+        {generalSuccessMessage && (
+          <div className="text-emerald-500 dark:text-emerald-500 text-sm font-normal flex items-center gap-2 justify-center">
+            <FontAwesomeIcon icon={faCircleCheck} />
+            <span>{generalSuccessMessage}</span>
+          </div>
+        )}
+
+        {generalErrorMessage && (
+          <div className="text-red-500 dark:text-red-500 text-sm font-normal flex items-center gap-2 justify-center">
+            <FontAwesomeIcon icon={faTriangleExclamation} />
+            <span>{generalErrorMessage}</span>
+          </div>
+        )}
 
         {/* Submit Button */}
         <button

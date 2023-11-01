@@ -5,13 +5,14 @@ import {
   SecretNetworkClient
 } from 'secretjs'
 import { FeeGrantStatus } from 'shared/types/FeeGrantStatus'
+import { IbcMode } from 'shared/types/IbcMode'
 import { Nullable } from 'shared/types/Nullable'
-import { WrappingMode } from 'shared/types/WrappingMode'
 import { faucetAddress, randomPadding } from 'shared/utils/commons'
 import { Token, tokens } from 'shared/utils/config'
 
 interface IBaseProps {
-  wrappingMode: WrappingMode | string
+  ibcMode: IbcMode
+  chainName: string
   amount: string
   secretNetworkClient: SecretNetworkClient
   feeGrantStatus: FeeGrantStatus
