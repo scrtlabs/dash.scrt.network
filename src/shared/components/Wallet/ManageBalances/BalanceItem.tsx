@@ -12,9 +12,9 @@ import {
   WrappedTokenBalanceUi
 } from 'shared/components/BalanceUI'
 import { useSecretNetworkClientStore } from 'store/secretNetworkClient'
-import { getWalletViewingKey } from 'service/walletService'
 import { useTokenPricesStore } from 'store/TokenPrices'
 import { Nullable } from 'shared/types/Nullable'
+import { WalletService } from 'shared/services/wallet.service'
 
 interface Props {
   token?: Token
@@ -87,7 +87,7 @@ const BalanceItem = (props: Props) => {
       return
     }
 
-    const key = await getWalletViewingKey(props.token?.address)
+    const key = await WalletService.getWalletViewingKey(props.token?.address)
     if (!key) {
       setTokenBalance(viewingKeyErrorString)
       return

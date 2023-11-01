@@ -27,8 +27,8 @@ import mixpanel from 'mixpanel-browser'
 import { useSearchParams } from 'react-router-dom'
 import { APIContext } from 'shared/context/APIContext'
 import { useSecretNetworkClientStore } from 'store/secretNetworkClient'
-import { getWalletViewingKey } from 'service/walletService'
 import SendForm from './components/SendForm'
+import { WalletService } from 'shared/services/wallet.service'
 
 export function Send() {
   const { feeGrantStatus, secretNetworkClient, connectWallet, isConnected } =
@@ -225,7 +225,7 @@ export function Send() {
       return
     }
 
-    const key = await getWalletViewingKey(selectedToken.address)
+    const key = await WalletService.getWalletViewingKey(selectedToken.address)
     if (!key) {
       setTokenBalance(viewingKeyErrorString)
       return

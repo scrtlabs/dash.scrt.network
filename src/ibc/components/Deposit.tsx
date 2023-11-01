@@ -56,7 +56,6 @@ import {
   Environment
 } from '@axelar-network/axelarjs-sdk'
 import { useSecretNetworkClientStore } from 'store/secretNetworkClient'
-import { getWalletViewingKey } from 'service/walletService'
 import { Nullable } from 'shared/types/Nullable'
 import {
   NativeTokenBalanceUi,
@@ -65,6 +64,7 @@ import {
 import PercentagePicker from 'shared/components/PercentagePicker'
 import { APIContext } from 'shared/context/APIContext'
 import IbcSelect from './IbcSelect'
+import { WalletService } from 'shared/services/wallet.service'
 
 function Deposit() {
   const {
@@ -309,7 +309,9 @@ function Deposit() {
     if (isConnected) {
       setAvailableBalance(undefined)
       if (selectedToken.is_snip20 || selectedToken.is_ics20) {
-        const key = await getWalletViewingKey(selectedToken.address)
+        const key = await WalletService.getWalletViewingKey(
+          selectedToken.address
+        )
         if (!key) {
           setAvailableBalance(viewingKeyErrorString)
           return

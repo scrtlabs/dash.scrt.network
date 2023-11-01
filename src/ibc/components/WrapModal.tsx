@@ -4,10 +4,10 @@ import {
   faXmark
 } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { getWalletViewingKey } from 'service/walletService'
 import { IbcContext } from 'ibc/Ibc'
 import { useContext, useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
+import { WalletService } from 'shared/services/wallet.service'
 import { IbcMode } from 'shared/types/IbcMode'
 import { viewingKeyErrorString } from 'shared/utils/commons'
 import { Token } from 'shared/utils/config'
@@ -29,7 +29,7 @@ const WrapModal = (props: Props) => {
 
   useEffect(() => {
     const updateCoinBalance = async () => {
-      const key = await getWalletViewingKey(selectedToken.address)
+      const key = await WalletService.getWalletViewingKey(selectedToken.address)
       if (!key) {
         setAssetViewingKey(viewingKeyErrorString)
       }

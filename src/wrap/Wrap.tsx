@@ -32,7 +32,6 @@ import { useSearchParams } from 'react-router-dom'
 import { WrappingMode, isWrappingMode } from 'shared/types/WrappingMode'
 import { APIContext } from 'shared/context/APIContext'
 import { useSecretNetworkClientStore } from 'store/secretNetworkClient'
-import { getWalletViewingKey } from 'service/walletService'
 import FeeGrant from 'shared/components/FeeGrant'
 import Title from 'shared/components/Title'
 import {
@@ -216,7 +215,7 @@ export function Wrap() {
   //     return
   //   }
 
-  //   const key = await getWalletViewingKey(selectedToken.address)
+  //   const key = await WalletService.getWalletViewingKey(selectedToken.address)
   //   if (!key) {
   //     setTokenBalance(viewingKeyErrorString)
   //     return

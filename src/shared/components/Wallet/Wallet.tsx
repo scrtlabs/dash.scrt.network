@@ -18,12 +18,12 @@ import { faKey, faInfoCircle } from '@fortawesome/free-solid-svg-icons'
 import BalanceItem from '../BalanceItem'
 import { trackMixPanelEvent } from 'shared/utils/commons'
 import { useSecretNetworkClientStore } from 'store/secretNetworkClient'
-import { setWalletViewingKey } from 'service/walletService'
 import { scrtToken } from 'shared/utils/tokens'
 import { ConnectWalletModal } from 'shared/context/ConnectWalletModal'
 import Modal from '../UI/Modal/Modal'
 import { ManageBalances } from './ManageBalances/ManageBalances'
 import Button from '../UI/Modal/Button/Button'
+import { WalletService } from 'shared/services/wallet.service'
 
 export function Wallet() {
   const {
@@ -61,7 +61,7 @@ export function Wallet() {
           <button
             className="ml-2 font-semibold bg-neutral-100 dark:bg-neutral-900 px-1.5 py-0.5 rounded-md border-neutral-300 dark:border-neutral-700 transition-colors hover:bg-neutral-300 dark:hover:bg-neutral-700 focus:bg-neutral-500 dark:focus:bg-neutral-500 cursor-pointer disabled:text-neutral-500 dark:disabled:text-neutral-500 disabled:hover:bg-neutral-100 dark:disabled:hover:bg-neutral-900 disabled:cursor-default"
             onClick={async () => {
-              await setWalletViewingKey(scrtToken.address)
+              await WalletService.setWalletViewingKey(scrtToken.address)
               try {
                 await sleep(1000) // sometimes query nodes lag
                 await setsScrtBalance()

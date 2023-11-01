@@ -1,11 +1,23 @@
 import { SecretNetworkClient } from 'secretjs'
 import { FeeGrantStatus } from 'shared/types/FeeGrantStatus'
 import { Nullable } from 'shared/types/Nullable'
-import { faucetURL, sleep, viewingKeyErrorString } from 'shared/utils/commons'
+import {
+  allTokens,
+  faucetURL,
+  sleep,
+  viewingKeyErrorString
+} from 'shared/utils/commons'
 import { SECRET_CHAIN_ID, SECRET_LCD, Token, tokens } from 'shared/utils/config'
 import { isMobile } from 'react-device-detect'
 import { scrtToken } from 'shared/utils/tokens'
 import { WalletAPIType } from 'shared/types/WalletAPIType'
+import BigNumber from 'bignumber.js'
+import { QueryAllBalancesResponse } from 'secretjs/dist/grpc_gateway/cosmos/bank/v1beta1/query.pb'
+
+interface TokenBalances {
+  balance: Nullable<BigNumber>
+  secretBalance: Nullable<BigNumber>
+}
 
 const connectKeplr = async () => {
   const sleep = (ms: number) =>
@@ -83,9 +95,7 @@ const connectLeap = async () => {
   }
 }
 
-export const connectWalletService = async (
-  walletAPIType: WalletAPIType = 'keplr'
-) => {
+const connectWalletService = async (walletAPIType: WalletAPIType = 'keplr') => {
   let walletAddress: string
   let secretNetworkClient: Nullable<SecretNetworkClient>
   // TODO: choice between Keplr and Leap APIs
@@ -98,7 +108,7 @@ export const connectWalletService = async (
   return { walletAddress, secretjs: secretNetworkClient }
 }
 
-export const requestFeeGrantService = async (
+const requestFeeGrantService = async (
   feeGrantStatus: FeeGrantStatus,
   walletAddress: String
 ) => {
@@ -146,7 +156,7 @@ export const requestFeeGrantService = async (
   return newFeeGrantStatus
 }
 
-export const setWalletViewingKey = async (token: string) => {
+const setWalletViewingKey = async (token: string) => {
   if (!window.keplr && !(window as any).leap) {
     console.error('Wallet not present')
     return
@@ -154,7 +164,7 @@ export const setWalletViewingKey = async (token: string) => {
   await (window as any).wallet.suggestToken(SECRET_CHAIN_ID, token)
 }
 
-export const getWalletViewingKey = async (
+const getWalletViewingKey = async (
   token: string
 ): Promise<Nullable<string>> => {
   if (!window.keplr && !(window as any).leap) {
@@ -172,12 +182,12 @@ export const getWalletViewingKey = async (
   }
 }
 
-export const isViewingKeyAvailable = async (token: Token) => {
+const isViewingKeyAvailable = async (token: Token) => {
   const key = await getWalletViewingKey(token.address)
   return key ? true : false
 }
 
-export const getsScrtTokenBalance = async (
+const getsScrtTokenBalance = async (
   isConnected: boolean,
   secretNetworkClient: any,
   walletAddress: string
@@ -225,23 +235,148 @@ export const getsScrtTokenBalance = async (
   return sScrtBalance
 }
 
-export const getScrtTokenBalance = async (
+const getsTokenBalance = async (
+  secretNetworkClient: any,
+  walletAddress: string,
+  token: Token
+): Promise<Nullable<string>> => {
+  if (!secretNetworkClient) {
+    return null
+  }
+
+  let sBalance: string
+
+  const key = await getWalletViewingKey(token.address)
+  if (!key) {
+    sBalance = viewingKeyErrorString
+    return null
+  }
+
+  interface IResult {
+    viewing_key_error: any
+    balance: {
+      amount: string
+    }
+  }
+
+  try {
+    const result: IResult =
+      await secretNetworkClient?.query?.compute?.queryContract({
+        contract_address: scrtToken.address,
+        code_hash: scrtToken.code_hash,
+        query: {
+          balance: { address: walletAddress, key }
+        }
+      })
+
+    if (result.viewing_key_error) {
+      console.error(result.viewing_key_error.msg)
+      sBalance = viewingKeyErrorString
+    } else {
+      sBalance = result.balance.amount
+    }
+  } catch (error) {
+    console.error(`Error getting balance for s${scrtToken.name}: `, error)
+    sBalance = viewingKeyErrorString
+  }
+
+  return sBalance
+}
+
+const getScrtTokenBalance = async (
   secretNetworkClient: any,
   walletAddress: string
 ) => {
-  let ScrtBalance: string
-
   try {
     const response = await secretNetworkClient.query.bank.balance({
       address: walletAddress,
       denom: 'uscrt'
     })
 
-    ScrtBalance = response.balance.amount
-
-    return ScrtBalance
+    return response.balance.amount
   } catch (error) {
     console.error(`Error getting balance for SCRT: `, error)
     return null
   }
+}
+
+const getBalancesForTokens = async (
+  secretNetworkClient: any,
+  walletAddress: string,
+  tokens: Token[]
+) => {
+  if (!secretNetworkClient) {
+    return null
+  }
+
+  try {
+    const { balances }: QueryAllBalancesResponse =
+      await secretNetworkClient?.query.bank.allBalances({
+        address: secretNetworkClient?.address,
+        pagination: { limit: 1000 }
+      })
+    console.log(balances)
+
+    let newBalanceMapping = new Map<Token, TokenBalances>()
+
+    const tokenMap = new Map<string, Token>()
+
+    tokens.forEach((token) => {
+      const fromDenom = token.withdrawals[0]?.from_denom
+      if (fromDenom) {
+        tokenMap.set(fromDenom, token)
+      }
+    })
+
+    // Iterate through the response and update the balance mapping
+    balances.forEach((balance) => {
+      const token = tokenMap.get(balance.denom)
+      if (token) {
+        newBalanceMapping.set(token, {
+          balance: new BigNumber(balance.amount),
+          secretBalance: null
+        })
+      }
+    })
+
+    for (const token of allTokens) {
+      const secretBalance = await getsTokenBalance(
+        secretNetworkClient,
+        walletAddress,
+        token
+      )
+
+      const currentEntry = newBalanceMapping.get(token)
+      if (currentEntry) {
+        newBalanceMapping.set(token, {
+          ...currentEntry,
+          secretBalance: secretBalance ? new BigNumber(secretBalance) : null
+        })
+      } else {
+        newBalanceMapping.set(token, {
+          balance: null,
+          secretBalance: secretBalance ? new BigNumber(secretBalance) : null
+        })
+      }
+    }
+
+    console.log(newBalanceMapping)
+
+    return newBalanceMapping
+  } catch (error) {
+    console.error(`Error getting balance: `, error)
+    return null
+  }
+}
+
+export const WalletService = {
+  connectWalletService,
+  requestFeeGrantService,
+  setWalletViewingKey,
+  getWalletViewingKey,
+  isViewingKeyAvailable,
+  getsScrtTokenBalance,
+  getsTokenBalance,
+  getScrtTokenBalance,
+  getBalancesForTokens
 }

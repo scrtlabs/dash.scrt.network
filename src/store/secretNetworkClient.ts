@@ -1,19 +1,13 @@
-import {
-  connectWalletService,
-  getScrtTokenBalance,
-  getsScrtTokenBalance,
-  requestFeeGrantService,
-  setWalletViewingKey
-} from 'service/walletService'
 import { SecretNetworkClient } from 'secretjs'
 import { FeeGrantStatus } from 'shared/types/FeeGrantStatus'
 import { Nullable } from 'shared/types/Nullable'
-import { sleep } from 'shared/utils/commons'
-import { Token, tokens } from 'shared/utils/config'
+import { allTokens, sleep } from 'shared/utils/commons'
+import { Token } from 'shared/utils/config'
 import { create } from 'zustand'
 import { WalletAPIType } from 'shared/types/WalletAPIType'
 import BigNumber from 'bignumber.js'
-import { PageRequest } from 'secretjs/dist/grpc_gateway/cosmos/base/query/v1beta1/pagination.pb'
+import { scrtToken } from 'shared/utils/tokens'
+import { WalletService } from 'shared/services/wallet.service'
 
 interface TokenBalances {
   balance: Nullable<BigNumber>
@@ -45,25 +39,8 @@ interface SecretNetworkClientState {
 export const useSecretNetworkClientStore = create<SecretNetworkClientState>()(
   (set, get) => ({
     isInitialized: false,
-    init: async () => {
-      // tokens.forEach(async (token: Token) => {
-      try {
-        const res = await get().secretNetworkClient?.query.bank.allBalances({
-          address: get().secretNetworkClient?.address,
-          pagination: { countTotal: true } as PageRequest
-        })
-        // let newBalanceMapping = new Map<Token, TokenBalances>()
-        // newBalanceMapping.set(token, {
-        //   balance: new BigNumber(amount),
-        //   secretBalance: null
-        // })
-        // set({ balanceMapping: newBalanceMapping })
-        console.log('res: ', res)
-        set({ isInitialized: true })
-      } catch (e) {
-        console.error(`Error while trying to query all token balances:`, e)
-      }
-      // })
+    init: () => {
+      set({ isInitialized: true })
     },
     isConnected: false,
     walletAddress: null,
@@ -74,7 +51,7 @@ export const useSecretNetworkClientStore = create<SecretNetworkClientState>()(
     connectWallet: async (walletAPIType?: WalletAPIType) => {
       const { setScrtBalance, setsScrtBalance } = get()
       const { walletAddress, secretjs: secretNetworkClient } =
-        await connectWalletService(walletAPIType)
+        await WalletService.connectWalletService(walletAPIType)
       set({
         walletAddress,
         secretNetworkClient: secretNetworkClient,
@@ -82,6 +59,11 @@ export const useSecretNetworkClientStore = create<SecretNetworkClientState>()(
       })
       setScrtBalance()
       setsScrtBalance()
+      WalletService.getBalancesForTokens(
+        get().secretNetworkClient,
+        get().secretNetworkClient?.address,
+        allTokens
+      )
     },
     disconnectWallet: () =>
       set({
@@ -94,7 +76,7 @@ export const useSecretNetworkClientStore = create<SecretNetworkClientState>()(
     feeGrantStatus: 'untouched',
     requestFeeGrant: async () => {
       const { feeGrantStatus, walletAddress } = get()
-      const newFeeGrantStatus = await requestFeeGrantService(
+      const newFeeGrantStatus = await WalletService.requestFeeGrantService(
         feeGrantStatus,
         walletAddress
       )
@@ -108,7 +90,7 @@ export const useSecretNetworkClientStore = create<SecretNetworkClientState>()(
         walletAddress,
         secretNetworkClient: secretNetworkClient
       } = get()
-      const sScrtBalance = await getsScrtTokenBalance(
+      const sScrtBalance = await WalletService.getsScrtTokenBalance(
         isConnected,
         secretNetworkClient,
         walletAddress
@@ -117,7 +99,7 @@ export const useSecretNetworkClientStore = create<SecretNetworkClientState>()(
     },
     setScrtBalance: async () => {
       const { walletAddress, secretNetworkClient: secretNetworkClient } = get()
-      const scrtBalance = await getScrtTokenBalance(
+      const scrtBalance = await WalletService.getScrtTokenBalance(
         secretNetworkClient,
         walletAddress
       )
@@ -126,7 +108,7 @@ export const useSecretNetworkClientStore = create<SecretNetworkClientState>()(
     isTokenBalanceLoading: false,
     setViewingKey: async (token: Token) => {
       const { setsScrtBalance } = get()
-      await setWalletViewingKey(token.address)
+      await WalletService.setWalletViewingKey(token.address)
       try {
         // setLoadingTokenBalance(true);
         await sleep(1000) // sometimes query nodes lag
@@ -138,21 +120,19 @@ export const useSecretNetworkClientStore = create<SecretNetworkClientState>()(
       }
     },
     balanceMapping: new Map<Token, TokenBalances>(),
-    getBalance(token: Token, secureSecret: boolean = false) {
+    getBalance(token: Token, secretToken: boolean = false) {
       if (!get().isInitialized) {
         get().init()
       }
 
-      return new BigNumber(0) // TODO: Fix
+      const tokenBalances: TokenBalances = get().balanceMapping.get(token)
 
-      const tokenBalaces: TokenBalances = get().balanceMapping.get(token)
-
-      if (!secureSecret) {
-        return tokenBalaces.balance
+      if (!secretToken) {
+        return tokenBalances.balance
       }
 
-      if (secureSecret) {
-        return tokenBalaces.secretBalance
+      if (secretToken) {
+        return tokenBalances.secretBalance
       }
 
       return null
