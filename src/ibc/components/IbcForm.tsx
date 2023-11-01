@@ -1,10 +1,10 @@
 import { useFormik } from 'formik'
 import { ibcSchema } from './ibcSchema'
 import { useSecretNetworkClientStore } from 'store/secretNetworkClient'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { IbcMode } from 'shared/types/IbcMode'
 import Select from 'react-select'
-import { Token, chains, tokens } from 'shared/utils/config'
+import { Chain, Token, chains, tokens } from 'shared/utils/config'
 import IbcSelect from './IbcSelect'
 import Tooltip from '@mui/material/Tooltip'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -54,12 +54,10 @@ export default function IbcForm() {
     }
   }
 
-  const selectableChains = tokens.find(
-    (token) => token.name === 'SCRT'
-  ).deposits
+  const selectableChains = IbcService.getSupportedChains()
 
   const [selectedToken, setSelectedToken] = useState<Token>(
-    tokens.filter((token: Token) => token.name === 'SCRT')[0]
+    tokens.find((token: Token) => token.name === 'SCRT')
   )
 
   const [selectedSource, setSelectedSource] = useState<any>(
@@ -70,33 +68,34 @@ export default function IbcForm() {
 
   const ChainSelect = () => {
     return (
-      <>
-        <Select
-          options={selectableChains}
-          value={selectedSource}
-          onChange={setSelectedSource}
-          isSearchable={false}
-          isDisabled={!isConnected}
-          formatOptionLabel={(option) => (
-            <IbcSelect
-              imgSrc={`/img/assets/${chains[option.chain_name].chain_image}`}
-              altText={`/img/assets/${
-                chains[option.chain_name].chain_name
-              } asset logo`}
-              optionName={option.chain_name}
-            />
-          )}
-          className="react-select-container"
-          classNamePrefix="react-select"
-        />
-      </>
+      <Select
+        options={selectableChains}
+        value={chains[formik.values.chainName]}
+        onChange={(chain: Chain) => {
+          formik.setFieldValue('chainName', chain.chain_name)
+          // formik.setFieldValue('tokenName', chain.chain_name)
+        }}
+        isSearchable={false}
+        isDisabled={!isConnected}
+        formatOptionLabel={(option) => (
+          <IbcSelect
+            imgSrc={`/img/assets/${chains[option.chain_name].chain_image}`}
+            altText={`/img/assets/${
+              chains[option.chain_name].chain_name
+            } asset logo`}
+            optionName={option.chain_name}
+          />
+        )}
+        className="react-select-container"
+        classNamePrefix="react-select"
+      />
     )
   }
 
   const formik = useFormik({
     initialValues: {
-      chainName: 'AKT',
-      tokenName: 'AKT',
+      chainName: 'Jackal',
+      tokenName: 'SCRT',
       ibcMode: 'deposit',
       amount: ''
     },
@@ -129,6 +128,21 @@ export default function IbcForm() {
     }
   })
 
+  function getSupportedTokens(): Token[] {
+    let tempSelectedChain = chains[formik.values.chainName]
+    let supportedTokens =
+      IbcService.getSupportedIbcTokensByChain(tempSelectedChain)
+    return supportedTokens
+  }
+
+  const [supportedTokens, setSupportedTokens] = useState(getSupportedTokens())
+
+  useEffect(() => {
+    const supportedTokensBySelectedChain: Token[] = getSupportedTokens()
+    setSupportedTokens(supportedTokensBySelectedChain)
+    formik.setFieldValue('tokenName', 'SCRT')
+  }, [formik.values.chainName])
+
   // return <Deposit />
   return (
     <>
@@ -159,13 +173,13 @@ export default function IbcForm() {
                       src={
                         '/img/assets/' +
                         (formik.values.ibcMode === 'deposit'
-                          ? chains[selectedSource.chain_name].chain_image
+                          ? chains[formik.values.chainName].chain_image
                           : 'scrt.svg')
                       }
                       className="w-full relative inline-block rounded-full overflow-hiden"
                       alt={`${
                         formik.values.ibcMode === 'deposit'
-                          ? chains[selectedSource.chain_name].chain_name
+                          ? chains[formik.values.chainName].chain_name
                           : 'SCRT'
                       } logo`}
                     />
@@ -245,13 +259,13 @@ export default function IbcForm() {
                       src={
                         '/img/assets/' +
                         (formik.values.ibcMode === 'withdrawal'
-                          ? chains[selectedSource.chain_name].chain_image
+                          ? chains[formik.values.chainName].chain_image
                           : 'scrt.svg')
                       }
                       className="w-full relative inline-block rounded-full overflow-hiden"
                       alt={`${
                         formik.values.ibcMode === 'withdrawal'
-                          ? chains[selectedSource.chain_name].chain_name
+                          ? chains[formik.values.chainName].chain_name
                           : 'SCRT'
                       } logo`}
                     />
@@ -300,12 +314,16 @@ export default function IbcForm() {
           </div>
           <div className="flex" id="inputWrapper">
             <Select
-              options={tokens} // TODO: was "supportedTokens"
-              value={selectedToken}
-              onChange={setSelectedToken}
+              options={supportedTokens}
+              value={tokens.find(
+                (token: Token) => token.name === formik.values.tokenName
+              )}
+              onChange={(token: Token) =>
+                formik.setFieldValue('tokenName', token.name)
+              }
               isSearchable={false}
               isDisabled={!secretNetworkClient?.address}
-              formatOptionLabel={(token) => (
+              formatOptionLabel={(token: Token) => (
                 <div className="flex items-center">
                   <img
                     src={`/img/assets/${token.image}`}
@@ -411,6 +429,7 @@ export default function IbcForm() {
         >
           {`Execute Transfer`}
         </button>
+        {JSON.stringify}
       </form>
     </>
   )

@@ -168,14 +168,14 @@ function WrapForm() {
               name="tokenName"
               options={tokens.sort((a, b) => a.name.localeCompare(b.name))}
               value={tokens.find(
-                (token) => token.name === formik.values.tokenName
+                (token: Token) => token.name === formik.values.tokenName
               )}
               onChange={(token: Token) =>
                 formik.setFieldValue('tokenName', token.name)
               }
               onBlur={formik.handleBlur}
               isSearchable={false}
-              formatOptionLabel={(token) => (
+              formatOptionLabel={(token: Token) => (
                 <div className="flex items-center">
                   <img
                     src={`/img/assets/${token.image}`}
