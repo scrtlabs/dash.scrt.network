@@ -19,7 +19,18 @@ import {
 import { FeeGrantStatus } from 'shared/types/FeeGrantStatus'
 import { IbcMode } from 'shared/types/IbcMode'
 import { Nullable } from 'shared/types/Nullable'
-import { faucetAddress, randomPadding } from 'shared/utils/commons'
+import {
+  sleep,
+  faucetAddress,
+  suggestCrescenttoWallet,
+  suggestChihuahuatoWallet,
+  suggestInjectivetoWallet,
+  suggestKujiratoWallet,
+  suggestTerratoWallet,
+  suggestComposabletoWallet,
+  randomPadding,
+  viewingKeyErrorString
+} from 'shared/utils/commons'
 import { Chain, Deposit, Token, chains, tokens } from 'shared/utils/config'
 import Long from 'long'
 import { TxRaw } from 'secretjs/dist/protobuf/cosmos/tx/v1beta1/tx'
@@ -47,6 +58,59 @@ interface IPropsTokenName extends IBaseProps {
 }
 
 type TProps = IPropsToken | IPropsTokenName
+
+async function getChainSecretJs(chain: Chain): Promise<SecretNetworkClient> {
+  while (
+    !(window as any).wallet ||
+    !(window as any).wallet.getOfflineSignerOnlyAmino
+  ) {
+    await sleep(100)
+  }
+  if (chain.chain_name === 'Terra') {
+    await suggestTerratoWallet((window as any).wallet)
+  } else if (chain.chain_name === 'Injective') {
+    await suggestInjectivetoWallet((window as any).wallet)
+  } else if (chain.chain_name === 'Crescent') {
+    await suggestCrescenttoWallet((window as any).wallet)
+  } else if (chain.chain_name === 'Kujira') {
+    await suggestKujiratoWallet((window as any).wallet)
+  } else if (chain.chain_name === 'Chihuahua') {
+    await suggestChihuahuatoWallet((window as any).wallet)
+  } else if (chain.chain_name === 'Composable') {
+    await suggestComposabletoWallet((window as any).wallet)
+  }
+
+  const { chain_id, lcd } = chains[chain.chain_name]
+
+  await (window as any).wallet.enable(chain_id)
+
+  if ((window as any).wallet) {
+    ;(window as any).wallet.defaultOptions = {
+      sign: {
+        preferNoSetFee: false,
+        disableBalanceCheck: true
+      }
+    }
+  }
+
+  let sourceOfflineSigner
+  if (chain.chain_name === 'Composable') {
+    sourceOfflineSigner = (window as any).wallet.getOfflineSigner(chain_id)
+  } else {
+    sourceOfflineSigner = (window as any).wallet.getOfflineSignerOnlyAmino(
+      chain_id
+    )
+  }
+  const depositFromAccounts = await sourceOfflineSigner.getAccounts()
+
+  const secretNetworkClient = new SecretNetworkClient({
+    url: lcd,
+    chainId: chain_id,
+    wallet: sourceOfflineSigner,
+    walletAddress: depositFromAccounts[0].address
+  })
+  return secretNetworkClient
+}
 
 /**
  * Attempts to perform IBC Transfer via secret.js API
