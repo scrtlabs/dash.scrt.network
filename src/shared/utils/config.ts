@@ -2839,6 +2839,114 @@ export const ICSTokens: Token[] = [
     ],
   },
   {
+    name: "awstETH",
+    description: "wstETH from Axelar",
+    is_ics20: true,
+    address: "secret148jzxkagwe0xulf8jt3sw4nuh2shdh788z3gyd",
+    code_hash:
+      "638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e",
+    image: "/wsteth.svg",
+    decimals: 18,
+    coingecko_id: "wrapped-steth",
+    axelar_denom: "wsteth-wei",
+    deposits: [
+      {
+        chain_name: "Axelar",
+        axelar_chain_name: CHAINS.MAINNET.AXELAR,
+        from_denom: "wsteth-wei",
+        channel_id: "channel-69",
+        gas: 300_000,
+      },
+      {
+        chain_name: "Juno",
+        axelar_chain_name: CHAINS.MAINNET.JUNO,
+        from_denom: ibcDenom(
+          [{ incomingChannelId: "channel-71", incomingPortId: "transfer" }],
+          "wsteth-wei"
+        ),
+        channel_id: "channel-71",
+        gas: 300_000,
+      },
+      {
+        chain_name: "Kujira",
+        axelar_chain_name: CHAINS.MAINNET.KUJIRA,
+        from_denom: ibcDenom(
+          [{ incomingChannelId: "channel-9", incomingPortId: "transfer" }],
+          "wsteth-wei"
+        ),
+        channel_id: "channel-9",
+        gas: 300_000,
+      },
+      {
+        chain_name: "Osmosis",
+        axelar_chain_name: CHAINS.MAINNET.OSMOSIS,
+        from_denom: ibcDenom(
+          [{ incomingChannelId: "channel-208", incomingPortId: "transfer" }],
+          "wsteth-wei"
+        ),
+        channel_id: "channel-208",
+        gas: 300_000,
+      },
+      {
+        chain_name: "Stargaze",
+        axelar_chain_name: CHAINS.MAINNET.STARGAZE,
+        from_denom: ibcDenom(
+          [{ incomingChannelId: "channel-50", incomingPortId: "transfer" }],
+          "wsteth-wei"
+        ),
+        channel_id: "channel-50",
+        gas: 300_000,
+      },
+      {
+        chain_name: "Terra",
+        axelar_chain_name: CHAINS.MAINNET.TERRA,
+        from_denom: ibcDenom(
+          [{ incomingChannelId: "channel-6", incomingPortId: "transfer" }],
+          "wsteth-wei"
+        ),
+        channel_id: "channel-6",
+        gas: 300_000,
+      },
+    ],
+    withdrawals: [
+      {
+        chain_name: "Juno",
+        axelar_chain_name: CHAINS.MAINNET.JUNO,
+        from_denom: "secret1yxjmepvyl2c25vnt53cr2dpn8amknwausxee83",
+        channel_id: "channel-61",
+        gas: 350_000,
+      },
+      {
+        chain_name: "Kujira",
+        axelar_chain_name: CHAINS.MAINNET.KUJIRA,
+        from_denom: "secret1yxjmepvyl2c25vnt53cr2dpn8amknwausxee83",
+        channel_id: "channel-61",
+        gas: 350_000,
+      },
+      {
+        chain_name: "Osmosis",
+        axelar_chain_name: CHAINS.MAINNET.OSMOSIS,
+        from_denom: "secret1yxjmepvyl2c25vnt53cr2dpn8amknwausxee83",
+        channel_id: "channel-61",
+        gas: 350_000,
+      },
+      {
+        chain_name: "Stargaze",
+        axelar_chain_name: CHAINS.MAINNET.STARGAZE,
+        from_denom: "secret1yxjmepvyl2c25vnt53cr2dpn8amknwausxee83",
+        channel_id: "channel-61",
+        gas: 350_000,
+      },
+      {
+        chain_name: "Terra",
+        axelar_chain_name: CHAINS.MAINNET.TERRA,
+        from_denom: "secret1yxjmepvyl2c25vnt53cr2dpn8amknwausxee83",
+        channel_id: "channel-61",
+        gas: 350_000,
+      },
+    ],
+  },
+  {
     name: "aWBTC",
     description: "Wrapped Bitcoin from Axelar",
     is_ics20: true,
