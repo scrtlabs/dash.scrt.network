@@ -110,7 +110,7 @@ const SquidModal = (props: Props) => {
     }
   }
 
-  if (!open) return null
+  if (!props.open) return null
 
   return (
     <>

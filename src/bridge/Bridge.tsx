@@ -115,7 +115,6 @@ function Bridge() {
             document.body.classList.remove('overflow-hidden')
           }}
           theme={theme}
-          secretAddress={walletAddress}
         />
         <p>
           Or anonymously bridge your assets into SCRT using Houdini Swap.

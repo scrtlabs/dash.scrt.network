@@ -13,7 +13,7 @@ interface Props {
 const HoudiniModal = (props: Props) => {
   const [loading, setLoading] = useState(true)
 
-  if (!open) return null
+  if (!props.open) return null
 
   return (
     <>
