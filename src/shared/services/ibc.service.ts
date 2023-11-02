@@ -9,10 +9,12 @@ import { cosmos } from '@tharsis/proto/dist/proto/cosmos/tx/v1beta1/tx'
 import {
   BroadcastMode,
   MsgExecuteContract,
+  MsgTransfer,
   SecretNetworkClient,
   TxResponse,
   fromBase64,
-  toBase64
+  toBase64,
+  toUtf8
 } from 'secretjs'
 import { FeeGrantStatus } from 'shared/types/FeeGrantStatus'
 import { IbcMode } from 'shared/types/IbcMode'
@@ -32,6 +34,7 @@ interface IBaseProps {
   chainName: string
   amount: string
   secretNetworkClient: SecretNetworkClient
+  sourceChainNetworkClient: SecretNetworkClient
   feeGrantStatus: FeeGrantStatus
 }
 
@@ -76,6 +79,24 @@ const performIbcTransfer = async (
     return result
   }
 
+  if (props.ibcMode === 'withdrawal') {
+    return performIbcWithdrawal(props, token)
+  } else if (props.ibcMode === 'deposit') {
+    return performIbcDeposit(props, token)
+  }
+}
+
+const performIbcDeposit = async (
+  props: TProps,
+  token: Token
+): Promise<{ success: boolean; errorMsg: Nullable<string> }> => {
+  let result: { success: boolean; errorMsg: Nullable<string> } = {
+    success: false,
+    errorMsg: null
+  }
+
+  const selectedSource = chains[props.chainName]
+
   // IBC Logic
   let {
     deposit_channel_id,
@@ -102,9 +123,9 @@ const performIbcTransfer = async (
         token.name === 'SCRT' ||
         chain.axelar_chain_name == CHAINS.MAINNET.AXELAR
       ) {
-        tx = await sourceChainSecretjs.tx.ibc.transfer(
+        tx = await props.sourceChainNetworkClient.tx.ibc.transfer(
           {
-            sender: sourceAddress,
+            sender: props.sourceChainNetworkClient.address,
             receiver: props.secretNetworkClient.address,
             source_channel: deposit_channel_id,
             source_port: 'transfer',
@@ -129,9 +150,9 @@ const performIbcTransfer = async (
           }
         )
       } else {
-        tx = await sourceChainSecretjs.tx.ibc.transfer(
+        tx = await props.sourceChainNetworkClient.tx.ibc.transfer(
           {
-            sender: sourceAddress,
+            sender: props.sourceChainNetworkClient.address,
             receiver: 'secret198lmmh2fpj3weqhjczptkzl9pxygs23yn6dsev',
             source_channel: deposit_channel_id,
             source_port: 'transfer',
@@ -183,9 +204,9 @@ const performIbcTransfer = async (
         destinationAddress,
         asset
       })
-      tx = await sourceChainSecretjs.tx.ibc.transfer(
+      tx = await props.sourceChainNetworkClient.tx.ibc.transfer(
         {
-          sender: sourceAddress,
+          sender: props.sourceChainNetworkClient.address,
           receiver: depositAddress,
           source_channel: deposit_channel_id,
           source_port: 'transfer',
@@ -227,9 +248,9 @@ const performIbcTransfer = async (
         }
       } = await (
         await fetch(
-          `${
-            chains[props.chainName].lcd
-          }/cosmos/auth/v1beta1/accounts/${sourceAddress}`
+          `${chains[props.chainName].lcd}/cosmos/auth/v1beta1/accounts/${
+            props.sourceChainNetworkClient.address
+          }`
         )
       ).json()
 
@@ -247,7 +268,7 @@ const performIbcTransfer = async (
           cosmosChainId: chains[props.chainName].chain_id
         },
         {
-          accountAddress: sourceAddress,
+          accountAddress: props.sourceChainNetworkClient.address,
           accountNumber: Number(accountNumber),
           sequence: Number(accountSequence),
           pubkey: toBase64(pubkey)
@@ -287,7 +308,7 @@ const performIbcTransfer = async (
       // Sign the tx
       const sig = await (window as any).wallet?.signDirect(
         chains[props.chainName].chain_id,
-        sourceAddress,
+        props.sourceChainNetworkClient.address,
         {
           bodyBytes: txIbcMsgTransfer.signDirect.body.serializeBinary(),
           authInfoBytes: txIbcMsgTransfer.signDirect.authInfo.serializeBinary(),
@@ -308,7 +329,7 @@ const performIbcTransfer = async (
       // cosmjs can broadcast to Ethermint but cannot handle the response
 
       // Broadcast the tx to Evmos
-      tx = await sourceChainSecretjs.tx.broadcastSignedTx(txBytes, {
+      tx = await props.sourceChainNetworkClient.tx.broadcastSignedTx(txBytes, {
         ibcTxsOptions: {
           resolveResponses: true,
           resolveResponsesCheckIntervalMs: 250,
@@ -358,7 +379,6 @@ const performIbcTransfer = async (
           props.ibcMode === 'deposit' ? props.chainName : 'Secret Network',
         'Target Chain':
           props.ibcMode === 'withdrawal' ? props.chainName : 'Secret Network',
-        // "Amount": amountToTransfer,
         'Fee Grant used':
           props.feeGrantStatus === 'success' && props.ibcMode === 'withdrawal'
             ? true
@@ -375,377 +395,263 @@ const performIbcTransfer = async (
     // })
   } finally {
   }
+}
 
-  // if (props.ibcMode === 'withdrawal') {
-  //   const amount = new BigNumber(props.amount)
-  //     .multipliedBy(`1e${selectedToken.decimals}`)
-  //     .toFixed(0, BigNumber.ROUND_DOWN)
+const performIbcWithdrawal = async (
+  props: TProps,
+  token: Token
+): Promise<{ success: boolean; errorMsg: Nullable<string> }> => {
+  let result: { success: boolean; errorMsg: Nullable<string> } = {
+    success: false,
+    errorMsg: null
+  }
 
-  //   let {
-  //     withdraw_channel_id,
-  //     withdraw_gas,
-  //     lcd: lcdDstChain
-  //   } = chains[selectedSource.chain_name]
+  const selectedSource = chains[props.chainName]
 
-  //   const withdrawalChain = selectedToken.withdrawals.filter(
-  //     (withdrawal: any) => withdrawal.chain_name === selectedSource.chain_name
-  //   )[0]
+  const amount = new BigNumber(props.amount)
+    .multipliedBy(`1e${token.decimals}`)
+    .toFixed(0, BigNumber.ROUND_DOWN)
 
-  //   withdraw_channel_id = withdrawalChain.channel_id || withdraw_channel_id
-  //   withdraw_gas = withdrawalChain.gas || withdraw_gas
+  let {
+    withdraw_channel_id,
+    withdraw_gas,
+    lcd: lcdDstChain
+  } = chains[selectedSource.chain_name]
 
-  //   const toastId = toast.loading(
-  //     `Sending ${normalizedAmount} ${selectedToken.name} from Secret Network to ${selectedSource.chain_name}`,
-  //     {
-  //       closeButton: true
-  //     }
-  //   )
+  const withdrawalChain = token.withdrawals.filter(
+    (withdrawal: any) => withdrawal.chain_name === selectedSource.chain_name
+  )[0]
 
-  //   try {
-  //     let tx: TxResponse
+  withdraw_channel_id = withdrawalChain.channel_id || withdraw_channel_id
+  withdraw_gas = withdrawalChain.gas || withdraw_gas
 
-  //     if (selectedToken.is_snip20) {
-  //       tx = await secretjs.tx.compute.executeContract(
-  //         {
-  //           contract_address: selectedToken.address,
-  //           code_hash: selectedToken.code_hash,
-  //           sender: secretjs?.address,
-  //           msg: {
-  //             send: {
-  //               recipient: 'secret1tqmms5awftpuhalcv5h5mg76fa0tkdz4jv9ex4', // cw20-ics20
-  //               recipient_code_hash:
-  //                 'f85b413b547b9460162958bafd51113ac266dac96a84c33b9150f68f045f2641',
-  //               amount,
-  //               msg: toBase64(
-  //                 toUtf8(
-  //                   JSON.stringify({
-  //                     channel: withdraw_channel_id,
-  //                     remote_address: sourceAddress,
-  //                     timeout: 600 // 10 minute timeout
-  //                   })
-  //                 )
-  //               )
-  //             }
-  //           }
-  //         },
-  //         {
-  //           broadcastCheckIntervalMs: 10000,
-  //           gasLimit: withdraw_gas,
-  //           gasPriceInFeeDenom: 0.1,
-  //           feeDenom: 'uscrt',
-  //           feeGranter: feeGrantStatus === 'Success' ? faucetAddress : '',
-  //           ibcTxsOptions: {
-  //             resolveResponses: true,
-  //             resolveResponsesCheckIntervalMs: 250,
-  //             resolveResponsesTimeoutMs: 12 * 60 * 1000
-  //           },
-  //           broadcastMode: BroadcastMode.Sync
-  //         }
-  //       )
-  //     } else if (
-  //       selectedToken.is_ics20 &&
-  //       !(
-  //         withdrawalChain?.axelar_chain_name === CHAINS.MAINNET.AXELAR &&
-  //         selectedToken.name === 'SCRT'
-  //       )
-  //     ) {
-  //       const fromChain = 'secret-snip',
-  //         toChain = withdrawalChain.axelar_chain_name,
-  //         destinationAddress = sourceAddress,
-  //         asset = selectedToken.axelar_denom
-
-  //       let depositAddress = ''
-
-  //       if (withdrawalChain?.axelar_chain_name === CHAINS.MAINNET.AXELAR) {
-  //         depositAddress = destinationAddress
-  //       } else {
-  //         depositAddress = await sdk.getDepositAddress({
-  //           fromChain,
-  //           toChain,
-  //           destinationAddress,
-  //           asset
-  //         })
-  //       }
-
-  //       console.log(
-  //         JSON.stringify({
-  //           channel: withdraw_channel_id,
-  //           remote_address: depositAddress,
-  //           timeout: 600 // 10 minute timeout
-  //         })
-  //       )
-  //       tx = await secretjs.tx.compute.executeContract(
-  //         {
-  //           contract_address: selectedToken.address,
-  //           code_hash: selectedToken.code_hash,
-  //           sender: secretjs?.address,
-  //           msg: {
-  //             send: {
-  //               recipient: 'secret1yxjmepvyl2c25vnt53cr2dpn8amknwausxee83', // ics20
-  //               recipient_code_hash:
-  //                 '2976a2577999168b89021ecb2e09c121737696f71c4342f9a922ce8654e98662',
-  //               amount,
-  //               msg: toBase64(
-  //                 toUtf8(
-  //                   JSON.stringify({
-  //                     channel: withdraw_channel_id,
-  //                     remote_address: depositAddress,
-  //                     timeout: 600 // 10 minute timeout
-  //                   })
-  //                 )
-  //               )
-  //             }
-  //           }
-  //         },
-  //         {
-  //           broadcastCheckIntervalMs: 10000,
-  //           gasLimit: withdraw_gas,
-  //           gasPriceInFeeDenom: 0.1,
-  //           feeDenom: 'uscrt',
-  //           feeGranter: feeGrantStatus === 'Success' ? faucetAddress : '',
-  //           ibcTxsOptions: {
-  //             resolveResponses: true,
-  //             resolveResponsesCheckIntervalMs: 10_000,
-  //             resolveResponsesTimeoutMs: 12 * 60 * 1000
-  //           },
-  //           broadcastMode: BroadcastMode.Sync
-  //         }
-  //       )
-  //     } else if (selectedToken.name === 'SCRT') {
-  //       const source_channel_id =
-  //         withdrawalChain?.axelar_chain_name == CHAINS.MAINNET.AXELAR &&
-  //         selectedToken.name !== 'SCRT'
-  //           ? withdrawalChain.channel_id
-  //           : withdraw_channel_id
-  //       tx = await secretjs.tx.ibc.transfer(
-  //         {
-  //           sender: secretjs?.address,
-  //           receiver: sourceAddress,
-  //           source_channel: source_channel_id,
-  //           source_port: 'transfer',
-  //           token: {
-  //             amount,
-  //             denom: withdrawalChain.from_denom
-  //           },
-  //           timeout_timestamp: String(Math.floor(Date.now() / 1000) + 10 * 60) // 10 minute timeout
-  //         },
-  //         {
-  //           broadcastCheckIntervalMs: 10000,
-  //           gasLimit: withdraw_gas,
-  //           gasPriceInFeeDenom: 0.1,
-  //           feeDenom: 'uscrt',
-  //           feeGranter: feeGrantStatus === 'Success' ? faucetAddress : '',
-  //           ibcTxsOptions: {
-  //             resolveResponses: true,
-  //             resolveResponsesCheckIntervalMs: 250,
-  //             resolveResponsesTimeoutMs: 12 * 60 * 1000
-  //           },
-  //           broadcastMode: BroadcastMode.Sync
-  //         }
-  //       )
-  //     } else {
-  //       tx = await secretjs.tx.broadcast(
-  //         [
-  //           new MsgExecuteContract({
-  //             sender: secretjs?.address,
-  //             contract_address: selectedToken.address,
-  //             code_hash: selectedToken.code_hash,
-  //             sent_funds: [],
-  //             msg: {
-  //               redeem: {
-  //                 amount,
-  //                 denom: selectedToken.withdrawals[0].from_denom,
-  //                 padding: randomPadding()
-  //               }
-  //             }
-  //           } as any),
-  //           new MsgTransfer({
-  //             sender: secretjs?.address,
-  //             receiver: sourceAddress,
-  //             source_channel: withdraw_channel_id,
-  //             source_port: 'transfer',
-  //             token: {
-  //               amount,
-  //               denom: withdrawalChain.from_denom
-  //             },
-  //             timeout_timestamp: String(Math.floor(Date.now() / 1000) + 10 * 60) // 10 minute timeout
-  //           })
-  //         ],
-  //         {
-  //           broadcastCheckIntervalMs: 10000,
-  //           gasLimit: 150_000,
-  //           gasPriceInFeeDenom: 0.1,
-  //           feeDenom: 'uscrt',
-  //           feeGranter: feeGrantStatus === 'Success' ? faucetAddress : '',
-  //           ibcTxsOptions: {
-  //             resolveResponses: true,
-  //             resolveResponsesCheckIntervalMs: 250,
-  //             resolveResponsesTimeoutMs: 12 * 60 * 1000
-  //           },
-  //           broadcastMode: BroadcastMode.Sync
-  //         }
-  //       )
-  //     }
-
-  //     if (tx.code !== 0) {
-  //       toast.update(toastId, {
-  //         render: `Failed sending ${normalizedAmount} ${selectedToken.name} from Secret Network to ${selectedSource.chain_name}: ${tx.rawLog}`,
-  //         type: 'error',
-  //         isLoading: false
-  //       })
-  //     } else {
-  //       toast.update(toastId, {
-  //         render: `Receiving ${normalizedAmount} ${selectedToken.name} on ${selectedSource.chain_name}`
-  //       })
-
-  //       const ibcResp = await tx.ibcResponses[0]
-
-  //       if (ibcResp.type === 'ack') {
-  //         updateCoinBalance()
-  //         toast.update(toastId, {
-  //           render: `Received ${normalizedAmount} ${selectedToken.name} on ${selectedSource.chain_name}`,
-  //           type: 'success',
-  //           isLoading: false,
-  //           closeOnClick: true
-  //         })
-  //       } else {
-  //         toast.update(toastId, {
-  //           render: `Timed out while waiting to receive ${normalizedAmount} ${selectedToken.name} on ${selectedSource.chain_name} from Secret Network`,
-  //           type: 'warning',
-  //           isLoading: false
-  //         })
-  //       }
-  //     }
-  //   } catch (e) {
-  //     toast.update(toastId, {
-  //       render: `Failed sending ${normalizedAmount} ${
-  //         selectedToken.name
-  //       } from Secret Network to ${selectedSource.chain_name}: ${
-  //         (e as any).message
-  //       }`,
-  //       type: 'error',
-  //       isLoading: false
-  //     })
-  //   } finally {
+  // const toastId = toast.loading(
+  //   `Sending ${normalizedAmount} ${selectedToken.name} from Secret Network to ${selectedSource.chain_name}`,
+  //   {
+  //     closeButton: true
   //   }
+  // )
 
-  //   // End IBC Logic
+  try {
+    let tx: TxResponse
 
-  //   const baseAmount = props.amount
-  //   const amount = new BigNumber(Number(baseAmount))
-  //     .multipliedBy(`1e${token.decimals}`)
-  //     .toFixed(0, BigNumber.ROUND_DOWN)
+    if (token.is_snip20) {
+      tx = await props.secretNetworkClient.tx.compute.executeContract(
+        {
+          contract_address: token.address,
+          code_hash: token.code_hash,
+          sender: props.secretNetworkClient?.address,
+          msg: {
+            send: {
+              recipient: 'secret1tqmms5awftpuhalcv5h5mg76fa0tkdz4jv9ex4', // cw20-ics20
+              recipient_code_hash:
+                'f85b413b547b9460162958bafd51113ac266dac96a84c33b9150f68f045f2641',
+              amount,
+              msg: toBase64(
+                toUtf8(
+                  JSON.stringify({
+                    channel: withdraw_channel_id,
+                    remote_address: props.sourceChainNetworkClient.address,
+                    timeout: 600 // 10 minute timeout
+                  })
+                )
+              )
+            }
+          }
+        },
+        {
+          broadcastCheckIntervalMs: 10000,
+          gasLimit: withdraw_gas,
+          gasPriceInFeeDenom: 0.1,
+          feeDenom: 'uscrt',
+          feeGranter: props.feeGrantStatus === 'success' ? faucetAddress : '',
+          ibcTxsOptions: {
+            resolveResponses: true,
+            resolveResponsesCheckIntervalMs: 250,
+            resolveResponsesTimeoutMs: 12 * 60 * 1000
+          },
+          broadcastMode: BroadcastMode.Sync
+        }
+      )
+    } else if (
+      token.is_ics20 &&
+      !(
+        withdrawalChain?.axelar_chain_name === CHAINS.MAINNET.AXELAR &&
+        token.name === 'SCRT'
+      )
+    ) {
+      const fromChain = 'secret-snip',
+        toChain = withdrawalChain.axelar_chain_name,
+        destinationAddress = props.sourceChainNetworkClient.address,
+        asset = token.axelar_denom
 
-  //   if (amount === 'NaN') {
-  //     console.error('NaN amount', baseAmount)
-  //     result.success = false
-  //     result.errorMsg = 'Amount is not a valid number!'
-  //     return result
-  //   }
+      let depositAddress = ''
 
-  //   try {
-  //     if (props.wrappingMode === 'wrap') {
-  //       await props.secretNetworkClient.tx
-  //         .broadcast(
-  //           [
-  //             new MsgExecuteContract({
-  //               sender: props.secretNetworkClient.address,
-  //               contract_address: token.address,
-  //               code_hash: token.code_hash,
-  //               sent_funds: [
-  //                 { denom: token.withdrawals[0].from_denom, amount }
-  //               ],
-  //               msg: {
-  //                 deposit: {
-  //                   padding: randomPadding()
-  //                 }
-  //               }
-  //             } as any)
-  //           ],
-  //           {
-  //             gasLimit: 150_000,
-  //             gasPriceInFeeDenom: 0.25,
-  //             feeDenom: 'uscrt',
-  //             feeGranter:
-  //               props.feeGrantStatus === 'success' ? faucetAddress : '',
-  //             broadcastMode: BroadcastMode.Sync
-  //           }
-  //         )
-  //         .catch((error: any) => {
-  //           console.error(error)
-  //           result.success = false
-  //           result.errorMsg = `Wrapping of ${token.name} failed: ${error.tx.rawLog}`
-  //           return result
-  //         })
-  //         .then((tx: any) => {
-  //           console.log(tx)
-  //           if (tx) {
-  //             if (tx.code === 0) {
-  //               result.success = true
-  //               result.errorMsg = null
-  //               return result
-  //             }
-  //           }
-  //         })
-  //     }
+      if (withdrawalChain?.axelar_chain_name === CHAINS.MAINNET.AXELAR) {
+        depositAddress = destinationAddress
+      } else {
+        depositAddress = await sdk.getDepositAddress({
+          fromChain,
+          toChain,
+          destinationAddress,
+          asset
+        })
+      }
 
-  //     if (props.wrappingMode === 'unwrap') {
-  //       await props.secretNetworkClient.tx
-  //         .broadcast(
-  //           [
-  //             new MsgExecuteContract({
-  //               sender: props.secretNetworkClient.address,
-  //               contract_address: props.secretNetworkClient.address,
-  //               // code_hash: props.secretNetworkClient.code_hash,
-  //               sent_funds: [],
-  //               msg: {
-  //                 redeem: {
-  //                   amount,
-  //                   denom:
-  //                     token.name === 'SCRT'
-  //                       ? undefined
-  //                       : token.withdrawals[0].from_denom,
-  //                   padding: randomPadding()
-  //                 }
-  //               }
-  //             } as any)
-  //           ],
-  //           {
-  //             gasLimit: 150_000,
-  //             gasPriceInFeeDenom: 0.25,
-  //             feeDenom: 'uscrt',
-  //             feeGranter:
-  //               props.feeGrantStatus === 'success' ? faucetAddress : '',
-  //             broadcastMode: BroadcastMode.Sync
-  //           }
-  //         )
-  //         .catch((error: any) => {
-  //           console.error(error)
-  //           result.success = false
-  //           result.errorMsg = `Unwrapping of s${token.name} failed: ${error.tx.rawLog}`
-  //           return result
-  //         })
-  //         .then((tx: any) => {
-  //           console.log(tx)
-  //           if (tx) {
-  //             if (tx.code === 0) {
-  //               result.success = true
-  //               result.errorMsg = null
-  //               return result
-  //             }
-  //           }
-  //         })
-  //     }
-  //   } catch (error: any) {
-  //     console.error(error)
-  //     result.success = false
-  //     result.errorMsg = error
-  //     return result
-  //   }
-  //   result.success = false
-  //   result.errorMsg = 'Unwrapping failed!'
-  //   return result
-  // }
+      tx = await props.secretNetworkClient.tx.compute.executeContract(
+        {
+          contract_address: token.address,
+          code_hash: token.code_hash,
+          sender: props.secretNetworkClient?.address,
+          msg: {
+            send: {
+              recipient: 'secret1yxjmepvyl2c25vnt53cr2dpn8amknwausxee83', // ics20
+              recipient_code_hash:
+                '2976a2577999168b89021ecb2e09c121737696f71c4342f9a922ce8654e98662',
+              amount,
+              msg: toBase64(
+                toUtf8(
+                  JSON.stringify({
+                    channel: withdraw_channel_id,
+                    remote_address: depositAddress,
+                    timeout: 600 // 10 minute timeout
+                  })
+                )
+              )
+            }
+          }
+        },
+        {
+          broadcastCheckIntervalMs: 10000,
+          gasLimit: withdraw_gas,
+          gasPriceInFeeDenom: 0.1,
+          feeDenom: 'uscrt',
+          feeGranter: props.feeGrantStatus === 'success' ? faucetAddress : '',
+          ibcTxsOptions: {
+            resolveResponses: true,
+            resolveResponsesCheckIntervalMs: 10_000,
+            resolveResponsesTimeoutMs: 12 * 60 * 1000
+          },
+          broadcastMode: BroadcastMode.Sync
+        }
+      )
+    } else if (token.name === 'SCRT') {
+      const source_channel_id =
+        withdrawalChain?.axelar_chain_name == CHAINS.MAINNET.AXELAR &&
+        token.name !== 'SCRT'
+          ? withdrawalChain.channel_id
+          : withdraw_channel_id
+      tx = await props.secretNetworkClient.tx.ibc.transfer(
+        {
+          sender: props.secretNetworkClient?.address,
+          receiver: props.sourceChainNetworkClient.address,
+          source_channel: source_channel_id,
+          source_port: 'transfer',
+          token: {
+            amount,
+            denom: withdrawalChain.from_denom
+          },
+          timeout_timestamp: String(Math.floor(Date.now() / 1000) + 10 * 60) // 10 minute timeout
+        },
+        {
+          broadcastCheckIntervalMs: 10000,
+          gasLimit: withdraw_gas,
+          gasPriceInFeeDenom: 0.1,
+          feeDenom: 'uscrt',
+          feeGranter: props.feeGrantStatus === 'success' ? faucetAddress : '',
+          ibcTxsOptions: {
+            resolveResponses: true,
+            resolveResponsesCheckIntervalMs: 250,
+            resolveResponsesTimeoutMs: 12 * 60 * 1000
+          },
+          broadcastMode: BroadcastMode.Sync
+        }
+      )
+    } else {
+      tx = await props.secretNetworkClient.tx.broadcast(
+        [
+          new MsgExecuteContract({
+            sender: props.secretNetworkClient?.address,
+            contract_address: token.address,
+            code_hash: token.code_hash,
+            sent_funds: [],
+            msg: {
+              redeem: {
+                amount,
+                denom: token.withdrawals[0].from_denom,
+                padding: randomPadding()
+              }
+            }
+          } as any),
+          new MsgTransfer({
+            sender: props.secretNetworkClient?.address,
+            receiver: props.sourceChainNetworkClient.address,
+            source_channel: withdraw_channel_id,
+            source_port: 'transfer',
+            token: {
+              amount,
+              denom: withdrawalChain.from_denom
+            },
+            timeout_timestamp: String(Math.floor(Date.now() / 1000) + 10 * 60) // 10 minute timeout
+          })
+        ],
+        {
+          broadcastCheckIntervalMs: 10000,
+          gasLimit: 150_000,
+          gasPriceInFeeDenom: 0.1,
+          feeDenom: 'uscrt',
+          feeGranter: props.feeGrantStatus === 'success' ? faucetAddress : '',
+          ibcTxsOptions: {
+            resolveResponses: true,
+            resolveResponsesCheckIntervalMs: 250,
+            resolveResponsesTimeoutMs: 12 * 60 * 1000
+          },
+          broadcastMode: BroadcastMode.Sync
+        }
+      )
+    }
+
+    if (tx.code !== 0) {
+      // toast.update(toastId, {
+      //   render: `Failed sending ${normalizedAmount} ${selectedToken.name} from Secret Network to ${selectedSource.chain_name}: ${tx.rawLog}`,
+      //   type: 'error',
+      //   isLoading: false
+      // })
+    } else {
+      // toast.update(toastId, {
+      //   render: `Receiving ${normalizedAmount} ${selectedToken.name} on ${selectedSource.chain_name}`
+      // })
+
+      const ibcResp = await tx.ibcResponses[0]
+
+      if (ibcResp.type === 'ack') {
+        // updateCoinBalance()
+        // toast.update(toastId, {
+        //   render: `Received ${normalizedAmount} ${selectedToken.name} on ${selectedSource.chain_name}`,
+        //   type: 'success',
+        //   isLoading: false,
+        //   closeOnClick: true
+        // })
+      } else {
+        // toast.update(toastId, {
+        //   render: `Timed out while waiting to receive ${normalizedAmount} ${selectedToken.name} on ${selectedSource.chain_name} from Secret Network`,
+        //   type: 'warning',
+        //   isLoading: false
+        // })
+      }
+    }
+  } catch (e) {
+    // toast.update(toastId, {
+    //   render: `Failed sending ${normalizedAmount} ${
+    //     selectedToken.name
+    //   } from Secret Network to ${selectedSource.chain_name}: ${
+    //     (e as any).message
+    //   }`,
+    //   type: 'error',
+    //   isLoading: false
+    // })
+  } finally {
+  }
 }
 
 /**
