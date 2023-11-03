@@ -1,5 +1,6 @@
 import {
   AxelarAssetTransfer,
+  AxelarQueryAPI,
   CHAINS,
   Environment
 } from '@axelar-network/axelarjs-sdk'
@@ -167,7 +168,7 @@ const performIbcDeposit = async (
     deposit_gas,
     deposit_gas_denom,
     lcd: lcdSrcChain
-  } = chains[props.chainName]
+  } = selectedSource
 
   const chain = token.deposits.filter(
     (deposit: Deposit) => deposit.chain_name === props.chainName
@@ -476,11 +477,7 @@ const performIbcWithdrawal = async (
     .multipliedBy(`1e${token.decimals}`)
     .toFixed(0, BigNumber.ROUND_DOWN)
 
-  let {
-    withdraw_channel_id,
-    withdraw_gas,
-    lcd: lcdDstChain
-  } = chains[selectedSource.chain_name]
+  let { withdraw_channel_id, withdraw_gas, lcd: lcdDstChain } = selectedSource
 
   const withdrawalChain = token.withdrawals.filter(
     (withdrawal: any) => withdrawal.chain_name === selectedSource.chain_name
@@ -718,15 +715,84 @@ const performIbcWithdrawal = async (
   }
 }
 
+async function getAxelarTransferFee(
+  token: Token,
+  chain: Chain,
+  amount: number,
+  ibcMode: IbcMode
+) {
+  if (token.is_ics20) {
+    const axelarQuery = new AxelarQueryAPI({
+      environment: Environment.MAINNET
+    })
+    const filteredChain = token.deposits.filter(
+      (chainFilter: Deposit) => chainFilter.chain_name === chain.chain_name
+    )[0]
+
+    const fromChain =
+        ibcMode === 'deposit' ? filteredChain.axelar_chain_name : 'secret-snip',
+      toChain =
+        ibcMode === 'deposit' ? 'secret-snip' : filteredChain.axelar_chain_name,
+      asset = token.axelar_denom
+
+    const fee = await axelarQuery.getTransferFee(
+      fromChain,
+      toChain,
+      asset,
+      new BigNumber(amount).multipliedBy(`1e${token.decimals}`).toNumber()
+    )
+    return fee
+  }
+}
+
+const fetchSourceBalance = async (
+  address: String,
+  chain: Chain,
+  ibcMode: IbcMode,
+  token: Token
+) => {
+  if (address) {
+    const url = `${
+      chains[chain.chain_name].lcd
+    }/cosmos/bank/v1beta1/balances/${address}`
+    try {
+      const {
+        balances
+      }: {
+        balances: Array<{ denom: string; amount: string }>
+      } = await (await fetch(url)).json()
+
+      const balance =
+        balances.find(
+          (c) =>
+            c.denom ===
+            token.deposits.filter(
+              (deposit: any) => deposit.chain_name === chain.chain_name
+            )[0].from_denom
+        )?.amount || '0'
+      return balance
+    } catch (e) {
+      console.error(`Error while trying to query ${url}:`, e)
+      return 'Error'
+    }
+  }
+}
+
 /**
 Get supported chains for IBC transfers.
 @returns An array of chains.
 */
-function getSupportedChains(): Deposit[] {
-  const supportedChains = tokens.find(
-    (token: Token) => token.name === 'SCRT'
-  ).deposits
-  return supportedChains
+function getSupportedChains(): { chain_name: string; chain_image: string }[] {
+  const selectableChains = Object.keys(chains)
+    .filter((chain_name) => chain_name !== 'Secret Network')
+    .map((chain_name) => {
+      const chain = chains[chain_name]
+      return {
+        chain_name: chain.chain_name,
+        chain_image: chain.chain_image
+      }
+    })
+  return selectableChains
 }
 
 /**
