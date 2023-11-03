@@ -7,7 +7,7 @@ import WrapModal from "./components/WrapModal";
 import Deposit from "./components/Deposit";
 import { SecretjsContext } from "shared/context/SecretjsContext";
 import ViewingKeyModal from "./components/ViewingKeyModal";
-import { Token } from "shared/utils/config";
+import { Token, chains } from "shared/utils/config";
 import { allTokens } from "shared/utils/commons";
 import { IbcMode } from "shared/types/IbcMode";
 import { useSearchParams } from "react-router-dom";
@@ -49,9 +49,15 @@ export function Ibc() {
   const chainUrlParam = searchParams.get("chain");
   const tokenUrlParam = searchParams.get("token");
 
-  const selectableChains = tokens.find(
-    (token: any) => token.name === "SCRT"
-  ).deposits;
+  const selectableChains = Object.keys(chains)
+    .filter((chain_name) => chain_name !== "Secret Network")
+    .map((chain_name) => {
+      const chain = chains[chain_name];
+      return {
+        chain_name: chain.chain_name,
+        chain_image: chain.chain_image,
+      };
+    });
 
   const [selectedSource, setSelectedSource] = useState<any>(
     selectedToken.deposits.find(
