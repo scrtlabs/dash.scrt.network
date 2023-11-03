@@ -269,6 +269,20 @@ export const chains: { [chain_name: string]: Chain } = {
     chain_image: "/kuji.svg",
     explorer_account: "https://kujira.explorers.guru/account/",
   },
+  Neutron: {
+    chain_name: "Neutron",
+    deposit_channel_id: "channel-XX",
+    deposit_gas: 150_000,
+    deposit_gas_denom: "untrn",
+    withdraw_channel_id: "channel-XX",
+    withdraw_gas: 30_000,
+    chain_id: "neutron-1",
+    bech32_prefix: "noble",
+    lcd: "https://rest-kralum.neutron-1.neutron.org",
+    rpc: "https://rpc-kralum.neutron-1.neutron.org",
+    chain_image: "/ntrn.svg",
+    explorer_account: "https://www.mintscan.io/neutron/account/",
+  },
   Noble: {
     chain_name: "Noble",
     deposit_channel_id: "channel-17",
@@ -2615,6 +2629,16 @@ export const ICSTokens: Token[] = [
         gas: 300_000,
       },
       {
+        chain_name: "Neutron",
+        axelar_chain_name: CHAINS.MAINNET.NEUTRON,
+        from_denom: ibcDenom(
+          [{ incomingChannelId: "channel-2", incomingPortId: "transfer" }],
+          "uusdc"
+        ),
+        channel_id: "channel-2",
+        gas: 300_000,
+      },
+      {
         chain_name: "Kujira",
         axelar_chain_name: CHAINS.MAINNET.KUJIRA,
         from_denom: ibcDenom(
@@ -2666,6 +2690,13 @@ export const ICSTokens: Token[] = [
       {
         chain_name: "Juno",
         axelar_chain_name: CHAINS.MAINNET.JUNO,
+        from_denom: "secret1yxjmepvyl2c25vnt53cr2dpn8amknwausxee83",
+        channel_id: "channel-61",
+        gas: 350_000,
+      },
+      {
+        chain_name: "Neutron",
+        axelar_chain_name: CHAINS.MAINNET.NEUTRON,
         from_denom: "secret1yxjmepvyl2c25vnt53cr2dpn8amknwausxee83",
         channel_id: "channel-61",
         gas: 350_000,
