@@ -315,32 +315,61 @@ function Deposit() {
 
   const fetchSourceBalance = async (newAddress: String | null) => {
     if (secretjs && secretjs?.address) {
-      if (ibcMode === "deposit") {
-        const url = `${
-          chains[selectedSource.chain_name].lcd
-        }/cosmos/bank/v1beta1/balances/${
-          newAddress ? newAddress : sourceAddress
-        }`;
-        try {
-          const {
-            balances,
-          }: {
-            balances: Array<{ denom: string; amount: string }>;
-          } = await (await fetch(url)).json();
+      const sourceDenom = selectedToken.deposits.filter(
+        (deposit: any) => deposit.chain_name === selectedSource.chain_name
+      )[0].from_denom;
 
-          const balance =
-            balances.find(
-              (c) =>
-                c.denom ===
-                selectedToken.deposits.filter(
-                  (deposit: any) =>
-                    deposit.chain_name === selectedSource.chain_name
-                )[0].from_denom
-            )?.amount || "0";
+      if (ibcMode === "deposit") {
+        if (
+          selectedToken.deposits
+            .filter(
+              (deposit: any) => deposit.chain_name === selectedSource.chain_name
+            )[0]
+            .from_denom.startsWith("cw20:")
+        ) {
+          const url = `${
+            chains[selectedSource.chain_name].lcd
+          }/cosmwasm/wasm/v1/contract/${sourceDenom.substring(
+            "cw20:".length
+          )}/smart/${toBase64(
+            toUtf8(
+              '{"balance":{"address":"' +
+                (newAddress ? newAddress : sourceAddress) +
+                '"}}'
+            )
+          )}`;
+          console.log(url);
+          const { data } = await (await fetch(url)).json();
+
+          const balance = data.balance || "0";
           setAvailableBalance(balance);
-        } catch (e) {
-          console.error(`Error while trying to query ${url}:`, e);
-          setAvailableBalance("Error");
+        } else {
+          const url = `${
+            chains[selectedSource.chain_name].lcd
+          }/cosmos/bank/v1beta1/balances/${
+            newAddress ? newAddress : sourceAddress
+          }`;
+          try {
+            const {
+              balances,
+            }: {
+              balances: Array<{ denom: string; amount: string }>;
+            } = await (await fetch(url)).json();
+
+            const balance =
+              balances.find(
+                (c) =>
+                  c.denom ===
+                  selectedToken.deposits.filter(
+                    (deposit: any) =>
+                      deposit.chain_name === selectedSource.chain_name
+                  )[0].from_denom
+              )?.amount || "0";
+            setAvailableBalance(balance);
+          } catch (e) {
+            console.error(`Error while trying to query ${url}:`, e);
+            setAvailableBalance("Error");
+          }
         }
       } else if (ibcMode === "withdrawal") {
         updateCoinBalance();

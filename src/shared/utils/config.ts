@@ -899,6 +899,37 @@ export const tokens: Token[] = [
     ],
   },
   {
+    name: "ampLUNA",
+    description: "ERIS liquid staked LUNA",
+    address: "XXXX",
+    code_hash:
+      "638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e",
+    image: "/ampluna.svg",
+    decimals: 6,
+    coingecko_id: "eris-amplified-luna",
+    deposits: [
+      {
+        chain_name: "Terra",
+        from_denom:
+          "cw20:terra1ecgazyd0waaj3g7l9cmy5gulhxkps2gmxu9ghducvuypjq68mq2s5lvsct",
+      },
+    ],
+    withdrawals: [
+      {
+        chain_name: "Terra",
+        from_denom: ibcDenom(
+          [
+            {
+              incomingChannelId: chains["Terra"].withdraw_channel_id,
+              incomingPortId: "transfer",
+            },
+          ],
+          "cw20:terra1ecgazyd0waaj3g7l9cmy5gulhxkps2gmxu9ghducvuypjq68mq2s5lvsct"
+        ),
+      },
+    ],
+  },
+  {
     name: "ARCH",
     description: "Archway Governance Token",
     address: "secret188z7hncvphw4us4h6uy6vlq4qf20jd2vm2vu8c",
