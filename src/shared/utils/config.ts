@@ -2791,6 +2791,16 @@ export const ICSTokens: Token[] = [
         gas: 300_000,
       },
       {
+        chain_name: "Neutron",
+        axelar_chain_name: CHAINS.MAINNET.NEUTRON,
+        from_denom: ibcDenom(
+          [{ incomingChannelId: "channel-2", incomingPortId: "transfer" }],
+          "weth-wei"
+        ),
+        channel_id: "channel-2",
+        gas: 300_000,
+      },
+      {
         chain_name: "Kujira",
         axelar_chain_name: CHAINS.MAINNET.KUJIRA,
         from_denom: ibcDenom(
@@ -2896,6 +2906,16 @@ export const ICSTokens: Token[] = [
           "wsteth-wei"
         ),
         channel_id: "channel-71",
+        gas: 300_000,
+      },
+      {
+        chain_name: "Neutron",
+        axelar_chain_name: CHAINS.MAINNET.NEUTRON,
+        from_denom: ibcDenom(
+          [{ incomingChannelId: "channel-2", incomingPortId: "transfer" }],
+          "wsteth-wei"
+        ),
+        channel_id: "channel-2",
         gas: 300_000,
       },
       {
@@ -3007,6 +3027,16 @@ export const ICSTokens: Token[] = [
         gas: 300_000,
       },
       {
+        chain_name: "Neutron",
+        axelar_chain_name: CHAINS.MAINNET.NEUTRON,
+        from_denom: ibcDenom(
+          [{ incomingChannelId: "channel-2", incomingPortId: "transfer" }],
+          "wbtc-satoshi"
+        ),
+        channel_id: "channel-2",
+        gas: 300_000,
+      },
+      {
         chain_name: "Kujira",
         axelar_chain_name: CHAINS.MAINNET.KUJIRA,
         from_denom: ibcDenom(
@@ -3021,7 +3051,7 @@ export const ICSTokens: Token[] = [
         axelar_chain_name: CHAINS.MAINNET.OSMOSIS,
         from_denom: ibcDenom(
           [{ incomingChannelId: "channel-208", incomingPortId: "transfer" }],
-          "weth-satoshi"
+          "wbtc-satoshi"
         ),
         channel_id: "channel-208",
         gas: 300_000,
@@ -3031,7 +3061,7 @@ export const ICSTokens: Token[] = [
         axelar_chain_name: CHAINS.MAINNET.STARGAZE,
         from_denom: ibcDenom(
           [{ incomingChannelId: "channel-50", incomingPortId: "transfer" }],
-          "weth-satoshi"
+          "wbtc-satoshi"
         ),
         channel_id: "channel-50",
         gas: 300_000,
@@ -3041,7 +3071,7 @@ export const ICSTokens: Token[] = [
         axelar_chain_name: CHAINS.MAINNET.TERRA,
         from_denom: ibcDenom(
           [{ incomingChannelId: "channel-6", incomingPortId: "transfer" }],
-          "weth-satoshi"
+          "wbtc-satoshi"
         ),
         channel_id: "channel-6",
         gas: 300_000,
@@ -3544,6 +3574,16 @@ export const ICSTokens: Token[] = [
           "uusdt"
         ),
         channel_id: "channel-71",
+        gas: 300_000,
+      },
+      {
+        chain_name: "Neutron",
+        axelar_chain_name: CHAINS.MAINNET.NEUTRON,
+        from_denom: ibcDenom(
+          [{ incomingChannelId: "channel-2", incomingPortId: "transfer" }],
+          "uusdt"
+        ),
+        channel_id: "channel-2",
         gas: 300_000,
       },
       {
