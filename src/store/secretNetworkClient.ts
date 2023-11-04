@@ -59,7 +59,12 @@ export const useSecretNetworkClientStore = create<SecretNetworkClientState>()((s
     })
     setScrtBalance()
     setsScrtBalance()
-    WalletService.getBalancesForTokens(get().secretNetworkClient, get().secretNetworkClient?.address, allTokens)
+
+    WalletService.getBalancesForTokens({
+      secretNetworkClient: get().secretNetworkClient,
+      walletAddress: get().secretNetworkClient?.address,
+      tokens: allTokens
+    })
   },
   disconnectWallet: () =>
     set({

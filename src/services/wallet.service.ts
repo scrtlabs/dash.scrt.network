@@ -265,15 +265,21 @@ const getScrtTokenBalance = async (secretNetworkClient: any, walletAddress: stri
   }
 }
 
-const getBalancesForTokens = async (secretNetworkClient: any, walletAddress: string, tokens: Token[]) => {
-  if (!secretNetworkClient) {
+interface IGetBalancesForTokensProps {
+  secretNetworkClient: SecretNetworkClient
+  walletAddress: string
+  tokens: Token[]
+}
+
+async function getBalancesForTokens(props: IGetBalancesForTokensProps): Promise<Nullable<Map<Token, TokenBalances>>> {
+  if (!props.secretNetworkClient) {
     return null
   }
 
   try {
-    const { balances }: QueryAllBalancesResponse = await secretNetworkClient?.query.bank.allBalances({
-      address: secretNetworkClient?.address,
-      pagination: { limit: 1000 }
+    const { balances }: QueryAllBalancesResponse = await props.secretNetworkClient.query.bank.allBalances({
+      address: props.secretNetworkClient.address,
+      pagination: { limit: '1000' }
     })
     console.log(balances)
 
@@ -300,7 +306,7 @@ const getBalancesForTokens = async (secretNetworkClient: any, walletAddress: str
     })
 
     for (const token of allTokens) {
-      const secretBalance = await getsTokenBalance(secretNetworkClient, walletAddress, token)
+      const secretBalance = await getsTokenBalance(props.secretNetworkClient, props.walletAddress, token)
 
       const currentEntry = newBalanceMapping.get(token)
       if (currentEntry) {
