@@ -124,6 +124,16 @@ export default function IbcForm() {
     const supportedTokensBySelectedChain: Token[] = getSupportedTokens()
     setSupportedTokens(supportedTokensBySelectedChain)
     formik.setFieldValue('tokenName', 'SCRT')
+
+    IbcService.getSkipIBCRouting(
+      chains['Osmosis'],
+      'withdrawal',
+      tokens.find((token) => token.name === 'ATOM')
+    ).then((routing) => {
+      console.log(routing)
+      console.log(routing.operations)
+      IbcService.composePMFMemo(routing.operations, 'KEK').then((memo) => console.log(memo))
+    })
   }, [formik.values.chainName])
 
   // return <Deposit />

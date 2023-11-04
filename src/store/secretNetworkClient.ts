@@ -2,7 +2,7 @@ import { SecretNetworkClient } from 'secretjs'
 import { FeeGrantStatus } from 'types/FeeGrantStatus'
 import { Nullable } from 'types/Nullable'
 import { allTokens, sleep } from 'utils/commons'
-import { Token } from 'utils/config'
+import { Token, tokens } from 'utils/config'
 import { create } from 'zustand'
 import { WalletAPIType } from 'types/WalletAPIType'
 import BigNumber from 'bignumber.js'
@@ -32,8 +32,9 @@ interface SecretNetworkClientState {
   setScrtBalance: () => void
   isTokenBalanceLoading: boolean
   setViewingKey: (token: Token) => void
-  getBalance: (token: Token, secureSecret?: boolean) => Nullable<BigNumber>
+  getBalance: (token: Token, secretToken?: boolean) => Nullable<BigNumber>
   balanceMapping: Map<Token, TokenBalances>
+  setBalanceMapping: () => void
 }
 
 export const useSecretNetworkClientStore = create<SecretNetworkClientState>()((set, get) => ({
@@ -47,7 +48,7 @@ export const useSecretNetworkClientStore = create<SecretNetworkClientState>()((s
   secretNetworkClient: null,
   setSecretNetworkClient: (secretNetworkClient: any) => set({ secretNetworkClient: secretNetworkClient }),
   connectWallet: async (walletAPIType?: WalletAPIType) => {
-    const { setScrtBalance, setsScrtBalance } = get()
+    const { setScrtBalance, setsScrtBalance, setBalanceMapping, getBalance } = get()
     const { walletAddress, secretjs: secretNetworkClient } = await WalletService.connectWallet(
       walletAPIType,
       get().secretNetworkClient
@@ -59,12 +60,8 @@ export const useSecretNetworkClientStore = create<SecretNetworkClientState>()((s
     })
     setScrtBalance()
     setsScrtBalance()
-
-    WalletService.getBalancesForTokens({
-      secretNetworkClient: get().secretNetworkClient,
-      walletAddress: get().secretNetworkClient?.address,
-      tokens: allTokens
-    })
+    setBalanceMapping()
+    getBalance(tokens[0])
   },
   disconnectWallet: () =>
     set({
@@ -106,20 +103,32 @@ export const useSecretNetworkClientStore = create<SecretNetworkClientState>()((s
       // setLoadingTokenBalance(false);
     }
   },
-  balanceMapping: new Map<Token, TokenBalances>(),
+  balanceMapping: null,
+  setBalanceMapping: async () => {
+    const { walletAddress, secretNetworkClient: secretNetworkClient } = get()
+    const balances = await WalletService.getBalancesForTokens({
+      secretNetworkClient: secretNetworkClient,
+      walletAddress: walletAddress,
+      tokens: allTokens
+    })
+    set({ balanceMapping: balances })
+  },
   getBalance(token: Token, secretToken: boolean = false) {
     if (!get().isInitialized) {
       get().init()
     }
 
-    const tokenBalances: TokenBalances = get().balanceMapping.get(token)
+    console.log(get().balanceMapping)
 
-    if (!secretToken) {
-      return tokenBalances.balance
-    }
+    if (get().balanceMapping != null) {
+      const tokenBalances: TokenBalances = get().balanceMapping.get(token)
+      if (!secretToken) {
+        return tokenBalances.balance
+      }
 
-    if (secretToken) {
-      return tokenBalances.secretBalance
+      if (secretToken) {
+        return tokenBalances.secretBalance
+      }
     }
 
     return null

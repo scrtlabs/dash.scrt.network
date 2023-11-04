@@ -1,13 +1,8 @@
-import {
-  AxelarAssetTransfer,
-  AxelarQueryAPI,
-  CHAINS,
-  Environment
-} from '@axelar-network/axelarjs-sdk'
+import { AxelarAssetTransfer, AxelarQueryAPI, CHAINS, Environment } from '@axelar-network/axelarjs-sdk'
 import { createTxIBCMsgTransfer } from '@tharsis/transactions'
 import BigNumber from 'bignumber.js'
 import { cosmos } from '@tharsis/proto/dist/proto/cosmos/tx/v1beta1/tx'
-import { SkipRouter, SKIP_API_URL } from '@skip-router/core'
+import { SkipRouter, SKIP_API_URL, Operation } from '@skip-router/core'
 import {
   BroadcastMode,
   MsgExecuteContract,
@@ -62,10 +57,7 @@ interface IPropsTokenName extends IBaseProps {
 type TProps = IPropsToken | IPropsTokenName
 
 async function getChainSecretJs(chain: Chain): Promise<SecretNetworkClient> {
-  while (
-    !(window as any).wallet ||
-    !(window as any).wallet.getOfflineSignerOnlyAmino
-  ) {
+  while (!(window as any).wallet || !(window as any).wallet.getOfflineSignerOnlyAmino) {
     await sleep(100)
   }
   if (chain.chain_name === 'Terra') {
@@ -99,9 +91,7 @@ async function getChainSecretJs(chain: Chain): Promise<SecretNetworkClient> {
   if (chain.chain_name === 'Composable') {
     sourceOfflineSigner = (window as any).wallet.getOfflineSigner(chain_id)
   } else {
-    sourceOfflineSigner = (window as any).wallet.getOfflineSignerOnlyAmino(
-      chain_id
-    )
+    sourceOfflineSigner = (window as any).wallet.getOfflineSignerOnlyAmino(chain_id)
   }
   const depositFromAccounts = await sourceOfflineSigner.getAccounts()
 
@@ -124,9 +114,7 @@ async function getChainSecretJs(chain: Chain): Promise<SecretNetworkClient> {
  * @async
  */
 
-const performIbcTransfer = async (
-  props: TProps
-): Promise<{ success: boolean; errorMsg: Nullable<string> }> => {
+const performIbcTransfer = async (props: TProps): Promise<{ success: boolean; errorMsg: Nullable<string> }> => {
   let result: { success: boolean; errorMsg: Nullable<string> } = {
     success: false,
     errorMsg: null
@@ -164,31 +152,21 @@ const performIbcDeposit = async (
   const selectedSource = chains[props.chainName]
 
   // IBC Logic
-  let {
-    deposit_channel_id,
-    deposit_gas,
-    deposit_gas_denom,
-    lcd: lcdSrcChain
-  } = selectedSource
+  let { deposit_channel_id, deposit_gas, deposit_gas_denom, lcd: lcdSrcChain } = selectedSource
 
-  const chain = token.deposits.filter(
-    (deposit: Deposit) => deposit.chain_name === props.chainName
-  )[0]
+  const deposit = token.deposits.filter((deposit: Deposit) => deposit.chain_name === props.chainName)[0]
 
-  deposit_channel_id = chain.channel_id || deposit_channel_id
-  deposit_gas = chain.gas || deposit_gas
+  deposit_channel_id = deposit.channel_id || deposit_channel_id
+  deposit_gas = deposit.gas || deposit_gas
 
   try {
     let tx: TxResponse
     if (
       !['Evmos', 'Injective'].includes(props.chainName) &&
-      (!token.is_ics20 || chain.axelar_chain_name == CHAINS.MAINNET.AXELAR)
+      (!token.is_ics20 || deposit.axelar_chain_name == CHAINS.MAINNET.AXELAR)
     ) {
       // Regular cosmos chain (not ethermint signing)
-      if (
-        token.name === 'SCRT' ||
-        chain.axelar_chain_name == CHAINS.MAINNET.AXELAR
-      ) {
+      if (token.name === 'SCRT' || deposit.axelar_chain_name == CHAINS.MAINNET.AXELAR) {
         tx = await props.sourceChainNetworkClient.tx.ibc.transfer(
           {
             sender: props.sourceChainNetworkClient.address,
@@ -197,9 +175,7 @@ const performIbcDeposit = async (
             source_port: 'transfer',
             token: {
               amount: props.amount,
-              denom: token.deposits.filter(
-                (deposit: Deposit) => deposit.chain_name === props.chainName
-              )[0].denom
+              denom: token.deposits.filter((deposit: Deposit) => deposit.chain_name === props.chainName)[0].denom
             },
             timeout_timestamp: String(Math.floor(Date.now() / 1000) + 10 * 60) // 10 minute timeout
           },
@@ -224,9 +200,7 @@ const performIbcDeposit = async (
             source_port: 'transfer',
             token: {
               amount: props.amount,
-              denom: token.deposits.filter(
-                (deposit: any) => deposit.chain_name === props.chainName
-              )[0].denom
+              denom: token.deposits.filter((deposit: any) => deposit.chain_name === props.chainName)[0].denom
             },
             timeout_timestamp: String(Math.floor(Date.now() / 1000) + 10 * 60), // 10 minute timeout
             memo: JSON.stringify({
@@ -255,11 +229,8 @@ const performIbcDeposit = async (
           }
         )
       }
-    } else if (
-      token.is_ics20 &&
-      chain.axelar_chain_name != CHAINS.MAINNET.AXELAR
-    ) {
-      const fromChain = chain.axelar_chain_name,
+    } else if (token.is_ics20 && deposit.axelar_chain_name != CHAINS.MAINNET.AXELAR) {
+      const fromChain = deposit.axelar_chain_name,
         toChain = 'secret-snip',
         destinationAddress = props.secretNetworkClient.address,
         asset = token.axelar_denom
@@ -278,7 +249,7 @@ const performIbcDeposit = async (
           source_port: 'transfer',
           token: {
             amount: props.amount,
-            denom: chain.denom
+            denom: deposit.denom
           },
           timeout_timestamp: String(Math.floor(Date.now() / 1000) + 10 * 60) // 10 minute timeout
         },
@@ -300,10 +271,7 @@ const performIbcDeposit = async (
       // Get Evmos/Injective account_number & sequence
       const {
         account: {
-          base_account: {
-            account_number: accountNumber,
-            sequence: accountSequence
-          }
+          base_account: { account_number: accountNumber, sequence: accountSequence }
         }
       }: {
         account: {
@@ -313,25 +281,19 @@ const performIbcDeposit = async (
           }
         }
       } = await (
-        await fetch(
-          `${chains[props.chainName].lcd}/cosmos/auth/v1beta1/accounts/${
-            props.sourceChainNetworkClient.address
-          }`
-        )
+        await fetch(`${selectedSource.lcd}/cosmos/auth/v1beta1/accounts/${props.sourceChainNetworkClient.address}`)
       ).json()
 
       // Get account pubkey
       // Can't get it from the chain because an account without txs won't have its pubkey listed on-chain
-      const evmosProtoSigner = window.getOfflineSigner!(
-        chains[props.chainName].chain_id
-      )
+      const evmosProtoSigner = window.getOfflineSigner!(selectedSource.chain_id)
       const [{ pubkey }] = await evmosProtoSigner.getAccounts()
 
       // Create IBC MsgTransfer tx
       const txIbcMsgTransfer = createTxIBCMsgTransfer(
         {
           chainId: 9001, // Evmos EIP155, this is ignored in Injective
-          cosmosChainId: chains[props.chainName].chain_id
+          cosmosChainId: selectedSource.chain_id
         },
         {
           accountAddress: props.sourceChainNetworkClient.address,
@@ -349,36 +311,29 @@ const performIbcDeposit = async (
           sourcePort: 'transfer',
           sourceChannel: deposit_channel_id,
           amount: props.amount,
-          denom: token.deposits.filter(
-            (deposit: Deposit) => deposit.chain_name === props.chainName
-          )[0].denom,
+          denom: token.deposits.filter((deposit: Deposit) => deposit.chain_name === props.chainName)[0].denom,
           receiver: props.secretNetworkClient.address,
           revisionNumber: 0,
           revisionHeight: 0,
-          timeoutTimestamp: `${
-            Math.floor(Date.now() / 1000) + 10 * 60
-          }000000000` // 10 minute timeout (ns)
+          timeoutTimestamp: `${Math.floor(Date.now() / 1000) + 10 * 60}000000000` // 10 minute timeout (ns)
         }
       )
 
-      if (chains[props.chainName].chain_name === 'Injective') {
-        const signer_info =
-          txIbcMsgTransfer.signDirect.authInfo.signer_infos[0].toObject()
-        signer_info.public_key!.type_url =
-          '/injective.crypto.v1beta1.ethsecp256k1.PubKey'
+      if (selectedSource.chain_name === 'Injective') {
+        const signer_info = txIbcMsgTransfer.signDirect.authInfo.signer_infos[0].toObject()
+        signer_info.public_key!.type_url = '/injective.crypto.v1beta1.ethsecp256k1.PubKey'
 
-        txIbcMsgTransfer.signDirect.authInfo.signer_infos[0] =
-          cosmos.tx.v1beta1.SignerInfo.fromObject(signer_info)
+        txIbcMsgTransfer.signDirect.authInfo.signer_infos[0] = cosmos.tx.v1beta1.SignerInfo.fromObject(signer_info)
       }
 
       // Sign the tx
       const sig = await (window as any).wallet?.signDirect(
-        chains[props.chainName].chain_id,
+        selectedSource.chain_id,
         props.sourceChainNetworkClient.address,
         {
           bodyBytes: txIbcMsgTransfer.signDirect.body.serializeBinary(),
           authInfoBytes: txIbcMsgTransfer.signDirect.authInfo.serializeBinary(),
-          chainId: chains[props.chainName].chain_id,
+          chainId: selectedSource.chain_id,
           accountNumber: new Long(Number(accountNumber))
         },
         { isEthereum: true }
@@ -441,14 +396,9 @@ const performIbcDeposit = async (
       })
       mixpanel.identify('Dashboard-App')
       mixpanel.track('IBC Transfer', {
-        'Source Chain':
-          props.ibcMode === 'deposit' ? props.chainName : 'Secret Network',
-        'Target Chain':
-          props.ibcMode === 'withdrawal' ? props.chainName : 'Secret Network',
-        'Fee Grant used':
-          props.feeGrantStatus === 'success' && props.ibcMode === 'withdrawal'
-            ? true
-            : false
+        'Source Chain': props.ibcMode === 'deposit' ? props.chainName : 'Secret Network',
+        'Target Chain': props.ibcMode === 'withdrawal' ? props.chainName : 'Secret Network',
+        'Fee Grant used': props.feeGrantStatus === 'success' && props.ibcMode === 'withdrawal' ? true : false
       })
     }
 
@@ -472,16 +422,14 @@ const performIbcWithdrawal = async (
     errorMsg: null
   }
 
-  const selectedSource = chains[props.chainName]
+  const selectedDest = chains[props.chainName]
 
-  const amount = new BigNumber(props.amount)
-    .multipliedBy(`1e${token.decimals}`)
-    .toFixed(0, BigNumber.ROUND_DOWN)
+  const amount = new BigNumber(props.amount).multipliedBy(`1e${token.decimals}`).toFixed(0, BigNumber.ROUND_DOWN)
 
-  let { withdraw_channel_id, withdraw_gas, lcd: lcdDstChain } = selectedSource
+  let { withdraw_channel_id, withdraw_gas, lcd: lcdDstChain } = selectedDest
 
   const withdrawalChain = token.withdrawals.filter(
-    (withdrawal: any) => withdrawal.chain_name === selectedSource.chain_name
+    (withdrawal: any) => withdrawal.chain_name === selectedDest.chain_name
   )[0]
 
   withdraw_channel_id = withdrawalChain.channel_id || withdraw_channel_id
@@ -493,6 +441,8 @@ const performIbcWithdrawal = async (
   //     closeButton: true
   //   }
   // )
+
+  const routing = await getSkipIBCRouting(selectedDest, 'withdrawal', token)
 
   try {
     let tx: TxResponse
@@ -506,8 +456,7 @@ const performIbcWithdrawal = async (
           msg: {
             send: {
               recipient: 'secret1tqmms5awftpuhalcv5h5mg76fa0tkdz4jv9ex4', // cw20-ics20
-              recipient_code_hash:
-                'f85b413b547b9460162958bafd51113ac266dac96a84c33b9150f68f045f2641',
+              recipient_code_hash: 'f85b413b547b9460162958bafd51113ac266dac96a84c33b9150f68f045f2641',
               amount,
               msg: toBase64(
                 toUtf8(
@@ -537,10 +486,7 @@ const performIbcWithdrawal = async (
       )
     } else if (
       token.is_ics20 &&
-      !(
-        withdrawalChain?.axelar_chain_name === CHAINS.MAINNET.AXELAR &&
-        token.name === 'SCRT'
-      )
+      !(withdrawalChain?.axelar_chain_name === CHAINS.MAINNET.AXELAR && token.name === 'SCRT')
     ) {
       const fromChain = 'secret-snip',
         toChain = withdrawalChain.axelar_chain_name,
@@ -568,8 +514,7 @@ const performIbcWithdrawal = async (
           msg: {
             send: {
               recipient: 'secret1yxjmepvyl2c25vnt53cr2dpn8amknwausxee83', // ics20
-              recipient_code_hash:
-                '2976a2577999168b89021ecb2e09c121737696f71c4342f9a922ce8654e98662',
+              recipient_code_hash: '2976a2577999168b89021ecb2e09c121737696f71c4342f9a922ce8654e98662',
               amount,
               msg: toBase64(
                 toUtf8(
@@ -599,10 +544,10 @@ const performIbcWithdrawal = async (
       )
     } else if (token.name === 'SCRT') {
       const source_channel_id =
-        withdrawalChain?.axelar_chain_name == CHAINS.MAINNET.AXELAR &&
-        token.name !== 'SCRT'
+        withdrawalChain?.axelar_chain_name == CHAINS.MAINNET.AXELAR && token.name !== 'SCRT'
           ? withdrawalChain.channel_id
           : withdraw_channel_id
+
       tx = await props.secretNetworkClient.tx.ibc.transfer(
         {
           sender: props.secretNetworkClient?.address,
@@ -613,6 +558,7 @@ const performIbcWithdrawal = async (
             amount,
             denom: withdrawalChain.denom
           },
+          memo: routing.operations.length > 1 ? await composePMFMemo(routing.operations) : '',
           timeout_timestamp: String(Math.floor(Date.now() / 1000) + 10 * 60) // 10 minute timeout
         },
         {
@@ -654,6 +600,7 @@ const performIbcWithdrawal = async (
               amount,
               denom: withdrawalChain.denom
             },
+            memo: routing.operations.length > 1 ? await composePMFMemo(routing.operations) : '',
             timeout_timestamp: String(Math.floor(Date.now() / 1000) + 10 * 60) // 10 minute timeout
           })
         ],
@@ -694,6 +641,10 @@ const performIbcWithdrawal = async (
         //   isLoading: false,
         //   closeOnClick: true
         // })
+        result = {
+          success: true,
+          errorMsg: null
+        }
       } else {
         // toast.update(toastId, {
         //   render: `Timed out while waiting to receive ${normalizedAmount} ${selectedToken.name} on ${selectedSource.chain_name} from Secret Network`,
@@ -712,24 +663,24 @@ const performIbcWithdrawal = async (
     //   type: 'error',
     //   isLoading: false
     // })
+    result = {
+      success: false,
+      errorMsg: `Failed sending ${amount} ${token.name} from Secret Network to ${selectedDest.chain_name}: ${
+        (e as any).message
+      }`
+    }
   } finally {
+    return result
   }
 }
 
-async function getAxelarTransferFee(
-  token: Token,
-  chain: Chain,
-  amount: number,
-  ibcMode: IbcMode
-) {
+async function getAxelarTransferFee(token: Token, chain: Chain, amount: number, ibcMode: IbcMode) {
   const axelarQuery = new AxelarQueryAPI({
     environment: Environment.MAINNET
   })
 
   // Ensure the chain is found before proceeding
-  const filteredChain = token.deposits.find(
-    (deposit: Deposit) => deposit.chain_name === chain.chain_name
-  )
+  const filteredChain = token.deposits.find((deposit: Deposit) => deposit.chain_name === chain.chain_name)
   if (!filteredChain) {
     throw new Error('Chain not found')
   }
@@ -743,17 +694,10 @@ async function getAxelarTransferFee(
   const asset = token.axelar_denom
 
   // Define the formatted amount
-  const formattedAmount = new BigNumber(amount)
-    .multipliedBy(`1e${token.decimals}`)
-    .toNumber()
+  const formattedAmount = new BigNumber(amount).multipliedBy(`1e${token.decimals}`).toNumber()
 
   // Get and return the transfer fee
-  const fee = await axelarQuery.getTransferFee(
-    fromChain,
-    toChain,
-    asset,
-    formattedAmount
-  )
+  const fee = await axelarQuery.getTransferFee(fromChain, toChain, asset, formattedAmount)
   return fee
 }
 
@@ -768,9 +712,7 @@ async function fetchSourceBalance(
     return 'Error'
   }
 
-  const url = `${
-    chains[chain.chain_name].lcd
-  }/cosmos/bank/v1beta1/balances/${address}`
+  const url = `${chains[chain.chain_name].lcd}/cosmos/bank/v1beta1/balances/${address}`
 
   try {
     const response = await fetch(url)
@@ -781,13 +723,9 @@ async function fetchSourceBalance(
 
     const { balances } = await response.json()
 
-    const targetDenom = token.deposits.filter(
-      (deposit: any) => deposit.chain_name === chain.chain_name
-    )[0]?.denom
+    const targetDenom = token.deposits.filter((deposit: any) => deposit.chain_name === chain.chain_name)[0]?.denom
 
-    const balanceObj = balances.find(
-      (balance: any) => balance.denom === targetDenom
-    )
+    const balanceObj = balances.find((balance: any) => balance.denom === targetDenom)
 
     return balanceObj ? parseInt(balanceObj.amount, 10) : 0
   } catch (e) {
@@ -805,32 +743,76 @@ async function getSkipIBCRouting(chain: Chain, IbcMode: IbcMode, token: Token) {
   let source
   if (IbcMode === 'deposit') {
     source = token.withdrawals[0]
-    dest = token.withdrawals.find(
-      (withdrawal) => withdrawal.chain_name === chain.chain_name
-    )
+    dest = token.withdrawals.find((withdrawal) => withdrawal.chain_name === chain.chain_name)
   }
   if (IbcMode === 'withdrawal') {
     dest = token.withdrawals[0]
-    source = token.withdrawals.find(
-      (withdrawal) => withdrawal.chain_name === chain.chain_name
-    )
+    source = token.withdrawals.find((withdrawal) => withdrawal.chain_name === chain.chain_name)
   }
 
   const route = await client.route({
     amountIn: '1000',
     sourceAssetDenom: source.denom,
-    sourceAssetChainID:
-      IbcMode === 'withdrawal'
-        ? chains['Secret Network'].chain_id
-        : chain.chain_id,
+    sourceAssetChainID: IbcMode === 'withdrawal' ? chains['Secret Network'].chain_id : chain.chain_id,
     destAssetDenom: dest.denom,
-    destAssetChainID:
-      IbcMode === 'withdrawal'
-        ? chain.chain_id
-        : chains['Secret Network'].chain_id,
+    destAssetChainID: IbcMode === 'withdrawal' ? chain.chain_id : chains['Secret Network'].chain_id,
     cumulativeAffiliateFeeBPS: '0'
   })
+
   return route
+}
+
+interface Forward {
+  receiver: string
+  port: string
+  channel: string
+  timeout: number
+  retries: number
+  next?: string | Forward | null
+}
+
+interface MemoObject {
+  forward: Forward
+}
+
+function composePMFMemo(allOperations: Operation[], finalMemo?: string | undefined): Promise<string> {
+  async function getReceiverAddress(chainID: string): Promise<string> {
+    const wallet = (window as any).wallet.getOfflineSignerOnlyAmino(chainID)
+    const [{ address: walletAddress }] = await wallet.getAccounts()
+    return walletAddress
+  }
+
+  async function generateMemo(operations: Operation[], finalNextContent: string): Promise<string> {
+    // Base case: if there are no more operations, return the finalNextContent
+    if (operations.length === 0) {
+      return finalNextContent
+    }
+
+    // Take the first operation from the array
+    const operation = operations[0]
+
+    // Recursively process the rest of the operations array
+    const next: string | Forward | null =
+      operations.length > 1 ? JSON.parse(await generateMemo(operations.slice(1), finalNextContent)) : undefined
+
+    const receiver = await getReceiverAddress((operation as any).transfer.chainID)
+
+    // Construct the memo object for this operation
+    const memoObject: MemoObject = {
+      forward: {
+        receiver: receiver, // Replace with the actual receiver address
+        port: (operation as any).transfer.port,
+        channel: (operation as any).transfer.channel,
+        timeout: 0, // Adjust timeout as needed
+        retries: 2, // Adjust retries as needed
+        ...(next || finalNextContent ? { next: next } : {}) // Conditionally include the "next" field
+      }
+    }
+    return JSON.stringify(memoObject)
+  }
+
+  const memo: Promise<string> = generateMemo(allOperations.slice(1), finalMemo)
+  return memo
 }
 
 /**
@@ -857,9 +839,7 @@ Get supported IBC tokens by the specified chain.
 */
 function getSupportedIbcTokensByChain(chain: Chain) {
   const supportedTokens = tokens.filter((token: Token) => {
-    return token.deposits.find(
-      (deposit: Deposit) => deposit.chain_name === chain.chain_name
-    )
+    return token.deposits.find((deposit: Deposit) => deposit.chain_name === chain.chain_name)
   })
   return supportedTokens
 }
@@ -867,5 +847,7 @@ function getSupportedIbcTokensByChain(chain: Chain) {
 export const IbcService = {
   getSupportedChains,
   getSupportedIbcTokensByChain,
-  performIbcTransfer
+  performIbcTransfer,
+  composePMFMemo,
+  getSkipIBCRouting
 }

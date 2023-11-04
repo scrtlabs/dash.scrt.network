@@ -7,15 +7,13 @@ export const viewingKeyErrorString = '🧐'
 export const faucetURL = 'https://faucet.secretsaturn.net/claim'
 export const faucetAddress = 'secret1tq6y8waegggp4fv2fcxk3zmpsmlfadyc7lsd69'
 
-export const dAppsURL =
-  'https://secretadmin.scrt.network/api/ecosystem-dapps?populate=deep&pagination[pageSize]=1000'
+export const dAppsURL = 'https://secretadmin.scrt.network/api/ecosystem-dapps?populate=deep&pagination[pageSize]=1000'
 
 export const gasPriceUscrt = 0.25
 
 export const restakeThreshold = 10_000_000
 
-export const sleep = (ms: number) =>
-  new Promise((resolve) => setTimeout(resolve, ms))
+export const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
 export const randomDelay = (min: any, max: any) => {
   return Math.floor(Math.random() * (max - min + 1)) + min
 }
@@ -30,11 +28,9 @@ export const randomPadding = (): string => {
     MAX = 15,
     MIN = 8
   }
-  const paddingLength =
-    Math.floor(Math.random() * (length.MAX - length.MIN + 1)) + length.MIN
+  const paddingLength = Math.floor(Math.random() * (length.MAX - length.MIN + 1)) + length.MIN
   let result = ''
-  const characters =
-    'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
+  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
   for (let i = 0; i < paddingLength; i += 1) {
     result += characters.charAt(Math.floor(Math.random() * characters.length))
   }
@@ -303,33 +299,11 @@ export function formatUsdString(input: string | number) {
   return usdString.format(Number(input))
 }
 
-const COUNT_ABBRS = [
-  '',
-  'K',
-  'M',
-  'B',
-  't',
-  'q',
-  's',
-  'S',
-  'o',
-  'n',
-  'd',
-  'U',
-  'D',
-  'T',
-  'Qt',
-  'Qd',
-  'Sd',
-  'St'
-]
+const COUNT_ABBRS = ['', 'K', 'M', 'B', 't', 'q', 's', 'S', 'o', 'n', 'd', 'U', 'D', 'T', 'Qt', 'Qd', 'Sd', 'St']
 
 export function formatNumber(count: number, decimals = 2) {
   const i = count < 1 ? 0 : Math.floor(Math.log(count) / Math.log(1000))
-  return (
-    parseFloat((count / 1000 ** i).toFixed(decimals)).toLocaleString() +
-    COUNT_ABBRS[i]
-  )
+  return parseFloat((count / 1000 ** i).toFixed(decimals)).toLocaleString() + COUNT_ABBRS[i]
 }
 
 export const shuffleArray = (array: any[]) => {
@@ -339,18 +313,13 @@ export const shuffleArray = (array: any[]) => {
   while (currentIndex != 0) {
     randomIndex = Math.floor(Math.random() * currentIndex)
     currentIndex--
-    ;[array[currentIndex], array[randomIndex]] = [
-      array[randomIndex],
-      array[currentIndex]
-    ]
+    ;[array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]]
   }
   return array
 }
 
 export const sortDAppsArray = (array: any[]) => {
-  const sortedArray = [...array].sort((a, b) =>
-    a.attributes.name.localeCompare(b.attributes.name)
-  )
+  const sortedArray = [...array].sort((a, b) => a.attributes.name.localeCompare(b.attributes.name))
   return sortedArray
 }
 
@@ -394,7 +363,7 @@ export const ibcJsonLdSchema = [
 
 // Wrap
 export const wrapPageTitle = `${pageTitle} | Wrap`
-export const wrapPageDescription = `Convert publicly visible SCRT into its privacy-preserving equivalent sSCRT with Secret Wrap! These secure tokens are not publicly visible and require a viewing key!`
+export const wrapPageDescription = `Convert publicly visible SCRT into its privacy-preserving equivalent sSCRT with Secret Wrap! These secret tokens are not publicly visible and require a viewing key!`
 export const wrapJsonLdSchema = [
   {
     '@context': 'http://schema.org',

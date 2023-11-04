@@ -8,29 +8,27 @@ import { useSecretNetworkClientStore } from 'store/secretNetworkClient'
 
 interface IProps {
   token: Token
-  isSecureToken?: boolean
+  isSecretToken?: boolean
 }
 
-export default function NewBalanceUI({ isSecureToken: isSecureToken = false, ...props }: IProps) {
+export default function NewBalanceUI({ isSecretToken: isSecretToken = false, ...props }: IProps) {
   const setViewingKey = () => {
     // TODO: Do something with props.token;
   }
 
-  const { isConnected, getBalance } = useSecretNetworkClientStore()
-  const { getPrice } = useTokenPricesStore()
+  const { isConnected, getBalance, balanceMapping } = useSecretNetworkClientStore()
+  const { getPrice, priceMapping } = useTokenPricesStore()
 
-  const [balance, setBalance] = useState<Nullable<BigNumber>>(null)
-  const usdPriceString: Nullable<string> = getPrice(props.token)
-  const tokenName = (isSecureToken ? 's' : '') + props.token.name
+  const [balance, setBalance] = useState<number>(null)
+  //const usdPriceString: Nullable<string> = getPrice(props.token)
+  const usdPriceString = ''
+  const tokenName = (isSecretToken ? 's' : '') + props.token.name
 
   useEffect(() => {
-    if (isConnected) {
-      // TODO: Fix balances
-      // const x = getBalance(props.token)
-      // console.log('x', x)
-      // setBalance(x)
+    if (isConnected && balanceMapping != null) {
+      setBalance(getBalance(props.token, isSecretToken).toNumber())
     }
-  }, [isConnected])
+  }, [isConnected, balanceMapping])
 
   if (!isConnected) return null
 

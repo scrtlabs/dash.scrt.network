@@ -185,7 +185,7 @@ function WrapForm() {
             <div className="flex-1 text-xs">
               <NewBalanceUI
                 token={tokens.find((token) => token.name.toLowerCase() === 'scrt')}
-                isSecureToken={formik.values.wrappingMode === 'unwrap'}
+                isSecretToken={formik.values.wrappingMode === 'unwrap'}
               />
             </div>
             <div className="sm:flex-initial text-xs">
@@ -262,7 +262,7 @@ function WrapForm() {
           <div className="flex-1 text-xs mt-3 text-center sm:text-left h-[1rem]">
             <NewBalanceUI
               token={tokens.find((token) => token.name.toLowerCase() === 'scrt')}
-              isSecureToken={formik.values.wrappingMode === 'wrap'}
+              isSecretToken={formik.values.wrappingMode === 'wrap'}
             />
           </div>
         </div>

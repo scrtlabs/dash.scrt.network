@@ -3,15 +3,10 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faInfoCircle } from '@fortawesome/free-solid-svg-icons'
 import Tooltip from '@mui/material/Tooltip'
 import { Helmet } from 'react-helmet-async'
-import WrapModal from './components/WrapModal'
 import { Token, tokens } from 'utils/config'
 import { IbcMode } from 'types/IbcMode'
 import { useSearchParams } from 'react-router-dom'
-import {
-  ibcJsonLdSchema,
-  ibcPageDescription,
-  ibcPageTitle
-} from 'utils/commons'
+import { ibcJsonLdSchema, ibcPageDescription, ibcPageTitle } from 'utils/commons'
 import { useSecretNetworkClientStore } from 'store/secretNetworkClient'
 import Title from 'components/Title'
 import Deposit from './components/Deposit'
@@ -22,9 +17,7 @@ export const IbcContext = createContext(null)
 export function Ibc() {
   const [isWrapModalOpen, setIsWrapModalOpen] = useState<boolean>(false)
 
-  const [selectedToken, setSelectedToken] = useState<Token>(
-    tokens.filter((token: Token) => token.name === 'SCRT')[0]
-  )
+  const [selectedToken, setSelectedToken] = useState<Token>(tokens.filter((token: Token) => token.name === 'SCRT')[0])
 
   const [supportedTokens, setSupportedTokens] = useState<Token[]>([])
 
@@ -38,20 +31,15 @@ export function Ibc() {
   const chainUrlParam: string = searchParams.get('chain')
   const tokenUrlParam: string = searchParams.get('token')
 
-  const selectableChains = tokens.find(
-    (token) => token.name === 'SCRT'
-  ).deposits
+  const selectableChains = tokens.find((token) => token.name === 'SCRT').deposits
 
   const [selectedSource, setSelectedSource] = useState<Deposit>(
-    selectedToken.deposits.find(
-      (deposit: any) => deposit.chain_name.toLowerCase() === 'osmosis'
-    )
+    selectedToken.deposits.find((deposit: any) => deposit.chain_name.toLowerCase() === 'osmosis')
   )
 
   const isValidChainUrlParam = () => {
     return selectedToken.deposits.find(
-      (deposit: any) =>
-        deposit.chain_name.toLowerCase() === chainUrlParam.toLowerCase()
+      (deposit: any) => deposit.chain_name.toLowerCase() === chainUrlParam.toLowerCase()
     )
       ? true
       : false
@@ -62,10 +50,7 @@ export function Ibc() {
   }
 
   useEffect(() => {
-    if (
-      modeUrlParam?.toLowerCase() === 'deposit' ||
-      modeUrlParam?.toLowerCase() === 'withdrawal'
-    ) {
+    if (modeUrlParam?.toLowerCase() === 'deposit' || modeUrlParam?.toLowerCase() === 'withdrawal') {
       setIbcMode(modeUrlParam.toLowerCase() as IbcMode)
     }
   }, [])
@@ -73,18 +58,11 @@ export function Ibc() {
   useEffect(() => {
     if (chainUrlParam && isValidChainUrlParam()) {
       setSelectedSource(
-        selectedToken.deposits.find(
-          (deposit: any) =>
-            deposit.chain_name.toLowerCase() === chainUrlParam.toLowerCase()
-        )
+        selectedToken.deposits.find((deposit: any) => deposit.chain_name.toLowerCase() === chainUrlParam.toLowerCase())
       )
     }
     if (tokenUrlParam && isValidTokenUrlParam()) {
-      setSelectedToken(
-        tokens.find(
-          (token) => token.name.toLowerCase() === tokenUrlParam.toLowerCase()
-        )
-      )
+      setSelectedToken(tokens.find((token) => token.name.toLowerCase() === tokenUrlParam.toLowerCase()))
     }
   }, [])
 
@@ -148,33 +126,15 @@ export function Ibc() {
 
         <meta property="og:title" content={ibcPageTitle} />
         <meta property="og:description" content={ibcPageDescription} />
-        <meta
-          property="og:image"
-          content={`/img/secret_dashboard_preview.png`}
-        />
+        <meta property="og:image" content={`/img/secret_dashboard_preview.png`} />
 
         <meta name="twitter:title" content={ibcPageTitle} />
         <meta name="twitter:description" content={ibcPageDescription} />
-        <meta
-          property="twitter:image"
-          content={`/img/secret_dashboard_preview.png`}
-        />
+        <meta property="twitter:image" content={`/img/secret_dashboard_preview.png`} />
 
-        <script type="application/ld+json">
-          {JSON.stringify(ibcJsonLdSchema)}
-        </script>
+        <script type="application/ld+json">{JSON.stringify(ibcJsonLdSchema)}</script>
       </Helmet>
       <IbcContext.Provider value={ibcContextProviderValue}>
-        {/* <WrapModal
-          open={isWrapModalOpen}
-          selectedToken={selectedToken}
-          ibcMode={ibcMode}
-          onClose={() => {
-            setIsWrapModalOpen(false)
-            document.body.classList.remove('overflow-hidden')
-          }}
-        /> */}
-
         {/* Content */}
         <div className="container w-full max-w-xl mx-auto px-4">
           {/* Content */}

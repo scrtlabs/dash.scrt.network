@@ -147,7 +147,7 @@ export default function SendForm() {
         {/* Balance | [25%|50%|75%|Max] */}
         <div className="flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 mt-2">
           <div className="flex-1 text-xs">
-            <NewBalanceUI token={getSelectedToken()} isSecureToken={false} />
+            <NewBalanceUI token={getSelectedToken()} isSecretToken={false} />
           </div>
           <div className="sm:flex-initial text-xs">
             <PercentagePicker setAmountByPercentage={setAmountByPercentage} disabled={!isConnected} />
