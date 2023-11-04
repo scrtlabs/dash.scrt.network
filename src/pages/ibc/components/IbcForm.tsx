@@ -205,7 +205,7 @@ export default function IbcForm() {
                     <button
                       onClick={toggleIbcMode}
                       className={
-                        'focus:outline-none focus-visible:ring-2 ring-sky-500/40 inline-block bg-neutral-200 dark:bg-neutral-800 px-3 py-2 text-cyan-500 dark:text-cyan-500 transition-colors rounded-xl disabled:text-neutral-500 dark:disabled:text-neutral-500' +
+                        'focus:outline-none focus-visible:ring-2 ring-sky-500/40 inline-block bg-neutral-200 dark:bg-neutral-700 px-3 py-2 text-cyan-500 dark:text-cyan-500 transition-colors rounded-xl disabled:text-neutral-500 dark:disabled:text-neutral-500' +
                         (secretNetworkClient?.address ? 'hover:text-cyan-700 dark:hover:text-cyan-300' : '')
                       }
                       disabled={!isConnected}

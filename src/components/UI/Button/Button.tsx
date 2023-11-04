@@ -40,7 +40,7 @@ export default function Button(props: Props) {
       className={`focus:outline-none focus-visible:ring-4 text-center font-bold rounded transition-colors
       ${colorClasses[props.color || 'primary']}
       ${sizeClasses[props.size || 'default']}
-      ${props.className}
+      ${props.className || ''}
     `}
       type={props.type || 'button'}
       onClick={props.onClick}

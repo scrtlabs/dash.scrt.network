@@ -1,13 +1,14 @@
-import React from 'react'
+import React, { ReactNode } from 'react'
 
-interface Props {
+interface IProps {
   title: String
-  children?: React.ReactNode
+  children?: ReactNode
+  className?: string
 }
 
-const Title = (props: Props) => {
+export default function Title(props: IProps) {
   return (
-    <div className="text-center mb-4 max-w-6xl mx-auto">
+    <div className={`text-center mb-4 max-w-6xl mx-auto ${props.className || ''}`}>
       <h1 className="font-bold text-4xl inline text-transparent bg-clip-text bg-gradient-to-r from-cyan-500 to-purple-500">
         {props.title}
       </h1>
@@ -15,5 +16,3 @@ const Title = (props: Props) => {
     </div>
   )
 }
-
-export default Title
