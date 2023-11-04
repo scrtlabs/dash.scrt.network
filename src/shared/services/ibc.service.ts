@@ -7,6 +7,7 @@ import {
 import { createTxIBCMsgTransfer } from '@tharsis/transactions'
 import BigNumber from 'bignumber.js'
 import { cosmos } from '@tharsis/proto/dist/proto/cosmos/tx/v1beta1/tx'
+import { SkipRouter, SKIP_API_URL } from '@skip-router/core'
 import {
   BroadcastMode,
   MsgExecuteContract,
@@ -198,7 +199,7 @@ const performIbcDeposit = async (
               amount: props.amount,
               denom: token.deposits.filter(
                 (deposit: Deposit) => deposit.chain_name === props.chainName
-              )[0].from_denom
+              )[0].denom
             },
             timeout_timestamp: String(Math.floor(Date.now() / 1000) + 10 * 60) // 10 minute timeout
           },
@@ -225,7 +226,7 @@ const performIbcDeposit = async (
               amount: props.amount,
               denom: token.deposits.filter(
                 (deposit: any) => deposit.chain_name === props.chainName
-              )[0].from_denom
+              )[0].denom
             },
             timeout_timestamp: String(Math.floor(Date.now() / 1000) + 10 * 60), // 10 minute timeout
             memo: JSON.stringify({
@@ -277,7 +278,7 @@ const performIbcDeposit = async (
           source_port: 'transfer',
           token: {
             amount: props.amount,
-            denom: chain.from_denom
+            denom: chain.denom
           },
           timeout_timestamp: String(Math.floor(Date.now() / 1000) + 10 * 60) // 10 minute timeout
         },
@@ -350,7 +351,7 @@ const performIbcDeposit = async (
           amount: props.amount,
           denom: token.deposits.filter(
             (deposit: Deposit) => deposit.chain_name === props.chainName
-          )[0].from_denom,
+          )[0].denom,
           receiver: props.secretNetworkClient.address,
           revisionNumber: 0,
           revisionHeight: 0,
@@ -610,7 +611,7 @@ const performIbcWithdrawal = async (
           source_port: 'transfer',
           token: {
             amount,
-            denom: withdrawalChain.from_denom
+            denom: withdrawalChain.denom
           },
           timeout_timestamp: String(Math.floor(Date.now() / 1000) + 10 * 60) // 10 minute timeout
         },
@@ -639,7 +640,7 @@ const performIbcWithdrawal = async (
             msg: {
               redeem: {
                 amount,
-                denom: token.withdrawals[0].from_denom,
+                denom: token.withdrawals[0].denom,
                 padding: randomPadding()
               }
             }
@@ -651,7 +652,7 @@ const performIbcWithdrawal = async (
             source_port: 'transfer',
             token: {
               amount,
-              denom: withdrawalChain.from_denom
+              denom: withdrawalChain.denom
             },
             timeout_timestamp: String(Math.floor(Date.now() / 1000) + 10 * 60) // 10 minute timeout
           })
@@ -721,61 +722,115 @@ async function getAxelarTransferFee(
   amount: number,
   ibcMode: IbcMode
 ) {
-  if (token.is_ics20) {
-    const axelarQuery = new AxelarQueryAPI({
-      environment: Environment.MAINNET
-    })
-    const filteredChain = token.deposits.filter(
-      (chainFilter: Deposit) => chainFilter.chain_name === chain.chain_name
-    )[0]
+  const axelarQuery = new AxelarQueryAPI({
+    environment: Environment.MAINNET
+  })
 
-    const fromChain =
-        ibcMode === 'deposit' ? filteredChain.axelar_chain_name : 'secret-snip',
-      toChain =
-        ibcMode === 'deposit' ? 'secret-snip' : filteredChain.axelar_chain_name,
-      asset = token.axelar_denom
-
-    const fee = await axelarQuery.getTransferFee(
-      fromChain,
-      toChain,
-      asset,
-      new BigNumber(amount).multipliedBy(`1e${token.decimals}`).toNumber()
-    )
-    return fee
+  // Ensure the chain is found before proceeding
+  const filteredChain = token.deposits.find(
+    (deposit: Deposit) => deposit.chain_name === chain.chain_name
+  )
+  if (!filteredChain) {
+    throw new Error('Chain not found')
   }
+
+  // Define the fromChain and toChain based on ibcMode
+  const isDeposit = ibcMode === 'deposit'
+  const fromChain = isDeposit ? filteredChain.axelar_chain_name : 'secret-snip'
+  const toChain = isDeposit ? 'secret-snip' : filteredChain.axelar_chain_name
+
+  // Define the asset
+  const asset = token.axelar_denom
+
+  // Define the formatted amount
+  const formattedAmount = new BigNumber(amount)
+    .multipliedBy(`1e${token.decimals}`)
+    .toNumber()
+
+  // Get and return the transfer fee
+  const fee = await axelarQuery.getTransferFee(
+    fromChain,
+    toChain,
+    asset,
+    formattedAmount
+  )
+  return fee
 }
 
-const fetchSourceBalance = async (
-  address: String,
+async function fetchSourceBalance(
+  address: string,
   chain: Chain,
   ibcMode: IbcMode,
   token: Token
-) => {
-  if (address) {
-    const url = `${
-      chains[chain.chain_name].lcd
-    }/cosmos/bank/v1beta1/balances/${address}`
-    try {
-      const {
-        balances
-      }: {
-        balances: Array<{ denom: string; amount: string }>
-      } = await (await fetch(url)).json()
+): Promise<number | 'Error'> {
+  if (!address) {
+    console.error('Address is required')
+    return 'Error'
+  }
 
-      const balance =
-        balances.find(
-          (c) =>
-            c.denom ===
-            token.deposits.filter(
-              (deposit: any) => deposit.chain_name === chain.chain_name
-            )[0].from_denom
-        )?.amount || '0'
-      return balance
-    } catch (e) {
-      console.error(`Error while trying to query ${url}:`, e)
+  const url = `${
+    chains[chain.chain_name].lcd
+  }/cosmos/bank/v1beta1/balances/${address}`
+
+  try {
+    const response = await fetch(url)
+    if (!response.ok) {
+      console.error(`Failed to fetch ${url}: ${response.statusText}`)
       return 'Error'
     }
+
+    const { balances } = await response.json()
+
+    const targetDenom = token.deposits.filter(
+      (deposit: any) => deposit.chain_name === chain.chain_name
+    )[0]?.denom
+
+    const balanceObj = balances.find(
+      (balance: any) => balance.denom === targetDenom
+    )
+
+    return balanceObj ? parseInt(balanceObj.amount, 10) : 0
+  } catch (e) {
+    console.error(`Error while trying to query ${url}:`, e)
+    return 'Error'
   }
+}
+
+async function getSkipIBCRouting(chain: Chain, IbcMode: IbcMode, token: Token) {
+  const client = new SkipRouter({
+    apiURL: SKIP_API_URL
+  })
+
+  let dest
+  let source
+  if (IbcMode === 'deposit') {
+    source = token.withdrawals[0]
+    dest = token.withdrawals.find(
+      (withdrawal) => withdrawal.chain_name === chain.chain_name
+    )
+  }
+  if (IbcMode === 'withdrawal') {
+    dest = token.withdrawals[0]
+    source = token.withdrawals.find(
+      (withdrawal) => withdrawal.chain_name === chain.chain_name
+    )
+  }
+
+  const route = await client.route({
+    amountIn: '1000',
+    sourceAssetDenom: source.denom,
+    sourceAssetChainID:
+      IbcMode === 'withdrawal'
+        ? chains['Secret Network'].chain_id
+        : chain.chain_id,
+    destAssetDenom: dest.denom,
+    destAssetChainID:
+      IbcMode === 'withdrawal'
+        ? chain.chain_id
+        : chains['Secret Network'].chain_id,
+    cumulativeAffiliateFeeBPS: '0'
+  })
+  return route
 }
 
 /**

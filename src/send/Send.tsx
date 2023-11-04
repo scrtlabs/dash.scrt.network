@@ -434,7 +434,7 @@ export function Send() {
         balance: { amount }
       } = await secretNetworkClient.query.bank.balance({
         address: secretNetworkClient?.address,
-        denom: selectedToken.withdrawals[0]?.from_denom
+        denom: selectedToken.withdrawals[0]?.denom
       })
       setNativeBalance(amount)
     } catch (e) {
