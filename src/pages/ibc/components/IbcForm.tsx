@@ -8,32 +8,28 @@ import { Chain, Token, chains, tokens } from 'utils/config'
 import IbcSelect from './IbcSelect'
 import Tooltip from '@mui/material/Tooltip'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCircleCheck, faRightLeft, faTriangleExclamation } from '@fortawesome/free-solid-svg-icons'
+import { faCircleCheck, faRightLeft } from '@fortawesome/free-solid-svg-icons'
 import AddressInfo from './AddressInfo'
-import { NativeTokenBalanceUi, WrappedTokenBalanceUi } from 'components/BalanceUI'
 import PercentagePicker from 'components/PercentagePicker'
 import { IbcService } from 'services/ibc.service'
 import FeeGrant from 'components/FeeGrant/FeeGrant'
+import NewBalanceUI from 'components/NewBalanceUI'
 
 export default function IbcForm() {
-  const { feeGrantStatus, requestFeeGrant, secretNetworkClient, walletAddress, isConnected } =
-    useSecretNetworkClientStore()
+  const { feeGrantStatus, secretNetworkClient, walletAddress, isConnected } = useSecretNetworkClientStore()
 
   const [isLoading, setIsWaiting] = useState<boolean>(false)
   const [generalSuccessMessage, setGeneralSuccessMessage] = useState<String>('')
   const [generalErrorMessage, setGeneralErrorMessage] = useState<String>('')
 
   // handles [25% | 50% | 75% | Max] Button-Group
-  function setAmountByPercentage(percentage: number) {}
+  function setAmountByPercentage(percentage: number) {
+    formik.setFieldValue('amount', '100')
+  }
 
-  // refactor start
   const [srcAddress, setSrcAddress] = useState<string>('')
   const [availableBalance, setAvailableBalance] = useState<string>('')
   const [amountToTransfer, setAmountToTransfer] = useState<string>('')
-  function handleInputChange(e: any) {
-    setAmountToTransfer(e.target.value)
-  }
-  // refactor end
 
   function toggleIbcMode() {
     if (formik.values.ibcMode === 'deposit') {
@@ -45,16 +41,13 @@ export default function IbcForm() {
 
   const selectableChains = IbcService.getSupportedChains()
 
-  const [selectedToken, setSelectedToken] = useState<Token>(tokens.find((token: Token) => token.name === 'SCRT'))
-
   const ChainSelect = () => {
     return (
       <Select
         options={selectableChains}
-        value={chains[formik.values.chainName]}
+        value={formik.values.chain}
         onChange={(chain: Chain) => {
-          formik.setFieldValue('chainName', chain.chain_name)
-          // formik.setFieldValue('tokenName', chain.chain_name)
+          formik.setFieldValue('chain', chain)
         }}
         isSearchable={false}
         isDisabled={!isConnected}
@@ -71,10 +64,19 @@ export default function IbcForm() {
     )
   }
 
-  const formik = useFormik({
+  interface IFormValues {
+    chain: Chain
+    token: Token
+    ibcMode: IbcMode
+    amount: string
+  }
+
+  const formik = useFormik<IFormValues>({
     initialValues: {
-      chainName: 'Osmosis',
-      tokenName: 'SCRT',
+      chain: selectableChains.find((chain: Chain) => chain.chain_name === 'Osmosis'),
+      token: IbcService.getSupportedIbcTokensByChain(
+        selectableChains.find((chain: Chain) => chain.chain_name === 'Osmosis')
+      ).find((token: Token) => token.name === 'SCRT'),
       ibcMode: 'deposit',
       amount: ''
     },
@@ -88,11 +90,11 @@ export default function IbcForm() {
         setIsWaiting(true)
         const res = await IbcService.performIbcTransfer({
           secretNetworkClient: secretNetworkClient,
-          chainName: formik.values.chainName,
-          ibcMode: formik.values.ibcMode as IbcMode,
-          tokenName: formik.values.tokenName,
+          chain: formik.values.chain,
+          ibcMode: formik.values.ibcMode,
+          token: formik.values.token,
           amount: formik.values.amount,
-          feeGrantStatus: null,
+          feeGrantStatus: feeGrantStatus,
           sourceChainNetworkClient: secretNetworkClient
         })
         setIsWaiting(false)
@@ -109,7 +111,7 @@ export default function IbcForm() {
   })
 
   function getSupportedTokens(): Token[] {
-    let tempSelectedChain = chains[formik.values.chainName]
+    let tempSelectedChain = formik.values.chain
     let supportedTokens = IbcService.getSupportedIbcTokensByChain(tempSelectedChain)
     return supportedTokens
   }
@@ -130,7 +132,7 @@ export default function IbcForm() {
       console.log(routing.operations)
       IbcService.composePMFMemo(routing.operations, 'KEK').then((memo) => console.log(memo))
     })
-  }, [formik.values.chainName])
+  }, [formik.values.chain])
 
   // return <Deposit />
   return (
@@ -159,12 +161,10 @@ export default function IbcForm() {
                     <img
                       src={
                         '/img/assets/' +
-                        (formik.values.ibcMode === 'deposit' ? chains[formik.values.chainName].chain_image : 'scrt.svg')
+                        (formik.values.ibcMode === 'deposit' ? formik.values.chain.chain_image : 'scrt.svg')
                       }
                       className="w-full relative inline-block rounded-full overflow-hiden"
-                      alt={`${
-                        formik.values.ibcMode === 'deposit' ? chains[formik.values.chainName].chain_name : 'SCRT'
-                      } logo`}
+                      alt={`${formik.values.ibcMode === 'deposit' ? formik.values.chain.chain_name : 'SCRT'} logo`}
                     />
                   </div>
                 </div>
@@ -234,14 +234,10 @@ export default function IbcForm() {
                     <img
                       src={
                         '/img/assets/' +
-                        (formik.values.ibcMode === 'withdrawal'
-                          ? chains[formik.values.chainName].chain_image
-                          : 'scrt.svg')
+                        (formik.values.ibcMode === 'withdrawal' ? formik.values.chain.chain_image : 'scrt.svg')
                       }
                       className="w-full relative inline-block rounded-full overflow-hiden"
-                      alt={`${
-                        formik.values.ibcMode === 'withdrawal' ? chains[formik.values.chainName].chain_name : 'SCRT'
-                      } logo`}
+                      alt={`${formik.values.ibcMode === 'withdrawal' ? formik.values.chain.chain_name : 'SCRT'} logo`}
                     />
                   </div>
                 </div>
@@ -287,8 +283,8 @@ export default function IbcForm() {
           <div className="flex" id="inputWrapper">
             <Select
               options={supportedTokens}
-              value={tokens.find((token: Token) => token.name === formik.values.tokenName)}
-              onChange={(token: Token) => formik.setFieldValue('tokenName', token.name)}
+              value={formik.values.token}
+              onChange={(token: Token) => formik.setFieldValue('token', token)}
               isSearchable={false}
               isDisabled={!secretNetworkClient?.address}
               formatOptionLabel={(token: Token) => (
@@ -326,20 +322,11 @@ export default function IbcForm() {
           {/* Balance | [25%|50%|75%|Max] */}
           <div className="flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 mt-3">
             <div className="flex-1 text-xs">
-              {/* {(selectedToken.is_ics20 || selectedToken.is_snip20) &&
-              formik.values.ibcMode === 'withdrawal'
-                ? WrappedTokenBalanceUi(
-                    availableBalance,
-                    selectedToken,
-                    selectedTokenPrice
-                  )
-                : NativeTokenBalanceUi(
-                    availableBalance,
-                    selectedToken,
-                    selectedTokenPrice
-                  )} */}
+              <NewBalanceUI token={formik.values.token} />
             </div>
-            <div className="sm:flex-initial text-xs">{PercentagePicker(setAmountByPercentage, !walletAddress)}</div>
+            <div className="sm:flex-initial text-xs">
+              <PercentagePicker setAmountByPercentage={setAmountByPercentage} disabled={!isConnected} />
+            </div>
           </div>
         </div>
 
@@ -354,7 +341,7 @@ export default function IbcForm() {
               fill="none"
               viewBox="0 0 24 24"
             >
-              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
               <path
                 className="opacity-75"
                 fill="currentColor"
@@ -365,19 +352,19 @@ export default function IbcForm() {
           </div>
         ) : null}
 
-        {generalSuccessMessage && (
+        {generalSuccessMessage ? (
           <div className="text-emerald-500 dark:text-emerald-500 text-sm font-normal flex items-center gap-2 justify-center">
             <FontAwesomeIcon icon={faCircleCheck} />
             <span>{generalSuccessMessage}</span>
           </div>
-        )}
+        ) : null}
 
-        {generalErrorMessage && (
-          <div className="text-red-500 dark:text-red-500 text-sm font-normal flex items-center gap-2 justify-center">
-            <FontAwesomeIcon icon={faTriangleExclamation} />
-            <span>{generalErrorMessage}</span>
+        {generalSuccessMessage ? (
+          <div className="text-emerald-500 dark:text-emerald-500 text-sm font-normal flex items-center gap-2 justify-center">
+            <FontAwesomeIcon icon={faCircleCheck} />
+            <span>{generalSuccessMessage}</span>
           </div>
-        )}
+        ) : null}
 
         {/* Submit Button */}
         <button
@@ -389,7 +376,6 @@ export default function IbcForm() {
         >
           {`Execute Transfer`}
         </button>
-        {JSON.stringify}
       </form>
     </>
   )

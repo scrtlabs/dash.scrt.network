@@ -5,6 +5,7 @@ import { Token, tokens } from 'utils/config'
 import { scrtToken } from 'utils/tokens'
 import { useTokenPricesStore } from 'store/TokenPrices'
 import { useSecretNetworkClientStore } from 'store/secretNetworkClient'
+import Tooltip from '@mui/material/Tooltip'
 
 interface IProps {
   token: Token
@@ -40,16 +41,27 @@ export default function NewBalanceUI({ isSecretToken: isSecretToken = false, ...
 
   return (
     <>
-      {balance}
       <div className="flex items-center gap-1.5">
         <span className="font-bold">{`Balance: `}</span>
 
-        {balance && tokenName && usdPriceString ? (
-          <span className="font-medium">{`${balance} ${tokenName} (${usdPriceString})`}</span>
+        {balance && tokenName ? (
+          <>
+            <span className="font-medium">{`${balance} ${tokenName}`}</span>
+            {usdPriceString ? (
+              <span className="font-medium"> {usdPriceString}</span>
+            ) : (
+              <>
+                {/* Skeleton Loader */}
+                <Tooltip title={`Loading USD price...`} placement="bottom" arrow>
+                  <span className="animate-pulse bg-neutral-300/40 dark:bg-neutral-600 rounded w-10 h-5"></span>
+                </Tooltip>
+              </>
+            )}
+          </>
         ) : (
           <>
             {/* Skeleton Loader */}
-            <span className="animate-pulse bg-neutral-300/40 dark:bg-neutral-700/40 rounded w-20 h-5 ml-2"></span>
+            <span className="animate-pulse bg-neutral-300/40 dark:bg-neutral-600 rounded w-20 h-5 ml-2"></span>
           </>
         )}
 

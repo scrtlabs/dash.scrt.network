@@ -26,7 +26,6 @@ import {
   suggestTerratoWallet,
   suggestComposabletoWallet,
   randomPadding,
-  viewingKeyErrorString,
   allTokens
 } from 'utils/commons'
 import { Chain, Deposit, Token, chains, tokens } from 'utils/config'
@@ -38,24 +37,15 @@ const sdk: AxelarAssetTransfer = new AxelarAssetTransfer({
   environment: Environment.MAINNET
 })
 
-interface IBaseProps {
+interface TProps {
   ibcMode: IbcMode
-  chainName: string
+  chain: Chain
+  token: Token
   amount: string
   secretNetworkClient: SecretNetworkClient
   sourceChainNetworkClient: SecretNetworkClient
   feeGrantStatus: FeeGrantStatus
 }
-
-interface IPropsToken extends IBaseProps {
-  token: Token
-}
-
-interface IPropsTokenName extends IBaseProps {
-  tokenName: string
-}
-
-type TProps = IPropsToken | IPropsTokenName
 
 async function getChainSecretJs(chain: Chain): Promise<SecretNetworkClient> {
   while (!(window as any).wallet || !(window as any).wallet.getOfflineSignerOnlyAmino) {
@@ -121,41 +111,25 @@ const performIbcTransfer = async (props: TProps): Promise<{ success: boolean; er
     errorMsg: null
   }
 
-  let token: Nullable<Token>
-  if ('tokenName' in props) {
-    token = tokens.find((token) => token.name === props.tokenName)
-  } else {
-    token = props.token
-  }
-
-  if (!token) {
-    result.success = false
-    result.errorMsg = 'Token not found!'
-    return result
-  }
-
   if (props.ibcMode === 'withdrawal') {
-    return performIbcWithdrawal(props, token)
+    return performIbcWithdrawal(props, props.token)
   } else if (props.ibcMode === 'deposit') {
-    return performIbcDeposit(props, token)
+    return performIbcDeposit(props)
   }
 }
 
-const performIbcDeposit = async (
-  props: TProps,
-  token: Token
-): Promise<{ success: boolean; errorMsg: Nullable<string> }> => {
+const performIbcDeposit = async (props: TProps): Promise<{ success: boolean; errorMsg: Nullable<string> }> => {
   let result: { success: boolean; errorMsg: Nullable<string> } = {
     success: false,
     errorMsg: null
   }
 
-  const selectedSource = chains[props.chainName]
+  const selectedSource = props.chain
 
   // IBC Logic
   let { deposit_channel_id, deposit_gas, deposit_gas_denom, lcd: lcdSrcChain } = selectedSource
 
-  const deposit = token.deposits.filter((deposit: Deposit) => deposit.chain_name === props.chainName)[0]
+  const deposit = props.token.deposits.filter((deposit: Deposit) => deposit.chain_name === props.chain.chain_name)[0]
 
   deposit_channel_id = deposit.channel_id || deposit_channel_id
   deposit_gas = deposit.gas || deposit_gas
@@ -163,11 +137,11 @@ const performIbcDeposit = async (
   try {
     let tx: TxResponse
     if (
-      !['Evmos', 'Injective'].includes(props.chainName) &&
-      (!token.is_ics20 || deposit.axelar_chain_name == CHAINS.MAINNET.AXELAR)
+      !['Evmos', 'Injective'].includes(props.chain.chain_name) &&
+      (!props.token.is_ics20 || deposit.axelar_chain_name == CHAINS.MAINNET.AXELAR)
     ) {
       // Regular cosmos chain (not ethermint signing)
-      if (token.name === 'SCRT' || deposit.axelar_chain_name == CHAINS.MAINNET.AXELAR) {
+      if (props.token.name === 'SCRT' || deposit.axelar_chain_name == CHAINS.MAINNET.AXELAR) {
         tx = await props.sourceChainNetworkClient.tx.ibc.transfer(
           {
             sender: props.sourceChainNetworkClient.address,
@@ -176,7 +150,8 @@ const performIbcDeposit = async (
             source_port: 'transfer',
             token: {
               amount: props.amount,
-              denom: token.deposits.filter((deposit: Deposit) => deposit.chain_name === props.chainName)[0].denom
+              denom: props.token.deposits.filter((deposit: Deposit) => deposit.chain_name === props.chain.chain_name)[0]
+                .denom
             },
             timeout_timestamp: String(Math.floor(Date.now() / 1000) + 10 * 60) // 10 minute timeout
           },
@@ -201,7 +176,8 @@ const performIbcDeposit = async (
             source_port: 'transfer',
             token: {
               amount: props.amount,
-              denom: token.deposits.filter((deposit: any) => deposit.chain_name === props.chainName)[0].denom
+              denom: props.token.deposits.filter((deposit: any) => deposit.chain_name === props.chain.chain_name)[0]
+                .denom
             },
             timeout_timestamp: String(Math.floor(Date.now() / 1000) + 10 * 60), // 10 minute timeout
             memo: JSON.stringify({
@@ -209,8 +185,8 @@ const performIbcDeposit = async (
                 contract: 'secret198lmmh2fpj3weqhjczptkzl9pxygs23yn6dsev',
                 msg: {
                   wrap_deposit: {
-                    snip20_address: token.address,
-                    snip20_code_hash: token.code_hash,
+                    snip20_address: props.token.address,
+                    snip20_code_hash: props.token.code_hash,
                     recipient_address: props.secretNetworkClient.address
                   }
                 }
@@ -230,11 +206,11 @@ const performIbcDeposit = async (
           }
         )
       }
-    } else if (token.is_ics20 && deposit.axelar_chain_name != CHAINS.MAINNET.AXELAR) {
+    } else if (props.token.is_ics20 && deposit.axelar_chain_name != CHAINS.MAINNET.AXELAR) {
       const fromChain = deposit.axelar_chain_name,
         toChain = 'secret-snip',
         destinationAddress = props.secretNetworkClient.address,
-        asset = token.axelar_denom
+        asset = props.token.axelar_denom
 
       const depositAddress = await sdk.getDepositAddress({
         fromChain,
@@ -312,7 +288,8 @@ const performIbcDeposit = async (
           sourcePort: 'transfer',
           sourceChannel: deposit_channel_id,
           amount: props.amount,
-          denom: token.deposits.filter((deposit: Deposit) => deposit.chain_name === props.chainName)[0].denom,
+          denom: props.token.deposits.filter((deposit: Deposit) => deposit.chain_name === props.chain.chain_name)[0]
+            .denom,
           receiver: props.secretNetworkClient.address,
           revisionNumber: 0,
           revisionHeight: 0,
@@ -397,8 +374,8 @@ const performIbcDeposit = async (
       })
       mixpanel.identify('Dashboard-App')
       mixpanel.track('IBC Transfer', {
-        'Source Chain': props.ibcMode === 'deposit' ? props.chainName : 'Secret Network',
-        'Target Chain': props.ibcMode === 'withdrawal' ? props.chainName : 'Secret Network',
+        'Source Chain': props.ibcMode === 'deposit' ? props.chain.chain_name : 'Secret Network',
+        'Target Chain': props.ibcMode === 'withdrawal' ? props.chain.chain_name : 'Secret Network',
         'Fee Grant used': props.feeGrantStatus === 'success' && props.ibcMode === 'withdrawal' ? true : false
       })
     }
@@ -423,7 +400,7 @@ const performIbcWithdrawal = async (
     errorMsg: null
   }
 
-  const selectedDest = chains[props.chainName]
+  const selectedDest = chains[props.chain.chain_name]
 
   const amount = new BigNumber(props.amount).multipliedBy(`1e${token.decimals}`).toFixed(0, BigNumber.ROUND_DOWN)
 
@@ -820,16 +797,8 @@ function composePMFMemo(allOperations: Operation[], finalMemo?: string | undefin
 Get supported chains for IBC transfers.
 @returns An array of chains.
 */
-function getSupportedChains(): { chain_name: string; chain_image: string }[] {
-  const selectableChains = Object.keys(chains)
-    .filter((chain_name) => chain_name !== 'Secret Network')
-    .map((chain_name) => {
-      const chain = chains[chain_name]
-      return {
-        chain_name: chain.chain_name,
-        chain_image: chain.chain_image
-      }
-    })
+function getSupportedChains(): Chain[] {
+  const selectableChains: Chain[] = Object.values(chains).filter((chain) => chain.chain_name !== 'Secret Network')
   return selectableChains
 }
 

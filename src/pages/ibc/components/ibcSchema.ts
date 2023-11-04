@@ -1,6 +1,6 @@
 import * as yup from 'yup'
 import { isIbcMode } from 'types/IbcMode'
-import { tokens } from 'utils/config'
+import { chains, tokens } from 'utils/config'
 
 /**
  * TODO: Src
@@ -14,15 +14,18 @@ export const ibcSchema = yup.object().shape({
     .number()
     .min(0.00001, 'Please enter a valid amount')
     .typeError('Please enter a valid amount')
-    .transform((_value, originalValue) =>
-      Number(originalValue.replace(/,/, '.'))
-    ) // transforms comma to dot
+    .transform((_value, originalValue) => Number(originalValue.replace(/,/, '.'))) // transforms comma to dot
     .required('Please enter a valid amount'),
-  tokenName: yup.string().oneOf(
-    tokens.map((token) => token.name),
-    'Please select a valid token'
-  ),
-  chainName: yup.string().required('Please select a chain!'),
+  token: yup
+    .mixed()
+    .test('isValidToken', 'Please select a valid token', (value) => tokens.some((token) => token.name === value))
+    .required('Please select a token!'),
+  chain: yup
+    .mixed()
+    .required('Please select a chain!')
+    .test('isValidChain', 'Please select a valid chain', (chainValue: any) =>
+      Object.values(chains).some((chain) => chain.chain_name === chainValue.chain_name)
+    ),
   ibcMode: yup
     .string()
     .test('isIbcMode', 'Invalid IBC Mode', (value) => isIbcMode(value))
