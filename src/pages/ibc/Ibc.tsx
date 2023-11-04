@@ -138,7 +138,7 @@ export function Ibc() {
         {/* Content */}
         <div className="container w-full max-w-xl mx-auto px-4">
           {/* Content */}
-          <div className="rounded-3xl px-6 py-6 text-neutral-800 dark:text-neutral-200 bg-white dark:bg-neutral-900">
+          <div className="rounded-3xl px-6 py-6 bg-white dark:bg-neutral-800">
             {/* Title: Secret Wrap / Secret Unwrap */}
             <div className="mb-8">
               <Title title={`IBC Transfer`}>

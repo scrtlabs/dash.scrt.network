@@ -137,7 +137,7 @@ export default function IbcForm() {
     <>
       <form
         onSubmit={formik.handleSubmit}
-        className="w-full flex flex-col gap-4 text-neutral-800 dark:text-neutral-200 bg-white dark:bg-neutral-900"
+        className="w-full flex flex-col gap-4 text-neutral-800 dark:text-neutral-200 bg-white dark:bg-neutral-800"
       >
         {/* [From|To] Picker */}
         <div className="flex flex-col md:flex-row mb-8">
@@ -276,7 +276,7 @@ export default function IbcForm() {
           destAddress={`iowerg8035089ty354u890-2t490u34t9034ty8080rih3240r`}
         />
 
-        <div className="bg-neutral-200 dark:bg-neutral-800 p-4 rounded-xl">
+        <div className="bg-neutral-200 dark:bg-neutral-700 p-4 rounded-xl">
           {/* Title Bar */}
           <div className="flex flex-col sm:flex-row justify-between items-center mb-2 text-center sm:text-left">
             <span className="font-extrabold">Token</span>
@@ -315,7 +315,7 @@ export default function IbcForm() {
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
               className={
-                'dark:placeholder-neutral-700 remove-arrows text-right focus:z-10 block flex-1 min-w-0 w-full bg-neutral-100 dark:bg-neutral-900 text-black dark:text-white px-4 rounded-r-lg disabled:placeholder-neutral-300 dark:disabled:placeholder-neutral-700 transition-colors font-medium focus:outline-0 focus:ring-2 ring-sky-500/40' +
+                'dark:placeholder-neutral-600 remove-arrows text-right focus:z-10 block flex-1 min-w-0 w-full bg-neutral-100 dark:bg-neutral-800 text-black dark:text-white px-4 rounded-r-lg disabled:placeholder-neutral-300 dark:disabled:placeholder-neutral-700 transition-colors font-medium focus:outline-0 focus:ring-2 ring-sky-500/40' +
                 (false ? '  border border-red-500 dark:border-red-500' : '')
               }
               placeholder="0"

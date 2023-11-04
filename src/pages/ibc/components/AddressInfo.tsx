@@ -17,15 +17,14 @@ interface IProps {
 export default function AddressInfo(props: IProps) {
   const { isConnected, connectWallet } = useSecretNetworkClientStore()
 
-  const dataMissing =
-    !props.srcChain || !props.srcAddress || !props.destChain || !props.destChain
+  const dataMissing = !props.srcChain || !props.srcAddress || !props.destChain || !props.destChain
 
   // e.g. https://www.mintscan.io/secret/account/[address]
   const srcChainExplorerUrl: string = `${props.srcChain?.explorer_account}${props.srcAddress}`
   const destChainExplorerUrl: string = `${props.destChain?.explorer_account}${props.destAddress}`
 
   return (
-    <div className="bg-neutral-200 dark:bg-neutral-800 p-4 rounded-xl space-y-6 my-4">
+    <div className="bg-neutral-200 dark:bg-neutral-700 p-4 rounded-xl space-y-6 my-4">
       <div className="flex items-center">
         <div className="font-semibold mr-4 w-10">From:</div>
         <div className="flex-1 truncate font-medium text-sm">
