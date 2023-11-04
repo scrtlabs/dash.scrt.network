@@ -246,7 +246,7 @@ export function Navigation({
                 />
               </a>
             </li>
-            <li>
+            {/*  <li>
               <a
                 href="https://secretanalytics.xyz"
                 target="_blank"
@@ -263,7 +263,7 @@ export function Navigation({
                   size={'xs'}
                 />
               </a>
-            </li>
+            </li> */}
             <li>
               <a
                 href="https://www.mintscan.io/secret"

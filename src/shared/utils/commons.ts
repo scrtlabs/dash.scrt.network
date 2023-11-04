@@ -1,7 +1,4 @@
-import { StdFee } from '@cosmjs/stargate'
 import { Bech32Address } from '@keplr-wallet/cosmos'
-import { sha256 } from '@noble/hashes/sha256'
-import { Wallet, toHex, toUtf8 } from 'secretjs'
 import { tokens, snips, ICSTokens } from './config'
 import mixpanel from 'mixpanel-browser'
 
@@ -24,18 +21,6 @@ export const randomDelay = (min: any, max: any) => {
 }
 
 export const allTokens = tokens.concat(snips).concat(ICSTokens)
-
-export function gasToFee(gas: number, denom: string): StdFee {
-  return {
-    amount: [
-      {
-        amount: String(Math.floor(gas * gasPriceUscrt) + 1),
-        denom: denom ? denom : 'uscrt'
-      }
-    ],
-    gas: String(gas)
-  }
-}
 
 /**
  * Generates random string of characters, used to add entropy to TX data

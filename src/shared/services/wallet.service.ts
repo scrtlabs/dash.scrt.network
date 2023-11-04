@@ -323,7 +323,7 @@ const getBalancesForTokens = async (
     const tokenMap = new Map<string, Token>()
 
     tokens.forEach((token) => {
-      const fromDenom = token.withdrawals[0]?.from_denom
+      const fromDenom = token.withdrawals[0]?.denom
       if (fromDenom) {
         tokenMap.set(fromDenom, token)
       }

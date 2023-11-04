@@ -79,7 +79,7 @@ const performWrapping = async (
               sender: props.secretNetworkClient.address,
               contract_address: token.address,
               code_hash: token.code_hash,
-              sent_funds: [{ denom: token.withdrawals[0].from_denom, amount }],
+              sent_funds: [{ denom: token.withdrawals[0].denom, amount }],
               msg: {
                 deposit: {
                   padding: randomPadding()
@@ -128,7 +128,7 @@ const performWrapping = async (
                   denom:
                     token.name === 'SCRT'
                       ? undefined
-                      : token.withdrawals[0].from_denom,
+                      : token.withdrawals[0].denom,
                   padding: randomPadding()
                 }
               }

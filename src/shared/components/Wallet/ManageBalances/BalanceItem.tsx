@@ -74,7 +74,7 @@ const BalanceItem = (props: Props) => {
         balance: { amount }
       } = await secretNetworkClient.query.bank.balance({
         address: secretNetworkClient?.address,
-        denom: props.token?.withdrawals[0]?.from_denom
+        denom: props.token?.withdrawals[0]?.denom
       })
       setNativeBalance(amount)
     } catch (e) {
