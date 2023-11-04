@@ -26,8 +26,8 @@ export default function NewBalanceUI({ isSecureToken: isSecureToken = false, ...
   useEffect(() => {
     if (isConnected) {
       // TODO: Fix balances
-      const x = getBalance(props.token)
-      console.log('x', x)
+      // const x = getBalance(props.token)
+      // console.log('x', x)
       // setBalance(x)
     }
   }, [isConnected])
