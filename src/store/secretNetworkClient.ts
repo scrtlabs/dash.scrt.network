@@ -1,13 +1,13 @@
 import { SecretNetworkClient } from 'secretjs'
-import { FeeGrantStatus } from 'shared/types/FeeGrantStatus'
-import { Nullable } from 'shared/types/Nullable'
-import { allTokens, sleep } from 'shared/utils/commons'
-import { Token } from 'shared/utils/config'
+import { FeeGrantStatus } from 'types/FeeGrantStatus'
+import { Nullable } from 'types/Nullable'
+import { allTokens, sleep } from 'utils/commons'
+import { Token } from 'utils/config'
 import { create } from 'zustand'
-import { WalletAPIType } from 'shared/types/WalletAPIType'
+import { WalletAPIType } from 'types/WalletAPIType'
 import BigNumber from 'bignumber.js'
-import { scrtToken } from 'shared/utils/tokens'
-import { WalletService } from 'shared/services/wallet.service'
+import { scrtToken } from 'utils/tokens'
+import { WalletService } from 'services/wallet.service'
 
 interface TokenBalances {
   balance: Nullable<BigNumber>

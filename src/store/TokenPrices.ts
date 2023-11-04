@@ -1,7 +1,7 @@
 import BigNumber from 'bignumber.js'
-import { Nullable } from 'shared/types/Nullable'
-import { allTokens, formatUsdString } from 'shared/utils/commons'
-import { Token, tokens } from 'shared/utils/config'
+import { Nullable } from 'types/Nullable'
+import { allTokens, formatUsdString } from 'utils/commons'
+import { Token, tokens } from 'utils/config'
 import { create } from 'zustand'
 
 export interface CoinPrice {

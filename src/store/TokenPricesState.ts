@@ -1,5 +1,5 @@
-import { Nullable } from 'shared/types/Nullable'
-import { Token } from 'shared/utils/config'
+import { Nullable } from 'types/Nullable'
+import { Token } from 'utils/config'
 
 export interface TokenPricesState {
   priceMapping: Map<Token, number>

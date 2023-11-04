@@ -1,29 +1,29 @@
 import React from 'react'
 import { Window as KeplrWindow } from '@keplr-wallet/types'
 import { BreakpointProvider } from 'react-socks'
-import 'shared/assets/scss/index.scss'
+import 'assets/scss/index.scss'
 import { Buffer } from 'buffer'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import ReactDOM from 'react-dom/client'
 import { Helmet, HelmetProvider } from 'react-helmet-async'
 
 // Pages
-import { Ibc } from 'ibc/Ibc'
-import { Wrap } from 'wrap/Wrap'
-import DefaultLayout from 'shared/layouts/DefaultLayout'
-import Bridge from 'bridge/Bridge'
-import Apps from 'apps/Apps'
-import { Staking } from 'staking/Staking'
-import { Send } from 'send/Send'
-import GetSCRT from 'get-scrt/GetScrt'
+import { Ibc } from 'pages/ibc/Ibc'
+import { Wrap } from 'pages/wrap/Wrap'
+import Apps from 'pages/apps/Apps'
+import { Staking } from 'pages/staking/Staking'
+import { Send } from 'pages/send/Send'
 
 // Contexts
-import { ThemeContextProvider } from 'shared/context/ThemeContext'
-import { APIContextProvider } from 'shared/context/APIContext'
+import { ThemeContextProvider } from 'context/ThemeContext'
+import { APIContextProvider } from 'context/APIContext'
 
 // mixpanel
 import mixpanel from 'mixpanel-browser'
-import Dashboard from 'dashboard/Dashboard'
+import Bridge from 'pages/bridge/Bridge'
+import GetSCRT from 'pages/get-scrt/GetScrt'
+import Dashboard from 'pages/dashboard/Dashboard'
+import DefaultLayout from 'layouts/DefaultLayout'
 
 if (import.meta.env.VITE_MIXPANEL_ENABLED === 'true') {
   mixpanel.init(import.meta.env.VITE_MIXPANEL_PROJECT_TOKEN, { debug: true })
