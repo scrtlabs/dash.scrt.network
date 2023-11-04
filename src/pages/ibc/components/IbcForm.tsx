@@ -73,7 +73,7 @@ export default function IbcForm() {
 
   const formik = useFormik({
     initialValues: {
-      chainName: 'Jackal',
+      chainName: 'Osmosis',
       tokenName: 'SCRT',
       ibcMode: 'deposit',
       amount: ''

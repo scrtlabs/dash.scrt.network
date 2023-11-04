@@ -26,7 +26,8 @@ import {
   suggestTerratoWallet,
   suggestComposabletoWallet,
   randomPadding,
-  viewingKeyErrorString
+  viewingKeyErrorString,
+  allTokens
 } from 'utils/commons'
 import { Chain, Deposit, Token, chains, tokens } from 'utils/config'
 import Long from 'long'
@@ -838,7 +839,7 @@ Get supported IBC tokens by the specified chain.
 @returns An array of supported IBC tokens (as Token) on the given chain.
 */
 function getSupportedIbcTokensByChain(chain: Chain) {
-  const supportedTokens = tokens.filter((token: Token) => {
+  const supportedTokens = allTokens.filter((token: Token) => {
     return token.deposits.find((deposit: Deposit) => deposit.chain_name === chain.chain_name)
   })
   return supportedTokens
