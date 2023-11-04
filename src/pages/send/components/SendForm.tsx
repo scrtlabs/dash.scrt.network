@@ -68,9 +68,12 @@ export default function SendForm() {
   const [isValidationActive, setIsValidationActive] = useState<boolean>(false)
   const [amountString, setAmountString] = useState<string>('0')
   const secretToken: Token = tokens.find((token) => token.name === 'SCRT')
-  const [selectedToken, setSelectedToken] = useState<Token>(secretToken)
   const [tokenBalance, setTokenBalance] = useState<any>()
   const [memo, setMemo] = useState<string>('')
+
+  function getSelectedToken(): Token {
+    return tokens.find((token: Token) => token.name === formik.values.tokenName)
+  }
 
   // handles [25% | 50% | 75% | Max] Button-Group
   function setAmountByPercentage(percentage: number) {
@@ -144,10 +147,7 @@ export default function SendForm() {
         {/* Balance | [25%|50%|75%|Max] */}
         <div className="flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 mt-2">
           <div className="flex-1 text-xs">
-            <NewBalanceUI
-              token={tokens.find((token: Token) => token.name.toLowerCase() === 'scrt')}
-              isSecureToken={false}
-            />
+            <NewBalanceUI token={getSelectedToken()} isSecureToken={false} />
           </div>
           <div className="sm:flex-initial text-xs">
             <PercentagePicker setAmountByPercentage={setAmountByPercentage} disabled={!isConnected} />
