@@ -134,6 +134,8 @@ const performIbcDeposit = async (props: TProps): Promise<{ success: boolean; err
   deposit_channel_id = deposit.channel_id || deposit_channel_id
   deposit_gas = deposit.gas || deposit_gas
 
+  const routing = await getSkipIBCRouting(selectedSource, 'deposit', token)
+
   try {
     let tx: TxResponse
     if (
@@ -153,6 +155,7 @@ const performIbcDeposit = async (props: TProps): Promise<{ success: boolean; err
               denom: props.token.deposits.filter((deposit: Deposit) => deposit.chain_name === props.chain.chain_name)[0]
                 .denom
             },
+            memo: routing.operations.length > 1 ? await composePMFMemo(routing.operations) : '',
             timeout_timestamp: String(Math.floor(Date.now() / 1000) + 10 * 60) // 10 minute timeout
           },
           {
@@ -180,18 +183,35 @@ const performIbcDeposit = async (props: TProps): Promise<{ success: boolean; err
                 .denom
             },
             timeout_timestamp: String(Math.floor(Date.now() / 1000) + 10 * 60), // 10 minute timeout
-            memo: JSON.stringify({
-              wasm: {
-                contract: 'secret198lmmh2fpj3weqhjczptkzl9pxygs23yn6dsev',
-                msg: {
-                  wrap_deposit: {
-                    snip20_address: props.token.address,
-                    snip20_code_hash: props.token.code_hash,
-                    recipient_address: props.secretNetworkClient.address
-                  }
-                }
-              }
-            })
+            memo:
+              routing.operations.length > 1
+                ? await composePMFMemo(
+                    routing.operations,
+                    JSON.stringify({
+                      wasm: {
+                        contract: 'secret198lmmh2fpj3weqhjczptkzl9pxygs23yn6dsev',
+                        msg: {
+                          wrap_deposit: {
+                            snip20_address: token.address,
+                            snip20_code_hash: token.code_hash,
+                            recipient_address: props.secretNetworkClient.address
+                          }
+                        }
+                      }
+                    })
+                  )
+                : JSON.stringify({
+                    wasm: {
+                      contract: 'secret198lmmh2fpj3weqhjczptkzl9pxygs23yn6dsev',
+                      msg: {
+                        wrap_deposit: {
+                          snip20_address: props.token.address,
+                          snip20_code_hash: props.token.code_hash,
+                          recipient_address: props.secretNetworkClient.address
+                        }
+                      }
+                    }
+                  })
           },
           {
             broadcastCheckIntervalMs: 10000,

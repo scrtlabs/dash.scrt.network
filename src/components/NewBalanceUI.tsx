@@ -9,10 +9,10 @@ import Tooltip from '@mui/material/Tooltip'
 
 interface IProps {
   token: Token
-  isSecretToken?: boolean
+  isSecretToken: boolean
 }
 
-export default function NewBalanceUI({ isSecretToken: isSecretToken = false, ...props }: IProps) {
+export default function NewBalanceUI(props: IProps) {
   const setViewingKey = () => {
     // TODO: Do something with props.token;
   }
@@ -23,13 +23,18 @@ export default function NewBalanceUI({ isSecretToken: isSecretToken = false, ...
   const [balance, setBalance] = useState<number>(null)
   const [usdPriceString, setUsdPriceString] = useState<string>(null)
   //const usdPriceString: Nullable<string> = getPrice(props.token)
-  const tokenName = (isSecretToken ? 's' : '') + props.token.name
+  const tokenName = (props.isSecretToken ? 's' : '') + props.token.name
 
   useEffect(() => {
     if (balanceMapping != null) {
-      setBalance(getBalance(props.token, isSecretToken).toNumber())
+      const newBalance = getBalance(props.token, props.isSecretToken)
+      if (newBalance != null || newBalance != undefined) {
+        setBalance(newBalance.toNumber())
+      } else {
+        setBalance(undefined)
+      }
     }
-  }, [balanceMapping])
+  }, [balanceMapping, props])
 
   useEffect(() => {
     if (priceMapping != null) {

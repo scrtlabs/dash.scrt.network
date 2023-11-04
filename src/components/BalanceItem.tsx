@@ -14,12 +14,8 @@ type IBalanceProps = {
   isSecretToken?: boolean
 }
 
-const BalanceItem: FunctionComponent<IBalanceProps> = ({
-  isSecretToken = false,
-  token
-}) => {
-  const { scrtBalance, sScrtBalance, setViewingKey } =
-    useSecretNetworkClientStore()
+const BalanceItem: FunctionComponent<IBalanceProps> = ({ isSecretToken = false, token }) => {
+  const { scrtBalance, sScrtBalance, setViewingKey } = useSecretNetworkClientStore()
 
   const { currentPrice } = useContext(APIContext)
 
@@ -50,27 +46,17 @@ const BalanceItem: FunctionComponent<IBalanceProps> = ({
 
   //  e.g. "$1.23"
   const scrtBalanceUsdString = usdString.format(
-    new BigNumber(scrtBalance!)
-      .dividedBy(`1e${scrtToken.decimals}`)
-      .multipliedBy(Number(currentPrice))
-      .toNumber()
+    new BigNumber(scrtBalance!).dividedBy(`1e${scrtToken.decimals}`).multipliedBy(Number(currentPrice)).toNumber()
   )
 
   //  e.g. "$1.23"
   const sScrtBalanceUsdString = usdString.format(
-    new BigNumber(sScrtBalance!)
-      .dividedBy(`1e${scrtToken.decimals}`)
-      .multipliedBy(Number(currentPrice))
-      .toNumber()
+    new BigNumber(sScrtBalance!).dividedBy(`1e${scrtToken.decimals}`).multipliedBy(Number(currentPrice)).toNumber()
   )
 
-  const viewingkeyMissing =
-    isSecretToken &&
-    (sScrtBalance === viewingKeyErrorString || sScrtBalance === null)
+  const viewingkeyMissing = isSecretToken && (sScrtBalance === viewingKeyErrorString || sScrtBalance === null)
   const balanceIsNaN = new BigNumber(sScrtBalance!).toString() === 'NaN'
-  const isLoading =
-    (isSecretToken && !viewingkeyMissing && balanceIsNaN) ||
-    (!isSecretToken && balanceIsNaN)
+  const isLoading = (isSecretToken && !viewingkeyMissing && balanceIsNaN) || (!isSecretToken && balanceIsNaN)
 
   if (isLoading) {
     return (
@@ -84,11 +70,7 @@ const BalanceItem: FunctionComponent<IBalanceProps> = ({
   return (
     <div className="flex items-center gap-3">
       <div>
-        <img
-          src={'/img/assets' + token.image}
-          alt={token.name + ' logo'}
-          className="h-7"
-        />
+        <img src={'/img/assets' + token.image} alt={token.name + ' logo'} className="h-7" />
       </div>
       {isSecretToken && sScrtBalance == viewingKeyErrorString ? (
         <div className="font-semibold">
@@ -100,22 +82,15 @@ const BalanceItem: FunctionComponent<IBalanceProps> = ({
         <div className="text-xs">
           {/* Balance as native token */}
           <div className="font-semibold">
-            {!isSecretToken
-              ? new BigNumber(scrtBalance!)
-                  .dividedBy(`1e${scrtToken.decimals}`)
-                  .toFormat()
-              : new BigNumber(scrtBalance!)
-                  .dividedBy(`1e${scrtToken.decimals}`)
-                  .toFormat()}
+            {isSecretToken
+              ? new BigNumber(sScrtBalance!).dividedBy(`1e${scrtToken.decimals}`).toFormat()
+              : new BigNumber(scrtBalance!).dividedBy(`1e${scrtToken.decimals}`).toFormat()}
             {/* Token name */}
             {' ' + (isSecretToken ? 's' : '') + token.name}
           </div>
           {/* Balance in USD */}
-          {currentPrice && scrtBalance && (
-            <div className="text-gray-500">
-              {'≈ ' +
-                (isSecretToken ? sScrtBalanceUsdString : scrtBalanceUsdString)}
-            </div>
+          {currentPrice && scrtBalance && sScrtBalance && (
+            <div className="text-gray-500">{'≈ ' + (isSecretToken ? sScrtBalanceUsdString : scrtBalanceUsdString)}</div>
           )}
         </div>
       )}

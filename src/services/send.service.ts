@@ -63,7 +63,6 @@ const performSending = async (props: TProps): Promise<{ success: boolean; errorM
     return result
   }
 
-  // TODO: Add logic for send
   await props.secretNetworkClient.tx
     .broadcast(
       [

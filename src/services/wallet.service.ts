@@ -312,17 +312,15 @@ async function getBalancesForTokens(props: IGetBalancesForTokensProps): Promise<
       if (currentEntry) {
         newBalanceMapping.set(token, {
           ...currentEntry,
-          secretBalance: secretBalance ? new BigNumber(secretBalance) : null
+          secretBalance: secretBalance ? new BigNumber(secretBalance) : undefined
         })
       } else {
         newBalanceMapping.set(token, {
-          balance: null,
-          secretBalance: secretBalance ? new BigNumber(secretBalance) : null
+          balance: undefined,
+          secretBalance: secretBalance ? new BigNumber(secretBalance) : undefined
         })
       }
     }
-
-    console.log(newBalanceMapping)
 
     return newBalanceMapping
   } catch (error) {
