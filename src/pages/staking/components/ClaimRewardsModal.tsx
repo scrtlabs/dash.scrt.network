@@ -3,17 +3,14 @@ import { toast } from 'react-toastify'
 import { MsgWithdrawDelegationReward } from 'secretjs'
 import { faucetAddress } from 'utils/commons'
 import { StakingContext } from 'pages/staking/Staking'
-import FeeGrant from '../../../components/FeeGrant'
+import FeeGrant from '../../../components/FeeGrant/FeeGrant'
 import BigNumber from 'bignumber.js'
 import { useSecretNetworkClientStore } from 'store/secretNetworkClient'
 import { scrtToken } from 'utils/tokens'
 import Modal from 'components/UI/Modal/Modal'
 import { StakingService } from 'services/staking.service'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import {
-  faCircleCheck,
-  faTriangleExclamation
-} from '@fortawesome/free-solid-svg-icons'
+import { faCircleCheck, faTriangleExclamation } from '@fortawesome/free-solid-svg-icons'
 import Button from 'components/UI/Button/Button'
 
 interface Props {
@@ -26,16 +23,10 @@ export default function ClaimRewardsModal(props: Props) {
   const [generalErrorMessage, setGeneralErrorMessage] = useState<String>('')
   const [isLoading, setIsWaiting] = useState<boolean>(false)
 
-  const {
-    secretNetworkClient,
-    scrtBalance,
-    feeGrantStatus,
-    requestFeeGrant,
-    isConnected
-  } = useSecretNetworkClientStore()
+  const { secretNetworkClient, scrtBalance, feeGrantStatus, requestFeeGrant, isConnected } =
+    useSecretNetworkClientStore()
 
-  const { delegatorDelegations, delegationTotalRewards } =
-    useContext(StakingContext)
+  const { delegatorDelegations, delegationTotalRewards } = useContext(StakingContext)
 
   if (!props.open) return null
 
@@ -84,14 +75,7 @@ export default function ClaimRewardsModal(props: Props) {
                   fill="none"
                   viewBox="0 0 24 24"
                 >
-                  <circle
-                    className="opacity-25"
-                    cx="12"
-                    cy="12"
-                    r="10"
-                    stroke="currentColor"
-                    stroke-width="4"
-                  ></circle>
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                   <path
                     className="opacity-75"
                     fill="currentColor"

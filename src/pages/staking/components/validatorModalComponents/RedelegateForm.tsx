@@ -2,15 +2,10 @@ import BigNumber from 'bignumber.js'
 import React, { useContext, useEffect, useState } from 'react'
 import { APIContext } from 'context/APIContext'
 import { faSearch } from '@fortawesome/free-solid-svg-icons'
-import {
-  formatNumber,
-  usdString,
-  faucetAddress,
-  shuffleArray
-} from 'utils/commons'
+import { formatNumber, usdString, faucetAddress, shuffleArray } from 'utils/commons'
 import { StakingContext } from 'pages/staking/Staking'
 import { toast } from 'react-toastify'
-import FeeGrant from '../../../../components/FeeGrant'
+import FeeGrant from '../../../../components/FeeGrant/FeeGrant'
 import Select, { components } from 'react-select'
 import { ThemeContext } from 'context/ThemeContext'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -20,17 +15,9 @@ import PercentagePicker from 'components/PercentagePicker'
 import Button from 'components/UI/Button/Button'
 
 export default function RedelegateForm() {
-  const {
-    delegatorDelegations,
-    validators,
-    selectedValidator,
-    setView,
-    reload,
-    setReload
-  } = useContext(StakingContext)
+  const { delegatorDelegations, validators, selectedValidator, setView, reload, setReload } = useContext(StakingContext)
 
-  const { secretNetworkClient, walletAddress, feeGrantStatus, isConnected } =
-    useSecretNetworkClientStore()
+  const { secretNetworkClient, walletAddress, feeGrantStatus, isConnected } = useSecretNetworkClientStore()
 
   const { currentPrice } = useContext(APIContext)
 
@@ -127,14 +114,11 @@ export default function RedelegateForm() {
   function setAmountByPercentage(percentage: number) {
     const maxValue = delegatorDelegations?.find(
       (delegatorDelegation: any) =>
-        selectedValidator?.operator_address ==
-        delegatorDelegation.delegation.validator_address
+        selectedValidator?.operator_address == delegatorDelegation.delegation.validator_address
     )?.balance?.amount
 
     if (maxValue) {
-      let availableAmount = new BigNumber(maxValue).dividedBy(
-        `1e${scrtToken.decimals}`
-      )
+      let availableAmount = new BigNumber(maxValue).dividedBy(`1e${scrtToken.decimals}`)
       let potentialInput = availableAmount.toNumber() * (percentage * 0.01)
       if (Number(potentialInput) < 0) {
         setAmountString('')
@@ -165,9 +149,7 @@ export default function RedelegateForm() {
   return (
     <>
       <div className="bg-neutral-200 dark:bg-neutral-800 p-4 rounded-xl my-4">
-        <div className="font-semibold mb-2 text-center sm:text-left">
-          Amount
-        </div>
+        <div className="font-semibold mb-2 text-center sm:text-left">Amount</div>
 
         <input
           value={amountString}
@@ -188,16 +170,11 @@ export default function RedelegateForm() {
             {amountInDollarString !== '$NaN' ? amountInDollarString : '$ -'}
           </div>
           <div className="text-center sm:text-left flex-initial">
-            {PercentagePicker(
-              setAmountByPercentage,
-              !secretNetworkClient?.address
-            )}
+            {PercentagePicker(setAmountByPercentage, !secretNetworkClient?.address)}
           </div>
         </div>
         <div className="mt-4">
-          <div className="font-semibold mb-2 text-center sm:text-left">
-            Redelegate to
-          </div>
+          <div className="font-semibold mb-2 text-center sm:text-left">Redelegate to</div>
           <Select
             isDisabled={!isConnected}
             options={shuffleArray(
@@ -211,20 +188,14 @@ export default function RedelegateForm() {
                 })
             )}
             onChange={(item: any) => {
-              setRedelegateValidator(
-                validators.find(
-                  (validator: any) => validator.operator_address === item.value
-                )
-              )
+              setRedelegateValidator(validators.find((validator: any) => validator.operator_address === item.value))
             }}
             isSearchable={true}
             filterOption={customFilter}
             formatOptionLabel={(validator: any) => {
               return (
                 <div className="flex items-center">
-                  <span className="font-semibold text-base">
-                    {validator?.name}
-                  </span>
+                  <span className="font-semibold text-base">{validator?.name}</span>
                 </div>
               )
             }}

@@ -7,8 +7,8 @@ export type ModalSize = '2xl' | 'xl' | 'lg' | 'md' | 'sm' | 'xs'
 
 interface Props {
   size?: ModalSize
-  title?: string
-  subTitle?: string
+  title?: ReactNode
+  subTitle?: ReactNode
   onClose: any
   isOpen: boolean
   children?: ReactNode
@@ -58,23 +58,12 @@ function Modal({ size = 'sm', ...props }: Props) {
       <div className="z-50 fixed inset-0 bg-black/80">
         <div className="absolute inset-0 overflow-y-scroll">
           <div className={` mt-4 md:mt-24 mb-24 ${sizeClass()} mx-auto `}>
-            <div
-              ref={modalRef}
-              className="mx-4 bg-white dark:bg-neutral-900 p-8 rounded-2xl"
-            >
+            <div ref={modalRef} className="mx-4 bg-white dark:bg-neutral-900 p-8 rounded-2xl">
               {/* Head */}
-              <div
-                className={`flex mb-6${
-                  !props.title ? ' justify-end' : ' items-center gap-4'
-                }`}
-              >
+              <div className={`flex mb-6${!props.title ? ' justify-end' : ' items-center gap-4'}`}>
                 {props.title || props.subTitle ? (
                   <div className="flex-1 flex-col">
-                    {props.title ? (
-                      <div className="flex-1 text-xl font-semibold">
-                        {props.title}
-                      </div>
-                    ) : null}
+                    {props.title ? <div className="flex-1 text-xl font-semibold">{props.title}</div> : null}
                     {props.subTitle ? (
                       <div className="mt-2 flex-1 text-sm text-neutral-500 dark:text-neutral-500 font-semibold">
                         {props.subTitle}

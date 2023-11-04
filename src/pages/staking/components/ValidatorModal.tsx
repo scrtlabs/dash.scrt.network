@@ -1,6 +1,6 @@
 import { faGlobe, faXmark } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { useContext, useEffect, useState } from 'react'
+import { ReactNode, useContext, useEffect, useState } from 'react'
 import { APIContext } from 'context/APIContext'
 import { usdString, formatNumber } from 'utils/commons'
 import BigNumber from 'bignumber.js'
@@ -10,10 +10,7 @@ import { toast } from 'react-toastify'
 import { faCopy } from '@fortawesome/free-solid-svg-icons'
 import Tooltip from '@mui/material/Tooltip'
 import { chains } from 'utils/config'
-import {
-  SecretNetworkClient,
-  validatorAddressToSelfDelegatorAddress
-} from 'secretjs'
+import { SecretNetworkClient, validatorAddressToSelfDelegatorAddress } from 'secretjs'
 import { Nullable } from 'types/Nullable'
 import { StakingContext } from 'pages/staking/Staking'
 import StakingForm from './validatorModalComponents/StakingForm'
@@ -46,19 +43,12 @@ const ValidatorModal = (props: Props) => {
     secretFoundationTax
   } = useContext(APIContext)
 
-  const {
-    scrtBalance,
-    feeGrantStatus,
-    requestFeeGrant,
-    secretNetworkClient,
-    walletAddress,
-    isConnected
-  } = useSecretNetworkClientStore()
+  const { scrtBalance, feeGrantStatus, requestFeeGrant, secretNetworkClient, walletAddress, isConnected } =
+    useSecretNetworkClientStore()
 
   const [realYield, setRealYield] = useState<Nullable<number>>(null)
 
-  const { delegatorDelegations, selectedValidator, view, setView } =
-    useContext(StakingContext)
+  const { delegatorDelegations, selectedValidator, view, setView } = useContext(StakingContext)
 
   useEffect(() => {
     if (
@@ -96,18 +86,15 @@ const ValidatorModal = (props: Props) => {
     }
 
     const fetchValidatorSelfDelegations = async () => {
-      const selfDelegatingAddr = validatorAddressToSelfDelegatorAddress(
-        selectedValidator?.operator_address
-      )
+      const selfDelegatingAddr = validatorAddressToSelfDelegatorAddress(selectedValidator?.operator_address)
       const secretjsquery = new SecretNetworkClient({
         url: SECRET_LCD,
         chainId: SECRET_CHAIN_ID
       })
-      const { delegation_response } =
-        await secretjsquery.query.staking.delegation({
-          delegator_addr: selfDelegatingAddr,
-          validator_addr: selectedValidator?.operator_address
-        })
+      const { delegation_response } = await secretjsquery.query.staking.delegation({
+        delegator_addr: selfDelegatingAddr,
+        validator_addr: selectedValidator?.operator_address
+      })
       setValidatorSelfDelegation(delegation_response?.balance.amount)
     }
     const fetchKeybaseImgUrl = async () => {
@@ -136,88 +123,71 @@ const ValidatorModal = (props: Props) => {
 
   if (!props.open) return null
 
+  function customTitle() {
+    return (
+      <>
+        <div className="flex gap-4 items-center">
+          <div className="image">
+            {imgUrl ? (
+              <>
+                <img src={imgUrl} alt={`validator logo`} className="rounded-full w-10" />
+              </>
+            ) : (
+              <>
+                <div className="relative bg-blue-500 dark:bg-blue-500 rounded-full w-10 h-10">
+                  <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 font-semibold">
+                    {/* .charAt(0) or .slice(0,1) won't work here with emojis! */}
+                    {[...selectedValidator?.description?.moniker][0].toUpperCase()}
+                  </div>
+                </div>
+              </>
+            )}
+          </div>
+          <div>
+            <div className="mb-1">
+              <span className="font-semibold">{selectedValidator?.description?.moniker}</span>
+              {selectedValidator?.description?.website && (
+                <a href={selectedValidator?.description?.website} target="_blank" className="group font-medium text-sm">
+                  <FontAwesomeIcon
+                    icon={faGlobe}
+                    size="sm"
+                    className="ml-3 mr-1 text-neutral-500 dark:group-hover:text-white group-hover:text-black"
+                  />
+                  <span className="text-neutral-500 dark:group-hover:text-white group-hover:text-black">Website</span>
+                </a>
+              )}
+            </div>
+            <div className="flex gap-4 items-center">
+              {selectedValidator?.status === 'BOND_STATUS_UNBONDED' && (
+                <div className="border border-red-500 bg-transparent text-red-500 text-sm rounded px-4 py-2 flex items-center justify-start">
+                  Inactive
+                </div>
+              )}
+            </div>
+            <div className="text-neutral-400 font-medium text-sm">
+              <div className="commission font-semibold">
+                Commission {(selectedValidator?.commission?.commission_rates?.rate * 100).toFixed(2)}% | APR{' '}
+                {formatNumber(realYield, 2)}%
+              </div>
+            </div>
+          </div>
+        </div>
+      </>
+    )
+  }
+
   return (
     <>
-      <Modal onClose={props.onClose} isOpen={props.open} size="lg">
+      <Modal title={customTitle()} onClose={props.onClose} isOpen={props.open} size="lg">
         <div className="max-h-[80vh] overflow-y-auto">
           {/* Header */}
 
           {/* Body */}
           <div className="grid grid-cols-12 gap-4">
-            {/* Picture | Title | Info */}
-            <div className="col-span-12">
-              <div className="flex gap-4 items-center">
-                <div className="image">
-                  {imgUrl ? (
-                    <>
-                      <img
-                        src={imgUrl}
-                        alt={`validator logo`}
-                        className="rounded-full w-10"
-                      />
-                    </>
-                  ) : (
-                    <>
-                      <div className="relative bg-blue-500 dark:bg-blue-500 rounded-full w-10 h-10">
-                        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 font-semibold">
-                          {/* .charAt(0) or .slice(0,1) won't work here with emojis! */}
-                          {[
-                            ...selectedValidator?.description?.moniker
-                          ][0].toUpperCase()}
-                        </div>
-                      </div>
-                    </>
-                  )}
-                </div>
-                <div>
-                  <div className="mb-1">
-                    <span className="font-semibold">
-                      {selectedValidator?.description?.moniker}
-                    </span>
-                    {selectedValidator?.description?.website && (
-                      <a
-                        href={selectedValidator?.description?.website}
-                        target="_blank"
-                        className="group font-medium text-sm"
-                      >
-                        <FontAwesomeIcon
-                          icon={faGlobe}
-                          size="sm"
-                          className="ml-3 mr-1 text-neutral-500 dark:group-hover:text-white group-hover:text-black"
-                        />
-                        <span className="text-neutral-500 dark:group-hover:text-white group-hover:text-black">
-                          Website
-                        </span>
-                      </a>
-                    )}
-                  </div>
-                  <div className="flex gap-4 items-center">
-                    {selectedValidator?.status === 'BOND_STATUS_UNBONDED' && (
-                      <div className="border border-red-500 bg-transparent text-red-500 text-sm rounded px-4 py-2 flex items-center justify-start">
-                        Inactive
-                      </div>
-                    )}
-                  </div>
-                  <div className="text-neutral-400 font-medium text-sm">
-                    <div className="commission font-semibold">
-                      Commission{' '}
-                      {(
-                        selectedValidator?.commission?.commission_rates?.rate *
-                        100
-                      ).toFixed(2)}
-                      % | APR {formatNumber(realYield, 2)}%
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
             {selectedValidator?.description?.details ? (
               <div className="col-span-12">
                 <div className="text-sm dark:bg-neutral-800 rounded-md p-4 text-center sm:text-left">
-                  <div className="font-semibold text-black dark:text-white mb-1">
-                    Description
-                  </div>
+                  <div className="font-semibold text-black dark:text-white mb-1">Description</div>
                   <div className="italic text-neutral-600 dark:text-neutral-400">
                     {selectedValidator?.description?.details}
                   </div>
@@ -240,16 +210,10 @@ const ValidatorModal = (props: Props) => {
                           <CopyToClipboard
                             text={selectedValidator?.description?.identity}
                             onCopy={() => {
-                              toast.success(
-                                'Validator identity copied to clipboard!'
-                              )
+                              toast.success('Validator identity copied to clipboard!')
                             }}
                           >
-                            <Tooltip
-                              title={'Copy to clipboard'}
-                              placement="bottom"
-                              arrow
-                            >
+                            <Tooltip title={'Copy to clipboard'} placement="bottom" arrow>
                               <button className="text-neutral-500 hover:text-neutral-800 dark:text-neutral-400 dark:hover:text-neutral-300 transition-colors">
                                 <FontAwesomeIcon icon={faCopy} />
                               </button>
@@ -267,20 +231,12 @@ const ValidatorModal = (props: Props) => {
                           {`${selectedValidator?.description?.security_contact}  `}
 
                           <CopyToClipboard
-                            text={
-                              selectedValidator?.description?.security_contact
-                            }
+                            text={selectedValidator?.description?.security_contact}
                             onCopy={() => {
-                              toast.success(
-                                'Validator security contact copied to clipboard!'
-                              )
+                              toast.success('Validator security contact copied to clipboard!')
                             }}
                           >
-                            <Tooltip
-                              title={'Copy to clipboard'}
-                              placement="bottom"
-                              arrow
-                            >
+                            <Tooltip title={'Copy to clipboard'} placement="bottom" arrow>
                               <button className="text-neutral-500 hover:text-neutral-800 dark:text-neutral-400 dark:hover:text-neutral-300 transition-colors">
                                 <FontAwesomeIcon icon={faCopy} />
                               </button>
@@ -292,12 +248,7 @@ const ValidatorModal = (props: Props) => {
                     {/* Third Item */}
                     <div className="col-span-12 sm:col-span-6 flex flex-col gap-0.5 text-neutral-800 dark:text-neutral-300 font-semibold">
                       <div className="text-xs">Staked Tokens</div>
-                      <div className="text-sm">
-                        {`${formatNumber(
-                          selectedValidator?.tokens / 1e6,
-                          2
-                        )} SCRT`}
-                      </div>
+                      <div className="text-sm">{`${formatNumber(selectedValidator?.tokens / 1e6, 2)} SCRT`}</div>
                     </div>
                     {/* Fourth Item */}
 
@@ -305,11 +256,7 @@ const ValidatorModal = (props: Props) => {
                       <div className="text-xs">Self Delegation</div>
                       <div className="text-sm">
                         {' '}
-                        {validatorSelfDelegation &&
-                          `${formatNumber(
-                            validatorSelfDelegation / 1e6,
-                            2
-                          )} SCRT`}{' '}
+                        {validatorSelfDelegation && `${formatNumber(validatorSelfDelegation / 1e6, 2)} SCRT`}{' '}
                         {!validatorSelfDelegation && (
                           <div className="animate-pulse bg-neutral-700/40 rounded col-span-2 w-16 h-8"></div>
                         )}
@@ -327,16 +274,10 @@ const ValidatorModal = (props: Props) => {
                         <CopyToClipboard
                           text={selectedValidator?.operator_address}
                           onCopy={() => {
-                            toast.success(
-                              'Operator address copied to clipboard!'
-                            )
+                            toast.success('Operator address copied to clipboard!')
                           }}
                         >
-                          <Tooltip
-                            title={'Copy to clipboard'}
-                            placement="bottom"
-                            arrow
-                          >
+                          <Tooltip title={'Copy to clipboard'} placement="bottom" arrow>
                             <button className="text-neutral-500 hover:text-neutral-800 dark:text-neutral-400 dark:hover:text-neutral-300 transition-colors">
                               <FontAwesomeIcon icon={faCopy} />
                             </button>
@@ -350,38 +291,24 @@ const ValidatorModal = (props: Props) => {
 
                       <div className="text-sm">
                         <a
-                          href={`${
-                            chains['Secret Network'].explorer_account
-                          }${validatorAddressToSelfDelegatorAddress(
+                          href={`${chains['Secret Network'].explorer_account}${validatorAddressToSelfDelegatorAddress(
                             selectedValidator?.operator_address
                           )}`}
                           target="_blank"
                         >
                           {`${
-                            validatorAddressToSelfDelegatorAddress(
-                              selectedValidator?.operator_address
-                            ).slice(0, 15) +
+                            validatorAddressToSelfDelegatorAddress(selectedValidator?.operator_address).slice(0, 15) +
                             '...' +
-                            validatorAddressToSelfDelegatorAddress(
-                              selectedValidator?.operator_address
-                            ).slice(-15)
+                            validatorAddressToSelfDelegatorAddress(selectedValidator?.operator_address).slice(-15)
                           } `}
                         </a>
                         <CopyToClipboard
-                          text={validatorAddressToSelfDelegatorAddress(
-                            selectedValidator?.operator_address
-                          )}
+                          text={validatorAddressToSelfDelegatorAddress(selectedValidator?.operator_address)}
                           onCopy={() => {
-                            toast.success(
-                              'Validator address copied to clipboard!'
-                            )
+                            toast.success('Validator address copied to clipboard!')
                           }}
                         >
-                          <Tooltip
-                            title={'Copy to clipboard'}
-                            placement="bottom"
-                            arrow
-                          >
+                          <Tooltip title={'Copy to clipboard'} placement="bottom" arrow>
                             <button className="text-neutral-500 hover:text-neutral-800 dark:text-neutral-400 dark:hover:text-neutral-300 transition-colors">
                               <FontAwesomeIcon icon={faCopy} />
                             </button>
@@ -399,9 +326,7 @@ const ValidatorModal = (props: Props) => {
               <div className="bg-white/5 col-span-12 md:col-span-6 rounded-xl px-4 py-8 mt-4 text-center sm:text-left">
                 <div className="font-semibold mb-2">Available to Stake</div>
                 <div className="font-semibold">
-                  {new BigNumber(scrtBalance!)
-                    .dividedBy(`1e${scrtToken.decimals}`)
-                    .toFormat()}
+                  {new BigNumber(scrtBalance!).dividedBy(`1e${scrtToken.decimals}`).toFormat()}
                   <span className="text-neutral-400 text-xs">{` SCRT`}</span>
                 </div>
                 <div className="font-semibold text-neutral-400 mt-0.5 text-sm">
@@ -420,16 +345,14 @@ const ValidatorModal = (props: Props) => {
               walletAddress &&
               (delegatorDelegations?.find(
                 (delegatorDelegation: any) =>
-                  selectedValidator?.operator_address ==
-                  delegatorDelegation.delegation.validator_address
+                  selectedValidator?.operator_address == delegatorDelegation.delegation.validator_address
               ) ? (
                 <div className="bg-white/5 col-span-12 md:col-span-6 rounded-xl px-4 py-8 mt-4 text-center sm:text-left">
                   <div className="font-semibold mb-2">Your Delegation</div>
                   <div className="font-semibold">
                     {delegatorDelegations?.find(
                       (delegatorDelegation: any) =>
-                        selectedValidator?.operator_address ==
-                        delegatorDelegation.delegation.validator_address
+                        selectedValidator?.operator_address == delegatorDelegation.delegation.validator_address
                     )?.balance?.amount / 1e6}
                     <span className="text-neutral-400 text-xs">{` SCRT`}</span>
                   </div>
@@ -438,8 +361,7 @@ const ValidatorModal = (props: Props) => {
                       new BigNumber(
                         delegatorDelegations?.find(
                           (delegatorDelegation: any) =>
-                            selectedValidator?.operator_address ==
-                            delegatorDelegation.delegation.validator_address
+                            selectedValidator?.operator_address == delegatorDelegation.delegation.validator_address
                         )?.balance?.amount
                       )
                         .dividedBy(`1e${scrtToken.decimals}`)
@@ -455,9 +377,7 @@ const ValidatorModal = (props: Props) => {
                     {0}
                     <span className="text-neutral-400 text-xs">{` SCRT`}</span>
                   </div>
-                  <div className="font-semibold text-neutral-400 mt-0.5 text-sm">
-                    {usdString.format(0)}
-                  </div>
+                  <div className="font-semibold text-neutral-400 mt-0.5 text-sm">{usdString.format(0)}</div>
                 </div>
               ))}
 
@@ -479,22 +399,13 @@ const ValidatorModal = (props: Props) => {
                     </Button>
                     {delegatorDelegations?.find(
                       (delegatorDelegation: any) =>
-                        selectedValidator?.operator_address ==
-                        delegatorDelegation.delegation.validator_address
+                        selectedValidator?.operator_address == delegatorDelegation.delegation.validator_address
                     ) ? (
                       <>
-                        <Button
-                          onClick={() => setView('redelegate')}
-                          color="secondary"
-                          size="large"
-                        >
+                        <Button onClick={() => setView('redelegate')} color="secondary" size="large">
                           Redelegate
                         </Button>
-                        <Button
-                          onClick={() => setView('undelegate')}
-                          color="secondary"
-                          size="large"
-                        >
+                        <Button onClick={() => setView('undelegate')} color="secondary" size="large">
                           Undelegate
                         </Button>
                       </>

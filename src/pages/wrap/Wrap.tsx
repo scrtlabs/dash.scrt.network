@@ -15,12 +15,7 @@ import {
 import BigNumber from 'bignumber.js'
 import { toast } from 'react-toastify'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import {
-  faKey,
-  faArrowRightArrowLeft,
-  faRightLeft,
-  faInfoCircle
-} from '@fortawesome/free-solid-svg-icons'
+import { faKey, faArrowRightArrowLeft, faRightLeft, faInfoCircle } from '@fortawesome/free-solid-svg-icons'
 import { Link } from 'react-router-dom'
 import Select from 'react-select'
 import Tooltip from '@mui/material/Tooltip'
@@ -32,12 +27,9 @@ import { useSearchParams } from 'react-router-dom'
 import { WrappingMode, isWrappingMode } from 'types/WrappingMode'
 import { APIContext } from 'context/APIContext'
 import { useSecretNetworkClientStore } from 'store/secretNetworkClient'
-import FeeGrant from 'components/FeeGrant'
+import FeeGrant from 'components/FeeGrant/FeeGrant'
 import Title from 'components/Title'
-import {
-  NativeTokenBalanceUi,
-  WrappedTokenBalanceUi
-} from 'components/BalanceUI'
+import { NativeTokenBalanceUi, WrappedTokenBalanceUi } from 'components/BalanceUI'
 import PercentagePicker from 'components/PercentagePicker'
 import { useFormik } from 'formik'
 import { wrapSchema } from './wrapSchema'
@@ -60,10 +52,7 @@ export function Wrap() {
 
   useEffect(() => {
     setSelectedTokenPrice(
-      prices.find(
-        (price: { coingecko_id: string }) =>
-          price.coingecko_id === selectedToken.coingecko_id
-      )?.priceUsd
+      prices.find((price: { coingecko_id: string }) => price.coingecko_id === selectedToken.coingecko_id)?.priceUsd
     )
   }, [selectedToken, prices])
 
@@ -83,11 +72,7 @@ export function Wrap() {
   const tokenUrlParam = searchParams.get('token')
 
   const isValidTokenParam = () => {
-    return tokens.find(
-      (token) => token.name.toLowerCase() === tokenUrlParam.toLowerCase()
-    )
-      ? true
-      : false
+    return tokens.find((token) => token.name.toLowerCase() === tokenUrlParam.toLowerCase()) ? true : false
   }
 
   useEffect(() => {
@@ -98,11 +83,7 @@ export function Wrap() {
 
   useEffect(() => {
     if (tokenUrlParam && isValidTokenParam()) {
-      setSelectedToken(
-        tokens.find(
-          (token) => token.name.toLowerCase() === tokenUrlParam.toLowerCase()
-        )
-      )
+      setSelectedToken(tokens.find((token) => token.name.toLowerCase() === tokenUrlParam.toLowerCase()))
     }
   }, [])
 
@@ -122,8 +103,7 @@ export function Wrap() {
       ? `Converting publicly visible ${selectedToken.name} into its privacy-preserving equivalent s${selectedToken.name}. These tokens are not publicly visible and require a viewing key!`
       : `Converting privacy-preserving s${selectedToken.name} into its publicly visible equivalent ${selectedToken.name}!`
 
-  const [isUnknownBalanceModalOpen, setIsUnknownBalanceModalOpen] =
-    useState(false)
+  const [isUnknownBalanceModalOpen, setIsUnknownBalanceModalOpen] = useState(false)
   const [isFeeGrantInfoModalOpen, setIsFeeGrantInfoModalOpen] = useState(false)
 
   // UI
@@ -301,9 +281,7 @@ export function Wrap() {
         <meta name="twitter:description" content={wrapPageDescription} />
         {/* <meta name="twitter:image" content="Image URL Here"/> */}
 
-        <script type="application/ld+json">
-          {JSON.stringify(wrapJsonLdSchema)}
-        </script>
+        <script type="application/ld+json">{JSON.stringify(wrapJsonLdSchema)}</script>
       </Helmet>
 
       <FeeGrantInfoModal
@@ -327,9 +305,7 @@ export function Wrap() {
         <div className="rounded-3xl px-6 py-6 text-neutral-800 dark:text-neutral-200 bg-white dark:bg-neutral-900">
           {/* Title: Secret Wrap / Secret Unwrap */}
           <div className="mb-8">
-            <Title
-              title={`Secret ${wrappingMode === 'wrap' ? 'Wrap' : 'Unwrap'}`}
-            >
+            <Title title={`Secret ${wrappingMode === 'wrap' ? 'Wrap' : 'Unwrap'}`}>
               <Tooltip title={infoMsg} placement="right" arrow>
                 <span className="ml-2 relative -top-1.5 text-neutral-600 dark:text-neutral-400 hover:text-black dark:hover:text-white transition-colors cursor-pointer">
                   <FontAwesomeIcon icon={faInfoCircle} />

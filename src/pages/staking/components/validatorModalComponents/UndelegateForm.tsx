@@ -4,22 +4,15 @@ import { APIContext } from 'context/APIContext'
 import { formatNumber, usdString, faucetAddress } from 'utils/commons'
 import { StakingContext } from 'pages/staking/Staking'
 import { toast } from 'react-toastify'
-import FeeGrant from '../../../../components/FeeGrant'
+import FeeGrant from '../../../../components/FeeGrant/FeeGrant'
 import { useSecretNetworkClientStore } from 'store/secretNetworkClient'
 import { scrtToken } from 'utils/tokens'
 import PercentagePicker from 'components/PercentagePicker'
 import Button from 'components/UI/Button/Button'
 
 export default function UndelegateForm() {
-  const { delegatorDelegations, selectedValidator, setView } =
-    useContext(StakingContext)
-  const {
-    secretNetworkClient,
-    walletAddress,
-    scrtBalance,
-    feeGrantStatus,
-    isConnected
-  } = useSecretNetworkClientStore()
+  const { delegatorDelegations, selectedValidator, setView } = useContext(StakingContext)
+  const { secretNetworkClient, walletAddress, scrtBalance, feeGrantStatus, isConnected } = useSecretNetworkClientStore()
   const { currentPrice } = useContext(APIContext)
 
   const [amountString, setAmountString] = useState<string>('0')
@@ -109,14 +102,11 @@ export default function UndelegateForm() {
   function setAmountByPercentage(percentage: number) {
     const maxValue = delegatorDelegations?.find(
       (delegatorDelegation: any) =>
-        selectedValidator?.operator_address ==
-        delegatorDelegation.delegation.validator_address
+        selectedValidator?.operator_address == delegatorDelegation.delegation.validator_address
     )?.balance?.amount
 
     if (maxValue) {
-      let availableAmount = new BigNumber(maxValue).dividedBy(
-        `1e${scrtToken.decimals}`
-      )
+      let availableAmount = new BigNumber(maxValue).dividedBy(`1e${scrtToken.decimals}`)
       let potentialInput = availableAmount.toNumber() * (percentage * 0.01)
       if (Number(potentialInput) < 0) {
         setAmountString('')
@@ -129,9 +119,7 @@ export default function UndelegateForm() {
   return (
     <>
       <div className="bg-neutral-200 dark:bg-neutral-800 p-4 rounded-xl my-4">
-        <div className="font-semibold mb-2 text-center sm:text-left">
-          Amount to Undelegate
-        </div>
+        <div className="font-semibold mb-2 text-center sm:text-left">Amount to Undelegate</div>
 
         <input
           value={amountString}
@@ -152,10 +140,7 @@ export default function UndelegateForm() {
             {amountInDollarString !== '$NaN' ? amountInDollarString : '$ -'}
           </div>
           <div className="text-center sm:text-left flex-initial">
-            {PercentagePicker(
-              setAmountByPercentage,
-              !secretNetworkClient?.address
-            )}
+            {PercentagePicker(setAmountByPercentage, !secretNetworkClient?.address)}
           </div>
         </div>
       </div>

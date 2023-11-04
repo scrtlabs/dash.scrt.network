@@ -8,13 +8,10 @@ import NewBalanceUI from 'components/NewBalanceUI'
 import PercentagePicker from 'components/PercentagePicker'
 import BigNumber from 'bignumber.js'
 import Tooltip from '@mui/material/Tooltip'
-import {
-  faCircleCheck,
-  faInfoCircle,
-  faTriangleExclamation
-} from '@fortawesome/free-solid-svg-icons'
+import { faCircleCheck, faInfoCircle, faTriangleExclamation } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { SendService } from 'services/send.service'
+import FeeGrant from 'components/FeeGrant/FeeGrant'
 
 export default function SendForm() {
   const {
@@ -67,8 +64,7 @@ export default function SendForm() {
 
   const [destinationAddress, setDestinationAddress] = useState<string>('')
   const [isValidDestination, setIsValidDestination] = useState<boolean>(false)
-  const [destinationValidationMessage, setDestinationValidationMessage] =
-    useState<string>('')
+  const [destinationValidationMessage, setDestinationValidationMessage] = useState<string>('')
   const [isValidationActive, setIsValidationActive] = useState<boolean>(false)
   const [amountString, setAmountString] = useState<string>('0')
   const secretToken: Token = tokens.find((token) => token.name === 'SCRT')
@@ -79,15 +75,9 @@ export default function SendForm() {
   // handles [25% | 50% | 75% | Max] Button-Group
   function setAmountByPercentage(percentage: number) {
     if (tokenBalance) {
-      let availableAmount = new BigNumber(tokenBalance).dividedBy(
-        `1e${selectedToken.decimals}`
-      )
+      let availableAmount = new BigNumber(tokenBalance).dividedBy(`1e${selectedToken.decimals}`)
       let potentialInput = availableAmount.toNumber() * (percentage * 0.01)
-      if (
-        percentage === 100 &&
-        potentialInput > 0.05 &&
-        selectedToken.name === 'SCRT'
-      ) {
+      if (percentage === 100 && potentialInput > 0.05 && selectedToken.name === 'SCRT') {
         potentialInput = potentialInput - 0.05
       }
       if (Number(potentialInput) < 0) {
@@ -109,9 +99,7 @@ export default function SendForm() {
         <div className="flex flex-col sm:flex-row justify-between items-center mb-2 text-center sm:text-left">
           <span className="font-extrabold">Amount</span>
           {formik.errors.amount && (
-            <span className="text-red-500 dark:text-red-500 text-xs font-normal">
-              {formik.errors.amount}
-            </span>
+            <span className="text-red-500 dark:text-red-500 text-xs font-normal">{formik.errors.amount}</span>
           )}
         </div>
         {/* Input Field */}
@@ -120,12 +108,8 @@ export default function SendForm() {
             isDisabled={!isConnected}
             name="tokenName"
             options={tokens.sort((a, b) => a.name.localeCompare(b.name))}
-            value={tokens.find(
-              (token) => token.name === formik.values.tokenName
-            )}
-            onChange={(token: Token) =>
-              formik.setFieldValue('tokenName', token.name)
-            }
+            value={tokens.find((token) => token.name === formik.values.tokenName)}
+            onChange={(token: Token) => formik.setFieldValue('tokenName', token.name)}
             onBlur={formik.handleBlur}
             isSearchable={false}
             formatOptionLabel={(token) => (
@@ -150,9 +134,7 @@ export default function SendForm() {
             onBlur={formik.handleBlur}
             className={
               'dark:placeholder-neutral-700 text-right focus:z-10 block flex-1 min-w-0 w-full bg-neutral-100 dark:bg-neutral-900 text-black dark:text-white px-4 rounded-r-lg disabled:placeholder-neutral-300 dark:disabled:placeholder-neutral-700 transition-colors font-medium focus:outline-0 focus:ring-2 ring-sky-500/40' +
-              (formik.errors.amount
-                ? '  border border-red-500 dark:border-red-500'
-                : '')
+              (formik.errors.amount ? '  border border-red-500 dark:border-red-500' : '')
             }
             placeholder="0"
             disabled={!isConnected}
@@ -163,17 +145,12 @@ export default function SendForm() {
         <div className="flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 mt-2">
           <div className="flex-1 text-xs">
             <NewBalanceUI
-              token={tokens.find(
-                (token: Token) => token.name.toLowerCase() === 'scrt'
-              )}
+              token={tokens.find((token: Token) => token.name.toLowerCase() === 'scrt')}
               isSecureToken={false}
             />
           </div>
           <div className="sm:flex-initial text-xs">
-            <PercentagePicker
-              setAmountByPercentage={setAmountByPercentage}
-              disabled={!isConnected}
-            />
+            <PercentagePicker setAmountByPercentage={setAmountByPercentage} disabled={!isConnected} />
           </div>
         </div>
       </div>
@@ -184,20 +161,14 @@ export default function SendForm() {
         <div className="flex justify-between items-center mb-2">
           <span className="flex-1 font-semibold mb-2 text-center sm:text-left">
             Recipient
-            <Tooltip
-              title={`The wallet address you want to transfer your assets to.`}
-              placement="right"
-              arrow
-            >
+            <Tooltip title={`The wallet address you want to transfer your assets to.`} placement="right" arrow>
               <span className="ml-2 mt-1 text-neutral-600 dark:text-neutral-400 hover:text-black dark:hover:text-white transition-colors cursor-pointer">
                 <FontAwesomeIcon icon={faInfoCircle} />
               </span>
             </Tooltip>
           </span>
           {formik.errors.recipient && (
-            <span className="text-red-500 dark:text-red-500 text-xs font-normal">
-              {formik.errors.recipient}
-            </span>
+            <span className="text-red-500 dark:text-red-500 text-xs font-normal">{formik.errors.recipient}</span>
           )}
         </div>
 
@@ -212,9 +183,7 @@ export default function SendForm() {
             type="text"
             className={
               'dark:placeholder-neutral-700 py-2 text-left focus:z-10 block flex-1 min-w-0 w-full bg-neutral-100 dark:bg-neutral-900 text-black dark:text-white px-4 rounded-md disabled:placeholder-neutral-300 dark:disabled:placeholder-neutral-700 transition-colors font-medium focus:outline-0 focus:ring-2 ring-sky-500/40' +
-              (!isValidDestination && isValidationActive
-                ? '  border border-red-500 dark:border-red-500'
-                : '')
+              (!isValidDestination && isValidationActive ? '  border border-red-500 dark:border-red-500' : '')
             }
             placeholder="secret1..."
             disabled={!isConnected}
@@ -222,26 +191,20 @@ export default function SendForm() {
         </div>
       </div>
 
-      {/* *** Recipient *** */}
+      {/* *** Memo *** */}
       <div className="bg-neutral-200 dark:bg-neutral-800 p-4 rounded-xl">
         {/* Title Bar */}
         <div className="flex justify-between items-center mb-2">
           <span className="flex-1 font-semibold mb-2 text-center sm:text-left">
             Memo (optional)
-            <Tooltip
-              title={`Add a message to your transaction. Beware: Messages are public!`}
-              placement="right"
-              arrow
-            >
+            <Tooltip title={`Add a message to your transaction. Beware: Messages are public!`} placement="right" arrow>
               <span className="ml-2 mt-1 text-neutral-600 dark:text-neutral-400 hover:text-black dark:hover:text-white transition-colors cursor-pointer">
                 <FontAwesomeIcon icon={faInfoCircle} />
               </span>
             </Tooltip>
           </span>
           {!isValidDestination && isValidationActive && (
-            <span className="text-red-500 dark:text-red-500 text-xs font-normal">
-              {destinationValidationMessage}
-            </span>
+            <span className="text-red-500 dark:text-red-500 text-xs font-normal">{destinationValidationMessage}</span>
           )}
         </div>
 
@@ -256,14 +219,15 @@ export default function SendForm() {
             type="text"
             className={
               'dark:placeholder-neutral-700 py-2 text-left focus:z-10 block flex-1 min-w-0 w-full bg-neutral-100 dark:bg-neutral-900 text-black dark:text-white px-4 rounded-md disabled:placeholder-neutral-300 dark:disabled:placeholder-neutral-700 transition-colors font-medium focus:outline-0 focus:ring-2 ring-sky-500/40' +
-              (!isValidDestination && isValidationActive
-                ? '  border border-red-500 dark:border-red-500'
-                : '')
+              (!isValidDestination && isValidationActive ? '  border border-red-500 dark:border-red-500' : '')
             }
             disabled={!isConnected}
           />
         </div>
       </div>
+
+      {/* Fee Grant */}
+      <FeeGrant />
 
       {isLoading ? (
         <div className="text-sm font-normal flex items-center gap-2 justify-center">
@@ -273,14 +237,7 @@ export default function SendForm() {
             fill="none"
             viewBox="0 0 24 24"
           >
-            <circle
-              className="opacity-25"
-              cx="12"
-              cy="12"
-              r="10"
-              stroke="currentColor"
-              stroke-width="4"
-            ></circle>
+            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
             <path
               className="opacity-75"
               fill="currentColor"

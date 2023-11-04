@@ -4,7 +4,7 @@ import { APIContext } from 'context/APIContext'
 import { formatNumber, usdString, faucetAddress } from 'utils/commons'
 import { StakingContext } from 'pages/staking/Staking'
 import { toast } from 'react-toastify'
-import FeeGrant from '../../../../components/FeeGrant'
+import FeeGrant from '../../../../components/FeeGrant/FeeGrant'
 import { useSecretNetworkClientStore } from 'store/secretNetworkClient'
 import { scrtToken } from 'utils/tokens'
 import PercentagePicker from 'components/PercentagePicker'
@@ -12,13 +12,7 @@ import Button from 'components/UI/Button/Button'
 
 export default function StakingForm() {
   const { selectedValidator, setView } = useContext(StakingContext)
-  const {
-    secretNetworkClient,
-    walletAddress,
-    scrtBalance,
-    feeGrantStatus,
-    isConnected
-  } = useSecretNetworkClientStore()
+  const { secretNetworkClient, walletAddress, scrtBalance, feeGrantStatus, isConnected } = useSecretNetworkClientStore()
   const { currentPrice } = useContext(APIContext)
 
   const [amountString, setAmountString] = useState<string>('0')
@@ -108,9 +102,7 @@ export default function StakingForm() {
 
   function setAmountByPercentage(percentage: number) {
     if (scrtBalance) {
-      let availableAmount = new BigNumber(scrtBalance).dividedBy(
-        `1e${scrtToken.decimals}`
-      )
+      let availableAmount = new BigNumber(scrtBalance).dividedBy(`1e${scrtToken.decimals}`)
       let potentialInput = availableAmount.toNumber() * (percentage * 0.01)
       potentialInput = potentialInput - 0.05
       if (Number(potentialInput) < 0) {
@@ -124,9 +116,7 @@ export default function StakingForm() {
   return (
     <>
       <div className="bg-neutral-200 dark:bg-neutral-800 p-4 rounded-xl my-4">
-        <div className="font-semibold mb-2 text-center sm:text-left">
-          Amount to Stake
-        </div>
+        <div className="font-semibold mb-2 text-center sm:text-left">Amount to Stake</div>
 
         <input
           value={amountString}
@@ -147,10 +137,7 @@ export default function StakingForm() {
             {amountInDollarString !== '$NaN' ? amountInDollarString : '$ -'}
           </div>
           <div className="text-center sm:text-left flex-initial">
-            {PercentagePicker(
-              setAmountByPercentage,
-              !secretNetworkClient?.address
-            )}
+            {PercentagePicker(setAmountByPercentage, !secretNetworkClient?.address)}
           </div>
         </div>
       </div>
@@ -162,18 +149,17 @@ export default function StakingForm() {
 
       {/* Footer */}
       <div className="flex flex-col sm:flex-row-reverse justify-start mt-4 gap-2">
-        <button
-          onClick={handleSubmit}
-          className="enabled:bg-gradient-to-r enabled:from-cyan-600 enabled:to-purple-600 enabled:hover:from-cyan-500 enabled:hover:to-purple-500 transition-colors text-white font-semibold px-4 py-2 rounded-lg disabled:bg-neutral-500 focus:outline-none focus-visible:ring-4 ring-sky-500/40"
-        >
+        <Button size="large" color="primary" onClick={handleSubmit}>
           Delegate
-        </button>
-        <button
+        </Button>
+        <Button
+          size="large"
+          color="secondary"
           onClick={() => setView(null)}
           className="bg-neutral-200 dark:bg-neutral-800 hover:bg-neutral-300 dark:hover:bg-neutral-700 font-semibold px-4 py-2 rounded-md transition-colors"
         >
           Back
-        </button>
+        </Button>
       </div>
     </>
   )

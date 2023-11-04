@@ -5,7 +5,7 @@ import BigNumber from 'bignumber.js'
 import { useFormik } from 'formik'
 import React, { useEffect, useState } from 'react'
 import { NativeTokenBalanceUi, WrappedTokenBalanceUi } from 'components/BalanceUI'
-import FeeGrant from 'components/FeeGrant'
+import FeeGrant from 'components/FeeGrant/FeeGrant'
 import PercentagePicker from 'components/PercentagePicker'
 import { WrappingMode } from 'types/WrappingMode'
 import { Token, tokens } from 'utils/config'
@@ -172,7 +172,7 @@ function WrapForm() {
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
               className={
-                'dark:placeholder-neutral-700 text-right focus:z-10 block flex-1 min-w-0 w-full bg-neutral-100 dark:bg-neutral-900 text-black dark:text-white px-4 rounded-r-lg disabled:placeholder-neutral-300 dark:disabled:placeholder-neutral-700 transition-colors font-medium focus:outline-0 focus-visible:ring-2 focus-visible:ring-sky-500/40' +
+                'dark:placeholder-neutral-700 text-right focus:z-10 block flex-1 min-w-0 w-full bg-neutral-100 dark:bg-neutral-900 text-black dark:text-white px-4 rounded-r-lg disabled:placeholder-neutral-300 dark:disabled:placeholder-neutral-700 transition-colors font-medium focus:outline-0 focus-visible:ring-2 focus-visible:ring-sky-500/60' +
                 (formik.errors.amount ? '  border border-red-500 dark:border-red-500' : '')
               }
               placeholder="0"
@@ -253,7 +253,7 @@ function WrapForm() {
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
               className={
-                'dark:placeholder-neutral-700 text-right focus:z-10 block flex-1 min-w-0 w-full bg-neutral-100 dark:bg-neutral-900 text-black dark:text-white px-4 rounded-r-lg disabled:placeholder-neutral-300 dark:disabled:placeholder-neutral-700 transition-colors font-medium focus:outline-0 focus:ring-2 ring-sky-500/40'
+                'dark:placeholder-neutral-700 text-right focus:z-10 block flex-1 min-w-0 w-full bg-neutral-100 dark:bg-neutral-900 text-black dark:text-white px-4 rounded-r-lg disabled:placeholder-neutral-300 dark:disabled:placeholder-neutral-700 transition-colors font-medium focus:outline-0 focus-visible:ring-2 ring-sky-500/60'
               }
               placeholder="0"
               disabled={!isConnected}
@@ -266,6 +266,7 @@ function WrapForm() {
             />
           </div>
         </div>
+
         {/* Fee Grant */}
         <FeeGrant />
 

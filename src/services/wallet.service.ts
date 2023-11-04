@@ -1,12 +1,7 @@
 import { SecretNetworkClient } from 'secretjs'
 import { FeeGrantStatus } from 'types/FeeGrantStatus'
 import { Nullable } from 'types/Nullable'
-import {
-  allTokens,
-  faucetURL,
-  sleep,
-  viewingKeyErrorString
-} from 'utils/commons'
+import { allTokens, faucetURL, sleep, viewingKeyErrorString } from 'utils/commons'
 import { SECRET_CHAIN_ID, SECRET_LCD, Token, tokens } from 'utils/config'
 import { isMobile } from 'react-device-detect'
 import { scrtToken } from 'utils/tokens'
@@ -20,14 +15,9 @@ interface TokenBalances {
 }
 
 const connectKeplr = async () => {
-  const sleep = (ms: number) =>
-    new Promise((resolve) => setTimeout(resolve, ms))
+  const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
 
-  while (
-    !window.keplr ||
-    !window.getEnigmaUtils ||
-    !window.getOfflineSignerOnlyAmino
-  ) {
+  while (!window.keplr || !window.getEnigmaUtils || !window.getOfflineSignerOnlyAmino) {
     await sleep(50)
   }
 
@@ -66,19 +56,13 @@ const connectLeap = async () => {
     // localStorage.setItem("preferedWalletApi", "Fina");
     // window.dispatchEvent(new Event("storage"));
   } else {
-    while (
-      !(window as any).leap ||
-      !window.getEnigmaUtils ||
-      !window.getOfflineSignerOnlyAmino
-    ) {
+    while (!(window as any).leap || !window.getEnigmaUtils || !window.getOfflineSignerOnlyAmino) {
       await sleep(50)
     }
 
     await (window as any).leap.enable(SECRET_CHAIN_ID)
 
-    const wallet = (window as any).leap.getOfflineSignerOnlyAmino(
-      SECRET_CHAIN_ID
-    )
+    const wallet = (window as any).leap.getOfflineSignerOnlyAmino(SECRET_CHAIN_ID)
     const [{ address: walletAddress }] = await wallet.getAccounts()
 
     const secretjs: SecretNetworkClient = new SecretNetworkClient({
@@ -95,10 +79,7 @@ const connectLeap = async () => {
   }
 }
 
-const connectWallet = async (
-  walletAPIType: WalletAPIType = 'keplr',
-  secretNetworkClient: SecretNetworkClient
-) => {
+const connectWallet = async (walletAPIType: WalletAPIType = 'keplr', secretNetworkClient: SecretNetworkClient) => {
   let walletAddress: string
   if (walletAPIType === 'keplr') {
     ;({ walletAddress, secretjs: secretNetworkClient } = await connectKeplr())
@@ -109,16 +90,11 @@ const connectWallet = async (
   return { walletAddress, secretjs: secretNetworkClient }
 }
 
-const requestFeeGrantService = async (
-  feeGrantStatus: FeeGrantStatus,
-  walletAddress: String
-) => {
+const requestFeeGrantService = async (feeGrantStatus: FeeGrantStatus, walletAddress: String) => {
   let newFeeGrantStatus: FeeGrantStatus = feeGrantStatus
 
   if (feeGrantStatus === 'success') {
-    console.debug(
-      'User requested Fee Grant. Fee Grant has already been granted. Therefore doing nothing...'
-    )
+    console.debug('User requested Fee Grant. Fee Grant has already been granted. Therefore doing nothing...')
   } else {
     let result
     try {
@@ -128,7 +104,7 @@ const requestFeeGrantService = async (
         headers: { 'Content-Type': 'application/json' }
       })
     } catch (error) {
-      // console.error(error);
+      console.error(error)
       newFeeGrantStatus = 'fail'
       // toast.error(
       //   `Fee Grant for address ${secretAddress} failed with error: ${error}`
@@ -140,9 +116,7 @@ const requestFeeGrantService = async (
       // toast.success(
       //   `Successfully sent new fee grant (0.1 SCRT) to address ${secretAddress}`
       // );
-    } else if (
-      (await result?.text()) === 'Existing Fee Grant did not expire\n'
-    ) {
+    } else if ((await result?.text()) === 'Existing Fee Grant did not expire\n') {
       newFeeGrantStatus = 'success'
       // toast.success(
       //   `Your address ${secretAddress} already has an existing fee grant`
@@ -165,18 +139,13 @@ const setWalletViewingKey = async (token: string) => {
   await (window as any).wallet.suggestToken(SECRET_CHAIN_ID, token)
 }
 
-const getWalletViewingKey = async (
-  token: string
-): Promise<Nullable<string>> => {
+const getWalletViewingKey = async (token: string): Promise<Nullable<string>> => {
   if (!window.keplr && !(window as any).leap) {
     console.error('Wallet not present')
     return null
   }
   try {
-    return await (window as any).wallet?.getSecret20ViewingKey(
-      SECRET_CHAIN_ID,
-      token
-    )
+    return await (window as any).wallet?.getSecret20ViewingKey(SECRET_CHAIN_ID, token)
   } catch (error) {
     console.error(error)
     return null
@@ -213,14 +182,13 @@ const getsScrtTokenBalance = async (
   }
 
   try {
-    const result: IResult =
-      await secretNetworkClient?.query?.compute?.queryContract({
-        contract_address: scrtToken.address,
-        code_hash: scrtToken.code_hash,
-        query: {
-          balance: { address: walletAddress, key }
-        }
-      })
+    const result: IResult = await secretNetworkClient?.query?.compute?.queryContract({
+      contract_address: scrtToken.address,
+      code_hash: scrtToken.code_hash,
+      query: {
+        balance: { address: walletAddress, key }
+      }
+    })
 
     if (result.viewing_key_error) {
       console.error(result.viewing_key_error.msg)
@@ -261,14 +229,13 @@ const getsTokenBalance = async (
   }
 
   try {
-    const result: IResult =
-      await secretNetworkClient?.query?.compute?.queryContract({
-        contract_address: scrtToken.address,
-        code_hash: scrtToken.code_hash,
-        query: {
-          balance: { address: walletAddress, key }
-        }
-      })
+    const result: IResult = await secretNetworkClient?.query?.compute?.queryContract({
+      contract_address: scrtToken.address,
+      code_hash: scrtToken.code_hash,
+      query: {
+        balance: { address: walletAddress, key }
+      }
+    })
 
     if (result.viewing_key_error) {
       console.error(result.viewing_key_error.msg)
@@ -284,10 +251,7 @@ const getsTokenBalance = async (
   return sBalance
 }
 
-const getScrtTokenBalance = async (
-  secretNetworkClient: any,
-  walletAddress: string
-) => {
+const getScrtTokenBalance = async (secretNetworkClient: any, walletAddress: string) => {
   try {
     const response = await secretNetworkClient.query.bank.balance({
       address: walletAddress,
@@ -301,21 +265,16 @@ const getScrtTokenBalance = async (
   }
 }
 
-const getBalancesForTokens = async (
-  secretNetworkClient: any,
-  walletAddress: string,
-  tokens: Token[]
-) => {
+const getBalancesForTokens = async (secretNetworkClient: any, walletAddress: string, tokens: Token[]) => {
   if (!secretNetworkClient) {
     return null
   }
 
   try {
-    const { balances }: QueryAllBalancesResponse =
-      await secretNetworkClient?.query.bank.allBalances({
-        address: secretNetworkClient?.address,
-        pagination: { limit: 1000 }
-      })
+    const { balances }: QueryAllBalancesResponse = await secretNetworkClient?.query.bank.allBalances({
+      address: secretNetworkClient?.address,
+      pagination: { limit: 1000 }
+    })
     console.log(balances)
 
     let newBalanceMapping = new Map<Token, TokenBalances>()
@@ -341,11 +300,7 @@ const getBalancesForTokens = async (
     })
 
     for (const token of allTokens) {
-      const secretBalance = await getsTokenBalance(
-        secretNetworkClient,
-        walletAddress,
-        token
-      )
+      const secretBalance = await getsTokenBalance(secretNetworkClient, walletAddress, token)
 
       const currentEntry = newBalanceMapping.get(token)
       if (currentEntry) {

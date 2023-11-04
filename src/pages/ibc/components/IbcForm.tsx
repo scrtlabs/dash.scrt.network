@@ -8,27 +8,16 @@ import { Chain, Token, chains, tokens } from 'utils/config'
 import IbcSelect from './IbcSelect'
 import Tooltip from '@mui/material/Tooltip'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import {
-  faCircleCheck,
-  faRightLeft,
-  faTriangleExclamation
-} from '@fortawesome/free-solid-svg-icons'
+import { faCircleCheck, faRightLeft, faTriangleExclamation } from '@fortawesome/free-solid-svg-icons'
 import AddressInfo from './AddressInfo'
-import {
-  NativeTokenBalanceUi,
-  WrappedTokenBalanceUi
-} from 'components/BalanceUI'
+import { NativeTokenBalanceUi, WrappedTokenBalanceUi } from 'components/BalanceUI'
 import PercentagePicker from 'components/PercentagePicker'
 import { IbcService } from 'services/ibc.service'
+import FeeGrant from 'components/FeeGrant/FeeGrant'
 
 export default function IbcForm() {
-  const {
-    feeGrantStatus,
-    requestFeeGrant,
-    secretNetworkClient,
-    walletAddress,
-    isConnected
-  } = useSecretNetworkClientStore()
+  const { feeGrantStatus, requestFeeGrant, secretNetworkClient, walletAddress, isConnected } =
+    useSecretNetworkClientStore()
 
   const [isLoading, setIsWaiting] = useState<boolean>(false)
   const [generalSuccessMessage, setGeneralSuccessMessage] = useState<String>('')
@@ -56,14 +45,10 @@ export default function IbcForm() {
 
   const selectableChains = IbcService.getSupportedChains()
 
-  const [selectedToken, setSelectedToken] = useState<Token>(
-    tokens.find((token: Token) => token.name === 'SCRT')
-  )
+  const [selectedToken, setSelectedToken] = useState<Token>(tokens.find((token: Token) => token.name === 'SCRT'))
 
   const [selectedSource, setSelectedSource] = useState<any>(
-    selectedToken.deposits.find(
-      (deposit: any) => deposit.chain_name.toLowerCase() === 'osmosis'
-    )
+    selectedToken.deposits.find((deposit: any) => deposit.chain_name.toLowerCase() === 'osmosis')
   )
 
   const ChainSelect = () => {
@@ -80,9 +65,7 @@ export default function IbcForm() {
         formatOptionLabel={(option) => (
           <IbcSelect
             imgSrc={`/img/assets/${chains[option.chain_name].chain_image}`}
-            altText={`/img/assets/${
-              chains[option.chain_name].chain_name
-            } asset logo`}
+            altText={`/img/assets/${chains[option.chain_name].chain_name} asset logo`}
             optionName={option.chain_name}
           />
         )}
@@ -113,7 +96,8 @@ export default function IbcForm() {
           ibcMode: formik.values.ibcMode as IbcMode,
           tokenName: formik.values.tokenName,
           amount: formik.values.amount,
-          feeGrantStatus: null
+          feeGrantStatus: null,
+          sourceChainNetworkClient: secretNetworkClient
         })
         setIsWaiting(false)
         if (res.success) {
@@ -130,8 +114,7 @@ export default function IbcForm() {
 
   function getSupportedTokens(): Token[] {
     let tempSelectedChain = chains[formik.values.chainName]
-    let supportedTokens =
-      IbcService.getSupportedIbcTokensByChain(tempSelectedChain)
+    let supportedTokens = IbcService.getSupportedIbcTokensByChain(tempSelectedChain)
     return supportedTokens
   }
 
@@ -164,23 +147,17 @@ export default function IbcForm() {
                   <div className="relative">
                     <div
                       className={`absolute inset-0 bg-cyan-500 blur-md rounded-full overflow-hidden ${
-                        secretNetworkClient?.address
-                          ? 'fadeInAndOutLoop'
-                          : 'opacity-40'
+                        secretNetworkClient?.address ? 'fadeInAndOutLoop' : 'opacity-40'
                       }`}
                     ></div>
                     <img
                       src={
                         '/img/assets/' +
-                        (formik.values.ibcMode === 'deposit'
-                          ? chains[formik.values.chainName].chain_image
-                          : 'scrt.svg')
+                        (formik.values.ibcMode === 'deposit' ? chains[formik.values.chainName].chain_image : 'scrt.svg')
                       }
                       className="w-full relative inline-block rounded-full overflow-hiden"
                       alt={`${
-                        formik.values.ibcMode === 'deposit'
-                          ? chains[formik.values.chainName].chain_name
-                          : 'SCRT'
+                        formik.values.ibcMode === 'deposit' ? chains[formik.values.chainName].chain_name : 'SCRT'
                       } logo`}
                     />
                   </div>
@@ -223,16 +200,11 @@ export default function IbcForm() {
                       onClick={toggleIbcMode}
                       className={
                         'focus:outline-none focus-visible:ring-2 ring-sky-500/40 inline-block bg-neutral-200 dark:bg-neutral-800 px-3 py-2 text-cyan-500 dark:text-cyan-500 transition-colors rounded-xl disabled:text-neutral-500 dark:disabled:text-neutral-500' +
-                        (secretNetworkClient?.address
-                          ? 'hover:text-cyan-700 dark:hover:text-cyan-300'
-                          : '')
+                        (secretNetworkClient?.address ? 'hover:text-cyan-700 dark:hover:text-cyan-300' : '')
                       }
                       disabled={!isConnected}
                     >
-                      <FontAwesomeIcon
-                        icon={faRightLeft}
-                        className="rotate-90 md:rotate-0"
-                      />
+                      <FontAwesomeIcon icon={faRightLeft} className="rotate-90 md:rotate-0" />
                     </button>
                   </span>
                 </Tooltip>
@@ -250,9 +222,7 @@ export default function IbcForm() {
                   <div className="relative">
                     <div
                       className={`absolute inset-0 bg-violet-500 blur-md rounded-full overflow-hidden ${
-                        secretNetworkClient?.address
-                          ? 'fadeInAndOutLoop'
-                          : 'opacity-40'
+                        secretNetworkClient?.address ? 'fadeInAndOutLoop' : 'opacity-40'
                       }`}
                     ></div>
                     <img
@@ -264,9 +234,7 @@ export default function IbcForm() {
                       }
                       className="w-full relative inline-block rounded-full overflow-hiden"
                       alt={`${
-                        formik.values.ibcMode === 'withdrawal'
-                          ? chains[formik.values.chainName].chain_name
-                          : 'SCRT'
+                        formik.values.ibcMode === 'withdrawal' ? chains[formik.values.chainName].chain_name : 'SCRT'
                       } logo`}
                     />
                   </div>
@@ -307,20 +275,14 @@ export default function IbcForm() {
           <div className="flex flex-col sm:flex-row justify-between items-center mb-2 text-center sm:text-left">
             <span className="font-extrabold">Token</span>
             {!formik.errors.amount && (
-              <span className="text-red-500 dark:text-red-500 text-xs font-normal">
-                {formik.errors.amount}
-              </span>
+              <span className="text-red-500 dark:text-red-500 text-xs font-normal">{formik.errors.amount}</span>
             )}
           </div>
           <div className="flex" id="inputWrapper">
             <Select
               options={supportedTokens}
-              value={tokens.find(
-                (token: Token) => token.name === formik.values.tokenName
-              )}
-              onChange={(token: Token) =>
-                formik.setFieldValue('tokenName', token.name)
-              }
+              value={tokens.find((token: Token) => token.name === formik.values.tokenName)}
+              onChange={(token: Token) => formik.setFieldValue('tokenName', token.name)}
               isSearchable={false}
               isDisabled={!secretNetworkClient?.address}
               formatOptionLabel={(token: Token) => (
@@ -331,9 +293,7 @@ export default function IbcForm() {
                     className="w-6 h-6 mr-2 rounded-full"
                   />
                   <span className="font-semibold text-sm">
-                    {token.is_ics20 &&
-                      formik.values.ibcMode === 'withdrawal' &&
-                      's'}
+                    {token.is_ics20 && formik.values.ibcMode === 'withdrawal' && 's'}
                     {token.name}
                   </span>
                 </div>
@@ -373,11 +333,12 @@ export default function IbcForm() {
                     selectedTokenPrice
                   )} */}
             </div>
-            <div className="sm:flex-initial text-xs">
-              {PercentagePicker(setAmountByPercentage, !walletAddress)}
-            </div>
+            <div className="sm:flex-initial text-xs">{PercentagePicker(setAmountByPercentage, !walletAddress)}</div>
           </div>
         </div>
+
+        {/* Fee Grant */}
+        {formik.values.ibcMode === 'withdrawal' ? <FeeGrant /> : null}
 
         {isLoading ? (
           <div className="text-sm font-normal flex items-center gap-2 justify-center">
@@ -387,14 +348,7 @@ export default function IbcForm() {
               fill="none"
               viewBox="0 0 24 24"
             >
-              <circle
-                className="opacity-25"
-                cx="12"
-                cy="12"
-                r="10"
-                stroke="currentColor"
-                stroke-width="4"
-              ></circle>
+              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
               <path
                 className="opacity-75"
                 fill="currentColor"

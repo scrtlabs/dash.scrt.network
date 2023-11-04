@@ -1,9 +1,5 @@
 import BigNumber from 'bignumber.js'
-import {
-  BroadcastMode,
-  MsgExecuteContract,
-  SecretNetworkClient
-} from 'secretjs'
+import { BroadcastMode, MsgExecuteContract, SecretNetworkClient } from 'secretjs'
 import { FeeGrantStatus } from 'types/FeeGrantStatus'
 import { Nullable } from 'types/Nullable'
 import { WrappingMode } from 'types/WrappingMode'
@@ -11,7 +7,7 @@ import { faucetAddress, randomPadding } from 'utils/commons'
 import { Token, tokens } from 'utils/config'
 
 interface IBaseProps {
-  wrappingMode: WrappingMode | string
+  wrappingMode: WrappingMode
   amount: string
   secretNetworkClient: SecretNetworkClient
   feeGrantStatus: FeeGrantStatus
@@ -37,9 +33,7 @@ type TProps = IPropsToken | IPropsTokenName
  * @async
  */
 
-const performWrapping = async (
-  props: TProps
-): Promise<{ success: boolean; errorMsg: Nullable<string> }> => {
+const performWrapping = async (props: TProps): Promise<{ success: boolean; errorMsg: Nullable<string> }> => {
   let result: { success: boolean; errorMsg: Nullable<string> } = {
     success: false,
     errorMsg: null
@@ -59,9 +53,7 @@ const performWrapping = async (
   }
 
   const baseAmount = props.amount
-  const amount = new BigNumber(Number(baseAmount))
-    .multipliedBy(`1e${token.decimals}`)
-    .toFixed(0, BigNumber.ROUND_DOWN)
+  const amount = new BigNumber(Number(baseAmount)).multipliedBy(`1e${token.decimals}`).toFixed(0, BigNumber.ROUND_DOWN)
 
   if (amount === 'NaN') {
     console.error('NaN amount', baseAmount)
@@ -125,10 +117,7 @@ const performWrapping = async (
               msg: {
                 redeem: {
                   amount,
-                  denom:
-                    token.name === 'SCRT'
-                      ? undefined
-                      : token.withdrawals[0].denom,
+                  denom: token.name === 'SCRT' ? undefined : token.withdrawals[0].denom,
                   padding: randomPadding()
                 }
               }
