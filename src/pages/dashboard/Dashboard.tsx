@@ -1,4 +1,5 @@
 import { useEffect, useState, createContext, useContext } from 'react'
+import { SecretNetworkClient } from 'secretjs'
 import CurrentPrice from './components/CurrentPrice'
 import MiniTile from './components/MiniTile'
 import PriceVolumeTVL from './components/PriceVolTVLChart/PriceVolumeTVL'
@@ -9,50 +10,21 @@ import StakingChart from './components/StakingChart'
 import { formatNumber } from 'utils/commons'
 import { APIContext } from 'context/APIContext'
 import { Helmet } from 'react-helmet-async'
-import {
-  trackMixPanelEvent,
-  dashboardPageTitle,
-  dashboardPageDescription,
-  dashboardJsonLdSchema
-} from 'utils/commons'
-import { SecretNetworkClient } from 'secretjs'
+import { trackMixPanelEvent, dashboardPageTitle, dashboardPageDescription, dashboardJsonLdSchema } from 'utils/commons'
 
 function Dashboard() {
   const {
-    coingeckoApiData_Day,
-    setCoinGeckoApiData_Day,
-    coingeckoApiData_Month,
-    setCoinGeckoApiData_Month,
-    coingeckoApiData_Year,
-    setCoinGeckoApiData_Year,
-    defiLamaApiData_Year,
-    setDefiLamaApiData_Year,
     defiLamaApiData_TVL,
-    setDefiLamaApiData_TVL,
     currentPrice,
-    setCurrentPrice,
     externalApiData,
-    setExternalApiData,
-    secretAnalyticslApiData,
-    setSecretAnalyticslApiData,
     bondedToken,
-    setBondedToken,
     notBondedToken,
-    setNotBondedToken,
     totalSupply,
-    setTotalSupply,
-    communityPool,
-    setCommunityPool,
     inflation,
-    setInflation,
     secretFoundationTax,
-    setSecretFoundationTax,
     communityTax,
-    setCommunityTax,
     volume,
-    setVolume,
-    marketCap,
-    setMarketCap
+    marketCap
   } = useContext(APIContext)
 
   useEffect(() => {
@@ -61,8 +33,7 @@ function Dashboard() {
 
   // block height
   const [blockHeight, setBlockHeight] = useState(null)
-  const [blockHeightFormattedString, setblockHeightFormattedString] =
-    useState('')
+  const [blockHeightFormattedString, setblockHeightFormattedString] = useState('')
 
   useEffect(() => {
     if (blockHeight) {
@@ -85,10 +56,9 @@ function Dashboard() {
     }
   }, [blockTime])
 
-  // daily transactions
+  // # transactions
   const [transactions, setTransactions] = useState('')
-  const [dailyTransactionsFormattedString, setTransactionsFormattedString] =
-    useState('')
+  const [transactionsFormattedString, setTransactionsFormattedString] = useState('')
 
   useEffect(() => {
     if (transactions) {
@@ -112,14 +82,14 @@ function Dashboard() {
   }, [communityTax, secretFoundationTax])
 
   // feesPaid
-  const [gasUsed, setGasUsed] = useState('')
-  const [gasUsedFormattedString, setGasUsedFormattedString] = useState('')
+  const [activeValidators, setActiveValidators] = useState('')
+  const [activeValidatorsFormattedString, setActiveValidatorsFormattedString] = useState('')
 
   useEffect(() => {
-    if (gasUsed) {
-      setGasUsedFormattedString(formatNumber(parseInt(gasUsed), 2))
+    if (activeValidators) {
+      setActiveValidatorsFormattedString(formatNumber(parseInt(activeValidators), 2))
     }
-  }, [gasUsed])
+  }, [activeValidators])
 
   // inflation
   const [inflationFormattedString, setInflationFormattedString] = useState('')
@@ -135,32 +105,28 @@ function Dashboard() {
 
   //Bonded Ratio
   const [bondedRatio, setBondedRatio] = useState(0)
-  const [bondedRatioFormattedString, setBondedRatioFormattedString] =
-    useState('')
+  const [bondedRatioFormattedString, setBondedRatioFormattedString] = useState('')
 
   useEffect(() => {
     const queryData = async () => {
-      const secretNetworkClientQuery = new SecretNetworkClient({
+      const secretjsquery = new SecretNetworkClient({
         url: SECRET_LCD,
         chainId: SECRET_CHAIN_ID
       })
 
-      secretNetworkClientQuery?.query?.tendermint
-        .getLatestBlock('')
-        ?.then((res1) => {
-          setBlockHeight(res1.block.header.height)
-          secretNetworkClientQuery?.query?.tendermint
-            .getBlockByHeight({
-              height: (Number(res1.block.header.height) - 1).toString()
-            })
-            ?.then((res2) => {
-              const timestamp1 = new Date(res1.block.header.time as any)
-              const timestamp2 = new Date(res2.block.header.time as any)
-              const diffInSeconds =
-                Math.abs((timestamp1 as any) - (timestamp2 as any)) / 1000
-              setBlockTime(diffInSeconds.toFixed(2))
-            })
-        })
+      secretjsquery?.query?.tendermint.getLatestBlock('')?.then((res1) => {
+        setBlockHeight(res1.block.header.height)
+        secretjsquery?.query?.tendermint
+          .getBlockByHeight({
+            height: (Number(res1.block.header.height) - 1).toString()
+          })
+          ?.then((res2) => {
+            const timestamp1 = new Date(res1.block.header.time as any)
+            const timestamp2 = new Date(res2.block.header.time as any)
+            const diffInSeconds = Math.abs((timestamp1 as any) - (timestamp2 as any)) / 1000
+            setBlockTime(diffInSeconds.toFixed(2))
+          })
+      })
     }
     queryData()
   }, [])
@@ -172,78 +138,44 @@ function Dashboard() {
 
   useEffect(() => {
     if (volume) {
-      setVolumeFormattedString(
-        '$' + formatNumber(parseInt(volume.toFixed(0).toString()), 2)
-      )
+      setVolumeFormattedString('$' + formatNumber(parseInt(volume.toFixed(0).toString()), 2))
     }
     if (marketCap) {
-      setMarketCapFormattedString(
-        '$' + formatNumber(parseInt(marketCap.toFixed(0).toString()), 2)
-      )
+      setMarketCapFormattedString('$' + formatNumber(parseInt(marketCap.toFixed(0).toString()), 2))
     }
     if (defiLamaApiData_TVL) {
-      setTVLFormattedString(
-        '$' +
-          formatNumber(parseInt(defiLamaApiData_TVL.toFixed(0).toString()), 2)
-      )
+      setTVLFormattedString('$' + formatNumber(parseInt(defiLamaApiData_TVL.toFixed(0).toString()), 2))
     }
   }, [volume, marketCap, defiLamaApiData_TVL])
 
   const [circulatingSupply, setCirculatingSupply] = useState(0)
 
-  // useEffect(() => {
-  //   if (externalApiData) {
-  //     const queryData = async () => {
-  //       setBlockTime((externalApiData as any).block_time);
-  //     };
-
-  //     queryData();
-  //   }
-  // }, [externalApiData]);
-
   useEffect(() => {
-    if (secretAnalyticslApiData) {
+    if (externalApiData) {
       const queryData = async () => {
-        setTransactions((secretAnalyticslApiData as any).tx_count)
-        setGasUsed((secretAnalyticslApiData as any).gas_used)
+        setTransactions((externalApiData as any).total_txs_num)
+        setActiveValidators((externalApiData as any).unjailed_validator_num)
       }
 
       queryData()
     }
-  }, [secretAnalyticslApiData])
+  }, [externalApiData])
 
   useEffect(() => {
-    if (
-      inflation &&
-      secretFoundationTax &&
-      communityTax &&
-      bondedToken &&
-      notBondedToken &&
-      totalSupply
-    ) {
+    if (inflation && secretFoundationTax && communityTax && bondedToken && notBondedToken && totalSupply) {
       // staking ratio missing
       const I = inflation // inflation
       const F = parseFloat(secretFoundationTax) // foundation tax
       const C = 0.0 // validator commision rate; median is 5%
       const T = parseFloat(communityTax) // community tax
-      const R = bondedToken / (bondedToken + notBondedToken) // bonded ratio
+      const R = bondedToken / totalSupply // bonded ratio
       setBondedRatio(R * 100)
       const APR = (I / R) * 100
       const realYield = (I / R) * (1 - F - T) * (1 - C) * 100
-      setGrowthRateFormattedString(
-        formatNumber(APR, 2) + '%' + ' / ' + formatNumber(realYield, 2) + '%'
-      )
+      setGrowthRateFormattedString(formatNumber(APR, 2) + '%' + ' / ' + formatNumber(realYield, 2) + '%')
       setBondedRatioFormattedString(formatNumber(bondedRatio, 2) + '%')
     }
-  }, [
-    inflation,
-    secretFoundationTax,
-    communityTax,
-    bondedToken,
-    notBondedToken,
-    bondedRatio,
-    totalSupply
-  ])
+  }, [inflation, secretFoundationTax, communityTax, bondedToken, notBondedToken, bondedRatio, totalSupply])
 
   return (
     <>
@@ -260,21 +192,19 @@ function Dashboard() {
 
         <meta property="og:title" content={dashboardPageTitle} />
         <meta property="og:description" content={dashboardPageDescription} />
-        {/* <meta property="og:image" content="Image URL Here"/> */}
+        {/* <meta property='og:image' content='Image URL Here'/> */}
 
         <meta name="twitter:title" content={dashboardPageTitle} />
         <meta name="twitter:description" content={dashboardPageDescription} />
-        {/* <meta name="twitter:image" content="Image URL Here"/> */}
+        {/* <meta name='twitter:image' content='Image URL Here'/> */}
 
-        <script type="application/ld+json">
-          {JSON.stringify(dashboardJsonLdSchema)}
-        </script>
+        <script type="application/ld+json">{JSON.stringify(dashboardJsonLdSchema)}</script>
       </Helmet>
       <div className="px-4 mx-auto space-y-4 w-full">
         <div className="grid grid-cols-12 gap-4">
           {/* WideQuadTile */}
-          {/* <div className="col-span-12">
-              <WideQuadTile item1_key="Block Height" item1_value={blockHeightFormattedString} item2_key="Block Time" item2_value={blockTimeFormattedString} item3_key="Daily Transactions" item3_value={dailyTransactionsFormattedString} item4_key="Fees Paid" item4_value={feesPaidFormattedString}/>
+          {/* <div className='col-span-12'>
+              <WideQuadTile item1_key='Block Height' item1_value={blockHeightFormattedString} item2_key='Block Time' item2_value={blockTimeFormattedString} item3_key='Daily Transactions' item3_value={dailyTransactionsFormattedString} item4_key='Fees Paid' item4_value={feesPaidFormattedString}/>
             </div> */}
 
           {/* Price */}
@@ -289,10 +219,7 @@ function Dashboard() {
 
           {/* Market Cap */}
           <div className="col-span-12 sm:col-span-6 lg:col-span-12 xl:col-span-6 2xl:col-span-2">
-            <MiniTile
-              name="Market Cap/TVL"
-              value={`${marketCapFormattedString} / ${TVLFormattedString}`}
-            />
+            <MiniTile name="Market Cap/TVL" value={`${marketCapFormattedString} / ${TVLFormattedString}`} />
           </div>
 
           {/* Social Media */}
@@ -302,7 +229,6 @@ function Dashboard() {
 
           {/* Block Info */}
           <div className="col-span-12 md:col-span-6 lg:col-span-12 xl:col-span-6 2xl:col-span-4">
-            {/* <BlockInfo blockHeight={blockHeight || 0} blockTime={blockTime} circulatingSupply={circulatingSupply} inflation={inflation}/> */}
             <QuadTile
               item1={{ key: 'Block Height', value: blockHeightFormattedString }}
               item2={{
@@ -310,10 +236,10 @@ function Dashboard() {
                 value: blockTimeFormattedString
               }}
               item3={{
-                key: '# Transactions (24h)',
-                value: dailyTransactionsFormattedString
+                key: '# Transactions (total)',
+                value: transactionsFormattedString
               }}
-              item4={{ key: 'Gas Used (24h)', value: gasUsedFormattedString }}
+              item4={{ key: '# Active Validators', value: activeValidatorsFormattedString }}
             />
           </div>
 
@@ -346,11 +272,11 @@ function Dashboard() {
             <PriceVolumeTVL />
           </div>
           {/* Item */}
-          {/* <div className="col-span-12 xl:col-span-6 bg-neutral-800 p-4 rounded-xl">
+          {/* <div className='col-span-12 xl:col-span-6 bg-neutral-800 p-4 rounded-xl'>
               <PriceChart />
             </div> */}
           {/* Item */}
-          {/* <div className="col-span-12 xl:col-span-6 bg-neutral-800 p-4 rounded-xl">
+          {/* <div className='col-span-12 xl:col-span-6 bg-neutral-800 p-4 rounded-xl'>
               <VolumeChart />
             </div> */}
         </div>
@@ -358,5 +284,4 @@ function Dashboard() {
     </>
   )
 }
-
 export default Dashboard

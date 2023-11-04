@@ -1,13 +1,8 @@
+import BigNumber from 'bignumber.js'
 import { createContext, useEffect, useRef, useState } from 'react'
 import { SecretNetworkClient } from 'secretjs'
-import {
-  allTokens,
-  dAppsURL,
-  shuffleArray,
-  sortDAppsArray
-} from 'utils/commons'
-import { tokens } from 'utils/config'
-import { SECRET_LCD, SECRET_CHAIN_ID } from 'utils/config'
+import { allTokens, dAppsURL, randomDelay, sleep, sortDAppsArray } from 'utils/commons'
+import { SECRET_LCD, SECRET_CHAIN_ID, chains } from 'utils/config'
 
 const APIContext = createContext(null)
 
@@ -20,6 +15,10 @@ const APIContextProvider = ({ children }: any) => {
   const [totalSupply, setTotalSupply] = useState(Number)
   const [bondedToken, setBondedToken] = useState(Number)
   const [notBondedToken, setNotBondedToken] = useState(Number)
+  const [distributionRewardToken, setDistributionRewardToken] = useState(Number)
+  const [sSCRTTokenSupply, setSSCRTTokenSupply] = useState(Number)
+  const [stkdSCRTTokenSupply, setStkdSCRTTokenSupply] = useState(Number)
+  const [IBCTokenSupply, setIBCTokenSupply] = useState(Number)
 
   const [inflation, setInflation] = useState(0)
 
@@ -27,35 +26,6 @@ const APIContextProvider = ({ children }: any) => {
   const [secretFoundationTax, setSecretFoundationTax] = useState('')
 
   const [communityPool, setCommunityPool] = useState(Number) // in uscrt
-
-  const [prices, setPrices] = useState<any>([])
-
-  let coinGeckoIdsString: string = ''
-  allTokens.forEach((token, index) => {
-    coinGeckoIdsString = coinGeckoIdsString.concat(token.coingecko_id)
-    if (index !== tokens.length - 1) {
-      coinGeckoIdsString = coinGeckoIdsString.concat(',')
-    }
-  })
-
-  function fetchPrices() {
-    let pricesApiUrl = `https://api.coingecko.com/api/v3/simple/price?ids=${coinGeckoIdsString}&vs_currencies=USD`
-    fetch(pricesApiUrl)
-      .then((resp) => resp.json())
-      .then((result: { [coingecko_id: string]: { usd: number } }) => {
-        const formattedPrices = Object.entries(result).map(
-          ([coingecko_id, { usd }]) => ({
-            coingecko_id,
-            priceUsd: usd
-          })
-        )
-        setPrices(formattedPrices)
-      })
-  }
-
-  useEffect(() => {
-    fetchPrices()
-  }, [])
 
   useEffect(() => {
     const queryData = async () => {
@@ -69,19 +39,79 @@ const APIContextProvider = ({ children }: any) => {
         ?.then((res) => setTotalSupply((res.amount.amount as any) / 1e6))
 
       secretjsquery?.query?.staking?.pool('')?.then((res) => {
-        setBondedToken(parseInt(res.pool.bonded_tokens) / 10e5)
-        setNotBondedToken(parseInt(res.pool.not_bonded_tokens) / 10e4)
+        setBondedToken(parseInt(res.pool.bonded_tokens) / 1e6)
+        setNotBondedToken(parseInt(res.pool.not_bonded_tokens) / 1e6)
       })
 
       secretjsquery?.query?.distribution
         ?.communityPool('')
-        ?.then((res) =>
-          setCommunityPool(Math.floor((res.pool[1] as any).amount / 10e5))
-        )
+        ?.then((res) => setCommunityPool(Math.floor((res.pool[1] as any).amount / 1e6)))
 
-      secretjsquery?.query?.mint
-        ?.inflation('')
-        ?.then((res) => setInflation((res as any).inflation))
+      secretjsquery?.query?.bank
+        ?.balance({
+          address: allTokens.find((token) => token.name === 'SCRT').address,
+          denom: 'uscrt'
+        })
+        ?.then((res) => {
+          setSSCRTTokenSupply(Number(res.balance?.amount) / 1e6)
+        })
+
+      secretjsquery?.query?.bank
+        ?.balance({
+          address: allTokens.find((token) => token.name === 'stkd-SCRT').address,
+          denom: 'uscrt'
+        })
+        ?.then((res) => {
+          setStkdSCRTTokenSupply(Number(res.balance?.amount) / 1e6)
+          secretjsquery?.query?.staking
+            .delegatorDelegations({
+              delegator_addr: allTokens.find((token) => token.name === 'stkd-SCRT').address,
+              pagination: { limit: '1000' }
+            })
+            ?.then((delegatorDelegations) => {
+              const totalDelegations = delegatorDelegations.delegation_responses
+                ?.reduce((sum: any, delegation: any) => {
+                  const amount = new BigNumber(delegation?.balance?.amount || 0)
+                  return sum.plus(amount)
+                }, new BigNumber(0))
+                .dividedBy(`1e6`)
+              setStkdSCRTTokenSupply(Number(res.balance?.amount) / 1e6 + Number(totalDelegations))
+            })
+        })
+
+      let totalAmount = 0
+
+      allTokens[0].deposits.forEach((deposit, index) => {
+        const chainName = deposit.chain_name
+        const channelId = chains[chainName].withdraw_channel_id
+        const isLast = index === allTokens[0].deposits.length - 1
+        setTimeout(() => {
+          executeQuery(channelId, isLast)
+        }, index * 100)
+      })
+
+      const executeQuery = (channelId: any, isLast: any) => {
+        secretjsquery?.query?.ibc_transfer
+          ?.escrowAddress({
+            channel_id: channelId,
+            port_id: 'transfer'
+          })
+          ?.then((escrow) => {
+            secretjsquery?.query?.bank
+              ?.balance({
+                address: escrow.escrow_address,
+                denom: 'uscrt'
+              })
+              ?.then((res) => {
+                totalAmount += Number(res.balance?.amount) / 1e6
+                if (isLast) {
+                  setIBCTokenSupply(totalAmount)
+                }
+              })
+          })
+      }
+
+      secretjsquery?.query?.mint?.inflation('')?.then((res) => setInflation((res as any).inflation))
 
       secretjsquery?.query?.distribution.params('')?.then((res) => {
         setSecretFoundationTax(res?.params.secret_foundation_tax)
@@ -169,10 +199,7 @@ const APIContextProvider = ({ children }: any) => {
       .then((response) => response.json())
       .then((response) => {
         setDefiLamaApiData_Year(
-          response.map((x: any[]) => [
-            parseInt((x as any).date) * 1000,
-            (x as any).totalLiquidityUSD
-          ])
+          response.map((x: any[]) => [parseInt((x as any).date) * 1000, (x as any).totalLiquidityUSD])
         )
       })
 
@@ -180,9 +207,7 @@ const APIContextProvider = ({ children }: any) => {
     fetch(defiLamaApiUrl_TVL)
       .then((response) => response.json())
       .then((response) => {
-        setDefiLamaApiData_TVL(
-          response.filter((item: any) => item?.gecko_id === 'secret')[0]?.tvl
-        )
+        setDefiLamaApiData_TVL(response.filter((item: any) => item?.gecko_id === 'secret')[0]?.tvl)
       })
 
     // Coingecko Market Price, Market Cap & Volume
@@ -195,19 +220,19 @@ const APIContextProvider = ({ children }: any) => {
         setVolume(response.secret.usd_24h_vol)
       })
 
-    /*let mintscanApiDataUrl = `https://api.mintscan.io/v1/secret/status`;
+    let mintscanApiDataUrl = `https://dev.api.mintscan.io/v1/secret/status`
     fetch(mintscanApiDataUrl)
       .then((response) => response.json())
       .then((response) => {
-        setExternalApiData(response);
-      }); */
+        setExternalApiData(response)
+      })
 
-    let secretAnalyticsApiDataUrl = `https://api.secretanalytics.xyz/network`
+    /*     let secretAnalyticsApiDataUrl = `https://api.secretanalytics.xyz/network`;
     fetch(secretAnalyticsApiDataUrl)
       .then((response) => response.json())
       .then((response) => {
-        setSecretAnalyticslApiData(response)
-      })
+        setSecretAnalyticslApiData(response);
+      }); */
   }, [])
 
   const providerValue = {
@@ -241,6 +266,12 @@ const APIContextProvider = ({ children }: any) => {
     setTotalSupply,
     communityPool,
     setCommunityPool,
+    sSCRTTokenSupply,
+    setSSCRTTokenSupply,
+    stkdSCRTTokenSupply,
+    setStkdSCRTTokenSupply,
+    IBCTokenSupply,
+    setIBCTokenSupply,
     inflation,
     setInflation,
     secretFoundationTax,
@@ -250,13 +281,10 @@ const APIContextProvider = ({ children }: any) => {
     volume,
     setVolume,
     marketCap,
-    setMarketCap,
-    prices
+    setMarketCap
   }
 
-  return (
-    <APIContext.Provider value={providerValue}>{children}</APIContext.Provider>
-  )
+  return <APIContext.Provider value={providerValue}>{children}</APIContext.Provider>
 }
 
 export { APIContext, APIContextProvider }

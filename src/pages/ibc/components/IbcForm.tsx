@@ -47,10 +47,6 @@ export default function IbcForm() {
 
   const [selectedToken, setSelectedToken] = useState<Token>(tokens.find((token: Token) => token.name === 'SCRT'))
 
-  const [selectedSource, setSelectedSource] = useState<any>(
-    selectedToken.deposits.find((deposit: any) => deposit.chain_name.toLowerCase() === 'osmosis')
-  )
-
   const ChainSelect = () => {
     return (
       <Select
