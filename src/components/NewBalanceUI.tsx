@@ -20,15 +20,21 @@ export default function NewBalanceUI({ isSecretToken: isSecretToken = false, ...
   const { getPrice, priceMapping } = useTokenPricesStore()
 
   const [balance, setBalance] = useState<number>(null)
+  const [usdPriceString, setUsdPriceString] = useState<string>(null)
   //const usdPriceString: Nullable<string> = getPrice(props.token)
-  const usdPriceString = ''
   const tokenName = (isSecretToken ? 's' : '') + props.token.name
 
   useEffect(() => {
-    if (isConnected && balanceMapping != null) {
+    if (balanceMapping != null) {
       setBalance(getBalance(props.token, isSecretToken).toNumber())
     }
-  }, [isConnected, balanceMapping])
+  }, [balanceMapping])
+
+  useEffect(() => {
+    if (priceMapping != null) {
+      setUsdPriceString(getPrice(props.token))
+    }
+  }, [usdPriceString])
 
   if (!isConnected) return null
 
