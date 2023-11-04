@@ -164,9 +164,9 @@ export default function SendForm() {
           <div className="flex-1 text-xs">
             <NewBalanceUI
               token={tokens.find(
-                (token) => token.name.toLowerCase() === 'scrt'
+                (token: Token) => token.name.toLowerCase() === 'scrt'
               )}
-              secureToken={formik.values.wrappingMode === 'unwrap'}
+              isSecureToken={false}
             />
           </div>
           <div className="sm:flex-initial text-xs">

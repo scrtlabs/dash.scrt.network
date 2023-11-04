@@ -18,9 +18,9 @@ const colorClasses: Record<Color, string> = {
 }
 
 const sizeClasses: Record<Size, string> = {
-  default: 'py-2 px-4 text-sm sm:w-full',
-  large: 'py-3 px-4 text-sm sm:w-full',
-  small: 'py-1.5 px-2 text-xs sm:w-full'
+  default: 'py-2 px-4 text-sm',
+  large: 'py-3 px-4 text-sm',
+  small: 'py-1.5 px-2 text-xs'
 }
 
 interface Props {

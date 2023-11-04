@@ -51,11 +51,14 @@ export const useSecretNetworkClientStore = create<SecretNetworkClientState>()(
     connectWallet: async (walletAPIType?: WalletAPIType) => {
       const { setScrtBalance, setsScrtBalance } = get()
       const { walletAddress, secretjs: secretNetworkClient } =
-        await WalletService.connectWalletService(walletAPIType)
+        await WalletService.connectWallet(
+          walletAPIType,
+          get().secretNetworkClient
+        )
       set({
         walletAddress,
-        secretNetworkClient: secretNetworkClient,
-        isConnected: walletAddress !== null && secretNetworkClient !== null
+        secretNetworkClient,
+        isConnected: !!(walletAddress && secretNetworkClient)
       })
       setScrtBalance()
       setsScrtBalance()

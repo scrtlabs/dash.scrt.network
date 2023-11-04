@@ -394,7 +394,6 @@ export const Staking = () => {
                   <div className="flex-initial"></div>
                   <Button
                     onClick={() => setIsClaimRewardsModalOpen(true)}
-                    type={'button'}
                     color={'emerald'}
                   >
                     Claim Pending Rewards

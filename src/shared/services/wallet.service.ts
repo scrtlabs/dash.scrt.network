@@ -95,10 +95,11 @@ const connectLeap = async () => {
   }
 }
 
-const connectWalletService = async (walletAPIType: WalletAPIType = 'keplr') => {
+const connectWallet = async (
+  walletAPIType: WalletAPIType = 'keplr',
+  secretNetworkClient: SecretNetworkClient
+) => {
   let walletAddress: string
-  let secretNetworkClient: Nullable<SecretNetworkClient>
-  // TODO: choice between Keplr and Leap APIs
   if (walletAPIType === 'keplr') {
     ;({ walletAddress, secretjs: secretNetworkClient } = await connectKeplr())
   } else {
@@ -370,7 +371,7 @@ const getBalancesForTokens = async (
 }
 
 export const WalletService = {
-  connectWalletService,
+  connectWallet,
   requestFeeGrantService,
   setWalletViewingKey,
   getWalletViewingKey,

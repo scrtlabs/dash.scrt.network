@@ -8,10 +8,13 @@ import { useSecretNetworkClientStore } from 'store/secretNetworkClient'
 
 interface IProps {
   token: Token
-  secureToken?: boolean
+  isSecureToken?: boolean
 }
 
-function NewBalanceUI({ secureToken = false, ...props }: IProps) {
+export default function NewBalanceUI({
+  isSecureToken: isSecureToken = false,
+  ...props
+}: IProps) {
   const setViewingKey = () => {
     // TODO: Do something with props.token;
   }
@@ -19,16 +22,14 @@ function NewBalanceUI({ secureToken = false, ...props }: IProps) {
   const { isConnected, getBalance } = useSecretNetworkClientStore()
   const { getPrice } = useTokenPricesStore()
 
-  const [balance, setBalance] = useState<Nullable<BigNumber>>(
-    getBalance(props.token)
-  )
+  const [balance, setBalance] = useState<Nullable<BigNumber>>(null)
   const usdPriceString: Nullable<string> = getPrice(props.token, balance)
-  const tokenName = (secureToken ? 's' : '') + props.token.name
+  const tokenName = (isSecureToken ? 's' : '') + props.token.name
 
   useEffect(() => {
-    function setBalance() {}
-
-    setBalance()
+    // TODO: Fix balances
+    // const x = getBalance(props.token, isSecureToken)
+    // setBalance()
   }, [])
 
   if (!isConnected) return null
@@ -58,5 +59,3 @@ function NewBalanceUI({ secureToken = false, ...props }: IProps) {
     </>
   )
 }
-
-export default NewBalanceUI

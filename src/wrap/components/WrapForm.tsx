@@ -216,7 +216,7 @@ function WrapForm() {
                 token={tokens.find(
                   (token) => token.name.toLowerCase() === 'scrt'
                 )}
-                secureToken={formik.values.wrappingMode === 'unwrap'}
+                isSecureToken={formik.values.wrappingMode === 'unwrap'}
               />
             </div>
             <div className="sm:flex-initial text-xs">
@@ -306,7 +306,7 @@ function WrapForm() {
               token={tokens.find(
                 (token) => token.name.toLowerCase() === 'scrt'
               )}
-              secureToken={formik.values.wrappingMode === 'wrap'}
+              isSecureToken={formik.values.wrappingMode === 'wrap'}
             />
           </div>
         </div>
