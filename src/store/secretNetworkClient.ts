@@ -110,20 +110,14 @@ export const useSecretNetworkClientStore = create<SecretNetworkClientState>()((s
       walletAddress: walletAddress,
       tokens: allTokens
     })
-    console.log(balances)
     set({ balanceMapping: balances })
   },
   getBalance(token: Token, secretToken: boolean = false) {
     if (!get().isInitialized) {
       get().init()
     }
-
-    console.log(get().balanceMapping)
-
     if (get().balanceMapping != null) {
       const tokenBalances: TokenBalances = get().balanceMapping.get(token)
-      console.log(token)
-      console.log(tokenBalances)
       if (!tokenBalances) {
         return null
       }

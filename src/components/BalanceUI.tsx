@@ -1,6 +1,6 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import BigNumber from 'bignumber.js'
-import { viewingKeyErrorString, usdString } from 'utils/commons'
+import { viewingKeyErrorString, formatUsdString } from 'utils/commons'
 import Tooltip from '@mui/material/Tooltip'
 import { Token } from 'utils/config'
 import { faKey, faInfoCircle } from '@fortawesome/free-solid-svg-icons'
@@ -19,11 +19,11 @@ export function NativeTokenBalanceUi(
       <>
         {!disableAvailable && <span className="font-semibold">Available:</span>}
         <span className="">
-          {` ${new BigNumber(nativeBalance!)
-            .dividedBy(`1e${selectedToken.decimals}`)
-            .toFormat()} ${selectedToken.name} ${
+          {` ${new BigNumber(nativeBalance!).dividedBy(`1e${selectedToken.decimals}`).toFormat()} ${
+            selectedToken.name
+          } ${
             selectedToken.coingecko_id && selectedTokenPrice
-              ? ` (${usdString.format(
+              ? ` (${formatUsdString(
                   new BigNumber(nativeBalance!)
                     .dividedBy(`1e${selectedToken.decimals}`)
                     .multipliedBy(Number(selectedTokenPrice))
@@ -84,13 +84,11 @@ export function WrappedTokenBalanceUi(
         {/* Available: 0.123456 sSCRT () */}
         {!disableAvailable && <span className="font-semibold">Available:</span>}
         <span className="">
-          {` ${new BigNumber(tokenBalance!)
-            .dividedBy(`1e${selectedToken.decimals}`)
-            .toFormat()} ${selectedToken.is_snip20 ? '' : 's'}${
-            selectedToken.name
-          } ${
+          {` ${new BigNumber(tokenBalance!).dividedBy(`1e${selectedToken.decimals}`).toFormat()} ${
+            selectedToken.is_snip20 ? '' : 's'
+          }${selectedToken.name} ${
             selectedToken.coingecko_id && selectedTokenPrice
-              ? ` (${usdString.format(
+              ? ` (${formatUsdString(
                   new BigNumber(tokenBalance!)
                     .dividedBy(`1e${selectedToken.decimals}`)
                     .multipliedBy(Number(selectedTokenPrice))

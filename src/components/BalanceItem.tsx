@@ -2,7 +2,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import BigNumber from 'bignumber.js'
 import { FunctionComponent, useContext, useEffect, useState } from 'react'
 import { APIContext } from 'context/APIContext'
-import { viewingKeyErrorString, usdString } from 'utils/commons'
+import { viewingKeyErrorString, formatUsdString } from 'utils/commons'
 import Tooltip from '@mui/material/Tooltip'
 import { Token } from 'utils/config'
 import { faKey, faInfoCircle } from '@fortawesome/free-solid-svg-icons'
@@ -45,12 +45,12 @@ const BalanceItem: FunctionComponent<IBalanceProps> = ({ isSecretToken = false, 
   }
 
   //  e.g. "$1.23"
-  const scrtBalanceUsdString = usdString.format(
+  const scrtBalanceUsdString = formatUsdString(
     new BigNumber(scrtBalance!).dividedBy(`1e${scrtToken.decimals}`).multipliedBy(Number(currentPrice)).toNumber()
   )
 
   //  e.g. "$1.23"
-  const sScrtBalanceUsdString = usdString.format(
+  const sScrtBalanceUsdString = formatUsdString(
     new BigNumber(sScrtBalance!).dividedBy(`1e${scrtToken.decimals}`).multipliedBy(Number(currentPrice)).toNumber()
   )
 

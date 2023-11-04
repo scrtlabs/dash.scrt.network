@@ -1,15 +1,9 @@
 import { useContext, useEffect, useRef, useState } from 'react'
-import { sleep, viewingKeyErrorString, usdString } from 'utils/commons'
+import { sleep, viewingKeyErrorString, formatUsdString } from 'utils/commons'
 import Tooltip from '@mui/material/Tooltip'
 import CopyToClipboard from 'react-copy-to-clipboard'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import {
-  faCopy,
-  faDesktop,
-  faMobileScreen,
-  faWallet,
-  faXmark
-} from '@fortawesome/free-solid-svg-icons'
+import { faCopy, faDesktop, faMobileScreen, faWallet, faXmark } from '@fortawesome/free-solid-svg-icons'
 import { toast } from 'react-toastify'
 import { useHoverOutside } from 'utils/useHoverOutside'
 import { APIContext } from 'context/APIContext'
@@ -37,10 +31,8 @@ export function Wallet() {
   const { currentPrice } = useContext(APIContext)
 
   const [isMenuVisible, setIsMenuVisible] = useState<boolean>(false)
-  const [isGetWalletModalOpen, setIsGetWalletModalOpen] =
-    useState<boolean>(false)
-  const [isConnectWalletModalOpen, setIsConnectWalletModalOpen] =
-    useState<boolean>(false)
+  const [isGetWalletModalOpen, setIsGetWalletModalOpen] = useState<boolean>(false)
+  const [isConnectWalletModalOpen, setIsConnectWalletModalOpen] = useState<boolean>(false)
 
   const { sScrtBalance, setsScrtBalance } = useSecretNetworkClientStore()
 
@@ -50,58 +42,6 @@ export function Wallet() {
 
   const handleManageViewingKeys = () => {
     setIsManageViewingkeysModalOpen(true)
-  }
-
-  function WrappedTokenBalanceUi() {
-    if (!isConnected || !sScrtBalance) {
-      return
-    } else if (sScrtBalance === viewingKeyErrorString) {
-      return (
-        <>
-          <button
-            className="ml-2 font-semibold bg-neutral-100 dark:bg-neutral-900 px-1.5 py-0.5 rounded-md border-neutral-300 dark:border-neutral-700 transition-colors hover:bg-neutral-300 dark:hover:bg-neutral-700 focus:bg-neutral-500 dark:focus:bg-neutral-500 cursor-pointer disabled:text-neutral-500 dark:disabled:text-neutral-500 disabled:hover:bg-neutral-100 dark:disabled:hover:bg-neutral-900 disabled:cursor-default"
-            onClick={async () => {
-              await WalletService.setWalletViewingKey(scrtToken.address)
-              try {
-                await sleep(1000) // sometimes query nodes lag
-                await setsScrtBalance()
-              } finally {
-                console.log('sdgfbydsjhg')
-              }
-            }}
-          >
-            <FontAwesomeIcon icon={faKey} className="mr-2" />
-            Set Viewing Key
-          </button>
-          <Tooltip title={''} placement="right" arrow>
-            <span className="ml-2 mt-1 text-neutral-600 dark:text-neutral-400 hover:text-black dark:hover:text-white transition-colors cursor-pointer">
-              <FontAwesomeIcon icon={faInfoCircle} />
-            </span>
-          </Tooltip>
-        </>
-      )
-    } else if (Number(sScrtBalance) > -1) {
-      return (
-        <div className="text-xs">
-          <div className="font-bold">
-            {` ${new BigNumber(sScrtBalance!)
-              .dividedBy(`1e${scrtToken.decimals}`)
-              .toFormat()} sSCRT`}
-          </div>
-          {currentPrice && sScrtBalance && (
-            <div className="text-gray-500">
-              ≈{' '}
-              {` ${usdString.format(
-                new BigNumber(sScrtBalance!)
-                  .dividedBy(`1e${scrtToken.decimals}`)
-                  .multipliedBy(Number(currentPrice))
-                  .toNumber()
-              )}`}
-            </div>
-          )}
-        </div>
-      )
-    }
   }
 
   useEffect(() => {
@@ -124,10 +64,7 @@ export function Wallet() {
       >
         <button className="px-2 py-1 mb-2 rounded-lg flex gap-2 items-center group bg-neutral-100 dark:bg-neutral-900 hover:bg-neutral-200 dark:hover:bg-black transition-colors">
           {walletAddress.slice(0, 14) + '...' + walletAddress.slice(-14)}
-          <FontAwesomeIcon
-            icon={faCopy}
-            className="block text-neutral-500 dark:text-neutral-500 transition-colors"
-          />
+          <FontAwesomeIcon icon={faCopy} className="block text-neutral-500 dark:text-neutral-500 transition-colors" />
         </button>
       </CopyToClipboard>
     )
@@ -141,11 +78,7 @@ export function Wallet() {
           <BalanceItem token={scrtToken} isSecretToken={false} />
           <BalanceItem token={scrtToken} isSecretToken={true} />
         </div>
-        <Button
-          size="small"
-          color="secondary"
-          onClick={handleManageViewingKeys}
-        >
+        <Button size="small" color="secondary" onClick={handleManageViewingKeys}>
           All Balances
         </Button>
       </div>
@@ -175,12 +108,7 @@ export function Wallet() {
           <Balances />
 
           {/* Disconnect Button */}
-          <Button
-            onClick={disconnectWallet}
-            color="red"
-            size="small"
-            className="w-full"
-          >
+          <Button onClick={disconnectWallet} color="red" size="small" className="w-full">
             Disconnect Wallet
           </Button>
         </div>
@@ -197,8 +125,7 @@ export function Wallet() {
     )
   }
 
-  const [isManageViewingkeysModalOpen, setIsManageViewingkeysModalOpen] =
-    useState<boolean>(false)
+  const [isManageViewingkeysModalOpen, setIsManageViewingkeysModalOpen] = useState<boolean>(false)
 
   return (
     <>
@@ -239,10 +166,7 @@ export function Wallet() {
               trackMixPanelEvent('Clicked Starshell Wallet on Get Wallet Modal')
             }}
           >
-            <img
-              src="/img/assets/starshell.svg"
-              className="flex-initial w-7 h-7"
-            />
+            <img src="/img/assets/starshell.svg" className="flex-initial w-7 h-7" />
             <span className="flex-1 font-medium flex items-center">
               Starshell{' '}
               <span className="text-xs ml-2 font-semibold py-0.5 px-1.5 rounded bg-gradient-to-r from-cyan-600 to-purple-600">
@@ -251,8 +175,7 @@ export function Wallet() {
             </span>
             <span className="text-white dark:text-white bg-blue-500 dark:bg-blue-500 group-hover:bg-blue-600 dark:group-hover:bg-blue-400 transition-colors px-3 py-1.5 rounded text-xs font-semibold">
               <FontAwesomeIcon icon={faDesktop} className="mr-1" />
-              Desktop /{' '}
-              <FontAwesomeIcon icon={faMobileScreen} className="mr-1" />
+              Desktop / <FontAwesomeIcon icon={faMobileScreen} className="mr-1" />
               Mobile
             </span>
           </a>
@@ -268,8 +191,7 @@ export function Wallet() {
             <span className="flex-1 font-medium">Leap</span>
             <span className="text-white dark:text-white bg-blue-500 dark:bg-blue-500 group-hover:bg-blue-600 dark:group-hover:bg-blue-400 transition-colors px-3 py-1.5 rounded text-xs font-semibold">
               <FontAwesomeIcon icon={faDesktop} className="mr-1" />
-              Desktop /{' '}
-              <FontAwesomeIcon icon={faMobileScreen} className="mr-1" />
+              Desktop / <FontAwesomeIcon icon={faMobileScreen} className="mr-1" />
               Mobile
             </span>
           </a>

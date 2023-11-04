@@ -230,8 +230,8 @@ const getsTokenBalance = async (
 
   try {
     const result: IResult = await secretNetworkClient?.query?.compute?.queryContract({
-      contract_address: scrtToken.address,
-      code_hash: scrtToken.code_hash,
+      contract_address: token.address,
+      code_hash: token.code_hash,
       query: {
         balance: { address: walletAddress, key }
       }
@@ -281,7 +281,6 @@ async function getBalancesForTokens(props: IGetBalancesForTokensProps): Promise<
       address: props.secretNetworkClient.address,
       pagination: { limit: '1000' }
     })
-    console.log(balances)
 
     let newBalanceMapping = new Map<Token, TokenBalances>()
 
@@ -307,17 +306,18 @@ async function getBalancesForTokens(props: IGetBalancesForTokensProps): Promise<
 
     for (const token of allTokens) {
       const secretBalance = await getsTokenBalance(props.secretNetworkClient, props.walletAddress, token)
+      console.log(secretBalance)
 
       const currentEntry = newBalanceMapping.get(token)
       if (currentEntry) {
         newBalanceMapping.set(token, {
           ...currentEntry,
-          secretBalance: secretBalance ? new BigNumber(secretBalance) : undefined
+          secretBalance: secretBalance ? new BigNumber(secretBalance) : null
         })
       } else {
         newBalanceMapping.set(token, {
-          balance: undefined,
-          secretBalance: secretBalance ? new BigNumber(secretBalance) : undefined
+          balance: null,
+          secretBalance: secretBalance ? new BigNumber(secretBalance) : null
         })
       }
     }

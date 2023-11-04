@@ -2,7 +2,7 @@ import { faGlobe, faXmark } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { ReactNode, useContext, useEffect, useState } from 'react'
 import { APIContext } from 'context/APIContext'
-import { usdString, formatNumber } from 'utils/commons'
+import { formatUsdString, formatNumber } from 'utils/commons'
 import BigNumber from 'bignumber.js'
 import { SECRET_LCD, SECRET_CHAIN_ID } from 'utils/config'
 import CopyToClipboard from 'react-copy-to-clipboard'
@@ -330,7 +330,7 @@ const ValidatorModal = (props: Props) => {
                   <span className="text-neutral-400 text-xs">{` SCRT`}</span>
                 </div>
                 <div className="font-semibold text-neutral-400 mt-0.5 text-sm">
-                  {usdString.format(
+                  {formatUsdString(
                     new BigNumber(scrtBalance!)
                       .dividedBy(`1e${scrtToken.decimals}`)
                       .multipliedBy(Number(currentPrice))
@@ -357,7 +357,7 @@ const ValidatorModal = (props: Props) => {
                     <span className="text-neutral-400 text-xs">{` SCRT`}</span>
                   </div>
                   <div className="font-semibold text-neutral-400 mt-0.5 text-sm">
-                    {usdString.format(
+                    {formatUsdString(
                       new BigNumber(
                         delegatorDelegations?.find(
                           (delegatorDelegation: any) =>
@@ -377,7 +377,7 @@ const ValidatorModal = (props: Props) => {
                     {0}
                     <span className="text-neutral-400 text-xs">{` SCRT`}</span>
                   </div>
-                  <div className="font-semibold text-neutral-400 mt-0.5 text-sm">{usdString.format(0)}</div>
+                  <div className="font-semibold text-neutral-400 mt-0.5 text-sm">{formatUsdString(0)}</div>
                 </div>
               ))}
 

@@ -6,6 +6,7 @@ import { scrtToken } from 'utils/tokens'
 import { useTokenPricesStore } from 'store/TokenPrices'
 import { useSecretNetworkClientStore } from 'store/secretNetworkClient'
 import Tooltip from '@mui/material/Tooltip'
+import { formatUsdString } from 'utils/commons'
 
 interface IProps {
   token: Token
@@ -18,17 +19,17 @@ export default function NewBalanceUI(props: IProps) {
   }
 
   const { isConnected, getBalance, balanceMapping } = useSecretNetworkClientStore()
-  const { getPrice, priceMapping } = useTokenPricesStore()
+  const { getValuePrice, priceMapping } = useTokenPricesStore()
 
   const [balance, setBalance] = useState<number>(null)
   const [usdPriceString, setUsdPriceString] = useState<string>(null)
-  //const usdPriceString: Nullable<string> = getPrice(props.token)
   const tokenName = (props.isSecretToken ? 's' : '') + props.token.name
 
   useEffect(() => {
-    if (balanceMapping != null) {
+    if (balanceMapping !== null) {
       const newBalance = getBalance(props.token, props.isSecretToken)
-      if (newBalance != null || newBalance != undefined) {
+      console.log(newBalance)
+      if (newBalance !== null) {
         setBalance(newBalance.toNumber())
       } else {
         setBalance(undefined)
@@ -37,10 +38,11 @@ export default function NewBalanceUI(props: IProps) {
   }, [balanceMapping, props])
 
   useEffect(() => {
-    if (priceMapping != null) {
-      setUsdPriceString(getPrice(props.token))
+    if (priceMapping !== null && balance !== null) {
+      console.log(getValuePrice(props.token, BigNumber(balance)))
+      setUsdPriceString(getValuePrice(props.token, BigNumber(balance)))
     }
-  }, [usdPriceString])
+  }, [usdPriceString, props, balance])
 
   if (!isConnected) return null
 
@@ -51,17 +53,18 @@ export default function NewBalanceUI(props: IProps) {
 
         {balance && tokenName ? (
           <>
-            <span className="font-medium">{`${balance} ${tokenName}`}</span>
-            {usdPriceString ? (
-              <span className="font-medium"> {usdPriceString}</span>
-            ) : (
-              <>
-                {/* Skeleton Loader */}
-                <Tooltip title={`Loading USD price...`} placement="bottom" arrow>
-                  <span className="animate-pulse bg-neutral-300/40 dark:bg-neutral-600 rounded w-10 h-5"></span>
-                </Tooltip>
-              </>
-            )}
+            <span className="font-medium">{` ${new BigNumber(balance)
+              .dividedBy(`1e${props.token.decimals}`)
+              .toFormat()} ${props.token.is_snip20 ? '' : 's'}${props.token.name} ${
+              props.token.coingecko_id && usdPriceString
+                ? ` (${formatUsdString(
+                    new BigNumber(balance)
+                      .dividedBy(`1e${props.token.decimals}`)
+                      .multipliedBy(Number(usdPriceString))
+                      .toNumber()
+                  )})`
+                : ''
+            }`}</span>
           </>
         ) : (
           <>

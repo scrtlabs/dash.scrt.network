@@ -1,19 +1,9 @@
 import { useEffect, useState, useContext } from 'react'
-import {
-  randomDelay,
-  sleep,
-  usdString,
-  viewingKeyErrorString
-} from 'utils/commons'
+import { randomDelay, sleep, formatUsdString, viewingKeyErrorString } from 'utils/commons'
 import { APIContext } from 'context/APIContext'
 import { Token } from 'utils/config'
-import {
-  NativeTokenBalanceUi,
-  WrappedTokenBalanceUi
-} from 'components/BalanceUI'
 import { useSecretNetworkClientStore } from 'store/secretNetworkClient'
 import { useTokenPricesStore } from 'store/TokenPrices'
-import { Nullable } from 'types/Nullable'
 import { WalletService } from 'services/wallet.service'
 
 interface Props {
@@ -28,16 +18,11 @@ const BalanceItem = (props: Props) => {
 
   const assetPrice = getPrice(props.token)
 
-  const tokenName =
-    (props.token?.address === 'native' || props.token?.is_snip20 ? '' : 's') +
-    props.token?.name
+  const tokenName = (props.token?.address === 'native' || props.token?.is_snip20 ? '' : 's') + props.token?.name
 
   const tokenDescription =
-    (props.token?.address !== 'native' ||
-    props.token?.is_ics20 ||
-    props.token?.is_snip20
-      ? 'Private '
-      : 'Public ') + props.token?.description
+    (props.token?.address !== 'native' || props.token?.is_ics20 || props.token?.is_snip20 ? 'Private ' : 'Public ') +
+    props.token?.description
 
   const [nativeBalance, setNativeBalance] = useState<any>(undefined)
   const [tokenBalance, setTokenBalance] = useState<any>(undefined)
@@ -141,18 +126,14 @@ const BalanceItem = (props: Props) => {
           <span className="font-semibold dark:text-white text-black">
             {tokenName}
             {props.token?.description ? (
-              <div className="text-xs text-neutral-500 dark:text-neutral-600">
-                {tokenDescription}
-              </div>
+              <div className="text-xs text-neutral-500 dark:text-neutral-600">{tokenDescription}</div>
             ) : null}
           </span>
         </div>
 
         {props.token?.coingecko_id !== '' && (
           <div className="flex flex-col items-center">
-            <div className="description text-xs text-neutral-500 dark:text-neutral-600 mb-2">
-              Price
-            </div>
+            <div className="description text-xs text-neutral-500 dark:text-neutral-600 mb-2">Price</div>
             {assetPrice ? (
               <div className="font-semibold">{assetPrice}</div>
             ) : (
@@ -162,9 +143,7 @@ const BalanceItem = (props: Props) => {
         )}
         {secretNetworkClient?.address ? (
           <div className="flex flex-col items-center">
-            <div className="description text-xs text-neutral-500 dark:text-neutral-600 mb-2">
-              Balance
-            </div>
+            <div className="description text-xs text-neutral-500 dark:text-neutral-600 mb-2">Balance</div>
             <div className="font-semibold">
               {/* {props.token?.address === 'native'
                 ? NativeTokenBalanceUi(
