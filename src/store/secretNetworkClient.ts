@@ -11,8 +11,10 @@ import { WalletService } from 'services/wallet.service'
 
 interface TokenBalances {
   balance: Nullable<BigNumber>
-  secretBalance: Nullable<BigNumber | string>
+  secretBalance: Nullable<BigNumber | GetBalanceError>
 }
+
+export type GetBalanceError = 'viewingKeyError' | 'GenericFetchError'
 
 interface SecretNetworkClientState {
   isInitialized: boolean
@@ -32,7 +34,7 @@ interface SecretNetworkClientState {
   setScrtBalance: () => void
   isTokenBalanceLoading: boolean
   setViewingKey: (token: Token) => void
-  getBalance: (token: Token, secretToken?: boolean) => Nullable<BigNumber | string>
+  getBalance: (token: Token, secretToken?: boolean) => Nullable<BigNumber | GetBalanceError>
   balanceMapping: Map<Token, TokenBalances>
   setBalanceMapping: () => void
 }
@@ -116,11 +118,13 @@ export const useSecretNetworkClientStore = create<SecretNetworkClientState>()((s
     if (!get().isInitialized) {
       get().init()
     }
-    if (get().balanceMapping != null) {
+    if (get().balanceMapping !== null) {
       const tokenBalances: TokenBalances = get().balanceMapping.get(token)
+
       if (!tokenBalances) {
         return null
       }
+
       if (!secretToken) {
         return tokenBalances.balance
       } else if (secretToken) {

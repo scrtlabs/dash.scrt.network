@@ -4,9 +4,9 @@ import { Nullable } from 'types/Nullable'
 import { Chain, Token, tokens } from 'utils/config'
 import { scrtToken } from 'utils/tokens'
 import { useTokenPricesStore } from 'store/TokenPrices'
-import { useSecretNetworkClientStore } from 'store/secretNetworkClient'
+import { GetBalanceError, useSecretNetworkClientStore } from 'store/secretNetworkClient'
 import Tooltip from '@mui/material/Tooltip'
-import { formatUsdString, viewingKeyErrorString } from 'utils/commons'
+import { formatUsdString } from 'utils/commons'
 import { faKey } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
@@ -31,14 +31,14 @@ export default function NewBalanceUI(props: IProps) {
   useEffect(() => {
     if (balanceMapping !== null) {
       const newBalance = getBalance(props.token, props.isSecretToken)
-      console.log(newBalance)
-      if (newBalance !== null && newBalance !== viewingKeyErrorString) {
+      console.debug(newBalance)
+      if (newBalance !== null && newBalance instanceof BigNumber) {
         setBalance(newBalance.toNumber())
-      } else if (balance === viewingKeyErrorString) {
-        console.log('dfgsdhdfghgfjdjh')
-        setBalance(viewingKeyErrorString)
+      } else if (balance === 'viewingKeyError') {
+        console.debug('Viewing Key not found.')
+        setBalance('viewingKeyError' as GetBalanceError)
       } else {
-        setBalance(undefined)
+        setBalance(null)
       }
     }
   }, [balanceMapping, props.token, props.isSecretToken])
@@ -71,7 +71,7 @@ export default function NewBalanceUI(props: IProps) {
           </>
         )}
 
-        {balance === viewingKeyErrorString ? (
+        {balance === ('viewingKeyError' as GetBalanceError) ? (
           <button
             onClick={setViewingKey}
             className="text-left flex items-center font-semibold bg-neutral-100 dark:bg-neutral-900 px-1.5 py-0.5 rounded-md border-neutral-300 dark:border-neutral-700 transition hover:bg-neutral-300 dark:hover:bg-neutral-700 focus:bg-neutral-500 dark:focus:bg-neutral-500 cursor-pointer disabled:text-neutral-500 dark:disabled:text-neutral-500 disabled:hover:bg-neutral-100 dark:disabled:hover:bg-neutral-900 disabled:cursor-default"

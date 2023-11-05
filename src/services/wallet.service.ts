@@ -1,17 +1,18 @@
 import { SecretNetworkClient } from 'secretjs'
 import { FeeGrantStatus } from 'types/FeeGrantStatus'
 import { Nullable } from 'types/Nullable'
-import { allTokens, faucetURL, sleep, viewingKeyErrorString } from 'utils/commons'
+import { allTokens, faucetURL, sleep } from 'utils/commons'
 import { SECRET_CHAIN_ID, SECRET_LCD, Token, tokens } from 'utils/config'
 import { isMobile } from 'react-device-detect'
 import { scrtToken } from 'utils/tokens'
 import { WalletAPIType } from 'types/WalletAPIType'
 import BigNumber from 'bignumber.js'
 import { QueryAllBalancesResponse } from 'secretjs/dist/grpc_gateway/cosmos/bank/v1beta1/query.pb'
+import { GetBalanceError } from 'store/secretNetworkClient'
 
 interface TokenBalances {
   balance: Nullable<BigNumber>
-  secretBalance: Nullable<BigNumber | string>
+  secretBalance: Nullable<BigNumber | GetBalanceError>
 }
 
 const connectKeplr = async () => {
@@ -166,11 +167,11 @@ const getsScrtTokenBalance = async (
     return null
   }
 
-  let sScrtBalance: string
+  let sScrtBalance: string | GetBalanceError
 
   const key = await getWalletViewingKey(scrtToken.address)
   if (!key) {
-    sScrtBalance = viewingKeyErrorString
+    sScrtBalance = 'viewingKeyError' as GetBalanceError
     return null
   }
 
@@ -192,13 +193,13 @@ const getsScrtTokenBalance = async (
 
     if (result.viewing_key_error) {
       console.error(result.viewing_key_error.msg)
-      sScrtBalance = viewingKeyErrorString
+      sScrtBalance = 'viewingKeyError' as GetBalanceError
     } else {
       sScrtBalance = result.balance.amount
     }
   } catch (error) {
     console.error(`Error getting balance for s${scrtToken.name}: `, error)
-    sScrtBalance = viewingKeyErrorString
+    sScrtBalance = 'viewingKeyError' as GetBalanceError
   }
 
   return sScrtBalance
@@ -217,7 +218,7 @@ const getsTokenBalance = async (
 
   const key = await getWalletViewingKey(token.address)
   if (!key) {
-    sBalance = viewingKeyErrorString
+    sBalance = 'viewingKeyError' as GetBalanceError
     return sBalance
   }
 
@@ -239,13 +240,13 @@ const getsTokenBalance = async (
 
     if (result.viewing_key_error) {
       console.error(result.viewing_key_error.msg)
-      sBalance = viewingKeyErrorString
+      sBalance = 'viewingKeyError' as GetBalanceError
     } else {
       sBalance = result.balance.amount
     }
   } catch (error) {
     console.error(`Error getting balance for s${scrtToken.name}: `, error)
-    sBalance = viewingKeyErrorString
+    sBalance = 'viewingKeyError' as GetBalanceError
   }
 
   return sBalance
@@ -309,10 +310,10 @@ async function getBalancesForTokens(props: IGetBalancesForTokensProps): Promise<
       const currentEntry = newBalanceMapping.get(token)
 
       if (currentEntry) {
-        if (secretBalance === viewingKeyErrorString) {
+        if (secretBalance === ('viewingKeyError' as GetBalanceError)) {
           newBalanceMapping.set(token, {
             ...currentEntry,
-            secretBalance: viewingKeyErrorString
+            secretBalance: 'viewingKeyError'
           })
         } else {
           newBalanceMapping.set(token, {
@@ -321,10 +322,10 @@ async function getBalancesForTokens(props: IGetBalancesForTokensProps): Promise<
           })
         }
       } else {
-        if (secretBalance === viewingKeyErrorString) {
+        if (secretBalance === ('viewingKeyError' as GetBalanceError)) {
           newBalanceMapping.set(token, {
             balance: null,
-            secretBalance: viewingKeyErrorString
+            secretBalance: 'viewingKeyError'
           })
         } else {
           newBalanceMapping.set(token, {
