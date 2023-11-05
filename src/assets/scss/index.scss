@@ -1,0 +1,230 @@
+@use './components/fonts';
+
+// Tailwind
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html,
+body {
+  @apply h-full m-0;
+}
+
+body:not(.dark) {
+  @apply bg-slate-100;
+}
+body.dark {
+  @apply bg-neutral-900;
+}
+
+::selection {
+  @apply bg-purple-500/40  text-black dark:text-white;
+}
+
+body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.react-select__control {
+  cursor: pointer !important;
+  @apply py-1 bg-neutral-200 dark:bg-neutral-800 border-neutral-400 dark:border-neutral-600 text-black dark:text-white hover:bg-neutral-400 dark:hover:bg-neutral-600;
+}
+
+.react-select__single-value {
+  @apply text-black dark:text-white;
+}
+
+.react-select__menu,
+.react-select__option {
+  background-color: #737373 !important;
+}
+
+.react-select__option:is-selected {
+  background-color: #a3a3a3 !important;
+}
+
+.react-select__option:hover {
+  background-color: #a3a3a3 !important;
+}
+
+.react-select-wrap__control {
+  cursor: pointer !important;
+  @apply py-1 bg-neutral-200 dark:bg-neutral-800 border-gray-500 dark:border-gray-500;
+  border-radius: 0.5rem 0 0 0.5rem !important;
+  &:hover {
+    background-color: #525252 !important;
+  }
+}
+
+.react-select-wrap__single-value {
+  @apply text-black dark:text-white;
+}
+
+.react-select-wrap__menu,
+.react-select-wrap__option {
+  background-color: #737373 !important;
+}
+
+.react-select-wrap__option:hover {
+  background-color: #a3a3a3 !important;
+}
+
+.react-select-wrap__indicator-separator {
+  display: none;
+}
+
+.react-select__indicator-separator {
+  display: none;
+}
+
+.react-select__value-container img {
+  display: none;
+}
+
+.react-select-getscrt__control {
+  cursor: pointer !important;
+  @apply py-1 bg-neutral-200 dark:bg-neutral-800 border-gray-500 dark:border-gray-500;
+  border-radius: 0.5rem 0.5rem 0.5rem 0.5rem !important;
+  &:hover {
+    background-color: #525252 !important;
+  }
+}
+
+.react-select-getscrt__single-value {
+  @apply text-black dark:text-white;
+}
+
+.react-select-getscrt__menu,
+.react-select-getscrt__option {
+  background-color: #737373 !important;
+}
+
+.react-select-getscrt__option:hover {
+  background-color: #a3a3a3 !important;
+}
+
+.react-select-getscrt__indicator-separator {
+  display: none;
+}
+
+// Animations
+.fadeInAndOutLoop {
+  opacity: 1;
+  animation: fade 2s linear infinite;
+}
+
+@keyframes fade {
+  0%,
+  100% {
+    opacity: 0.5;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeInDown2 {
+  from {
+    opacity: 0;
+    -webkit-transform: translate3d(0, -10%, 0);
+    transform: translate3d(0, -10%, 0);
+  }
+
+  to {
+    opacity: 1;
+    -webkit-transform: translate3d(0, 0, 0);
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+.onEnter_fadeInDown {
+  animation: fadeInDown2 250ms ease-in-out;
+}
+
+@media screen and (min-width: 768px) {
+  #ibcSwitchButton {
+    padding-top: 100%;
+  }
+}
+
+#ibcSwitchButton {
+  @apply block;
+}
+
+.isInactiveNavLink {
+  svg {
+    @apply dark:fill-neutral-300 fill-neutral-700;
+  }
+  &:hover svg {
+    @apply fill-black dark:fill-white;
+  }
+}
+
+.isActiveNavLink {
+  svg {
+    @apply dark:fill-white fill-black;
+  }
+  &:hover svg {
+    @apply fill-black dark:fill-white;
+  }
+}
+
+// Inset (Redelegate)
+
+.react-select-container,
+.react-select-inset__control {
+  @apply rounded-lg #{!important};
+}
+
+.react-select-inset__control {
+  cursor: pointer !important;
+  @apply rounded-lg p-1 bg-neutral-200 dark:bg-neutral-900 border-0 dark:border-0 text-black dark:text-white hover:bg-neutral-400 dark:hover:bg-neutral-600;
+}
+
+.react-select-inset__single-value {
+  @apply text-black dark:text-white;
+}
+
+.react-select-inset__menu,
+.react-select-inset__option {
+  @apply bg-neutral-200 dark:bg-neutral-900 border-0 dark:border-0 text-black dark:text-white;
+}
+
+.react-select-inset__option:hover {
+  background-color: #a3a3a3 !important;
+}
+
+.react-select-wrap-inset__control {
+  cursor: pointer !important;
+  @apply py-1 bg-neutral-200 dark:bg-neutral-800 border-gray-500 dark:border-gray-500;
+  border-radius: 0.5rem 0 0 0.5rem !important;
+  &:hover {
+    background-color: #525252 !important;
+  }
+}
+
+.react-select-wrap-inset__single-value {
+  @apply text-black dark:text-white;
+}
+
+.react-select-wrap-inset__menu,
+.react-select-wrap-inset__option {
+  background-color: #737373 !important;
+}
+
+.react-select-wrap-inset__option:hover {
+  background-color: #a3a3a3 !important;
+}
+
+.react-select-wrap-inset__indicator-separator {
+  display: none;
+}
+
+.react-select-inset__indicator-separator {
+  display: none;
+}
+
+.react-select-inset__value-container img {
+  display: none;
+}

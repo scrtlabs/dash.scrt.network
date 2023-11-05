@@ -1,8 +1,21 @@
-node_modules
+# General
 dist
 build
-yarn-error.log
 .vscode/launch.json
-.DS_Store
+
+# Dependency directories
+node_modules/
+jspm_packages/
+
+# Optional npm cache directory
+.npm
+
+# dotenv environment variable files
 .env
-.npmrc
+.env.test
+
+# OS generated files
+.DS_Store*
+ehthumbs.db
+Icon?
+Thumbs.db
