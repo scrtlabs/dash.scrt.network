@@ -1,19 +1,17 @@
 import { useFormik } from 'formik'
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { sendSchema } from 'pages/send/sendSchema'
 import { useSecretNetworkClientStore } from 'store/secretNetworkClient'
 import Select from 'react-select'
 import { Token } from 'utils/config'
 import NewBalanceUI from 'components/NewBalanceUI'
 import PercentagePicker from 'components/PercentagePicker'
-import BigNumber from 'bignumber.js'
 import Tooltip from '@mui/material/Tooltip'
 import { faCircleCheck, faInfoCircle, faTriangleExclamation } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { SendService } from 'services/send.service'
 import FeeGrant from 'components/FeeGrant/FeeGrant'
 import { allTokens } from 'utils/commons'
-import _ from 'lodash'
 
 export default function SendForm() {
   const { secretNetworkClient, walletAddress, feeGrantStatus, requestFeeGrant, isConnected, connectWallet } =
@@ -23,7 +21,14 @@ export default function SendForm() {
   const [generalErrorMessage, setGeneralErrorMessage] = useState<String>('')
   const [isLoading, setIsWaiting] = useState<boolean>(false)
 
-  const formik = useFormik({
+  interface IFormValues {
+    amount: string
+    token: Token
+    recipient: string
+    memo: string
+  }
+
+  const formik = useFormik<IFormValues>({
     initialValues: {
       amount: '',
       token: allTokens[0],
@@ -57,74 +62,63 @@ export default function SendForm() {
     }
   })
 
-  const [destinationAddress, setDestinationAddress] = useState<string>('')
-  const [isValidDestination, setIsValidDestination] = useState<boolean>(false)
-  const [destinationValidationMessage, setDestinationValidationMessage] = useState<string>('')
-  const [isValidationActive, setIsValidationActive] = useState<boolean>(false)
-  const [amountString, setAmountString] = useState<string>('0')
-  const [tokenBalance, setTokenBalance] = useState<any>()
-
-  function getSelectedToken(): Token {
-    return formik.values.token
-  }
-
   // handles [25% | 50% | 75% | Max] Button-Group
   function setAmountByPercentage(percentage: number) {
-    if (tokenBalance) {
-      let availableAmount = new BigNumber(tokenBalance).dividedBy(`1e${getSelectedToken().decimals}`)
-      let potentialInput = availableAmount.toNumber() * (percentage * 0.01)
-      if (percentage === 100 && potentialInput > 0.05 && getSelectedToken().name === 'SCRT') {
-        potentialInput = potentialInput - 0.05
-      }
-      if (Number(potentialInput) < 0) {
-        setAmountString('')
-      } else {
-        setAmountString(potentialInput.toFixed(getSelectedToken().decimals))
-      }
-    }
+    formik.setFieldValue('amount', percentage.toString()) // TODO: Fix percentage
+    formik.setFieldTouched('amount', true)
+  }
+
+  const tokenSelectOptions = [allTokens[0]].concat(
+    allTokens.map((token) => (token.name === 'SCRT' ? { ...token, address: 'native' } : token))
+  )
+
+  function handleTokenSelect(token: Token) {
+    formik.setFieldValue('token', token)
+    formik.setFieldTouched('token', true)
+    formik.setFieldValue('amount', '')
+    formik.setFieldTouched('amount', false)
+  }
+
+  function TokenSelectFormatOptionLabel({ token }: { token: Token }) {
+    return (
+      <div className="flex items-center">
+        <img src={`/img/assets/${token.image}`} alt={`${token.name} logo`} className="w-6 h-6 mr-2 rounded-full" />
+        <span className="font-semibold text-sm">
+          {token.address === 'native' || token.is_snip20 ? null : 's'}
+          {token.name}
+        </span>
+      </div>
+    )
   }
 
   return (
     <form onSubmit={formik.handleSubmit} className="w-full flex flex-col gap-4">
-      {/* *** Amount *** */}
+      {/* Amount */}
       <div className="bg-neutral-200 dark:bg-neutral-700 p-4 rounded-xl">
         {/* Title Bar */}
         <div className="flex flex-col sm:flex-row justify-between items-center mb-2 text-center sm:text-left">
           <span className="font-extrabold">Amount</span>
-          {formik.errors.amount && (
+          {/* Validation Error Message */}
+          {formik.touched.amount && formik.errors.amount ? (
             <span className="text-red-500 dark:text-red-500 text-xs font-normal">{formik.errors.amount}</span>
-          )}
+          ) : null}
         </div>
-        {/* Input Field */}
+        {/* Input Fields */}
         <div className="flex">
+          {/* Token */}
           <Select
             isDisabled={!isConnected}
             name="tokenName"
-            options={[allTokens[0]].concat(
-              allTokens.map((token) => (token.name === 'SCRT' ? { ...token, address: 'native' } : token))
-            )}
+            options={tokenSelectOptions}
             value={formik.values.token}
-            onChange={(token: Token) => {
-              formik.setFieldValue('token', token)
-            }}
+            onChange={(token: Token) => handleTokenSelect(token)}
             onBlur={formik.handleBlur}
             isSearchable={false}
-            formatOptionLabel={(token) => (
-              <div className="flex items-center">
-                <img
-                  src={`/img/assets/${token.image}`}
-                  alt={`${token.name} logo`}
-                  className="w-6 h-6 mr-2 rounded-full"
-                />
-                <span className="font-semibold text-sm">
-                  {token.address === 'native' || token.is_snip20 ? null : 's'}
-                  {token.name}
-                </span>
-              </div>
-            )}
+            formatOptionLabel={(token: Token) => <TokenSelectFormatOptionLabel token={token} />}
             className="react-select-wrap-container"
             classNamePrefix="react-select-wrap"
           />
+          {/* Amount */}
           <input
             id="amount"
             name="amount"
@@ -134,20 +128,17 @@ export default function SendForm() {
             onBlur={formik.handleBlur}
             className={
               'dark:placeholder-neutral-600 text-right focus:z-10 block flex-1 min-w-0 w-full bg-neutral-100 dark:bg-neutral-800 text-black dark:text-white px-4 rounded-r-lg disabled:placeholder-neutral-300 dark:disabled:placeholder-neutral-700 transition-colors font-medium focus:outline-0 focus:ring-2 ring-sky-500/40' +
-              (formik.errors.amount ? '  border border-red-500 dark:border-red-500' : '')
+              (formik.touched.amount && formik.errors.amount ? '  border border-red-500 dark:border-red-500' : '')
             }
             placeholder="0"
             disabled={!isConnected}
           />
         </div>
 
-        {/* Balance | [25%|50%|75%|Max] */}
+        {/* Balance | [25%|50%|75%|100%] */}
         <div className="flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 mt-2">
           <div className="flex-1 text-xs">
-            <NewBalanceUI
-              token={allTokens.find((token: Token) => token.name === formik.values.token.name)}
-              isSecretToken={formik.values.token.address !== 'native'}
-            />
+            <NewBalanceUI token={formik.values.token} isSecretToken={formik.values.token.address !== 'native'} />
           </div>
           <div className="sm:flex-initial text-xs">
             <PercentagePicker setAmountByPercentage={setAmountByPercentage} disabled={!isConnected} />
@@ -167,9 +158,11 @@ export default function SendForm() {
               </span>
             </Tooltip>
           </span>
-          {formik.errors.recipient && (
+
+          {/* Validation Error Message */}
+          {formik.touched.recipient && formik.errors.recipient ? (
             <span className="text-red-500 dark:text-red-500 text-xs font-normal">{formik.errors.recipient}</span>
-          )}
+          ) : null}
         </div>
 
         {/* Input Field */}
@@ -183,7 +176,7 @@ export default function SendForm() {
             type="text"
             className={
               'dark:placeholder-neutral-600 py-2 text-left focus:z-10 block flex-1 min-w-0 w-full bg-neutral-100 dark:bg-neutral-800 text-black dark:text-white px-4 rounded-md disabled:placeholder-neutral-300 dark:disabled:placeholder-neutral-700 transition-colors font-medium focus:outline-0 focus:ring-2 ring-sky-500/40' +
-              (!isValidDestination && isValidationActive ? '  border border-red-500 dark:border-red-500' : '')
+              (formik.touched.recipient && formik.errors.recipient ? '  border border-red-500 dark:border-red-500' : '')
             }
             placeholder="secret1..."
             disabled={!isConnected}
@@ -203,9 +196,11 @@ export default function SendForm() {
               </span>
             </Tooltip>
           </span>
-          {!isValidDestination && isValidationActive && (
-            <span className="text-red-500 dark:text-red-500 text-xs font-normal">{destinationValidationMessage}</span>
-          )}
+
+          {/* Validation Error Message */}
+          {formik.touched.memo && formik.errors.memo ? (
+            <span className="text-red-500 dark:text-red-500 text-xs font-normal">{formik.errors.memo}</span>
+          ) : null}
         </div>
 
         {/* Input Field */}
@@ -219,7 +214,7 @@ export default function SendForm() {
             type="text"
             className={
               'dark:placeholder-neutral-600 py-2 text-left focus:z-10 block flex-1 min-w-0 w-full bg-neutral-100 dark:bg-neutral-800 text-black dark:text-white px-4 rounded-md disabled:placeholder-neutral-300 dark:disabled:placeholder-neutral-700 transition-colors font-medium focus:outline-0 focus:ring-2 ring-sky-500/40' +
-              (!isValidDestination && isValidationActive ? '  border border-red-500 dark:border-red-500' : '')
+              (formik.touched.memo && formik.errors.memo ? '  border border-red-500 dark:border-red-500' : '')
             }
             disabled={!isConnected}
           />
@@ -237,7 +232,7 @@ export default function SendForm() {
             fill="none"
             viewBox="0 0 24 24"
           >
-            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
             <path
               className="opacity-75"
               fill="currentColor"
