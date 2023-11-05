@@ -7,6 +7,8 @@ import { useTokenPricesStore } from 'store/TokenPrices'
 import { useSecretNetworkClientStore } from 'store/secretNetworkClient'
 import Tooltip from '@mui/material/Tooltip'
 import { formatUsdString } from 'utils/commons'
+import { faKey } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 interface IProps {
   token: Token
@@ -34,7 +36,7 @@ export default function NewBalanceUI(props: IProps) {
         setBalance(undefined)
       }
     }
-  }, [balanceMapping, props.token])
+  }, [balanceMapping, props.token, props.isSecretToken])
 
   useEffect(() => {
     if (priceMapping !== null && balance !== null) {
@@ -53,7 +55,7 @@ export default function NewBalanceUI(props: IProps) {
           <>
             <span className="font-medium">{` ${new BigNumber(balance)
               .dividedBy(`1e${props.token.decimals}`)
-              .toFormat()} ${props.isSecretToken ? 's' : ''}${props.token.name} ${
+              .toFormat()} ${props.isSecretToken && !props.token.is_snip20 ? 's' : ''}${props.token.name} ${
               props.token.coingecko_id && usdPriceString ? ` (${usdPriceString})` : ''
             }`}</span>
           </>
@@ -64,13 +66,15 @@ export default function NewBalanceUI(props: IProps) {
           </>
         )}
 
-        {/* <button
-          onClick={setViewingKey}
-          className="text-left flex items-center font-semibold bg-neutral-100 dark:bg-neutral-900 px-1.5 py-0.5 rounded-md border-neutral-300 dark:border-neutral-700 transition hover:bg-neutral-300 dark:hover:bg-neutral-700 focus:bg-neutral-500 dark:focus:bg-neutral-500 cursor-pointer disabled:text-neutral-500 dark:disabled:text-neutral-500 disabled:hover:bg-neutral-100 dark:disabled:hover:bg-neutral-900 disabled:cursor-default"
-        >
-          <FontAwesomeIcon icon={faKey} className="mr-2" />
-          <span className="text-left">Set Viewing Key</span>
-        </button> */}
+        {
+          <button
+            onClick={setViewingKey}
+            className="text-left flex items-center font-semibold bg-neutral-100 dark:bg-neutral-900 px-1.5 py-0.5 rounded-md border-neutral-300 dark:border-neutral-700 transition hover:bg-neutral-300 dark:hover:bg-neutral-700 focus:bg-neutral-500 dark:focus:bg-neutral-500 cursor-pointer disabled:text-neutral-500 dark:disabled:text-neutral-500 disabled:hover:bg-neutral-100 dark:disabled:hover:bg-neutral-900 disabled:cursor-default"
+          >
+            <FontAwesomeIcon icon={faKey} className="mr-2" />
+            <span className="text-left">Set Viewing Key</span>
+          </button>
+        }
       </div>
     </>
   )

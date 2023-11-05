@@ -26,7 +26,7 @@ export default function SendForm() {
   const formik = useFormik({
     initialValues: {
       amount: '',
-      token: allTokens[1],
+      token: allTokens[0],
       recipient: '',
       memo: ''
     },
@@ -149,7 +149,7 @@ export default function SendForm() {
           <div className="flex-1 text-xs">
             <NewBalanceUI
               token={allTokens.find((token: Token) => token.name === formik.values.token.name)}
-              isSecretToken={formik.values.token.address != 'native'}
+              isSecretToken={formik.values.token.address !== 'native'}
             />
           </div>
           <div className="sm:flex-initial text-xs">
