@@ -139,7 +139,9 @@ const performIbcDeposit = async (
   deposit_channel_id = deposit.channel_id || deposit_channel_id
   deposit_gas = deposit.gas || deposit_gas
 
-  const routing = await getSkipIBCRouting(selectedSource, 'deposit', token)
+  const amount = new BigNumber(props.amount).multipliedBy(`1e${token.decimals}`).toFixed(0, BigNumber.ROUND_DOWN)
+
+  const routing = await getSkipIBCRouting(selectedSource, 'deposit', token, amount)
 
   try {
     let tx: TxResponse
@@ -156,7 +158,7 @@ const performIbcDeposit = async (
             source_channel: deposit_channel_id,
             source_port: 'transfer',
             token: {
-              amount: props.amount,
+              amount: amount,
               denom: token.deposits.filter((deposit: Deposit) => deposit.chain_name === props.chain.chain_name)[0].denom
             },
             memo: routing.operations.length > 1 ? await composePMFMemo(routing.operations) : '',
@@ -182,7 +184,7 @@ const performIbcDeposit = async (
             source_channel: deposit_channel_id,
             source_port: 'transfer',
             token: {
-              amount: props.amount,
+              amount: amount,
               denom: token.deposits.filter((deposit: any) => deposit.chain_name === props.chain.chain_name)[0].denom
             },
             timeout_timestamp: String(Math.floor(Date.now() / 1000) + 10 * 60), // 10 minute timeout
@@ -248,7 +250,7 @@ const performIbcDeposit = async (
           source_channel: deposit_channel_id,
           source_port: 'transfer',
           token: {
-            amount: props.amount,
+            amount: amount,
             denom: deposit.denom
           },
           timeout_timestamp: String(Math.floor(Date.now() / 1000) + 10 * 60) // 10 minute timeout
@@ -310,7 +312,7 @@ const performIbcDeposit = async (
         {
           sourcePort: 'transfer',
           sourceChannel: deposit_channel_id,
-          amount: props.amount,
+          amount: amount,
           denom: token.deposits.filter((deposit: Deposit) => deposit.chain_name === props.chain.chain_name)[0].denom,
           receiver: props.secretNetworkClient.address,
           revisionNumber: 0,
@@ -443,7 +445,7 @@ const performIbcWithdrawal = async (
   //   }
   // )
 
-  const routing = await getSkipIBCRouting(selectedDest, 'withdrawal', token)
+  const routing = await getSkipIBCRouting(selectedDest, 'withdrawal', token, amount)
 
   try {
     let tx: TxResponse
@@ -730,7 +732,7 @@ async function fetchSourceBalance(address: string, chain: Chain, token: Token): 
   }
 }
 
-async function getSkipIBCRouting(chain: Chain, IbcMode: IbcMode, token: Token) {
+async function getSkipIBCRouting(chain: Chain, IbcMode: IbcMode, token: Token, amount: BigNumber) {
   const client = new SkipRouter({
     apiURL: SKIP_API_URL
   })
@@ -738,16 +740,21 @@ async function getSkipIBCRouting(chain: Chain, IbcMode: IbcMode, token: Token) {
   let dest
   let source
   if (IbcMode === 'deposit') {
-    source = token.withdrawals[0]
-    dest = token.withdrawals.find((withdrawal) => withdrawal.chain_name === chain.chain_name)
+    dest = token.deposits.find((deposit) => deposit.chain_name === chain.chain_name)
+    source = token.withdrawals.find((withdrawals) => withdrawals.chain_name === chain.chain_name)
+    console.log(source)
+    console.log(dest)
   }
   if (IbcMode === 'withdrawal') {
-    dest = token.withdrawals[0]
-    source = token.withdrawals.find((withdrawal) => withdrawal.chain_name === chain.chain_name)
+    source = token.deposits.find((deposit) => deposit.chain_name === chain.chain_name)
+    dest = token.withdrawals.find((withdrawal) => withdrawal.chain_name === chain.chain_name)
+    console.log(dest)
+    console.log(source)
   }
+  console.log(amount)
 
   const route = await client.route({
-    amountIn: '1000',
+    amountIn: amount.toString(),
     sourceAssetDenom: source.denom,
     sourceAssetChainID: IbcMode === 'withdrawal' ? chains['Secret Network'].chain_id : chain.chain_id,
     destAssetDenom: dest.denom,

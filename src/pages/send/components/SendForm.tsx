@@ -1,7 +1,7 @@
 import { useFormik } from 'formik'
 import { useState } from 'react'
 import { sendSchema } from 'pages/send/sendSchema'
-import { useSecretNetworkClientStore } from 'store/secretNetworkClient'
+import { GetBalanceError, useSecretNetworkClientStore } from 'store/secretNetworkClient'
 import Select from 'react-select'
 import { Token, chains } from 'utils/config'
 import NewBalanceUI from 'components/NewBalanceUI'
@@ -13,6 +13,7 @@ import { SendService } from 'services/send.service'
 import FeeGrant from 'components/FeeGrant/FeeGrant'
 import { allTokens } from 'utils/commons'
 import { FeeGrantStatus } from 'types/FeeGrantStatus'
+import BigNumber from 'bignumber.js'
 
 export default function SendForm() {
   const {
@@ -42,7 +43,7 @@ export default function SendForm() {
   const formik = useFormik<IFormValues>({
     initialValues: {
       amount: '',
-      token: tokenSelectOptions[2],
+      token: tokenSelectOptions[1],
       recipient: '',
       memo: '',
       feeGrantStatus: feeGrantStatus
@@ -75,9 +76,22 @@ export default function SendForm() {
 
   // handles [25% | 50% | 75% | Max] Button-Group
   function setAmountByPercentage(percentage: number) {
-    formik.setFieldValue('amount', getBalance(formik.values.token) + '')
-    console.log(getBalance(formik.values.token))
-    console.log('formik.values.token', formik.values.token)
+    const balance = getBalance(
+      allTokens.find((token: Token) => token.name === formik.values.token.name),
+      formik.values.token.address !== 'native'
+    )
+    if (
+      (balance !== ('viewingKeyError' as GetBalanceError) || balance !== ('GenericFetchError' as GetBalanceError)) &&
+      balance !== null
+    ) {
+      formik.setFieldValue(
+        'amount',
+        (balance as BigNumber)
+          .dividedBy(`1e${formik.values.token.decimals}`)
+          .times(percentage / 100)
+          .toFormat()
+      )
+    }
     formik.setFieldTouched('amount', true)
   }
 
