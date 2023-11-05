@@ -1,7 +1,6 @@
 import { faBars, faSun } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import Footer from 'components/Footer'
-import { Wallet } from 'components/Wallet/Wallet'
 import { Navigation } from 'components/Navigation'
 import { useState, createContext, useEffect, useContext } from 'react'
 import { Breakpoint } from 'react-socks'
@@ -12,6 +11,7 @@ import FeedbackButton from 'components/FeedbackButton'
 import { ThemeSwitch } from 'components/ThemeSwitch'
 import { Nullable } from 'types/Nullable'
 import Modal from 'components/UI/Modal/Modal'
+import Wallet from 'components/Wallet/Wallet'
 
 export const NavigationContext = createContext<Nullable<boolean>>(null)
 
@@ -46,10 +46,7 @@ export const DefaultLayout = ({ children }: any) => {
       /> */}
 
       {/* Fixed Help Button */}
-      <FloatingCTAButton
-        url="https://linktr.ee/SCRTSupport"
-        text="Need Help?"
-      />
+      <FloatingCTAButton url="https://linktr.ee/SCRTSupport" text="Need Help?" />
 
       <div className="flex">
         {/* Menu */}
@@ -63,10 +60,7 @@ export const DefaultLayout = ({ children }: any) => {
           }
         >
           <NavigationContext.Provider value={showMobileMenu}>
-            <Navigation
-              showMobileMenu={showMobileMenu}
-              setShowMobileMenu={setShowMobileMenu}
-            />
+            <Navigation showMobileMenu={showMobileMenu} setShowMobileMenu={setShowMobileMenu} />
           </NavigationContext.Provider>
         </aside>
         <main className="flex flex-col min-h-screen flex-1 lg:ml-[17rem]">
