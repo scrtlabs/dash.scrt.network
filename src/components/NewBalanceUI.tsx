@@ -40,7 +40,7 @@ export default function NewBalanceUI(props: IProps) {
     if (priceMapping !== null && balance !== null) {
       setUsdPriceString(getValuePrice(props.token, BigNumber(balance)))
     }
-  }, [props, balance])
+  }, [priceMapping, props.token, balance])
 
   if (!isConnected) return null
 
@@ -53,7 +53,7 @@ export default function NewBalanceUI(props: IProps) {
           <>
             <span className="font-medium">{` ${new BigNumber(balance)
               .dividedBy(`1e${props.token.decimals}`)
-              .toFormat()} ${props.token.is_snip20 ? '' : 's'}${props.token.name} ${
+              .toFormat()} ${props.isSecretToken ? 's' : ''}${props.token.name} ${
               props.token.coingecko_id && usdPriceString ? ` (${usdPriceString})` : ''
             }`}</span>
           </>
