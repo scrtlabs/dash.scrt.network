@@ -10,6 +10,7 @@ import SquidModal from './SquidModal'
 import { ThemeContext } from 'context/ThemeContext'
 import HoudiniModal from './HoudiniModal'
 import { useSecretNetworkClientStore } from 'store/secretNetworkClient'
+import Title from 'components/Title'
 
 function Bridge() {
   useEffect(() => {
