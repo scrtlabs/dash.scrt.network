@@ -313,7 +313,9 @@ export const Staking = () => {
         {secretNetworkClient?.address && scrtBalance === '0' ? <NoScrtWarning /> : null}
 
         {/* My Validators */}
-        <MyValidators />
+        <div className="my-validators mb- max-w-6xl mx-auto">
+          <div className="font-semibold text-xl mb-4 px-4">My Validators</div>
+        </div>
         {secretNetworkClient?.address && delegatorDelegations && delegatorDelegations?.length != 0 && validators && (
           <div className="my-validators mb-20 max-w-6xl mx-auto">
             {/* Claim Rewards */}
