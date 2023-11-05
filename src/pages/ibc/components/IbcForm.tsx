@@ -90,8 +90,7 @@ export default function IbcForm() {
           ibcMode: formik.values.ibcMode,
           token: formik.values.token,
           amount: formik.values.amount,
-          feeGrantStatus: feeGrantStatus,
-          sourceChainNetworkClient: secretNetworkClient
+          feeGrantStatus: feeGrantStatus
         })
         setIsWaiting(false)
         if (res.success) {

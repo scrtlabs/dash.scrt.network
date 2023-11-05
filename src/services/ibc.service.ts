@@ -44,7 +44,6 @@ interface TProps {
   token: Token
   amount: string
   secretNetworkClient: SecretNetworkClient
-  sourceChainNetworkClient: SecretNetworkClient
   feeGrantStatus: FeeGrantStatus
 }
 
@@ -112,14 +111,19 @@ const performIbcTransfer = async (props: TProps): Promise<{ success: boolean; er
     errorMsg: null
   }
 
+  const sourceChainNetworkClient = await IbcService.getChainSecretJs(props.chain)
   if (props.ibcMode === 'withdrawal') {
-    return performIbcWithdrawal(props, props.token)
+    return performIbcWithdrawal(props, props.token, sourceChainNetworkClient)
   } else if (props.ibcMode === 'deposit') {
-    return performIbcDeposit(props)
+    return performIbcDeposit(props, props.token, sourceChainNetworkClient)
   }
 }
 
-const performIbcDeposit = async (props: TProps): Promise<{ success: boolean; errorMsg: Nullable<string> }> => {
+const performIbcDeposit = async (
+  props: TProps,
+  token: Token,
+  sourceChainNetworkClient: SecretNetworkClient
+): Promise<{ success: boolean; errorMsg: Nullable<string> }> => {
   let result: { success: boolean; errorMsg: Nullable<string> } = {
     success: false,
     errorMsg: null
@@ -130,7 +134,7 @@ const performIbcDeposit = async (props: TProps): Promise<{ success: boolean; err
   // IBC Logic
   let { deposit_channel_id, deposit_gas, deposit_gas_denom, lcd: lcdSrcChain } = selectedSource
 
-  const deposit = props.token.deposits.filter((deposit: Deposit) => deposit.chain_name === props.chain.chain_name)[0]
+  const deposit = token.deposits.filter((deposit: Deposit) => deposit.chain_name === props.chain.chain_name)[0]
 
   deposit_channel_id = deposit.channel_id || deposit_channel_id
   deposit_gas = deposit.gas || deposit_gas
@@ -141,20 +145,19 @@ const performIbcDeposit = async (props: TProps): Promise<{ success: boolean; err
     let tx: TxResponse
     if (
       !['Evmos', 'Injective'].includes(props.chain.chain_name) &&
-      (!props.token.is_ics20 || deposit.axelar_chain_name == CHAINS.MAINNET.AXELAR)
+      (!token.is_ics20 || deposit.axelar_chain_name == CHAINS.MAINNET.AXELAR)
     ) {
       // Regular cosmos chain (not ethermint signing)
-      if (props.token.name === 'SCRT' || deposit.axelar_chain_name == CHAINS.MAINNET.AXELAR) {
-        tx = await props.sourceChainNetworkClient.tx.ibc.transfer(
+      if (token.name === 'SCRT' || deposit.axelar_chain_name == CHAINS.MAINNET.AXELAR) {
+        tx = await sourceChainNetworkClient.tx.ibc.transfer(
           {
-            sender: props.sourceChainNetworkClient.address,
+            sender: sourceChainNetworkClient.address,
             receiver: props.secretNetworkClient.address,
             source_channel: deposit_channel_id,
             source_port: 'transfer',
             token: {
               amount: props.amount,
-              denom: props.token.deposits.filter((deposit: Deposit) => deposit.chain_name === props.chain.chain_name)[0]
-                .denom
+              denom: token.deposits.filter((deposit: Deposit) => deposit.chain_name === props.chain.chain_name)[0].denom
             },
             memo: routing.operations.length > 1 ? await composePMFMemo(routing.operations) : '',
             timeout_timestamp: String(Math.floor(Date.now() / 1000) + 10 * 60) // 10 minute timeout
@@ -172,16 +175,15 @@ const performIbcDeposit = async (props: TProps): Promise<{ success: boolean; err
           }
         )
       } else {
-        tx = await props.sourceChainNetworkClient.tx.ibc.transfer(
+        tx = await sourceChainNetworkClient.tx.ibc.transfer(
           {
-            sender: props.sourceChainNetworkClient.address,
+            sender: sourceChainNetworkClient.address,
             receiver: 'secret198lmmh2fpj3weqhjczptkzl9pxygs23yn6dsev',
             source_channel: deposit_channel_id,
             source_port: 'transfer',
             token: {
               amount: props.amount,
-              denom: props.token.deposits.filter((deposit: any) => deposit.chain_name === props.chain.chain_name)[0]
-                .denom
+              denom: token.deposits.filter((deposit: any) => deposit.chain_name === props.chain.chain_name)[0].denom
             },
             timeout_timestamp: String(Math.floor(Date.now() / 1000) + 10 * 60), // 10 minute timeout
             memo:
@@ -206,8 +208,8 @@ const performIbcDeposit = async (props: TProps): Promise<{ success: boolean; err
                       contract: 'secret198lmmh2fpj3weqhjczptkzl9pxygs23yn6dsev',
                       msg: {
                         wrap_deposit: {
-                          snip20_address: props.token.address,
-                          snip20_code_hash: props.token.code_hash,
+                          snip20_address: token.address,
+                          snip20_code_hash: token.code_hash,
                           recipient_address: props.secretNetworkClient.address
                         }
                       }
@@ -227,11 +229,11 @@ const performIbcDeposit = async (props: TProps): Promise<{ success: boolean; err
           }
         )
       }
-    } else if (props.token.is_ics20 && deposit.axelar_chain_name != CHAINS.MAINNET.AXELAR) {
+    } else if (token.is_ics20 && deposit.axelar_chain_name != CHAINS.MAINNET.AXELAR) {
       const fromChain = deposit.axelar_chain_name,
         toChain = 'secret-snip',
         destinationAddress = props.secretNetworkClient.address,
-        asset = props.token.axelar_denom
+        asset = token.axelar_denom
 
       const depositAddress = await sdk.getDepositAddress({
         fromChain,
@@ -239,9 +241,9 @@ const performIbcDeposit = async (props: TProps): Promise<{ success: boolean; err
         destinationAddress,
         asset
       })
-      tx = await props.sourceChainNetworkClient.tx.ibc.transfer(
+      tx = await sourceChainNetworkClient.tx.ibc.transfer(
         {
-          sender: props.sourceChainNetworkClient.address,
+          sender: sourceChainNetworkClient.address,
           receiver: depositAddress,
           source_channel: deposit_channel_id,
           source_port: 'transfer',
@@ -279,7 +281,7 @@ const performIbcDeposit = async (props: TProps): Promise<{ success: boolean; err
           }
         }
       } = await (
-        await fetch(`${selectedSource.lcd}/cosmos/auth/v1beta1/accounts/${props.sourceChainNetworkClient.address}`)
+        await fetch(`${selectedSource.lcd}/cosmos/auth/v1beta1/accounts/${sourceChainNetworkClient.address}`)
       ).json()
 
       // Get account pubkey
@@ -294,7 +296,7 @@ const performIbcDeposit = async (props: TProps): Promise<{ success: boolean; err
           cosmosChainId: selectedSource.chain_id
         },
         {
-          accountAddress: props.sourceChainNetworkClient.address,
+          accountAddress: sourceChainNetworkClient.address,
           accountNumber: Number(accountNumber),
           sequence: Number(accountSequence),
           pubkey: toBase64(pubkey)
@@ -309,8 +311,7 @@ const performIbcDeposit = async (props: TProps): Promise<{ success: boolean; err
           sourcePort: 'transfer',
           sourceChannel: deposit_channel_id,
           amount: props.amount,
-          denom: props.token.deposits.filter((deposit: Deposit) => deposit.chain_name === props.chain.chain_name)[0]
-            .denom,
+          denom: token.deposits.filter((deposit: Deposit) => deposit.chain_name === props.chain.chain_name)[0].denom,
           receiver: props.secretNetworkClient.address,
           revisionNumber: 0,
           revisionHeight: 0,
@@ -328,7 +329,7 @@ const performIbcDeposit = async (props: TProps): Promise<{ success: boolean; err
       // Sign the tx
       const sig = await (window as any).wallet?.signDirect(
         selectedSource.chain_id,
-        props.sourceChainNetworkClient.address,
+        sourceChainNetworkClient.address,
         {
           bodyBytes: txIbcMsgTransfer.signDirect.body.serializeBinary(),
           authInfoBytes: txIbcMsgTransfer.signDirect.authInfo.serializeBinary(),
@@ -349,7 +350,7 @@ const performIbcDeposit = async (props: TProps): Promise<{ success: boolean; err
       // cosmjs can broadcast to Ethermint but cannot handle the response
 
       // Broadcast the tx to Evmos
-      tx = await props.sourceChainNetworkClient.tx.broadcastSignedTx(txBytes, {
+      tx = await sourceChainNetworkClient.tx.broadcastSignedTx(txBytes, {
         ibcTxsOptions: {
           resolveResponses: true,
           resolveResponsesCheckIntervalMs: 250,
@@ -414,7 +415,8 @@ const performIbcDeposit = async (props: TProps): Promise<{ success: boolean; err
 
 const performIbcWithdrawal = async (
   props: TProps,
-  token: Token
+  token: Token,
+  sourceChainNetworkClient: SecretNetworkClient
 ): Promise<{ success: boolean; errorMsg: Nullable<string> }> => {
   let result: { success: boolean; errorMsg: Nullable<string> } = {
     success: false,
@@ -461,7 +463,7 @@ const performIbcWithdrawal = async (
                 toUtf8(
                   JSON.stringify({
                     channel: withdraw_channel_id,
-                    remote_address: props.sourceChainNetworkClient.address,
+                    remote_address: sourceChainNetworkClient.address,
                     timeout: 600 // 10 minute timeout
                   })
                 )
@@ -489,7 +491,7 @@ const performIbcWithdrawal = async (
     ) {
       const fromChain = 'secret-snip',
         toChain = withdrawalChain.axelar_chain_name,
-        destinationAddress = props.sourceChainNetworkClient.address,
+        destinationAddress = sourceChainNetworkClient.address,
         asset = token.axelar_denom
 
       let depositAddress = ''
@@ -550,7 +552,7 @@ const performIbcWithdrawal = async (
       tx = await props.secretNetworkClient.tx.ibc.transfer(
         {
           sender: props.secretNetworkClient?.address,
-          receiver: props.sourceChainNetworkClient.address,
+          receiver: sourceChainNetworkClient.address,
           source_channel: source_channel_id,
           source_port: 'transfer',
           token: {
@@ -592,7 +594,7 @@ const performIbcWithdrawal = async (
           } as any),
           new MsgTransfer({
             sender: props.secretNetworkClient?.address,
-            receiver: props.sourceChainNetworkClient.address,
+            receiver: sourceChainNetworkClient.address,
             source_channel: withdraw_channel_id,
             source_port: 'transfer',
             token: {
