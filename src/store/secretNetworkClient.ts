@@ -61,7 +61,6 @@ export const useSecretNetworkClientStore = create<SecretNetworkClientState>()((s
     setScrtBalance()
     setsScrtBalance()
     setBalanceMapping()
-    getBalance(tokens[0])
   },
   disconnectWallet: () =>
     set({
@@ -91,12 +90,12 @@ export const useSecretNetworkClientStore = create<SecretNetworkClientState>()((s
   },
   isTokenBalanceLoading: false,
   setViewingKey: async (token: Token) => {
-    const { setsScrtBalance } = get()
+    const { setBalanceMapping } = get()
     await WalletService.setWalletViewingKey(token.address)
     try {
       // setLoadingTokenBalance(true);
       await sleep(1000) // sometimes query nodes lag
-      setsScrtBalance()
+      setBalanceMapping()
     } catch (e) {
       console.error(e)
     } finally {
@@ -117,20 +116,17 @@ export const useSecretNetworkClientStore = create<SecretNetworkClientState>()((s
     if (!get().isInitialized) {
       get().init()
     }
-
-    console.log(get().balanceMapping)
-
     if (get().balanceMapping != null) {
       const tokenBalances: TokenBalances = get().balanceMapping.get(token)
+      if (!tokenBalances) {
+        return null
+      }
       if (!secretToken) {
         return tokenBalances.balance
-      }
-
-      if (secretToken) {
+      } else if (secretToken) {
         return tokenBalances.secretBalance
       }
     }
-
     return null
   }
 }))

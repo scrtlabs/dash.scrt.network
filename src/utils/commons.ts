@@ -288,15 +288,40 @@ export async function suggestComposabletoWallet(wallet: any) {
   })
 }
 
-export const usdString = new Intl.NumberFormat('en-US', {
-  style: 'currency',
-  currency: 'USD',
-  minimumFractionDigits: 2,
-  maximumFractionDigits: 2
-})
+export const getFractionDigits = (number: any) => {
+  const significantDigits = 2
+  const maxFractionDigits = 6
 
-export function formatUsdString(input: string | number) {
-  return usdString.format(Number(input))
+  const strNumber = number.toFixed(maxFractionDigits)
+
+  const [whole, decimal] = strNumber.split('.')
+
+  if (!decimal || whole.length >= significantDigits) {
+    return { minimumFractionDigits: 2, maximumFractionDigits: 2 }
+  }
+
+  let requiredDigits = significantDigits - whole.length
+
+  const leadingZeros = decimal.length - decimal.replace(/^0+/, '').length
+
+  requiredDigits += leadingZeros
+
+  let fractionDigits = Math.min(requiredDigits, maxFractionDigits)
+  fractionDigits = Math.max(fractionDigits, 2)
+
+  return {
+    minimumFractionDigits: fractionDigits,
+    maximumFractionDigits: fractionDigits
+  }
+}
+
+export const formatUsdString = (number: any) => {
+  const fractionDigits = getFractionDigits(number)
+  return new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD',
+    ...fractionDigits
+  }).format(number)
 }
 
 const COUNT_ABBRS = ['', 'K', 'M', 'B', 't', 'q', 's', 'S', 'o', 'n', 'd', 'U', 'D', 'T', 'Qt', 'Qd', 'Sd', 'St']

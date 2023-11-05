@@ -13,7 +13,8 @@ interface TokenPricesState {
   priceMapping: Map<Token, number>
   init: () => void
   isInitialized: boolean
-  getPrice: (token: Token, amount?: BigNumber) => Nullable<string>
+  getPrice: (token: Token) => Nullable<string>
+  getValuePrice: (token: Token, amount: BigNumber) => Nullable<string>
 }
 
 export const useTokenPricesStore = create<TokenPricesState>()((set, get) => ({
@@ -50,13 +51,23 @@ export const useTokenPricesStore = create<TokenPricesState>()((set, get) => ({
         })
       })
   },
-  getPrice: (token: Token, amount: BigNumber = new BigNumber(1)) => {
+  getPrice: (token: Token) => {
     if (!get().isInitialized) {
       get().init()
     }
     const tokenPrice = get().priceMapping.get(token)
     if (tokenPrice !== undefined) {
-      const result = new BigNumber(tokenPrice).multipliedBy(amount)
+      return formatUsdString(tokenPrice)
+    }
+    return null
+  },
+  getValuePrice: (token: Token, amount: BigNumber = new BigNumber(1)) => {
+    if (!get().isInitialized) {
+      get().init()
+    }
+    const tokenPrice = get().priceMapping.get(token)
+    if (tokenPrice !== undefined) {
+      const result = new BigNumber(tokenPrice).multipliedBy(amount).dividedBy(`1e${token.decimals}`)
       return formatUsdString(Number(result))
     }
     return null

@@ -3,7 +3,7 @@ import React, { useState } from 'react'
 import { sendSchema } from 'pages/send/sendSchema'
 import { useSecretNetworkClientStore } from 'store/secretNetworkClient'
 import Select from 'react-select'
-import { Token, tokens } from 'utils/config'
+import { Token } from 'utils/config'
 import NewBalanceUI from 'components/NewBalanceUI'
 import PercentagePicker from 'components/PercentagePicker'
 import BigNumber from 'bignumber.js'
@@ -12,17 +12,12 @@ import { faCircleCheck, faInfoCircle, faTriangleExclamation } from '@fortawesome
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { SendService } from 'services/send.service'
 import FeeGrant from 'components/FeeGrant/FeeGrant'
+import { allTokens } from 'utils/commons'
+import _ from 'lodash'
 
 export default function SendForm() {
-  const {
-    secretNetworkClient,
-    walletAddress,
-    feeGrantStatus,
-    requestFeeGrant,
-    isConnected,
-    connectWallet,
-    scrtBalance
-  } = useSecretNetworkClientStore()
+  const { secretNetworkClient, walletAddress, feeGrantStatus, requestFeeGrant, isConnected, connectWallet } =
+    useSecretNetworkClientStore()
 
   const [generalSuccessMessage, setGeneralSuccessMessage] = useState<String>('')
   const [generalErrorMessage, setGeneralErrorMessage] = useState<String>('')
@@ -31,7 +26,7 @@ export default function SendForm() {
   const formik = useFormik({
     initialValues: {
       amount: '',
-      tokenName: 'AKT',
+      token: allTokens[0],
       recipient: '',
       memo: ''
     },
@@ -67,26 +62,24 @@ export default function SendForm() {
   const [destinationValidationMessage, setDestinationValidationMessage] = useState<string>('')
   const [isValidationActive, setIsValidationActive] = useState<boolean>(false)
   const [amountString, setAmountString] = useState<string>('0')
-  const secretToken: Token = tokens.find((token) => token.name === 'SCRT')
   const [tokenBalance, setTokenBalance] = useState<any>()
-  const [memo, setMemo] = useState<string>('')
 
   function getSelectedToken(): Token {
-    return tokens.find((token: Token) => token.name === formik.values.tokenName)
+    return formik.values.token
   }
 
   // handles [25% | 50% | 75% | Max] Button-Group
   function setAmountByPercentage(percentage: number) {
     if (tokenBalance) {
-      let availableAmount = new BigNumber(tokenBalance).dividedBy(`1e${selectedToken.decimals}`)
+      let availableAmount = new BigNumber(tokenBalance).dividedBy(`1e${getSelectedToken().decimals}`)
       let potentialInput = availableAmount.toNumber() * (percentage * 0.01)
-      if (percentage === 100 && potentialInput > 0.05 && selectedToken.name === 'SCRT') {
+      if (percentage === 100 && potentialInput > 0.05 && getSelectedToken().name === 'SCRT') {
         potentialInput = potentialInput - 0.05
       }
       if (Number(potentialInput) < 0) {
         setAmountString('')
       } else {
-        setAmountString(potentialInput.toFixed(selectedToken.decimals))
+        setAmountString(potentialInput.toFixed(getSelectedToken().decimals))
       }
     }
   }
@@ -110,9 +103,13 @@ export default function SendForm() {
           <Select
             isDisabled={!isConnected}
             name="tokenName"
-            options={tokens.sort((a, b) => a.name.localeCompare(b.name))}
-            value={tokens.find((token) => token.name === formik.values.tokenName)}
-            onChange={(token: Token) => formik.setFieldValue('tokenName', token.name)}
+            options={[allTokens[0]].concat(
+              allTokens.map((token) => (token.name === 'SCRT' ? { ...token, address: 'native' } : token))
+            )}
+            value={formik.values.token}
+            onChange={(token: Token) => {
+              formik.setFieldValue('token', token)
+            }}
             onBlur={formik.handleBlur}
             isSearchable={false}
             formatOptionLabel={(token) => (
@@ -122,7 +119,10 @@ export default function SendForm() {
                   alt={`${token.name} logo`}
                   className="w-6 h-6 mr-2 rounded-full"
                 />
-                <span className="font-semibold text-sm">{token.name}</span>
+                <span className="font-semibold text-sm">
+                  {token.address === 'native' || token.is_snip20 ? null : 's'}
+                  {token.name}
+                </span>
               </div>
             )}
             className="react-select-wrap-container"
@@ -147,7 +147,10 @@ export default function SendForm() {
         {/* Balance | [25%|50%|75%|Max] */}
         <div className="flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 mt-2">
           <div className="flex-1 text-xs">
-            <NewBalanceUI token={getSelectedToken()} isSecretToken={false} />
+            <NewBalanceUI
+              token={allTokens.find((token: Token) => token.name === formik.values.token.name)}
+              isSecretToken={formik.values.token.address !== 'native'}
+            />
           </div>
           <div className="sm:flex-initial text-xs">
             <PercentagePicker setAmountByPercentage={setAmountByPercentage} disabled={!isConnected} />

@@ -1,7 +1,7 @@
 import BigNumber from 'bignumber.js'
 import React, { useContext, useEffect, useState } from 'react'
 import { APIContext } from 'context/APIContext'
-import { formatNumber, usdString, faucetAddress } from 'utils/commons'
+import { formatNumber, formatUsdString, faucetAddress } from 'utils/commons'
 import { StakingContext } from 'pages/staking/Staking'
 import { toast } from 'react-toastify'
 import FeeGrant from '../../../../components/FeeGrant/FeeGrant'
@@ -23,7 +23,7 @@ export default function StakingForm() {
   }
 
   useEffect(() => {
-    const scrtBalanceUsdString = usdString.format(
+    const scrtBalanceUsdString = formatUsdString(
       new BigNumber(amountString!).multipliedBy(Number(currentPrice)).toNumber()
     )
     setAmountInDollarString(scrtBalanceUsdString)

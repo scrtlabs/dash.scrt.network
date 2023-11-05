@@ -6,36 +6,43 @@ import { scrtToken } from 'utils/tokens'
 import { useTokenPricesStore } from 'store/TokenPrices'
 import { useSecretNetworkClientStore } from 'store/secretNetworkClient'
 import Tooltip from '@mui/material/Tooltip'
+import { formatUsdString } from 'utils/commons'
+import { faKey } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 interface IProps {
   token: Token
-  isSecretToken?: boolean
+  isSecretToken: boolean
 }
 
-export default function NewBalanceUI({ isSecretToken: isSecretToken = false, ...props }: IProps) {
+export default function NewBalanceUI(props: IProps) {
   const setViewingKey = () => {
     // TODO: Do something with props.token;
   }
 
   const { isConnected, getBalance, balanceMapping } = useSecretNetworkClientStore()
-  const { getPrice, priceMapping } = useTokenPricesStore()
+  const { getValuePrice, priceMapping } = useTokenPricesStore()
 
   const [balance, setBalance] = useState<number>(null)
   const [usdPriceString, setUsdPriceString] = useState<string>(null)
-  //const usdPriceString: Nullable<string> = getPrice(props.token)
-  const tokenName = (isSecretToken ? 's' : '') + props.token.name
+  const tokenName = (props.isSecretToken ? 's' : '') + props.token.name
 
   useEffect(() => {
-    if (balanceMapping != null) {
-      setBalance(getBalance(props.token, isSecretToken).toNumber())
+    if (balanceMapping !== null) {
+      const newBalance = getBalance(props.token, props.isSecretToken)
+      if (newBalance !== null) {
+        setBalance(newBalance.toNumber())
+      } else {
+        setBalance(undefined)
+      }
     }
-  }, [balanceMapping])
+  }, [balanceMapping, props.token, props.isSecretToken])
 
   useEffect(() => {
-    if (priceMapping != null) {
-      setUsdPriceString(getPrice(props.token))
+    if (priceMapping !== null && balance !== null) {
+      setUsdPriceString(getValuePrice(props.token, BigNumber(balance)))
     }
-  }, [usdPriceString])
+  }, [priceMapping, props.token, balance])
 
   if (!isConnected) return null
 
@@ -44,19 +51,13 @@ export default function NewBalanceUI({ isSecretToken: isSecretToken = false, ...
       <div className="flex items-center gap-1.5">
         <span className="font-bold">{`Balance: `}</span>
 
-        {balance && tokenName ? (
+        {balance != undefined && tokenName ? (
           <>
-            <span className="font-medium">{`${balance} ${tokenName}`}</span>
-            {usdPriceString ? (
-              <span className="font-medium"> {usdPriceString}</span>
-            ) : (
-              <>
-                {/* Skeleton Loader */}
-                <Tooltip title={`Loading USD price...`} placement="bottom" arrow>
-                  <span className="animate-pulse bg-neutral-300/40 dark:bg-neutral-600 rounded w-10 h-5"></span>
-                </Tooltip>
-              </>
-            )}
+            <span className="font-medium">{` ${new BigNumber(balance)
+              .dividedBy(`1e${props.token.decimals}`)
+              .toFormat()} ${props.isSecretToken && !props.token.is_snip20 ? 's' : ''}${props.token.name} ${
+              props.token.coingecko_id && usdPriceString ? ` (${usdPriceString})` : ''
+            }`}</span>
           </>
         ) : (
           <>
@@ -65,13 +66,15 @@ export default function NewBalanceUI({ isSecretToken: isSecretToken = false, ...
           </>
         )}
 
-        {/* <button
-          onClick={setViewingKey}
-          className="text-left flex items-center font-semibold bg-neutral-100 dark:bg-neutral-900 px-1.5 py-0.5 rounded-md border-neutral-300 dark:border-neutral-700 transition hover:bg-neutral-300 dark:hover:bg-neutral-700 focus:bg-neutral-500 dark:focus:bg-neutral-500 cursor-pointer disabled:text-neutral-500 dark:disabled:text-neutral-500 disabled:hover:bg-neutral-100 dark:disabled:hover:bg-neutral-900 disabled:cursor-default"
-        >
-          <FontAwesomeIcon icon={faKey} className="mr-2" />
-          <span className="text-left">Set Viewing Key</span>
-        </button> */}
+        {
+          <button
+            onClick={setViewingKey}
+            className="text-left flex items-center font-semibold bg-neutral-100 dark:bg-neutral-900 px-1.5 py-0.5 rounded-md border-neutral-300 dark:border-neutral-700 transition hover:bg-neutral-300 dark:hover:bg-neutral-700 focus:bg-neutral-500 dark:focus:bg-neutral-500 cursor-pointer disabled:text-neutral-500 dark:disabled:text-neutral-500 disabled:hover:bg-neutral-100 dark:disabled:hover:bg-neutral-900 disabled:cursor-default"
+          >
+            <FontAwesomeIcon icon={faKey} className="mr-2" />
+            <span className="text-left">Set Viewing Key</span>
+          </button>
+        }
       </div>
     </>
   )
