@@ -17,15 +17,7 @@ import { Line } from 'react-chartjs-2'
 import TypeSwitch from './components/TypeSwitch'
 import RangeSwitch from './components/RangeSwitch'
 
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Title,
-  Tooltip,
-  Legend
-)
+ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend)
 
 type ChartType = 'Price' | 'Volume' | 'TVL'
 type ChartRange = 'Day' | 'Month' | 'Year'
@@ -65,12 +57,7 @@ export default function PriceVolumeTVL(props: any) {
   ])
 
   useEffect(() => {
-    if (
-      !coingeckoApiData_Day ||
-      !coingeckoApiData_Month ||
-      !coingeckoApiData_Year ||
-      !defiLamaApiData_Year
-    ) {
+    if (!coingeckoApiData_Day || !coingeckoApiData_Month || !coingeckoApiData_Year || !defiLamaApiData_Year) {
       return
     }
     if (chartType === 'Price') {
@@ -81,23 +68,13 @@ export default function PriceVolumeTVL(props: any) {
       setChartData(defiLamaApiData_Year)
       setChartRange('Year')
     }
-  }, [
-    chartType,
-    chartRange,
-    coingeckoApiData_Day,
-    coingeckoApiData_Month,
-    coingeckoApiData_Year,
-    defiLamaApiData_Year
-  ])
+  }, [chartType, chartRange, coingeckoApiData_Day, coingeckoApiData_Month, coingeckoApiData_Year, defiLamaApiData_Year])
 
   const data = {
     labels: chartData.map(
       (x: any[]) =>
         ({
-          x:
-            chartRange === 'Day'
-              ? new Date(x[0]).toLocaleTimeString()
-              : new Date(x[0]).toLocaleDateString()
+          x: chartRange === 'Day' ? new Date(x[0]).toLocaleTimeString() : new Date(x[0]).toLocaleDateString()
         }).x
     ),
     datasets: [
@@ -117,8 +94,7 @@ export default function PriceVolumeTVL(props: any) {
     beforeDatasetsDraw: (chart: any, args: any, options: any) => {
       const ctx = chart.ctx
       ctx.save()
-      ;(ctx.shadowColor = theme === 'dark' ? '#06b6d4' : '#06b6d4'),
-        (ctx.shadowBlur = 8)
+      ;(ctx.shadowColor = theme === 'dark' ? '#06b6d4' : '#06b6d4'), (ctx.shadowBlur = 8)
       ctx.shadowOffsetX = 0
       ctx.shadowOffsetY = 0
     },
@@ -184,10 +160,7 @@ export default function PriceVolumeTVL(props: any) {
           color: theme === 'dark' ? '#fff' : '#000'
         },
         grid: {
-          color:
-            theme === 'dark'
-              ? 'rgba(255, 255, 255, 0.2)'
-              : 'rgba(0, 0, 0, 0.2)',
+          color: theme === 'dark' ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0, 0, 0, 0.2)',
           display: true,
           drawOnChartArea: true,
           drawTicks: true,
@@ -206,32 +179,24 @@ export default function PriceVolumeTVL(props: any) {
   }
 
   return (
-    <>
-      <PriceVolumeHistoryContext.Provider value={providerValue}>
-        <div className="flex flex-col gap-4 xs:gap-2 xs:flex-row items-center mb-4">
-          {/* [Price|Volume|TVL] */}
-          <div className="flex-1 flex items-center">
-            <div className="block xs:hidden mr-2 text-sm font-semibold dark:text-neutral-400">
-              Mode:
-            </div>
-            <TypeSwitch />
-          </div>
-          {/* [Day|Month|Year] */}
-          <div className="flex-initial flex items-center">
-            <div className="block xs:hidden mr-2 text-sm font-semibold text-neutral-600 dark:text-neutral-400">
-              Range:
-            </div>
-            <RangeSwitch />
-          </div>
+    <PriceVolumeHistoryContext.Provider value={providerValue}>
+      <div className="flex flex-col gap-4 xs:gap-2 xs:flex-row items-center mb-4">
+        {/* [Price|Volume|TVL] */}
+        <div className="flex-1 flex items-center">
+          <div className="block xs:hidden mr-2 text-sm font-semibold dark:text-neutral-400">Mode:</div>
+          <TypeSwitch />
         </div>
-        <div className="w-full h-[300px] xl:h-[400px]">
-          <Line
-            data={data as any}
-            options={options as any}
-            plugins={[glowPlugin]}
-          />
+        {/* [Day|Month|Year] */}
+        <div className="flex-initial flex items-center">
+          <div className="block xs:hidden mr-2 text-sm font-semibold text-neutral-600 dark:text-neutral-400">
+            Range:
+          </div>
+          <RangeSwitch />
         </div>
-      </PriceVolumeHistoryContext.Provider>
-    </>
+      </div>
+      <div className="w-full h-[300px] xl:h-[400px]">
+        <Line data={data as any} options={options as any} plugins={[glowPlugin]} />
+      </div>
+    </PriceVolumeHistoryContext.Provider>
   )
 }

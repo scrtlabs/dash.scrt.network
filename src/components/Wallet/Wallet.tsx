@@ -79,7 +79,7 @@ export default function Wallet() {
           <BalanceItem token={scrtToken} isSecretToken={true} />
         </div>
         <Button className="w-full" size="small" color="secondary" onClick={handleManageViewingKeys}>
-          View All Balances
+          Manage All Balances
         </Button>
       </div>
     )
