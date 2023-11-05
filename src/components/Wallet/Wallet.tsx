@@ -19,7 +19,7 @@ import { ManageBalances } from './ManageBalances/ManageBalances'
 import Button from '../UI/Button/Button'
 import { WalletService } from 'services/wallet.service'
 
-export function Wallet() {
+export default function Wallet() {
   const {
     isConnected,
     secretNetworkClient: secretjs,
@@ -54,7 +54,7 @@ export function Wallet() {
   const keplrRef = useRef()
   useHoverOutside(keplrRef, () => setIsMenuVisible(false))
 
-  const CopyableAddress = () => {
+  function CopyableAddress() {
     return (
       <CopyToClipboard
         text={walletAddress as string}
@@ -62,15 +62,15 @@ export function Wallet() {
           toast.success('Address copied to clipboard!')
         }}
       >
-        <button className="px-2 py-1 mb-2 rounded-lg flex gap-2 items-center group bg-neutral-100 dark:bg-neutral-900 hover:bg-neutral-200 dark:hover:bg-black transition-colors">
+        <Button size="small" color="secondary" className="flex gap-2 items-center group">
           {walletAddress.slice(0, 14) + '...' + walletAddress.slice(-14)}
-          <FontAwesomeIcon icon={faCopy} className="block text-neutral-500 dark:text-neutral-500 transition-colors" />
-        </button>
+          <FontAwesomeIcon icon={faCopy} />
+        </Button>
       </CopyToClipboard>
     )
   }
 
-  const Balances = () => {
+  function Balances() {
     return (
       <div>
         <div className="font-bold mb-2">Your Balances</div>
@@ -78,14 +78,14 @@ export function Wallet() {
           <BalanceItem token={scrtToken} isSecretToken={false} />
           <BalanceItem token={scrtToken} isSecretToken={true} />
         </div>
-        <Button size="small" color="secondary" onClick={handleManageViewingKeys}>
-          All Balances
+        <Button className="w-full" size="small" color="secondary" onClick={handleManageViewingKeys}>
+          View All Balances
         </Button>
       </div>
     )
   }
 
-  const handleConnectWallet = () => {
+  function handleConnectWallet() {
     if (window.keplr && (window as any).leap) {
       setIsConnectWalletModalOpen(true)
     } else if (window.keplr && !(window as any).leap) {
@@ -97,7 +97,7 @@ export function Wallet() {
     }
   }
 
-  const ContextMenu = () => {
+  function ContextMenu() {
     return (
       <div className="absolute pt-10 right-4 z-40 top-[3.7rem]">
         <div className="bg-white dark:bg-neutral-800 border text-xs border-neutral-200 dark:border-neutral-700 p-4 w-auto rounded-lg flex-row space-y-4">
@@ -116,7 +116,7 @@ export function Wallet() {
     )
   }
 
-  const GreenAnimatedDot = () => {
+  function GreenAnimatedDot() {
     return (
       <span className="flex relative h-2 w-2">
         <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-1/2"></span>
