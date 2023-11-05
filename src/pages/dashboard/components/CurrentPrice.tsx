@@ -10,12 +10,10 @@ interface Props {
 
 const CurrentPrice = (props: Props) => {
   return (
-    <div className="bg-white dark:bg-neutral-900 rounded-xl h-full flex items-center px-4 py-2">
+    <div className="bg-white dark:bg-neutral-800 rounded-xl h-full flex items-center px-4 py-2">
       <div className="flex-1">
         <div className="text-center inline-block">
-          <div className="text-neutral-400 dark:text-neutral-500 text-sm font-semibold mb-0.5">
-            Current Price
-          </div>
+          <div className="text-neutral-400 dark:text-neutral-500 text-sm font-semibold mb-0.5">Current Price</div>
           <div className="text-xl">
             {props.price ? (
               <>
@@ -39,10 +37,7 @@ const CurrentPrice = (props: Props) => {
           }}
         >
           Get SCRT
-          <FontAwesomeIcon
-            icon={faArrowUpRightFromSquare}
-            className="text-xs ml-2"
-          />
+          <FontAwesomeIcon icon={faArrowUpRightFromSquare} className="text-xs ml-2" />
         </Link>
       </div>
     </div>

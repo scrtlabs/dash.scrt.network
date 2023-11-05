@@ -4,14 +4,12 @@ interface Props {
   volume?: string
 }
 
-const Volume = (props: Props) => {
+export default function Volume(props: Props) {
   return (
     <>
       <div className="bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-xl h-full flex items-center px-8 py-4">
         <div className="flex-1 text-center">
-          <div className="text-neutral-500 dark:text-neutral-500 text-sm font-semibold mb-0.5">
-            Volume
-          </div>
+          <div className="text-neutral-500 dark:text-neutral-500 text-sm font-semibold mb-0.5">Volume</div>
           <div className="text-2xl">
             <If condition={props.volume}>
               <Then>{props.volume}</Then>
@@ -25,5 +23,3 @@ const Volume = (props: Props) => {
     </>
   )
 }
-
-export default Volume

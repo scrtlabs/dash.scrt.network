@@ -244,7 +244,7 @@ function Dashboard() {
           </div>
 
           <div className="col-span-12 md:col-span-6 lg:col-span-12 xl:col-span-6 2xl:col-span-4">
-            <div className="bg-white dark:bg-neutral-900 px-6 py-8 rounded-xl">
+            <div className="bg-white dark:bg-neutral-800 px-6 py-8 rounded-xl">
               <StakingChart />
             </div>
           </div>
@@ -268,7 +268,7 @@ function Dashboard() {
 
         <div className="grid grid-cols-12 gap-4">
           {/* Item */}
-          <div className="col-span-12 bg-white dark:bg-neutral-900 p-4 rounded-xl">
+          <div className="col-span-12 bg-white dark:bg-neutral-800 p-4 rounded-xl">
             <PriceVolumeTVL />
           </div>
           {/* Item */}

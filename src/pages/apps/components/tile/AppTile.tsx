@@ -29,7 +29,7 @@ const AppTile = (props: Props) => {
       onClick={handleClick}
       className="group col-span-12 sm:col-span-6 lg:col-span-6 xl:col-span-4 2xl:col-span-3 hover:bg-gradient-to-r from-cyan-500 to-purple-500 p-0.5 rounded-xl hover:shadow-2xl hover:shadow-cyan-500/40"
     >
-      <div className="bg-white group-hover:bg-white/95 dark:bg-neutral-900 group-hover:dark:bg-neutral-900/95 p-4 flex flex-col h-full rounded-xl overflow-hidden text-center sm:text-left">
+      <div className="bg-white group-hover:bg-white/95 dark:bg-neutral-800 group-hover:dark:bg-neutral-800/95 p-4 flex flex-col h-full rounded-xl overflow-hidden text-center sm:text-left">
         {/* Image */}
         {props.image && (
           <img
@@ -40,18 +40,14 @@ const AppTile = (props: Props) => {
         )}
 
         {/* Name */}
-        <div className="text-xl font-semibold flex-initial mb-1">
-          {props.name}
-        </div>
+        <div className="text-xl font-semibold flex-initial mb-1">{props.name}</div>
 
         {/* Description */}
         <div className="text-neutral-400 flex-1">{props.description}</div>
 
         {/* Tags */}
         {props.tags?.length! > 0 && (
-          <div className="space-x-2 mt-4 flex-initial">
-            {props.tags?.map((tag) => <Tag key={tag} name={tag} />)}
-          </div>
+          <div className="space-x-2 mt-4 flex-initial">{props.tags?.map((tag) => <Tag key={tag} name={tag} />)}</div>
         )}
       </div>
     </a>

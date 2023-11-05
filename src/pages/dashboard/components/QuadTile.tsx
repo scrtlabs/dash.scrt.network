@@ -13,7 +13,7 @@ interface Props {
 const QuadTile = (props: Props) => {
   return (
     <>
-      <div className="bg-white dark:bg-neutral-900 p-8 rounded-xl h-full">
+      <div className="bg-white dark:bg-neutral-800 p-8 rounded-xl h-full">
         <div className="flex flex-col h-full">
           <div className="flex-1 flex text-center items-center">
             {/* First Item */}

@@ -1,15 +1,11 @@
-import {
-  faDiscord,
-  faTelegram,
-  faTwitter
-} from '@fortawesome/free-brands-svg-icons'
+import { faDiscord, faTelegram, faTwitter } from '@fortawesome/free-brands-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { trackMixPanelEvent } from 'utils/commons'
 
 export default function SocialMedia() {
   return (
     <>
-      <div className="bg-white dark:bg-neutral-900 rounded-xl h-full flex items-center px-4 py-4">
+      <div className="bg-white dark:bg-neutral-800 rounded-xl h-full flex items-center px-4 py-4">
         <div className="flex-1 text-center border-r border-neutral-300 dark:border-neutral-700">
           <a
             href="https://twitter.com/SecretNetwork"
@@ -19,11 +15,7 @@ export default function SocialMedia() {
               trackMixPanelEvent('Clicked Twitter on dashboard')
             }}
           >
-            <FontAwesomeIcon
-              icon={faTwitter}
-              size="xl"
-              className="fa-fw sm:mb-1"
-            />
+            <FontAwesomeIcon icon={faTwitter} size="xl" className="fa-fw sm:mb-1" />
             <br />
             <span className="group-hover:text-black dark:group-hover:text-white transition-colors text-sm font-semibold text-neutral-500 dark:text-neutral-500 hidden sm:inline-block">
               Twitter
@@ -40,11 +32,7 @@ export default function SocialMedia() {
               trackMixPanelEvent('Clicked Discord on dashboard')
             }}
           >
-            <FontAwesomeIcon
-              icon={faDiscord}
-              size="xl"
-              className="fa-fw sm:mb-1"
-            />
+            <FontAwesomeIcon icon={faDiscord} size="xl" className="fa-fw sm:mb-1" />
             <br />
             <span className="group-hover:text-black dark:group-hover:text-white transition-colors text-sm font-semibold text-neutral-500 dark:text-neutral-500 hidden sm:inline-block">
               Discord
@@ -61,11 +49,7 @@ export default function SocialMedia() {
               trackMixPanelEvent('Clicked Telegram on dashboard')
             }}
           >
-            <FontAwesomeIcon
-              icon={faTelegram}
-              size="xl"
-              className="fa-fw sm:mb-1"
-            />
+            <FontAwesomeIcon icon={faTelegram} size="xl" className="fa-fw sm:mb-1" />
             <br />
             <span className="group-hover:text-black dark:group-hover:text-white transition-colors text-sm font-semibold text-neutral-500 dark:text-neutral-500 hidden sm:inline-block">
               Telegram
