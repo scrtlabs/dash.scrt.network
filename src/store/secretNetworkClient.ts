@@ -6,7 +6,6 @@ import { Token, tokens } from 'utils/config'
 import { create } from 'zustand'
 import { WalletAPIType } from 'types/WalletAPIType'
 import BigNumber from 'bignumber.js'
-import { scrtToken } from 'utils/tokens'
 import { WalletService } from 'services/wallet.service'
 
 interface TokenBalances {

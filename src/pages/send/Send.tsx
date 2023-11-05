@@ -1,32 +1,19 @@
-import { useEffect, useState, useContext } from 'react'
-import { MsgExecuteContract, BroadcastMode, MsgSend, validateAddress } from 'secretjs'
-import { Token } from 'utils/config'
-import {
-  sleep,
-  faucetAddress,
-  viewingKeyErrorString,
-  sendPageTitle,
-  sendPageDescription,
-  sendJsonLdSchema,
-  allTokens,
-  randomPadding
-} from 'utils/commons'
+import { useEffect } from 'react'
+import { sendPageTitle, sendPageDescription, sendJsonLdSchema } from 'utils/commons'
 import Title from 'components/Title'
-import BigNumber from 'bignumber.js'
-import { toast } from 'react-toastify'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faInfoCircle } from '@fortawesome/free-solid-svg-icons'
 import Tooltip from '@mui/material/Tooltip'
 import { Helmet } from 'react-helmet-async'
 import mixpanel from 'mixpanel-browser'
 import { useSearchParams } from 'react-router-dom'
-import { APIContext } from 'context/APIContext'
 import { useSecretNetworkClientStore } from 'store/secretNetworkClient'
 import SendForm from './components/SendForm'
-import { WalletService } from 'services/wallet.service'
+import { Token, tokens } from 'utils/config'
+import { Nullable } from 'types/Nullable'
 
 export function Send() {
-  const { secretNetworkClient, connectWallet } = useSecretNetworkClientStore()
+  const { connectWallet, isConnected } = useSecretNetworkClientStore()
 
   useEffect(() => {
     if (import.meta.env.VITE_MIXPANEL_ENABLED === 'true') {
@@ -40,20 +27,22 @@ export function Send() {
 
   // URL params
   const [searchParams, setSearchParams] = useSearchParams()
-  const tokenUrlParam = searchParams.get('token')
 
-  // const isValidTokenParam = () => {
-  //   return tokens.find((token: any) => token.name.toLowerCase() === tokenUrlParam.toLowerCase()) ? true : false
-  // }
+  function getTokenByUrlParam(): Nullable<Token> {
+    const tokenUrlParam = searchParams.get('token')
 
-  // useEffect(() => {
-  //   if (tokenUrlParam && isValidTokenParam()) {
-  //     setSelectedToken(tokens.find((token: any) => token.name.toLowerCase() === tokenUrlParam.toLowerCase()))
-  //   }
-  // }, [])
+    if (!tokenUrlParam) {
+      return null
+    }
+
+    const potentialToken: Nullable<Token> = tokens.find(
+      (token: Token) => token.name.toLowerCase() === tokenUrlParam.toLowerCase() || null
+    )
+    return potentialToken
+  }
 
   const handleClick = () => {
-    if (!secretNetworkClient || !secretNetworkClient.address) {
+    if (!isConnected) {
       connectWallet()
     }
   }
