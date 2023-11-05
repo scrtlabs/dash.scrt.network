@@ -16,7 +16,7 @@ After verifying the system requirements you should be able to run a few commands
 ```
 git clone https://github.com/scrtlabs/dash.scrt.network.git
 cd dash.scrt.network
-yarn install
+npm install
 ```
 
 ## Running the app
@@ -26,7 +26,7 @@ yarn install
 To get the app up and running, run:
 
 ```
-yarn start
+npm run dev
 ```
 
 The App runs on port 3000.
