@@ -11,7 +11,7 @@ import { QueryAllBalancesResponse } from 'secretjs/dist/grpc_gateway/cosmos/bank
 
 interface TokenBalances {
   balance: Nullable<BigNumber>
-  secretBalance: Nullable<BigNumber>
+  secretBalance: Nullable<BigNumber | string>
 }
 
 const connectKeplr = async () => {
@@ -218,7 +218,7 @@ const getsTokenBalance = async (
   const key = await getWalletViewingKey(token.address)
   if (!key) {
     sBalance = viewingKeyErrorString
-    return null
+    return sBalance
   }
 
   interface IResult {
@@ -306,19 +306,32 @@ async function getBalancesForTokens(props: IGetBalancesForTokensProps): Promise<
 
     for (const token of allTokens) {
       const secretBalance = await getsTokenBalance(props.secretNetworkClient, props.walletAddress, token)
-      console.log(secretBalance)
-
       const currentEntry = newBalanceMapping.get(token)
+
       if (currentEntry) {
-        newBalanceMapping.set(token, {
-          ...currentEntry,
-          secretBalance: secretBalance ? new BigNumber(secretBalance) : null
-        })
+        if (secretBalance === viewingKeyErrorString) {
+          newBalanceMapping.set(token, {
+            ...currentEntry,
+            secretBalance: viewingKeyErrorString
+          })
+        } else {
+          newBalanceMapping.set(token, {
+            ...currentEntry,
+            secretBalance: secretBalance !== null ? new BigNumber(secretBalance) : null
+          })
+        }
       } else {
-        newBalanceMapping.set(token, {
-          balance: null,
-          secretBalance: secretBalance ? new BigNumber(secretBalance) : null
-        })
+        if (secretBalance === viewingKeyErrorString) {
+          newBalanceMapping.set(token, {
+            balance: null,
+            secretBalance: viewingKeyErrorString
+          })
+        } else {
+          newBalanceMapping.set(token, {
+            balance: null,
+            secretBalance: secretBalance !== null ? new BigNumber(secretBalance) : null
+          })
+        }
       }
     }
 

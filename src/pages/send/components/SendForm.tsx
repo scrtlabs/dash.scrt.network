@@ -3,7 +3,7 @@ import { useState } from 'react'
 import { sendSchema } from 'pages/send/sendSchema'
 import { useSecretNetworkClientStore } from 'store/secretNetworkClient'
 import Select from 'react-select'
-import { Token } from 'utils/config'
+import { Token, chains } from 'utils/config'
 import NewBalanceUI from 'components/NewBalanceUI'
 import PercentagePicker from 'components/PercentagePicker'
 import Tooltip from '@mui/material/Tooltip'
@@ -138,7 +138,11 @@ export default function SendForm() {
         {/* Balance | [25%|50%|75%|100%] */}
         <div className="flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 mt-2">
           <div className="flex-1 text-xs">
-            <NewBalanceUI token={formik.values.token} isSecretToken={formik.values.token.address !== 'native'} />
+            <NewBalanceUI
+              token={allTokens.find((token: Token) => token.name === formik.values.token.name)}
+              chain={chains['Secret Network']}
+              isSecretToken={formik.values.token.address !== 'native'}
+            />
           </div>
           <div className="sm:flex-initial text-xs">
             <PercentagePicker setAmountByPercentage={setAmountByPercentage} disabled={!isConnected} />

@@ -11,7 +11,7 @@ import { WalletService } from 'services/wallet.service'
 
 interface TokenBalances {
   balance: Nullable<BigNumber>
-  secretBalance: Nullable<BigNumber>
+  secretBalance: Nullable<BigNumber | string>
 }
 
 interface SecretNetworkClientState {
@@ -32,7 +32,7 @@ interface SecretNetworkClientState {
   setScrtBalance: () => void
   isTokenBalanceLoading: boolean
   setViewingKey: (token: Token) => void
-  getBalance: (token: Token, secretToken?: boolean) => Nullable<BigNumber>
+  getBalance: (token: Token, secretToken?: boolean) => Nullable<BigNumber | string>
   balanceMapping: Map<Token, TokenBalances>
   setBalanceMapping: () => void
 }

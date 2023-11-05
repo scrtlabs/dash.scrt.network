@@ -86,7 +86,7 @@ function WrapForm() {
   const formik = useFormik({
     initialValues: {
       amount: '',
-      tokenName: 'AKT',
+      tokenName: 'SCRT',
       wrappingMode: 'wrap'
     },
     validationSchema: wrapSchema,
