@@ -67,7 +67,7 @@ export const useTokenPricesStore = create<TokenPricesState>()((set, get) => ({
     }
     const tokenPrice = get().priceMapping.get(token)
     if (tokenPrice !== undefined) {
-      const result = new BigNumber(tokenPrice).multipliedBy(amount).dividedBy(token.decimals)
+      const result = new BigNumber(tokenPrice).multipliedBy(amount).dividedBy(`1e${token.decimals}`)
       return formatUsdString(Number(result))
     }
     return null

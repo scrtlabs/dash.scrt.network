@@ -28,21 +28,19 @@ export default function NewBalanceUI(props: IProps) {
   useEffect(() => {
     if (balanceMapping !== null) {
       const newBalance = getBalance(props.token, props.isSecretToken)
-      console.log(newBalance)
       if (newBalance !== null) {
         setBalance(newBalance.toNumber())
       } else {
         setBalance(undefined)
       }
     }
-  }, [balanceMapping, props])
+  }, [balanceMapping, props.token])
 
   useEffect(() => {
     if (priceMapping !== null && balance !== null) {
-      console.log(getValuePrice(props.token, BigNumber(balance)))
       setUsdPriceString(getValuePrice(props.token, BigNumber(balance)))
     }
-  }, [usdPriceString, props, balance])
+  }, [props, balance])
 
   if (!isConnected) return null
 
@@ -51,19 +49,12 @@ export default function NewBalanceUI(props: IProps) {
       <div className="flex items-center gap-1.5">
         <span className="font-bold">{`Balance: `}</span>
 
-        {balance && tokenName ? (
+        {balance != undefined && tokenName ? (
           <>
             <span className="font-medium">{` ${new BigNumber(balance)
               .dividedBy(`1e${props.token.decimals}`)
               .toFormat()} ${props.token.is_snip20 ? '' : 's'}${props.token.name} ${
-              props.token.coingecko_id && usdPriceString
-                ? ` (${formatUsdString(
-                    new BigNumber(balance)
-                      .dividedBy(`1e${props.token.decimals}`)
-                      .multipliedBy(Number(usdPriceString))
-                      .toNumber()
-                  )})`
-                : ''
+              props.token.coingecko_id && usdPriceString ? ` (${usdPriceString})` : ''
             }`}</span>
           </>
         ) : (

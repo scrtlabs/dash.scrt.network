@@ -295,7 +295,7 @@ export default function IbcForm() {
                     className="w-6 h-6 mr-2 rounded-full"
                   />
                   <span className="font-semibold text-sm">
-                    {token.is_ics20 && formik.values.ibcMode === 'withdrawal' && 's'}
+                    {!(token.is_snip20 || token.name === 'SCRT') && formik.values.ibcMode == 'withdrawal' ? 's' : null}
                     {token.name}
                   </span>
                 </div>
@@ -322,7 +322,7 @@ export default function IbcForm() {
           {/* Balance | [25%|50%|75%|Max] */}
           <div className="flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 mt-3">
             <div className="flex-1 text-xs">
-              <NewBalanceUI token={formik.values.token} />
+              <NewBalanceUI token={formik.values.token} isSecretToken={formik.values.token.name !== 'SCRT'} />
             </div>
             <div className="sm:flex-initial text-xs">
               <PercentagePicker setAmountByPercentage={setAmountByPercentage} disabled={!isConnected} />
