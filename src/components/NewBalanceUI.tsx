@@ -9,6 +9,7 @@ import Tooltip from '@mui/material/Tooltip'
 import { formatUsdString } from 'utils/commons'
 import { faKey } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { IbcService } from 'services/ibc.service'
 
 interface IProps {
   token: Token
@@ -29,19 +30,42 @@ export default function NewBalanceUI({ token, chain = chains['Secret Network'], 
   const tokenName = (isSecretToken ? 's' : '') + token.name
 
   useEffect(() => {
-    if (balanceMapping !== null) {
+    if (balanceMapping !== null && chain === chains['Secret Network']) {
       const newBalance = getBalance(token, isSecretToken)
       console.debug(newBalance)
       if (newBalance !== null && newBalance instanceof BigNumber) {
         setBalance(newBalance.toNumber())
-      } else if (balance === 'viewingKeyError') {
+      } else if (newBalance === ('viewingKeyError' as GetBalanceError)) {
         console.debug('Viewing Key not found.')
         setBalance('viewingKeyError' as GetBalanceError)
+      } else if (newBalance === ('GenericFetchError' as GetBalanceError)) {
+        console.debug('Viewing Key not found.')
+        setBalance('GenericFetchError' as GetBalanceError)
       } else {
         setBalance(null)
       }
     }
-  }, [balanceMapping, token, isSecretToken])
+
+    console.log(chain)
+    console.log(isSecretToken)
+    console.log(token)
+    if (chain !== chains['Secret Network']) {
+      async function fetchIbcChainBalances() {
+        const sourceChain = await IbcService.getChainSecretJs(chain)
+        const sourceChainBalance = await IbcService.fetchSourceBalance(sourceChain.address, chain, token)
+
+        if (sourceChainBalance !== null && sourceChainBalance instanceof BigNumber) {
+          setBalance(sourceChainBalance.toNumber())
+        } else if (sourceChainBalance === ('GenericFetchError' as GetBalanceError)) {
+          console.debug('Viewing Key not found.')
+          setBalance('GenericFetchError' as GetBalanceError)
+        } else {
+          setBalance(null)
+        }
+      }
+      fetchIbcChainBalances()
+    }
+  }, [balanceMapping, token, isSecretToken, chain])
 
   useEffect(() => {
     if (priceMapping !== null && balance !== null) {
@@ -56,18 +80,22 @@ export default function NewBalanceUI({ token, chain = chains['Secret Network'], 
       <div className="flex items-center gap-1.5">
         <span className="font-bold">{`Balance: `}</span>
 
-        {!isNaN(Number(balance)) && tokenName ? (
+        {balance === null ? (
+          <>
+            {/* Skeleton Loader */}
+            <span className="animate-pulse bg-neutral-300/40 dark:bg-neutral-600 rounded w-20 h-5 ml-2"></span>
+          </>
+        ) : null}
+        {balance !== null &&
+        balance !== ('viewingKeyError' as GetBalanceError) &&
+        balance !== ('GenericFetchError' as GetBalanceError) &&
+        tokenName ? (
           <>
             <span className="font-medium">{` ${new BigNumber(balance).dividedBy(`1e${token.decimals}`).toFormat()} ${
               isSecretToken && !token.is_snip20 ? 's' : ''
             }${token.name} ${token.coingecko_id && usdPriceString ? ` (${usdPriceString})` : ''}`}</span>
           </>
-        ) : (
-          <>
-            {/* Skeleton Loader */}
-            <span className="animate-pulse bg-neutral-300/40 dark:bg-neutral-600 rounded w-20 h-5 ml-2"></span>
-          </>
-        )}
+        ) : null}
 
         {balance === ('viewingKeyError' as GetBalanceError) ? (
           <button

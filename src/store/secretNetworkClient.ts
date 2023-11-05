@@ -119,7 +119,6 @@ export const useSecretNetworkClientStore = create<SecretNetworkClientState>()((s
     }
     if (get().balanceMapping !== null) {
       const tokenBalances: TokenBalances = get().balanceMapping.get(token)
-
       if (!tokenBalances) {
         return null
       }

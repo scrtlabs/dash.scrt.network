@@ -32,6 +32,7 @@ import { Chain, Deposit, Token, chains, tokens } from 'utils/config'
 import Long from 'long'
 import { TxRaw } from 'secretjs/dist/protobuf/cosmos/tx/v1beta1/tx'
 import mixpanel from 'mixpanel-browser'
+import { GetBalanceError } from 'store/secretNetworkClient'
 
 const sdk: AxelarAssetTransfer = new AxelarAssetTransfer({
   environment: Environment.MAINNET
@@ -699,15 +700,10 @@ async function getAxelarTransferFee(token: Token, chain: Chain, amount: number, 
   return fee
 }
 
-async function fetchSourceBalance(
-  address: string,
-  chain: Chain,
-  ibcMode: IbcMode,
-  token: Token
-): Promise<number | 'Error'> {
+async function fetchSourceBalance(address: string, chain: Chain, token: Token): Promise<BigNumber | GetBalanceError> {
   if (!address) {
     console.error('Address is required')
-    return 'Error'
+    return 'GenericFetchError' as GetBalanceError
   }
 
   const url = `${chains[chain.chain_name].lcd}/cosmos/bank/v1beta1/balances/${address}`
@@ -716,7 +712,7 @@ async function fetchSourceBalance(
     const response = await fetch(url)
     if (!response.ok) {
       console.error(`Failed to fetch ${url}: ${response.statusText}`)
-      return 'Error'
+      return 'GenericFetchError' as GetBalanceError
     }
 
     const { balances } = await response.json()
@@ -725,10 +721,10 @@ async function fetchSourceBalance(
 
     const balanceObj = balances.find((balance: any) => balance.denom === targetDenom)
 
-    return balanceObj ? parseInt(balanceObj.amount, 10) : 0
+    return balanceObj ? BigNumber(balanceObj.amount) : null
   } catch (e) {
     console.error(`Error while trying to query ${url}:`, e)
-    return 'Error'
+    return 'GenericFetchError' as GetBalanceError
   }
 }
 
@@ -839,5 +835,7 @@ export const IbcService = {
   getSupportedIbcTokensByChain,
   performIbcTransfer,
   composePMFMemo,
-  getSkipIBCRouting
+  getSkipIBCRouting,
+  getChainSecretJs,
+  fetchSourceBalance
 }

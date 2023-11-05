@@ -27,10 +27,6 @@ export default function IbcForm() {
     formik.setFieldValue('amount', percentage.toString()) // TODO: Fix
   }
 
-  const [srcAddress, setSrcAddress] = useState<string>('')
-  const [availableBalance, setAvailableBalance] = useState<string>('')
-  const [amountToTransfer, setAmountToTransfer] = useState<string>('')
-
   function toggleIbcMode() {
     if (formik.values.ibcMode === 'deposit') {
       formik.setFieldValue('ibcMode', 'withdrawal')
@@ -117,21 +113,18 @@ export default function IbcForm() {
   }
 
   const [supportedTokens, setSupportedTokens] = useState(getSupportedTokens())
+  const [sourceChainAddress, setSourceChainAddress] = useState<string>('')
 
   useEffect(() => {
     const supportedTokensBySelectedChain: Token[] = getSupportedTokens()
     setSupportedTokens(supportedTokensBySelectedChain)
-    formik.setFieldValue('tokenName', 'SCRT')
+    formik.setFieldValue('tokenName', supportedTokensBySelectedChain[0].name)
 
-    IbcService.getSkipIBCRouting(
-      chains['Osmosis'],
-      'withdrawal',
-      tokens.find((token) => token.name === 'ATOM')
-    ).then((routing) => {
-      console.log(routing)
-      console.log(routing.operations)
-      IbcService.composePMFMemo(routing.operations, 'KEK').then((memo) => console.log(memo))
-    })
+    async function fetchSourceChainAddress() {
+      const sourceChainAddr = await IbcService.getChainSecretJs(formik.values.chain)
+      setSourceChainAddress(sourceChainAddr.address)
+    }
+    fetchSourceChainAddress()
   }, [formik.values.chain])
 
   // return <Deposit />
@@ -266,10 +259,10 @@ export default function IbcForm() {
           </div>
         </div>
         <AddressInfo
-          srcChain={chains['Secret Network']}
-          srcAddress={`iowerg8035089ty354u890-2t490u34t9034ty8080rih3240r`}
-          destChain={chains['Secret Network']}
-          destAddress={`iowerg8035089ty354u890-2t490u34t9034ty8080rih3240r`}
+          srcChain={formik.values.ibcMode === 'withdrawal' ? chains['Secret Network'] : formik.values.chain}
+          srcAddress={formik.values.ibcMode === 'withdrawal' ? walletAddress : sourceChainAddress}
+          destChain={formik.values.ibcMode === 'withdrawal' ? formik.values.chain : chains['Secret Network']}
+          destAddress={formik.values.ibcMode === 'withdrawal' ? sourceChainAddress : walletAddress}
         />
 
         <div className="bg-neutral-200 dark:bg-neutral-700 p-4 rounded-xl">
@@ -324,7 +317,7 @@ export default function IbcForm() {
             <div className="flex-1 text-xs">
               <NewBalanceUI
                 token={formik.values.token}
-                chain={formik.values.chain}
+                chain={formik.values.ibcMode === 'withdrawal' ? chains['Secret Network'] : formik.values.chain}
                 isSecretToken={formik.values.ibcMode === 'withdrawal' && formik.values.token.name !== 'SCRT'}
               />
             </div>
