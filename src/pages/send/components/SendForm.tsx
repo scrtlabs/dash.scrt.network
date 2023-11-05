@@ -85,12 +85,9 @@ export default function SendForm() {
   }
 
   return (
-    <form
-      onSubmit={formik.handleSubmit}
-      className="w-full flex flex-col gap-4 text-neutral-800 dark:text-neutral-200 bg-white dark:bg-neutral-900"
-    >
+    <form onSubmit={formik.handleSubmit} className="w-full flex flex-col gap-4">
       {/* *** Amount *** */}
-      <div className="bg-neutral-200 dark:bg-neutral-800 p-4 rounded-xl">
+      <div className="bg-neutral-200 dark:bg-neutral-700 p-4 rounded-xl">
         {/* Title Bar */}
         <div className="flex flex-col sm:flex-row justify-between items-center mb-2 text-center sm:text-left">
           <span className="font-extrabold">Amount</span>
@@ -159,7 +156,7 @@ export default function SendForm() {
       </div>
 
       {/* *** Recipient *** */}
-      <div className="bg-neutral-200 dark:bg-neutral-800 p-4 rounded-xl">
+      <div className="bg-neutral-200 dark:bg-neutral-700 p-4 rounded-xl">
         {/* Title Bar */}
         <div className="flex justify-between items-center mb-2">
           <span className="flex-1 font-semibold mb-2 text-center sm:text-left">
@@ -195,7 +192,7 @@ export default function SendForm() {
       </div>
 
       {/* *** Memo *** */}
-      <div className="bg-neutral-200 dark:bg-neutral-800 p-4 rounded-xl">
+      <div className="bg-neutral-200 dark:bg-neutral-700 p-4 rounded-xl">
         {/* Title Bar */}
         <div className="flex justify-between items-center mb-2">
           <span className="flex-1 font-semibold mb-2 text-center sm:text-left">

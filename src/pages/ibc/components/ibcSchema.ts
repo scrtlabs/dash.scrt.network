@@ -2,13 +2,6 @@ import * as yup from 'yup'
 import { isIbcMode } from 'types/IbcMode'
 import { chains, tokens } from 'utils/config'
 
-/**
- * TODO: Src
- * TODO: Dest
- * Token
- * Amount
- */
-
 export const ibcSchema = yup.object().shape({
   amount: yup
     .number()

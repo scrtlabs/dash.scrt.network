@@ -42,18 +42,18 @@ export function Send() {
   const [searchParams, setSearchParams] = useSearchParams()
   const tokenUrlParam = searchParams.get('token')
 
-  const isValidTokenParam = () => {
-    return tokens.find((token: any) => token.name.toLowerCase() === tokenUrlParam.toLowerCase()) ? true : false
-  }
+  // const isValidTokenParam = () => {
+  //   return tokens.find((token: any) => token.name.toLowerCase() === tokenUrlParam.toLowerCase()) ? true : false
+  // }
 
-  useEffect(() => {
-    if (tokenUrlParam && isValidTokenParam()) {
-      setSelectedToken(tokens.find((token: any) => token.name.toLowerCase() === tokenUrlParam.toLowerCase()))
-    }
-  }, [])
+  // useEffect(() => {
+  //   if (tokenUrlParam && isValidTokenParam()) {
+  //     setSelectedToken(tokens.find((token: any) => token.name.toLowerCase() === tokenUrlParam.toLowerCase()))
+  //   }
+  // }, [])
 
   const handleClick = () => {
-    if (!secretNetworkClient?.address || !secretNetworkClient) {
+    if (!secretNetworkClient || !secretNetworkClient.address) {
       connectWallet()
     }
   }
@@ -82,20 +82,20 @@ export function Send() {
         <script type="application/ld+json">{JSON.stringify(sendJsonLdSchema)}</script>
       </Helmet>
 
-      {/* Content */}
       <div className="container w-full max-w-xl mx-auto px-4">
+        {/* Title*/}
+        <Title title={`Send`} className="mb-6">
+          <Tooltip title={'Transfer your assets to a given address'} placement="right" arrow>
+            <span className="ml-2 relative -top-1.5 text-neutral-600 dark:text-neutral-400 hover:text-black dark:hover:text-white transition-colors cursor-pointer">
+              <FontAwesomeIcon icon={faInfoCircle} />
+            </span>
+          </Tooltip>
+        </Title>
         {/* Content */}
-        <div className="rounded-3xl px-6 py-6 text-neutral-800 dark:text-neutral-200 bg-white dark:bg-neutral-900">
-          {/* Title: Secret Wrap / Secret Unwrap */}
-          <div className="mb-8">
-            <Title title={`Send`}>
-              <Tooltip title={'Transfer your assets to a given address'} placement="right" arrow>
-                <span className="ml-2 relative -top-1.5 text-neutral-600 dark:text-neutral-400 hover:text-black dark:hover:text-white transition-colors cursor-pointer">
-                  <FontAwesomeIcon icon={faInfoCircle} />
-                </span>
-              </Tooltip>
-            </Title>
-          </div>
+        <div
+          onClick={handleClick}
+          className="rounded-3xl px-6 py-6 text-neutral-800 dark:text-neutral-200 bg-white dark:bg-neutral-800"
+        >
           <SendForm />
         </div>
       </div>
