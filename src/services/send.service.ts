@@ -3,8 +3,14 @@ import mixpanel from 'mixpanel-browser'
 import { BroadcastMode, MsgExecuteContract, MsgSend, SecretNetworkClient } from 'secretjs'
 import { FeeGrantStatus } from 'types/FeeGrantStatus'
 import { Nullable } from 'types/Nullable'
-import { faucetAddress, randomPadding } from 'utils/commons'
+import { allTokens, faucetAddress, randomPadding } from 'utils/commons'
 import { Token, tokens } from 'utils/config'
+
+function getSupportedTokens() {
+  return [allTokens[0]].concat(
+    allTokens.map((token: Token) => (token.name === 'SCRT' ? { ...token, address: 'native' } : token))
+  )
+}
 
 interface IBaseProps {
   amount: string
@@ -34,7 +40,7 @@ type TProps = IPropsToken | IPropsTokenName
  * @async
  */
 
-const performSending = async (props: TProps): Promise<{ success: boolean; errorMsg: Nullable<string> }> => {
+async function performSending(props: TProps): Promise<{ success: boolean; errorMsg: Nullable<string> }> {
   let result: { success: boolean; errorMsg: Nullable<string> } = {
     success: false,
     errorMsg: null
@@ -128,5 +134,6 @@ const performSending = async (props: TProps): Promise<{ success: boolean; errorM
 }
 
 export const SendService = {
-  performSending
+  performSending,
+  getSupportedTokens
 }

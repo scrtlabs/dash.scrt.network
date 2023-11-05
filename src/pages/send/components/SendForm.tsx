@@ -22,6 +22,8 @@ export default function SendForm() {
   const [generalErrorMessage, setGeneralErrorMessage] = useState<String>('')
   const [isLoading, setIsWaiting] = useState<boolean>(false)
 
+  const tokenSelectOptions = SendService.getSupportedTokens()
+
   interface IFormValues {
     amount: string
     token: Token
@@ -33,7 +35,7 @@ export default function SendForm() {
   const formik = useFormik<IFormValues>({
     initialValues: {
       amount: '',
-      token: allTokens[0],
+      token: tokenSelectOptions[2],
       recipient: '',
       memo: '',
       feeGrantStatus: feeGrantStatus
@@ -69,10 +71,6 @@ export default function SendForm() {
     formik.setFieldValue('amount', percentage.toString()) // TODO: Fix percentage
     formik.setFieldTouched('amount', true)
   }
-
-  const tokenSelectOptions = [allTokens[0]].concat(
-    allTokens.map((token) => (token.name === 'SCRT' ? { ...token, address: 'native' } : token))
-  )
 
   function handleTokenSelect(token: Token) {
     formik.setFieldValue('token', token)
@@ -273,6 +271,13 @@ export default function SendForm() {
       >
         {`Send`}
       </button>
+
+      {import.meta.env.VITE_DEBUG_MODE === 'true' ? (
+        <div className="text-sky-500 text-xs p-2 bg-blue-500/20 rounded">
+          <div className="mb-4 font-semibold">Debug Info</div>
+          formik.errors: {JSON.stringify(formik.errors)}
+        </div>
+      ) : null}
     </form>
   )
 }
