@@ -246,7 +246,7 @@ const getsTokenBalance = async (
     }
   } catch (error) {
     console.error(`Error getting balance for s${scrtToken.name}: `, error)
-    sBalance = 'viewingKeyError' as GetBalanceError
+    sBalance = 'GenericFetchError' as GetBalanceError
   }
 
   return sBalance
@@ -310,10 +310,13 @@ async function getBalancesForTokens(props: IGetBalancesForTokensProps): Promise<
       const currentEntry = newBalanceMapping.get(token)
 
       if (currentEntry) {
-        if (secretBalance === ('viewingKeyError' as GetBalanceError)) {
+        if (
+          secretBalance === ('viewingKeyError' as GetBalanceError) ||
+          secretBalance === ('GenericFetchError' as GetBalanceError)
+        ) {
           newBalanceMapping.set(token, {
             ...currentEntry,
-            secretBalance: 'viewingKeyError'
+            secretBalance: secretBalance
           })
         } else {
           newBalanceMapping.set(token, {
@@ -322,7 +325,10 @@ async function getBalancesForTokens(props: IGetBalancesForTokensProps): Promise<
           })
         }
       } else {
-        if (secretBalance === ('viewingKeyError' as GetBalanceError)) {
+        if (
+          secretBalance === ('viewingKeyError' as GetBalanceError) ||
+          secretBalance === ('GenericFetchError' as GetBalanceError)
+        ) {
           newBalanceMapping.set(token, {
             balance: null,
             secretBalance: 'viewingKeyError'
