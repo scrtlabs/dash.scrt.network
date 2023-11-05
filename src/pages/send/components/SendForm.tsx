@@ -15,8 +15,15 @@ import { allTokens } from 'utils/commons'
 import { FeeGrantStatus } from 'types/FeeGrantStatus'
 
 export default function SendForm() {
-  const { secretNetworkClient, walletAddress, feeGrantStatus, requestFeeGrant, isConnected, connectWallet } =
-    useSecretNetworkClientStore()
+  const {
+    secretNetworkClient,
+    walletAddress,
+    feeGrantStatus,
+    requestFeeGrant,
+    isConnected,
+    connectWallet,
+    getBalance
+  } = useSecretNetworkClientStore()
 
   const [generalSuccessMessage, setGeneralSuccessMessage] = useState<String>('')
   const [generalErrorMessage, setGeneralErrorMessage] = useState<String>('')
@@ -68,7 +75,9 @@ export default function SendForm() {
 
   // handles [25% | 50% | 75% | Max] Button-Group
   function setAmountByPercentage(percentage: number) {
-    formik.setFieldValue('amount', percentage.toString()) // TODO: Fix percentage
+    formik.setFieldValue('amount', getBalance(formik.values.token) + '')
+    console.log(getBalance(formik.values.token))
+    console.log('formik.values.token', formik.values.token)
     formik.setFieldTouched('amount', true)
   }
 
