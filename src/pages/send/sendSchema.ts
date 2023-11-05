@@ -1,8 +1,6 @@
 import * as yup from 'yup'
-import { tokens } from 'utils/config'
 import { validateAddress } from 'secretjs'
 import { isFeeGrantStatus } from 'types/FeeGrantStatus'
-import { SendService } from 'services/send.service'
 
 export const sendSchema = yup.object().shape({
   amount: yup
@@ -11,7 +9,7 @@ export const sendSchema = yup.object().shape({
     .typeError('Please enter a valid amount')
     .transform((_value, originalValue) => Number(originalValue.replace(/,/, '.'))) // transforms comma to dot
     .required('Please enter a valid amount'),
-  token: yup.mixed().required('Token is required'), // TODO: add check with SendService.getSupportedTokens()
+  token: yup.mixed().required('Token is required'), // TODO: (low prio) add check with SendService.getSupportedTokens()
   recipient: yup
     .string()
     .required('Add a recipient')

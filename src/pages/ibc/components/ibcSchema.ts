@@ -1,6 +1,7 @@
 import * as yup from 'yup'
 import { isIbcMode } from 'types/IbcMode'
-import { chains, tokens } from 'utils/config'
+import { Token, chains, tokens } from 'utils/config'
+import { isFeeGrantStatus } from 'types/FeeGrantStatus'
 
 export const ibcSchema = yup.object().shape({
   amount: yup
@@ -9,10 +10,7 @@ export const ibcSchema = yup.object().shape({
     .typeError('Please enter a valid amount')
     .transform((_value, originalValue) => Number(originalValue.replace(/,/, '.'))) // transforms comma to dot
     .required('Please enter a valid amount'),
-  token: yup
-    .mixed()
-    .test('isValidToken', 'Please select a valid token', (value) => tokens.some((token) => token.name === value))
-    .required('Please select a token!'),
+  token: yup.mixed().required('Token is required'), // TODO: (low prio) add check with SendService.getSupportedTokens()
   chain: yup
     .mixed()
     .required('Please select a chain!')
@@ -22,5 +20,9 @@ export const ibcSchema = yup.object().shape({
   ibcMode: yup
     .string()
     .test('isIbcMode', 'Invalid IBC Mode', (value) => isIbcMode(value))
-    .required('Please pick an IBC Mode')
+    .required('Please pick an IBC Mode'),
+  feeGrantStatus: yup
+    .mixed()
+    .test('is-fee-grant-status', 'Invalid fee grant status', (value: any) => isFeeGrantStatus(value))
+    .required('Fee grant status is required')
 })

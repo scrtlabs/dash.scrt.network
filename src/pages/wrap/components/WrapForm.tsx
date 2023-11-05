@@ -14,6 +14,7 @@ import { wrapSchema } from 'pages/wrap/wrapSchema'
 import Tooltip from '@mui/material/Tooltip'
 import { WrapService } from 'services/wrap.service'
 import NewBalanceUI from 'components/NewBalanceUI'
+import { FeeGrantStatus } from 'types/FeeGrantStatus'
 
 function WrapForm() {
   const {
@@ -86,13 +87,15 @@ function WrapForm() {
     amount: string
     token: Token
     wrappingMode: WrappingMode
+    feeGrantStatus: FeeGrantStatus
   }
 
   const formik = useFormik<IFormValues>({
     initialValues: {
       amount: '',
       token: tokens.find((token: Token) => token.name === 'SCRT'),
-      wrappingMode: 'wrap'
+      wrappingMode: 'wrap',
+      feeGrantStatus: feeGrantStatus
     },
     validationSchema: wrapSchema,
     validateOnBlur: false,
@@ -104,8 +107,7 @@ function WrapForm() {
         setIsWaiting(true)
         const res = await WrapService.performWrapping({
           ...values,
-          secretNetworkClient,
-          feeGrantStatus
+          secretNetworkClient
         })
         setIsWaiting(false)
 
@@ -320,6 +322,14 @@ function WrapForm() {
         >
           {`Execute ${formik.values.wrappingMode === 'wrap' ? 'Wrap' : 'Unwrap'}`}
         </button>
+
+        {/* Debug Info */}
+        {import.meta.env.VITE_DEBUG_MODE === 'true' ? (
+          <div className="text-sky-500 text-xs p-2 bg-blue-500/20 rounded">
+            <div className="mb-4 font-semibold">Debug Info (Dev Mode)</div>
+            formik.errors: {JSON.stringify(formik.errors)}
+          </div>
+        ) : null}
 
         {/* amount={amountString}
               nativeCurrency={selectedToken.name}

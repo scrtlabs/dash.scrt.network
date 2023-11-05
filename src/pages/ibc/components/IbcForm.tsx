@@ -14,6 +14,7 @@ import PercentagePicker from 'components/PercentagePicker'
 import { IbcService } from 'services/ibc.service'
 import FeeGrant from 'components/FeeGrant/FeeGrant'
 import NewBalanceUI from 'components/NewBalanceUI'
+import { FeeGrantStatus } from 'types/FeeGrantStatus'
 
 export default function IbcForm() {
   const { feeGrantStatus, secretNetworkClient, walletAddress, isConnected } = useSecretNetworkClientStore()
@@ -65,6 +66,7 @@ export default function IbcForm() {
     token: Token
     ibcMode: IbcMode
     amount: string
+    feeGrantStatus: FeeGrantStatus
   }
 
   const formik = useFormik<IFormValues>({
@@ -74,7 +76,8 @@ export default function IbcForm() {
         selectableChains.find((chain: Chain) => chain.chain_name === 'Osmosis')
       ).find((token: Token) => token.name === 'SCRT'),
       ibcMode: 'deposit',
-      amount: ''
+      amount: '',
+      feeGrantStatus: feeGrantStatus
     },
     validationSchema: ibcSchema,
     validateOnBlur: false,
@@ -85,12 +88,8 @@ export default function IbcForm() {
         setGeneralSuccessMessage('')
         setIsWaiting(true)
         const res = await IbcService.performIbcTransfer({
-          secretNetworkClient: secretNetworkClient,
-          chain: formik.values.chain,
-          ibcMode: formik.values.ibcMode,
-          token: formik.values.token,
-          amount: formik.values.amount,
-          feeGrantStatus: feeGrantStatus
+          ...values,
+          secretNetworkClient: secretNetworkClient
         })
         setIsWaiting(false)
         if (res.success) {
@@ -117,7 +116,7 @@ export default function IbcForm() {
   useEffect(() => {
     const supportedTokensBySelectedChain: Token[] = getSupportedTokens()
     setSupportedTokens(supportedTokensBySelectedChain)
-    formik.setFieldValue('tokenName', supportedTokensBySelectedChain[0].name)
+    formik.setFieldValue('token', supportedTokensBySelectedChain[0])
 
     async function fetchSourceChainAddress() {
       const sourceChainAddr = await IbcService.getChainSecretJs(formik.values.chain)
@@ -268,9 +267,9 @@ export default function IbcForm() {
           {/* Title Bar */}
           <div className="flex flex-col sm:flex-row justify-between items-center mb-2 text-center sm:text-left">
             <span className="font-extrabold">Token</span>
-            {!formik.errors.amount && (
+            {formik.touched.amount && formik.errors.amount ? (
               <span className="text-red-500 dark:text-red-500 text-xs font-normal">{formik.errors.amount}</span>
-            )}
+            ) : null}
           </div>
           <div className="flex" id="inputWrapper">
             <Select
@@ -372,6 +371,14 @@ export default function IbcForm() {
         >
           {`Execute Transfer`}
         </button>
+
+        {/* Debug Info */}
+        {import.meta.env.VITE_DEBUG_MODE === 'true' ? (
+          <div className="text-sky-500 text-xs p-2 bg-blue-500/20 rounded">
+            <div className="mb-4 font-semibold">Debug Info (Dev Mode)</div>
+            formik.errors: {JSON.stringify(formik.errors)}
+          </div>
+        ) : null}
       </form>
     </>
   )

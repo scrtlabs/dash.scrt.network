@@ -272,9 +272,10 @@ export default function SendForm() {
         {`Send`}
       </button>
 
+      {/* Debug Info */}
       {import.meta.env.VITE_DEBUG_MODE === 'true' ? (
         <div className="text-sky-500 text-xs p-2 bg-blue-500/20 rounded">
-          <div className="mb-4 font-semibold">Debug Info</div>
+          <div className="mb-4 font-semibold">Debug Info (Dev Mode)</div>
           formik.errors: {JSON.stringify(formik.errors)}
         </div>
       ) : null}
