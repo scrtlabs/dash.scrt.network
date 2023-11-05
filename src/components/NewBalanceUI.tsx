@@ -98,6 +98,7 @@ export default function NewBalanceUI({ token, chain = chains['Secret Network'], 
 
         {balance === ('viewingKeyError' as GetBalanceError) ? (
           <button
+            type="button"
             onClick={setViewingKey}
             className="text-left flex items-center font-semibold bg-neutral-100 dark:bg-neutral-900 px-1.5 py-0.5 rounded-md border-neutral-300 dark:border-neutral-700 transition hover:bg-neutral-300 dark:hover:bg-neutral-700 focus:bg-neutral-500 dark:focus:bg-neutral-500 cursor-pointer disabled:text-neutral-500 dark:disabled:text-neutral-500 disabled:hover:bg-neutral-100 dark:disabled:hover:bg-neutral-900 disabled:cursor-default"
           >

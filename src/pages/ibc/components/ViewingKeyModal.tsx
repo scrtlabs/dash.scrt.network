@@ -1,8 +1,4 @@
-import {
-  faCircleCheck,
-  faShuffle,
-  faXmark
-} from '@fortawesome/free-solid-svg-icons'
+import { faCircleCheck, faShuffle, faXmark } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { IbcContext } from 'pages/ibc/Ibc'
 import { useContext } from 'react'
@@ -21,10 +17,7 @@ const ViewingKeyModal = (props: Props) => {
   return (
     <>
       {/* Outer */}
-      <div
-        className="fixed top-0 left-0 right-0 bottom-0 bg-black/80 z-50"
-        onClick={props.onClose}
-      >
+      <div className="fixed top-0 left-0 right-0 bottom-0 bg-black/80 z-50" onClick={props.onClose}>
         {/* Inner */}
         <div className="absolute top-[15%] w-full onEnter_fadeInDown">
           <div className="mx-auto max-w-xl px-4">
@@ -37,6 +30,7 @@ const ViewingKeyModal = (props: Props) => {
               {/* Header */}
               <div className="mb-0 text-right">
                 <button
+                  type="button"
                   onClick={props.onClose}
                   className="text-neutral-500 dark:text-neutral-500 hover:bg-neutral-800 dark:hover:bg-neutral-200 transition-colors px-1.5 py-1 rounded-lg text-xl"
                 >
@@ -47,17 +41,12 @@ const ViewingKeyModal = (props: Props) => {
               {/* Header */}
               <div className="mb-4 text-center">
                 <h2 className="text-2xl font-medium mb-4">
-                  <FontAwesomeIcon
-                    icon={faCircleCheck}
-                    className="mr-2 text-emerald-500 dark:text-emerald-500"
-                  />
+                  <FontAwesomeIcon icon={faCircleCheck} className="mr-2 text-emerald-500 dark:text-emerald-500" />
                   Transaction Successful
                 </h2>
                 <p className="text-neutral-600 dark:text-neutral-400 max-w-sm mx-auto mb-6">
-                  Now that you have (publicly visible){' '}
-                  {selectedToken.name || 'SCRT'} in Secret Network, make sure to
-                  wrap your assets into the privacy-preserving equivalent s
-                  {selectedToken.name || 'SCRT'}.
+                  Now that you have (publicly visible) {selectedToken.name || 'SCRT'} in Secret Network, make sure to
+                  wrap your assets into the privacy-preserving equivalent s{selectedToken.name || 'SCRT'}.
                 </p>
                 <Link
                   to={'/wrap?token=' + selectedToken.name}
