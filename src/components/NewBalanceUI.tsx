@@ -1,14 +1,8 @@
 import BigNumber from 'bignumber.js'
 import { useEffect, useState } from 'react'
-import { Nullable } from 'types/Nullable'
 import { Token, tokens } from 'utils/config'
-import { scrtToken } from 'utils/tokens'
 import { useTokenPricesStore } from 'store/TokenPrices'
 import { useSecretNetworkClientStore } from 'store/secretNetworkClient'
-import Tooltip from '@mui/material/Tooltip'
-import { formatUsdString } from 'utils/commons'
-import { faKey } from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 interface IProps {
   token: Token
