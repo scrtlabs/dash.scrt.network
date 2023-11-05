@@ -73,6 +73,20 @@ export const chains: { [chain_name: string]: Chain } = {
     chain_image: '/akt.svg',
     explorer_account: 'https://www.mintscan.io/akash/account/'
   },
+  Archway: {
+    chain_name: 'Archway',
+    deposit_channel_id: 'channel-21',
+    deposit_gas: 150_000,
+    deposit_gas_denom: 'aarch',
+    withdraw_channel_id: 'channel-84',
+    withdraw_gas: 30_000,
+    chain_id: 'archway-1',
+    bech32_prefix: 'archway',
+    lcd: 'https://archway-api.lavenderfive.com:443',
+    rpc: 'https://rpc-archway.whispernode.com',
+    chain_image: '/archway.svg',
+    explorer_account: 'https://www.mintscan.io/archway/account/'
+  },
   Axelar: {
     chain_name: 'Axelar',
     deposit_channel_id: 'channel-12',
@@ -143,19 +157,33 @@ export const chains: { [chain_name: string]: Chain } = {
     chain_image: '/atom.svg',
     explorer_account: 'https://www.mintscan.io/cosmos/account/'
   },
-  /*   Crescent: {
-    chain_name: "Crescent",
-    deposit_channel_id: "channel-10",
+  dYdX: {
+    chain_name: 'dYdX',
+    deposit_channel_id: 'channel-2',
     deposit_gas: 150_000,
-    deposit_gas_denom: "ucre",
-    withdraw_channel_id: "channel-24",
+    deposit_gas_denom: 'adydx',
+    withdraw_channel_id: 'channel-89',
+    withdraw_gas: 50_000,
+    chain_id: 'dydx-mainnet-1',
+    bech32_prefix: 'dydx',
+    lcd: 'https://dydx-api.lavenderfive.com:443',
+    rpc: 'https://dydx-rpc.lavenderfive.com:443',
+    chain_image: '/dydx.svg',
+    explorer_account: 'https://www.mintscan.io/dydx/account/'
+  },
+  /*   Crescent: {
+    chain_name: 'Crescent',
+    deposit_channel_id: 'channel-10',
+    deposit_gas: 150_000,
+    deposit_gas_denom: 'ucre',
+    withdraw_channel_id: 'channel-24',
     withdraw_gas: 30_000,
-    chain_id: "crescent-1",
-    bech32_prefix: "cre",
-    lcd: "https://mainnet.crescent.network:1317",
-    rpc: "https://mainnet.crescent.network:26657",
-    chain_image: "/cre.svg",
-    explorer_account: "https://www.mintscan.io/crescent/account/",
+    chain_id: 'crescent-1',
+    bech32_prefix: 'cre',
+    lcd: 'https://mainnet.crescent.network:1317',
+    rpc: 'https://mainnet.crescent.network:26657',
+    chain_image: '/cre.svg',
+    explorer_account: 'https://www.mintscan.io/crescent/account/',
   }, */
   Evmos: {
     chain_name: 'Evmos',
@@ -236,10 +264,38 @@ export const chains: { [chain_name: string]: Chain } = {
     withdraw_gas: 30_000,
     chain_id: 'kaiyo-1',
     bech32_prefix: 'kujira',
-    lcd: 'https://kujira-api.lavenderfive.com',
+    lcd: 'https://kujira-api.polkachu.com/',
     rpc: 'https://kujira-rpc.lavenderfive.com',
     chain_image: '/kuji.svg',
     explorer_account: 'https://kujira.explorers.guru/account/'
+  },
+  Neutron: {
+    chain_name: 'Neutron',
+    deposit_channel_id: 'channel-XX',
+    deposit_gas: 150_000,
+    deposit_gas_denom: 'untrn',
+    withdraw_channel_id: 'channel-XX',
+    withdraw_gas: 30_000,
+    chain_id: 'neutron-1',
+    bech32_prefix: 'noble',
+    lcd: 'https://rest-kralum.neutron-1.neutron.org',
+    rpc: 'https://rpc-kralum.neutron-1.neutron.org',
+    chain_image: '/ntrn.svg',
+    explorer_account: 'https://www.mintscan.io/neutron/account/'
+  },
+  Noble: {
+    chain_name: 'Noble',
+    deposit_channel_id: 'channel-17',
+    deposit_gas: 150_000,
+    deposit_gas_denom: 'uusdc',
+    withdraw_channel_id: 'channel-88',
+    withdraw_gas: 30_000,
+    chain_id: 'noble-1',
+    bech32_prefix: 'noble',
+    lcd: 'https://noble-api.polkachu.com',
+    rpc: 'https://noble-rpc.polkachu.com',
+    chain_image: '/noble.svg',
+    explorer_account: 'https://www.mintscan.io/noble/account/'
   },
   Osmosis: {
     chain_name: 'Osmosis',
@@ -250,8 +306,8 @@ export const chains: { [chain_name: string]: Chain } = {
     withdraw_gas: 30_000,
     chain_id: 'osmosis-1',
     bech32_prefix: 'osmo',
-    lcd: 'https://api-osmosis-ia.cosmosia.notional.ventures',
-    rpc: 'https://rpc.osmosis.zone',
+    lcd: 'https://osmosis-api.polkachu.com',
+    rpc: 'https://rpc.osmosis.zone/',
     chain_image: '/osmo.svg',
     explorer_account: 'https://www.mintscan.io/osmosis/account/'
   },
@@ -298,18 +354,18 @@ export const chains: { [chain_name: string]: Chain } = {
     explorer_account: 'https://www.mintscan.io/sentinel/account/'
   },
   /*   Sifchain: {
-    chain_name: "Sifchain",
-    deposit_channel_id: "channel-65",
+    chain_name: 'Sifchain',
+    deposit_channel_id: 'channel-65',
     deposit_gas: 150_000,
-    deposit_gas_denom: "urowan",
-    withdraw_channel_id: "channel-15",
+    deposit_gas_denom: 'urowan',
+    withdraw_channel_id: 'channel-15',
     withdraw_gas: 30_000,
-    chain_id: "sifchain-1",
-    bech32_prefix: "sif",
-    lcd: "https://api-sifchain-ia.cosmosia.notional.ventures",
-    rpc: "https://rpc.sifchain.finance",
-    chain_image: "/rowan.svg",
-    explorer_account: "https://www.mintscan.io/sifchain/account/",
+    chain_id: 'sifchain-1',
+    bech32_prefix: 'sif',
+    lcd: 'https://api-sifchain-ia.cosmosia.notional.ventures',
+    rpc: 'https://rpc.sifchain.finance',
+    chain_image: '/rowan.svg',
+    explorer_account: 'https://www.mintscan.io/sifchain/account/',
   }, */
   Stargaze: {
     chain_name: 'Stargaze',
@@ -387,7 +443,7 @@ export type Deposit = {
   chain_name: string
   /** Axelar chain name of the source chain */
   axelar_chain_name?: string
-  /** Axelar channel ID of the source chain */
+  /** Axelar channel name of the source chain */
   axelar_channel_id?: string
   /** denom on the other chain */
   denom: string
@@ -439,6 +495,18 @@ export const tokens: Token[] = [
           [
             {
               incomingChannelId: chains['Akash'].deposit_channel_id,
+              incomingPortId: 'transfer'
+            }
+          ],
+          'uscrt'
+        )
+      },
+      {
+        chain_name: 'Archway',
+        denom: ibcDenom(
+          [
+            {
+              incomingChannelId: chains['Archway'].deposit_channel_id,
               incomingPortId: 'transfer'
             }
           ],
@@ -505,16 +573,28 @@ export const tokens: Token[] = [
           'uscrt'
         )
       },
-      /*       {
-        chain_name: "Crescent",
+      {
+        chain_name: 'dYdX',
         denom: ibcDenom(
           [
             {
-              incomingChannelId: chains["Crescent"].deposit_channel_id,
-              incomingPortId: "transfer",
+              incomingChannelId: chains['dYdX'].deposit_channel_id,
+              incomingPortId: 'transfer'
+            }
+          ],
+          'uscrt'
+        )
+      },
+      /*       {
+        chain_name: 'Crescent',
+        denom: ibcDenom(
+          [
+            {
+              incomingChannelId: chains['Crescent'].deposit_channel_id,
+              incomingPortId: 'transfer',
             },
           ],
-          "uscrt"
+          'uscrt'
         ),
       }, */
       {
@@ -590,6 +670,18 @@ export const tokens: Token[] = [
         )
       },
       {
+        chain_name: 'Noble',
+        denom: ibcDenom(
+          [
+            {
+              incomingChannelId: chains['Noble'].deposit_channel_id,
+              incomingPortId: 'transfer'
+            }
+          ],
+          'uscrt'
+        )
+      },
+      {
         chain_name: 'Osmosis',
         denom: ibcDenom(
           [
@@ -638,15 +730,15 @@ export const tokens: Token[] = [
         )
       },
       /*       {
-        chain_name: "Sifchain",
+        chain_name: 'Sifchain',
         denom: ibcDenom(
           [
             {
-              incomingChannelId: chains["Sifchain"].deposit_channel_id,
-              incomingPortId: "transfer",
+              incomingChannelId: chains['Sifchain'].deposit_channel_id,
+              incomingPortId: 'transfer',
             },
           ],
-          "uscrt"
+          'uscrt'
         ),
       }, */
       {
@@ -696,6 +788,10 @@ export const tokens: Token[] = [
         denom: 'uscrt'
       },
       {
+        chain_name: 'Archway',
+        denom: 'uscrt'
+      },
+      {
         chain_name: 'Axelar',
         denom: 'uscrt'
       },
@@ -715,9 +811,13 @@ export const tokens: Token[] = [
         chain_name: 'Cosmos Hub',
         denom: 'uscrt'
       },
+      {
+        chain_name: 'dYdX',
+        denom: 'uscrt'
+      },
       /*       {
-        chain_name: "Crescent",
-        denom: "uscrt",
+        chain_name: 'Crescent',
+        denom: 'uscrt',
       }, */
       {
         chain_name: 'Evmos',
@@ -744,6 +844,10 @@ export const tokens: Token[] = [
         denom: 'uscrt'
       },
       {
+        chain_name: 'Noble',
+        denom: 'uscrt'
+      },
+      {
         chain_name: 'Osmosis',
         denom: 'uscrt'
       },
@@ -760,8 +864,8 @@ export const tokens: Token[] = [
         denom: 'uscrt'
       },
       /*       {
-        chain_name: "Sifchain",
-        denom: "uscrt",
+        chain_name: 'Sifchain',
+        denom: 'uscrt',
       }, */
       {
         chain_name: 'Stargaze',
@@ -802,6 +906,35 @@ export const tokens: Token[] = [
             }
           ],
           'uakt'
+        )
+      }
+    ]
+  },
+  {
+    name: 'ARCH',
+    description: 'Archway Governance Token',
+    address: 'secret188z7hncvphw4us4h6uy6vlq4qf20jd2vm2vu8c',
+    code_hash: '638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e',
+    image: '/archway.svg',
+    decimals: 18,
+    coingecko_id: 'archway',
+    deposits: [
+      {
+        chain_name: 'Archway',
+        denom: 'aarch'
+      }
+    ],
+    withdrawals: [
+      {
+        chain_name: 'Archway',
+        denom: ibcDenom(
+          [
+            {
+              incomingChannelId: chains['Archway'].withdraw_channel_id,
+              incomingPortId: 'transfer'
+            }
+          ],
+          'aarch'
         )
       }
     ]
@@ -947,30 +1080,30 @@ export const tokens: Token[] = [
     ]
   },
   /*  {
-    name: "CRE",
-    address: "secret1tatdlkyznf00m3a7hftw5daaq2nk38ugfphuyr",
+    name: 'CRE',
+    address: 'secret1tatdlkyznf00m3a7hftw5daaq2nk38ugfphuyr',
     code_hash:
-      "5a085bd8ed89de92b35134ddd12505a602c7759ea25fb5c089ba03c8535b3042",
-    image: "/cre.svg",
+      '5a085bd8ed89de92b35134ddd12505a602c7759ea25fb5c089ba03c8535b3042',
+    image: '/cre.svg',
     decimals: 6,
-    coingecko_id: "crescent-network",
+    coingecko_id: 'crescent-network',
     deposits: [
       {
-        chain_name: "Crescent",
-        denom: "ucre",
+        chain_name: 'Crescent',
+        denom: 'ucre',
       },
     ],
     withdrawals: [
       {
-        chain_name: "Crescent",
+        chain_name: 'Crescent',
         denom: ibcDenom(
           [
             {
-              incomingChannelId: chains["Crescent"].withdraw_channel_id,
-              incomingPortId: "transfer",
+              incomingChannelId: chains['Crescent'].withdraw_channel_id,
+              incomingPortId: 'transfer',
             },
           ],
-          "ucre"
+          'ucre'
         ),
       },
     ],
@@ -1029,6 +1162,35 @@ export const tokens: Token[] = [
             }
           ],
           'udvpn'
+        )
+      }
+    ]
+  },
+  {
+    name: 'dYdX',
+    description: 'dYdX governance token',
+    address: 'secret13lndcagy53wfzh69rtv0dex3a7cks0dv5emwke',
+    code_hash: '5a085bd8ed89de92b35134ddd12505a602c7759ea25fb5c089ba03c8535b3042',
+    image: '/dydx.svg',
+    decimals: 18,
+    coingecko_id: 'dydx',
+    deposits: [
+      {
+        chain_name: 'dYdX',
+        denom: 'adydx'
+      }
+    ],
+    withdrawals: [
+      {
+        chain_name: 'dYdX',
+        denom: ibcDenom(
+          [
+            {
+              incomingChannelId: chains['dYdX'].withdraw_channel_id,
+              incomingPortId: 'transfer'
+            }
+          ],
+          'adydx'
         )
       }
     ]
@@ -1152,8 +1314,8 @@ export const tokens: Token[] = [
   {
     name: 'INJ',
     description: 'Injective Governance Token',
-    address: 'secret16cwf53um7hgdvepfp3jwdzvwkt5qe2f9vfkuwv',
-    code_hash: '5a085bd8ed89de92b35134ddd12505a602c7759ea25fb5c089ba03c8535b3042',
+    address: 'secret14706vxakdzkz9a36872cs62vpl5qd84kpwvpew',
+    code_hash: '638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e',
     image: '/inj.svg',
     decimals: 18,
     coingecko_id: 'injective-protocol',
@@ -1411,6 +1573,34 @@ export const tokens: Token[] = [
     ]
   },
   {
+    name: 'PICA',
+    address: 'secret1e0y9vf4xr9wffyxsvlz35jzl5st2srkdl8frac',
+    code_hash: '5a085bd8ed89de92b35134ddd12505a602c7759ea25fb5c089ba03c8535b3042',
+    image: '/pica.svg',
+    decimals: 12,
+    coingecko_id: 'picasso',
+    deposits: [
+      {
+        chain_name: 'Composable',
+        denom: 'ppica'
+      }
+    ],
+    withdrawals: [
+      {
+        chain_name: 'Composable',
+        denom: ibcDenom(
+          [
+            {
+              incomingChannelId: chains['Composable'].withdraw_channel_id,
+              incomingPortId: 'transfer'
+            }
+          ],
+          'ppica'
+        )
+      }
+    ]
+  },
+  {
     name: 'pSTAKE',
     description: 'Persistance pSTAKE',
     address: 'secret1umeg3u5y949vz6jkgq0n4rhefsr84ws3duxmnz',
@@ -1526,31 +1716,59 @@ export const tokens: Token[] = [
       }
     ]
   },
-  /* {
-    name: "ROWAN",
-    address: "secret159p22zvq2wzsdtqhm2plp4wg33srxp2hf0qudc",
-    code_hash:
-      "5a085bd8ed89de92b35134ddd12505a602c7759ea25fb5c089ba03c8535b3042",
-    image: "/rowan.svg",
-    decimals: 18,
-    coingecko_id: "sifchain",
+  {
+    name: 'USDC (Noble)',
+    address: 'secret1chsejpk9kfj4vt9ec6xvyguw539gsdtr775us2',
+    code_hash: '5a085bd8ed89de92b35134ddd12505a602c7759ea25fb5c089ba03c8535b3042',
+    image: '/ausdc.svg',
+    decimals: 6,
+    coingecko_id: 'usd-coin',
     deposits: [
       {
-        chain_name: "Sifchain",
-        denom: "rowan",
+        chain_name: 'Noble',
+        denom: 'uusdc'
+      }
+    ],
+    withdrawals: [
+      {
+        chain_name: 'Noble',
+        denom: ibcDenom(
+          [
+            {
+              incomingChannelId: chains['Noble'].withdraw_channel_id,
+              incomingPortId: 'transfer'
+            }
+          ],
+          'uusdc'
+        )
+      }
+    ]
+  },
+  /* {
+    name: 'ROWAN',
+    address: 'secret159p22zvq2wzsdtqhm2plp4wg33srxp2hf0qudc',
+    code_hash:
+      '5a085bd8ed89de92b35134ddd12505a602c7759ea25fb5c089ba03c8535b3042',
+    image: '/rowan.svg',
+    decimals: 18,
+    coingecko_id: 'sifchain',
+    deposits: [
+      {
+        chain_name: 'Sifchain',
+        denom: 'rowan',
       },
     ],
     withdrawals: [
       {
-        chain_name: "Sifchain",
+        chain_name: 'Sifchain',
         denom: ibcDenom(
           [
             {
-              incomingChannelId: chains["Sifchain"].withdraw_channel_id,
-              incomingPortId: "transfer",
+              incomingChannelId: chains['Sifchain'].withdraw_channel_id,
+              incomingPortId: 'transfer',
             },
           ],
-          "rowan"
+          'rowan'
         ),
       },
     ],
@@ -1824,17 +2042,26 @@ export const snips: Token[] = [
     name: 'ALTER',
     description: 'ALTER dApp Token',
     is_snip20: true,
-    address: 'secret12rcvz0umvk875kd6a803txhtlu7y0pnd73kcej',
-    code_hash: 'd4f32c1bca133f15f69d557bd0722da10f45e31e5475a12900ca1e62e63e8f76',
-    image: '/alter.jpg',
+    address: 'secret17ljp7wwesff85ewt8xlauxjt7zrlr2hh27wgvr',
+    code_hash: '68e859db0840969e4b20b825c2cd2f41c189da83ee703746daf7a658d26f494f',
+    image: '/alter.svg',
     decimals: 6,
-    coingecko_id: '',
+    coingecko_id: 'alter',
     deposits: [
+      {
+        chain_name: 'Archway',
+        denom: ibcDenom(
+          [{ incomingChannelId: 'channel-39', incomingPortId: 'transfer' }],
+          'cw20:secret17ljp7wwesff85ewt8xlauxjt7zrlr2hh27wgvr'
+        ),
+        channel_id: 'channel-39',
+        gas: 300_000
+      },
       {
         chain_name: 'Osmosis',
         denom: ibcDenom(
           [{ incomingChannelId: 'channel-476', incomingPortId: 'transfer' }],
-          'cw20:secret12rcvz0umvk875kd6a803txhtlu7y0pnd73kcej'
+          'cw20:secret17ljp7wwesff85ewt8xlauxjt7zrlr2hh27wgvr'
         ),
         channel_id: 'channel-476',
         gas: 300_000
@@ -1843,7 +2070,7 @@ export const snips: Token[] = [
         chain_name: 'Kujira',
         denom: ibcDenom(
           [{ incomingChannelId: 'channel-44', incomingPortId: 'transfer' }],
-          'cw20:secret12rcvz0umvk875kd6a803txhtlu7y0pnd73kcej'
+          'cw20:secret17ljp7wwesff85ewt8xlauxjt7zrlr2hh27wgvr'
         ),
         channel_id: 'channel-44',
         gas: 300_000
@@ -1852,7 +2079,7 @@ export const snips: Token[] = [
         chain_name: 'Juno',
         denom: ibcDenom(
           [{ incomingChannelId: 'channel-163', incomingPortId: 'transfer' }],
-          'cw20:secret12rcvz0umvk875kd6a803txhtlu7y0pnd73kcej'
+          'cw20:secret17ljp7wwesff85ewt8xlauxjt7zrlr2hh27wgvr'
         ),
         channel_id: 'channel-163',
         gas: 300_000
@@ -1860,20 +2087,26 @@ export const snips: Token[] = [
     ],
     withdrawals: [
       {
+        chain_name: 'Archway',
+        denom: 'secret17ljp7wwesff85ewt8xlauxjt7zrlr2hh27wgvr',
+        channel_id: 'channel-90',
+        gas: 350_000
+      },
+      {
         chain_name: 'Osmosis',
-        denom: 'secret12rcvz0umvk875kd6a803txhtlu7y0pnd73kcej',
+        denom: 'secret17ljp7wwesff85ewt8xlauxjt7zrlr2hh27wgvr',
         channel_id: 'channel-44',
         gas: 350_000
       },
       {
         chain_name: 'Kujira',
-        denom: 'secret12rcvz0umvk875kd6a803txhtlu7y0pnd73kcej',
+        denom: 'secret17ljp7wwesff85ewt8xlauxjt7zrlr2hh27wgvr',
         channel_id: 'channel-46',
         gas: 350_000
       },
       {
         chain_name: 'Juno',
-        denom: 'secret12rcvz0umvk875kd6a803txhtlu7y0pnd73kcej',
+        denom: 'secret17ljp7wwesff85ewt8xlauxjt7zrlr2hh27wgvr',
         channel_id: 'channel-45',
         gas: 350_000
       }
@@ -2017,6 +2250,15 @@ export const snips: Token[] = [
         gas: 300_000
       },
       {
+        chain_name: 'Archway',
+        denom: ibcDenom(
+          [{ incomingChannelId: 'channel-39', incomingPortId: 'transfer' }],
+          'cw20:secret153wu605vvp934xhd4k9dtd640zsep5jkesstdm'
+        ),
+        channel_id: 'channel-39',
+        gas: 300_000
+      },
+      {
         chain_name: 'Osmosis',
         denom: ibcDenom(
           [{ incomingChannelId: 'channel-476', incomingPortId: 'transfer' }],
@@ -2045,6 +2287,12 @@ export const snips: Token[] = [
       }
     ],
     withdrawals: [
+      {
+        chain_name: 'Archway',
+        denom: 'secret153wu605vvp934xhd4k9dtd640zsep5jkesstdm',
+        channel_id: 'channel-90',
+        gas: 350_000
+      },
       {
         chain_name: 'Composable',
         denom: 'secret153wu605vvp934xhd4k9dtd640zsep5jkesstdm',
@@ -2351,6 +2599,13 @@ export const ICSTokens: Token[] = [
         gas: 300_000
       },
       {
+        chain_name: 'Neutron',
+        axelar_chain_name: CHAINS.MAINNET.NEUTRON,
+        denom: ibcDenom([{ incomingChannelId: 'channel-2', incomingPortId: 'transfer' }], 'uusdc'),
+        channel_id: 'channel-2',
+        gas: 300_000
+      },
+      {
         chain_name: 'Kujira',
         axelar_chain_name: CHAINS.MAINNET.KUJIRA,
         denom: ibcDenom([{ incomingChannelId: 'channel-9', incomingPortId: 'transfer' }], 'uusdc'),
@@ -2390,6 +2645,13 @@ export const ICSTokens: Token[] = [
       {
         chain_name: 'Juno',
         axelar_chain_name: CHAINS.MAINNET.JUNO,
+        denom: 'secret1yxjmepvyl2c25vnt53cr2dpn8amknwausxee83',
+        channel_id: 'channel-61',
+        gas: 350_000
+      },
+      {
+        chain_name: 'Neutron',
+        axelar_chain_name: CHAINS.MAINNET.NEUTRON,
         denom: 'secret1yxjmepvyl2c25vnt53cr2dpn8amknwausxee83',
         channel_id: 'channel-61',
         gas: 350_000
@@ -2479,6 +2741,13 @@ export const ICSTokens: Token[] = [
         gas: 300_000
       },
       {
+        chain_name: 'Neutron',
+        axelar_chain_name: CHAINS.MAINNET.NEUTRON,
+        denom: ibcDenom([{ incomingChannelId: 'channel-2', incomingPortId: 'transfer' }], 'weth-wei'),
+        channel_id: 'channel-2',
+        gas: 300_000
+      },
+      {
         chain_name: 'Kujira',
         axelar_chain_name: CHAINS.MAINNET.KUJIRA,
         denom: ibcDenom([{ incomingChannelId: 'channel-9', incomingPortId: 'transfer' }], 'weth-wei'),
@@ -2503,6 +2772,105 @@ export const ICSTokens: Token[] = [
         chain_name: 'Terra',
         axelar_chain_name: CHAINS.MAINNET.TERRA,
         denom: ibcDenom([{ incomingChannelId: 'channel-6', incomingPortId: 'transfer' }], 'weth-wei'),
+        channel_id: 'channel-6',
+        gas: 300_000
+      }
+    ],
+    withdrawals: [
+      {
+        chain_name: 'Juno',
+        axelar_chain_name: CHAINS.MAINNET.JUNO,
+        denom: 'secret1yxjmepvyl2c25vnt53cr2dpn8amknwausxee83',
+        channel_id: 'channel-61',
+        gas: 350_000
+      },
+      {
+        chain_name: 'Kujira',
+        axelar_chain_name: CHAINS.MAINNET.KUJIRA,
+        denom: 'secret1yxjmepvyl2c25vnt53cr2dpn8amknwausxee83',
+        channel_id: 'channel-61',
+        gas: 350_000
+      },
+      {
+        chain_name: 'Osmosis',
+        axelar_chain_name: CHAINS.MAINNET.OSMOSIS,
+        denom: 'secret1yxjmepvyl2c25vnt53cr2dpn8amknwausxee83',
+        channel_id: 'channel-61',
+        gas: 350_000
+      },
+      {
+        chain_name: 'Stargaze',
+        axelar_chain_name: CHAINS.MAINNET.STARGAZE,
+        denom: 'secret1yxjmepvyl2c25vnt53cr2dpn8amknwausxee83',
+        channel_id: 'channel-61',
+        gas: 350_000
+      },
+      {
+        chain_name: 'Terra',
+        axelar_chain_name: CHAINS.MAINNET.TERRA,
+        denom: 'secret1yxjmepvyl2c25vnt53cr2dpn8amknwausxee83',
+        channel_id: 'channel-61',
+        gas: 350_000
+      }
+    ]
+  },
+  {
+    name: 'awstETH',
+    description: 'wstETH from Axelar',
+    is_ics20: true,
+    address: 'secret148jzxkagwe0xulf8jt3sw4nuh2shdh788z3gyd',
+    code_hash: '638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e',
+    image: '/wsteth.svg',
+    decimals: 18,
+    coingecko_id: 'wrapped-steth',
+    axelar_denom: 'wsteth-wei',
+    deposits: [
+      {
+        chain_name: 'Axelar',
+        axelar_chain_name: CHAINS.MAINNET.AXELAR,
+        denom: 'wsteth-wei',
+        channel_id: 'channel-69',
+        gas: 300_000
+      },
+      {
+        chain_name: 'Juno',
+        axelar_chain_name: CHAINS.MAINNET.JUNO,
+        denom: ibcDenom([{ incomingChannelId: 'channel-71', incomingPortId: 'transfer' }], 'wsteth-wei'),
+        channel_id: 'channel-71',
+        gas: 300_000
+      },
+      {
+        chain_name: 'Neutron',
+        axelar_chain_name: CHAINS.MAINNET.NEUTRON,
+        denom: ibcDenom([{ incomingChannelId: 'channel-2', incomingPortId: 'transfer' }], 'wsteth-wei'),
+        channel_id: 'channel-2',
+        gas: 300_000
+      },
+      {
+        chain_name: 'Kujira',
+        axelar_chain_name: CHAINS.MAINNET.KUJIRA,
+        denom: ibcDenom([{ incomingChannelId: 'channel-9', incomingPortId: 'transfer' }], 'wsteth-wei'),
+        channel_id: 'channel-9',
+        gas: 300_000
+      },
+      {
+        chain_name: 'Osmosis',
+        axelar_chain_name: CHAINS.MAINNET.OSMOSIS,
+        denom: ibcDenom([{ incomingChannelId: 'channel-208', incomingPortId: 'transfer' }], 'wsteth-wei'),
+        channel_id: 'channel-208',
+        gas: 300_000
+      },
+      {
+        chain_name: 'Stargaze',
+        axelar_chain_name: CHAINS.MAINNET.STARGAZE,
+        denom: ibcDenom([{ incomingChannelId: 'channel-50', incomingPortId: 'transfer' }], 'wsteth-wei'),
+        channel_id: 'channel-50',
+        gas: 300_000
+      },
+      {
+        chain_name: 'Terra',
+        axelar_chain_name: CHAINS.MAINNET.TERRA,
+        denom: ibcDenom([{ incomingChannelId: 'channel-6', incomingPortId: 'transfer' }], 'wsteth-wei'),
         channel_id: 'channel-6',
         gas: 300_000
       }
@@ -2571,6 +2939,13 @@ export const ICSTokens: Token[] = [
         gas: 300_000
       },
       {
+        chain_name: 'Neutron',
+        axelar_chain_name: CHAINS.MAINNET.NEUTRON,
+        denom: ibcDenom([{ incomingChannelId: 'channel-2', incomingPortId: 'transfer' }], 'wbtc-satoshi'),
+        channel_id: 'channel-2',
+        gas: 300_000
+      },
+      {
         chain_name: 'Kujira',
         axelar_chain_name: CHAINS.MAINNET.KUJIRA,
         denom: ibcDenom([{ incomingChannelId: 'channel-9', incomingPortId: 'transfer' }], 'wbtc-satoshi'),
@@ -2580,21 +2955,21 @@ export const ICSTokens: Token[] = [
       {
         chain_name: 'Osmosis',
         axelar_chain_name: CHAINS.MAINNET.OSMOSIS,
-        denom: ibcDenom([{ incomingChannelId: 'channel-208', incomingPortId: 'transfer' }], 'weth-satoshi'),
+        denom: ibcDenom([{ incomingChannelId: 'channel-208', incomingPortId: 'transfer' }], 'wbtc-satoshi'),
         channel_id: 'channel-208',
         gas: 300_000
       },
       {
         chain_name: 'Stargaze',
         axelar_chain_name: CHAINS.MAINNET.STARGAZE,
-        denom: ibcDenom([{ incomingChannelId: 'channel-50', incomingPortId: 'transfer' }], 'weth-satoshi'),
+        denom: ibcDenom([{ incomingChannelId: 'channel-50', incomingPortId: 'transfer' }], 'wbtc-satoshi'),
         channel_id: 'channel-50',
         gas: 300_000
       },
       {
         chain_name: 'Terra',
         axelar_chain_name: CHAINS.MAINNET.TERRA,
-        denom: ibcDenom([{ incomingChannelId: 'channel-6', incomingPortId: 'transfer' }], 'weth-satoshi'),
+        denom: ibcDenom([{ incomingChannelId: 'channel-6', incomingPortId: 'transfer' }], 'wbtc-satoshi'),
         channel_id: 'channel-6',
         gas: 300_000
       }
@@ -3028,6 +3403,13 @@ export const ICSTokens: Token[] = [
         axelar_chain_name: CHAINS.MAINNET.JUNO,
         denom: ibcDenom([{ incomingChannelId: 'channel-71', incomingPortId: 'transfer' }], 'uusdt'),
         channel_id: 'channel-71',
+        gas: 300_000
+      },
+      {
+        chain_name: 'Neutron',
+        axelar_chain_name: CHAINS.MAINNET.NEUTRON,
+        denom: ibcDenom([{ incomingChannelId: 'channel-2', incomingPortId: 'transfer' }], 'uusdt'),
+        channel_id: 'channel-2',
         gas: 300_000
       },
       {
