@@ -28,10 +28,6 @@ import { APIContext } from 'context/APIContext'
 import { useSecretNetworkClientStore } from 'store/secretNetworkClient'
 import FeeGrant from 'components/FeeGrant/FeeGrant'
 import Title from 'components/Title'
-import { NativeTokenBalanceUi, WrappedTokenBalanceUi } from 'components/BalanceUI'
-import PercentagePicker from 'components/PercentagePicker'
-import { useFormik } from 'formik'
-import { wrapSchema } from './wrapSchema'
 import WrapForm from './components/WrapForm'
 
 export const WrapContext = createContext(null)
@@ -48,12 +44,6 @@ export function Wrap() {
   const [selectedTokenPrice, setSelectedTokenPrice] = useState<number>(0)
   const [amountString, setAmountString] = useState<string>('0')
   const [wrappingMode, setWrappingMode] = useState<WrappingMode>('wrap')
-
-  // useEffect(() => {
-  //   setSelectedTokenPrice(
-  //     prices.find((price: { coingecko_id: string }) => price.coingecko_id === selectedToken.coingecko_id)?.priceUsd
-  //   )
-  // }, [selectedToken, prices])
 
   useEffect(() => {
     if (import.meta.env.VITE_MIXPANEL_ENABLED === 'true') {
@@ -104,160 +94,6 @@ export function Wrap() {
 
   const [isUnknownBalanceModalOpen, setIsUnknownBalanceModalOpen] = useState(false)
   const [isFeeGrantInfoModalOpen, setIsFeeGrantInfoModalOpen] = useState(false)
-
-  // UI
-  const [isValidAmount, setisValidAmount] = useState<boolean>(false)
-  const [validationMessage, setValidationMessage] = useState<string>('')
-  const [isValidationActive, setIsValidationActive] = useState<boolean>(false)
-  // function validateForm() {
-  //   let isValid = false
-  //   const availableAmount = new BigNumber(
-  //     wrappingMode === 'wrap' ? nativeBalance : tokenBalance
-  //   ).dividedBy(`1e${selectedToken.decimals}`)
-
-  //   const numberRegex = /^(?:[1-9]\d*|0)?(?:\.\d+)?$/
-
-  //   function matchExact(r: any, str: any) {
-  //     const match = str.match(r)
-  //     return match && str === match[0]
-  //   }
-
-  //   if (
-  //     new BigNumber(amountString).isGreaterThan(
-  //       new BigNumber(availableAmount)
-  //     ) &&
-  //     !(tokenBalance === viewingKeyErrorString && wrappingMode === 'unwrap') &&
-  //     amountString !== ''
-  //   ) {
-  //     setValidationMessage('Not enough balance')
-  //     setisValidAmount(false)
-  //   } else if (!matchExact(numberRegex, amountString) || amountString === '') {
-  //     setValidationMessage('Please enter a valid amount')
-  //     setisValidAmount(false)
-  //   } else {
-  //     setisValidAmount(true)
-  //     isValid = true
-  //   }
-  //   return isValid
-  // }
-
-  // useEffect(() => {
-  //   // setting amountToWrap to max. value, if entered value is > available
-  //   const availableAmount =
-  //     wrappingMode === 'wrap'
-  //       ? new BigNumber(nativeBalance).dividedBy(`1e${selectedToken.decimals}`)
-  //       : new BigNumber(tokenBalance).dividedBy(`1e${selectedToken.decimals}`)
-  //   if (
-  //     !new BigNumber(amountString).isNaN() &&
-  //     availableAmount.isGreaterThan(new BigNumber(0)) &&
-  //     new BigNumber(amountString).isGreaterThan(
-  //       new BigNumber(availableAmount)
-  //     ) &&
-  //     !(tokenBalance === viewingKeyErrorString && wrappingMode === 'unwrap') &&
-  //     amountString !== ''
-  //   ) {
-  //     setAmountString(availableAmount.toString())
-  //   }
-
-  //   if (isValidationActive) {
-  //     validateForm()
-  //   }
-  // }, [amountString, wrappingMode, isValidationActive])
-
-  // useEffect(() => {
-  //   setAmountString('')
-  // }, [selectedToken, wrappingMode])
-
-  function handleInputChange(e: any) {
-    const filteredValue = e.target.value.replace(/[^0-9.]+/g, '')
-    setAmountString(filteredValue)
-  }
-
-  // function showModal() {
-  //   setIsUnknownBalanceModalOpen(true)
-  //   document.body.classList.add('overflow-hidden')
-  // }
-
-  // async function setBalance() {
-  //   try {
-  //     setNativeBalance(undefined)
-  //     setTokenBalance(undefined)
-  //     await updateCoinBalance()
-  //     await updateTokenBalance()
-  //   } catch (e) {
-  //     console.log(e)
-  //   }
-  // }
-
-  // const updateTokenBalance = async () => {
-  //   if (!selectedToken.address || !secretNetworkClient) {
-  //     return
-  //   }
-
-  //   const key = await WalletService.getWalletViewingKey(selectedToken.address)
-  //   if (!key) {
-  //     setTokenBalance(viewingKeyErrorString)
-  //     return
-  //   }
-
-  //   try {
-  //     const result: {
-  //       viewing_key_error: any
-  //       balance: {
-  //         amount: string
-  //       }
-  //     } = await secretNetworkClient.query.compute.queryContract({
-  //       contract_address: selectedToken.address,
-  //       code_hash: selectedToken.code_hash,
-  //       query: {
-  //         balance: { address: secretNetworkClient?.address, key }
-  //       }
-  //     })
-
-  //     if (result.viewing_key_error) {
-  //       setTokenBalance(viewingKeyErrorString)
-  //       return
-  //     }
-
-  //     setTokenBalance(result.balance.amount)
-  //   } catch (e) {
-  //     console.error(`Error getting balance for s${selectedToken.name}`, e)
-
-  //     setTokenBalance(viewingKeyErrorString)
-  //   }
-  // }
-
-  // const updateCoinBalance = async () => {
-  //   setNativeBalance(undefined)
-  //   try {
-  //     const {
-  //       balance: { amount }
-  //     } = await secretNetworkClient.query.bank.balance({
-  //       address: secretNetworkClient?.address,
-  //       denom: selectedToken.withdrawals[0]?.from_denom
-  //     })
-  //     setNativeBalance(amount)
-  //   } catch (e) {
-  //     console.error(`Error while trying to query ${selectedToken.name}:`, e)
-  //   }
-  // }
-
-  // useEffect(() => {
-  //   if (!secretNetworkClient?.address) return
-  //   ;(async () => {
-  //     setBalance()
-  //   })()
-
-  //   const interval = setInterval(setBalance, 10000)
-  //   return () => {
-  //     clearInterval(interval)
-  //   }
-  // }, [
-  //   secretNetworkClient?.address,
-  //   secretNetworkClient,
-  //   selectedToken,
-  //   feeGrantStatus
-  // ])
 
   return (
     <>

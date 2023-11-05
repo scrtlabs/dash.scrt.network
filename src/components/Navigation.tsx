@@ -33,10 +33,6 @@ export function Navigation({
     setIsExtendedMenuOpen(!isExtendedMenuOpen)
   }
 
-  function toggleIsWalletMenuOpen() {
-    setIsWalletMenuOpen(!isWalletMenuOpen)
-  }
-
   return (
     <>
       <NavLink to="/" className="block ml-4 mb-12" style={{ maxWidth: '9rem' }}>

@@ -1,20 +1,20 @@
 import { useContext, useEffect, useRef, useState } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { ThemeContext } from 'shared/context/ThemeContext'
-import { trackMixPanelEvent } from 'shared/utils/commons'
+import { ThemeContext } from 'context/ThemeContext'
+import { trackMixPanelEvent } from 'utils/commons'
 import CopyToClipboard from 'react-copy-to-clipboard'
 import { toast } from 'react-toastify'
 import Tooltip from '@mui/material/Tooltip'
 import { QRCode } from 'react-qrcode-logo'
 import { faArrowUpRightFromSquare, faCopy } from '@fortawesome/free-solid-svg-icons'
-import { SecretjsContext } from 'shared/context/SecretjsContext'
-import { Token, chains, tokens } from 'shared/utils/config'
+import { Token, chains, tokens } from 'utils/config'
 import { Link } from 'react-router-dom'
+import { useSecretNetworkClientStore } from 'store/secretNetworkClient'
 
 export default function AddressQR() {
   const { theme, setTheme } = useContext(ThemeContext)
 
-  const { secretjs } = useContext(SecretjsContext)
+  const { secretNetworkClient, walletAddress } = useSecretNetworkClientStore()
 
   const secretToken: Token = tokens.find((token) => token.name === 'SCRT')
 
@@ -28,17 +28,17 @@ export default function AddressQR() {
               <div className="flex">
                 <div className="flex-1 font-semibold mb-2 text-center sm:text-left">Your Address:</div>
               </div>
-              {secretjs && secretjs?.address && (
+              {secretNetworkClient && (
                 <a
-                  href={`${chains['Secret Network'].explorer_account}${secretjs?.address}`}
+                  href={`${chains['Secret Network'].explorer_account}${walletAddress}`}
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  {secretjs?.address}{' '}
+                  {walletAddress}{' '}
                 </a>
               )}
               <CopyToClipboard
-                text={secretjs?.address}
+                text={walletAddress}
                 onCopy={() => {
                   toast.success('Address copied to clipboard!')
                 }}
@@ -46,13 +46,13 @@ export default function AddressQR() {
                 <Tooltip
                   title={'Copy to clipboard'}
                   placement="bottom"
-                  disableHoverListener={!secretjs && !secretjs?.address}
+                  disableHoverListener={!secretNetworkClient}
                   arrow
                 >
                   <span>
                     <button
                       className="text-neutral-500 hover:text-neutral-800 dark:hover:text-neutral-300 active:text-neutral-500 transition-colors"
-                      disabled={!secretjs && !secretjs?.address}
+                      disabled={!secretNetworkClient}
                     >
                       <FontAwesomeIcon icon={faCopy} />
                     </button>
@@ -86,7 +86,7 @@ export default function AddressQR() {
           {/* QR Code */}
           <div className="ml-2">
             <QRCode
-              value={secretjs?.address}
+              value={walletAddress}
               quietZone={0}
               logoImage={`/img/assets/${secretToken.image}`}
               size={110}
