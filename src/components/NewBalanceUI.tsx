@@ -1,7 +1,7 @@
 import BigNumber from 'bignumber.js'
 import { useEffect, useState } from 'react'
 import { Nullable } from 'types/Nullable'
-import { Chain, Token, tokens } from 'utils/config'
+import { Chain, Token, chains, tokens } from 'utils/config'
 import { scrtToken } from 'utils/tokens'
 import { useTokenPricesStore } from 'store/TokenPrices'
 import { GetBalanceError, useSecretNetworkClientStore } from 'store/secretNetworkClient'
@@ -12,13 +12,13 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 interface IProps {
   token: Token
-  chain: Chain
-  isSecretToken: boolean
+  chain?: Chain
+  isSecretToken?: boolean
 }
 
-export default function NewBalanceUI(props: IProps) {
+export default function NewBalanceUI({ token, chain = chains['Secret Network'], isSecretToken = false }: IProps) {
   const setViewingKey = () => {
-    // TODO: Do something with props.token;
+    // TODO: Do something with token;
   }
 
   const { isConnected, getBalance, balanceMapping } = useSecretNetworkClientStore()
@@ -26,11 +26,11 @@ export default function NewBalanceUI(props: IProps) {
 
   const [balance, setBalance] = useState<number | string>(null)
   const [usdPriceString, setUsdPriceString] = useState<string>(null)
-  const tokenName = (props.isSecretToken ? 's' : '') + props.token.name
+  const tokenName = (isSecretToken ? 's' : '') + token.name
 
   useEffect(() => {
     if (balanceMapping !== null) {
-      const newBalance = getBalance(props.token, props.isSecretToken)
+      const newBalance = getBalance(token, isSecretToken)
       console.debug(newBalance)
       if (newBalance !== null && newBalance instanceof BigNumber) {
         setBalance(newBalance.toNumber())
@@ -41,13 +41,13 @@ export default function NewBalanceUI(props: IProps) {
         setBalance(null)
       }
     }
-  }, [balanceMapping, props.token, props.isSecretToken])
+  }, [balanceMapping, token, isSecretToken])
 
   useEffect(() => {
     if (priceMapping !== null && balance !== null) {
-      setUsdPriceString(getValuePrice(props.token, BigNumber(balance)))
+      setUsdPriceString(getValuePrice(token, BigNumber(balance)))
     }
-  }, [priceMapping, props.token, balance])
+  }, [priceMapping, token, balance])
 
   if (!isConnected) return null
 
@@ -58,11 +58,9 @@ export default function NewBalanceUI(props: IProps) {
 
         {!isNaN(Number(balance)) && tokenName ? (
           <>
-            <span className="font-medium">{` ${new BigNumber(balance)
-              .dividedBy(`1e${props.token.decimals}`)
-              .toFormat()} ${props.isSecretToken && !props.token.is_snip20 ? 's' : ''}${props.token.name} ${
-              props.token.coingecko_id && usdPriceString ? ` (${usdPriceString})` : ''
-            }`}</span>
+            <span className="font-medium">{` ${new BigNumber(balance).dividedBy(`1e${token.decimals}`).toFormat()} ${
+              isSecretToken && !token.is_snip20 ? 's' : ''
+            }${token.name} ${token.coingecko_id && usdPriceString ? ` (${usdPriceString})` : ''}`}</span>
           </>
         ) : (
           <>

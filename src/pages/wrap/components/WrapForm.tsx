@@ -32,8 +32,6 @@ function WrapForm() {
     }
   }
 
-  const [isLoading, setIsWaiting] = useState<boolean>(false)
-
   function toggleWrappingMode() {
     if (formik.values.wrappingMode === 'wrap') {
       formik.setFieldValue('wrappingMode', 'unwrap')
@@ -80,13 +78,20 @@ function WrapForm() {
     }
   }, [isConnected])
 
+  const [isLoading, setIsWaiting] = useState<boolean>(false)
   const [generalSuccessMessage, setGeneralSuccessMessage] = useState<String>('')
   const [generalErrorMessage, setGeneralErrorMessage] = useState<String>('')
 
-  const formik = useFormik({
+  interface IFormValues {
+    amount: string
+    token: Token
+    wrappingMode: WrappingMode
+  }
+
+  const formik = useFormik<IFormValues>({
     initialValues: {
       amount: '',
-      tokenName: 'SCRT',
+      token: tokens.find((token: Token) => token.name === 'SCRT'),
       wrappingMode: 'wrap'
     },
     validationSchema: wrapSchema,
@@ -122,20 +127,23 @@ function WrapForm() {
     setGeneralSuccessMessage('')
   }, [formik.values])
 
+  function handleTokenSelect(token: Token) {
+    formik.setFieldValue('token', token)
+    formik.setFieldValue('amount', '')
+    formik.setFieldTouched('amount', false)
+  }
+
   return (
     <div onClick={handleClick}>
-      <form
-        onSubmit={formik.handleSubmit}
-        className="w-full flex flex-col gap-4 text-neutral-800 dark:text-neutral-200 bg-white dark:bg-neutral-900"
-      >
+      <form onSubmit={formik.handleSubmit} className="w-full flex flex-col gap-4">
         {/* *** From *** */}
-        <div className="bg-neutral-200 dark:bg-neutral-800 p-4 rounded-xl">
+        <div className="bg-neutral-200 dark:bg-neutral-700 p-4 rounded-xl">
           {/* Title Bar */}
           <div className="flex flex-col sm:flex-row justify-between items-center mb-2 text-center sm:text-left">
             <span className="font-extrabold">From</span>
-            {formik.errors.amount && (
+            {formik.touched.amount && formik.errors.amount ? (
               <span className="text-red-500 dark:text-red-500 text-xs font-normal">{formik.errors.amount}</span>
-            )}
+            ) : null}
           </div>
 
           {/* Input Field */}
@@ -143,9 +151,9 @@ function WrapForm() {
             <Select
               isDisabled={!isConnected}
               name="tokenName"
-              options={tokens.sort((a, b) => a.name.localeCompare(b.name))}
-              value={tokens.find((token: Token) => token.name === formik.values.tokenName)}
-              onChange={(token: Token) => formik.setFieldValue('tokenName', token.name)}
+              options={tokens.sort((a: Token, b: Token) => a.name.localeCompare(b.name))}
+              value={formik.values.token}
+              onChange={(token: Token) => handleTokenSelect(token)}
               onBlur={formik.handleBlur}
               isSearchable={false}
               formatOptionLabel={(token: Token) => (
@@ -172,8 +180,8 @@ function WrapForm() {
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
               className={
-                'dark:placeholder-neutral-700 text-right focus:z-10 block flex-1 min-w-0 w-full bg-neutral-100 dark:bg-neutral-900 text-black dark:text-white px-4 rounded-r-lg disabled:placeholder-neutral-300 dark:disabled:placeholder-neutral-700 transition-colors font-medium focus:outline-0 focus-visible:ring-2 focus-visible:ring-sky-500/60' +
-                (formik.errors.amount ? '  border border-red-500 dark:border-red-500' : '')
+                'dark:placeholder-neutral-600 text-right focus:z-10 block flex-1 min-w-0 w-full bg-neutral-100 dark:bg-neutral-800 text-black dark:text-white px-4 rounded-r-lg disabled:placeholder-neutral-300 dark:disabled:placeholder-neutral-700 transition-colors font-medium focus:outline-0 focus-visible:ring-2 focus-visible:ring-sky-500/60' +
+                (formik.touched.amount && formik.errors.amount ? '  border border-red-500 dark:border-red-500' : '')
               }
               placeholder="0"
               disabled={!isConnected}
@@ -202,21 +210,23 @@ function WrapForm() {
             placement="right"
             arrow
           >
-            <button
-              onClick={toggleWrappingMode}
-              type="button"
-              disabled={!isConnected}
-              className={
-                'inline-block bg-neutral-200 dark:bg-neutral-800 px-3 py-2 text-cyan-500 dark:text-cyan-500 transition-colors rounded-xl disabled:text-neutral-500 dark:disabled:text-neutral-500 focus:outline-0 focus:ring-2 ring-sky-500/40' +
-                (!isConnected ? '' : ' hover:text-cyan-600 dark:hover:text-cyan-300')
-              }
-            >
-              <FontAwesomeIcon icon={faRightLeft} className="fa-rotate-90" />
-            </button>
+            <>
+              <button
+                onClick={toggleWrappingMode}
+                type="button"
+                disabled={!isConnected}
+                className={
+                  'inline-block bg-neutral-200 dark:bg-neutral-700 px-3 py-2 text-cyan-500 dark:text-cyan-500 transition-colors rounded-xl disabled:text-neutral-500 dark:disabled:text-neutral-500 focus:outline-0 focus:ring-2 ring-sky-500/40' +
+                  (isConnected ? ' hover:text-cyan-600 dark:hover:text-cyan-300' : '')
+                }
+              >
+                <FontAwesomeIcon icon={faRightLeft} className="fa-rotate-90" />
+              </button>
+            </>
           </Tooltip>
         </div>
 
-        <div className="bg-neutral-200 dark:bg-neutral-800 p-4 rounded-xl">
+        <div className="bg-neutral-200 dark:bg-neutral-700 p-4 rounded-xl">
           <div className="mb-2 text-center sm:text-left">
             <span className="font-extrabold">To</span>
           </div>
@@ -226,8 +236,8 @@ function WrapForm() {
               isDisabled={!isConnected}
               name="tokenName"
               options={tokens.sort((a, b) => a.name.localeCompare(b.name))}
-              value={tokens.find((token) => token.name === formik.values.tokenName)}
-              onChange={(token: Token) => formik.setFieldValue('tokenName', token.name)}
+              value={formik.values.token}
+              onChange={(token: Token) => handleTokenSelect(token)}
               onBlur={formik.handleBlur}
               isSearchable={false}
               formatOptionLabel={(token) => (
@@ -253,17 +263,14 @@ function WrapForm() {
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
               className={
-                'dark:placeholder-neutral-700 text-right focus:z-10 block flex-1 min-w-0 w-full bg-neutral-100 dark:bg-neutral-900 text-black dark:text-white px-4 rounded-r-lg disabled:placeholder-neutral-300 dark:disabled:placeholder-neutral-700 transition-colors font-medium focus:outline-0 focus-visible:ring-2 ring-sky-500/60'
+                'dark:placeholder-neutral-600 text-right focus:z-10 block flex-1 min-w-0 w-full bg-neutral-100 dark:bg-neutral-800 text-black dark:text-white px-4 rounded-r-lg disabled:placeholder-neutral-300 dark:disabled:placeholder-neutral-700 transition-colors font-medium focus:outline-0 focus-visible:ring-2 ring-sky-500/60'
               }
               placeholder="0"
               disabled={!isConnected}
             />
           </div>
           <div className="flex-1 text-xs mt-3 text-center sm:text-left h-[1rem]">
-            <NewBalanceUI
-              token={tokens.find((token) => token.name.toLowerCase() === 'scrt')}
-              isSecretToken={formik.values.wrappingMode === 'wrap'}
-            />
+            <NewBalanceUI token={formik.values.token} isSecretToken={formik.values.wrappingMode === 'wrap'} />
           </div>
         </div>
 
