@@ -170,7 +170,7 @@ export default function RedelegateForm() {
             {amountInDollarString !== '$NaN' ? amountInDollarString : '$ -'}
           </div>
           <div className="text-center sm:text-left flex-initial">
-            {PercentagePicker(setAmountByPercentage, !secretNetworkClient?.address)}
+            <PercentagePicker setAmountByPercentage={setAmountByPercentage} disabled={!secretNetworkClient?.address} />
           </div>
         </div>
         <div className="mt-4">

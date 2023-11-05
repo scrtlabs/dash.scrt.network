@@ -1,10 +1,11 @@
 import { useEffect, useState, useContext } from 'react'
-import { randomDelay, sleep, formatUsdString, viewingKeyErrorString } from 'utils/commons'
+import { randomDelay, sleep, formatUsdString, viewingKeyErrorString, allTokens } from 'utils/commons'
 import { APIContext } from 'context/APIContext'
 import { Token } from 'utils/config'
 import { useSecretNetworkClientStore } from 'store/secretNetworkClient'
 import { useTokenPricesStore } from 'store/TokenPrices'
 import { WalletService } from 'services/wallet.service'
+import NewBalanceUI from 'components/NewBalanceUI'
 
 interface Props {
   token?: Token
@@ -14,97 +15,13 @@ const BalanceItem = (props: Props) => {
   const { secretNetworkClient } = useSecretNetworkClientStore()
   const { getPrice } = useTokenPricesStore()
 
-  const { prices } = useContext(APIContext)
-
-  const assetPrice = getPrice(props.token)
+  const assetPrice = getPrice(allTokens.find((token: Token) => token.name === props.token.name))
 
   const tokenName = (props.token?.address === 'native' || props.token?.is_snip20 ? '' : 's') + props.token?.name
 
   const tokenDescription =
     (props.token?.address !== 'native' || props.token?.is_ics20 || props.token?.is_snip20 ? 'Private ' : 'Public ') +
     props.token?.description
-
-  const [nativeBalance, setNativeBalance] = useState<any>(undefined)
-  const [tokenBalance, setTokenBalance] = useState<any>(undefined)
-
-  async function setBalance() {
-    try {
-      if (props.token?.address === 'native') {
-        setNativeBalance(undefined)
-        await updateCoinBalance()
-      } else {
-        setTokenBalance(undefined)
-        await updateTokenBalance()
-      }
-    } catch (e) {
-      console.log(e)
-    }
-  }
-
-  useEffect(() => {
-    if (!secretNetworkClient?.address) return
-    ;(async () => {
-      setBalance()
-    })()
-
-    const interval = setInterval(setBalance, 100000)
-    return () => {
-      clearInterval(interval)
-    }
-  }, [secretNetworkClient?.address, secretNetworkClient])
-
-  const updateCoinBalance = async () => {
-    try {
-      const {
-        balance: { amount }
-      } = await secretNetworkClient.query.bank.balance({
-        address: secretNetworkClient?.address,
-        denom: props.token?.withdrawals[0]?.denom
-      })
-      setNativeBalance(amount)
-    } catch (e) {
-      console.error(`Error while trying to query ${props.token?.name}:`, e)
-    }
-  }
-
-  const updateTokenBalance = async () => {
-    if (!props.token?.address || !secretNetworkClient) {
-      return
-    }
-
-    const key = await WalletService.getWalletViewingKey(props.token?.address)
-    if (!key) {
-      setTokenBalance(viewingKeyErrorString)
-      return
-    }
-
-    try {
-      await sleep(randomDelay(0, 1000))
-      const result: {
-        viewing_key_error: any
-        balance: {
-          amount: string
-        }
-      } = await secretNetworkClient.query.compute.queryContract({
-        contract_address: props.token?.address,
-        code_hash: props.token?.code_hash,
-        query: {
-          balance: { address: secretNetworkClient?.address, key }
-        }
-      })
-
-      if (result.viewing_key_error) {
-        setTokenBalance(viewingKeyErrorString)
-        return
-      }
-
-      setTokenBalance(result.balance.amount)
-    } catch (e) {
-      console.error(`Error getting balance for s${props.token?.name}`, e)
-
-      setTokenBalance(viewingKeyErrorString)
-    }
-  }
 
   return (
     <>
@@ -145,19 +62,10 @@ const BalanceItem = (props: Props) => {
           <div className="flex flex-col items-center">
             <div className="description text-xs text-neutral-500 dark:text-neutral-600 mb-2">Balance</div>
             <div className="font-semibold">
-              {/* {props.token?.address === 'native'
-                ? NativeTokenBalanceUi(
-                    nativeBalance,
-                    props.token,
-                    assetPrice,
-                    true
-                  )
-                : WrappedTokenBalanceUi(
-                    tokenBalance,
-                    props.token,
-                    assetPrice,
-                    true
-                  )} */}
+              <NewBalanceUI
+                token={allTokens.find((token: Token) => token.name === props.token.name)}
+                isSecretToken={props.token?.address !== 'native'}
+              />
             </div>
           </div>
         ) : null}

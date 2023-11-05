@@ -9,7 +9,6 @@ import { useSearchParams } from 'react-router-dom'
 import { ibcJsonLdSchema, ibcPageDescription, ibcPageTitle } from 'utils/commons'
 import { useSecretNetworkClientStore } from 'store/secretNetworkClient'
 import Title from 'components/Title'
-import Deposit from './components/Deposit'
 import IbcForm from './components/IbcForm'
 
 export const IbcContext = createContext(null)
@@ -33,7 +32,7 @@ export function Ibc() {
 
   const selectableChains = tokens.find((token) => token.name === 'SCRT').deposits
 
-  const [selectedSource, setSelectedSource] = useState<Deposit>(
+  const [selectedSource, setSelectedSource] = useState(
     selectedToken.deposits.find((deposit: any) => deposit.chain_name.toLowerCase() === 'osmosis')
   )
 

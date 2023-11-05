@@ -95,7 +95,7 @@ export default function IbcForm() {
         if (res.success) {
           setGeneralSuccessMessage(`IBC transfer successful!`)
         } else {
-          throw new Error()
+          throw new Error(res.errorMsg)
         }
       } catch (error: any) {
         console.error(error)

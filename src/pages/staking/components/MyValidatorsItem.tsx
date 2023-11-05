@@ -8,6 +8,7 @@ import BigNumber from 'bignumber.js'
 import { formatNumber } from 'utils/commons'
 import { scrtToken } from 'utils/tokens'
 import ValidatorItem from './ValidatorItem'
+import { Validator } from 'secretjs/dist/grpc_gateway/cosmos/staking/v1beta1/staking.pb'
 
 interface Props {
   name: string
@@ -21,9 +22,7 @@ interface Props {
 }
 
 const MyValidatorsItem = (props: Props) => {
-  const stakedAmountString = BigNumber(props.stakedAmount!)
-    .dividedBy(`1e6`)
-    .toString()
+  const stakedAmountString = BigNumber(props.stakedAmount!).dividedBy(`1e6`).toString()
 
   const { currentPrice, setCurrentPrice } = useContext(APIContext)
 
@@ -67,10 +66,7 @@ const MyValidatorsItem = (props: Props) => {
   }, [props.identity, identityRef])
 
   const isRestakeEnabled = (validator: Validator) => {
-    return props.restakeEntries.find(
-      (validatorAddress: string) =>
-        validatorAddress === validator.operator_address
-    )
+    return props.restakeEntries.find((validatorAddress: string) => validatorAddress === validator.operator_address)
   }
 
   const isAboveRestakeThreshold = (stakedAmount: number) => {
@@ -119,11 +115,7 @@ const MyValidatorsItem = (props: Props) => {
         <div className="image">
           {imgUrl ? (
             <>
-              <img
-                src={imgUrl}
-                alt={`validator logo`}
-                className="rounded-full w-10"
-              />
+              <img src={imgUrl} alt={`validator logo`} className="rounded-full w-10" />
             </>
           ) : (
             <>
@@ -161,26 +153,17 @@ const MyValidatorsItem = (props: Props) => {
           </div>
         )}
         <div className="flex flex-col items-right">
-          <div className="description text-xs text-gray-500 mb-2 text-right">
-            Your stake
-          </div>
+          <div className="description text-xs text-gray-500 mb-2 text-right">Your stake</div>
           <div>
             <div>
               <span className="font-semibold">{stakedAmountString}</span>
-              <span className="text-xs font-semibold text-neutral-400">
-                {' '}
-                SCRT
-              </span>
+              <span className="text-xs font-semibold text-neutral-400"> SCRT</span>
             </div>
           </div>
         </div>
         <div className="flex flex-col items-center">
-          <div className="description text-xs text-gray-500 mb-2">
-            Commission
-          </div>
-          <div className="commission font-semibold">
-            {formatNumber(props.commissionPercentage * 100, 2)}%
-          </div>
+          <div className="description text-xs text-gray-500 mb-2">Commission</div>
+          <div className="commission font-semibold">{formatNumber(props.commissionPercentage * 100, 2)}%</div>
         </div>
         {/*         <div className="flex items-center font-semibold border-b border-white/0 hover:border-white transition-colors">
           <FontAwesomeIcon icon={faChevronRight} size="sm" className="ml-1" />

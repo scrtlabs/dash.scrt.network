@@ -5,19 +5,12 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons'
 import './Balances.scss'
 import BalanceItem from './BalanceItem'
+import { SendService } from 'services/send.service'
 
 export const ManageBalances = () => {
   const [searchQuery, setSearchQuery] = useState<string>('')
 
-  let tokens = JSON.parse(JSON.stringify(allTokens))
-  const tokenToModify = tokens.find((token: Token) => token.name === 'SCRT')
-  if (tokenToModify) {
-    tokenToModify.address = 'native'
-  }
-
-  const SCRT = allTokens.find((token: Token) => token.name === 'SCRT')
-
-  tokens = [SCRT, ...tokens]
+  const tokens = SendService.getSupportedTokens()
 
   const displayedAssets = tokens.filter(
     (token: Token) =>
@@ -50,9 +43,7 @@ export const ManageBalances = () => {
 
       <div className="balance-item flex flex-col">
         {tokens
-          ? displayedAssets.map((token: Token, i: number) => (
-              <BalanceItem token={token} key={i} />
-            ))
+          ? displayedAssets.map((token: Token, i: number) => <BalanceItem token={token} key={i} />)
           : [...Array(10)].map((_, index) => <BalanceItem key={index} />)}
       </div>
     </>

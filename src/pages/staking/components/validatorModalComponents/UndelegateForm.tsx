@@ -140,7 +140,7 @@ export default function UndelegateForm() {
             {amountInDollarString !== '$NaN' ? amountInDollarString : '$ -'}
           </div>
           <div className="text-center sm:text-left flex-initial">
-            {PercentagePicker(setAmountByPercentage, !secretNetworkClient?.address)}
+            <PercentagePicker setAmountByPercentage={setAmountByPercentage} disabled={!secretNetworkClient?.address} />
           </div>
         </div>
       </div>

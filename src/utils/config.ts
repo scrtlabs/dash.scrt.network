@@ -824,7 +824,7 @@ export const tokens: Token[] = [
         denom: ibcDenom(
           [
             {
-              incomingChannelId: 'channel-141',
+              incomingChannelId: 'channel-0',
               incomingPortId: 'transfer'
             }
           ],

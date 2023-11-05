@@ -141,7 +141,7 @@ const performIbcDeposit = async (
 
   const amount = new BigNumber(props.amount).multipliedBy(`1e${token.decimals}`).toFixed(0, BigNumber.ROUND_DOWN)
 
-  const routing = await getSkipIBCRouting(selectedSource, 'deposit', token, amount)
+  const routing = await getSkipIBCRouting(selectedSource, 'deposit', token, new BigNumber(props.amount))
 
   try {
     let tx: TxResponse
@@ -151,6 +151,8 @@ const performIbcDeposit = async (
     ) {
       // Regular cosmos chain (not ethermint signing)
       if (token.name === 'SCRT' || deposit.axelar_chain_name == CHAINS.MAINNET.AXELAR) {
+        const forwardingMemo = await composePMFMemo(routing.operations)
+
         tx = await sourceChainNetworkClient.tx.ibc.transfer(
           {
             sender: sourceChainNetworkClient.address,
@@ -161,7 +163,7 @@ const performIbcDeposit = async (
               amount: amount,
               denom: token.deposits.filter((deposit: Deposit) => deposit.chain_name === props.chain.chain_name)[0].denom
             },
-            memo: routing.operations.length > 1 ? await composePMFMemo(routing.operations) : '',
+            memo: routing.operations.length > 1 ? forwardingMemo : '',
             timeout_timestamp: String(Math.floor(Date.now() / 1000) + 10 * 60) // 10 minute timeout
           },
           {
@@ -177,46 +179,34 @@ const performIbcDeposit = async (
           }
         )
       } else {
+        const autoWrapJsonString = JSON.stringify({
+          wasm: {
+            contract: 'secret198lmmh2fpj3weqhjczptkzl9pxygs23yn6dsev',
+            msg: {
+              wrap_deposit: {
+                snip20_address: token.address,
+                snip20_code_hash: token.code_hash,
+                recipient_address: props.secretNetworkClient.address
+              }
+            }
+          }
+        })
+
+        const forwardingMemo = await composePMFMemo(routing.operations, autoWrapJsonString)
+
         tx = await sourceChainNetworkClient.tx.ibc.transfer(
           {
             sender: sourceChainNetworkClient.address,
             receiver: 'secret198lmmh2fpj3weqhjczptkzl9pxygs23yn6dsev',
-            source_channel: deposit_channel_id,
-            source_port: 'transfer',
+            source_channel:
+              routing.operations.length > 1 ? (routing.operations[0] as any).transfer.channel : deposit_channel_id,
+            source_port: routing.operations.length > 1 ? (routing.operations[0] as any).transfer.port : 'transfer',
             token: {
               amount: amount,
               denom: token.deposits.filter((deposit: any) => deposit.chain_name === props.chain.chain_name)[0].denom
             },
             timeout_timestamp: String(Math.floor(Date.now() / 1000) + 10 * 60), // 10 minute timeout
-            memo:
-              routing.operations.length > 1
-                ? await composePMFMemo(
-                    routing.operations,
-                    JSON.stringify({
-                      wasm: {
-                        contract: 'secret198lmmh2fpj3weqhjczptkzl9pxygs23yn6dsev',
-                        msg: {
-                          wrap_deposit: {
-                            snip20_address: token.address,
-                            snip20_code_hash: token.code_hash,
-                            recipient_address: props.secretNetworkClient.address
-                          }
-                        }
-                      }
-                    })
-                  )
-                : JSON.stringify({
-                    wasm: {
-                      contract: 'secret198lmmh2fpj3weqhjczptkzl9pxygs23yn6dsev',
-                      msg: {
-                        wrap_deposit: {
-                          snip20_address: token.address,
-                          snip20_code_hash: token.code_hash,
-                          recipient_address: props.secretNetworkClient.address
-                        }
-                      }
-                    }
-                  })
+            memo: routing.operations.length > 1 ? forwardingMemo : autoWrapJsonString
           },
           {
             broadcastCheckIntervalMs: 10000,
@@ -429,6 +419,8 @@ const performIbcWithdrawal = async (
 
   const amount = new BigNumber(props.amount).multipliedBy(`1e${token.decimals}`).toFixed(0, BigNumber.ROUND_DOWN)
 
+  const routing = await getSkipIBCRouting(selectedDest, 'withdrawal', token, new BigNumber(props.amount))
+
   let { withdraw_channel_id, withdraw_gas, lcd: lcdDstChain } = selectedDest
 
   const withdrawalChain = token.withdrawals.filter(
@@ -444,8 +436,6 @@ const performIbcWithdrawal = async (
   //     closeButton: true
   //   }
   // )
-
-  const routing = await getSkipIBCRouting(selectedDest, 'withdrawal', token, amount)
 
   try {
     let tx: TxResponse
@@ -551,6 +541,8 @@ const performIbcWithdrawal = async (
           ? withdrawalChain.channel_id
           : withdraw_channel_id
 
+      const forwardingMemo = await composePMFMemo(routing.operations)
+
       tx = await props.secretNetworkClient.tx.ibc.transfer(
         {
           sender: props.secretNetworkClient?.address,
@@ -561,7 +553,7 @@ const performIbcWithdrawal = async (
             amount,
             denom: withdrawalChain.denom
           },
-          memo: routing.operations.length > 1 ? await composePMFMemo(routing.operations) : '',
+          memo: routing.operations.length > 1 ? forwardingMemo : '',
           timeout_timestamp: String(Math.floor(Date.now() / 1000) + 10 * 60) // 10 minute timeout
         },
         {
@@ -579,6 +571,8 @@ const performIbcWithdrawal = async (
         }
       )
     } else {
+      const forwardingMemo = await composePMFMemo(routing.operations)
+
       tx = await props.secretNetworkClient.tx.broadcast(
         [
           new MsgExecuteContract({
@@ -603,7 +597,7 @@ const performIbcWithdrawal = async (
               amount,
               denom: withdrawalChain.denom
             },
-            memo: routing.operations.length > 1 ? await composePMFMemo(routing.operations) : '',
+            memo: routing.operations.length > 1 ? forwardingMemo : '',
             timeout_timestamp: String(Math.floor(Date.now() / 1000) + 10 * 60) // 10 minute timeout
           })
         ],
@@ -629,6 +623,7 @@ const performIbcWithdrawal = async (
       //   type: 'error',
       //   isLoading: false
       // })
+      console.log(tx.rawLog)
     } else {
       // toast.update(toastId, {
       //   render: `Receiving ${normalizedAmount} ${selectedToken.name} on ${selectedSource.chain_name}`
@@ -742,8 +737,8 @@ async function getSkipIBCRouting(chain: Chain, IbcMode: IbcMode, token: Token, a
   if (IbcMode === 'deposit') {
     dest = token.deposits.find((deposit) => deposit.chain_name === chain.chain_name)
     source = token.withdrawals.find((withdrawals) => withdrawals.chain_name === chain.chain_name)
-    console.log(source)
     console.log(dest)
+    console.log(source)
   }
   if (IbcMode === 'withdrawal') {
     source = token.deposits.find((deposit) => deposit.chain_name === chain.chain_name)
@@ -751,7 +746,6 @@ async function getSkipIBCRouting(chain: Chain, IbcMode: IbcMode, token: Token, a
     console.log(dest)
     console.log(source)
   }
-  console.log(amount)
 
   const route = await client.route({
     amountIn: amount.toString(),
@@ -795,20 +789,22 @@ function composePMFMemo(allOperations: Operation[], finalMemo?: string | undefin
     const operation = operations[0]
 
     // Recursively process the rest of the operations array
-    const next: string | Forward | null =
-      operations.length > 1 ? JSON.parse(await generateMemo(operations.slice(1), finalNextContent)) : undefined
+    const nextMemo: string = await generateMemo(operations.slice(1), finalNextContent)
 
     const receiver = await getReceiverAddress((operation as any).transfer.chainID)
+
+    // If this is the last operation and there are no more operations, use finalNextContent as the next memo
+    const next = operations.length > 1 ? JSON.parse(nextMemo) : finalNextContent
 
     // Construct the memo object for this operation
     const memoObject: MemoObject = {
       forward: {
-        receiver: receiver, // Replace with the actual receiver address
+        receiver: receiver,
         port: (operation as any).transfer.port,
         channel: (operation as any).transfer.channel,
-        timeout: 0, // Adjust timeout as needed
-        retries: 2, // Adjust retries as needed
-        ...(next || finalNextContent ? { next: next } : {}) // Conditionally include the "next" field
+        timeout: 0,
+        retries: 2,
+        next: next // Unconditionally include the "next" field, as we've handled the base case above
       }
     }
     return JSON.stringify(memoObject)
