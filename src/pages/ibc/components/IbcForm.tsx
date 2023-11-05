@@ -24,7 +24,7 @@ export default function IbcForm() {
 
   // handles [25% | 50% | 75% | Max] Button-Group
   function setAmountByPercentage(percentage: number) {
-    formik.setFieldValue('amount', '100')
+    formik.setFieldValue('amount', percentage.toString()) // TODO: Fix
   }
 
   const [srcAddress, setSrcAddress] = useState<string>('')
