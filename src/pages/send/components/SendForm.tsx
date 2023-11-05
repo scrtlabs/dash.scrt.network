@@ -12,6 +12,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { SendService } from 'services/send.service'
 import FeeGrant from 'components/FeeGrant/FeeGrant'
 import { allTokens } from 'utils/commons'
+import { FeeGrantStatus } from 'types/FeeGrantStatus'
 
 export default function SendForm() {
   const { secretNetworkClient, walletAddress, feeGrantStatus, requestFeeGrant, isConnected, connectWallet } =
@@ -26,6 +27,7 @@ export default function SendForm() {
     token: Token
     recipient: string
     memo: string
+    feeGrantStatus: FeeGrantStatus
   }
 
   const formik = useFormik<IFormValues>({
@@ -33,7 +35,8 @@ export default function SendForm() {
       amount: '',
       token: allTokens[0],
       recipient: '',
-      memo: ''
+      memo: '',
+      feeGrantStatus: feeGrantStatus
     },
     validationSchema: sendSchema,
     validateOnBlur: false,
@@ -45,8 +48,7 @@ export default function SendForm() {
         setIsWaiting(true)
         const res = await SendService.performSending({
           ...values,
-          secretNetworkClient,
-          feeGrantStatus
+          secretNetworkClient
         })
         setIsWaiting(false)
 
