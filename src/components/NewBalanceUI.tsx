@@ -46,12 +46,10 @@ export default function NewBalanceUI({ token, chain = chains['Secret Network'], 
       }
     }
 
-    console.log(chain)
-    console.log(isSecretToken)
-    console.log(token)
     if (chain !== chains['Secret Network']) {
       async function fetchIbcChainBalances() {
         const sourceChain = await IbcService.getChainSecretJs(chain)
+
         const sourceChainBalance = await IbcService.fetchSourceBalance(sourceChain.address, chain, token)
 
         if (sourceChainBalance !== null && sourceChainBalance instanceof BigNumber) {
@@ -63,6 +61,7 @@ export default function NewBalanceUI({ token, chain = chains['Secret Network'], 
           setBalance(null)
         }
       }
+      setBalance(null)
       fetchIbcChainBalances()
     }
   }, [balanceMapping, token, isSecretToken, chain])

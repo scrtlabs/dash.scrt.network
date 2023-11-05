@@ -721,7 +721,7 @@ async function fetchSourceBalance(address: string, chain: Chain, token: Token): 
 
     const balanceObj = balances.find((balance: any) => balance.denom === targetDenom)
 
-    return balanceObj ? BigNumber(balanceObj.amount) : null
+    return balanceObj ? BigNumber(balanceObj.amount) : BigNumber(0)
   } catch (e) {
     console.error(`Error while trying to query ${url}:`, e)
     return 'GenericFetchError' as GetBalanceError
