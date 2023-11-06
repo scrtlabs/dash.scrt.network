@@ -192,7 +192,6 @@ function WrapForm() {
           {/* Balance | [25%|50%|75%|Max] */}
           <div className="flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 mt-2">
             <div className="flex-1 text-xs">
-              <span className="font-bold">{`Balance: `}</span>
               <BalanceUI
                 token={tokens.find((token) => token.name.toLowerCase() === 'scrt')}
                 isSecretToken={formik.values.wrappingMode === 'unwrap'}
