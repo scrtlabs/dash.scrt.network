@@ -983,7 +983,7 @@ export const tokens: Token[] = [
         denom: ibcDenom(
           [
             {
-              incomingChannelId: 'channel-0',
+              incomingChannelId: chains['Cosmos Hub'].withdraw_channel_id,
               incomingPortId: 'transfer'
             }
           ],
@@ -1725,11 +1725,35 @@ export const tokens: Token[] = [
     coingecko_id: 'usd-coin',
     deposits: [
       {
+        chain_name: 'Osmosis',
+        denom: ibcDenom(
+          [
+            {
+              incomingChannelId: 'channel-750',
+              incomingPortId: 'transfer'
+            }
+          ],
+          'uusdc'
+        )
+      },
+      {
         chain_name: 'Noble',
         denom: 'uusdc'
       }
     ],
     withdrawals: [
+      {
+        chain_name: 'Osmosis',
+        denom: ibcDenom(
+          [
+            {
+              incomingChannelId: chains['Noble'].withdraw_channel_id,
+              incomingPortId: 'transfer'
+            }
+          ],
+          'uusdc'
+        )
+      },
       {
         chain_name: 'Noble',
         denom: ibcDenom(
@@ -1812,11 +1836,35 @@ export const tokens: Token[] = [
     coingecko_id: 'stride-staked-atom',
     deposits: [
       {
+        chain_name: 'Osmosis',
+        denom: ibcDenom(
+          [
+            {
+              incomingChannelId: 'channel-326',
+              incomingPortId: 'transfer'
+            }
+          ],
+          'stuatom'
+        )
+      },
+      {
         chain_name: 'Stride',
         denom: 'stuatom'
       }
     ],
     withdrawals: [
+      {
+        chain_name: 'Osmosis',
+        denom: ibcDenom(
+          [
+            {
+              incomingChannelId: chains['Stride'].withdraw_channel_id,
+              incomingPortId: 'transfer'
+            }
+          ],
+          'stuatom'
+        )
+      },
       {
         chain_name: 'Stride',
         denom: ibcDenom(
@@ -1841,11 +1889,35 @@ export const tokens: Token[] = [
     coingecko_id: 'stride-staked-injective',
     deposits: [
       {
+        chain_name: 'Osmosis',
+        denom: ibcDenom(
+          [
+            {
+              incomingChannelId: 'channel-326',
+              incomingPortId: 'transfer'
+            }
+          ],
+          'stinj'
+        )
+      },
+      {
         chain_name: 'Stride',
         denom: 'stinj'
       }
     ],
     withdrawals: [
+      {
+        chain_name: 'Osmosis',
+        denom: ibcDenom(
+          [
+            {
+              incomingChannelId: chains['Stride'].withdraw_channel_id,
+              incomingPortId: 'transfer'
+            }
+          ],
+          'stinj'
+        )
+      },
       {
         chain_name: 'Stride',
         denom: ibcDenom(
@@ -1870,11 +1942,35 @@ export const tokens: Token[] = [
     coingecko_id: 'stride-staked-juno',
     deposits: [
       {
+        chain_name: 'Osmosis',
+        denom: ibcDenom(
+          [
+            {
+              incomingChannelId: 'channel-326',
+              incomingPortId: 'transfer'
+            }
+          ],
+          'stujuno'
+        )
+      },
+      {
         chain_name: 'Stride',
         denom: 'stujuno'
       }
     ],
     withdrawals: [
+      {
+        chain_name: 'Osmosis',
+        denom: ibcDenom(
+          [
+            {
+              incomingChannelId: chains['Stride'].withdraw_channel_id,
+              incomingPortId: 'transfer'
+            }
+          ],
+          'stujuno'
+        )
+      },
       {
         chain_name: 'Stride',
         denom: ibcDenom(
@@ -1928,6 +2024,18 @@ export const tokens: Token[] = [
     coingecko_id: 'stride-staked-luna',
     deposits: [
       {
+        chain_name: 'Osmosis',
+        denom: ibcDenom(
+          [
+            {
+              incomingChannelId: 'channel-326',
+              incomingPortId: 'transfer'
+            }
+          ],
+          'stuluna'
+        )
+      },
+      {
         chain_name: 'Stride',
         denom: 'stuluna'
       }
@@ -1957,11 +2065,35 @@ export const tokens: Token[] = [
     coingecko_id: 'stride-staked-osmo',
     deposits: [
       {
+        chain_name: 'Osmosis',
+        denom: ibcDenom(
+          [
+            {
+              incomingChannelId: 'channel-326',
+              incomingPortId: 'transfer'
+            }
+          ],
+          'stuosmo'
+        )
+      },
+      {
         chain_name: 'Stride',
         denom: 'stuosmo'
       }
     ],
     withdrawals: [
+      {
+        chain_name: 'Osmosis',
+        denom: ibcDenom(
+          [
+            {
+              incomingChannelId: chains['Stride'].withdraw_channel_id,
+              incomingPortId: 'transfer'
+            }
+          ],
+          'stuosmo'
+        )
+      },
       {
         chain_name: 'Stride',
         denom: ibcDenom(
@@ -1986,11 +2118,35 @@ export const tokens: Token[] = [
     coingecko_id: 'stride',
     deposits: [
       {
+        chain_name: 'Osmosis',
+        denom: ibcDenom(
+          [
+            {
+              incomingChannelId: 'channel-326',
+              incomingPortId: 'transfer'
+            }
+          ],
+          'ustrd'
+        )
+      },
+      {
         chain_name: 'Stride',
         denom: 'ustrd'
       }
     ],
     withdrawals: [
+      {
+        chain_name: 'Osmosis',
+        denom: ibcDenom(
+          [
+            {
+              incomingChannelId: chains['Stride'].withdraw_channel_id,
+              incomingPortId: 'transfer'
+            }
+          ],
+          'ustrd'
+        )
+      },
       {
         chain_name: 'Stride',
         denom: ibcDenom(
