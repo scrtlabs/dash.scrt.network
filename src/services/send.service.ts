@@ -30,22 +30,7 @@ interface IPropsTokenName extends IBaseProps {
 
 type TProps = IPropsToken | IPropsTokenName
 
-/**
- * Attempts to perform sending via secret.js API
- *
- * @param {TProps} props
- * @returns {Promise<{success: boolean, errorMsg: Nullable<string>}>} A promise that resolves to an object containing:
- * - `success`: A boolean indicating whether the wrapping operation was successful.
- * - `errorMsg`: A string containing an error message if something went wrong, or null if there were no errors.
- * @async
- */
-
-async function performSending(props: TProps): Promise<{ success: boolean; errorMsg: Nullable<string> }> {
-  let result: { success: boolean; errorMsg: Nullable<string> } = {
-    success: false,
-    errorMsg: null
-  }
-
+async function performSending(props: TProps): Promise<string> {
   let token: Nullable<Token>
   if ('tokenName' in props) {
     token = tokens.find((token) => token.name === props.tokenName)
@@ -54,9 +39,8 @@ async function performSending(props: TProps): Promise<{ success: boolean; errorM
   }
 
   if (!token) {
-    result.success = false
-    result.errorMsg = 'Token not found!'
-    return result
+    console.error('token', token)
+    throw new Error('Token not found!')
   }
 
   const baseAmount = props.amount
@@ -64,9 +48,7 @@ async function performSending(props: TProps): Promise<{ success: boolean; errorM
 
   if (amount === 'NaN') {
     console.error('NaN amount', baseAmount)
-    result.success = false
-    result.errorMsg = 'Amount is not a valid number!'
-    return result
+    throw new Error('Amount is not a valid number!')
   }
 
   await props.secretNetworkClient.tx
@@ -108,29 +90,20 @@ async function performSending(props: TProps): Promise<{ success: boolean; errorM
     )
     .catch((error: any) => {
       console.error(error)
-      result.success = false
-
-      if (error?.tx?.rawLog) {
-        result.errorMsg = error?.tx?.rawLog
-      } else {
-        result.errorMsg = error.message
-      }
-      return result
+      throw new Error(error)
     })
     .then((tx: any) => {
-      console.log(tx)
+      console.log('tx', tx)
       if (tx) {
         if (tx.code === 0) {
-          result.success = true
-          result.errorMsg = null
-          return result
+          return 'success'
         } else {
-          result.success = false
-          result.errorMsg = tx.rawLog
-          return result
+          console.error(tx.rawLog)
+          throw new Error(tx.rawLog)
         }
       }
     })
+  return
 }
 
 export const SendService = {

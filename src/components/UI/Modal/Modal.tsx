@@ -58,7 +58,8 @@ function Modal({ size = 'sm', ...props }: Props) {
       <div className="z-50 fixed inset-0 bg-black/80">
         <div className="absolute inset-0 overflow-y-scroll">
           <div className={` mt-4 md:mt-24 mb-24 ${sizeClass()} mx-auto `}>
-            <div ref={modalRef} className="mx-4 bg-slate-100 dark:bg-neutral-900 p-8 rounded-2xl">
+            {/* Inner */}
+            <div ref={modalRef} className="mx-4 bg-white dark:bg-neutral-900 p-8 rounded-2xl">
               {/* Head */}
               <div className={`flex mb-6${!props.title ? ' justify-end' : ' items-center gap-4'}`}>
                 {props.title || props.subTitle ? (

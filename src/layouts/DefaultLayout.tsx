@@ -12,6 +12,7 @@ import { ThemeSwitch } from 'components/ThemeSwitch'
 import { Nullable } from 'types/Nullable'
 import Modal from 'components/UI/Modal/Modal'
 import Wallet from 'components/Wallet/Wallet'
+import { Toaster, ToasterProps } from 'react-hot-toast'
 
 export const NavigationContext = createContext<Nullable<boolean>>(null)
 
@@ -38,8 +39,19 @@ export const DefaultLayout = ({ children }: any) => {
     window.addEventListener('resize', handleResize)
   }, [])
 
+  const toasterProps: ToasterProps = {
+    position: 'bottom-left',
+    reverseOrder: true,
+    gutter: 8,
+    toastOptions: {
+      duration: 100000,
+      className: 'bg-white text-black dark:bg-neutral-800 dark:text-white'
+    }
+  }
+
   return (
     <>
+      <Toaster {...toasterProps} />
       {/* Fixed Feedback Button */}
       {/* <FeedbackButton
         url={'https://github.com/scrtlabs/dash.scrt.network/issues/new'}

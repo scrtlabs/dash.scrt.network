@@ -14,6 +14,7 @@ import FeeGrant from 'components/FeeGrant/FeeGrant'
 import { allTokens } from 'utils/commons'
 import { FeeGrantStatus } from 'types/FeeGrantStatus'
 import BigNumber from 'bignumber.js'
+import toast, { Toaster } from 'react-hot-toast'
 
 export default function SendForm() {
   const {
@@ -26,8 +27,6 @@ export default function SendForm() {
     getBalance
   } = useSecretNetworkClientStore()
 
-  const [generalSuccessMessage, setGeneralSuccessMessage] = useState<String>('')
-  const [generalErrorMessage, setGeneralErrorMessage] = useState<String>('')
   const [isLoading, setIsWaiting] = useState<boolean>(false)
 
   const tokenSelectOptions = SendService.getSupportedTokens()
@@ -53,23 +52,18 @@ export default function SendForm() {
     validateOnChange: true,
     onSubmit: async (values) => {
       try {
-        setGeneralErrorMessage('')
-        setGeneralSuccessMessage('')
-        setIsWaiting(true)
-        const res = await SendService.performSending({
+        const res = SendService.performSending({
           ...values,
           secretNetworkClient
         })
-        setIsWaiting(false)
-
-        if (res.success) {
-          setGeneralSuccessMessage(`Sending successful!`)
-        } else {
-          throw new Error()
-        }
+        toast.promise(res, {
+          loading: `Waiting to send ${formik.values.amount} ${formik.values.token.name}...`,
+          success: 'Sending successful!',
+          error: 'Sending unsuccessful!'
+        })
       } catch (error: any) {
         console.error(error)
-        setGeneralErrorMessage(`Sending unsuccessful!`)
+        toast.error(`Sending unsuccessful!`)
       }
     }
   })
@@ -271,20 +265,6 @@ export default function SendForm() {
           <span>Processing...</span>
         </div>
       ) : null}
-
-      {generalSuccessMessage && (
-        <div className="text-emerald-500 dark:text-emerald-500 text-sm font-normal flex items-center gap-2 justify-center">
-          <FontAwesomeIcon icon={faCircleCheck} />
-          <span>{generalSuccessMessage}</span>
-        </div>
-      )}
-
-      {generalErrorMessage && (
-        <div className="text-red-500 dark:text-red-500 text-sm font-normal flex items-center gap-2 justify-center">
-          <FontAwesomeIcon icon={faTriangleExclamation} />
-          <span>{generalErrorMessage}</span>
-        </div>
-      )}
 
       {/* Submit Button */}
       <button

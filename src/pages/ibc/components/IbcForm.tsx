@@ -1,6 +1,6 @@
 import { useFormik } from 'formik'
 import { ibcSchema } from './ibcSchema'
-import { useSecretNetworkClientStore } from 'store/secretNetworkClient'
+import { GetBalanceError, useSecretNetworkClientStore } from 'store/secretNetworkClient'
 import { useEffect, useState } from 'react'
 import { IbcMode } from 'types/IbcMode'
 import Select from 'react-select'
@@ -16,9 +16,11 @@ import FeeGrant from 'components/FeeGrant/FeeGrant'
 import BalanceUI from 'components/BalanceUI'
 import { FeeGrantStatus } from 'types/FeeGrantStatus'
 import BridgingFees from './BridgingFees'
+import BigNumber from 'bignumber.js'
+import { allTokens } from 'utils/commons'
 
 export default function IbcForm() {
-  const { feeGrantStatus, secretNetworkClient, walletAddress, isConnected } = useSecretNetworkClientStore()
+  const { feeGrantStatus, secretNetworkClient, walletAddress, isConnected, getBalance } = useSecretNetworkClientStore()
 
   const [isLoading, setIsWaiting] = useState<boolean>(false)
   const [generalSuccessMessage, setGeneralSuccessMessage] = useState<String>('')
@@ -26,7 +28,23 @@ export default function IbcForm() {
 
   // handles [25% | 50% | 75% | Max] Button-Group
   function setAmountByPercentage(percentage: number) {
-    formik.setFieldValue('amount', percentage.toString()) // TODO: Fix
+    const balance = getBalance(
+      allTokens.find((token: Token) => token.name === formik.values.token.name),
+      formik.values.token.address !== 'native'
+    )
+    if (
+      (balance !== ('viewingKeyError' as GetBalanceError) || balance !== ('GenericFetchError' as GetBalanceError)) &&
+      balance !== null
+    ) {
+      formik.setFieldValue(
+        'amount',
+        (balance as BigNumber)
+          .dividedBy(`1e${formik.values.token.decimals}`)
+          .times(percentage / 100)
+          .toFormat()
+      )
+    }
+    formik.setFieldTouched('amount', true)
   }
 
   function toggleIbcMode() {
