@@ -13,6 +13,7 @@ import { Wrap } from 'pages/wrap/Wrap'
 import Apps from 'pages/apps/Apps'
 import { Staking } from 'pages/staking/Staking'
 import { Send } from 'pages/send/Send'
+import Portfolio from 'pages/portfolio/Portfolio'
 
 // Contexts
 import { ThemeContextProvider } from 'context/ThemeContext'
@@ -101,6 +102,7 @@ export default function App() {
         <Route path="/bridge" element={<Bridge />} />
         <Route path="/get-scrt" element={<GetSCRT />} />
         <Route path="/staking" element={<Staking />} />
+        <Route path="/portfolio" element={<Portfolio />} />
         <Route path="/send" element={<Send />} />
         <Route path="/apps" element={<Apps />} />
       </Routes>
