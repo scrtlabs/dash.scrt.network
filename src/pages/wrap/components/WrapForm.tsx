@@ -103,7 +103,9 @@ function WrapForm() {
           secretNetworkClient
         })
         toast.promise(res, {
-          loading: `Waiting to send ${formik.values.amount} ${formik.values.token.name}...`,
+          loading: `Waiting to ${formik.values.wrappingMode === 'wrap' ? 'wrap' : 'unwrap'} ${formik.values.amount} ${
+            formik.values.token.name
+          }...`,
           success: `${formik.values.wrappingMode === 'wrap' ? 'Wrapping' : 'Unwrapping'} successful!`,
           error: `${formik.values.wrappingMode === 'wrap' ? 'Wrapping' : 'Unwrapping'} unsuccessful!`
         })
