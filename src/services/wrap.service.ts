@@ -92,8 +92,8 @@ async function performWrapping(props: TProps): Promise<string> {
           [
             new MsgExecuteContract({
               sender: props.secretNetworkClient.address,
-              contract_address: props.secretNetworkClient.address,
-              // code_hash: props.secretNetworkClient.code_hash,
+              contract_address: token.address,
+              code_hash: token.code_hash,
               sent_funds: [],
               msg: {
                 redeem: {
