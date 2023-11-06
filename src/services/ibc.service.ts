@@ -141,24 +141,29 @@ const performIbcDeposit = async (
 
   const amount = new BigNumber(props.amount).multipliedBy(`1e${token.decimals}`).toFixed(0, BigNumber.ROUND_DOWN)
 
-  const routing = await getSkipIBCRouting(selectedSource, 'deposit', token, new BigNumber(props.amount))
-
   try {
     let tx: TxResponse
-    if (
-      !['Evmos', 'Injective'].includes(props.chain.chain_name) &&
-      (!token.is_ics20 || deposit.axelar_chain_name == CHAINS.MAINNET.AXELAR)
-    ) {
+    if (!['Evmos', 'Injective'].includes(props.chain.chain_name) && !token.is_ics20) {
       // Regular cosmos chain (not ethermint signing)
-      if (token.name === 'SCRT' || deposit.axelar_chain_name == CHAINS.MAINNET.AXELAR) {
-        const forwardingMemo = await composePMFMemo(routing.operations)
+      if (token.name === 'SCRT') {
+        const routing = await getSkipIBCRouting(selectedSource, 'deposit', token, new BigNumber(props.amount))
+
+        const forwardingMemo = await composePMFMemo(routing.operations, props.secretNetworkClient.address)
+
+        let receiver
+        if (routing.operations.length > 1) {
+          receiver = await getReceiverAddress((routing.operations[1] as any).transfer.chainID)
+        } else {
+          receiver = props.secretNetworkClient.address
+        }
 
         tx = await sourceChainNetworkClient.tx.ibc.transfer(
           {
             sender: sourceChainNetworkClient.address,
             receiver: props.secretNetworkClient.address,
-            source_channel: deposit_channel_id,
-            source_port: 'transfer',
+            source_channel:
+              routing.operations.length > 1 ? (routing.operations[0] as any).transfer.channel : deposit_channel_id,
+            source_port: routing.operations.length > 1 ? (routing.operations[0] as any).transfer.port : 'transfer',
             token: {
               amount: amount,
               denom: token.deposits.filter((deposit: Deposit) => deposit.chain_name === props.chain.chain_name)[0].denom
@@ -179,6 +184,8 @@ const performIbcDeposit = async (
           }
         )
       } else {
+        const routing = await getSkipIBCRouting(selectedSource, 'deposit', token, new BigNumber(props.amount))
+
         const autoWrapJsonString = JSON.stringify({
           wasm: {
             contract: 'secret198lmmh2fpj3weqhjczptkzl9pxygs23yn6dsev',
@@ -192,12 +199,23 @@ const performIbcDeposit = async (
           }
         })
 
-        const forwardingMemo = await composePMFMemo(routing.operations, autoWrapJsonString)
+        const forwardingMemo = await composePMFMemo(
+          routing.operations,
+          'secret198lmmh2fpj3weqhjczptkzl9pxygs23yn6dsev',
+          autoWrapJsonString
+        )
+
+        let receiver
+        if (routing.operations.length > 1) {
+          receiver = await getReceiverAddress((routing.operations[1] as any).transfer.chainID)
+        } else {
+          receiver = 'secret198lmmh2fpj3weqhjczptkzl9pxygs23yn6dsev'
+        }
 
         tx = await sourceChainNetworkClient.tx.ibc.transfer(
           {
             sender: sourceChainNetworkClient.address,
-            receiver: 'secret198lmmh2fpj3weqhjczptkzl9pxygs23yn6dsev',
+            receiver: receiver,
             source_channel:
               routing.operations.length > 1 ? (routing.operations[0] as any).transfer.channel : deposit_channel_id,
             source_port: routing.operations.length > 1 ? (routing.operations[0] as any).transfer.port : 'transfer',
@@ -221,18 +239,23 @@ const performIbcDeposit = async (
           }
         )
       }
-    } else if (token.is_ics20 && deposit.axelar_chain_name != CHAINS.MAINNET.AXELAR) {
+    } else if (token.is_ics20) {
       const fromChain = deposit.axelar_chain_name,
         toChain = 'secret-snip',
         destinationAddress = props.secretNetworkClient.address,
         asset = token.axelar_denom
 
-      const depositAddress = await sdk.getDepositAddress({
-        fromChain,
-        toChain,
-        destinationAddress,
-        asset
-      })
+      let depositAddress
+      if (deposit?.axelar_chain_name === CHAINS.MAINNET.AXELAR) {
+        depositAddress = destinationAddress
+      } else {
+        depositAddress = await sdk.getDepositAddress({
+          fromChain,
+          toChain,
+          destinationAddress,
+          asset
+        })
+      }
       tx = await sourceChainNetworkClient.tx.ibc.transfer(
         {
           sender: sourceChainNetworkClient.address,
@@ -419,8 +442,6 @@ const performIbcWithdrawal = async (
 
   const amount = new BigNumber(props.amount).multipliedBy(`1e${token.decimals}`).toFixed(0, BigNumber.ROUND_DOWN)
 
-  const routing = await getSkipIBCRouting(selectedDest, 'withdrawal', token, new BigNumber(props.amount))
-
   let { withdraw_channel_id, withdraw_gas, lcd: lcdDstChain } = selectedDest
 
   const withdrawalChain = token.withdrawals.filter(
@@ -477,10 +498,7 @@ const performIbcWithdrawal = async (
           broadcastMode: BroadcastMode.Sync
         }
       )
-    } else if (
-      token.is_ics20 &&
-      !(withdrawalChain?.axelar_chain_name === CHAINS.MAINNET.AXELAR && token.name === 'SCRT')
-    ) {
+    } else if (token.is_ics20) {
       const fromChain = 'secret-snip',
         toChain = withdrawalChain.axelar_chain_name,
         destinationAddress = sourceChainNetworkClient.address,
@@ -536,19 +554,24 @@ const performIbcWithdrawal = async (
         }
       )
     } else if (token.name === 'SCRT') {
-      const source_channel_id =
-        withdrawalChain?.axelar_chain_name == CHAINS.MAINNET.AXELAR && token.name !== 'SCRT'
-          ? withdrawalChain.channel_id
-          : withdraw_channel_id
+      const routing = await getSkipIBCRouting(selectedDest, 'withdrawal', token, new BigNumber(props.amount))
 
-      const forwardingMemo = await composePMFMemo(routing.operations)
+      let receiver
+      if (routing.operations.length > 1) {
+        receiver = await getReceiverAddress((routing.operations[1] as any).transfer.chainID)
+      } else {
+        receiver = sourceChainNetworkClient.address
+      }
+
+      const forwardingMemo = await composePMFMemo(routing.operations, sourceChainNetworkClient.address)
 
       tx = await props.secretNetworkClient.tx.ibc.transfer(
         {
           sender: props.secretNetworkClient?.address,
-          receiver: sourceChainNetworkClient.address,
-          source_channel: source_channel_id,
-          source_port: 'transfer',
+          receiver: receiver,
+          source_channel:
+            routing.operations.length > 1 ? (routing.operations[0] as any).transfer.channel : withdraw_channel_id,
+          source_port: routing.operations.length > 1 ? (routing.operations[0] as any).transfer.port : 'transfer',
           token: {
             amount,
             denom: withdrawalChain.denom
@@ -571,7 +594,16 @@ const performIbcWithdrawal = async (
         }
       )
     } else {
-      const forwardingMemo = await composePMFMemo(routing.operations)
+      const routing = await getSkipIBCRouting(selectedDest, 'withdrawal', token, new BigNumber(props.amount))
+
+      let receiver
+      if (routing.operations.length > 1) {
+        receiver = await getReceiverAddress((routing.operations[1] as any).transfer.chainID)
+      } else {
+        receiver = sourceChainNetworkClient.address
+      }
+
+      const forwardingMemo = await composePMFMemo(routing.operations, sourceChainNetworkClient.address)
 
       tx = await props.secretNetworkClient.tx.broadcast(
         [
@@ -590,9 +622,10 @@ const performIbcWithdrawal = async (
           } as any),
           new MsgTransfer({
             sender: props.secretNetworkClient?.address,
-            receiver: sourceChainNetworkClient.address,
-            source_channel: withdraw_channel_id,
-            source_port: 'transfer',
+            receiver: receiver,
+            source_channel:
+              routing.operations.length > 1 ? (routing.operations[0] as any).transfer.channel : withdraw_channel_id,
+            source_port: routing.operations.length > 1 ? (routing.operations[0] as any).transfer.port : 'transfer',
             token: {
               amount,
               denom: withdrawalChain.denom
@@ -735,16 +768,12 @@ async function getSkipIBCRouting(chain: Chain, IbcMode: IbcMode, token: Token, a
   let dest
   let source
   if (IbcMode === 'deposit') {
-    dest = token.deposits.find((deposit) => deposit.chain_name === chain.chain_name)
-    source = token.withdrawals.find((withdrawals) => withdrawals.chain_name === chain.chain_name)
-    console.log(dest)
-    console.log(source)
+    source = token.deposits.find((deposit) => deposit.chain_name === chain.chain_name)
+    dest = token.withdrawals.find((withdrawals) => withdrawals.chain_name === chain.chain_name)
   }
   if (IbcMode === 'withdrawal') {
-    source = token.deposits.find((deposit) => deposit.chain_name === chain.chain_name)
-    dest = token.withdrawals.find((withdrawal) => withdrawal.chain_name === chain.chain_name)
-    console.log(dest)
-    console.log(source)
+    dest = token.deposits.find((deposit) => deposit.chain_name === chain.chain_name)
+    source = token.withdrawals.find((withdrawal) => withdrawal.chain_name === chain.chain_name)
   }
 
   const route = await client.route({
@@ -757,6 +786,12 @@ async function getSkipIBCRouting(chain: Chain, IbcMode: IbcMode, token: Token, a
   })
 
   return route
+}
+
+async function getReceiverAddress(chainID: string): Promise<string> {
+  const wallet = (window as any).wallet.getOfflineSignerOnlyAmino(chainID)
+  const [{ address: walletAddress }] = await wallet.getAccounts()
+  return walletAddress
 }
 
 interface Forward {
@@ -772,26 +807,29 @@ interface MemoObject {
   forward: Forward
 }
 
-function composePMFMemo(allOperations: Operation[], finalMemo?: string | undefined): Promise<string> {
-  async function getReceiverAddress(chainID: string): Promise<string> {
-    const wallet = (window as any).wallet.getOfflineSignerOnlyAmino(chainID)
-    const [{ address: walletAddress }] = await wallet.getAccounts()
-    return walletAddress
-  }
-
+function composePMFMemo(
+  allOperations: Operation[],
+  lastReceiver: string,
+  finalMemo?: string | undefined
+): Promise<string> {
   async function generateMemo(operations: Operation[], finalNextContent: string): Promise<string> {
     // Base case: if there are no more operations, return the finalNextContent
     if (operations.length === 0) {
       return finalNextContent
     }
 
-    // Take the first operation from the array
-    const operation = operations[0]
-
     // Recursively process the rest of the operations array
     const nextMemo: string = await generateMemo(operations.slice(1), finalNextContent)
 
-    const receiver = await getReceiverAddress((operation as any).transfer.chainID)
+    // Take the first operation from the array
+    const operation = operations[0]
+
+    let receiver
+    if (operations.length === 1) {
+      receiver = lastReceiver
+    } else {
+      receiver = await getReceiverAddress((operations[1] as any).transfer.chainID)
+    }
 
     // If this is the last operation and there are no more operations, use finalNextContent as the next memo
     const next = operations.length > 1 ? JSON.parse(nextMemo) : finalNextContent

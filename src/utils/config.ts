@@ -2778,6 +2778,13 @@ export const ICSTokens: Token[] = [
     ],
     withdrawals: [
       {
+        chain_name: 'Axelar',
+        axelar_chain_name: CHAINS.MAINNET.AXELAR,
+        denom: 'secret1yxjmepvyl2c25vnt53cr2dpn8amknwausxee83',
+        channel_id: 'channel-61',
+        gas: 350_000
+      },
+      {
         chain_name: 'Juno',
         axelar_chain_name: CHAINS.MAINNET.JUNO,
         denom: 'secret1yxjmepvyl2c25vnt53cr2dpn8amknwausxee83',
@@ -2876,6 +2883,13 @@ export const ICSTokens: Token[] = [
       }
     ],
     withdrawals: [
+      {
+        chain_name: 'Axelar',
+        axelar_chain_name: CHAINS.MAINNET.AXELAR,
+        denom: 'secret1yxjmepvyl2c25vnt53cr2dpn8amknwausxee83',
+        channel_id: 'channel-61',
+        gas: 350_000
+      },
       {
         chain_name: 'Juno',
         axelar_chain_name: CHAINS.MAINNET.JUNO,
@@ -2976,6 +2990,13 @@ export const ICSTokens: Token[] = [
     ],
     withdrawals: [
       {
+        chain_name: 'Axelar',
+        axelar_chain_name: CHAINS.MAINNET.AXELAR,
+        denom: 'secret1yxjmepvyl2c25vnt53cr2dpn8amknwausxee83',
+        channel_id: 'channel-61',
+        gas: 350_000
+      },
+      {
         chain_name: 'Juno',
         axelar_chain_name: CHAINS.MAINNET.JUNO,
         denom: 'secret1yxjmepvyl2c25vnt53cr2dpn8amknwausxee83',
@@ -3067,6 +3088,13 @@ export const ICSTokens: Token[] = [
       }
     ],
     withdrawals: [
+      {
+        chain_name: 'Axelar',
+        axelar_chain_name: CHAINS.MAINNET.AXELAR,
+        denom: 'secret1yxjmepvyl2c25vnt53cr2dpn8amknwausxee83',
+        channel_id: 'channel-61',
+        gas: 350_000
+      },
       {
         chain_name: 'Juno',
         axelar_chain_name: CHAINS.MAINNET.JUNO,
@@ -3160,6 +3188,13 @@ export const ICSTokens: Token[] = [
     ],
     withdrawals: [
       {
+        chain_name: 'Axelar',
+        axelar_chain_name: CHAINS.MAINNET.AXELAR,
+        denom: 'secret1yxjmepvyl2c25vnt53cr2dpn8amknwausxee83',
+        channel_id: 'channel-61',
+        gas: 350_000
+      },
+      {
         chain_name: 'Juno',
         axelar_chain_name: CHAINS.MAINNET.JUNO,
         denom: 'secret1yxjmepvyl2c25vnt53cr2dpn8amknwausxee83',
@@ -3252,6 +3287,13 @@ export const ICSTokens: Token[] = [
     ],
     withdrawals: [
       {
+        chain_name: 'Axelar',
+        axelar_chain_name: CHAINS.MAINNET.AXELAR,
+        denom: 'secret1yxjmepvyl2c25vnt53cr2dpn8amknwausxee83',
+        channel_id: 'channel-61',
+        gas: 350_000
+      },
+      {
         chain_name: 'Juno',
         axelar_chain_name: CHAINS.MAINNET.JUNO,
         denom: 'secret1yxjmepvyl2c25vnt53cr2dpn8amknwausxee83',
@@ -3343,6 +3385,13 @@ export const ICSTokens: Token[] = [
       }
     ],
     withdrawals: [
+      {
+        chain_name: 'Axelar',
+        axelar_chain_name: CHAINS.MAINNET.AXELAR,
+        denom: 'secret1yxjmepvyl2c25vnt53cr2dpn8amknwausxee83',
+        channel_id: 'channel-61',
+        gas: 350_000
+      },
       {
         chain_name: 'Juno',
         axelar_chain_name: CHAINS.MAINNET.JUNO,
@@ -3443,6 +3492,13 @@ export const ICSTokens: Token[] = [
     ],
     withdrawals: [
       {
+        chain_name: 'Axelar',
+        axelar_chain_name: CHAINS.MAINNET.AXELAR,
+        denom: 'secret1yxjmepvyl2c25vnt53cr2dpn8amknwausxee83',
+        channel_id: 'channel-61',
+        gas: 350_000
+      },
+      {
         chain_name: 'Juno',
         axelar_chain_name: CHAINS.MAINNET.JUNO,
         denom: 'secret1yxjmepvyl2c25vnt53cr2dpn8amknwausxee83',
@@ -3534,6 +3590,13 @@ export const ICSTokens: Token[] = [
       }
     ],
     withdrawals: [
+      {
+        chain_name: 'Axelar',
+        axelar_chain_name: CHAINS.MAINNET.AXELAR,
+        denom: 'secret1yxjmepvyl2c25vnt53cr2dpn8amknwausxee83',
+        channel_id: 'channel-61',
+        gas: 350_000
+      },
       {
         chain_name: 'Juno',
         axelar_chain_name: CHAINS.MAINNET.JUNO,
