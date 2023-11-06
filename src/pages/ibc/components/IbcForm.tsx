@@ -13,7 +13,7 @@ import AddressInfo from './AddressInfo'
 import PercentagePicker from 'components/PercentagePicker'
 import { IbcService } from 'services/ibc.service'
 import FeeGrant from 'components/FeeGrant/FeeGrant'
-import NewBalanceUI from 'components/NewBalanceUI'
+import BalanceUI from 'components/BalanceUI'
 import { FeeGrantStatus } from 'types/FeeGrantStatus'
 
 export default function IbcForm() {
@@ -313,7 +313,7 @@ export default function IbcForm() {
           {/* Balance | [25%|50%|75%|Max] */}
           <div className="flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 mt-3">
             <div className="flex-1 text-xs">
-              <NewBalanceUI
+              <BalanceUI
                 token={formik.values.token}
                 chain={formik.values.ibcMode === 'withdrawal' ? chains['Secret Network'] : formik.values.chain}
                 isSecretToken={formik.values.ibcMode === 'withdrawal' && formik.values.token.name !== 'SCRT'}

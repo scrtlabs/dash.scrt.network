@@ -4,7 +4,7 @@ import { sendSchema } from 'pages/send/sendSchema'
 import { GetBalanceError, useSecretNetworkClientStore } from 'store/secretNetworkClient'
 import Select from 'react-select'
 import { Token, chains } from 'utils/config'
-import NewBalanceUI from 'components/NewBalanceUI'
+import BalanceUI from 'components/BalanceUI'
 import PercentagePicker from 'components/PercentagePicker'
 import Tooltip from '@mui/material/Tooltip'
 import { faCircleCheck, faInfoCircle, faTriangleExclamation } from '@fortawesome/free-solid-svg-icons'
@@ -161,7 +161,7 @@ export default function SendForm() {
         {/* Balance | [25%|50%|75%|100%] */}
         <div className="flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 mt-2">
           <div className="flex-1 text-xs">
-            <NewBalanceUI
+            <BalanceUI
               token={allTokens.find((token: Token) => token.name === formik.values.token.name)}
               chain={chains['Secret Network']}
               isSecretToken={formik.values.token.address !== 'native'}

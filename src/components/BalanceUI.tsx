@@ -15,9 +15,15 @@ interface IProps {
   token: Token
   chain?: Chain
   isSecretToken?: boolean
+  showBalanceLabel?: boolean
 }
 
-export default function NewBalanceUI({ token, chain = chains['Secret Network'], isSecretToken = false }: IProps) {
+export default function BalanceUI({
+  token,
+  chain = chains['Secret Network'],
+  isSecretToken = false,
+  showBalanceLabel = true
+}: IProps) {
   const { isConnected, getBalance, balanceMapping, setViewingKey } = useSecretNetworkClientStore()
   const { getValuePrice, priceMapping } = useTokenPricesStore()
 
@@ -73,7 +79,7 @@ export default function NewBalanceUI({ token, chain = chains['Secret Network'], 
   return (
     <>
       <div className="flex items-center gap-1.5">
-        <span className="font-bold">{`Balance: `}</span>
+        {showBalanceLabel ? <span className="font-bold">{`Balance: `}</span> : null}
 
         {balance === null ? (
           <>

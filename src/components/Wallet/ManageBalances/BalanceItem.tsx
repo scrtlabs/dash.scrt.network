@@ -5,7 +5,7 @@ import { Token } from 'utils/config'
 import { useSecretNetworkClientStore } from 'store/secretNetworkClient'
 import { useTokenPricesStore } from 'store/TokenPrices'
 import { WalletService } from 'services/wallet.service'
-import NewBalanceUI from 'components/NewBalanceUI'
+import BalanceUI from 'components/BalanceUI'
 
 interface Props {
   token?: Token
@@ -62,9 +62,10 @@ const BalanceItem = (props: Props) => {
           <div className="flex flex-col items-center">
             <div className="description text-xs text-neutral-500 dark:text-neutral-600 mb-2">Balance</div>
             <div className="font-semibold">
-              <NewBalanceUI
+              <BalanceUI
                 token={allTokens.find((token: Token) => token.name === props.token.name)}
                 isSecretToken={props.token?.address !== 'native'}
+                showBalanceLabel={false}
               />
             </div>
           </div>

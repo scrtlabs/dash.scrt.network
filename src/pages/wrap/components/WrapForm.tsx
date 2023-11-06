@@ -12,7 +12,7 @@ import { useSecretNetworkClientStore } from 'store/secretNetworkClient'
 import { wrapSchema } from 'pages/wrap/wrapSchema'
 import Tooltip from '@mui/material/Tooltip'
 import { WrapService } from 'services/wrap.service'
-import NewBalanceUI from 'components/NewBalanceUI'
+import BalanceUI from 'components/BalanceUI'
 import { FeeGrantStatus } from 'types/FeeGrantStatus'
 
 function WrapForm() {
@@ -192,7 +192,8 @@ function WrapForm() {
           {/* Balance | [25%|50%|75%|Max] */}
           <div className="flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 mt-2">
             <div className="flex-1 text-xs">
-              <NewBalanceUI
+              <span className="font-bold">{`Balance: `}</span>
+              <BalanceUI
                 token={tokens.find((token) => token.name.toLowerCase() === 'scrt')}
                 isSecretToken={formik.values.wrappingMode === 'unwrap'}
               />
@@ -271,7 +272,7 @@ function WrapForm() {
             />
           </div>
           <div className="flex-1 text-xs mt-3 text-center sm:text-left h-[1rem]">
-            <NewBalanceUI token={formik.values.token} isSecretToken={formik.values.wrappingMode === 'wrap'} />
+            <BalanceUI token={formik.values.token} isSecretToken={formik.values.wrappingMode === 'wrap'} />
           </div>
         </div>
 
