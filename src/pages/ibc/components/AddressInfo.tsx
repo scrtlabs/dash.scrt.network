@@ -24,7 +24,7 @@ export default function AddressInfo(props: IProps) {
   const destChainExplorerUrl: string = `${props.destChain?.explorer_account}${props.destAddress}`
 
   return (
-    <div className="bg-neutral-200 dark:bg-neutral-700 p-4 rounded-xl space-y-6 my-4">
+    <div className="bg-gray-200 dark:bg-neutral-700 p-4 rounded-xl space-y-6">
       <div className="flex items-center">
         <div className="font-semibold mr-4 w-10">From:</div>
         <div className="flex-1 truncate font-medium text-sm">
@@ -56,7 +56,7 @@ export default function AddressInfo(props: IProps) {
             >
               <span>
                 <button
-                  className="text-neutral-500 enabled:hover:text-white enabled:active:text-neutral-500 transition-colors"
+                  className="text-gray-500 dark:text-neutral-400 enabled:hover:text-black dark:enabled:hover:text-white enabled:active:text-neutral-500 transition-colors"
                   disabled={!isConnected || dataMissing}
                 >
                   <FontAwesomeIcon icon={faCopy} />
@@ -98,7 +98,7 @@ export default function AddressInfo(props: IProps) {
             >
               <span>
                 <button
-                  className="text-neutral-500 enabled:hover:text-white enabled:active:text-neutral-500 transition-colors"
+                  className="text-gray-500 dark:text-neutral-400 enabled:hover:text-black dark:enabled:hover:text-white enabled:active:text-neutral-500 transition-colors"
                   disabled={!isConnected || dataMissing}
                 >
                   <FontAwesomeIcon icon={faCopy} />

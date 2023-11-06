@@ -10,10 +10,10 @@ interface Props {
   item4?: Item
 }
 
-const QuadTile = (props: Props) => {
+export default function QuadTile(props: Props) {
   return (
     <>
-      <div className="bg-white dark:bg-neutral-800 p-8 rounded-xl h-full">
+      <div className="rounded-xl bg-white border border-neutral-200 dark:border-neutral-700 dark:bg-neutral-800 p-8 h-full">
         <div className="flex flex-col h-full">
           <div className="flex-1 flex text-center items-center">
             {/* First Item */}
@@ -84,5 +84,3 @@ const QuadTile = (props: Props) => {
     </>
   )
 }
-
-export default QuadTile

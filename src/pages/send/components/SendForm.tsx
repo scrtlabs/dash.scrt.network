@@ -117,7 +117,7 @@ export default function SendForm() {
   return (
     <form onSubmit={formik.handleSubmit} className="w-full flex flex-col gap-4">
       {/* Amount */}
-      <div className="bg-neutral-200 dark:bg-neutral-700 p-4 rounded-xl">
+      <div className="bg-gray-200 dark:bg-neutral-700 p-4 rounded-xl">
         {/* Title Bar */}
         <div className="flex flex-col sm:flex-row justify-between items-center mb-2 text-center sm:text-left">
           <span className="font-extrabold">Amount</span>
@@ -150,7 +150,7 @@ export default function SendForm() {
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
             className={
-              'dark:placeholder-neutral-600 text-right focus:z-10 block flex-1 min-w-0 w-full bg-neutral-100 dark:bg-neutral-800 text-black dark:text-white px-4 rounded-r-lg disabled:placeholder-neutral-300 dark:disabled:placeholder-neutral-700 transition-colors font-medium focus:outline-0 focus:ring-2 ring-sky-500/40' +
+              'dark:placeholder-neutral-600 text-right focus:z-10 block flex-1 min-w-0 w-full bg-white dark:bg-neutral-800 text-black dark:text-white px-4 rounded-r-lg disabled:placeholder-neutral-300 dark:disabled:placeholder-neutral-700 transition-colors font-medium focus:outline-0 focus:ring-2 ring-sky-500/40' +
               (formik.touched.amount && formik.errors.amount ? '  border border-red-500 dark:border-red-500' : '')
             }
             placeholder="0"
@@ -174,7 +174,7 @@ export default function SendForm() {
       </div>
 
       {/* *** Recipient *** */}
-      <div className="bg-neutral-200 dark:bg-neutral-700 p-4 rounded-xl">
+      <div className="bg-gray-200 dark:bg-neutral-700 p-4 rounded-xl">
         {/* Title Bar */}
         <div className="flex justify-between items-center mb-2">
           <span className="flex-1 font-semibold mb-2 text-center sm:text-left">
@@ -202,8 +202,10 @@ export default function SendForm() {
             onBlur={formik.handleBlur}
             type="text"
             className={
-              'dark:placeholder-neutral-600 py-2 text-left focus:z-10 block flex-1 min-w-0 w-full bg-neutral-100 dark:bg-neutral-800 text-black dark:text-white px-4 rounded-md disabled:placeholder-neutral-300 dark:disabled:placeholder-neutral-700 transition-colors font-medium focus:outline-0 focus:ring-2 ring-sky-500/40' +
-              (formik.touched.recipient && formik.errors.recipient ? '  border border-red-500 dark:border-red-500' : '')
+              'dark:placeholder-neutral-600 py-2 text-left focus:z-10 block flex-1 min-w-0 w-full bg-white dark:bg-neutral-800 text-black dark:text-white px-4 rounded-md disabled:placeholder-neutral-300 dark:disabled:placeholder-neutral-700 transition-colors font-medium focus:outline-0 focus:ring-2 ring-sky-500/40' +
+              (formik.touched.recipient && formik.errors.recipient
+                ? ' ring-1 ring-red-500 dark:ring-red-500 text-red-500 dark:text-red-500'
+                : '')
             }
             placeholder="secret1..."
             disabled={!isConnected}
@@ -212,7 +214,7 @@ export default function SendForm() {
       </div>
 
       {/* *** Memo *** */}
-      <div className="bg-neutral-200 dark:bg-neutral-700 p-4 rounded-xl">
+      <div className="bg-gray-200 dark:bg-neutral-700 p-4 rounded-xl">
         {/* Title Bar */}
         <div className="flex justify-between items-center mb-2">
           <span className="flex-1 font-semibold mb-2 text-center sm:text-left">
@@ -240,7 +242,7 @@ export default function SendForm() {
             onBlur={formik.handleBlur}
             type="text"
             className={
-              'dark:placeholder-neutral-600 py-2 text-left focus:z-10 block flex-1 min-w-0 w-full bg-neutral-100 dark:bg-neutral-800 text-black dark:text-white px-4 rounded-md disabled:placeholder-neutral-300 dark:disabled:placeholder-neutral-700 transition-colors font-medium focus:outline-0 focus:ring-2 ring-sky-500/40' +
+              'dark:placeholder-neutral-600 py-2 text-left focus:z-10 block flex-1 min-w-0 w-full bg-white dark:bg-neutral-800 text-black dark:text-white px-4 rounded-md disabled:placeholder-neutral-300 dark:disabled:placeholder-neutral-700 transition-colors font-medium focus:outline-0 focus:ring-2 ring-sky-500/40' +
               (formik.touched.memo && formik.errors.memo ? '  border border-red-500 dark:border-red-500' : '')
             }
             disabled={!isConnected}

@@ -145,7 +145,7 @@ export function Wrap() {
           </Tooltip>
         </Title>
         {/* Content */}
-        <div className="rounded-3xl px-6 py-6 text-neutral-800 dark:text-neutral-200 bg-white dark:bg-neutral-800">
+        <div className="rounded-3xl px-6 py-6 bg-white border border-neutral-200 dark:border-neutral-700 dark:bg-neutral-800">
           <WrapForm />
         </div>
       </div>

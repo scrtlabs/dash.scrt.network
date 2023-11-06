@@ -133,7 +133,7 @@ export default function IbcForm() {
         className="w-full flex flex-col gap-4 text-neutral-800 dark:text-neutral-200 bg-white dark:bg-neutral-800"
       >
         {/* [From|To] Picker */}
-        <div className="flex flex-col md:flex-row mb-8">
+        <div className="flex flex-col md:flex-row">
           {/* *** From *** */}
           <div className="flex-initial w-full md:w-1/3">
             {/* circle */}
@@ -196,7 +196,7 @@ export default function IbcForm() {
                     <button
                       onClick={toggleIbcMode}
                       className={
-                        'focus:outline-none focus-visible:ring-2 ring-sky-500/40 inline-block bg-neutral-200 dark:bg-neutral-700 px-3 py-2 text-cyan-500 dark:text-cyan-500 transition-colors rounded-xl disabled:text-neutral-500 dark:disabled:text-neutral-500' +
+                        'focus:outline-none focus-visible:ring-2 ring-sky-500/40 inline-block bg-gray-200 dark:bg-neutral-700 px-3 py-2 text-cyan-500 dark:text-cyan-500 transition-colors rounded-xl disabled:text-neutral-500 dark:disabled:text-neutral-500' +
                         (secretNetworkClient?.address ? 'hover:text-cyan-700 dark:hover:text-cyan-300' : '')
                       }
                       disabled={!isConnected}
@@ -246,7 +246,7 @@ export default function IbcForm() {
               {formik.values.ibcMode === 'deposit' && (
                 <div
                   style={{ paddingTop: '.76rem', paddingBottom: '.76rem' }}
-                  className="flex items-center w-full text-sm font-semibold select-none bg-neutral-200 dark:bg-neutral-800 rounded text-neutral-800 dark:text-neutral-200 focus:bg-neutral-300 dark:focus:bg-neutral-700 disabled:hover:bg-neutral-200 dark:disabled:hover:bg-neutral-800 border border-neutral-300 dark:border-neutral-600"
+                  className="flex items-center w-full text-sm font-semibold select-none bg-white dark:bg-neutral-800 rounded text-neutral-800 dark:text-neutral-200 focus:bg-neutral-300 dark:focus:bg-neutral-700 disabled:hover:bg-neutral-200 dark:disabled:hover:bg-neutral-800 border border-neutral-300 dark:border-neutral-600"
                 >
                   <div className="flex-1 px-3 text-center">
                     <span>Secret Network</span>
@@ -263,7 +263,7 @@ export default function IbcForm() {
           destAddress={formik.values.ibcMode === 'withdrawal' ? sourceChainAddress : walletAddress}
         />
 
-        <div className="bg-neutral-200 dark:bg-neutral-700 p-4 rounded-xl">
+        <div className="bg-gray-200 dark:bg-neutral-700 p-4 rounded-xl">
           {/* Title Bar */}
           <div className="flex flex-col sm:flex-row justify-between items-center mb-2 text-center sm:text-left">
             <span className="font-extrabold">Token</span>

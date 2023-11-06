@@ -5,7 +5,7 @@ import { trackMixPanelEvent } from 'utils/commons'
 export default function SocialMedia() {
   return (
     <>
-      <div className="bg-white dark:bg-neutral-800 rounded-xl h-full flex items-center px-4 py-4">
+      <div className="rounded-xl bg-white border border-neutral-200 dark:border-neutral-700 dark:bg-neutral-800 h-full flex items-center px-4 py-4">
         <div className="flex-1 text-center border-r border-neutral-300 dark:border-neutral-700">
           <a
             href="https://twitter.com/SecretNetwork"
