@@ -111,7 +111,7 @@ const performWrapping = async (props: TProps): Promise<{ success: boolean; error
           [
             new MsgExecuteContract({
               sender: props.secretNetworkClient.address,
-              contract_address: props.secretNetworkClient.address,
+              contract_address: token.address,
               code_hash: token.code_hash,
               sent_funds: [],
               msg: {
