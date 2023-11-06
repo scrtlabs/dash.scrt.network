@@ -404,31 +404,20 @@ export const Staking = () => {
             </div>
             <div className="flex-initial items-center rounded-md" role="group">
               <button
+                disabled={validatorDisplayStatus === 'active'}
                 onClick={() => setValidatorDisplayStatus('active')}
                 type="button"
-                className={
-                  'px-3 text-xs font-semibold rounded-l-lg py-2' +
-                  (validatorDisplayStatus === 'active'
-                    ? ' bg-emerald-500 text-white'
-                    : ' bg-gray-300 text-gray-800 hover:bg-gray-400 focus:bg-gray-400')
-                }
+                className="disabled:text-white px-3 text-xs font-semibold rounded-l-lg py-2 enabled:bg-gray-300 disabled:bg-emerald-500 dark:disabled:bg-emerald-500 dark:enabled:bg-neutral-700 enabled:hover:bg-gray-400 dark:enabled:hover:bg-neutral-600 transition"
               >
-                {`Active Set ${activeValidators ? '(' : ''}${activeValidators ? activeValidators?.length : ''}${
-                  activeValidators ? ')' : ''
-                }`}
+                {`Active Set${activeValidators ? ` (${activeValidators?.length})` : ''}`}
               </button>
               <button
                 onClick={() => setValidatorDisplayStatus('inactive')}
+                disabled={validatorDisplayStatus === 'inactive'}
                 type="button"
-                className={`px-3 text-xs font-semibold rounded-r-lg py-2 ${
-                  validatorDisplayStatus === 'inactive'
-                    ? ' bg-red-500 text-white'
-                    : ' bg-gray-300 text-gray-800 hover:bg-gray-400 focus:bg-gray-400'
-                }`}
+                className="px-3 text-xs font-semibold rounded-r-lg py-2 disabled:bg-red-500 disabled:text-white enabled:bg-gray-300 dark:enabled:bg-neutral-700 enabled:hover:bg-gray-400 enabled:dark:hover:bg-neutral-600 transition"
               >
-                {`Inactive Set ${inactiveValidators ? '(' : ''}${inactiveValidators ? inactiveValidators?.length : ''}${
-                  inactiveValidators ? ')' : ''
-                }`}
+                {`Inactive Set${inactiveValidators ? ` (${inactiveValidators?.length})` : ''}`}
               </button>
             </div>
           </div>

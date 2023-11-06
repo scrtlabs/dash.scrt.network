@@ -186,7 +186,7 @@ const ValidatorModal = (props: Props) => {
           <div className="grid grid-cols-12 gap-4">
             {selectedValidator?.description?.details ? (
               <div className="col-span-12">
-                <div className="text-sm dark:bg-neutral-800 rounded-md p-4 text-center sm:text-left">
+                <div className="text-sm rounded-xl p-4 text-center sm:text-left bg-gray-200 dark:bg-neutral-700 text-black dark:text-white">
                   <div className="font-semibold text-black dark:text-white mb-1">Description</div>
                   <div className="italic text-neutral-600 dark:text-neutral-400">
                     {selectedValidator?.description?.details}
@@ -199,7 +199,7 @@ const ValidatorModal = (props: Props) => {
               <>
                 <div className="col-span-12">
                   {/* Properties of the Val */}
-                  <div className="bg-white dark:bg-neutral-800 p-8 rounded-md grid grid-cols-12 gap-6">
+                  <div className="p-8 rounded-xl grid grid-cols-12 gap-6 bg-gray-200 dark:bg-neutral-700 text-black dark:text-white">
                     {/* First Item */}
                     {selectedValidator?.description?.identity && (
                       <div className="col-span-12 sm:col-span-6 flex flex-col gap-0.5 text-neutral-800 dark:text-neutral-300 font-semibold">
@@ -323,8 +323,8 @@ const ValidatorModal = (props: Props) => {
 
             {/* Available to Stake */}
             {isConnected && (
-              <div className="bg-white/5 col-span-12 md:col-span-6 rounded-xl px-4 py-8 mt-4 text-center sm:text-left">
-                <div className="font-semibold mb-2">Available to Stake</div>
+              <div className="col-span-12 md:col-span-6 rounded-xl p-6 text-center sm:text-left bg-gray-200 dark:bg-neutral-700 text-black dark:text-white">
+                <div className="font-semibold text-black dark:text-white mb-2">Available to Stake</div>
                 <div className="font-semibold">
                   {new BigNumber(scrtBalance!).dividedBy(`1e${scrtToken.decimals}`).toFormat()}
                   <span className="text-neutral-400 text-xs">{` SCRT`}</span>
@@ -347,8 +347,8 @@ const ValidatorModal = (props: Props) => {
                 (delegatorDelegation: any) =>
                   selectedValidator?.operator_address == delegatorDelegation.delegation.validator_address
               ) ? (
-                <div className="bg-white/5 col-span-12 md:col-span-6 rounded-xl px-4 py-8 mt-4 text-center sm:text-left">
-                  <div className="font-semibold mb-2">Your Delegation</div>
+                <div className="col-span-12 md:col-span-6 rounded-xl px-4 py-8 text-center sm:text-left bg-gray-200 dark:bg-neutral-700 text-black dark:text-white">
+                  <div className="font-semibold text-black dark:text-white mb-2">Your Delegation</div>
                   <div className="font-semibold">
                     {delegatorDelegations?.find(
                       (delegatorDelegation: any) =>
@@ -371,7 +371,7 @@ const ValidatorModal = (props: Props) => {
                   </div>
                 </div>
               ) : (
-                <div className="bg-white/5 col-span-12 md:col-span-6 rounded-xl px-4 py-8 mt-4 text-center sm:text-left">
+                <div className="col-span-12 md:col-span-6 rounded-xl px-4 py-8 text-center sm:text-left bg-white border border-neutral-200 dark:border-neutral-700 dark:bg-neutral-800">
                   <div className="font-semibold mb-2">Your Delegation</div>
                   <div className="font-semibold">
                     {0}
@@ -393,7 +393,7 @@ const ValidatorModal = (props: Props) => {
               <>
                 <div className="col-span-12">
                   {/* Navigation */}
-                  <div className="flex flex-col sm:flex-row-reverse justify-start mt-4 gap-2">
+                  <div className="flex flex-col sm:flex-row-reverse justify-start gap-2">
                     <Button onClick={() => setView('delegate')} size="large">
                       Delegate
                     </Button>

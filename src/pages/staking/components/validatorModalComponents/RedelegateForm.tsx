@@ -147,8 +147,8 @@ export default function RedelegateForm() {
   }
 
   return (
-    <>
-      <div className="bg-neutral-200 dark:bg-neutral-800 p-4 rounded-xl my-4">
+    <div className="grid grid-cols-12 gap-4">
+      <div className="col-span-12 bg-white border border-neutral-200 dark:border-neutral-700 dark:bg-neutral-800 p-4 rounded-xl">
         <div className="font-semibold mb-2 text-center sm:text-left">Amount</div>
 
         <input
@@ -218,7 +218,7 @@ export default function RedelegateForm() {
       </div>
 
       {/* Footer */}
-      <div className="flex flex-col sm:flex-row-reverse justify-start mt-4 gap-2">
+      <div className="col-span-12 flex flex-col sm:flex-row-reverse justify-start gap-2">
         <Button onClick={handleSubmit} color="primary" size="large">
           Redelegate
         </Button>
@@ -227,6 +227,6 @@ export default function RedelegateForm() {
           Back
         </Button>
       </div>
-    </>
+    </div>
   )
 }

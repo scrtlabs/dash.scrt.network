@@ -117,8 +117,8 @@ export default function UndelegateForm() {
   }
 
   return (
-    <>
-      <div className="bg-neutral-200 dark:bg-neutral-800 p-4 rounded-xl my-4">
+    <div className="grid grid-cols-12 gap-4">
+      <div className="col-span-12 p-4 rounded-xl bg-gray-200 dark:bg-neutral-700 text-black dark:text-white">
         <div className="font-semibold mb-2 text-center sm:text-left">Amount to Undelegate</div>
 
         <input
@@ -128,7 +128,7 @@ export default function UndelegateForm() {
           min="0"
           step="0.000001"
           className={
-            'block flex-1 min-w-0 w-full bg-neutral-100 dark:bg-neutral-900 text-black dark:text-white px-4 py-4 rounded-lg disabled:placeholder-neutral-300 dark:disabled:placeholder-neutral-700 transition-colors font-medium focus:outline-0 focus:ring-2 ring-sky-500/40'
+            'block flex-1 min-w-0 w-full bg-gray-200 dark:bg-neutral-800 text-black dark:text-white px-4 py-4 rounded-lg disabled:placeholder-neutral-300 dark:disabled:placeholder-neutral-700 transition-colors font-medium focus:outline-0 focus:ring-2 ring-sky-500/40'
           }
           name="toValue"
           id="toValue"
@@ -151,7 +151,7 @@ export default function UndelegateForm() {
       </div>
 
       {/* Footer */}
-      <div className="flex flex-col sm:flex-row-reverse justify-start mt-4 gap-2">
+      <div className="col-span-12 flex flex-col sm:flex-row-reverse justify-start gap-2">
         <Button onClick={handleSubmit} color="primary" size="large">
           Undelegate
         </Button>
@@ -160,6 +160,6 @@ export default function UndelegateForm() {
           Back
         </Button>
       </div>
-    </>
+    </div>
   )
 }
