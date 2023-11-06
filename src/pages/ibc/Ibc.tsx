@@ -137,13 +137,7 @@ export function Ibc() {
         {/* Content */}
         <div className="container w-full max-w-xl mx-auto px-4">
           {/* Title */}
-          <Title className="mb-6" title={`IBC Transfer`}>
-            <Tooltip title={message} placement="right" arrow>
-              <span className="ml-2 relative text-neutral-600 dark:text-neutral-400 hover:text-black dark:hover:text-white transition-colors cursor-pointer">
-                <FontAwesomeIcon icon={faInfoCircle} />
-              </span>
-            </Tooltip>
-          </Title>
+          <Title className="mb-6" title={`IBC Transfer`} tooltip={message} />
           {/* Content */}
           <div className="rounded-3xl px-6 py-6 bg-white border border-neutral-200 dark:border-neutral-700 dark:bg-neutral-800">
             <IbcForm />

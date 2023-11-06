@@ -3,7 +3,6 @@ import { sendPageTitle, sendPageDescription, sendJsonLdSchema } from 'utils/comm
 import Title from 'components/Title'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faInfoCircle } from '@fortawesome/free-solid-svg-icons'
-import Tooltip from '@mui/material/Tooltip'
 import { Helmet } from 'react-helmet-async'
 import mixpanel from 'mixpanel-browser'
 import { useSearchParams } from 'react-router-dom'
@@ -73,13 +72,7 @@ export function Send() {
 
       <div className="container w-full max-w-xl mx-auto px-4">
         {/* Title*/}
-        <Title title={`Send`} className="mb-6">
-          <Tooltip title={'Transfer your assets to a given address'} placement="right" arrow>
-            <span className="ml-2 relative text-neutral-600 dark:text-neutral-400 hover:text-black dark:hover:text-white transition-colors cursor-pointer">
-              <FontAwesomeIcon icon={faInfoCircle} />
-            </span>
-          </Tooltip>
-        </Title>
+        <Title title={`Send`} tooltip={`Transfer your assets to a given address`} className="mb-6" />
         {/* Content */}
         <div
           onClick={handleClick}
