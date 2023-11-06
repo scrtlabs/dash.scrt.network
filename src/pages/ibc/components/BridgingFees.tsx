@@ -1,112 +1,85 @@
 import { IbcContext } from 'pages/ibc/Ibc'
-import React, { useContext } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import CopyToClipboard from 'react-copy-to-clipboard'
-import { Chain, chains } from 'utils/config'
+import { Chain, ICSTokens, Token, chains } from 'utils/config'
 import { useSecretNetworkClientStore } from 'store/secretNetworkClient'
 import Tooltip from '@mui/material/Tooltip'
-import { faCopy } from '@fortawesome/free-solid-svg-icons'
+import { faCopy, faInfoCircle } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import BigNumber from 'bignumber.js'
+import { IbcMode } from 'types/IbcMode'
+import { GasToken } from '@axelar-network/axelarjs-sdk'
+import { IbcService } from 'services/ibc.service'
+import { amber } from '@mui/material/colors'
+import { Coin } from 'secretjs'
+import { useTokenPricesStore } from 'store/TokenPrices'
 
 interface IProps {
-  srcChain?: Chain
-  srcAddress?: string
-  destChain?: Chain
-  destAddress?: string
+  chain: Chain
+  ibcMode: IbcMode
+  token: Token
+  amount: string
 }
 
-export default function AddressInfo(props: IProps) {
+export default function BridgingFees(props: IProps) {
   const { isConnected, connectWallet } = useSecretNetworkClientStore()
 
-  const dataMissing = !props.srcChain || !props.srcAddress || !props.destChain || !props.destChain
+  const [axelarTransferFee, setAxelarTransferFee] = useState<Coin>(null)
+  const [usdPriceString, setUsdPriceString] = useState<string>(null)
 
-  // e.g. https://www.mintscan.io/secret/account/[address]
-  const srcChainExplorerUrl: string = `${props.srcChain?.explorer_account}${props.srcAddress}`
-  const destChainExplorerUrl: string = `${props.destChain?.explorer_account}${props.destAddress}`
+  const { getValuePrice, priceMapping } = useTokenPricesStore()
+
+  useEffect(() => {
+    if ((props.ibcMode, props.token, props.chain, props.amount)) {
+      async function fetchAxelarTransferFee() {
+        const { fee } = await IbcService.getAxelarTransferFee(
+          props.token,
+          props.chain,
+          BigNumber(props.amount).dividedBy(`1e${props.token.decimals}`).toNumber(),
+          props.ibcMode
+        )
+        setAxelarTransferFee(fee)
+        console.log(fee)
+      }
+      setAxelarTransferFee(null)
+      fetchAxelarTransferFee()
+    }
+  }, [props.ibcMode, props.token, props.chain, props.amount])
+
+  useEffect(() => {
+    if (priceMapping !== null && axelarTransferFee !== null) {
+      setUsdPriceString(getValuePrice(props.token, BigNumber(axelarTransferFee.amount)))
+    } else {
+      setUsdPriceString('')
+    }
+  }, [priceMapping, props.token, axelarTransferFee])
 
   return (
     <div className="bg-neutral-200 dark:bg-neutral-700 p-4 rounded-xl space-y-6 my-4">
-      <div className="flex items-center">
-        <div className="font-semibold mr-4 w-10">From:</div>
-        <div className="flex-1 truncate font-medium text-sm">
-          {isConnected ? (
-            <>
-              {!props.srcChain && !props.srcAddress ? (
-                <div className="animate-pulse">
-                  <div className="h-5 bg-white dark:bg-neutral-700 rounded"></div>
-                </div>
-              ) : (
-                <Tooltip title={'View in Explorer'} placement="top" arrow>
-                  <a href={srcChainExplorerUrl} target="_blank">
-                    <div className="truncate">
-                      {props.srcAddress.slice(0, 22) + '...' + props.srcAddress.slice(-22)}
-                    </div>
-                  </a>
-                </Tooltip>
-              )}
-            </>
-          ) : null}
+      <div className="flex justify-between items-center">
+        <div className="flex items-center">
+          <span className="font-semibold text-sm text-white">Bridging Fees</span>
+          <Tooltip
+            title={`Make sure to always transfer a higher amount than the transfer fees!`}
+            placement="right"
+            arrow
+          >
+            <span className="ml-2 text-white relative hover:text-black dark:hover:text-white transition-colors cursor-pointer">
+              <FontAwesomeIcon icon={faInfoCircle} />
+            </span>
+          </Tooltip>
         </div>
-        <div className="flex-initial ml-4">
-          <CopyToClipboard text={props.destAddress}>
-            <Tooltip
-              title={'Copy to Clipboard'}
-              placement="top"
-              disableHoverListener={!isConnected || dataMissing}
-              arrow
-            >
-              <span>
-                <button
-                  className="text-neutral-500 enabled:hover:text-white enabled:active:text-neutral-500 transition-colors"
-                  disabled={!isConnected || dataMissing}
-                >
-                  <FontAwesomeIcon icon={faCopy} />
-                </button>
-              </span>
-            </Tooltip>
-          </CopyToClipboard>
-        </div>
-      </div>
-
-      <div className="flex items-center">
-        <div className="flex-initial font-semibold mr-4 w-10">To:</div>
-        <div className="flex-1 truncate font-medium text-sm">
-          {isConnected ? (
-            <>
-              {!props.destChain && !props.destAddress ? (
-                <div className="animate-pulse">
-                  <div className="h-5 bg-white dark:bg-neutral-700 rounded"></div>
-                </div>
-              ) : (
-                <Tooltip title={'View in Explorer'} placement="bottom" arrow>
-                  <a href={destChainExplorerUrl} target="_blank">
-                    <div className="truncate">
-                      {props.destAddress.slice(0, 22) + '...' + props.destAddress.slice(-22)}
-                    </div>{' '}
-                  </a>
-                </Tooltip>
-              )}
-            </>
-          ) : null}
-        </div>
-        <div className="flex-initial ml-4">
-          <CopyToClipboard text={props.destAddress}>
-            <Tooltip
-              title={'Copy to Clipboard'}
-              placement="bottom"
-              disableHoverListener={!isConnected || dataMissing}
-              arrow
-            >
-              <span>
-                <button
-                  className="text-neutral-500 enabled:hover:text-white enabled:active:text-neutral-500 transition-colors"
-                  disabled={!isConnected || dataMissing}
-                >
-                  <FontAwesomeIcon icon={faCopy} />
-                </button>
-              </span>
-            </Tooltip>
-          </CopyToClipboard>
-        </div>
+        {props.token.is_ics20 && axelarTransferFee ? (
+          <div className="text-white font-medium">
+            {`${new BigNumber(axelarTransferFee.amount).dividedBy(`1e${props.token.decimals}`).toFormat()} ${
+              props.ibcMode == 'withdrawal' ? 's' : ''
+            }`}{' '}
+            {ICSTokens.filter((icstoken: any) => icstoken.axelar_denom === axelarTransferFee.denom)[0].name}
+            {props.token.coingecko_id && usdPriceString ? ` (${usdPriceString})` : ''}
+          </div>
+        ) : (
+          <span className="animate-pulse bg-neutral-300/40 dark:bg-neutral-600/40 rounded w-20 h-5"></span>
+        )}
       </div>
     </div>
   )

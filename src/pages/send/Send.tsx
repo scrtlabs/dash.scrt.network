@@ -75,7 +75,7 @@ export function Send() {
         {/* Title*/}
         <Title title={`Send`} className="mb-6">
           <Tooltip title={'Transfer your assets to a given address'} placement="right" arrow>
-            <span className="ml-2 relative -top-1.5 text-neutral-600 dark:text-neutral-400 hover:text-black dark:hover:text-white transition-colors cursor-pointer">
+            <span className="ml-2 relative text-neutral-600 dark:text-neutral-400 hover:text-black dark:hover:text-white transition-colors cursor-pointer">
               <FontAwesomeIcon icon={faInfoCircle} />
             </span>
           </Tooltip>
