@@ -23,22 +23,7 @@ interface IPropsTokenName extends IBaseProps {
 
 type TProps = IPropsToken | IPropsTokenName
 
-/**
- * Attempts to perform wrapping via secret.js API
- *
- * @param {TProps} props
- * @returns {Promise<{success: boolean, errorMsg: Nullable<string>}>} A promise that resolves to an object containing:
- * - `success`: A boolean indicating whether the wrapping operation was successful.
- * - `errorMsg`: A string containing an error message if something went wrong, or null if there were no errors.
- * @async
- */
-
-const performWrapping = async (props: TProps): Promise<{ success: boolean; errorMsg: Nullable<string> }> => {
-  let result: { success: boolean; errorMsg: Nullable<string> } = {
-    success: false,
-    errorMsg: null
-  }
-
+async function performWrapping(props: TProps): Promise<string> {
   let token: Nullable<Token>
   if ('tokenName' in props) {
     token = tokens.find((token) => token.name === props.tokenName)
@@ -47,9 +32,8 @@ const performWrapping = async (props: TProps): Promise<{ success: boolean; error
   }
 
   if (!token) {
-    result.success = false
-    result.errorMsg = 'Token not found!'
-    return result
+    console.error('token', token)
+    throw new Error('Token not found!')
   }
 
   const baseAmount = props.amount
@@ -57,9 +41,7 @@ const performWrapping = async (props: TProps): Promise<{ success: boolean; error
 
   if (amount === 'NaN') {
     console.error('NaN amount', baseAmount)
-    result.success = false
-    result.errorMsg = 'Amount is not a valid number!'
-    return result
+    throw new Error('Amount is not a valid number!')
   }
 
   try {
@@ -89,17 +71,16 @@ const performWrapping = async (props: TProps): Promise<{ success: boolean; error
         )
         .catch((error: any) => {
           console.error(error)
-          result.success = false
-          result.errorMsg = `Wrapping of ${token.name} failed: ${error.tx.rawLog}`
-          return result
+          throw new Error(`Wrapping of ${token.name} failed: ${error?.tx?.rawLog}`)
         })
         .then((tx: any) => {
-          console.log(tx)
+          console.log('tx', tx)
           if (tx) {
             if (tx.code === 0) {
-              result.success = true
-              result.errorMsg = null
-              return result
+              return 'Wrapping successful!'
+            } else {
+              console.error(tx.rawLog)
+              throw new Error(tx.rawLog)
             }
           }
         })
@@ -133,30 +114,25 @@ const performWrapping = async (props: TProps): Promise<{ success: boolean; error
         )
         .catch((error: any) => {
           console.error(error)
-          result.success = false
-          result.errorMsg = `Unwrapping of s${token.name} failed: ${error.tx.rawLog}`
-          return result
+          throw new Error(`Unwrapping of ${token.name} failed: ${error?.tx?.rawLog}`)
         })
         .then((tx: any) => {
-          console.log(tx)
+          console.log('tx', tx)
           if (tx) {
             if (tx.code === 0) {
-              result.success = true
-              result.errorMsg = null
-              return result
+              return 'Wrapping successful!'
+            } else {
+              console.error(tx.rawLog)
+              throw new Error(tx.rawLog)
             }
           }
         })
     }
   } catch (error: any) {
     console.error(error)
-    result.success = false
-    result.errorMsg = error
-    return result
+    throw new Error(error)
   }
-  result.success = false
-  result.errorMsg = 'Unwrapping failed!'
-  return result
+  return
 }
 
 export const WrapService = {

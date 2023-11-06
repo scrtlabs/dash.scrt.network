@@ -14,6 +14,7 @@ import Tooltip from '@mui/material/Tooltip'
 import { WrapService } from 'services/wrap.service'
 import BalanceUI from 'components/BalanceUI'
 import { FeeGrantStatus } from 'types/FeeGrantStatus'
+import toast from 'react-hot-toast'
 
 function WrapForm() {
   const {
@@ -78,10 +79,6 @@ function WrapForm() {
     }
   }, [isConnected])
 
-  const [isLoading, setIsWaiting] = useState<boolean>(false)
-  const [generalSuccessMessage, setGeneralSuccessMessage] = useState<String>('')
-  const [generalErrorMessage, setGeneralErrorMessage] = useState<String>('')
-
   interface IFormValues {
     amount: string
     token: Token
@@ -101,32 +98,21 @@ function WrapForm() {
     validateOnChange: true,
     onSubmit: async (values) => {
       try {
-        setGeneralErrorMessage('')
-        setGeneralSuccessMessage('')
-        setIsWaiting(true)
-        const res = await WrapService.performWrapping({
+        const res = WrapService.performWrapping({
           ...values,
           secretNetworkClient
         })
-        setIsWaiting(false)
-
-        if (res.success) {
-          setGeneralSuccessMessage(`${formik.values.wrappingMode === 'wrap' ? 'Wrapping' : 'Unwrapping'} Successful!`)
-        } else {
-          throw new Error()
-        }
+        toast.promise(res, {
+          loading: `Waiting to send ${formik.values.amount} ${formik.values.token.name}...`,
+          success: `${formik.values.wrappingMode === 'wrap' ? 'Wrapping' : 'Unwrapping'} successful!`,
+          error: `${formik.values.wrappingMode === 'wrap' ? 'Wrapping' : 'Unwrapping'} unsuccessful!`
+        })
       } catch (error: any) {
         console.error(error)
-        setGeneralErrorMessage(`${formik.values.wrappingMode === 'wrap' ? 'Wrapping' : 'Unwrapping'} unsuccessful!`)
+        toast.error(`${formik.values.wrappingMode === 'wrap' ? 'Wrapping' : 'Unwrapping'} unsuccessful!`)
       }
     }
   })
-
-  // reset messages on form change
-  useEffect(() => {
-    setGeneralErrorMessage('')
-    setGeneralSuccessMessage('')
-  }, [formik.values])
 
   function handleTokenSelect(token: Token) {
     formik.setFieldValue('token', token)
@@ -278,39 +264,6 @@ function WrapForm() {
         {/* Fee Grant */}
         <FeeGrant />
 
-        {isLoading ? (
-          <div className="text-sm font-normal flex items-center gap-2 justify-center">
-            <svg
-              className="animate-spin h-5 w-5 text-black dark:text-white"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-            >
-              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-              <path
-                className="opacity-75"
-                fill="currentColor"
-                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-              ></path>
-            </svg>
-            <span>Processing...</span>
-          </div>
-        ) : null}
-
-        {generalSuccessMessage && (
-          <div className="text-emerald-500 dark:text-emerald-500 text-sm font-normal flex items-center gap-2 justify-center">
-            <FontAwesomeIcon icon={faCircleCheck} />
-            <span>{generalSuccessMessage}</span>
-          </div>
-        )}
-
-        {generalErrorMessage && (
-          <div className="text-red-500 dark:text-red-500 text-sm font-normal flex items-center gap-2 justify-center">
-            <FontAwesomeIcon icon={faTriangleExclamation} />
-            <span>{generalErrorMessage}</span>
-          </div>
-        )}
-
         {/* Submit Button */}
         <button
           className={
@@ -329,12 +282,6 @@ function WrapForm() {
             formik.errors: {JSON.stringify(formik.errors)}
           </div>
         ) : null}
-
-        {/* amount={amountString}
-              nativeCurrency={selectedToken.name}
-              wrappedAmount={amountString}
-              wrappedCurrency={'s' + selectedToken.name}
-              wrappingMode={wrappingMode} */}
       </form>
     </div>
   )
