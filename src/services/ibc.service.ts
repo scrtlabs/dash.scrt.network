@@ -880,5 +880,6 @@ export const IbcService = {
   composePMFMemo,
   getSkipIBCRouting,
   getChainSecretJs,
-  fetchSourceBalance
+  fetchSourceBalance,
+  getAxelarTransferFee
 }

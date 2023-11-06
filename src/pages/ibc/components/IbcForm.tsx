@@ -15,6 +15,7 @@ import { IbcService } from 'services/ibc.service'
 import FeeGrant from 'components/FeeGrant/FeeGrant'
 import BalanceUI from 'components/BalanceUI'
 import { FeeGrantStatus } from 'types/FeeGrantStatus'
+import BridgingFees from './BridgingFees'
 
 export default function IbcForm() {
   const { feeGrantStatus, secretNetworkClient, walletAddress, isConnected } = useSecretNetworkClientStore()
@@ -327,6 +328,15 @@ export default function IbcForm() {
 
         {/* Fee Grant */}
         {formik.values.ibcMode === 'withdrawal' ? <FeeGrant /> : null}
+
+        {formik.values.token.is_ics20 ? (
+          <BridgingFees
+            chain={formik.values.chain}
+            token={formik.values.token}
+            amount={formik.values.amount}
+            ibcMode={formik.values.ibcMode}
+          />
+        ) : null}
 
         {isLoading ? (
           <div className="text-sm font-normal flex items-center gap-2 justify-center">
