@@ -430,6 +430,21 @@ export const stakingJsonLdSchema = [
   }
 ]
 
+// Portfolio
+export const portfolioPageTitle = `${pageTitle} | Portfolio`
+export const portfolioPageDescription = `View of all your balances on Secret Network!`
+export const portfolioJsonLdSchema = [
+  {
+    '@context': 'http://schema.org',
+    '@type': 'WebPage',
+    url: 'https://dash.scrt.network/portfolio',
+    name: `${pageTitle} | Portfolio`,
+    alternateName: `${alternatePageTitle} | Portfolio`,
+    description: portfolioPageDescription,
+    creator: 'Secret Jupiter, Secret Saturn'
+  }
+]
+
 // Send
 export const sendPageTitle = `${pageTitle} | Send`
 export const sendPageDescription = `Send public (SCRT) or privacy preserving tokens!`

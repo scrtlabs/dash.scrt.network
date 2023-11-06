@@ -6,10 +6,10 @@ import CopyToClipboard from 'react-copy-to-clipboard'
 import { toast } from 'react-toastify'
 import Tooltip from '@mui/material/Tooltip'
 import { QRCode } from 'react-qrcode-logo'
-import { faArrowUpRightFromSquare, faCopy } from '@fortawesome/free-solid-svg-icons'
 import { Token, chains, tokens } from 'utils/config'
 import { Link } from 'react-router-dom'
 import { useSecretNetworkClientStore } from 'store/secretNetworkClient'
+import { faCopy } from '@fortawesome/free-solid-svg-icons'
 
 export default function AddressQR() {
   const { theme, setTheme } = useContext(ThemeContext)
