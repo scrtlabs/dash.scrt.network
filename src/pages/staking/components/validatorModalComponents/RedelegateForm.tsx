@@ -148,7 +148,7 @@ export default function RedelegateForm() {
 
   return (
     <div className="grid grid-cols-12 gap-4">
-      <div className="col-span-12 bg-white border border-neutral-200 dark:border-neutral-700 dark:bg-neutral-800 p-4 rounded-xl">
+      <div className="col-span-12 bg-gray-200 dark:bg-neutral-700 text-black dark:text-white p-4 rounded-xl">
         <div className="font-semibold mb-2 text-center sm:text-left">Amount</div>
 
         <input
@@ -158,7 +158,7 @@ export default function RedelegateForm() {
           min="0"
           step="0.000001"
           className={
-            'remove-arrows block flex-1 min-w-0 w-full bg-neutral-100 dark:bg-neutral-900 text-black dark:text-white px-4 py-4 rounded-lg disabled:placeholder-neutral-300 dark:disabled:placeholder-neutral-700 transition-colors font-medium focus:outline-0 focus:ring-2 ring-sky-500/40'
+            'remove-arrows block flex-1 min-w-0 w-full bg-neutral-100 dark:bg-neutral-800 text-black dark:text-white px-4 py-4 rounded-lg disabled:placeholder-neutral-300 dark:disabled:placeholder-neutral-700 transition-colors font-medium focus:outline-0 focus:ring-2 ring-sky-500/40'
           }
           name="toValue"
           id="toValue"

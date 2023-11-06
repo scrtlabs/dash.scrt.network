@@ -54,7 +54,7 @@ function Portfolio() {
       {/* All Balances */}
       <div className="max-w-6xl mx-auto mt-8">
         {secretNetworkClient ? (
-          <div className="flex justify-left px-4 mb-4">
+          <div className="flex justify-left mb-4">
             <AddressQR />
           </div>
         ) : null}

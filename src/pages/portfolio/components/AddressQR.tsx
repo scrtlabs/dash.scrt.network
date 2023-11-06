@@ -51,6 +51,7 @@ export default function AddressQR() {
                 >
                   <span>
                     <button
+                      type="button"
                       className="text-neutral-500 hover:text-neutral-800 dark:hover:text-neutral-300 active:text-neutral-500 transition-colors"
                       disabled={!secretNetworkClient}
                     >

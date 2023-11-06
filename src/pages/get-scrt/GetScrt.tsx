@@ -9,6 +9,7 @@ import Select from 'react-select'
 import mixpanel from 'mixpanel-browser'
 import { Nullable } from 'types/Nullable'
 import { useSecretNetworkClientStore } from 'store/secretNetworkClient'
+import Title from 'components/Title'
 
 function GetSCRT() {
   const { secretNetworkClient: secretjs, walletAddress } = useSecretNetworkClientStore()
@@ -85,11 +86,7 @@ function GetSCRT() {
 
       <div className="max-w-2xl mx-auto px-6">
         {/* Title */}
-        <div className="text-center mb-4">
-          <h1 className="font-semibold text-4xl inline text-transparent bg-clip-text bg-gradient-to-r from-cyan-500 to-purple-500">
-            Get SCRT
-          </h1>
-        </div>
+        <Title title="Get SCRT" />
 
         <p className="mb-8  text-neutral-600 dark:text-neutral-400 leading-7 text-justify">
           You can get SCRT by swapping tokens on a{` `}

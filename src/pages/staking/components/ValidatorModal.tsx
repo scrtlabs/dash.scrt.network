@@ -371,7 +371,7 @@ const ValidatorModal = (props: Props) => {
                   </div>
                 </div>
               ) : (
-                <div className="col-span-12 md:col-span-6 rounded-xl px-4 py-8 text-center sm:text-left bg-white border border-neutral-200 dark:border-neutral-700 dark:bg-neutral-800">
+                <div className="col-span-12 md:col-span-6 rounded-xl px-4 py-8 text-center sm:text-left bg-gray-200 dark:bg-neutral-700 text-black dark:text-white">
                   <div className="font-semibold mb-2">Your Delegation</div>
                   <div className="font-semibold">
                     {0}
