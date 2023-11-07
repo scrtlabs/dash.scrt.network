@@ -6,8 +6,7 @@ Secret Dashboard is an entry point for new users into Secret Network. Features i
 
 ## System Requirements
 
-- [Node.js 18 LTS](https://nodejs.org/)
-- [Yarn](https://yarnpkg.com/)
+- [Node.js 20 LTS](https://nodejs.org/)
 
 ## Setup
 
@@ -26,7 +25,7 @@ yarn install
 To get the app up and running, run:
 
 ```
-yarn start
+npm run start
 ```
 
 The App runs on port 3000.
@@ -43,6 +42,6 @@ The App runs on port 3000. For further information check the `Dockerfile` and th
 
 ## License
 
-Developed by [Secret Jupiter](https://twitter.com/secretjupiter_) and [Secret Saturn](https://twitter.com/Secret_Saturn_)
+Developed by [Secret Jupiter](https://x.com/secretjupiter_) and [Secret Saturn](https://x.com/Secret_Saturn_)
 
 Licensed under the [MIT license](https://github.com/scrtlabs/dash.scrt.network/blob/master/LICENSE.md)
