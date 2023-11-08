@@ -3,7 +3,6 @@ import { Token } from 'utils/config'
 import { portfolioPageTitle, portfolioPageDescription, portfolioJsonLdSchema, allTokens } from 'utils/commons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons'
-import './Portfolio.scss'
 import { Helmet } from 'react-helmet-async'
 import BalanceItem from './components/BalanceItem'
 import Title from 'components/Title'
@@ -54,12 +53,13 @@ function Portfolio() {
       {/* All Balances */}
       <div className="max-w-6xl mx-auto mt-8">
         {secretNetworkClient ? (
-          <div className="flex justify-left mb-4">
+          <div className="w-full justify-left mb-12">
             <AddressQR />
           </div>
         ) : null}
         <div />
         {/* All Balances */}
+        <div className="mb-4 font-bold text-lg">Your Assets</div>
         <div className="flex flex-col gap-4 sm:flex-row items-center mb-4">
           {/* Search */}
           <div className="flex-1 w-full xs:w-auto">
