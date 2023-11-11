@@ -6,6 +6,7 @@ import { useSecretNetworkClientStore } from 'store/secretNetworkClient'
 import { useTokenPricesStore } from 'store/TokenPrices'
 import { WalletService } from 'services/wallet.service'
 import BalanceUI from 'components/BalanceUI'
+import Button from 'components/UI/Button/Button'
 
 interface Props {
   token?: Token
@@ -48,17 +49,20 @@ const BalanceItem = (props: Props) => {
           </span>
         </div>
 
+        {/* Price */}
         {props.token?.coingecko_id !== '' && (
           <div className="flex flex-col items-center">
             <div className="description text-xs text-neutral-500 dark:text-neutral-400 mb-2">Price</div>
             {assetPrice ? (
               <div className="font-semibold">{assetPrice}</div>
             ) : (
-              <div className="animate-pulse bg-neutral-300/40 dark:bg-neutral-700/40 rounded col-span-2 w-16 h-7 mx-auto"></div>
+              <div className="dark:group-odd:bg-neutral-600 animate-pulse group-odd:bg-neutral-300/40 group-even:bg-neutral-300/40 dark:group-even:bg-neutral-700/40 rounded col-span-2 w-16 h-7 mx-auto"></div>
             )}
           </div>
         )}
-        {secretNetworkClient?.address ? (
+
+        {/* Balance */}
+        {secretNetworkClient?.address && (
           <div className="flex-initial min-w-[11rem] flex flex-col items-center">
             <div className="description text-xs text-neutral-500 dark:text-neutral-400 mb-2">Balance</div>
             <div className="text-xs">
@@ -69,7 +73,20 @@ const BalanceItem = (props: Props) => {
               />
             </div>
           </div>
-        ) : null}
+        )}
+
+        {/* Balance */}
+        <div className="flex-initial min-w-[11rem] flex flex-col items-center">
+          <div className="description text-xs text-neutral-500 dark:text-neutral-400 mb-2">Send</div>
+          <div className="text-xs">
+            <a
+              href="/send"
+              className="bg-gray-500 dark:bg-gray-600 hover:bg-gray-600 dark:hover:bg-gray-700 text-white ring-gray-500/40 dark:ring-gray-600/40 py-1.5 px-2 text-xs focus:outline-none focus-visible:ring-4 text-center font-bold rounded transition-colors"
+            >
+              Send
+            </a>
+          </div>
+        </div>
       </div>
     </>
   )
