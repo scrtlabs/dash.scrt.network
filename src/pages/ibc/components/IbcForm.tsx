@@ -4,7 +4,7 @@ import { GetBalanceError, useSecretNetworkClientStore } from 'store/secretNetwor
 import { useEffect, useState } from 'react'
 import { IbcMode } from 'types/IbcMode'
 import Select from 'react-select'
-import { Chain, Token, chains, tokens } from 'utils/config'
+import { Chain, Deposit, Token, chains, tokens } from 'utils/config'
 import IbcSelect from './IbcSelect'
 import Tooltip from '@mui/material/Tooltip'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -18,8 +18,62 @@ import { FeeGrantStatus } from 'types/FeeGrantStatus'
 import BridgingFees from './BridgingFees'
 import BigNumber from 'bignumber.js'
 import { allTokens } from 'utils/commons'
+import { useSearchParams } from 'react-router-dom'
 
-export default function IbcForm() {
+type Props = {
+  preselection?: {
+    chainName?: string
+    tokenName?: string
+    modeName?: string
+  }
+}
+
+export default function IbcForm(props: Props) {
+  // URL params
+  const [searchParams, setSearchParams] = useSearchParams()
+  const modeUrlParam = searchParams.get('mode')
+  const chainUrlParam = searchParams.get('chain')
+  const tokenUrlParam = searchParams.get('token')
+
+  function isValidChainUrlParam(): boolean {
+    return !!formik.values.token.deposits.find(
+      (deposit: Deposit) => deposit.chain_name.toLowerCase() === chainUrlParam.toLowerCase()
+    )
+  }
+
+  function isValidTokenUrlParam(): boolean {
+    return true // TODO: Create
+  }
+
+  useEffect(() => {
+    if (modeUrlParam?.toLowerCase() === 'deposit') {
+      formik.setFieldValue('ibcMode', 'deposit')
+    }
+    if (modeUrlParam?.toLowerCase() === 'withdrawal') {
+      formik.setFieldValue('ibcMode', 'withdrawal')
+    }
+  }, [])
+
+  useEffect(() => {
+    if (chainUrlParam && isValidChainUrlParam()) {
+      formik.setFieldValue(
+        'chain',
+        selectableChains.find((chain: Chain) => chain.chain_name.toLowerCase() === chainUrlParam.toLowerCase())
+      )
+    }
+  }, [])
+
+  // useEffect(() => {
+  //   var params = {}
+  //   if (ibcMode) {
+  //     params = { ...params, mode: ibcMode.toLowerCase() }
+  //   }
+  //   if (selectedSource) {
+  //     params = { ...params, chain: selectedSource.chain_name.toLowerCase() }
+  //   }
+  //   setSearchParams(params)
+  // }, [ibcMode, selectedSource])
+
   const { feeGrantStatus, secretNetworkClient, walletAddress, isConnected, getBalance } = useSecretNetworkClientStore()
 
   const [isLoading, setIsWaiting] = useState<boolean>(false)

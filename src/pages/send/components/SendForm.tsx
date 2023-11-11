@@ -1,5 +1,5 @@
 import { useFormik } from 'formik'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { sendSchema } from 'pages/send/sendSchema'
 import { GetBalanceError, useSecretNetworkClientStore } from 'store/secretNetworkClient'
 import Select from 'react-select'
@@ -15,8 +15,41 @@ import { allTokens } from 'utils/commons'
 import { FeeGrantStatus } from 'types/FeeGrantStatus'
 import BigNumber from 'bignumber.js'
 import toast, { Toaster } from 'react-hot-toast'
+import { useSearchParams } from 'react-router-dom'
+import { Nullable } from 'types/Nullable'
 
 export default function SendForm() {
+  // URL params
+  const [searchParams, setSearchParams] = useSearchParams()
+  const tokenUrlParam = searchParams.get('token')
+  const recipientUrlParam = searchParams.get('recipient')
+  const memoUrlParam = searchParams.get('memo')
+
+  const tokenSelectOptions = SendService.getSupportedTokens()
+
+  useEffect(() => {
+    // sets token by searchParam
+    let foundToken: Nullable<Token> = null
+    if (tokenUrlParam) {
+      foundToken = tokenSelectOptions.find((token: Token) => token.name.toLowerCase() === tokenUrlParam)
+    }
+    if (foundToken) {
+      formik.setFieldValue('token', foundToken)
+    }
+
+    // sets recipient by searchParam
+    if (recipientUrlParam) {
+      formik.setFieldValue('recipient', recipientUrlParam)
+      formik.setFieldTouched('recipient')
+    }
+
+    // sets memo by SearchParam
+    if (memoUrlParam) {
+      formik.setFieldValue('memo', memoUrlParam)
+      formik.setFieldTouched('memo')
+    }
+  }, [])
+
   const {
     secretNetworkClient,
     walletAddress,
@@ -28,8 +61,6 @@ export default function SendForm() {
   } = useSecretNetworkClientStore()
 
   const [isLoading, setIsWaiting] = useState<boolean>(false)
-
-  const tokenSelectOptions = SendService.getSupportedTokens()
 
   interface IFormValues {
     amount: string

@@ -24,22 +24,6 @@ export function Send() {
     }
   }, [])
 
-  // URL params
-  const [searchParams, setSearchParams] = useSearchParams()
-
-  function getTokenByUrlParam(): Nullable<Token> {
-    const tokenUrlParam = searchParams.get('token')
-
-    if (!tokenUrlParam) {
-      return null
-    }
-
-    const potentialToken: Nullable<Token> = tokens.find(
-      (token: Token) => token.name.toLowerCase() === tokenUrlParam.toLowerCase() || null
-    )
-    return potentialToken
-  }
-
   const handleClick = () => {
     if (!isConnected) {
       connectWallet()

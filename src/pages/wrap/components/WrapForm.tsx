@@ -6,7 +6,7 @@ import { useFormik } from 'formik'
 import React, { useEffect, useState } from 'react'
 import FeeGrant from 'components/FeeGrant/FeeGrant'
 import PercentagePicker from 'components/PercentagePicker'
-import { WrappingMode } from 'types/WrappingMode'
+import { WrappingMode, isWrappingMode } from 'types/WrappingMode'
 import { Token, tokens } from 'utils/config'
 import { useSecretNetworkClientStore } from 'store/secretNetworkClient'
 import { wrapSchema } from 'pages/wrap/wrapSchema'
@@ -15,8 +15,32 @@ import { WrapService } from 'services/wrap.service'
 import BalanceUI from 'components/BalanceUI'
 import { FeeGrantStatus } from 'types/FeeGrantStatus'
 import toast from 'react-hot-toast'
+import { useSearchParams } from 'react-router-dom'
+import { Nullable } from 'types/Nullable'
 
-function WrapForm() {
+export default function WrapForm() {
+  // URL params
+  const [searchParams, setSearchParams] = useSearchParams()
+  const wrappingModeUrlParam = searchParams.get('mode')
+  const tokenUrlParam = searchParams.get('token')
+
+  useEffect(() => {
+    // sets token by searchParam
+    let foundToken: Nullable<Token> = null
+    if (tokenUrlParam) {
+      foundToken = tokens.find((token: Token) => token.name.toLowerCase() === tokenUrlParam)
+    }
+    if (foundToken) {
+      formik.setFieldValue('token', foundToken)
+    }
+
+    // sets wrappingMode by searchParam
+    if (wrappingModeUrlParam && isWrappingMode(wrappingModeUrlParam)) {
+      formik.setFieldValue('wrappingMode', wrappingModeUrlParam)
+      formik.setFieldTouched('wrappingMode')
+    }
+  }, [])
+
   const {
     secretNetworkClient,
     walletAddress,
@@ -288,5 +312,3 @@ function WrapForm() {
     </div>
   )
 }
-
-export default WrapForm
