@@ -67,7 +67,7 @@ export default function ClaimRewardsModal(props: Props) {
             <FeeGrant />
           </div>
           <div>
-            {isLoading ? (
+            {isLoading && (
               <div className="text-sm font-normal flex items-center gap-2 justify-center">
                 <svg
                   className="animate-spin h-5 w-5 text-black dark:text-white"
@@ -84,7 +84,7 @@ export default function ClaimRewardsModal(props: Props) {
                 </svg>
                 <span>Processing...</span>
               </div>
-            ) : null}
+            )}
 
             {generalSuccessMessage && (
               <div className="text-emerald-500 dark:text-emerald-500 text-sm font-normal flex items-center gap-2 justify-center">

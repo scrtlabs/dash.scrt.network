@@ -39,9 +39,9 @@ const HoudiniModal = (props: Props) => {
                 <FontAwesomeIcon icon={faXmark} className="fa-fw" />
               </button>
 
-              {loading ? (
+              {loading && (
                 <div className="animate-pulse bg-neutral-300/40 dark:bg-neutral-700/40 absolute top-0 left-0 right-0 bottom-0 rounded-2xl"></div>
-              ) : null}
+              )}
 
               <iframe
                 src={`https://houdiniswap.com/?widgetMode=true&theme=${

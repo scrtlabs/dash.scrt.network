@@ -29,23 +29,21 @@ const BalanceItem = (props: Props) => {
       <div className="first-of-type:rounded-t-lg last-of-type:rounded-b-lg group flex flex-col sm:flex-row items-center text-center sm:text-left even:bg-white odd:bg-neutral-200 dark:even:bg-neutral-800 dark:odd:bg-neutral-700 py-8 sm:py-4 gap-4 pl-4 pr-8  w-full min-w-full ">
         {/* Image */}
         <div className="relative flex items-center">
-          {props.token?.image ? (
-            <>
-              <img
-                src={`/img/assets/${props.token?.image}`}
-                alt={`${props.token?.name} logo`}
-                className="w-10 h-10 mr-1 rounded-full"
-              />
-            </>
-          ) : null}
+          {props.token?.image && (
+            <img
+              src={`/img/assets/${props.token?.image}`}
+              alt={`${props.token?.name} logo`}
+              className="w-10 h-10 mr-1 rounded-full"
+            />
+          )}
         </div>
         {/* Title */}
         <div className="flex-1">
           <span className="font-semibold dark:text-white text-black">
             {tokenName}
-            {props.token?.description ? (
+            {props.token?.description && (
               <div className="text-xs text-neutral-500 dark:text-neutral-400">{tokenDescription}</div>
-            ) : null}
+            )}
           </span>
         </div>
 

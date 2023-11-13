@@ -77,26 +77,26 @@ export default function BalanceUI({
   return (
     <>
       <div className="flex items-center gap-1.5">
-        {showBalanceLabel ? <span className="font-bold">{`Balance: `}</span> : null}
+        {showBalanceLabel && <span className="font-bold">{`Balance: `}</span>}
 
-        {balance === null ? (
+        {balance === null && (
           <>
             {/* Skeleton Loader */}
             <span className="animate-pulse bg-neutral-300/40 dark:bg-neutral-600 rounded w-20 h-5 ml-2"></span>
           </>
-        ) : null}
+        )}
         {balance !== null &&
-        balance !== ('viewingKeyError' as GetBalanceError) &&
-        balance !== ('GenericFetchError' as GetBalanceError) &&
-        tokenName ? (
-          <>
-            <span className="font-medium">{` ${new BigNumber(balance).dividedBy(`1e${token.decimals}`).toFormat()} ${
-              isSecretToken && !token.is_snip20 ? 's' : ''
-            }${token.name} ${token.coingecko_id && usdPriceString ? ` (${usdPriceString})` : ''}`}</span>
-          </>
-        ) : null}
+          balance !== ('viewingKeyError' as GetBalanceError) &&
+          balance !== ('GenericFetchError' as GetBalanceError) &&
+          tokenName && (
+            <>
+              <span className="font-medium">{` ${new BigNumber(balance).dividedBy(`1e${token.decimals}`).toFormat()} ${
+                isSecretToken && !token.is_snip20 ? 's' : ''
+              }${token.name} ${token.coingecko_id && usdPriceString ? ` (${usdPriceString})` : ''}`}</span>
+            </>
+          )}
 
-        {balance === ('viewingKeyError' as GetBalanceError) ? (
+        {balance === ('viewingKeyError' as GetBalanceError) && (
           <button
             onClick={() => setViewingKey(token)}
             className="text-left flex items-center font-semibold bg-neutral-100 dark:bg-neutral-900 px-1.5 py-0.5 rounded-md border-neutral-300 dark:border-neutral-700 transition hover:bg-neutral-300 dark:hover:bg-neutral-700 focus:bg-neutral-500 dark:focus:bg-neutral-500 cursor-pointer disabled:text-neutral-500 dark:disabled:text-neutral-500 disabled:hover:bg-neutral-100 dark:disabled:hover:bg-neutral-900 disabled:cursor-default"
@@ -104,7 +104,7 @@ export default function BalanceUI({
             <FontAwesomeIcon icon={faKey} className="mr-2" />
             <span className="text-left">Set Viewing Key</span>
           </button>
-        ) : null}
+        )}
       </div>
     </>
   )

@@ -309,7 +309,7 @@ export const Staking = () => {
         {/* Title */}
         <Title title={'Staking'} />
 
-        {secretNetworkClient?.address && scrtBalance === '0' ? <NoScrtWarning /> : null}
+        {secretNetworkClient?.address && scrtBalance === '0' && <NoScrtWarning />}
 
         {/* My Validators */}
         {secretNetworkClient?.address && delegatorDelegations && delegatorDelegations?.length != 0 && validators && (
@@ -319,7 +319,7 @@ export const Staking = () => {
             </div>
             <div className="my-validators mb-20 max-w-6xl mx-auto">
               {/* Claim Rewards */}
-              {delegationTotalRewards ? (
+              {delegationTotalRewards && (
                 <div className="px-4 mb-4 flex items-center flex-col sm:flex-row gap-2 sm:gap-4 text-center sm:text-left">
                   <div className="flex-1">
                     <span className="font-bold">{`Total Pending Rewards: `}</span>
@@ -333,7 +333,7 @@ export const Staking = () => {
                     Claim Pending Rewards
                   </Button>
                 </div>
-              ) : null}
+              )}
 
               <div className="my-validators flex flex-col px-4">
                 {delegatorDelegations?.map((delegation: any, i: number) => {
@@ -459,13 +459,13 @@ export const Staking = () => {
             )}
           </div>
 
-          {validators ? (
+          {validators && (
             <>
               <div className="italic text-center mt-4 px-4 text-sm">
                 all items are ordered randomly to promote decentralization
               </div>
             </>
-          ) : null}
+          )}
         </div>
       </>
     </StakingContext.Provider>

@@ -184,7 +184,7 @@ const ValidatorModal = (props: Props) => {
 
           {/* Body */}
           <div className="grid grid-cols-12 gap-4">
-            {selectedValidator?.description?.details ? (
+            {selectedValidator?.description?.details && (
               <div className="col-span-12">
                 <div className="text-sm rounded-xl p-4 text-center sm:text-left bg-gray-200 dark:bg-neutral-700 text-black dark:text-white">
                   <div className="font-semibold text-black dark:text-white mb-1">Description</div>
@@ -193,9 +193,9 @@ const ValidatorModal = (props: Props) => {
                   </div>
                 </div>
               </div>
-            ) : null}
+            )}
 
-            {view === null ? (
+            {view === null && (
               <>
                 <div className="col-span-12">
                   {/* Properties of the Val */}
@@ -319,7 +319,7 @@ const ValidatorModal = (props: Props) => {
                   </div>
                 </div>
               </>
-            ) : null}
+            )}
 
             {/* Available to Stake */}
             {isConnected && (
@@ -381,39 +381,37 @@ const ValidatorModal = (props: Props) => {
                 </div>
               ))}
 
-            {view !== null ? (
+            {view !== null && (
               <div className="col-span-12">
-                {view === 'delegate' ? <StakingForm /> : null}
-                {view === 'undelegate' ? <UndelegateForm /> : null}
-                {view === 'redelegate' ? <RedelegateForm /> : null}
+                {view === 'delegate' && <StakingForm />}
+                {view === 'undelegate' && <UndelegateForm />}
+                {view === 'redelegate' && <RedelegateForm />}
               </div>
-            ) : null}
+            )}
 
-            {view === null && secretNetworkClient?.address ? (
-              <>
-                <div className="col-span-12">
-                  {/* Navigation */}
-                  <div className="flex flex-col sm:flex-row-reverse justify-start gap-2">
-                    <Button onClick={() => setView('delegate')} size="large">
-                      Delegate
-                    </Button>
-                    {delegatorDelegations?.find(
-                      (delegatorDelegation: any) =>
-                        selectedValidator?.operator_address == delegatorDelegation.delegation.validator_address
-                    ) ? (
-                      <>
-                        <Button onClick={() => setView('redelegate')} color="secondary" size="large">
-                          Redelegate
-                        </Button>
-                        <Button onClick={() => setView('undelegate')} color="secondary" size="large">
-                          Undelegate
-                        </Button>
-                      </>
-                    ) : null}
-                  </div>
+            {view === null && secretNetworkClient?.address && (
+              <div className="col-span-12">
+                {/* Navigation */}
+                <div className="flex flex-col sm:flex-row-reverse justify-start gap-2">
+                  <Button onClick={() => setView('delegate')} size="large">
+                    Delegate
+                  </Button>
+                  {delegatorDelegations?.find(
+                    (delegatorDelegation: any) =>
+                      selectedValidator?.operator_address == delegatorDelegation.delegation.validator_address
+                  ) && (
+                    <>
+                      <Button onClick={() => setView('redelegate')} color="secondary" size="large">
+                        Redelegate
+                      </Button>
+                      <Button onClick={() => setView('undelegate')} color="secondary" size="large">
+                        Undelegate
+                      </Button>
+                    </>
+                  )}
                 </div>
-              </>
-            ) : null}
+              </div>
+            )}
           </div>
         </div>
       </Modal>

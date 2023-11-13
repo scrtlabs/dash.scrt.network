@@ -230,7 +230,7 @@ export default function Wallet() {
 
       {isConnected ? (
         <div ref={keplrRef}>
-          {isMenuVisible ? <ContextMenu /> : null}
+          {isMenuVisible && <ContextMenu />}
           <div
             className="w-full sm:w-auto rounded-lg px-4 py-3 bg-white dark:bg-neutral-700 hover:dark:bg-neutral-600 select-none cursor-pointer transition-colors"
             onMouseOver={() => setIsMenuVisible(true)}

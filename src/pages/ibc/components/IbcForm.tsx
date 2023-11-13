@@ -343,9 +343,9 @@ export default function IbcForm() {
           {/* Title Bar */}
           <div className="flex flex-col sm:flex-row justify-between items-center mb-2 text-center sm:text-left">
             <span className="font-extrabold">Token</span>
-            {formik.touched.amount && formik.errors.amount ? (
+            {formik.touched.amount && formik.errors.amount && (
               <span className="text-red-500 dark:text-red-500 text-xs font-normal">{formik.errors.amount}</span>
-            ) : null}
+            )}
           </div>
           <div className="flex" id="inputWrapper">
             <Select
@@ -402,18 +402,18 @@ export default function IbcForm() {
         </div>
 
         {/* Fee Grant */}
-        {formik.values.ibcMode === 'withdrawal' ? <FeeGrant /> : null}
+        {formik.values.ibcMode === 'withdrawal' && <FeeGrant />}
 
-        {formik.values.token.is_ics20 ? (
+        {formik.values.token.is_ics20 && (
           <BridgingFees
             chain={formik.values.chain}
             token={formik.values.token}
             amount={formik.values.amount}
             ibcMode={formik.values.ibcMode}
           />
-        ) : null}
+        )}
 
-        {isLoading ? (
+        {isLoading && (
           <div className="text-sm font-normal flex items-center gap-2 justify-center">
             <svg
               className="animate-spin h-5 w-5 text-black dark:text-white"
@@ -430,21 +430,21 @@ export default function IbcForm() {
             </svg>
             <span>Processing...</span>
           </div>
-        ) : null}
+        )}
 
-        {generalSuccessMessage ? (
+        {generalSuccessMessage && (
           <div className="text-emerald-500 dark:text-emerald-500 text-sm font-normal flex items-center gap-2 justify-center">
             <FontAwesomeIcon icon={faCircleCheck} />
             <span>{generalSuccessMessage}</span>
           </div>
-        ) : null}
+        )}
 
-        {generalSuccessMessage ? (
+        {generalSuccessMessage && (
           <div className="text-emerald-500 dark:text-emerald-500 text-sm font-normal flex items-center gap-2 justify-center">
             <FontAwesomeIcon icon={faCircleCheck} />
             <span>{generalSuccessMessage}</span>
           </div>
-        ) : null}
+        )}
 
         {/* Submit Button */}
         <button
@@ -458,12 +458,12 @@ export default function IbcForm() {
         </button>
 
         {/* Debug Info */}
-        {import.meta.env.VITE_DEBUG_MODE === 'true' ? (
+        {import.meta.env.VITE_DEBUG_MODE === 'true' && (
           <div className="text-sky-500 text-xs p-2 bg-blue-500/20 rounded">
             <div className="mb-4 font-semibold">Debug Info (Dev Mode)</div>
             formik.errors: {JSON.stringify(formik.errors)}
           </div>
-        ) : null}
+        )}
       </form>
     </>
   )

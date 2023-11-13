@@ -52,11 +52,11 @@ function Portfolio() {
       <Title title={'Portfolio'} />
       {/* All Balances */}
       <div className="max-w-6xl mx-auto mt-8">
-        {secretNetworkClient ? (
+        {secretNetworkClient && (
           <div className="w-full justify-left mb-12">
             <AddressQR />
           </div>
-        ) : null}
+        )}
         <div />
         {/* All Balances */}
         <div className="mb-4 font-bold text-lg">Your Assets</div>

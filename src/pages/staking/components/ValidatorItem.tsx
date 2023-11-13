@@ -109,7 +109,7 @@ const ValidatorItem = (props: Props) => {
       >
         {/* Image */}
         <div className="relative">
-          {hasTooMuchVotingPower(props.validator) ? (
+          {hasTooMuchVotingPower(props.validator) && (
             <Tooltip
               title={'This validator has more than 10% voting power. Avoid this validator to promote decentralization.'}
               placement="right"
@@ -117,7 +117,7 @@ const ValidatorItem = (props: Props) => {
             >
               <div className="absolute w-5 sm:w-2.5 h-5 sm:h-2.5 bg-red-500 rounded-full right-0 top-0 z-10"></div>
             </Tooltip>
-          ) : null}
+          )}
           {imgUrl ? (
             <>
               <img src={imgUrl} alt={`validator logo`} className="rounded-full w-20 sm:w-10" />

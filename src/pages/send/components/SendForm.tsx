@@ -163,9 +163,9 @@ export default function SendForm() {
         <div className="flex flex-col sm:flex-row justify-between items-center mb-2 text-center sm:text-left">
           <span className="font-extrabold">Amount</span>
           {/* Validation Error Message */}
-          {formik.touched.amount && formik.errors.amount ? (
+          {formik.touched.amount && formik.errors.amount && (
             <span className="text-red-500 dark:text-red-500 text-xs font-normal">{formik.errors.amount}</span>
-          ) : null}
+          )}
         </div>
         {/* Input Fields */}
         <div className="flex">
@@ -228,9 +228,9 @@ export default function SendForm() {
           </span>
 
           {/* Validation Error Message */}
-          {formik.touched.recipient && formik.errors.recipient ? (
+          {formik.touched.recipient && formik.errors.recipient && (
             <span className="text-red-500 dark:text-red-500 text-xs font-normal">{formik.errors.recipient}</span>
-          ) : null}
+          )}
         </div>
 
         {/* Input Field */}
@@ -268,9 +268,9 @@ export default function SendForm() {
           </span>
 
           {/* Validation Error Message */}
-          {formik.touched.memo && formik.errors.memo ? (
+          {formik.touched.memo && formik.errors.memo && (
             <span className="text-red-500 dark:text-red-500 text-xs font-normal">{formik.errors.memo}</span>
-          ) : null}
+          )}
         </div>
 
         {/* Input Field */}
@@ -294,7 +294,7 @@ export default function SendForm() {
       {/* Fee Grant */}
       <FeeGrant />
 
-      {isLoading ? (
+      {isLoading && (
         <div className="text-sm font-normal flex items-center gap-2 justify-center">
           <svg
             className="animate-spin h-5 w-5 text-black dark:text-white"
@@ -311,7 +311,7 @@ export default function SendForm() {
           </svg>
           <span>Processing...</span>
         </div>
-      ) : null}
+      )}
 
       {/* Submit Button */}
       <button
@@ -325,12 +325,12 @@ export default function SendForm() {
       </button>
 
       {/* Debug Info */}
-      {import.meta.env.VITE_DEBUG_MODE === 'true' ? (
+      {import.meta.env.VITE_DEBUG_MODE === 'true' && (
         <div className="text-sky-500 text-xs p-2 bg-blue-500/20 rounded">
           <div className="mb-4 font-semibold">Debug Info (Dev Mode)</div>
           formik.errors: {JSON.stringify(formik.errors)}
         </div>
-      ) : null}
+      )}
     </form>
   )
 }

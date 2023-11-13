@@ -28,23 +28,21 @@ const BalanceItem = (props: Props) => {
       <div className="group flex flex-col sm:flex-row items-center text-center sm:text-left even:bg-white odd:bg-neutral-200 dark:even:bg-neutral-800 dark:odd:bg-neutral-950 py-8 sm:py-4 gap-4 pl-4 pr-8  w-full min-w-full ">
         {/* Image */}
         <div className="relative flex items-center">
-          {props.token?.image ? (
-            <>
-              <img
-                src={`/img/assets/${props.token?.image}`}
-                alt={`${props.token?.name} logo`}
-                className="w-10 h-10 mr-1 rounded-full"
-              />
-            </>
-          ) : null}
+          {props.token?.image && (
+            <img
+              src={`/img/assets/${props.token?.image}`}
+              alt={`${props.token?.name} logo`}
+              className="w-10 h-10 mr-1 rounded-full"
+            />
+          )}
         </div>
         {/* Title */}
         <div className="flex-1">
           <span className="font-semibold dark:text-white text-black">
             {tokenName}
-            {props.token?.description ? (
+            {props.token?.description && (
               <div className="text-xs text-neutral-500 dark:text-neutral-600">{tokenDescription}</div>
-            ) : null}
+            )}
           </span>
         </div>
 
@@ -58,7 +56,7 @@ const BalanceItem = (props: Props) => {
             )}
           </div>
         )}
-        {secretNetworkClient?.address ? (
+        {secretNetworkClient?.address && (
           <div className="flex flex-col items-center">
             <div className="description text-xs text-neutral-500 dark:text-neutral-600 mb-2">Balance</div>
             <div className="font-semibold">
@@ -69,7 +67,7 @@ const BalanceItem = (props: Props) => {
               />
             </div>
           </div>
-        ) : null}
+        )}
       </div>
     </>
   )

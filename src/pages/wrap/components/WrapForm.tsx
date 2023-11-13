@@ -170,9 +170,9 @@ export default function WrapForm() {
           {/* Title Bar */}
           <div className="flex flex-col sm:flex-row justify-between items-center mb-2 text-center sm:text-left">
             <span className="font-extrabold">From</span>
-            {formik.touched.amount && formik.errors.amount ? (
+            {formik.touched.amount && formik.errors.amount && (
               <span className="text-red-500 dark:text-red-500 text-xs font-normal">{formik.errors.amount}</span>
-            ) : null}
+            )}
           </div>
 
           {/* Input Field */}
@@ -218,7 +218,7 @@ export default function WrapForm() {
           </div>
 
           {/* Balance | [25%|50%|75%|Max] */}
-          {Number(scrtBalance) !== 0 ? (
+          {Number(scrtBalance) !== 0 && (
             <div className="flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 mt-2">
               <div className="flex-1 text-xs">
                 <BalanceUI
@@ -230,7 +230,7 @@ export default function WrapForm() {
                 <PercentagePicker setAmountByPercentage={setAmountByPercentage} disabled={!isConnected} />
               </div>
             </div>
-          ) : null}
+          )}
         </div>
         {/* Wrapping Mode Switch */}
         <div className="text-center">
@@ -319,12 +319,12 @@ export default function WrapForm() {
         </button>
 
         {/* Debug Info */}
-        {import.meta.env.VITE_DEBUG_MODE === 'true' ? (
+        {import.meta.env.VITE_DEBUG_MODE === 'true' && (
           <div className="text-sky-500 text-xs p-2 bg-blue-500/20 rounded">
             <div className="mb-4 font-semibold">Debug Info (Dev Mode)</div>
             formik.errors: {JSON.stringify(formik.errors)}
           </div>
-        ) : null}
+        )}
       </form>
     </div>
   )
