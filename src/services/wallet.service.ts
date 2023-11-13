@@ -2,18 +2,16 @@ import { SecretNetworkClient } from 'secretjs'
 import { FeeGrantStatus } from 'types/FeeGrantStatus'
 import { Nullable } from 'types/Nullable'
 import { allTokens, faucetURL, sleep } from 'utils/commons'
-import { SECRET_CHAIN_ID, SECRET_LCD, Token, tokens } from 'utils/config'
+import { Chain, SECRET_CHAIN_ID, SECRET_LCD, Token, tokens } from 'utils/config'
 import { isMobile } from 'react-device-detect'
 import { scrtToken } from 'utils/tokens'
 import { WalletAPIType } from 'types/WalletAPIType'
 import BigNumber from 'bignumber.js'
 import { QueryAllBalancesResponse } from 'secretjs/dist/grpc_gateway/cosmos/bank/v1beta1/query.pb'
 import { GetBalanceError } from 'store/secretNetworkClient'
-
-interface TokenBalances {
-  balance: Nullable<BigNumber>
-  secretBalance: Nullable<BigNumber | GetBalanceError>
-}
+import { IbcService } from './ibc.service'
+import { faBalanceScale } from '@fortawesome/free-solid-svg-icons'
+import { TokenBalances } from 'store/secretNetworkClient'
 
 const connectKeplr = async () => {
   const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
@@ -266,10 +264,55 @@ const getScrtTokenBalance = async (secretNetworkClient: any, walletAddress: stri
   }
 }
 
+interface IGetIBCBalancesForTokensProps {
+  chain: Chain
+  tokens: Token[]
+}
 interface IGetBalancesForTokensProps {
   secretNetworkClient: SecretNetworkClient
   walletAddress: string
   tokens: Token[]
+}
+
+async function fetchIbcChainBalances(
+  props: IGetIBCBalancesForTokensProps
+): Promise<Nullable<Map<Token, TokenBalances>>> {
+  const sourceChain = await IbcService.getChainSecretJs(props.chain)
+
+  const { balances }: QueryAllBalancesResponse = await sourceChain.query.bank.allBalances({
+    address: sourceChain.address,
+    pagination: { limit: '1000' }
+  })
+
+  let newBalanceMapping = new Map<Token, TokenBalances>()
+
+  const tokenMap = new Map<string, Token>()
+
+  tokens.forEach((token) => {
+    const fromDenom = token.deposits[0]?.denom
+    if (fromDenom) {
+      tokenMap.set(fromDenom, token)
+    }
+  })
+
+  // Iterate through the response and update the balance mapping
+  balances.forEach((balance) => {
+    const token = tokenMap.get(balance.denom)
+    newBalanceMapping.set(token, {
+      balance: token ? new BigNumber(balance.amount) : new BigNumber(0)
+    })
+  })
+  for (const token of props.tokens) {
+    const currentEntry = newBalanceMapping.get(token)
+    console.log(newBalanceMapping.get(token))
+
+    if (!currentEntry) {
+      newBalanceMapping.set(token, {
+        balance: new BigNumber(0)
+      })
+    }
+  }
+  return newBalanceMapping
 }
 
 async function getBalancesForTokens(props: IGetBalancesForTokensProps): Promise<Nullable<Map<Token, TokenBalances>>> {
@@ -330,12 +373,12 @@ async function getBalancesForTokens(props: IGetBalancesForTokensProps): Promise<
           secretBalance === ('GenericFetchError' as GetBalanceError)
         ) {
           newBalanceMapping.set(token, {
-            balance: null,
+            balance: new BigNumber(0),
             secretBalance: 'viewingKeyError'
           })
         } else {
           newBalanceMapping.set(token, {
-            balance: null,
+            balance: new BigNumber(0),
             secretBalance: secretBalance !== null ? new BigNumber(secretBalance) : null
           })
         }
@@ -358,5 +401,6 @@ export const WalletService = {
   getsScrtTokenBalance,
   getsTokenBalance,
   getScrtTokenBalance,
-  getBalancesForTokens
+  getBalancesForTokens,
+  fetchIbcChainBalances
 }

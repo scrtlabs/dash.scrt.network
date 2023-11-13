@@ -19,28 +19,6 @@ import { useSearchParams } from 'react-router-dom'
 import { Nullable } from 'types/Nullable'
 
 export default function WrapForm() {
-  // URL params
-  const [searchParams, setSearchParams] = useSearchParams()
-  const wrappingModeUrlParam = searchParams.get('mode')
-  const tokenUrlParam = searchParams.get('token')
-
-  useEffect(() => {
-    // sets token by searchParam
-    let foundToken: Nullable<Token> = null
-    if (tokenUrlParam) {
-      foundToken = tokens.find((token: Token) => token.name.toLowerCase() === tokenUrlParam)
-    }
-    if (foundToken) {
-      formik.setFieldValue('token', foundToken)
-    }
-
-    // sets wrappingMode by searchParam
-    if (wrappingModeUrlParam && isWrappingMode(wrappingModeUrlParam)) {
-      formik.setFieldValue('wrappingMode', wrappingModeUrlParam)
-      formik.setFieldTouched('wrappingMode')
-    }
-  }, [])
-
   const {
     secretNetworkClient,
     walletAddress,
@@ -55,59 +33,6 @@ export default function WrapForm() {
     if (!isConnected) {
       connectWallet()
     }
-  }
-
-  function toggleWrappingMode() {
-    if (formik.values.wrappingMode === 'wrap') {
-      formik.setFieldValue('wrappingMode', 'unwrap')
-    } else {
-      formik.setFieldValue('wrappingMode', 'wrap')
-    }
-  }
-
-  const [nativeBalance, setNativeBalance] = useState<any>()
-  const [tokenBalance, setTokenBalance] = useState<any>()
-
-  const secretToken: Token = tokens.find((token) => token.name === 'SCRT')
-  const [selectedToken, setSelectedToken] = useState<Token>(secretToken)
-  const [selectedTokenPrice, setSelectedTokenPrice] = useState<number>(0)
-  const [amountString, setAmountString] = useState<string>('0')
-
-  // handles [25% | 50% | 75% | Max] Button-Group
-  function setAmountByPercentage(percentage: number) {
-    let maxValue = '0'
-    if (formik.values.wrappingMode === 'wrap') {
-      maxValue = nativeBalance
-    } else {
-      maxValue = tokenBalance
-    }
-
-    if (maxValue) {
-      let availableAmount = new BigNumber(maxValue).dividedBy(`1e${selectedToken.decimals}`)
-      let potentialInput = availableAmount.toNumber() * (percentage * 0.01)
-      if (percentage === 100 && potentialInput > 0.05 && selectedToken.name === 'SCRT') {
-        potentialInput = potentialInput - 0.05
-      }
-      if (Number(potentialInput) < 0) {
-        setAmountString('')
-      } else {
-        setAmountString(potentialInput.toFixed(selectedToken.decimals))
-      }
-    }
-  }
-
-  // auto focus on connect
-  useEffect(() => {
-    if (isConnected) {
-      document.getElementById('amount-top').focus()
-    }
-  }, [isConnected])
-
-  interface IFormValues {
-    amount: string
-    token: Token
-    wrappingMode: WrappingMode
-    feeGrantStatus: FeeGrantStatus
   }
 
   const formik = useFormik<IFormValues>({
@@ -144,6 +69,97 @@ export default function WrapForm() {
     formik.setFieldValue('token', token)
     formik.setFieldValue('amount', '')
     formik.setFieldTouched('amount', false)
+  }
+
+  // URL params
+  const [searchParams, setSearchParams] = useSearchParams()
+  const wrappingModeUrlParam = searchParams.get('mode')
+  const tokenUrlParam = searchParams.get('token')
+
+  useEffect(() => {
+    // sets token by searchParam
+    let foundToken: Nullable<Token> = null
+    if (tokenUrlParam) {
+      foundToken = tokens.find((token: Token) => token.name.toLowerCase() === tokenUrlParam)
+    }
+    if (foundToken) {
+      formik.setFieldValue('token', foundToken)
+    }
+
+    // sets wrappingMode by searchParam
+    if (wrappingModeUrlParam && isWrappingMode(wrappingModeUrlParam)) {
+      formik.setFieldValue('wrappingMode', wrappingModeUrlParam)
+      formik.setFieldTouched('wrappingMode')
+    }
+  }, [])
+
+  useEffect(() => {
+    var params = {}
+    if (formik.values.wrappingMode) {
+      params = { ...params, mode: formik.values.wrappingMode.toLowerCase() }
+    }
+    if (formik.values.token) {
+      params = { ...params, token: formik.values.token.name.toLowerCase() }
+    }
+    setSearchParams(params)
+  }, [formik.values.wrappingMode, formik.values.token])
+
+  function toggleWrappingMode() {
+    if (formik.values.wrappingMode === 'wrap') {
+      formik.setFieldValue('wrappingMode', 'unwrap')
+    } else {
+      formik.setFieldValue('wrappingMode', 'wrap')
+    }
+  }
+
+  const [nativeBalance, setNativeBalance] = useState<any>()
+  const [tokenBalance, setTokenBalance] = useState<any>()
+
+  const secretToken: Token = tokens.find((token) => token.name === 'SCRT')
+  const [amountString, setAmountString] = useState<string>('0')
+
+  useEffect(() => {
+    if (Number(scrtBalance) === 0 && scrtBalance !== null) {
+      formik.setFieldValue('wrappingMode', 'unwrap')
+      formik.setFieldValue('token', secretToken)
+    }
+  }, [scrtBalance])
+
+  // handles [25% | 50% | 75% | Max] Button-Group
+  function setAmountByPercentage(percentage: number) {
+    let maxValue = '0'
+    if (formik.values.wrappingMode === 'wrap') {
+      maxValue = nativeBalance
+    } else {
+      maxValue = tokenBalance
+    }
+
+    if (maxValue) {
+      let availableAmount = new BigNumber(maxValue).dividedBy(`1e${formik.values.token.decimals}`)
+      let potentialInput = availableAmount.toNumber() * (percentage * 0.01)
+      if (percentage === 100 && potentialInput > 0.05 && formik.values.token.name === 'SCRT') {
+        potentialInput = potentialInput - 0.05
+      }
+      if (Number(potentialInput) < 0) {
+        setAmountString('')
+      } else {
+        setAmountString(potentialInput.toFixed(formik.values.token.decimals))
+      }
+    }
+  }
+
+  // auto focus on connect
+  useEffect(() => {
+    if (isConnected) {
+      document.getElementById('amount-top').focus()
+    }
+  }, [isConnected])
+
+  interface IFormValues {
+    amount: string
+    token: Token
+    wrappingMode: WrappingMode
+    feeGrantStatus: FeeGrantStatus
   }
 
   return (
@@ -202,19 +218,20 @@ export default function WrapForm() {
           </div>
 
           {/* Balance | [25%|50%|75%|Max] */}
-          <div className="flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 mt-2">
-            <div className="flex-1 text-xs">
-              <BalanceUI
-                token={tokens.find((token) => token.name.toLowerCase() === 'scrt')}
-                isSecretToken={formik.values.wrappingMode === 'unwrap'}
-              />
+          {Number(scrtBalance) !== 0 ? (
+            <div className="flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 mt-2">
+              <div className="flex-1 text-xs">
+                <BalanceUI
+                  token={tokens.find((token) => token.name.toLowerCase() === 'scrt')}
+                  isSecretToken={formik.values.wrappingMode === 'unwrap'}
+                />
+              </div>
+              <div className="sm:flex-initial text-xs">
+                <PercentagePicker setAmountByPercentage={setAmountByPercentage} disabled={!isConnected} />
+              </div>
             </div>
-            <div className="sm:flex-initial text-xs">
-              <PercentagePicker setAmountByPercentage={setAmountByPercentage} disabled={!isConnected} />
-            </div>
-          </div>
+          ) : null}
         </div>
-
         {/* Wrapping Mode Switch */}
         <div className="text-center">
           <Tooltip

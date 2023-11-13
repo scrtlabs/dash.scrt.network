@@ -1,4 +1,3 @@
-import { IbcContext } from 'pages/ibc/Ibc'
 import React, { useContext, useEffect, useState } from 'react'
 import CopyToClipboard from 'react-copy-to-clipboard'
 import { Chain, ICSTokens, Token, chains } from 'utils/config'

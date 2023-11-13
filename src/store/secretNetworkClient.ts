@@ -2,15 +2,15 @@ import { SecretNetworkClient } from 'secretjs'
 import { FeeGrantStatus } from 'types/FeeGrantStatus'
 import { Nullable } from 'types/Nullable'
 import { allTokens, sleep } from 'utils/commons'
-import { Token, tokens } from 'utils/config'
+import { Token, chains, tokens } from 'utils/config'
 import { create } from 'zustand'
 import { WalletAPIType } from 'types/WalletAPIType'
 import BigNumber from 'bignumber.js'
 import { WalletService } from 'services/wallet.service'
 
-interface TokenBalances {
+export interface TokenBalances {
   balance: Nullable<BigNumber>
-  secretBalance: Nullable<BigNumber | GetBalanceError>
+  secretBalance?: Nullable<BigNumber | GetBalanceError>
 }
 
 export type GetBalanceError = 'viewingKeyError' | 'GenericFetchError'

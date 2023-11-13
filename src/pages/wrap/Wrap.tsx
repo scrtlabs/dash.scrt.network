@@ -11,38 +11,20 @@ import {
   wrapJsonLdSchema,
   randomPadding
 } from 'utils/commons'
-import BigNumber from 'bignumber.js'
-import { toast } from 'react-toastify'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faKey, faArrowRightArrowLeft, faRightLeft, faInfoCircle } from '@fortawesome/free-solid-svg-icons'
-import { Link } from 'react-router-dom'
-import Select from 'react-select'
-import Tooltip from '@mui/material/Tooltip'
 import { Helmet } from 'react-helmet-async'
-import UnknownBalanceModal from './components/UnknownBalanceModal'
 import FeeGrantInfoModal from './components/FeeGrantInfoModal'
 import mixpanel from 'mixpanel-browser'
 import { useSearchParams } from 'react-router-dom'
 import { WrappingMode, isWrappingMode } from 'types/WrappingMode'
-import { APIContext } from 'context/APIContext'
 import { useSecretNetworkClientStore } from 'store/secretNetworkClient'
-import FeeGrant from 'components/FeeGrant/FeeGrant'
 import Title from 'components/Title'
 import WrapForm from './components/WrapForm'
 
 export const WrapContext = createContext(null)
 
 export function Wrap() {
-  const { setViewingKey } = useSecretNetworkClientStore()
-
-  const { secretNetworkClient, walletAddress } = useSecretNetworkClientStore()
-
-  const { prices } = useContext(APIContext)
-
   const secretToken: Token = tokens.find((token) => token.name === 'SCRT')
   const [selectedToken, setSelectedToken] = useState<Token>(secretToken)
-  const [selectedTokenPrice, setSelectedTokenPrice] = useState<number>(0)
-  const [amountString, setAmountString] = useState<string>('0')
   const [wrappingMode, setWrappingMode] = useState<WrappingMode>('wrap')
 
   useEffect(() => {
@@ -68,31 +50,19 @@ export function Wrap() {
     if (isWrappingMode(modeUrlParam?.toLowerCase())) {
       setWrappingMode(modeUrlParam.toLowerCase() as WrappingMode)
     }
-  }, [])
+  }, [modeUrlParam])
 
   useEffect(() => {
     if (tokenUrlParam && isValidTokenParam()) {
       setSelectedToken(tokens.find((token) => token.name.toLowerCase() === tokenUrlParam.toLowerCase()))
     }
-  }, [])
-
-  useEffect(() => {
-    var params = {}
-    if (wrappingMode) {
-      params = { ...params, mode: wrappingMode.toLowerCase() }
-    }
-    if (selectedToken) {
-      params = { ...params, token: selectedToken.name.toLowerCase() }
-    }
-    setSearchParams(params)
-  }, [wrappingMode, selectedToken])
+  }, [tokenUrlParam])
 
   const infoMsg =
     wrappingMode === 'wrap'
       ? `Converting publicly visible ${selectedToken.name} into its privacy-preserving equivalent s${selectedToken.name}. These tokens are not publicly visible and require a viewing key!`
       : `Converting privacy-preserving s${selectedToken.name} into its publicly visible equivalent ${selectedToken.name}!`
 
-  const [isUnknownBalanceModalOpen, setIsUnknownBalanceModalOpen] = useState(false)
   const [isFeeGrantInfoModalOpen, setIsFeeGrantInfoModalOpen] = useState(false)
 
   return (
@@ -123,13 +93,6 @@ export function Wrap() {
         open={isFeeGrantInfoModalOpen}
         onClose={() => {
           setIsFeeGrantInfoModalOpen(false)
-          document.body.classList.remove('overflow-hidden')
-        }}
-      />
-      <UnknownBalanceModal
-        open={isUnknownBalanceModalOpen}
-        onClose={() => {
-          setIsUnknownBalanceModalOpen(false)
           document.body.classList.remove('overflow-hidden')
         }}
       />

@@ -10,6 +10,7 @@ import { formatUsdString } from 'utils/commons'
 import { faKey } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { IbcService } from 'services/ibc.service'
+import { WalletService } from 'services/wallet.service'
 
 interface IProps {
   token: Token
@@ -25,6 +26,7 @@ export default function BalanceUI({
   showBalanceLabel = true
 }: IProps) {
   const { isConnected, getBalance, balanceMapping, setViewingKey } = useSecretNetworkClientStore()
+
   const { getValuePrice, priceMapping } = useTokenPricesStore()
 
   const [balance, setBalance] = useState<number | string>(null)
@@ -49,22 +51,18 @@ export default function BalanceUI({
     }
 
     if (chain !== chains['Secret Network']) {
-      async function fetchIbcChainBalances() {
-        const sourceChain = await IbcService.getChainSecretJs(chain)
-
-        const sourceChainBalance = await IbcService.fetchSourceBalance(sourceChain.address, chain, token)
-
-        if (sourceChainBalance !== null && sourceChainBalance instanceof BigNumber) {
-          setBalance(sourceChainBalance.toNumber())
-        } else if (sourceChainBalance === ('GenericFetchError' as GetBalanceError)) {
-          console.debug('Viewing Key not found.')
-          setBalance('GenericFetchError' as GetBalanceError)
-        } else {
-          setBalance(null)
-        }
-      }
       setBalance(null)
-      fetchIbcChainBalances()
+
+      const supportedTokens = IbcService.getSupportedIbcTokensByChain(chain)
+      WalletService.fetchIbcChainBalances({ chain: chain, tokens: supportedTokens }).then((IbcBalances) => {
+        const IbcBalance = IbcBalances.get(token)
+        console.log(IbcBalances)
+        const newBalance = IbcBalance.balance
+        console.debug(newBalance)
+        if (newBalance !== null && newBalance instanceof BigNumber) {
+          setBalance(newBalance.toNumber())
+        } else setBalance(null)
+      })
     }
   }, [balanceMapping, token, isSecretToken, chain])
 
