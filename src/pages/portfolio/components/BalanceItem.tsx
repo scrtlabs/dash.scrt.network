@@ -78,7 +78,7 @@ const BalanceItem = (props: Props) => {
           <div className="description text-xs text-neutral-500 dark:text-neutral-400 mb-2">Send</div>
           <div className="text-xs">
             <a
-              href="/send"
+              href={`/send?token=` + props.token.name.toLowerCase()}
               className="bg-gray-500 dark:bg-gray-600 hover:bg-gray-600 dark:hover:bg-gray-700 text-white ring-gray-500/40 dark:ring-gray-600/40 py-1.5 px-2 text-xs focus:outline-none focus-visible:ring-4 text-center font-bold rounded transition-colors"
             >
               Send

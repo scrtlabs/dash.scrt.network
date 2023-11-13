@@ -10,13 +10,13 @@ import AddressQR from './components/AddressQR'
 import { SendService } from 'services/send.service'
 import { useSecretNetworkClientStore } from 'store/secretNetworkClient'
 
-function Portfolio() {
+export default function Portfolio() {
   //Search Query
   const [searchQuery, setSearchQuery] = useState<string>('')
 
   const { secretNetworkClient } = useSecretNetworkClientStore()
 
-  const tokens = SendService.getSupportedTokens()
+  const tokens: Token[] = SendService.getSupportedTokens()
 
   const displayedAssets = tokens.filter(
     (token: Token) =>
@@ -88,5 +88,3 @@ function Portfolio() {
     </>
   )
 }
-
-export default Portfolio
