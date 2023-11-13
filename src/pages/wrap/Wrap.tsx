@@ -20,8 +20,6 @@ import { useSecretNetworkClientStore } from 'store/secretNetworkClient'
 import Title from 'components/Title'
 import WrapForm from './components/WrapForm'
 
-export const WrapContext = createContext(null)
-
 export function Wrap() {
   const secretToken: Token = tokens.find((token) => token.name === 'SCRT')
   const [selectedToken, setSelectedToken] = useState<Token>(secretToken)
@@ -43,7 +41,7 @@ export function Wrap() {
   const tokenUrlParam = searchParams.get('token')
 
   const isValidTokenParam = () => {
-    return tokens.find((token) => token.name.toLowerCase() === tokenUrlParam.toLowerCase()) ? true : false
+    return tokens.find((token: Token) => token.name.toLowerCase() === tokenUrlParam.toLowerCase()) ? true : false
   }
 
   useEffect(() => {
@@ -54,7 +52,7 @@ export function Wrap() {
 
   useEffect(() => {
     if (tokenUrlParam && isValidTokenParam()) {
-      setSelectedToken(tokens.find((token) => token.name.toLowerCase() === tokenUrlParam.toLowerCase()))
+      setSelectedToken(tokens.find((token: Token) => token.name.toLowerCase() === tokenUrlParam.toLowerCase()))
     }
   }, [tokenUrlParam])
 

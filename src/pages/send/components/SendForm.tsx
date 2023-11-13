@@ -27,6 +27,10 @@ export default function SendForm() {
 
   const tokenSelectOptions = SendService.getSupportedTokens()
 
+  const isValidTokenParam = () => {
+    return !!tokenSelectOptions.find((token: Token) => token.name.toLowerCase() === tokenUrlParam.toLowerCase())
+  }
+
   useEffect(() => {
     // sets token by searchParam
     let foundToken: Nullable<Token> = null
@@ -35,6 +39,7 @@ export default function SendForm() {
     }
     if (foundToken) {
       formik.setFieldValue('token', foundToken)
+      formik.setFieldTouched('token')
     }
 
     // sets recipient by searchParam
@@ -138,6 +143,17 @@ export default function SendForm() {
       </div>
     )
   }
+
+  useEffect(() => {
+    var params = {}
+    params = {
+      ...params,
+      token: formik.values.token.name.toLowerCase(),
+      recipient: formik.values.recipient.toLowerCase(),
+      memo: formik.values.memo
+    }
+    setSearchParams(params)
+  }, [formik.values])
 
   return (
     <form onSubmit={formik.handleSubmit} className="w-full flex flex-col gap-4">

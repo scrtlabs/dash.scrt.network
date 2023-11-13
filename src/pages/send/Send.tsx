@@ -1,15 +1,10 @@
 import { useEffect } from 'react'
 import { sendPageTitle, sendPageDescription, sendJsonLdSchema } from 'utils/commons'
 import Title from 'components/Title'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faInfoCircle } from '@fortawesome/free-solid-svg-icons'
 import { Helmet } from 'react-helmet-async'
 import mixpanel from 'mixpanel-browser'
-import { useSearchParams } from 'react-router-dom'
 import { useSecretNetworkClientStore } from 'store/secretNetworkClient'
 import SendForm from './components/SendForm'
-import { Token, tokens } from 'utils/config'
-import { Nullable } from 'types/Nullable'
 
 export function Send() {
   const { connectWallet, isConnected } = useSecretNetworkClientStore()

@@ -20,15 +20,7 @@ import BigNumber from 'bignumber.js'
 import { allTokens } from 'utils/commons'
 import { useSearchParams } from 'react-router-dom'
 
-type Props = {
-  preselection?: {
-    chainName?: string
-    tokenName?: string
-    modeName?: string
-  }
-}
-
-export default function IbcForm(props: Props) {
+export default function IbcForm() {
   // URL params
   const [searchParams, setSearchParams] = useSearchParams()
   const modeUrlParam = searchParams.get('mode')
@@ -197,6 +189,16 @@ export default function IbcForm(props: Props) {
     }
     fetchSourceChainAddress()
   }, [formik.values.chain])
+
+  useEffect(() => {
+    var params = {}
+    params = {
+      ...params,
+      chain: formik.values.chain.chain_name.toLowerCase(),
+      token: formik.values.token.name.toLowerCase()
+    }
+    setSearchParams(params)
+  }, [formik.values])
 
   // return <Deposit />
   return (
