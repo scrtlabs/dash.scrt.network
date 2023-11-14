@@ -4,8 +4,8 @@ import { allTokens } from 'utils/commons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons'
 import './Balances.scss'
-import BalanceItem from './BalanceItem'
 import { SendService } from 'services/send.service'
+import BalanceItem from 'pages/portfolio/components/BalanceItem'
 
 export const ManageBalances = () => {
   const [searchQuery, setSearchQuery] = useState<string>('')

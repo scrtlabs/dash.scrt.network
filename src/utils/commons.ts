@@ -288,12 +288,16 @@ export async function suggestComposabletoWallet(wallet: any) {
   })
 }
 
-export const getFractionDigits = (number: any) => {
+export const getFractionDigits = (number: Number) => {
   const significantDigits = 2
   const maxFractionDigits = 6
 
-  const strNumber = number.toFixed(maxFractionDigits)
+  // Check if the number is zero
+  if (number === 0) {
+    return { minimumFractionDigits: 2, maximumFractionDigits: 2 }
+  }
 
+  const strNumber = number.toFixed(maxFractionDigits)
   const [whole, decimal] = strNumber.split('.')
 
   if (!decimal || whole.length >= significantDigits) {
@@ -301,9 +305,7 @@ export const getFractionDigits = (number: any) => {
   }
 
   let requiredDigits = significantDigits - whole.length
-
   const leadingZeros = decimal.length - decimal.replace(/^0+/, '').length
-
   requiredDigits += leadingZeros
 
   let fractionDigits = Math.min(requiredDigits, maxFractionDigits)
@@ -317,7 +319,7 @@ export const getFractionDigits = (number: any) => {
 
 export const formatUsdString = (number: any) => {
   const fractionDigits = getFractionDigits(number)
-  return new Intl.NumberFormat('en-US', {
+  return new Intl.NumberFormat(undefined, {
     style: 'currency',
     currency: 'USD',
     ...fractionDigits

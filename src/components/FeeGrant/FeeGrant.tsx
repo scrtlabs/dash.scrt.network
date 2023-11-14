@@ -8,10 +8,6 @@ import { useSecretNetworkClientStore } from 'store/secretNetworkClient'
 export default function FeeGrant() {
   const { feeGrantStatus } = useSecretNetworkClientStore()
 
-  // useEffect(() => {
-  //   if (feeGrantStatus === "")
-  // }, [feeGrantStatus])
-
   return (
     <div className="bg-gray-200 dark:bg-neutral-700 text-black dark:text-white p-4 rounded-xl select-none flex items-center">
       <div className="flex-1 flex items-center">

@@ -116,10 +116,9 @@ export default function SendForm() {
     ) {
       formik.setFieldValue(
         'amount',
-        (balance as BigNumber)
-          .dividedBy(`1e${formik.values.token.decimals}`)
-          .times(percentage / 100)
-          .toFormat()
+        Number((balance as BigNumber).dividedBy(`1e${formik.values.token.decimals}`).times(percentage / 100)).toFixed(
+          formik.values.token.decimals
+        )
       )
     }
     formik.setFieldTouched('amount', true)

@@ -9,7 +9,6 @@ import { useHoverOutside } from 'utils/useHoverOutside'
 import { APIContext } from 'context/APIContext'
 import BigNumber from 'bignumber.js'
 import { faKey, faInfoCircle } from '@fortawesome/free-solid-svg-icons'
-import BalanceItem from '../BalanceItem'
 import { trackMixPanelEvent } from 'utils/commons'
 import { useSecretNetworkClientStore } from 'store/secretNetworkClient'
 import { scrtToken } from 'utils/tokens'
@@ -18,6 +17,7 @@ import Modal from '../UI/Modal/Modal'
 import { ManageBalances } from './ManageBalances/ManageBalances'
 import Button from '../UI/Button/Button'
 import { WalletService } from 'services/wallet.service'
+import BalanceUI from 'components/BalanceUI'
 
 export default function Wallet() {
   const {
@@ -75,8 +75,14 @@ export default function Wallet() {
       <div>
         <div className="font-bold mb-2">Your Balances</div>
         <div className="flex flex-col gap-2 mb-2">
-          <BalanceItem token={scrtToken} isSecretToken={false} />
-          <BalanceItem token={scrtToken} isSecretToken={true} />
+          <div className="flex items-center gap-2">
+            <img src={'/img/assets' + scrtToken.image} alt={scrtToken.name + ' logo'} className="h-7" />
+            <BalanceUI token={scrtToken} isSecretToken={false} showBalanceLabel={false} />
+          </div>
+          <div className="flex items-center gap-2">
+            <img src={'/img/assets' + scrtToken.image} alt={scrtToken.name + ' logo'} className="h-7" />
+            <BalanceUI token={scrtToken} isSecretToken={true} showBalanceLabel={false} />
+          </div>
         </div>
         <Button className="w-full" size="small" color="secondary" onClick={handleManageViewingKeys}>
           Manage All Balances

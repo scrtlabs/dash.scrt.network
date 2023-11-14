@@ -25,7 +25,15 @@ export default function BalanceUI({
   isSecretToken = false,
   showBalanceLabel = true
 }: IProps) {
-  const { isConnected, getBalance, balanceMapping, setViewingKey } = useSecretNetworkClientStore()
+  const {
+    isConnected,
+    getBalance,
+    balanceMapping,
+    ibcBalanceMapping,
+    setViewingKey,
+    getIbcBalance,
+    setIbcBalanceMapping
+  } = useSecretNetworkClientStore()
 
   const { getValuePrice, priceMapping } = useTokenPricesStore()
 
@@ -34,7 +42,8 @@ export default function BalanceUI({
   const tokenName = (isSecretToken ? 's' : '') + token.name
 
   useEffect(() => {
-    if (balanceMapping !== null && chain === chains['Secret Network']) {
+    if (chain === chains['Secret Network']) {
+      setBalance(null)
       const newBalance = getBalance(token, isSecretToken)
       console.debug(newBalance)
       if (newBalance !== null && newBalance instanceof BigNumber) {
@@ -52,19 +61,16 @@ export default function BalanceUI({
 
     if (chain !== chains['Secret Network']) {
       setBalance(null)
-
-      const supportedTokens = IbcService.getSupportedIbcTokensByChain(chain)
-      WalletService.fetchIbcChainBalances({ chain: chain, tokens: supportedTokens }).then((IbcBalances) => {
-        const IbcBalance = IbcBalances.get(token)
-        console.log(IbcBalances)
-        const newBalance = IbcBalance.balance
-        console.debug(newBalance)
-        if (newBalance !== null && newBalance instanceof BigNumber) {
-          setBalance(newBalance.toNumber())
-        } else setBalance(null)
-      })
+      const IbcBalance = getIbcBalance(chain, token)
+      console.debug(IbcBalance)
+      if (IbcBalance !== null && IbcBalance instanceof BigNumber) {
+        setBalance(IbcBalance.toNumber())
+      } else {
+        setBalance(null)
+        setIbcBalanceMapping(chain)
+      }
     }
-  }, [balanceMapping, token, isSecretToken, chain])
+  }, [balanceMapping, ibcBalanceMapping, token, isSecretToken, chain])
 
   useEffect(() => {
     if (priceMapping !== null && balance !== null) {
@@ -90,9 +96,13 @@ export default function BalanceUI({
           balance !== ('GenericFetchError' as GetBalanceError) &&
           tokenName && (
             <>
-              <span className="font-medium">{` ${new BigNumber(balance).dividedBy(`1e${token.decimals}`).toFormat()} ${
-                isSecretToken && !token.is_snip20 ? 's' : ''
-              }${token.name} ${token.coingecko_id && usdPriceString ? ` (${usdPriceString})` : ''}`}</span>
+              <span className="font-medium">{` ${Number(
+                BigNumber(balance).dividedBy(`1e${token.decimals}`)
+              ).toLocaleString(undefined, {
+                maximumFractionDigits: token.decimals
+              })} ${isSecretToken && !token.is_snip20 ? 's' : ''}${token.name} ${
+                token.coingecko_id && usdPriceString ? ` (${usdPriceString})` : ''
+              }`}</span>
             </>
           )}
 

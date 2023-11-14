@@ -66,7 +66,8 @@ export default function IbcForm() {
   //   setSearchParams(params)
   // }, [ibcMode, selectedSource])
 
-  const { feeGrantStatus, secretNetworkClient, walletAddress, isConnected, getBalance } = useSecretNetworkClientStore()
+  const { feeGrantStatus, secretNetworkClient, walletAddress, isConnected, getBalance, getIbcBalance } =
+    useSecretNetworkClientStore()
 
   const [isLoading, setIsWaiting] = useState<boolean>(false)
   const [generalSuccessMessage, setGeneralSuccessMessage] = useState<String>('')
@@ -74,21 +75,32 @@ export default function IbcForm() {
 
   // handles [25% | 50% | 75% | Max] Button-Group
   function setAmountByPercentage(percentage: number) {
-    const balance = getBalance(
-      allTokens.find((token: Token) => token.name === formik.values.token.name),
-      formik.values.token.address !== 'native'
-    )
-    if (
-      (balance !== ('viewingKeyError' as GetBalanceError) || balance !== ('GenericFetchError' as GetBalanceError)) &&
-      balance !== null
-    ) {
-      formik.setFieldValue(
-        'amount',
-        (balance as BigNumber)
-          .dividedBy(`1e${formik.values.token.decimals}`)
-          .times(percentage / 100)
-          .toFormat()
+    if (formik.values.ibcMode === 'withdrawal') {
+      const balance = getBalance(
+        formik.values.token,
+        formik.values.ibcMode === 'withdrawal' && formik.values.token.name !== 'SCRT'
       )
+      if (
+        (balance !== ('viewingKeyError' as GetBalanceError) || balance !== ('GenericFetchError' as GetBalanceError)) &&
+        balance !== null
+      ) {
+        formik.setFieldValue(
+          'amount',
+          Number((balance as BigNumber).dividedBy(`1e${formik.values.token.decimals}`).times(percentage / 100)).toFixed(
+            formik.values.token.decimals
+          )
+        )
+      }
+    } else if (formik.values.ibcMode === 'deposit') {
+      const IbcBalance = getIbcBalance(formik.values.chain, formik.values.token)
+      if (IbcBalance !== null) {
+        formik.setFieldValue(
+          'amount',
+          Number(
+            (IbcBalance as BigNumber).dividedBy(`1e${formik.values.token.decimals}`).times(percentage / 100)
+          ).toFixed(formik.values.token.decimals)
+        )
+      }
     }
     formik.setFieldTouched('amount', true)
   }

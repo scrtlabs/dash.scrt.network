@@ -23,7 +23,7 @@ interface IProps {
 export default function BridgingFees(props: IProps) {
   const { isConnected, connectWallet } = useSecretNetworkClientStore()
 
-  const [axelarTransferFee, setAxelarTransferFee] = useState<Coin>(null)
+  const [axelarTransferFee, setAxelarTransferFee] = useState<Coin>(undefined)
   const [usdPriceString, setUsdPriceString] = useState<string>(null)
 
   const { getValuePrice, priceMapping } = useTokenPricesStore()
@@ -38,15 +38,14 @@ export default function BridgingFees(props: IProps) {
           props.ibcMode
         )
         setAxelarTransferFee(fee)
-        console.log(fee)
       }
-      setAxelarTransferFee(null)
+      setAxelarTransferFee(undefined)
       fetchAxelarTransferFee()
     }
   }, [props.ibcMode, props.token, props.chain, props.amount])
 
   useEffect(() => {
-    if (priceMapping !== null && axelarTransferFee !== null) {
+    if (priceMapping !== null && axelarTransferFee !== undefined) {
       setUsdPriceString(getValuePrice(props.token, BigNumber(axelarTransferFee.amount)))
     } else {
       setUsdPriceString('')
@@ -55,26 +54,30 @@ export default function BridgingFees(props: IProps) {
 
   return (
     <div className="bg-neutral-200 dark:bg-neutral-700 p-4 rounded-xl space-y-6 my-4">
-      <div className="flex justify-between items-center">
+      <div className="flex justify-between items-center text-sm">
         <div className="flex items-center">
-          <span className="font-semibold text-sm text-white">Bridging Fees</span>
+          <span className="font-semibold text-sm">Bridging Fees</span>
           <Tooltip
             title={`Make sure to always transfer a higher amount than the transfer fees!`}
             placement="right"
             arrow
           >
-            <span className="ml-2 text-white relative hover:text-black dark:hover:text-white transition-colors cursor-pointer">
+            <span className="ml-2 mt-1 text-neutral-600 dark:text-neutral-400 hover:text-black dark:hover:text-white transition-colors cursor-pointer">
               <FontAwesomeIcon icon={faInfoCircle} />
             </span>
           </Tooltip>
         </div>
-        {props.token.is_ics20 && axelarTransferFee ? (
-          <div className="text-white font-medium">
-            {`${new BigNumber(axelarTransferFee.amount).dividedBy(`1e${props.token.decimals}`).toFormat()} ${
-              props.ibcMode == 'withdrawal' ? 's' : ''
-            }`}{' '}
-            {ICSTokens.filter((icstoken: any) => icstoken.axelar_denom === axelarTransferFee.denom)[0].name}
-            {props.token.coingecko_id && usdPriceString ? ` (${usdPriceString})` : ''}
+        {props.token.is_ics20 && axelarTransferFee !== undefined ? (
+          <div>
+            {` ${Number(BigNumber(axelarTransferFee.amount).dividedBy(`1e${props.token.decimals}`)).toLocaleString(
+              undefined,
+              {
+                maximumFractionDigits: props.token.decimals
+              }
+            )} ${props.ibcMode == 'withdrawal' ? 's' : ''}${
+              ICSTokens.filter((icstoken: any) => icstoken.axelar_denom === axelarTransferFee.denom)[0].name
+            }
+          ${props.token.coingecko_id && usdPriceString ? ` (${usdPriceString})` : ''}`}
           </div>
         ) : (
           <span className="animate-pulse bg-neutral-300/40 dark:bg-neutral-600/40 rounded w-20 h-5"></span>

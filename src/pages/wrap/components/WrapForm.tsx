@@ -8,7 +8,7 @@ import FeeGrant from 'components/FeeGrant/FeeGrant'
 import PercentagePicker from 'components/PercentagePicker'
 import { WrappingMode, isWrappingMode } from 'types/WrappingMode'
 import { Token, tokens } from 'utils/config'
-import { useSecretNetworkClientStore } from 'store/secretNetworkClient'
+import { GetBalanceError, useSecretNetworkClientStore } from 'store/secretNetworkClient'
 import { wrapSchema } from 'pages/wrap/wrapSchema'
 import Tooltip from '@mui/material/Tooltip'
 import { WrapService } from 'services/wrap.service'
@@ -26,7 +26,8 @@ export default function WrapForm() {
     requestFeeGrant,
     isConnected,
     connectWallet,
-    scrtBalance
+    scrtBalance,
+    getBalance
   } = useSecretNetworkClientStore()
 
   const handleClick = () => {
@@ -112,9 +113,6 @@ export default function WrapForm() {
     }
   }
 
-  const [nativeBalance, setNativeBalance] = useState<any>()
-  const [tokenBalance, setTokenBalance] = useState<any>()
-
   const secretToken: Token = tokens.find((token) => token.name === 'SCRT')
   const [amountString, setAmountString] = useState<string>('0')
 
@@ -125,27 +123,20 @@ export default function WrapForm() {
     }
   }, [scrtBalance])
 
-  // handles [25% | 50% | 75% | Max] Button-Group
   function setAmountByPercentage(percentage: number) {
-    let maxValue = '0'
-    if (formik.values.wrappingMode === 'wrap') {
-      maxValue = nativeBalance
-    } else {
-      maxValue = tokenBalance
+    const balance = getBalance(formik.values.token, formik.values.wrappingMode === 'unwrap')
+    if (
+      (balance !== ('viewingKeyError' as GetBalanceError) || balance !== ('GenericFetchError' as GetBalanceError)) &&
+      balance !== null
+    ) {
+      formik.setFieldValue(
+        'amount',
+        Number((balance as BigNumber).dividedBy(`1e${formik.values.token.decimals}`).times(percentage / 100)).toFixed(
+          formik.values.token.decimals
+        )
+      )
     }
-
-    if (maxValue) {
-      let availableAmount = new BigNumber(maxValue).dividedBy(`1e${formik.values.token.decimals}`)
-      let potentialInput = availableAmount.toNumber() * (percentage * 0.01)
-      if (percentage === 100 && potentialInput > 0.05 && formik.values.token.name === 'SCRT') {
-        potentialInput = potentialInput - 0.05
-      }
-      if (Number(potentialInput) < 0) {
-        setAmountString('')
-      } else {
-        setAmountString(potentialInput.toFixed(formik.values.token.decimals))
-      }
-    }
+    formik.setFieldTouched('amount', true)
   }
 
   // auto focus on connect
