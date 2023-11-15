@@ -3,12 +3,12 @@ import React, { useContext, useEffect, useState } from 'react'
 import { APIContext } from 'context/APIContext'
 import { formatNumber, toUsdString, faucetAddress } from 'utils/commons'
 import { StakingContext } from 'pages/staking/Staking'
-import { toast } from 'react-toastify'
 import FeeGrant from '../../../../components/FeeGrant/FeeGrant'
 import { useSecretNetworkClientStore } from 'store/secretNetworkClient'
 import { scrtToken } from 'utils/tokens'
 import PercentagePicker from 'components/PercentagePicker'
 import Button from 'components/UI/Button/Button'
+import toast from 'react-hot-toast'
 
 export default function StakingForm() {
   const { selectedValidator, setView } = useContext(StakingContext)
@@ -56,43 +56,27 @@ export default function StakingForm() {
           )
           .catch((error: any) => {
             console.error(error)
+            toast.dismiss(toastId)
             if (error?.tx?.rawLog) {
-              toast.update(toastId, {
-                render: `Staking failed: ${error.tx.rawLog}`,
-                type: 'error',
-                isLoading: false,
-                closeOnClick: true
-              })
+              toast.error(`Staking failed: ${error.tx.rawLog}`)
             } else {
-              toast.update(toastId, {
-                render: `Staking failed: ${error.message}`,
-                type: 'error',
-                isLoading: false,
-                closeOnClick: true
-              })
+              toast.error(`Staking failed: ${error.message}`)
             }
           })
           .then((tx: any) => {
             console.log(tx)
             if (tx) {
               if (tx.code === 0) {
-                toast.update(toastId, {
-                  render: `Staking ${amountString} SCRT successfully with validator: ${selectedValidator?.description?.moniker}`,
-                  type: 'success',
-                  isLoading: false,
-                  closeOnClick: true
-                })
+                toast.success(
+                  `Staking ${amountString} SCRT successfully with validator: ${selectedValidator?.description?.moniker}`
+                )
               } else {
-                toast.update(toastId, {
-                  render: `Staking failed: ${tx.rawLog}`,
-                  type: 'error',
-                  isLoading: false,
-                  closeOnClick: true
-                })
+                toast.error(`Staking failed: ${tx.rawLog}`)
               }
             }
           })
-      } finally {
+      } catch (e: any) {
+        console.error(e)
       }
     }
     submit()

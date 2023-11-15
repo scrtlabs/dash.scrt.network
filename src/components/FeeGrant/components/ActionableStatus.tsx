@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import Button from 'components/UI/Button/Button'
 import { useSecretNetworkClientStore } from 'store/secretNetworkClient'
 import { sleep } from 'utils/commons'
+import toast from 'react-hot-toast'
 
 export default function ActionableStatus() {
   const { feeGrantStatus, requestFeeGrant, isConnected } = useSecretNetworkClientStore()
@@ -12,7 +13,12 @@ export default function ActionableStatus() {
 
   async function handleRequestFeeGrant() {
     setIsLoading(true)
-    const result = await requestFeeGrant()
+    const res = requestFeeGrant()
+    toast.promise(res, {
+      loading: `Requesting Fee Grant`,
+      success: `Request for Fee Grant successful!`,
+      error: `Request for Fee Grant failed!`
+    })
     setIsLoading(false)
   }
 
@@ -41,6 +47,7 @@ export default function ActionableStatus() {
   if (feeGrantStatus === 'untouched') {
     return (
       <Button
+        type="button"
         color="secondary"
         onClick={handleRequestFeeGrant}
         className="font-semibold text-xs bg-neutral-100 dark:bg-neutral-900 px-1.5 py-1 rounded-md transition-colors hover:bg-neutral-300 dark:hover:bg-neutral-700 cursor-pointer disabled:text-neutral-500 dark:disabled:text-neutral-500 disabled:hover:bg-neutral-100 dark:disabled:hover:bg-neutral-900 disabled:cursor-default focus:outline-0 focus:ring-2 ring-sky-500/40"

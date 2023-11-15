@@ -4,7 +4,6 @@ import { APIContext } from 'context/APIContext'
 import { faSearch } from '@fortawesome/free-solid-svg-icons'
 import { formatNumber, toUsdString, faucetAddress, shuffleArray } from 'utils/commons'
 import { StakingContext } from 'pages/staking/Staking'
-import { toast } from 'react-toastify'
 import FeeGrant from '../../../../components/FeeGrant/FeeGrant'
 import Select, { components } from 'react-select'
 import { ThemeContext } from 'context/ThemeContext'
@@ -13,6 +12,7 @@ import { useSecretNetworkClientStore } from 'store/secretNetworkClient'
 import { scrtToken } from 'utils/tokens'
 import PercentagePicker from 'components/PercentagePicker'
 import Button from 'components/UI/Button/Button'
+import toast from 'react-hot-toast'
 
 export default function RedelegateForm() {
   const { delegatorDelegations, validators, selectedValidator, setView, reload, setReload } = useContext(StakingContext)
@@ -67,39 +67,22 @@ export default function RedelegateForm() {
           )
           .catch((error: any) => {
             console.error(error)
+            toast.dismiss(toastId)
             if (error?.tx?.rawLog) {
-              toast.update(toastId, {
-                render: `Redelegating failed: ${error.tx.rawLog}`,
-                type: 'error',
-                isLoading: false,
-                closeOnClick: true
-              })
+              toast.error(`Redelegating failed: ${error.tx.rawLog}`)
             } else {
-              toast.update(toastId, {
-                render: `Redelegating failed: ${error.message}`,
-                type: 'error',
-                isLoading: false,
-                closeOnClick: true
-              })
+              toast.error(`Redelegating failed: ${error.message}`)
             }
           })
           .then((tx: any) => {
             console.log(tx)
             if (tx) {
               if (tx.code === 0) {
-                toast.update(toastId, {
-                  render: `Successfully redelegated ${amountString} SCRT from ${selectedValidator?.description?.moniker} to ${redelegateValidator?.description?.moniker}`,
-                  type: 'success',
-                  isLoading: false,
-                  closeOnClick: true
-                })
+                toast.success(
+                  `Successfully redelegated ${amountString} SCRT from ${selectedValidator?.description?.moniker} to ${redelegateValidator?.description?.moniker}`
+                )
               } else {
-                toast.update(toastId, {
-                  render: `Redelegating failed: ${tx.rawLog}`,
-                  type: 'error',
-                  isLoading: false,
-                  closeOnClick: true
-                })
+                toast.error(`Redelegating failed: ${tx.rawLog}`)
               }
             }
           })

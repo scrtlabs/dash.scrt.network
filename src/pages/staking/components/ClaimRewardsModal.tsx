@@ -1,7 +1,4 @@
 import { useContext, useState } from 'react'
-import { toast } from 'react-toastify'
-import { MsgWithdrawDelegationReward } from 'secretjs'
-import { faucetAddress } from 'utils/commons'
 import { StakingContext } from 'pages/staking/Staking'
 import FeeGrant from '../../../components/FeeGrant/FeeGrant'
 import BigNumber from 'bignumber.js'
