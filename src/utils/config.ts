@@ -22,8 +22,6 @@ export type Chain = {
   chain_id: string
   /** lcd url of the chain */
   lcd: string
-  /** rpc url of the chain */
-  rpc: string
   /** explorer link for accounts */
   explorer_account: string
   /** explorer link for txs */
@@ -41,7 +39,6 @@ export const chains: { [chain_name: string]: Chain } = {
     chain_id: 'secret-4',
     bech32_prefix: 'secret',
     lcd: 'https://lcd.secret.express',
-    rpc: 'https://wgrpc.secret.express', // gRPC-web
     chain_image: 'img/assets/scrt.svg',
     explorer_account: 'https://www.mintscan.io/secret/account/'
   },
@@ -55,7 +52,6 @@ export const chains: { [chain_name: string]: Chain } = {
     chain_id: 'agoric-3',
     bech32_prefix: 'agoric',
     lcd: 'https://main.api.agoric.net',
-    rpc: 'https://main.rpc.agoric.net',
     chain_image: '/bld.svg',
     explorer_account: 'https://agoric.explorers.guru/account/'
   },
@@ -69,7 +65,6 @@ export const chains: { [chain_name: string]: Chain } = {
     chain_id: 'akashnet-2',
     bech32_prefix: 'akash',
     lcd: 'https://akash-api.lavenderfive.com',
-    rpc: 'https://rpc.akash.forbole.com',
     chain_image: '/akt.svg',
     explorer_account: 'https://www.mintscan.io/akash/account/'
   },
@@ -83,7 +78,6 @@ export const chains: { [chain_name: string]: Chain } = {
     chain_id: 'archway-1',
     bech32_prefix: 'archway',
     lcd: 'https://archway-api.lavenderfive.com:443',
-    rpc: 'https://rpc-archway.whispernode.com',
     chain_image: '/archway.svg',
     explorer_account: 'https://www.mintscan.io/archway/account/'
   },
@@ -97,7 +91,6 @@ export const chains: { [chain_name: string]: Chain } = {
     chain_id: 'axelar-dojo-1',
     bech32_prefix: 'axelar',
     lcd: 'https://api-axelar-ia.cosmosia.notional.ventures',
-    rpc: 'https://rpc-axelar-ia.cosmosia.notional.ventures/',
     chain_image: '/axl.svg',
     explorer_account: 'https://axelarscan.io/account/'
   },
@@ -111,7 +104,6 @@ export const chains: { [chain_name: string]: Chain } = {
     chain_id: 'chihuahua-1',
     bech32_prefix: 'chihuahua',
     lcd: 'https://api-chihuahua-ia.cosmosia.notional.ventures',
-    rpc: 'https://rpc.chihuahua.wtf',
     chain_image: '/huahua.svg',
     explorer_account: 'https://ping.pub/chihuahua/account/'
   },
@@ -125,7 +117,6 @@ export const chains: { [chain_name: string]: Chain } = {
     chain_id: 'comdex-1',
     bech32_prefix: 'comdex',
     lcd: 'https://comdex-api.lavenderfive.com/',
-    rpc: 'https://comdex-rpc.lavenderfive.com/',
     chain_image: '/cmdx.svg',
     explorer_account: 'https://www.mintscan.io/comdex/account/'
   },
@@ -139,7 +130,6 @@ export const chains: { [chain_name: string]: Chain } = {
     chain_id: 'centauri-1',
     bech32_prefix: 'centauri',
     lcd: 'https://composable-api.lavenderfive.com',
-    rpc: 'https://composable-rpc.lavenderfive.com',
     chain_image: '/composable.svg',
     explorer_account: 'https://explorer.nodestake.top/composable/account/'
   },
@@ -153,7 +143,6 @@ export const chains: { [chain_name: string]: Chain } = {
     chain_id: 'cosmoshub-4',
     bech32_prefix: 'cosmos',
     lcd: 'https://api-cosmoshub-ia.cosmosia.notional.ventures',
-    rpc: 'https://rpc.cosmoshub.strange.love',
     chain_image: '/atom.svg',
     explorer_account: 'https://www.mintscan.io/cosmos/account/'
   },
@@ -167,7 +156,6 @@ export const chains: { [chain_name: string]: Chain } = {
     chain_id: 'dydx-mainnet-1',
     bech32_prefix: 'dydx',
     lcd: 'https://dydx-api.lavenderfive.com:443',
-    rpc: 'https://dydx-rpc.lavenderfive.com:443',
     chain_image: '/dydx.svg',
     explorer_account: 'https://www.mintscan.io/dydx/account/'
   },
@@ -181,7 +169,6 @@ export const chains: { [chain_name: string]: Chain } = {
     chain_id: 'crescent-1',
     bech32_prefix: 'cre',
     lcd: 'https://mainnet.crescent.network:1317',
-    rpc: 'https://mainnet.crescent.network:26657',
     chain_image: '/cre.svg',
     explorer_account: 'https://www.mintscan.io/crescent/account/',
   }, */
@@ -195,7 +182,6 @@ export const chains: { [chain_name: string]: Chain } = {
     chain_id: 'evmos_9001-2',
     bech32_prefix: 'evmos',
     lcd: 'https://evmos-api.lavenderfive.com',
-    rpc: 'https://evmos-rpc.lavenderfive.com',
     chain_image: '/evmos.svg',
     explorer_account: 'https://www.mintscan.io/evmos/account/'
   },
@@ -209,7 +195,6 @@ export const chains: { [chain_name: string]: Chain } = {
     chain_id: 'gravity-bridge-3',
     bech32_prefix: 'gravity',
     lcd: 'https://api-gravitybridge-ia.cosmosia.notional.ventures',
-    rpc: 'https://rpc.gravity-bridge.ezstaking.io',
     chain_image: '/grav.svg',
     explorer_account: 'https://www.mintscan.io/gravity-bridge/account/'
   },
@@ -223,7 +208,6 @@ export const chains: { [chain_name: string]: Chain } = {
     chain_id: 'injective-1',
     bech32_prefix: 'inj',
     lcd: 'https://injective-api.lavenderfive.com',
-    rpc: 'https://injective-rpc.lavenderfive.com',
     chain_image: '/inj.svg',
     explorer_account: 'https://www.mintscan.io/injective/account/'
   },
@@ -237,7 +221,6 @@ export const chains: { [chain_name: string]: Chain } = {
     chain_id: 'jackal-1',
     bech32_prefix: 'jkl',
     lcd: 'https://api.jackal.nodestake.top',
-    rpc: 'https://rpc.jackal.nodestake.top',
     chain_image: '/jkl.svg',
     explorer_account: 'https://explorer.nodestake.top/jackal/account/'
   },
@@ -251,23 +234,8 @@ export const chains: { [chain_name: string]: Chain } = {
     chain_id: 'juno-1',
     bech32_prefix: 'juno',
     lcd: 'https://api-juno-ia.cosmosia.notional.ventures/',
-    rpc: 'https://rpc-juno-ia.cosmosia.notional.ventures/',
     chain_image: '/juno.svg',
     explorer_account: 'https://www.mintscan.io/juno/account/'
-  },
-  Kujira: {
-    chain_name: 'Kujira',
-    deposit_channel_id: 'channel-10',
-    deposit_gas: 150_000,
-    deposit_gas_denom: 'ukuji',
-    withdraw_channel_id: 'channel-22',
-    withdraw_gas: 30_000,
-    chain_id: 'kaiyo-1',
-    bech32_prefix: 'kujira',
-    lcd: 'https://kujira-api.polkachu.com/',
-    rpc: 'https://kujira-rpc.lavenderfive.com',
-    chain_image: '/kuji.svg',
-    explorer_account: 'https://kujira.explorers.guru/account/'
   },
   Neutron: {
     chain_name: 'Neutron',
@@ -279,7 +247,6 @@ export const chains: { [chain_name: string]: Chain } = {
     chain_id: 'neutron-1',
     bech32_prefix: 'noble',
     lcd: 'https://rest-kralum.neutron-1.neutron.org',
-    rpc: 'https://rpc-kralum.neutron-1.neutron.org',
     chain_image: '/ntrn.svg',
     explorer_account: 'https://www.mintscan.io/neutron/account/'
   },
@@ -293,9 +260,34 @@ export const chains: { [chain_name: string]: Chain } = {
     chain_id: 'noble-1',
     bech32_prefix: 'noble',
     lcd: 'https://noble-api.polkachu.com',
-    rpc: 'https://noble-rpc.polkachu.com',
     chain_image: '/noble.svg',
     explorer_account: 'https://www.mintscan.io/noble/account/'
+  },
+  Nolus: {
+    chain_name: 'Nolus',
+    deposit_channel_id: 'channel-',
+    deposit_gas: 150_000,
+    deposit_gas_denom: 'unls',
+    withdraw_channel_id: 'channel-783',
+    withdraw_gas: 30_000,
+    chain_id: 'pirin-1',
+    bech32_prefix: 'nolus',
+    lcd: 'https://nolus-api.lavenderfive.com:443',
+    chain_image: '/nolus.svg',
+    explorer_account: 'https://ping.pub/nolus/account/'
+  },
+  Kujira: {
+    chain_name: 'Kujira',
+    deposit_channel_id: 'channel-10',
+    deposit_gas: 150_000,
+    deposit_gas_denom: 'ukuji',
+    withdraw_channel_id: 'channel-22',
+    withdraw_gas: 30_000,
+    chain_id: 'kaiyo-1',
+    bech32_prefix: 'kujira',
+    lcd: 'https://kujira-api.polkachu.com/',
+    chain_image: '/kuji.svg',
+    explorer_account: 'https://kujira.explorers.guru/account/'
   },
   Osmosis: {
     chain_name: 'Osmosis',
@@ -307,7 +299,6 @@ export const chains: { [chain_name: string]: Chain } = {
     chain_id: 'osmosis-1',
     bech32_prefix: 'osmo',
     lcd: 'https://osmosis-api.polkachu.com',
-    rpc: 'https://rpc.osmosis.zone/',
     chain_image: '/osmo.svg',
     explorer_account: 'https://www.mintscan.io/osmosis/account/'
   },
@@ -321,7 +312,6 @@ export const chains: { [chain_name: string]: Chain } = {
     chain_id: 'core-1',
     bech32_prefix: 'persistence',
     lcd: 'https://persistence-api.polkachu.com',
-    rpc: 'https://persistence-rpc.polkachu.com',
     chain_image: '/xprt.svg',
     explorer_account: 'https://www.mintscan.io/persistence/account/'
   },
@@ -335,7 +325,6 @@ export const chains: { [chain_name: string]: Chain } = {
     chain_id: 'quicksilver-2',
     bech32_prefix: 'quick',
     lcd: 'https://quicksilver-api.lavenderfive.com:443',
-    rpc: 'https://quicksilver-rpc.lavenderfive.com:443',
     chain_image: '/qck.svg',
     explorer_account: 'https://www.mintscan.io/quicksilver/account/'
   },
@@ -349,7 +338,6 @@ export const chains: { [chain_name: string]: Chain } = {
     chain_id: 'sentinelhub-2',
     bech32_prefix: 'sent',
     lcd: 'https://api-sentinel-ia.cosmosia.notional.ventures',
-    rpc: 'https://rpc-sentinel-ia.cosmosia.notional.ventures',
     chain_image: '/dvpn.svg',
     explorer_account: 'https://www.mintscan.io/sentinel/account/'
   },
@@ -363,7 +351,6 @@ export const chains: { [chain_name: string]: Chain } = {
     chain_id: 'sifchain-1',
     bech32_prefix: 'sif',
     lcd: 'https://api-sifchain-ia.cosmosia.notional.ventures',
-    rpc: 'https://rpc.sifchain.finance',
     chain_image: '/rowan.svg',
     explorer_account: 'https://www.mintscan.io/sifchain/account/',
   }, */
@@ -377,7 +364,6 @@ export const chains: { [chain_name: string]: Chain } = {
     chain_id: 'stargaze-1',
     bech32_prefix: 'stars',
     lcd: 'https://rest.stargaze-apis.com',
-    rpc: 'https://rpc.stargaze-apis.com',
     chain_image: '/stars.svg',
     explorer_account: 'https://www.mintscan.io/stargaze/account/'
   },
@@ -391,7 +377,6 @@ export const chains: { [chain_name: string]: Chain } = {
     chain_id: 'stride-1',
     bech32_prefix: 'stride',
     lcd: 'https://stride-api.lavenderfive.com',
-    rpc: 'https://stride-rpc.lavenderfive.com',
     chain_image: '/stride.svg',
     explorer_account: 'https://www.mintscan.io/stride/account/'
   },
@@ -405,7 +390,6 @@ export const chains: { [chain_name: string]: Chain } = {
     chain_id: 'phoenix-1',
     bech32_prefix: 'terra',
     lcd: 'https://phoenix-lcd.terra.dev',
-    rpc: 'https://terra-rpc.lavenderfive.com',
     chain_image: '/luna2.svg',
     explorer_account: 'https://finder.terra.money/mainnet/address/'
   }
@@ -682,6 +666,22 @@ export const tokens: Token[] = [
         )
       },
       {
+        chain_name: 'Nolus',
+        denom: ibcDenom(
+          [
+            {
+              incomingChannelId: 'channel-0',
+              incomingPortId: 'transfer'
+            },
+            {
+              incomingChannelId: chains['Osmosis'].deposit_channel_id,
+              incomingPortId: 'transfer'
+            }
+          ],
+          'uscrt'
+        )
+      },
+      {
         chain_name: 'Osmosis',
         denom: ibcDenom(
           [
@@ -845,6 +845,10 @@ export const tokens: Token[] = [
       },
       {
         chain_name: 'Noble',
+        denom: 'uscrt'
+      },
+      {
+        chain_name: 'Nolus',
         denom: 'uscrt'
       },
       {
@@ -1835,7 +1839,7 @@ export const tokens: Token[] = [
     decimals: 6,
     coingecko_id: 'stride-staked-atom',
     deposits: [
-      {
+      /*       {
         chain_name: 'Osmosis',
         denom: ibcDenom(
           [
@@ -1846,14 +1850,14 @@ export const tokens: Token[] = [
           ],
           'stuatom'
         )
-      },
+      }, */
       {
         chain_name: 'Stride',
         denom: 'stuatom'
       }
     ],
     withdrawals: [
-      {
+      /* {
         chain_name: 'Osmosis',
         denom: ibcDenom(
           [
@@ -1864,7 +1868,7 @@ export const tokens: Token[] = [
           ],
           'stuatom'
         )
-      },
+      }, */
       {
         chain_name: 'Stride',
         denom: ibcDenom(
@@ -1888,7 +1892,7 @@ export const tokens: Token[] = [
     decimals: 18,
     coingecko_id: 'stride-staked-injective',
     deposits: [
-      {
+      /*  {
         chain_name: 'Osmosis',
         denom: ibcDenom(
           [
@@ -1899,14 +1903,14 @@ export const tokens: Token[] = [
           ],
           'stinj'
         )
-      },
+      }, */
       {
         chain_name: 'Stride',
         denom: 'stinj'
       }
     ],
     withdrawals: [
-      {
+      /* {
         chain_name: 'Osmosis',
         denom: ibcDenom(
           [
@@ -1917,7 +1921,7 @@ export const tokens: Token[] = [
           ],
           'stinj'
         )
-      },
+      }, */
       {
         chain_name: 'Stride',
         denom: ibcDenom(
@@ -1941,7 +1945,7 @@ export const tokens: Token[] = [
     decimals: 6,
     coingecko_id: 'stride-staked-juno',
     deposits: [
-      {
+      /* {
         chain_name: 'Osmosis',
         denom: ibcDenom(
           [
@@ -1952,14 +1956,14 @@ export const tokens: Token[] = [
           ],
           'stujuno'
         )
-      },
+      }, */
       {
         chain_name: 'Stride',
         denom: 'stujuno'
       }
     ],
     withdrawals: [
-      {
+      /*  {
         chain_name: 'Osmosis',
         denom: ibcDenom(
           [
@@ -1970,7 +1974,7 @@ export const tokens: Token[] = [
           ],
           'stujuno'
         )
-      },
+      }, */
       {
         chain_name: 'Stride',
         denom: ibcDenom(
@@ -2023,7 +2027,7 @@ export const tokens: Token[] = [
     decimals: 6,
     coingecko_id: 'stride-staked-luna',
     deposits: [
-      {
+      /*  {
         chain_name: 'Osmosis',
         denom: ibcDenom(
           [
@@ -2034,13 +2038,25 @@ export const tokens: Token[] = [
           ],
           'stuluna'
         )
-      },
+      }, */
       {
         chain_name: 'Stride',
         denom: 'stuluna'
       }
     ],
     withdrawals: [
+      /*  {
+        chain_name: 'Osmosis',
+        denom: ibcDenom(
+          [
+            {
+              incomingChannelId: chains['Stride'].withdraw_channel_id,
+              incomingPortId: 'transfer'
+            }
+          ],
+          'stuluna'
+        )
+      }, */
       {
         chain_name: 'Stride',
         denom: ibcDenom(
@@ -2064,7 +2080,7 @@ export const tokens: Token[] = [
     decimals: 6,
     coingecko_id: 'stride-staked-osmo',
     deposits: [
-      {
+      /*  {
         chain_name: 'Osmosis',
         denom: ibcDenom(
           [
@@ -2075,14 +2091,14 @@ export const tokens: Token[] = [
           ],
           'stuosmo'
         )
-      },
+      }, */
       {
         chain_name: 'Stride',
         denom: 'stuosmo'
       }
     ],
     withdrawals: [
-      {
+      /*  {
         chain_name: 'Osmosis',
         denom: ibcDenom(
           [
@@ -2093,7 +2109,7 @@ export const tokens: Token[] = [
           ],
           'stuosmo'
         )
-      },
+      }, */
       {
         chain_name: 'Stride',
         denom: ibcDenom(
@@ -2117,7 +2133,7 @@ export const tokens: Token[] = [
     decimals: 6,
     coingecko_id: 'stride',
     deposits: [
-      {
+      /*  {
         chain_name: 'Osmosis',
         denom: ibcDenom(
           [
@@ -2128,14 +2144,14 @@ export const tokens: Token[] = [
           ],
           'ustrd'
         )
-      },
+      }, */
       {
         chain_name: 'Stride',
         denom: 'ustrd'
       }
     ],
     withdrawals: [
-      {
+      /*  {
         chain_name: 'Osmosis',
         denom: ibcDenom(
           [
@@ -2146,7 +2162,7 @@ export const tokens: Token[] = [
           ],
           'ustrd'
         )
-      },
+      }, */
       {
         chain_name: 'Stride',
         denom: ibcDenom(
@@ -3794,4 +3810,3 @@ export const ICSTokens: Token[] = [
 
 export const SECRET_CHAIN_ID = chains['Secret Network'].chain_id
 export const SECRET_LCD = chains['Secret Network'].lcd
-export const SECRET_RPC = chains['Secret Network'].rpc

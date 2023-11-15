@@ -2,7 +2,7 @@ import { SecretNetworkClient } from 'secretjs'
 import { FeeGrantStatus } from 'types/FeeGrantStatus'
 import { Nullable } from 'types/Nullable'
 import { allTokens, faucetURL, sleep } from 'utils/commons'
-import { Chain, SECRET_CHAIN_ID, SECRET_LCD, Token, tokens } from 'utils/config'
+import { Chain, SECRET_CHAIN_ID, SECRET_LCD, Token, chains, tokens } from 'utils/config'
 import { isMobile } from 'react-device-detect'
 import { scrtToken } from 'utils/tokens'
 import { WalletAPIType } from 'types/WalletAPIType'
@@ -288,8 +288,8 @@ async function fetchIbcChainBalances(
 
   const tokenMap = new Map<string, Token>()
 
-  tokens.forEach((token) => {
-    const fromDenom = token.deposits[0]?.denom
+  allTokens.forEach((token) => {
+    const fromDenom = token.deposits.find((deposit) => deposit.chain_name === props.chain.chain_name)?.denom
     if (fromDenom) {
       tokenMap.set(fromDenom, token)
     }
@@ -304,7 +304,6 @@ async function fetchIbcChainBalances(
   })
   for (const token of props.tokens) {
     const currentEntry = newBalanceMapping.get(token)
-    console.log(newBalanceMapping.get(token))
 
     if (!currentEntry) {
       newBalanceMapping.set(token, {
@@ -330,7 +329,7 @@ async function getBalancesForTokens(props: IGetBalancesForTokensProps): Promise<
 
     const tokenMap = new Map<string, Token>()
 
-    tokens.forEach((token) => {
+    allTokens.forEach((token) => {
       const fromDenom = token.withdrawals[0]?.denom
       if (fromDenom) {
         tokenMap.set(fromDenom, token)
