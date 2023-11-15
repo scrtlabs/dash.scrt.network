@@ -53,7 +53,7 @@ export default function BridgingFees(props: IProps) {
   }, [priceMapping, props.token, axelarTransferFee])
 
   return (
-    <div className="bg-neutral-200 dark:bg-neutral-700 p-4 rounded-xl space-y-6 my-4">
+    <div className="bg-neutral-200 dark:bg-neutral-700 p-4 rounded-xl space-y-6">
       <div className="flex justify-between items-center text-sm">
         <div className="flex items-center">
           <span className="font-semibold text-sm">Bridging Fees</span>
