@@ -3,14 +3,10 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import Footer from 'components/Footer'
 import { Navigation } from 'components/Navigation'
 import { useState, createContext, useEffect, useContext } from 'react'
-import { Breakpoint } from 'react-socks'
-import { Flip, ToastContainer } from 'react-toastify'
 import { useLocation } from 'react-router-dom'
 import FloatingCTAButton from 'components/FloatingCTAButton'
-import FeedbackButton from 'components/FeedbackButton'
 import { ThemeSwitch } from 'components/ThemeSwitch'
 import { Nullable } from 'types/Nullable'
-import Modal from 'components/UI/Modal/Modal'
 import Wallet from 'components/Wallet/Wallet'
 import { Toaster, ToasterProps } from 'react-hot-toast'
 
@@ -124,31 +120,6 @@ export const DefaultLayout = ({ children }: any) => {
           </div>
         </main>
       </div>
-      <Breakpoint medium up>
-        <ToastContainer
-          position="bottom-left"
-          autoClose={5000}
-          hideProgressBar
-          newestOnTop={true}
-          closeOnClick={true}
-          rtl={false}
-          pauseOnFocusLoss
-          draggable={false}
-          pauseOnHover={true}
-          theme="dark"
-        />
-      </Breakpoint>
-      <Breakpoint small down>
-        <ToastContainer
-          position={'bottom-left'}
-          autoClose={false}
-          hideProgressBar={true}
-          closeOnClick={true}
-          draggable={false}
-          theme={'dark'}
-          transition={Flip}
-        />
-      </Breakpoint>
     </>
   )
 }

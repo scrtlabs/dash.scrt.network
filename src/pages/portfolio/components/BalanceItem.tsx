@@ -1,5 +1,5 @@
 import { useEffect, useState, useContext } from 'react'
-import { randomDelay, sleep, formatUsdString, viewingKeyErrorString, allTokens } from 'utils/commons'
+import { randomDelay, sleep, toUsdString, viewingKeyErrorString, allTokens } from 'utils/commons'
 import { APIContext } from 'context/APIContext'
 import { Token } from 'utils/config'
 import { useSecretNetworkClientStore } from 'store/secretNetworkClient'

@@ -16,7 +16,6 @@ import {
 } from 'secretjs'
 import { FeeGrantStatus } from 'types/FeeGrantStatus'
 import { IbcMode } from 'types/IbcMode'
-import { Nullable } from 'types/Nullable'
 import {
   sleep,
   faucetAddress,

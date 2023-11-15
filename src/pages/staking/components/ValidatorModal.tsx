@@ -2,7 +2,7 @@ import { faGlobe, faXmark } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { ReactNode, useContext, useEffect, useState } from 'react'
 import { APIContext } from 'context/APIContext'
-import { formatUsdString, formatNumber } from 'utils/commons'
+import { toUsdString, formatNumber } from 'utils/commons'
 import BigNumber from 'bignumber.js'
 import { SECRET_LCD, SECRET_CHAIN_ID } from 'utils/config'
 import CopyToClipboard from 'react-copy-to-clipboard'
@@ -125,54 +125,48 @@ const ValidatorModal = (props: Props) => {
 
   function customTitle() {
     return (
-      <>
-        <div className="flex gap-4 items-center">
-          <div className="image">
-            {imgUrl ? (
-              <>
-                <img src={imgUrl} alt={`validator logo`} className="rounded-full w-10" />
-              </>
-            ) : (
-              <>
-                <div className="relative bg-blue-500 dark:bg-blue-500 rounded-full w-10 h-10">
-                  <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 font-semibold">
-                    {/* .charAt(0) or .slice(0,1) won't work here with emojis! */}
-                    {[...selectedValidator?.description?.moniker][0].toUpperCase()}
-                  </div>
-                </div>
-              </>
+      <div className="flex-1 flex gap-4 items-center">
+        <div className="image">
+          {imgUrl ? (
+            <img src={imgUrl} alt={`validator logo`} className="rounded-full w-10" />
+          ) : (
+            <div className="relative bg-blue-500 dark:bg-blue-500 rounded-full w-10 h-10">
+              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 font-semibold">
+                {/* .charAt(0) or .slice(0,1) won't work here with emojis! */}
+                {[...selectedValidator?.description?.moniker][0].toUpperCase()}
+              </div>
+            </div>
+          )}
+        </div>
+        <div>
+          <div className="mb-1">
+            <span className="font-semibold">{selectedValidator?.description?.moniker}</span>
+            {selectedValidator?.description?.website && (
+              <a href={selectedValidator?.description?.website} target="_blank" className="group font-medium text-sm">
+                <FontAwesomeIcon
+                  icon={faGlobe}
+                  size="sm"
+                  className="ml-3 mr-1 text-neutral-500 dark:group-hover:text-white group-hover:text-black"
+                />
+                <span className="text-neutral-500 dark:group-hover:text-white group-hover:text-black">Website</span>
+              </a>
             )}
           </div>
-          <div>
-            <div className="mb-1">
-              <span className="font-semibold">{selectedValidator?.description?.moniker}</span>
-              {selectedValidator?.description?.website && (
-                <a href={selectedValidator?.description?.website} target="_blank" className="group font-medium text-sm">
-                  <FontAwesomeIcon
-                    icon={faGlobe}
-                    size="sm"
-                    className="ml-3 mr-1 text-neutral-500 dark:group-hover:text-white group-hover:text-black"
-                  />
-                  <span className="text-neutral-500 dark:group-hover:text-white group-hover:text-black">Website</span>
-                </a>
-              )}
-            </div>
-            <div className="flex gap-4 items-center">
-              {selectedValidator?.status === 'BOND_STATUS_UNBONDED' && (
-                <div className="border border-red-500 bg-transparent text-red-500 text-sm rounded px-4 py-2 flex items-center justify-start">
-                  Inactive
-                </div>
-              )}
-            </div>
-            <div className="text-neutral-400 font-medium text-sm">
-              <div className="commission font-semibold">
-                Commission {(selectedValidator?.commission?.commission_rates?.rate * 100).toFixed(2)}% | APR{' '}
-                {formatNumber(realYield, 2)}%
+          <div className="flex gap-4 items-center">
+            {selectedValidator?.status === 'BOND_STATUS_UNBONDED' && (
+              <div className="border border-red-500 bg-transparent text-red-500 text-sm rounded px-4 py-2 flex items-center justify-start">
+                Inactive
               </div>
+            )}
+          </div>
+          <div className="text-neutral-400 font-medium text-sm">
+            <div className="commission font-semibold">
+              Commission {(selectedValidator?.commission?.commission_rates?.rate * 100).toFixed(2)}% | APR{' '}
+              {formatNumber(realYield, 2)}%
             </div>
           </div>
         </div>
-      </>
+      </div>
     )
   }
 
@@ -330,7 +324,7 @@ const ValidatorModal = (props: Props) => {
                   <span className="text-neutral-400 text-xs">{` SCRT`}</span>
                 </div>
                 <div className="font-semibold text-neutral-400 mt-0.5 text-sm">
-                  {formatUsdString(
+                  {toUsdString(
                     new BigNumber(scrtBalance!)
                       .dividedBy(`1e${scrtToken.decimals}`)
                       .multipliedBy(Number(currentPrice))
@@ -357,7 +351,7 @@ const ValidatorModal = (props: Props) => {
                     <span className="text-neutral-400 text-xs">{` SCRT`}</span>
                   </div>
                   <div className="font-semibold text-neutral-400 mt-0.5 text-sm">
-                    {formatUsdString(
+                    {toUsdString(
                       new BigNumber(
                         delegatorDelegations?.find(
                           (delegatorDelegation: any) =>
@@ -377,7 +371,7 @@ const ValidatorModal = (props: Props) => {
                     {0}
                     <span className="text-neutral-400 text-xs">{` SCRT`}</span>
                   </div>
-                  <div className="font-semibold text-neutral-400 mt-0.5 text-sm">{formatUsdString(0)}</div>
+                  <div className="font-semibold text-neutral-400 mt-0.5 text-sm">{toUsdString(0)}</div>
                 </div>
               ))}
 

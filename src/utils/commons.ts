@@ -317,7 +317,7 @@ export const getFractionDigits = (number: Number) => {
   }
 }
 
-export const formatUsdString = (number: any) => {
+export const toUsdString = (number: any) => {
   const fractionDigits = getFractionDigits(number)
   return new Intl.NumberFormat(undefined, {
     style: 'currency',

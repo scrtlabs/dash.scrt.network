@@ -3,7 +3,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { ThemeContext } from 'context/ThemeContext'
 import { trackMixPanelEvent } from 'utils/commons'
 import CopyToClipboard from 'react-copy-to-clipboard'
-import { toast } from 'react-toastify'
 import Tooltip from '@mui/material/Tooltip'
 import { QRCode } from 'react-qrcode-logo'
 import { Token, chains, tokens } from 'utils/config'
@@ -12,6 +11,7 @@ import { useSecretNetworkClientStore } from 'store/secretNetworkClient'
 import { faCopy } from '@fortawesome/free-solid-svg-icons'
 import { Nullable } from 'types/Nullable'
 import Button from 'components/UI/Button/Button'
+import toast from 'react-hot-toast'
 
 export default function AddressQR() {
   const { theme, setTheme } = useContext(ThemeContext)

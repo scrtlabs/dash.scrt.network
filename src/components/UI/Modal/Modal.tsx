@@ -74,6 +74,7 @@ function Modal({ size = 'sm', ...props }: Props) {
                     </div>
                   ))}
                 <button
+                  type="button"
                   onClick={props.onClose}
                   className="dark:bg-neutral-800 dark:text-neutral-400 dark:hover:text-white bg-neutral-100 hover:bg-neutral-200 dark:hover:bg-neutral-700 transition-colors py-2 px-2.5 rounded-full"
                 >

@@ -1,10 +1,9 @@
 import { useContext, useEffect, useRef, useState } from 'react'
-import { sleep, viewingKeyErrorString, formatUsdString } from 'utils/commons'
+import { sleep, viewingKeyErrorString, toUsdString } from 'utils/commons'
 import Tooltip from '@mui/material/Tooltip'
 import CopyToClipboard from 'react-copy-to-clipboard'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCopy, faDesktop, faMobileScreen, faWallet, faXmark } from '@fortawesome/free-solid-svg-icons'
-import { toast } from 'react-toastify'
 import { useHoverOutside } from 'utils/useHoverOutside'
 import { APIContext } from 'context/APIContext'
 import BigNumber from 'bignumber.js'
@@ -18,6 +17,7 @@ import { ManageBalances } from './ManageBalances/ManageBalances'
 import Button from '../UI/Button/Button'
 import { WalletService } from 'services/wallet.service'
 import BalanceUI from 'components/BalanceUI'
+import toast from 'react-hot-toast'
 
 export default function Wallet() {
   const {

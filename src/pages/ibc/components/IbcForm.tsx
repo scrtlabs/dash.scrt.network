@@ -19,6 +19,7 @@ import BridgingFees from './BridgingFees'
 import BigNumber from 'bignumber.js'
 import { allTokens } from 'utils/commons'
 import { useSearchParams } from 'react-router-dom'
+import toast from 'react-hot-toast'
 
 export default function IbcForm() {
   // URL params
@@ -68,10 +69,6 @@ export default function IbcForm() {
 
   const { feeGrantStatus, secretNetworkClient, walletAddress, isConnected, getBalance, getIbcBalance } =
     useSecretNetworkClientStore()
-
-  const [isLoading, setIsWaiting] = useState<boolean>(false)
-  const [generalSuccessMessage, setGeneralSuccessMessage] = useState<String>('')
-  const [generalErrorMessage, setGeneralErrorMessage] = useState<String>('')
 
   // handles [25% | 50% | 75% | Max] Button-Group
   function setAmountByPercentage(percentage: number) {
@@ -161,22 +158,20 @@ export default function IbcForm() {
     validateOnChange: true,
     onSubmit: async (values) => {
       try {
-        setGeneralErrorMessage('')
-        setGeneralSuccessMessage('')
-        setIsWaiting(true)
-        const res = await IbcService.performIbcTransfer({
+        const res = IbcService.performIbcTransfer({
           ...values,
           secretNetworkClient: secretNetworkClient
         })
-        setIsWaiting(false)
-        if (res.success) {
-          setGeneralSuccessMessage(`IBC transfer successful!`)
-        } else {
-          throw new Error(res.errorMsg)
-        }
+        toast.promise(res, {
+          loading: `Waiting to transfer ${formik.values.amount} ${formik.values.token.name} from ${
+            formik.values.ibcMode === 'deposit' ? formik.values.chain.chain_name : 'Secret Network'
+          } to ${formik.values.ibcMode === 'deposit' ? 'Secret Network' : formik.values.chain.chain_name}...`,
+          success: 'Transfer successful!',
+          error: 'Transfer unsuccessful!'
+        })
       } catch (error: any) {
         console.error(error)
-        setGeneralErrorMessage(`IBC transfer failed!`)
+        toast.error(`Transfer unsuccessful!`)
       }
     }
   })
@@ -423,39 +418,6 @@ export default function IbcForm() {
             amount={formik.values.amount}
             ibcMode={formik.values.ibcMode}
           />
-        )}
-
-        {isLoading && (
-          <div className="text-sm font-normal flex items-center gap-2 justify-center">
-            <svg
-              className="animate-spin h-5 w-5 text-black dark:text-white"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-            >
-              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-              <path
-                className="opacity-75"
-                fill="currentColor"
-                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-              ></path>
-            </svg>
-            <span>Processing...</span>
-          </div>
-        )}
-
-        {generalSuccessMessage && (
-          <div className="text-emerald-500 dark:text-emerald-500 text-sm font-normal flex items-center gap-2 justify-center">
-            <FontAwesomeIcon icon={faCircleCheck} />
-            <span>{generalSuccessMessage}</span>
-          </div>
-        )}
-
-        {generalSuccessMessage && (
-          <div className="text-emerald-500 dark:text-emerald-500 text-sm font-normal flex items-center gap-2 justify-center">
-            <FontAwesomeIcon icon={faCircleCheck} />
-            <span>{generalSuccessMessage}</span>
-          </div>
         )}
 
         {/* Submit Button */}
