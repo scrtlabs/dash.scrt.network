@@ -1,6 +1,5 @@
 import React from 'react'
 import { Window as KeplrWindow } from '@keplr-wallet/types'
-import { BreakpointProvider } from 'react-socks'
 import 'assets/scss/index.scss'
 import { Buffer } from 'buffer'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
@@ -77,19 +76,17 @@ class ErrorBoundary extends React.Component<{ children: any }, { hasError: boole
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement)
 
 root.render(
-  <BreakpointProvider>
-    <HelmetProvider>
-      <BrowserRouter>
-        <ThemeContextProvider>
-          <APIContextProvider>
-            <DefaultLayout>
-              <App />
-            </DefaultLayout>
-          </APIContextProvider>
-        </ThemeContextProvider>
-      </BrowserRouter>
-    </HelmetProvider>
-  </BreakpointProvider>
+  <HelmetProvider>
+    <BrowserRouter>
+      <ThemeContextProvider>
+        <APIContextProvider>
+          <DefaultLayout>
+            <App />
+          </DefaultLayout>
+        </APIContextProvider>
+      </ThemeContextProvider>
+    </BrowserRouter>
+  </HelmetProvider>
 )
 
 export default function App() {

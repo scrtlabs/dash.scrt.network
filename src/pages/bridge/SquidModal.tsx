@@ -1,6 +1,6 @@
 import { faXmark } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { Theme } from 'types/Theme'
 
 interface Props {
@@ -9,7 +9,7 @@ interface Props {
   theme: Theme
 }
 
-const SquidModal = (props: Props) => {
+export default function SquidModal(props: Props) {
   const [loading, setLoading] = useState(true)
 
   const SquidStringsDark = {
@@ -167,5 +167,3 @@ const SquidModal = (props: Props) => {
     </>
   )
 }
-
-export default SquidModal
