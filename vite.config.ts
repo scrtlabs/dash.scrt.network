@@ -5,7 +5,14 @@ import { whip003 } from './vite-plugin-whip-003'
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [reactRefresh(), tsconfigPaths(), whip003()],
+  plugins: [
+    { ...reactRefresh() },
+    { ...tsconfigPaths() },
+    {
+      ...whip003(),
+      apply: 'build'
+    }
+  ],
   server: {
     host: true,
     port: 3000
