@@ -6,7 +6,6 @@ import { toUsdString, formatNumber } from 'utils/commons'
 import BigNumber from 'bignumber.js'
 import { SECRET_LCD, SECRET_CHAIN_ID } from 'utils/config'
 import CopyToClipboard from 'react-copy-to-clipboard'
-import { toast } from 'react-toastify'
 import { faCopy } from '@fortawesome/free-solid-svg-icons'
 import Tooltip from '@mui/material/Tooltip'
 import { chains } from 'utils/config'
@@ -20,6 +19,7 @@ import { useSecretNetworkClientStore } from 'store/secretNetworkClient'
 import { scrtToken } from 'utils/tokens'
 import Button from 'components/UI/Button/Button'
 import Modal from 'components/UI/Modal/Modal'
+import toast from 'react-hot-toast'
 
 interface Props {
   open: boolean
@@ -203,12 +203,13 @@ const ValidatorModal = (props: Props) => {
 
                           <CopyToClipboard
                             text={selectedValidator?.description?.identity}
-                            onCopy={() => {
-                              toast.success('Validator identity copied to clipboard!')
-                            }}
+                            onCopy={() => toast.success('Identity copied to Clipboard!')}
                           >
                             <Tooltip title={'Copy to clipboard'} placement="bottom" arrow>
-                              <button className="text-neutral-500 hover:text-neutral-800 dark:text-neutral-400 dark:hover:text-neutral-300 transition-colors">
+                              <button
+                                type="button"
+                                className="text-neutral-500 hover:text-neutral-800 dark:text-neutral-400 dark:hover:text-neutral-300 transition-colors"
+                              >
                                 <FontAwesomeIcon icon={faCopy} />
                               </button>
                             </Tooltip>
@@ -231,7 +232,11 @@ const ValidatorModal = (props: Props) => {
                             }}
                           >
                             <Tooltip title={'Copy to clipboard'} placement="bottom" arrow>
-                              <button className="text-neutral-500 hover:text-neutral-800 dark:text-neutral-400 dark:hover:text-neutral-300 transition-colors">
+                              <button
+                                type="button"
+                                onClick={() => toast.success('Copied to Clipboard!')}
+                                className="text-neutral-500 hover:text-neutral-800 dark:text-neutral-400 dark:hover:text-neutral-300 transition-colors"
+                              >
                                 <FontAwesomeIcon icon={faCopy} />
                               </button>
                             </Tooltip>
@@ -267,9 +272,7 @@ const ValidatorModal = (props: Props) => {
                         } `}
                         <CopyToClipboard
                           text={selectedValidator?.operator_address}
-                          onCopy={() => {
-                            toast.success('Operator address copied to clipboard!')
-                          }}
+                          onCopy={() => toast.success('Operator Address copied to Clipboard!')}
                         >
                           <Tooltip title={'Copy to clipboard'} placement="bottom" arrow>
                             <button className="text-neutral-500 hover:text-neutral-800 dark:text-neutral-400 dark:hover:text-neutral-300 transition-colors">
@@ -298,12 +301,13 @@ const ValidatorModal = (props: Props) => {
                         </a>
                         <CopyToClipboard
                           text={validatorAddressToSelfDelegatorAddress(selectedValidator?.operator_address)}
-                          onCopy={() => {
-                            toast.success('Validator address copied to clipboard!')
-                          }}
+                          onCopy={() => toast.success('Validator Address copied to Clipboard!')}
                         >
                           <Tooltip title={'Copy to clipboard'} placement="bottom" arrow>
-                            <button className="text-neutral-500 hover:text-neutral-800 dark:text-neutral-400 dark:hover:text-neutral-300 transition-colors">
+                            <button
+                              type="button"
+                              className="text-neutral-500 hover:text-neutral-800 dark:text-neutral-400 dark:hover:text-neutral-300 transition-colors"
+                            >
                               <FontAwesomeIcon icon={faCopy} />
                             </button>
                           </Tooltip>
