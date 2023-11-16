@@ -94,6 +94,19 @@ export const chains: { [chain_name: string]: Chain } = {
     chain_image: '/axl.svg',
     explorer_account: 'https://axelarscan.io/account/'
   },
+  Celestia: {
+    chain_name: 'Celestia',
+    deposit_channel_id: 'channel-14',
+    deposit_gas: 150_000,
+    deposit_gas_denom: 'utia',
+    withdraw_channel_id: 'channel-91',
+    withdraw_gas: 30_000,
+    chain_id: 'celestia',
+    bech32_prefix: 'celestia',
+    lcd: 'https://celestia-api.lavenderfive.com:443',
+    chain_image: '/celestia.svg',
+    explorer_account: 'https://www.mintscan.io/celestia/account/'
+  },
   Chihuahua: {
     chain_name: 'Chihuahua',
     deposit_channel_id: 'channel-16',
@@ -510,6 +523,18 @@ export const tokens: Token[] = [
         )
       },
       {
+        chain_name: 'Celestia',
+        denom: ibcDenom(
+          [
+            {
+              incomingChannelId: chains['Celestia'].deposit_channel_id,
+              incomingPortId: 'transfer'
+            }
+          ],
+          'uscrt'
+        )
+      },
+      {
         chain_name: 'Chihuahua',
         denom: ibcDenom(
           [
@@ -793,6 +818,10 @@ export const tokens: Token[] = [
       },
       {
         chain_name: 'Axelar',
+        denom: 'uscrt'
+      },
+      {
+        chain_name: 'Celestia',
         denom: 'uscrt'
       },
       {
@@ -2175,6 +2204,59 @@ export const tokens: Token[] = [
           'ustrd'
         )
       }
+    ]
+  },
+  {
+    name: 'TIA',
+    description: 'Celestia Governance Token',
+    address: 'secret1s9h6mrp4k9gll4zfv5h78ll68hdq8ml7jrnn20',
+    code_hash: '638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e',
+    image: '/celestia.svg',
+    decimals: 6,
+    coingecko_id: 'celestia',
+    deposits: [
+      {
+        chain_name: 'Celestia',
+        denom: 'utia'
+      }
+      /*  {
+        chain_name: 'Osmosis',
+        denom: ibcDenom(
+          [
+            {
+              incomingChannelId: 'channel-6994',
+              incomingPortId: 'transfer'
+            }
+          ],
+          'utia'
+        )
+      } */
+    ],
+    withdrawals: [
+      {
+        chain_name: 'Celestia',
+        denom: ibcDenom(
+          [
+            {
+              incomingChannelId: chains['Celestia'].withdraw_channel_id,
+              incomingPortId: 'transfer'
+            }
+          ],
+          'utia'
+        )
+      }
+      /* {
+        chain_name: 'Osmosis',
+        denom: ibcDenom(
+          [
+            {
+              incomingChannelId: chains['Celestia'].withdraw_channel_id,
+              incomingPortId: 'transfer'
+            }
+          ],
+          'utia'
+        )
+      } */
     ]
   },
   {

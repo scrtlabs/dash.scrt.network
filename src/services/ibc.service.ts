@@ -127,11 +127,13 @@ async function performIbcDeposit(
           new BigNumber(props.amount)
         )
 
-        const forwardingMemo: string = await composePMFMemo(routing.operations, props.secretNetworkClient.address)
+        const useSKIPRouting = routing?.operations?.length > 1
 
-        let receiver
-        if (routing.operations.length > 1) {
+        let receiver = null
+        let forwardingMemo = null
+        if (routing?.operations.length > 1) {
           receiver = await getReceiverAddress((routing.operations[1] as any).transfer.chainID)
+          forwardingMemo = await composePMFMemo(routing.operations, props.secretNetworkClient.address)
         } else {
           receiver = props.secretNetworkClient.address
         }
@@ -140,14 +142,13 @@ async function performIbcDeposit(
           {
             sender: sourceChainNetworkClient.address,
             receiver: props.secretNetworkClient.address,
-            source_channel:
-              routing.operations.length > 1 ? (routing.operations[0] as any).transfer.channel : deposit_channel_id,
-            source_port: routing.operations.length > 1 ? (routing.operations[0] as any).transfer.port : 'transfer',
+            source_channel: useSKIPRouting ? (routing.operations[0] as any).transfer.channel : deposit_channel_id,
+            source_port: useSKIPRouting ? (routing.operations[0] as any).transfer.port : 'transfer',
             token: {
               amount: amount,
               denom: token.deposits.filter((deposit: Deposit) => deposit.chain_name === props.chain.chain_name)[0].denom
             },
-            memo: routing.operations.length > 1 ? forwardingMemo : '',
+            memo: useSKIPRouting ? forwardingMemo : '',
             timeout_timestamp: String(Math.floor(Date.now() / 1000) + 10 * 60) // 10 minute timeout
           },
           {
@@ -165,6 +166,8 @@ async function performIbcDeposit(
       } else {
         const routing = await getSkipIBCRouting(selectedSource, 'deposit', token, new BigNumber(props.amount))
 
+        const useSKIPRouting = routing?.operations?.length > 1
+
         const autoWrapJsonString = JSON.stringify({
           wasm: {
             contract: 'secret198lmmh2fpj3weqhjczptkzl9pxygs23yn6dsev',
@@ -178,14 +181,15 @@ async function performIbcDeposit(
           }
         })
 
-        const forwardingMemo: string = await composePMFMemo(
-          routing.operations,
-          'secret198lmmh2fpj3weqhjczptkzl9pxygs23yn6dsev',
-          autoWrapJsonString
-        )
+        let receiver = null
+        let forwardingMemo = null
 
-        let receiver
-        if (routing.operations.length > 1) {
+        if (useSKIPRouting) {
+          forwardingMemo = await composePMFMemo(
+            routing.operations,
+            'secret198lmmh2fpj3weqhjczptkzl9pxygs23yn6dsev',
+            autoWrapJsonString
+          )
           receiver = await getReceiverAddress((routing.operations[1] as any).transfer.chainID)
         } else {
           receiver = 'secret198lmmh2fpj3weqhjczptkzl9pxygs23yn6dsev'
@@ -195,15 +199,14 @@ async function performIbcDeposit(
           {
             sender: sourceChainNetworkClient.address,
             receiver: receiver,
-            source_channel:
-              routing.operations.length > 1 ? (routing.operations[0] as any).transfer.channel : deposit_channel_id,
-            source_port: routing.operations.length > 1 ? (routing.operations[0] as any).transfer.port : 'transfer',
+            source_channel: useSKIPRouting ? (routing.operations[0] as any).transfer.channel : deposit_channel_id,
+            source_port: useSKIPRouting ? (routing.operations[0] as any).transfer.port : 'transfer',
             token: {
               amount: amount,
               denom: token.deposits.filter((deposit: Deposit) => deposit.chain_name === props.chain.chain_name)[0].denom
             },
             timeout_timestamp: (Math.floor(Date.now() / 1000) + 10 * 60).toString(), // 10 minute timeout
-            memo: routing.operations.length > 1 ? forwardingMemo : autoWrapJsonString
+            memo: useSKIPRouting ? forwardingMemo : autoWrapJsonString
           },
           {
             broadcastCheckIntervalMs: 10000,
@@ -532,27 +535,28 @@ async function performIbcWithdrawal(
     } else if (token.name === 'SCRT') {
       const routing = await getSkipIBCRouting(selectedDest, 'withdrawal', token, new BigNumber(props.amount))
 
-      let receiver
-      if (routing.operations.length > 1) {
+      const useSKIPRouting = routing?.operations?.length > 1
+
+      let receiver = null
+      let forwardingMemo = null
+      if (useSKIPRouting) {
         receiver = await getReceiverAddress((routing.operations[1] as any).transfer.chainID)
+        forwardingMemo = await composePMFMemo(routing.operations, sourceChainNetworkClient.address)
       } else {
         receiver = sourceChainNetworkClient.address
       }
-
-      const forwardingMemo = await composePMFMemo(routing.operations, sourceChainNetworkClient.address)
 
       tx = await props.secretNetworkClient.tx.ibc.transfer(
         {
           sender: props.secretNetworkClient?.address,
           receiver: receiver,
-          source_channel:
-            routing.operations.length > 1 ? (routing.operations[0] as any).transfer.channel : withdraw_channel_id,
-          source_port: routing.operations.length > 1 ? (routing.operations[0] as any).transfer.port : 'transfer',
+          source_channel: useSKIPRouting ? (routing.operations[0] as any).transfer.channel : withdraw_channel_id,
+          source_port: useSKIPRouting ? (routing.operations[0] as any).transfer.port : 'transfer',
           token: {
             amount,
             denom: withdrawalChain.denom
           },
-          memo: routing.operations.length > 1 ? forwardingMemo : '',
+          memo: useSKIPRouting ? forwardingMemo : '',
           timeout_timestamp: String(Math.floor(Date.now() / 1000) + 10 * 60) // 10 minute timeout
         },
         {
@@ -572,14 +576,17 @@ async function performIbcWithdrawal(
     } else {
       const routing = await getSkipIBCRouting(selectedDest, 'withdrawal', token, new BigNumber(props.amount))
 
-      let receiver
-      if (routing.operations.length > 1) {
+      const useSKIPRouting = routing?.operations?.length > 1
+
+      let receiver = null
+      let forwardingMemo = null
+
+      if (useSKIPRouting) {
         receiver = await getReceiverAddress((routing.operations[1] as any).transfer.chainID)
+        forwardingMemo = await composePMFMemo(routing.operations, sourceChainNetworkClient.address)
       } else {
         receiver = sourceChainNetworkClient.address
       }
-
-      const forwardingMemo = await composePMFMemo(routing.operations, sourceChainNetworkClient.address)
 
       tx = await props.secretNetworkClient.tx.broadcast(
         [
@@ -599,14 +606,13 @@ async function performIbcWithdrawal(
           new MsgTransfer({
             sender: props.secretNetworkClient?.address,
             receiver: receiver,
-            source_channel:
-              routing.operations.length > 1 ? (routing.operations[0] as any).transfer.channel : withdraw_channel_id,
-            source_port: routing.operations.length > 1 ? (routing.operations[0] as any).transfer.port : 'transfer',
+            source_channel: useSKIPRouting ? (routing.operations[0] as any).transfer.channel : withdraw_channel_id,
+            source_port: useSKIPRouting ? (routing.operations[0] as any).transfer.port : 'transfer',
             token: {
               amount,
               denom: withdrawalChain.denom
             },
-            memo: routing.operations.length > 1 ? forwardingMemo : '',
+            memo: useSKIPRouting ? forwardingMemo : '',
             timeout_timestamp: String(Math.floor(Date.now() / 1000) + 10 * 60) // 10 minute timeout
           })
         ],
@@ -639,7 +645,7 @@ async function performIbcWithdrawal(
         console.log(`Received ${props.amount} ${token.name} on ${props.chain.chain_name}`)
         return `Received ${props.amount} ${token.name} on ${props.chain.chain_name}`
       } else {
-        console.log(
+        console.error(
           `Timed out while waiting to receive ${props.amount} ${token.name} on ${props.chain.chain_name} from Secret Network!`
         )
         // TODO: Throw new error? change to console.error above?
@@ -727,16 +733,22 @@ async function getSkipIBCRouting(chain: Chain, IbcMode: IbcMode, token: Token, a
     source = token.withdrawals.find((withdrawal) => withdrawal.chain_name === chain.chain_name)
   }
 
-  const route = await client.route({
-    amountIn: amount.toString(),
-    sourceAssetDenom: source.denom,
-    sourceAssetChainID: IbcMode === 'withdrawal' ? chains['Secret Network'].chain_id : chain.chain_id,
-    destAssetDenom: dest.denom,
-    destAssetChainID: IbcMode === 'withdrawal' ? chain.chain_id : chains['Secret Network'].chain_id,
-    cumulativeAffiliateFeeBPS: '0'
-  })
-
-  return route
+  try {
+    console.log('hsdgdfbgsdhgsfhg')
+    const route = await client.route({
+      amountIn: amount.toString(),
+      sourceAssetDenom: source.denom,
+      sourceAssetChainID: IbcMode === 'withdrawal' ? chains['Secret Network'].chain_id : chain.chain_id,
+      destAssetDenom: dest.denom,
+      destAssetChainID: IbcMode === 'withdrawal' ? chain.chain_id : chains['Secret Network'].chain_id,
+      cumulativeAffiliateFeeBPS: '0'
+    })
+    return route
+  } catch (error) {
+    console.log('sdgdsgdhfghdjjhj')
+    console.error(error)
+  }
+  return null
 }
 
 async function getReceiverAddress(chainID: string): Promise<string> {

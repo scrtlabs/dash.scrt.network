@@ -212,10 +212,7 @@ export default function WrapForm() {
           {Number(scrtBalance) !== 0 && (
             <div className="flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 mt-2">
               <div className="flex-1 text-xs">
-                <BalanceUI
-                  token={tokens.find((token) => token.name.toLowerCase() === 'scrt')}
-                  isSecretToken={formik.values.wrappingMode === 'unwrap'}
-                />
+                <BalanceUI token={formik.values.token} isSecretToken={formik.values.wrappingMode === 'unwrap'} />
               </div>
               <div className="sm:flex-initial text-xs">
                 <PercentagePicker setAmountByPercentage={setAmountByPercentage} disabled={!isConnected} />
