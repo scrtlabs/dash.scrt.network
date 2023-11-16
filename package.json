@@ -12,6 +12,7 @@
   "dependencies": {
     "@axelar-network/axelarjs-sdk": "^0.13.6",
     "@babel/core": "^7.23.3",
+    "@emotion/styled": "^11.11.0",
     "@fortawesome/fontawesome-free": "^6.2.1",
     "@fortawesome/fontawesome-svg-core": "^6.2.1",
     "@fortawesome/free-brands-svg-icons": "^6.2.1",
