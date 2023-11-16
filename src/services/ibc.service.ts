@@ -52,6 +52,7 @@ async function getChainSecretJs(chain: Chain): Promise<SecretNetworkClient> {
   while (!(window as any).wallet || !(window as any).wallet.getOfflineSignerOnlyAmino) {
     await sleep(100)
   }
+  console.log(chain.chain_name)
   if (chain.chain_name === 'Terra') {
     await suggestTerratoWallet((window as any).wallet)
   } else if (chain.chain_name === 'Injective') {
@@ -79,12 +80,7 @@ async function getChainSecretJs(chain: Chain): Promise<SecretNetworkClient> {
     }
   }
 
-  let sourceOfflineSigner
-  if (chain.chain_name === 'Composable') {
-    sourceOfflineSigner = (window as any).wallet.getOfflineSigner(chain_id)
-  } else {
-    sourceOfflineSigner = (window as any).wallet.getOfflineSignerOnlyAmino(chain_id)
-  }
+  const sourceOfflineSigner = (window as any).wallet.getOfflineSignerOnlyAmino(chain_id)
   const depositFromAccounts = await sourceOfflineSigner.getAccounts()
 
   const secretNetworkClient = new SecretNetworkClient({
@@ -369,6 +365,7 @@ async function performIbcDeposit(
       const ibcResp: IbcResponse = await tx.ibcResponses[0]
 
       if (ibcResp.type === 'ack') {
+        return `Received ${props.amount} ${token.name} on Secret Network from ${props.chain.chain_name}`
         // updateCoinBalance()
         // toast.update(toastId, {
         //   render: `Received ${normalizedAmount} ${selectedToken.name} on Secret Network from ${selectedSource.chain_name}`,

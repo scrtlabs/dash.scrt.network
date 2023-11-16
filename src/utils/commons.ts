@@ -85,7 +85,7 @@ export async function suggestTerratoWallet(wallet: any) {
         }
       }
     ],
-    features: ['stargate', 'ibc-transfer', 'no-legacy-stdTx', 'ibc-go']
+    features: ['ibc-transfer', 'ibc-go']
   })
 }
 
@@ -126,7 +126,7 @@ export async function suggestInjectivetoWallet(wallet: any) {
         }
       }
     ],
-    features: ['stargate', 'ibc-transfer', 'no-legacy-stdTx', 'ibc-go']
+    features: ['ibc-transfer', 'ibc-go']
   })
 }
 
@@ -167,7 +167,7 @@ export async function suggestCrescenttoWallet(wallet: any) {
         }
       }
     ],
-    features: ['stargate', 'ibc-transfer', 'no-legacy-stdTx', 'ibc-go']
+    features: ['ibc-transfer', 'ibc-go']
   })
 }
 
@@ -208,7 +208,7 @@ export async function suggestKujiratoWallet(wallet: any) {
         }
       }
     ],
-    features: ['stargate', 'ibc-transfer', 'no-legacy-stdTx', 'ibc-go']
+    features: ['ibc-transfer', 'ibc-go']
   })
 }
 
@@ -249,7 +249,7 @@ export async function suggestChihuahuatoWallet(wallet: any) {
         }
       }
     ],
-    features: ['stargate', 'ibc-transfer', 'no-legacy-stdTx', 'ibc-go']
+    features: ['ibc-transfer', 'ibc-go']
   })
 }
 
@@ -263,7 +263,7 @@ export async function suggestComposabletoWallet(wallet: any) {
       coinDenom: 'PICA',
       coinMinimalDenom: 'ppica',
       coinDecimals: 12,
-      coinGeckoId: ''
+      coinGeckoId: 'picasso'
     },
     bip44: { coinType: 118 },
     bech32Config: Bech32Address.defaultBech32Config('centauri'),
@@ -272,7 +272,7 @@ export async function suggestComposabletoWallet(wallet: any) {
         coinDenom: 'PICA',
         coinMinimalDenom: 'ppica',
         coinDecimals: 12,
-        coinGeckoId: ''
+        coinGeckoId: 'picasso'
       }
     ],
     feeCurrencies: [
@@ -280,11 +280,11 @@ export async function suggestComposabletoWallet(wallet: any) {
         coinDenom: 'PICA',
         coinMinimalDenom: 'ppica',
         coinDecimals: 12,
-        coinGeckoId: '',
+        coinGeckoId: 'picasso',
         gasPriceStep: { low: 0, average: 0, high: 0 }
       }
     ],
-    features: ['stargate', 'ibc-transfer', 'no-legacy-stdTx', 'ibc-go']
+    features: ['ibc-transfer', 'ibc-go']
   })
 }
 
