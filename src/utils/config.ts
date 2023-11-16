@@ -94,6 +94,19 @@ export const chains: { [chain_name: string]: Chain } = {
     chain_image: '/axl.svg',
     explorer_account: 'https://axelarscan.io/account/'
   },
+  Carbon: {
+    chain_name: 'Carbon',
+    deposit_channel_id: 'channel-XX',
+    deposit_gas: 150_000,
+    deposit_gas_denom: 'dswth',
+    withdraw_channel_id: 'channel-XX',
+    withdraw_gas: 30_000,
+    chain_id: 'carbon-1',
+    bech32_prefix: 'swth',
+    lcd: 'https://carbon-api.lavenderfive.com:443',
+    chain_image: '/swth.svg',
+    explorer_account: 'https://ping.pub/carbon/account/'
+  },
   Celestia: {
     chain_name: 'Celestia',
     deposit_channel_id: 'channel-14',
@@ -2846,6 +2859,13 @@ export const ICSTokens: Token[] = [
         gas: 300_000
       },
       {
+        chain_name: 'Carbon',
+        axelar_chain_name: CHAINS.MAINNET.CARBON,
+        denom: ibcDenom([{ incomingChannelId: 'channel-7', incomingPortId: 'transfer' }], 'uusdc'),
+        channel_id: 'channel-7',
+        gas: 300_000
+      },
+      {
         chain_name: 'Juno',
         axelar_chain_name: CHAINS.MAINNET.JUNO,
         denom: ibcDenom([{ incomingChannelId: 'channel-71', incomingPortId: 'transfer' }], 'uusdc'),
@@ -2892,6 +2912,13 @@ export const ICSTokens: Token[] = [
       {
         chain_name: 'Axelar',
         axelar_chain_name: CHAINS.MAINNET.AXELAR,
+        denom: 'secret1yxjmepvyl2c25vnt53cr2dpn8amknwausxee83',
+        channel_id: 'channel-61',
+        gas: 350_000
+      },
+      {
+        chain_name: 'Carbon',
+        axelar_chain_name: CHAINS.MAINNET.CARBON,
         denom: 'secret1yxjmepvyl2c25vnt53cr2dpn8amknwausxee83',
         channel_id: 'channel-61',
         gas: 350_000
@@ -2988,6 +3015,13 @@ export const ICSTokens: Token[] = [
         gas: 300_000
       },
       {
+        chain_name: 'Carbon',
+        axelar_chain_name: CHAINS.MAINNET.CARBON,
+        denom: ibcDenom([{ incomingChannelId: 'channel-7', incomingPortId: 'transfer' }], 'weth-wei'),
+        channel_id: 'channel-7',
+        gas: 300_000
+      },
+      {
         chain_name: 'Juno',
         axelar_chain_name: CHAINS.MAINNET.JUNO,
         denom: ibcDenom([{ incomingChannelId: 'channel-71', incomingPortId: 'transfer' }], 'weth-wei'),
@@ -3034,6 +3068,13 @@ export const ICSTokens: Token[] = [
       {
         chain_name: 'Axelar',
         axelar_chain_name: CHAINS.MAINNET.AXELAR,
+        denom: 'secret1yxjmepvyl2c25vnt53cr2dpn8amknwausxee83',
+        channel_id: 'channel-61',
+        gas: 350_000
+      },
+      {
+        chain_name: 'Carbon',
+        axelar_chain_name: CHAINS.MAINNET.CARBON,
         denom: 'secret1yxjmepvyl2c25vnt53cr2dpn8amknwausxee83',
         channel_id: 'channel-61',
         gas: 350_000
@@ -3200,6 +3241,13 @@ export const ICSTokens: Token[] = [
         gas: 300_000
       },
       {
+        chain_name: 'Carbon',
+        axelar_chain_name: CHAINS.MAINNET.CARBON,
+        denom: ibcDenom([{ incomingChannelId: 'channel-7', incomingPortId: 'transfer' }], 'wbtc-satoshi'),
+        channel_id: 'channel-7',
+        gas: 300_000
+      },
+      {
         chain_name: 'Juno',
         axelar_chain_name: CHAINS.MAINNET.JUNO,
         denom: ibcDenom([{ incomingChannelId: 'channel-71', incomingPortId: 'transfer' }], 'wbtc-satoshi'),
@@ -3246,6 +3294,13 @@ export const ICSTokens: Token[] = [
       {
         chain_name: 'Axelar',
         axelar_chain_name: CHAINS.MAINNET.AXELAR,
+        denom: 'secret1yxjmepvyl2c25vnt53cr2dpn8amknwausxee83',
+        channel_id: 'channel-61',
+        gas: 350_000
+      },
+      {
+        chain_name: 'Carbon',
+        axelar_chain_name: CHAINS.MAINNET.CARBON,
         denom: 'secret1yxjmepvyl2c25vnt53cr2dpn8amknwausxee83',
         channel_id: 'channel-61',
         gas: 350_000
@@ -3504,6 +3559,13 @@ export const ICSTokens: Token[] = [
         gas: 300_000
       },
       {
+        chain_name: 'Carbon',
+        axelar_chain_name: CHAINS.MAINNET.CARBON,
+        denom: ibcDenom([{ incomingChannelId: 'channel-7', incomingPortId: 'transfer' }], 'dai-wei'),
+        channel_id: 'channel-7',
+        gas: 300_000
+      },
+      {
         chain_name: 'Juno',
         axelar_chain_name: CHAINS.MAINNET.JUNO,
         denom: ibcDenom([{ incomingChannelId: 'channel-71', incomingPortId: 'transfer' }], 'dai-wei'),
@@ -3543,6 +3605,13 @@ export const ICSTokens: Token[] = [
       {
         chain_name: 'Axelar',
         axelar_chain_name: CHAINS.MAINNET.AXELAR,
+        denom: 'secret1yxjmepvyl2c25vnt53cr2dpn8amknwausxee83',
+        channel_id: 'channel-61',
+        gas: 350_000
+      },
+      {
+        chain_name: 'Carbon',
+        axelar_chain_name: CHAINS.MAINNET.CARBON,
         denom: 'secret1yxjmepvyl2c25vnt53cr2dpn8amknwausxee83',
         channel_id: 'channel-61',
         gas: 350_000
@@ -3702,6 +3771,13 @@ export const ICSTokens: Token[] = [
         gas: 300_000
       },
       {
+        chain_name: 'Carbon',
+        axelar_chain_name: CHAINS.MAINNET.CARBON,
+        denom: ibcDenom([{ incomingChannelId: 'channel-7', incomingPortId: 'transfer' }], 'uusdt'),
+        channel_id: 'channel-7',
+        gas: 300_000
+      },
+      {
         chain_name: 'Juno',
         axelar_chain_name: CHAINS.MAINNET.JUNO,
         denom: ibcDenom([{ incomingChannelId: 'channel-71', incomingPortId: 'transfer' }], 'uusdt'),
@@ -3748,6 +3824,13 @@ export const ICSTokens: Token[] = [
       {
         chain_name: 'Axelar',
         axelar_chain_name: CHAINS.MAINNET.AXELAR,
+        denom: 'secret1yxjmepvyl2c25vnt53cr2dpn8amknwausxee83',
+        channel_id: 'channel-61',
+        gas: 350_000
+      },
+      {
+        chain_name: 'Carbon',
+        axelar_chain_name: CHAINS.MAINNET.CARBON,
         denom: 'secret1yxjmepvyl2c25vnt53cr2dpn8amknwausxee83',
         channel_id: 'channel-61',
         gas: 350_000

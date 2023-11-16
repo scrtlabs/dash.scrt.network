@@ -16,18 +16,7 @@ import {
 } from 'secretjs'
 import { FeeGrantStatus } from 'types/FeeGrantStatus'
 import { IbcMode } from 'types/IbcMode'
-import {
-  sleep,
-  faucetAddress,
-  suggestCrescenttoWallet,
-  suggestChihuahuatoWallet,
-  suggestInjectivetoWallet,
-  suggestKujiratoWallet,
-  suggestTerratoWallet,
-  suggestComposabletoWallet,
-  randomPadding,
-  allTokens
-} from 'utils/commons'
+import { sleep, faucetAddress, randomPadding, allTokens, suggestChainToWallet } from 'utils/commons'
 import { Chain, Deposit, Token, Withdraw, chains, tokens } from 'utils/config'
 import Long from 'long'
 import { TxRaw } from 'secretjs/dist/protobuf/cosmos/tx/v1beta1/tx'
@@ -52,20 +41,8 @@ async function getChainSecretJs(chain: Chain): Promise<SecretNetworkClient> {
   while (!(window as any).wallet || !(window as any).wallet.getOfflineSignerOnlyAmino) {
     await sleep(100)
   }
-  console.log(chain.chain_name)
-  if (chain.chain_name === 'Terra') {
-    await suggestTerratoWallet((window as any).wallet)
-  } else if (chain.chain_name === 'Injective') {
-    await suggestInjectivetoWallet((window as any).wallet)
-  } else if (chain.chain_name === 'Crescent') {
-    await suggestCrescenttoWallet((window as any).wallet)
-  } else if (chain.chain_name === 'Kujira') {
-    await suggestKujiratoWallet((window as any).wallet)
-  } else if (chain.chain_name === 'Chihuahua') {
-    await suggestChihuahuatoWallet((window as any).wallet)
-  } else if (chain.chain_name === 'Composable') {
-    await suggestComposabletoWallet((window as any).wallet)
-  }
+
+  await suggestChainToWallet((window as any).wallet, chain.chain_id)
 
   const { chain_id, lcd } = chains[chain.chain_name]
 

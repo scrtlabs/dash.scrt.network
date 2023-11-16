@@ -13,6 +13,8 @@ export const gasPriceUscrt = 0.25
 
 export const restakeThreshold = 10_000_000
 
+export const keplrChainRegistryUrl = 'https://keplr-chain-registry.vercel.app/api/chains'
+
 export const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
 export const randomDelay = (min: any, max: any) => {
   return Math.floor(Math.random() * (max - min + 1)) + min
@@ -48,244 +50,27 @@ export function trackMixPanelEvent(event: string) {
   }
 }
 
-export async function suggestTerratoWallet(wallet: any) {
-  await wallet.experimentalSuggestChain({
-    rpc: 'https://terra-rpc.polkachu.com',
-    rest: 'https://terra-api.polkachu.com',
-    chainId: 'phoenix-1',
-    chainName: 'Terra',
-    stakeCurrency: {
-      coinDenom: 'LUNA',
-      coinMinimalDenom: 'uluna',
-      coinDecimals: 6,
-      coinGeckoId: 'terra-luna-2'
-    },
-    bip44: {
-      coinType: 330
-    },
-    bech32Config: Bech32Address.defaultBech32Config('terra'),
-    currencies: [
-      {
-        coinDenom: 'LUNA',
-        coinMinimalDenom: 'uluna',
-        coinDecimals: 6,
-        coinGeckoId: 'terra-luna-2'
-      }
-    ],
-    feeCurrencies: [
-      {
-        coinDenom: 'LUNA',
-        coinMinimalDenom: 'uluna',
-        coinDecimals: 6,
-        coinGeckoId: 'terra-luna-2',
-        gasPriceStep: {
-          low: 0.15,
-          average: 0.15,
-          high: 0.15
-        }
-      }
-    ],
-    features: ['ibc-transfer', 'ibc-go']
-  })
+async function getChainsData() {
+  try {
+    const response = await (await fetch(keplrChainRegistryUrl)).json()
+    return response.chains
+  } catch {
+    console.error('Error catching chain registry')
+  }
+  return null
 }
 
-export async function suggestInjectivetoWallet(wallet: any) {
-  await wallet.experimentalSuggestChain({
-    rpc: 'https://tm.injective.network',
-    rest: 'https://public.lcd.injective.network',
-    chainId: 'injective-1',
-    chainName: 'Injective',
-    stakeCurrency: {
-      coinDenom: 'INJ',
-      coinMinimalDenom: 'inj',
-      coinDecimals: 18,
-      coinGeckoId: 'injective-protocol'
-    },
-    bip44: {
-      coinType: 60
-    },
-    bech32Config: Bech32Address.defaultBech32Config('inj'),
-    currencies: [
-      {
-        coinDenom: 'INJ',
-        coinMinimalDenom: 'inj',
-        coinDecimals: 18,
-        coinGeckoId: 'injective-protocol'
-      }
-    ],
-    feeCurrencies: [
-      {
-        coinDenom: 'INJ',
-        coinMinimalDenom: 'inj',
-        coinDecimals: 18,
-        coinGeckoId: 'injective-protocol',
-        gasPriceStep: {
-          low: 0.0005,
-          average: 0.0007,
-          high: 0.0009
-        }
-      }
-    ],
-    features: ['ibc-transfer', 'ibc-go']
-  })
-}
+export async function suggestChainToWallet(wallet: any, chainId: string) {
+  const chains = await getChainsData()
 
-export async function suggestCrescenttoWallet(wallet: any) {
-  await wallet.experimentalSuggestChain({
-    rpc: 'https://mainnet.crescent.network:26657',
-    rest: 'https://mainnet.crescent.network:1317',
-    chainId: 'crescent-1',
-    chainName: 'Crescent',
-    stakeCurrency: {
-      coinDenom: 'CRE',
-      coinMinimalDenom: 'ucre',
-      coinDecimals: 6,
-      coinGeckoId: 'crescent-network'
-    },
-    bip44: {
-      coinType: 118
-    },
-    bech32Config: Bech32Address.defaultBech32Config('cre'),
-    currencies: [
-      {
-        coinDenom: 'CRE',
-        coinMinimalDenom: 'ucre',
-        coinDecimals: 6,
-        coinGeckoId: 'crescent-network'
-      }
-    ],
-    feeCurrencies: [
-      {
-        coinDenom: 'CRE',
-        coinMinimalDenom: 'ucre',
-        coinDecimals: 6,
-        coinGeckoId: 'crescent-network',
-        gasPriceStep: {
-          low: 0.01,
-          average: 0.01,
-          high: 0.02
-        }
-      }
-    ],
-    features: ['ibc-transfer', 'ibc-go']
-  })
-}
+  const chainInfo = chains.find((chain: any) => chain.chainId === chainId)
 
-export async function suggestKujiratoWallet(wallet: any) {
-  await wallet.experimentalSuggestChain({
-    rpc: 'https://rpc.kaiyo.kujira.setten.io',
-    rest: 'https://lcd.kaiyo.kujira.setten.io',
-    chainId: 'kaiyo-1',
-    chainName: 'Kujira',
-    stakeCurrency: {
-      coinDenom: 'KUJI',
-      coinMinimalDenom: 'ukuji',
-      coinDecimals: 6,
-      coinGeckoId: 'kujira'
-    },
-    bip44: {
-      coinType: 118
-    },
-    bech32Config: Bech32Address.defaultBech32Config('kujira'),
-    currencies: [
-      {
-        coinDenom: 'KUJI',
-        coinMinimalDenom: 'ukuji',
-        coinDecimals: 6,
-        coinGeckoId: 'kujira'
-      }
-    ],
-    feeCurrencies: [
-      {
-        coinDenom: 'KUJI',
-        coinMinimalDenom: 'ukuji',
-        coinDecimals: 6,
-        coinGeckoId: 'kujira',
-        gasPriceStep: {
-          low: 0.01,
-          average: 0.025,
-          high: 0.03
-        }
-      }
-    ],
-    features: ['ibc-transfer', 'ibc-go']
-  })
-}
-
-export async function suggestChihuahuatoWallet(wallet: any) {
-  await wallet.experimentalSuggestChain({
-    rpc: 'https://rpc-chihuahua-ia.cosmosia.notional.ventures',
-    rest: 'https://api-chihuahua-ia.cosmosia.notional.ventures',
-    chainId: 'chihuahua-1',
-    chainName: 'Chihuahua',
-    stakeCurrency: {
-      coinDenom: 'HUAHUA',
-      coinMinimalDenom: 'uhuahua',
-      coinDecimals: 6,
-      coinGeckoId: 'chihuahua-chain'
-    },
-    bip44: {
-      coinType: 118
-    },
-    bech32Config: Bech32Address.defaultBech32Config('chihuahua'),
-    currencies: [
-      {
-        coinDenom: 'HUAHUA',
-        coinMinimalDenom: 'uhuahua',
-        coinDecimals: 6,
-        coinGeckoId: 'chihuahua-chain'
-      }
-    ],
-    feeCurrencies: [
-      {
-        coinDenom: 'HUAHUA',
-        coinMinimalDenom: 'uhuahua',
-        coinDecimals: 6,
-        coinGeckoId: 'chihuahua-chain',
-        gasPriceStep: {
-          low: 0.025,
-          average: 0.03,
-          high: 0.035
-        }
-      }
-    ],
-    features: ['ibc-transfer', 'ibc-go']
-  })
-}
-
-export async function suggestComposabletoWallet(wallet: any) {
-  await wallet.experimentalSuggestChain({
-    rpc: 'https://composable-rpc.lavenderfive.com',
-    rest: 'https://composable-api.lavenderfive.com',
-    chainId: 'centauri-1',
-    chainName: 'Composable',
-    stakeCurrency: {
-      coinDenom: 'PICA',
-      coinMinimalDenom: 'ppica',
-      coinDecimals: 12,
-      coinGeckoId: 'picasso'
-    },
-    bip44: { coinType: 118 },
-    bech32Config: Bech32Address.defaultBech32Config('centauri'),
-    currencies: [
-      {
-        coinDenom: 'PICA',
-        coinMinimalDenom: 'ppica',
-        coinDecimals: 12,
-        coinGeckoId: 'picasso'
-      }
-    ],
-    feeCurrencies: [
-      {
-        coinDenom: 'PICA',
-        coinMinimalDenom: 'ppica',
-        coinDecimals: 12,
-        coinGeckoId: 'picasso',
-        gasPriceStep: { low: 0, average: 0, high: 0 }
-      }
-    ],
-    features: ['ibc-transfer', 'ibc-go']
-  })
+  if (!chainInfo) {
+    console.error('Chain not found')
+  }
+  console.log(chainInfo)
+  // Use chainInfo to suggest the chain to the wallet
+  await wallet.experimentalSuggestChain(chainInfo)
 }
 
 export const getFractionDigits = (number: Number) => {

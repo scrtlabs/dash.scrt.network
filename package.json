@@ -19,7 +19,7 @@
     "@fortawesome/free-regular-svg-icons": "^6.2.1",
     "@fortawesome/free-solid-svg-icons": "^6.2.1",
     "@fortawesome/react-fontawesome": "^0.2.0",
-    "@keplr-wallet/cosmos": "0.11.59",
+    "@keplr-wallet/cosmos": "^0.12.43",
     "@mui/material": "5.11.4",
     "@skip-router/core": "^0.0.13",
     "@tharsis/transactions": "0.2.5",
