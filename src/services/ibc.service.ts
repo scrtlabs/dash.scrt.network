@@ -23,6 +23,7 @@ import { TxRaw } from 'secretjs/dist/protobuf/cosmos/tx/v1beta1/tx'
 import mixpanel from 'mixpanel-browser'
 import { GetBalanceError } from 'store/secretNetworkClient'
 import { AccountData } from 'secretjs/dist/wallet_amino'
+import { NotificationService } from './notification.service'
 
 const sdk: AxelarAssetTransfer = new AxelarAssetTransfer({
   environment: Environment.MAINNET
@@ -42,11 +43,14 @@ async function getChainSecretJs(chain: Chain): Promise<SecretNetworkClient> {
     await sleep(100)
   }
 
-  await suggestChainToWallet((window as any).wallet, chain.chain_id)
-
   const { chain_id, lcd } = chains[chain.chain_name]
 
-  await (window as any).wallet.enable(chain_id)
+  try {
+    await (window as any).wallet.enable(chain_id)
+  } catch {
+    await suggestChainToWallet((window as any).wallet, chain.chain_id)
+    await (window as any).wallet.enable(chain_id)
+  }
 
   if ((window as any).wallet) {
     ;(window as any).wallet.defaultOptions = {
@@ -75,6 +79,11 @@ async function performIbcDeposit(
   sourceChainNetworkClient: SecretNetworkClient
 ): Promise<string> {
   const selectedSource = props.chain
+
+  const toastId = NotificationService.notify(
+    `Sending ${props.amount} ${token.name} from ${selectedSource.chain_name} to Secret Network`,
+    'loading'
+  )
 
   // IBC Logic
   let { deposit_channel_id, deposit_gas, deposit_gas_denom, lcd: lcdSrcChain } = selectedSource
@@ -333,29 +342,34 @@ async function performIbcDeposit(
       console.error(
         `Failed sending ${props.amount} ${token.name} from ${props.chain.chain_name} to Secret Network: ${tx.rawLog}`
       )
-      throw new Error(
-        `Failed sending ${props.amount} ${token.name} from ${props.chain.chain_name} to Secret Network: ${tx.rawLog}`
+      NotificationService.notify(
+        `Failed sending ${props.amount} ${token.name} from ${props.chain.chain_name} to Secret Network: ${tx.rawLog}`,
+        'error',
+        toastId
       )
     } else {
       console.log(`Receiving ${props.amount} ${token.name} on Secret Network from ${props.chain.chain_name}...`)
 
+      NotificationService.notify(
+        `Receiving ${props.amount} ${token.name} on Secret Network from ${props.chain.chain_name}...`,
+        'loading',
+        toastId
+      )
+
       const ibcResp: IbcResponse = await tx.ibcResponses[0]
 
       if (ibcResp.type === 'ack') {
-        return `Received ${props.amount} ${token.name} on Secret Network from ${props.chain.chain_name}`
-        // updateCoinBalance()
-        // toast.update(toastId, {
-        //   render: `Received ${normalizedAmount} ${selectedToken.name} on Secret Network from ${selectedSource.chain_name}`,
-        //   type: 'success',
-        //   isLoading: false,
-        //   closeOnClick: true
-        // })
+        NotificationService.notify(
+          `Received ${props.amount} ${token.name} on Secret Network from ${selectedSource.chain_name}`,
+          'success',
+          toastId
+        )
       } else {
-        // toast.update(toastId, {
-        //   render: `Timed out while waiting to receive ${normalizedAmount} ${selectedToken.name} on Secret Network from ${selectedSource.chain_name}`,
-        //   type: 'warning',
-        //   isLoading: false
-        // })
+        NotificationService.notify(
+          `Timed out while waiting to receive ${props.amount} ${token.name} on Secret Network from ${selectedSource.chain_name}`,
+          'error',
+          toastId
+        )
       }
     }
   } catch (e: any) {
@@ -375,10 +389,12 @@ async function performIbcDeposit(
         (e as any).message
       }`
     )
-    throw new Error(
+    NotificationService.notify(
       `Failed sending ${props.amount} ${token.name} from ${props.chain.chain_name} to Secret Network: ${
         (e as any).message
-      }`
+      }`,
+      'error',
+      toastId
     )
   }
   return
@@ -404,12 +420,10 @@ async function performIbcWithdrawal(
   withdraw_channel_id = withdrawalChain.channel_id || withdraw_channel_id
   withdraw_gas = withdrawalChain.gas || withdraw_gas
 
-  // const toastId = toast.loading(
-  //   `Sending ${normalizedAmount} ${selectedToken.name} from Secret Network to ${selectedSource.chain_name}`,
-  //   {
-  //     closeButton: true
-  //   }
-  // )
+  const toastId = NotificationService.notify(
+    `Sending ${props.amount} ${token.name} from Secret Network to ${selectedDest.chain_name}`,
+    'loading'
+  )
 
   try {
     let tx: TxResponse
@@ -607,30 +621,50 @@ async function performIbcWithdrawal(
     }
 
     if (tx.code !== 0) {
-      console.error('tx.rawLog', tx.rawLog)
-      throw new Error(tx.rawLog)
+      console.error(
+        `Failed sending ${props.amount} ${token.name} from Secret Network to ${selectedDest.chain_name}: ${tx.rawLog}`
+      )
+      NotificationService.notify(
+        `Failed sending ${props.amount} ${token.name} from Secret Network to ${selectedDest.chain_name}: ${tx.rawLog}`,
+        'error',
+        toastId
+      )
     } else {
-      console.log(`Receiving ${props.amount} ${token.name} on ${props.chain.chain_name}...`)
+      console.log(`Receiving ${props.amount} ${token.name} on ${selectedDest.chain_name}...`)
+      NotificationService.notify(
+        `Receiving ${props.amount} ${token.name} on ${selectedDest.chain_name}...`,
+        'loading',
+        toastId
+      )
 
       const ibcResp = await tx.ibcResponses[0]
 
       if (ibcResp.type === 'ack') {
-        // updateCoinBalance()
-        console.log(`Received ${props.amount} ${token.name} on ${props.chain.chain_name}`)
-        return `Received ${props.amount} ${token.name} on ${props.chain.chain_name}`
+        console.log(`Received ${props.amount} ${token.name} on ${selectedDest.chain_name}`)
+        NotificationService.notify(
+          `Received ${props.amount} ${token.name} on ${selectedDest.chain_name}`,
+          'success',
+          toastId
+        )
       } else {
         console.error(
-          `Timed out while waiting to receive ${props.amount} ${token.name} on ${props.chain.chain_name} from Secret Network!`
+          `Timed out while waiting to receive ${props.amount} ${token.name} on ${selectedDest.chain_name} from Secret Network!`
         )
-        // TODO: Throw new error? change to console.error above?
+        NotificationService.notify(
+          `Timed out while waiting to receive ${props.amount} ${token.name} on ${selectedDest.chain_name} from Secret Network!`,
+          'error',
+          toastId
+        )
       }
     }
   } catch (error: any) {
     console.error(
-      `Failed sending ${props.amount} ${token.name} from Secret Network to ${props.chain.chain_name}: ${error?.message}`
+      `Failed sending ${props.amount} ${token.name} from Secret Network to ${selectedDest.chain_name}: ${error?.message}`
     )
-    throw new Error(
-      `Failed sending ${props.amount} ${token.name} from Secret Network to ${props.chain.chain_name}: ${error?.message}`
+    NotificationService.notify(
+      `Failed sending ${props.amount} ${token.name} from Secret Network to ${selectedDest.chain_name}: ${error?.message}`,
+      'error',
+      toastId
     )
   }
   return
@@ -708,7 +742,6 @@ async function getSkipIBCRouting(chain: Chain, IbcMode: IbcMode, token: Token, a
   }
 
   try {
-    console.log('hsdgdfbgsdhgsfhg')
     const route = await client.route({
       amountIn: amount.toString(),
       sourceAssetDenom: source.denom,
@@ -719,7 +752,6 @@ async function getSkipIBCRouting(chain: Chain, IbcMode: IbcMode, token: Token, a
     })
     return route
   } catch (error) {
-    console.log('sdgdsgdhfghdjjhj')
     console.error(error)
   }
   return null

@@ -3,13 +3,14 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faInfoCircle } from '@fortawesome/free-solid-svg-icons'
 import Tooltip from '@mui/material/Tooltip'
 import { Helmet } from 'react-helmet-async'
-import { Token, tokens } from 'utils/config'
+import { Chain, Token, chains, tokens } from 'utils/config'
 import { IbcMode } from 'types/IbcMode'
 import { useSearchParams } from 'react-router-dom'
 import { ibcJsonLdSchema, ibcPageDescription, ibcPageTitle } from 'utils/commons'
 import { useSecretNetworkClientStore } from 'store/secretNetworkClient'
 import Title from 'components/Title'
 import IbcForm from './components/IbcForm'
+import { IbcService } from 'services/ibc.service'
 
 export function Ibc() {
   const [isWrapModalOpen, setIsWrapModalOpen] = useState<boolean>(false)
@@ -30,10 +31,51 @@ export function Ibc() {
     }
   }
 
+  const [searchParams, setSearchParams] = useSearchParams()
+  const modeUrlParam = searchParams.get('mode')
+  const chainUrlParam = searchParams.get('chain')
+  const tokenUrlParam = searchParams.get('token')
+
+  const selectableChains = IbcService.getSupportedChains()
+
+  function isValidChainUrlParam(): boolean {
+    return !!Object.values(chains).find(
+      (chain: Chain) => chain.chain_name.toLowerCase() === chainUrlParam.toLowerCase()
+    )
+  }
+
+  function isValidTokenUrlParam(chain: Chain): boolean {
+    return !!IbcService.getSupportedIbcTokensByChain(chain).find(
+      (token: Token) => token.name.toLowerCase() === tokenUrlParam.toLowerCase()
+    )
+  }
+
+  useEffect(() => {
+    if (modeUrlParam?.toLowerCase() === 'deposit') {
+      setIbcMode('deposit')
+    }
+    if (modeUrlParam?.toLowerCase() === 'withdrawal') {
+      setIbcMode('withdrawal')
+    }
+    if (chainUrlParam && isValidChainUrlParam()) {
+      const selectedChain = selectableChains.find(
+        (chain: Chain) => chain.chain_name.toLowerCase() === chainUrlParam.toLowerCase()
+      )
+
+      if (tokenUrlParam && isValidTokenUrlParam(selectedChain)) {
+        setSelectedToken(
+          IbcService.getSupportedIbcTokensByChain(selectedChain).find(
+            (token: Token) => token.name.toLowerCase() === tokenUrlParam.toLowerCase()
+          )
+        )
+      }
+    }
+  }, [chainUrlParam, tokenUrlParam, modeUrlParam])
+
   const message =
     ibcMode === 'deposit'
-      ? `Deposit your SCRT via IBC transfer from ${selectedSource.chain_name} to Secret Network`
-      : `Withdraw your SCRT via IBC transfer from Secret Network to ${selectedSource.chain_name}`
+      ? `Deposit your ${selectedToken.name} via IBC transfer from ${selectedSource.chain_name} to Secret Network`
+      : `Withdraw your ${selectedToken.name} via IBC transfer from Secret Network to ${selectedSource.chain_name}`
 
   return (
     <>

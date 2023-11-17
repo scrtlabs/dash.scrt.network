@@ -28,7 +28,6 @@ const performClaimStakingRewards = async (props: Props) => {
     errorMsg: null
   }
 
-  // START IMPORTED CODE
   try {
     const txs = props.delegatorDelegations.map((delegation: any) => {
       return new MsgWithdrawDelegationReward({
@@ -85,7 +84,6 @@ const performClaimStakingRewards = async (props: Props) => {
   } catch (e: any) {
     console.error(e)
   }
-  // END IMPORTED CODE
 }
 
 export const StakingService = {

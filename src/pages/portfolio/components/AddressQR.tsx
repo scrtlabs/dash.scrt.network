@@ -11,7 +11,7 @@ import { useSecretNetworkClientStore } from 'store/secretNetworkClient'
 import { faCopy } from '@fortawesome/free-solid-svg-icons'
 import { Nullable } from 'types/Nullable'
 import Button from 'components/UI/Button/Button'
-import toast from 'react-hot-toast'
+import { NotificationService } from 'services/notification.service'
 
 export default function AddressQR() {
   const { theme, setTheme } = useContext(ThemeContext)
@@ -48,7 +48,7 @@ export default function AddressQR() {
               <CopyToClipboard
                 text={walletAddress}
                 onCopy={() => {
-                  toast.success('Address copied to clipboard!')
+                  NotificationService.notify('Address copied to clipboard!', 'success')
                 }}
               >
                 <Tooltip

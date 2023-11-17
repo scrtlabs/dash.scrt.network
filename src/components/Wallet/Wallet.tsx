@@ -17,7 +17,7 @@ import { ManageBalances } from './ManageBalances/ManageBalances'
 import Button from '../UI/Button/Button'
 import { WalletService } from 'services/wallet.service'
 import BalanceUI from 'components/BalanceUI'
-import toast from 'react-hot-toast'
+import { NotificationService } from 'services/notification.service'
 
 export default function Wallet() {
   const {
@@ -59,7 +59,7 @@ export default function Wallet() {
       <CopyToClipboard
         text={walletAddress as string}
         onCopy={() => {
-          toast.success('Address copied to clipboard!')
+          NotificationService.notify('Address copied to clipboard!', 'success')
         }}
       >
         <Button size="small" color="secondary" className="flex gap-2 items-center group">

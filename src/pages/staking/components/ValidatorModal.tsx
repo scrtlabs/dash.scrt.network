@@ -19,7 +19,7 @@ import { useSecretNetworkClientStore } from 'store/secretNetworkClient'
 import { scrtToken } from 'utils/tokens'
 import Button from 'components/UI/Button/Button'
 import Modal from 'components/UI/Modal/Modal'
-import toast from 'react-hot-toast'
+import { NotificationService } from 'services/notification.service'
 
 interface Props {
   open: boolean
@@ -203,7 +203,7 @@ const ValidatorModal = (props: Props) => {
 
                           <CopyToClipboard
                             text={selectedValidator?.description?.identity}
-                            onCopy={() => toast.success('Identity copied to Clipboard!')}
+                            onCopy={() => NotificationService.notify('Identity copied to Clipboard!', 'success')}
                           >
                             <Tooltip title={'Copy to clipboard'} placement="bottom" arrow>
                               <button
@@ -228,13 +228,13 @@ const ValidatorModal = (props: Props) => {
                           <CopyToClipboard
                             text={selectedValidator?.description?.security_contact}
                             onCopy={() => {
-                              toast.success('Validator security contact copied to clipboard!')
+                              NotificationService.notify('Validator security contact copied to clipboard!', 'success')
                             }}
                           >
                             <Tooltip title={'Copy to clipboard'} placement="bottom" arrow>
                               <button
                                 type="button"
-                                onClick={() => toast.success('Copied to Clipboard!')}
+                                onClick={() => NotificationService.notify('Copied to Clipboard!', 'success')}
                                 className="text-neutral-500 hover:text-neutral-800 dark:text-neutral-400 dark:hover:text-neutral-300 transition-colors"
                               >
                                 <FontAwesomeIcon icon={faCopy} />
@@ -272,7 +272,7 @@ const ValidatorModal = (props: Props) => {
                         } `}
                         <CopyToClipboard
                           text={selectedValidator?.operator_address}
-                          onCopy={() => toast.success('Operator Address copied to Clipboard!')}
+                          onCopy={() => NotificationService.notify('Operator Address copied to Clipboard!', 'success')}
                         >
                           <Tooltip title={'Copy to clipboard'} placement="bottom" arrow>
                             <button className="text-neutral-500 hover:text-neutral-800 dark:text-neutral-400 dark:hover:text-neutral-300 transition-colors">
@@ -301,7 +301,7 @@ const ValidatorModal = (props: Props) => {
                         </a>
                         <CopyToClipboard
                           text={validatorAddressToSelfDelegatorAddress(selectedValidator?.operator_address)}
-                          onCopy={() => toast.success('Validator Address copied to Clipboard!')}
+                          onCopy={() => NotificationService.notify('Validator Address copied to Clipboard!', 'success')}
                         >
                           <Tooltip title={'Copy to clipboard'} placement="bottom" arrow>
                             <button

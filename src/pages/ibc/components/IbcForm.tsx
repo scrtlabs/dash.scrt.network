@@ -19,7 +19,7 @@ import BridgingFees from './BridgingFees'
 import BigNumber from 'bignumber.js'
 import { allTokens } from 'utils/commons'
 import { useSearchParams } from 'react-router-dom'
-import toast from 'react-hot-toast'
+import { NotificationService } from 'services/notification.service'
 
 export default function IbcForm() {
   // URL params
@@ -28,14 +28,18 @@ export default function IbcForm() {
   const chainUrlParam = searchParams.get('chain')
   const tokenUrlParam = searchParams.get('token')
 
+  const selectableChains = IbcService.getSupportedChains()
+
   function isValidChainUrlParam(): boolean {
-    return !!formik.values.token.deposits.find(
-      (deposit: Deposit) => deposit.chain_name.toLowerCase() === chainUrlParam.toLowerCase()
+    return !!Object.values(chains).find(
+      (chain: Chain) => chain.chain_name.toLowerCase() === chainUrlParam.toLowerCase()
     )
   }
 
-  function isValidTokenUrlParam(): boolean {
-    return true // TODO: Create
+  function isValidTokenUrlParam(chain: Chain): boolean {
+    return !!IbcService.getSupportedIbcTokensByChain(chain).find(
+      (token: Token) => token.name.toLowerCase() === tokenUrlParam.toLowerCase()
+    )
   }
 
   useEffect(() => {
@@ -45,30 +49,60 @@ export default function IbcForm() {
     if (modeUrlParam?.toLowerCase() === 'withdrawal') {
       formik.setFieldValue('ibcMode', 'withdrawal')
     }
-  }, [])
-
-  useEffect(() => {
     if (chainUrlParam && isValidChainUrlParam()) {
-      formik.setFieldValue(
-        'chain',
-        selectableChains.find((chain: Chain) => chain.chain_name.toLowerCase() === chainUrlParam.toLowerCase())
+      const selectedChain = selectableChains.find(
+        (chain: Chain) => chain.chain_name.toLowerCase() === chainUrlParam.toLowerCase()
       )
+      formik.setFieldValue('chain', selectedChain)
+      if (tokenUrlParam && isValidTokenUrlParam(selectedChain)) {
+        formik.setFieldValue(
+          'token',
+          IbcService.getSupportedIbcTokensByChain(selectedChain).find(
+            (token: Token) => token.name.toLowerCase() === tokenUrlParam.toLowerCase()
+          )
+        )
+      }
     }
-  }, [])
-
-  // useEffect(() => {
-  //   var params = {}
-  //   if (ibcMode) {
-  //     params = { ...params, mode: ibcMode.toLowerCase() }
-  //   }
-  //   if (selectedSource) {
-  //     params = { ...params, chain: selectedSource.chain_name.toLowerCase() }
-  //   }
-  //   setSearchParams(params)
-  // }, [ibcMode, selectedSource])
+  }, [chainUrlParam, tokenUrlParam, modeUrlParam])
 
   const { feeGrantStatus, secretNetworkClient, walletAddress, isConnected, getBalance, getIbcBalance } =
     useSecretNetworkClientStore()
+
+  const formik = useFormik<IFormValues>({
+    initialValues: {
+      chain: selectableChains.find((chain: Chain) => chain.chain_name === 'Osmosis'),
+      token: IbcService.getSupportedIbcTokensByChain(
+        selectableChains.find((chain: Chain) => chain.chain_name === 'Osmosis')
+      ).find((token: Token) => token.name === 'SCRT'),
+      ibcMode: 'deposit',
+      amount: '',
+      feeGrantStatus: feeGrantStatus
+    },
+    validationSchema: ibcSchema,
+    validateOnBlur: false,
+    validateOnChange: true,
+    onSubmit: async (values) => {
+      try {
+        IbcService.performIbcTransfer({
+          ...values,
+          secretNetworkClient: secretNetworkClient
+        })
+      } catch (error: any) {
+        console.error(error)
+        NotificationService.notify(`Transfer unsuccessful!`, 'error')
+      }
+    }
+  })
+
+  useEffect(() => {
+    var params = {}
+    params = {
+      chain: formik.values.chain.chain_name.toLowerCase(),
+      mode: formik.values.ibcMode,
+      token: formik.values.token.name.toLowerCase()
+    }
+    setSearchParams(params)
+  }, [formik.values.chain, formik.values.ibcMode, formik.values.token])
 
   // handles [25% | 50% | 75% | Max] Button-Group
   function setAmountByPercentage(percentage: number) {
@@ -110,8 +144,6 @@ export default function IbcForm() {
     }
   }
 
-  const selectableChains = IbcService.getSupportedChains()
-
   const ChainSelect = () => {
     return (
       <Select
@@ -143,39 +175,6 @@ export default function IbcForm() {
     feeGrantStatus: FeeGrantStatus
   }
 
-  const formik = useFormik<IFormValues>({
-    initialValues: {
-      chain: selectableChains.find((chain: Chain) => chain.chain_name === 'Osmosis'),
-      token: IbcService.getSupportedIbcTokensByChain(
-        selectableChains.find((chain: Chain) => chain.chain_name === 'Osmosis')
-      ).find((token: Token) => token.name === 'SCRT'),
-      ibcMode: 'deposit',
-      amount: '',
-      feeGrantStatus: feeGrantStatus
-    },
-    validationSchema: ibcSchema,
-    validateOnBlur: false,
-    validateOnChange: true,
-    onSubmit: async (values) => {
-      try {
-        const res = IbcService.performIbcTransfer({
-          ...values,
-          secretNetworkClient: secretNetworkClient
-        })
-        toast.promise(res, {
-          loading: `Waiting to transfer ${formik.values.amount} ${formik.values.token.name} from ${
-            formik.values.ibcMode === 'deposit' ? formik.values.chain.chain_name : 'Secret Network'
-          } to ${formik.values.ibcMode === 'deposit' ? 'Secret Network' : formik.values.chain.chain_name}...`,
-          success: 'Transfer successful!',
-          error: 'Transfer unsuccessful!'
-        })
-      } catch (error: any) {
-        console.error(error)
-        toast.error(`Transfer unsuccessful!`)
-      }
-    }
-  })
-
   function getSupportedTokens(): Token[] {
     let tempSelectedChain = formik.values.chain
     let supportedTokens = IbcService.getSupportedIbcTokensByChain(tempSelectedChain)
@@ -188,7 +187,9 @@ export default function IbcForm() {
   useEffect(() => {
     const supportedTokensBySelectedChain: Token[] = getSupportedTokens()
     setSupportedTokens(supportedTokensBySelectedChain)
-    formik.setFieldValue('token', supportedTokensBySelectedChain[0])
+    if (!supportedTokensBySelectedChain.includes(formik.values.token)) {
+      formik.setFieldValue('token', supportedTokensBySelectedChain[0])
+    }
 
     async function fetchSourceChainAddress() {
       const sourceChainAddr = await IbcService.getChainSecretJs(formik.values.chain)
@@ -196,16 +197,6 @@ export default function IbcForm() {
     }
     fetchSourceChainAddress()
   }, [formik.values.chain])
-
-  useEffect(() => {
-    var params = {}
-    params = {
-      ...params,
-      chain: formik.values.chain.chain_name.toLowerCase(),
-      token: formik.values.token.name.toLowerCase()
-    }
-    setSearchParams(params)
-  }, [formik.values])
 
   // return <Deposit />
   return (
