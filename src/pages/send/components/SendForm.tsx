@@ -65,8 +65,6 @@ export default function SendForm() {
     getBalance
   } = useSecretNetworkClientStore()
 
-  const [isLoading, setIsWaiting] = useState<boolean>(false)
-
   interface IFormValues {
     amount: string
     token: Token
@@ -93,7 +91,9 @@ export default function SendForm() {
           secretNetworkClient
         })
         toast.promise(res, {
-          loading: `Waiting to send ${formik.values.amount} ${formik.values.token.name}...`,
+          loading: `Waiting to send ${
+            formik.values.token.address === 'native' || formik.values.token.is_snip20 ? null : 's'
+          } ${formik.values.amount} ${formik.values.token.name}...`,
           success: 'Sending successful!',
           error: 'Sending unsuccessful!'
         })
@@ -292,25 +292,6 @@ export default function SendForm() {
 
       {/* Fee Grant */}
       <FeeGrant />
-
-      {isLoading && (
-        <div className="text-sm font-normal flex items-center gap-2 justify-center">
-          <svg
-            className="animate-spin h-5 w-5 text-black dark:text-white"
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-          >
-            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-            <path
-              className="opacity-75"
-              fill="currentColor"
-              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-            ></path>
-          </svg>
-          <span>Processing...</span>
-        </div>
-      )}
 
       {/* Submit Button */}
       <button

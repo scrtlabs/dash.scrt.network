@@ -5,6 +5,7 @@ import { FeeGrantStatus } from 'types/FeeGrantStatus'
 import { Nullable } from 'types/Nullable'
 import { faucetAddress, randomPadding } from 'utils/commons'
 import { Token, tokens } from 'utils/config'
+import { NotificationService } from './notification.service'
 
 interface Props {
   delegatorDelegations: any
@@ -23,10 +24,7 @@ interface Props {
  */
 
 const performClaimStakingRewards = async (props: Props) => {
-  let result: { success: boolean; errorMsg: Nullable<string> } = {
-    success: false,
-    errorMsg: null
-  }
+  const toastId = NotificationService.notify(`Claiming Staking Rewards`, 'loading')
 
   try {
     const txs = props.delegatorDelegations.map((delegation: any) => {
@@ -46,38 +44,18 @@ const performClaimStakingRewards = async (props: Props) => {
       .catch((error: any) => {
         console.error(error)
         if (error?.tx?.rawLog) {
-          // toast.update(toastId, {
-          //   render: `Claiming staking rewards failed: ${error.tx.rawLog}`,
-          //   type: 'error',
-          //   isLoading: false,
-          //   closeOnClick: true
-          // })
+          NotificationService.notify(`Claiming staking rewards failed: ${error.tx.rawLog}`, 'error', toastId)
         } else {
-          // toast.update(toastId, {
-          //   render: `Claiming staking rewards failed: ${error.message}`,
-          //   type: 'error',
-          //   isLoading: false,
-          //   closeOnClick: true
-          // })
+          NotificationService.notify(`Claiming staking rewards failed: ${error.message}`, 'error', toastId)
         }
       })
       .then((tx: any) => {
         console.log(tx)
         if (tx) {
           if (tx.code === 0) {
-            // toast.update(toastId, {
-            //   render: `Claiming staking rewards successful`,
-            //   type: 'success',
-            //   isLoading: false,
-            //   closeOnClick: true
-            // })
+            NotificationService.notify(`Claimed staking rewards successfully`, 'success', toastId)
           } else {
-            // toast.update(toastId, {
-            //   render: `Claiming staking rewards failed: ${tx.rawLog}`,
-            //   type: 'error',
-            //   isLoading: false,
-            //   closeOnClick: true
-            // })
+            NotificationService.notify(`Claiming staking rewards failed: ${tx.rawLog}`, 'error', toastId)
           }
         }
       })
