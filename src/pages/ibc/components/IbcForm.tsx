@@ -402,7 +402,7 @@ export default function IbcForm() {
         {/* Fee Grant */}
         {formik.values.ibcMode === 'withdrawal' && <FeeGrant />}
 
-        {formik.values.token.is_ics20 && (
+        {formik.values.token.is_ics20 && formik.values.chain.chain_name != 'Axelar' && (
           <BridgingFees
             chain={formik.values.chain}
             token={formik.values.token}

@@ -8,7 +8,7 @@ import FloatingCTAButton from 'components/FloatingCTAButton'
 import { ThemeSwitch } from 'components/ThemeSwitch'
 import { Nullable } from 'types/Nullable'
 import Wallet from 'components/Wallet/Wallet'
-import { Toaster, ToasterProps } from 'react-hot-toast'
+import toast, { ToastBar, Toaster, ToasterProps } from 'react-hot-toast'
 import FeedbackButton from 'components/FeedbackButton'
 
 export const NavigationContext = createContext<Nullable<boolean>>(null)
@@ -41,20 +41,30 @@ export const DefaultLayout = ({ children }: any) => {
     reverseOrder: true,
     gutter: 8,
     toastOptions: {
-      duration: 10000,
+      duration: Infinity,
       className: 'bg-white text-black dark:bg-neutral-800 dark:text-white'
     }
   }
 
   return (
     <>
-      <Toaster {...toasterProps} />
-      {/* Fixed Feedback Button */}
+      <Toaster {...toasterProps}>
+        {(t) => (
+          <ToastBar toast={t}>
+            {({ icon, message }) => (
+              <>
+                {icon}
+                {message}
+                {t.type !== 'loading' && <button onClick={() => toast.dismiss(t.id)}>X</button>}
+              </>
+            )}
+          </ToastBar>
+        )}
+      </Toaster>
+      ;{/* Fixed Feedback Button */}
       <FeedbackButton url={'https://github.com/scrtlabs/dash.scrt.network/issues/new'} />
-
       {/* Fixed Help Button */}
       <FloatingCTAButton url="https://linktr.ee/SCRTSupport" text="Need Help?" />
-
       <div className="flex">
         {/* Menu */}
         <aside
