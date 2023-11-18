@@ -208,7 +208,7 @@ export default function WrapForm() {
           </div>
 
           {/* Balance | [25%|50%|75%|Max] */}
-          {Number(scrtBalance) !== 0 && scrtBalance !== null ? (
+          {(Number(scrtBalance) !== 0 && scrtBalance !== null) || formik.values.wrappingMode !== 'unwrap' ? (
             <div className="flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 mt-2">
               <div className="flex-1 text-xs">
                 <BalanceUI token={formik.values.token} isSecretToken={formik.values.wrappingMode === 'unwrap'} />
@@ -286,9 +286,14 @@ export default function WrapForm() {
               disabled={!isConnected}
             />
           </div>
-          {Number(scrtBalance) !== 0 && scrtBalance !== null ? (
+          {(Number(scrtBalance) !== 0 && scrtBalance !== null) || formik.values.wrappingMode !== 'wrap' ? (
             <div className="flex-1 text-xs mt-3 text-center sm:text-left h-[1rem]">
-              <BalanceUI token={formik.values.token} isSecretToken={formik.values.wrappingMode === 'wrap'} />
+              <BalanceUI
+                token={formik.values.token}
+                isSecretToken={
+                  Number(scrtBalance) !== 0 && scrtBalance !== null && formik.values.wrappingMode === 'wrap'
+                }
+              />
             </div>
           ) : null}
         </div>
