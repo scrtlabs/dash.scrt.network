@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faInfoCircle } from '@fortawesome/free-solid-svg-icons'
 import Tooltip from '@mui/material/Tooltip'
 import { Helmet } from 'react-helmet-async'
-import { Chain, Token, chains, tokens } from 'utils/config'
+import { Chain, Deposit, Token, chains, tokens } from 'utils/config'
 import { IbcMode } from 'types/IbcMode'
 import { useSearchParams } from 'react-router-dom'
 import { ibcJsonLdSchema, ibcPageDescription, ibcPageTitle } from 'utils/commons'
@@ -22,7 +22,7 @@ export function Ibc() {
   const { isConnected, connectWallet } = useSecretNetworkClientStore()
 
   const [selectedSource, setSelectedSource] = useState(
-    selectedToken.deposits.find((deposit: any) => deposit.chain_name.toLowerCase() === 'osmosis')
+    selectedToken.deposits.find((deposit: Deposit) => deposit.chain_name.toLowerCase() === 'osmosis')
   )
 
   const handleClick = () => {

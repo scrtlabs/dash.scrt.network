@@ -16,7 +16,7 @@ export const restakeThreshold = 10_000_000
 export const keplrChainRegistryUrl = 'https://keplr-chain-registry.vercel.app/api/chains'
 
 export const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
-export const randomDelay = (min: any, max: any) => {
+export const randomDelay = (min: number, max: number) => {
   return Math.floor(Math.random() * (max - min + 1)) + min
 }
 
@@ -102,7 +102,7 @@ export const getFractionDigits = (number: Number) => {
   }
 }
 
-export const toUsdString = (number: any) => {
+export const toUsdString = (number: number) => {
   const fractionDigits = getFractionDigits(number)
   return new Intl.NumberFormat(undefined, {
     style: 'currency',

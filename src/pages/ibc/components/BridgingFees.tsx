@@ -75,7 +75,7 @@ export default function BridgingFees(props: IProps) {
                 maximumFractionDigits: props.token.decimals
               }
             )} ${props.ibcMode == 'withdrawal' ? 's' : ''}${
-              ICSTokens.filter((icstoken: any) => icstoken.axelar_denom === axelarTransferFee.denom)[0].name
+              ICSTokens.filter((icstoken: Token) => icstoken.axelar_denom === axelarTransferFee.denom)[0].name
             }
           ${props.token.coingecko_id && usdPriceString ? ` (${usdPriceString})` : ''}`}
           </div>

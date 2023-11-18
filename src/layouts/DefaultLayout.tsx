@@ -61,9 +61,9 @@ export const DefaultLayout = ({ children }: any) => {
           </ToastBar>
         )}
       </Toaster>
-      ;{/* Fixed Feedback Button */}
+      {/* Feedback Button */}
       <FeedbackButton url={'https://github.com/scrtlabs/dash.scrt.network/issues/new'} />
-      {/* Fixed Help Button */}
+      {/* Help Button */}
       <FloatingCTAButton url="https://linktr.ee/SCRTSupport" text="Need Help?" />
       <div className="flex">
         {/* Menu */}

@@ -1,12 +1,12 @@
 import { defineConfig } from 'vite'
-import reactRefresh from '@vitejs/plugin-react-refresh'
+import react from '@vitejs/plugin-react'
 import tsconfigPaths from 'vite-tsconfig-paths'
 import { whip003 } from './vite-plugin-whip-003'
 
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
-    { ...reactRefresh() },
+    { ...react() },
     { ...tsconfigPaths() },
     {
       ...whip003(),

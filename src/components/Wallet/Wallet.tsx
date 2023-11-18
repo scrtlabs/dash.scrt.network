@@ -1,13 +1,9 @@
 import { useContext, useEffect, useRef, useState } from 'react'
-import { sleep, viewingKeyErrorString, toUsdString } from 'utils/commons'
-import Tooltip from '@mui/material/Tooltip'
 import CopyToClipboard from 'react-copy-to-clipboard'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCopy, faDesktop, faMobileScreen, faWallet, faXmark } from '@fortawesome/free-solid-svg-icons'
 import { useHoverOutside } from 'utils/useHoverOutside'
 import { APIContext } from 'context/APIContext'
-import BigNumber from 'bignumber.js'
-import { faKey, faInfoCircle } from '@fortawesome/free-solid-svg-icons'
 import { trackMixPanelEvent } from 'utils/commons'
 import { useSecretNetworkClientStore } from 'store/secretNetworkClient'
 import { scrtToken } from 'utils/tokens'
@@ -15,11 +11,10 @@ import { ConnectWalletModal } from 'context/ConnectWalletModal'
 import Modal from '../UI/Modal/Modal'
 import { ManageBalances } from './ManageBalances/ManageBalances'
 import Button from '../UI/Button/Button'
-import { WalletService } from 'services/wallet.service'
 import BalanceUI from 'components/BalanceUI'
 import { NotificationService } from 'services/notification.service'
 
-export default function Wallet() {
+function Wallet() {
   const {
     isConnected,
     secretNetworkClient: secretjs,
@@ -28,13 +23,9 @@ export default function Wallet() {
     disconnectWallet
   } = useSecretNetworkClientStore()
 
-  const { currentPrice } = useContext(APIContext)
-
   const [isMenuVisible, setIsMenuVisible] = useState<boolean>(false)
   const [isGetWalletModalOpen, setIsGetWalletModalOpen] = useState<boolean>(false)
   const [isConnectWalletModalOpen, setIsConnectWalletModalOpen] = useState<boolean>(false)
-
-  const { sScrtBalance, setsScrtBalance } = useSecretNetworkClientStore()
 
   useEffect(() => {
     connectWallet()
@@ -268,3 +259,4 @@ export default function Wallet() {
     </>
   )
 }
+export default Wallet

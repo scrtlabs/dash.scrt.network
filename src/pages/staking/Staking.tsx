@@ -225,10 +225,10 @@ export const Staking = () => {
         }
       })
       setValidators(validators)
-      const activeValidators = validators.filter((item: any) => item.status === 'BOND_STATUS_BONDED')
+      const activeValidators = validators.filter((validator: Validator) => validator.status === 'BOND_STATUS_BONDED')
       setActiveValidators(activeValidators)
       setShuffledActiveValidators(shuffleArray(activeValidators))
-      setInactiveValidators(validators.filter((item: any) => item.status === 'BOND_STATUS_UNBONDED'))
+      setInactiveValidators(validators.filter((validator: Validator) => validator.status === 'BOND_STATUS_UNBONDED'))
     }
     fetchValidators()
   }, [])
@@ -241,7 +241,7 @@ export const Staking = () => {
     if (shuffledActiveValidators && validatorDisplayStatus == 'active') {
       setValidatorsBySearch(
         shuffledActiveValidators.filter(
-          (validator: any) => validator?.description?.moniker.toLowerCase().includes(searchQuery?.toLowerCase())
+          (validator: Validator) => validator?.description?.moniker.toLowerCase().includes(searchQuery?.toLowerCase())
         )
       )
     }
@@ -429,7 +429,7 @@ export const Staking = () => {
                 : validatorDisplayStatus == 'active'
                 ? shuffledActiveValidators
                 : inactiveValidators
-              )?.map((validator: any, i: any) => (
+              )?.map((validator: Validator, i: number) => (
                 <ValidatorItem
                   position={i}
                   validator={validator}

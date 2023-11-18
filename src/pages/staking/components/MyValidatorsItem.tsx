@@ -9,6 +9,7 @@ import { formatNumber } from 'utils/commons'
 import { scrtToken } from 'utils/tokens'
 import ValidatorItem from './ValidatorItem'
 import { Validator } from 'secretjs/dist/grpc_gateway/cosmos/staking/v1beta1/staking.pb'
+import { Nullable } from 'types/Nullable'
 
 interface Props {
   name: string
@@ -17,7 +18,7 @@ interface Props {
   identity?: string
   setSelectedValidator: any
   restakeEntries: any
-  validator: any
+  validator: Validator
   openModal: any
 }
 
@@ -26,7 +27,7 @@ const MyValidatorsItem = (props: Props) => {
 
   const { currentPrice, setCurrentPrice } = useContext(APIContext)
 
-  const [imgUrl, setImgUrl] = useState<any>()
+  const [imgUrl, setImgUrl] = useState<Nullable<string>>()
 
   const identityRef = useRef(props.identity)
 

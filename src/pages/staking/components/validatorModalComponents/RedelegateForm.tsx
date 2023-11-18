@@ -13,6 +13,7 @@ import { scrtToken } from 'utils/tokens'
 import PercentagePicker from 'components/PercentagePicker'
 import Button from 'components/UI/Button/Button'
 import toast from 'react-hot-toast'
+import { Validator } from 'types/Validator'
 
 export default function RedelegateForm() {
   const { delegatorDelegations, validators, selectedValidator, setView, reload, setReload } = useContext(StakingContext)
@@ -160,20 +161,22 @@ export default function RedelegateForm() {
             isDisabled={!isConnected}
             options={shuffleArray(
               validators
-                ?.filter((item: any) => item.status === 'BOND_STATUS_BONDED')
-                .map((validator: any) => {
+                ?.filter((validator: Validator) => validator.status === 'BOND_STATUS_BONDED')
+                .map((validator: Validator) => {
                   return {
                     name: validator?.description?.moniker,
                     value: validator?.operator_address
                   }
                 })
             )}
-            onChange={(item: any) => {
-              setRedelegateValidator(validators.find((validator: any) => validator.operator_address === item.value))
+            onChange={(item: Validator) => {
+              setRedelegateValidator(
+                validators.find((validator: Validator) => validator.operator_address === item.value)
+              )
             }}
             isSearchable={true}
             filterOption={customFilter}
-            formatOptionLabel={(validator: any) => {
+            formatOptionLabel={(validator: Validator) => {
               return (
                 <div className="flex items-center">
                   <span className="font-semibold text-base">{validator?.name}</span>

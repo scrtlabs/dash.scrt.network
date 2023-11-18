@@ -43,7 +43,7 @@ export default function ManageAutoRestakeModal(props: Props) {
     try {
       const toastId = toast.loading(
         `Setting Auto Restaking for validators: ${validatorObjects
-          .map((validator: any) => {
+          .map((validator: Validator) => {
             const matchedStatus = validatorRestakeStatuses.find(
               (status) => status.validatorAddress === validator.operator_address
             )
@@ -80,7 +80,7 @@ export default function ManageAutoRestakeModal(props: Props) {
             if (tx.code === 0) {
               toast.success(
                 `Set Auto Restaking successfully for validators ${validatorObjects
-                  .map((validator: any) => {
+                  .map((validator: Validator) => {
                     return validator?.description?.moniker
                   })
                   .join(', ')}`
@@ -100,7 +100,7 @@ export default function ManageAutoRestakeModal(props: Props) {
       <div className="my-validators w-full">
         {delegatorDelegations.map((delegation: any, i: number) => {
           const validator = validators.find(
-            (item: any) => item.operator_address == delegation.delegation.validator_address
+            (item: Validator) => item.operator_address == delegation.delegation.validator_address
           )
           return (
             <RestakeValidatorItem
