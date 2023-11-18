@@ -82,8 +82,6 @@ function GetSCRT() {
         <title>{pageTitle} | Get SCRT</title>
       </Helmet>
 
-      {/* <TransakModal open={false} onClose={undefined} /> */}
-
       <div className="max-w-2xl mx-auto px-6">
         {/* Title */}
         <Title title="Get SCRT" />

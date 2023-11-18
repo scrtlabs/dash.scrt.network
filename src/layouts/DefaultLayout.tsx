@@ -82,7 +82,7 @@ export const DefaultLayout = ({ children }: any) => {
         </aside>
         <main className="flex flex-col min-h-screen flex-1 lg:ml-[17rem]">
           {/* Info Box */}
-          <div className="bg-indigo-500 dark:bg-indigo-600 px-4 py-1.5 text-sm text-center">
+          <div className="bg-indigo-500 dark:bg-indigo-600 px-4 py-1.5 text-sm text-center dark:text-black text-white">
             <b>
               {`Earn yield on your ETH assets while benefiting from private DeFi
               with Shade Protocol! `}
