@@ -123,7 +123,7 @@ async function performIbcDeposit(
         tx = await sourceChainNetworkClient.tx.ibc.transfer(
           {
             sender: sourceChainNetworkClient.address,
-            receiver: props.secretNetworkClient.address,
+            receiver: receiver,
             source_channel: useSKIPRouting ? (routing.operations[0] as any).transfer.channel : deposit_channel_id,
             source_port: useSKIPRouting ? (routing.operations[0] as any).transfer.port : 'transfer',
             token: {
@@ -213,6 +213,11 @@ async function performIbcDeposit(
       if (deposit?.axelar_chain_name === CHAINS.MAINNET.AXELAR) {
         depositAddress = destinationAddress
       } else {
+        NotificationService.notify(
+          `Getting Axelar deposit address for sending to Secret Network from ${props.chain.chain_name}...`,
+          'loading',
+          toastId
+        )
         depositAddress = await sdk.getDepositAddress({
           fromChain,
           toChain,
@@ -220,6 +225,11 @@ async function performIbcDeposit(
           asset
         })
       }
+      NotificationService.notify(
+        `Sending ${props.amount} ${token.name} from ${selectedSource.chain_name} to Secret Network`,
+        'loading',
+        toastId
+      )
       tx = await sourceChainNetworkClient.tx.ibc.transfer(
         {
           sender: sourceChainNetworkClient.address,
@@ -476,6 +486,11 @@ async function performIbcWithdrawal(
       if (withdrawalChain?.axelar_chain_name === CHAINS.MAINNET.AXELAR) {
         depositAddress = destinationAddress
       } else {
+        NotificationService.notify(
+          `Getting Axelar deposit address for sending to Secret Network from ${props.chain.chain_name}...`,
+          'loading',
+          toastId
+        )
         depositAddress = await sdk.getDepositAddress({
           fromChain,
           toChain,
@@ -483,6 +498,11 @@ async function performIbcWithdrawal(
           asset
         })
       }
+      NotificationService.notify(
+        `Sending ${props.amount} ${token.name} from Secret Network to ${selectedDest.chain_name}`,
+        'loading',
+        toastId
+      )
 
       tx = await props.secretNetworkClient.tx.compute.executeContract(
         {

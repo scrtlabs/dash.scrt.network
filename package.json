@@ -10,6 +10,7 @@
     "prepare": "husky install"
   },
   "dependencies": {
+    "@axelar-network/axelar-cgp-solidity": "^6.2.0",
     "@axelar-network/axelarjs-sdk": "^0.13.6",
     "@babel/core": "^7.23.3",
     "@emotion/styled": "^11.11.0",
