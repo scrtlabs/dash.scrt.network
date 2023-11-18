@@ -114,7 +114,6 @@ export default function WrapForm() {
   }
 
   const secretToken: Token = tokens.find((token) => token.name === 'SCRT')
-  const [amountString, setAmountString] = useState<string>('0')
 
   useEffect(() => {
     if (Number(scrtBalance) === 0 && scrtBalance !== null) {
@@ -209,7 +208,7 @@ export default function WrapForm() {
           </div>
 
           {/* Balance | [25%|50%|75%|Max] */}
-          {Number(scrtBalance) !== 0 && (
+          {Number(scrtBalance) !== 0 && scrtBalance !== null ? (
             <div className="flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 mt-2">
               <div className="flex-1 text-xs">
                 <BalanceUI token={formik.values.token} isSecretToken={formik.values.wrappingMode === 'unwrap'} />
@@ -218,7 +217,7 @@ export default function WrapForm() {
                 <PercentagePicker setAmountByPercentage={setAmountByPercentage} disabled={!isConnected} />
               </div>
             </div>
-          )}
+          ) : null}
         </div>
         {/* Wrapping Mode Switch */}
         <div className="text-center">
@@ -287,9 +286,11 @@ export default function WrapForm() {
               disabled={!isConnected}
             />
           </div>
-          <div className="flex-1 text-xs mt-3 text-center sm:text-left h-[1rem]">
-            <BalanceUI token={formik.values.token} isSecretToken={formik.values.wrappingMode === 'wrap'} />
-          </div>
+          {Number(scrtBalance) !== 0 && scrtBalance !== null ? (
+            <div className="flex-1 text-xs mt-3 text-center sm:text-left h-[1rem]">
+              <BalanceUI token={formik.values.token} isSecretToken={formik.values.wrappingMode === 'wrap'} />
+            </div>
+          ) : null}
         </div>
 
         {/* Fee Grant */}
