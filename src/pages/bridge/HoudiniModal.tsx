@@ -46,11 +46,11 @@ const HoudiniModal = (props: Props) => {
               <iframe
                 src={`https://houdiniswap.com/?widgetMode=true&theme=${
                   props.theme === 'light' ? 'light' : 'dark'
-                }&tokenIn=ETH&tokenOut=SCRT&amount=1&anonymous=true&partnerId=64f58fc75abdd6a4df170fda&receiveAddress=${
-                  props.secretAddress
+                }&tokenIn=ETH&tokenOut=SCRT&amount=1&anonymous=true&partnerId=64f58fc75abdd6a4df170fda${
+                  props.secretAddress ? `&receiveAddress=${props.secretAddress}` : ``
                 }&tokenLockOut=true`}
-                width="100%"
                 height="100%"
+                width="100%"
                 style={{ maxHeight: '800px' }}
                 onLoad={() => setLoading(false)}
               ></iframe>

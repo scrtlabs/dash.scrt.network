@@ -1,6 +1,6 @@
 import { faXmark } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { Theme } from 'types/Theme'
 
 interface Props {
@@ -9,7 +9,7 @@ interface Props {
   theme: Theme
 }
 
-const SquidModal = (props: Props) => {
+export default function SquidModal(props: Props) {
   const [loading, setLoading] = useState(true)
 
   const SquidStringsDark = {
@@ -136,9 +136,9 @@ const SquidModal = (props: Props) => {
                 <FontAwesomeIcon icon={faXmark} className="fa-fw" />
               </button>
 
-              {loading && (
-                <div className="animate-pulse bg-neutral-300/40 dark:bg-neutral-700/40 absolute top-0 left-0 right-0 bottom-0"></div>
-              )}
+              {loading ? (
+                <div className="animate-pulse bg-neutral-300/40 dark:bg-neutral-700/40 absolute top-0 left-0 right-0 bottom-0 rounded-2xl"></div>
+              ) : null}
 
               {props.theme === 'dark' ? (
                 <iframe
@@ -158,6 +158,7 @@ const SquidModal = (props: Props) => {
                   src={`https://widget.squidrouter.com/iframe?config=${encodeURIComponent(
                     JSON.stringify(SquidStringsLight)
                   )}`}
+                  onLoad={() => setLoading(false)}
                 />
               )}
             </div>
@@ -167,5 +168,3 @@ const SquidModal = (props: Props) => {
     </>
   )
 }
-
-export default SquidModal

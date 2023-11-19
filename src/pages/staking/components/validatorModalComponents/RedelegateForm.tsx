@@ -2,9 +2,8 @@ import BigNumber from 'bignumber.js'
 import React, { useContext, useEffect, useState } from 'react'
 import { APIContext } from 'context/APIContext'
 import { faSearch } from '@fortawesome/free-solid-svg-icons'
-import { formatNumber, formatUsdString, faucetAddress, shuffleArray } from 'utils/commons'
+import { formatNumber, toUsdString, faucetAddress, shuffleArray } from 'utils/commons'
 import { StakingContext } from 'pages/staking/Staking'
-import { toast } from 'react-toastify'
 import FeeGrant from '../../../../components/FeeGrant/FeeGrant'
 import Select, { components } from 'react-select'
 import { ThemeContext } from 'context/ThemeContext'
@@ -13,6 +12,8 @@ import { useSecretNetworkClientStore } from 'store/secretNetworkClient'
 import { scrtToken } from 'utils/tokens'
 import PercentagePicker from 'components/PercentagePicker'
 import Button from 'components/UI/Button/Button'
+import toast from 'react-hot-toast'
+import { Validator } from 'types/Validator'
 
 export default function RedelegateForm() {
   const { delegatorDelegations, validators, selectedValidator, setView, reload, setReload } = useContext(StakingContext)
@@ -33,9 +34,7 @@ export default function RedelegateForm() {
   }
 
   useEffect(() => {
-    const scrtBalanceUsdString = formatUsdString(
-      new BigNumber(amountString!).multipliedBy(Number(currentPrice)).toNumber()
-    )
+    const scrtBalanceUsdString = toUsdString(new BigNumber(amountString!).multipliedBy(Number(currentPrice)).toNumber())
     setAmountInDollarString(scrtBalanceUsdString)
   }, [amountString])
 
@@ -69,39 +68,22 @@ export default function RedelegateForm() {
           )
           .catch((error: any) => {
             console.error(error)
+            toast.dismiss(toastId)
             if (error?.tx?.rawLog) {
-              toast.update(toastId, {
-                render: `Redelegating failed: ${error.tx.rawLog}`,
-                type: 'error',
-                isLoading: false,
-                closeOnClick: true
-              })
+              toast.error(`Redelegating failed: ${error.tx.rawLog}`)
             } else {
-              toast.update(toastId, {
-                render: `Redelegating failed: ${error.message}`,
-                type: 'error',
-                isLoading: false,
-                closeOnClick: true
-              })
+              toast.error(`Redelegating failed: ${error.message}`)
             }
           })
           .then((tx: any) => {
             console.log(tx)
             if (tx) {
               if (tx.code === 0) {
-                toast.update(toastId, {
-                  render: `Successfully redelegated ${amountString} SCRT from ${selectedValidator?.description?.moniker} to ${redelegateValidator?.description?.moniker}`,
-                  type: 'success',
-                  isLoading: false,
-                  closeOnClick: true
-                })
+                toast.success(
+                  `Successfully redelegated ${amountString} SCRT from ${selectedValidator?.description?.moniker} to ${redelegateValidator?.description?.moniker}`
+                )
               } else {
-                toast.update(toastId, {
-                  render: `Redelegating failed: ${tx.rawLog}`,
-                  type: 'error',
-                  isLoading: false,
-                  closeOnClick: true
-                })
+                toast.error(`Redelegating failed: ${tx.rawLog}`)
               }
             }
           })
@@ -147,8 +129,8 @@ export default function RedelegateForm() {
   }
 
   return (
-    <>
-      <div className="bg-neutral-200 dark:bg-neutral-800 p-4 rounded-xl my-4">
+    <div className="grid grid-cols-12 gap-4">
+      <div className="col-span-12 bg-gray-200 dark:bg-neutral-700 text-black dark:text-white p-4 rounded-xl">
         <div className="font-semibold mb-2 text-center sm:text-left">Amount</div>
 
         <input
@@ -158,7 +140,7 @@ export default function RedelegateForm() {
           min="0"
           step="0.000001"
           className={
-            'remove-arrows block flex-1 min-w-0 w-full bg-neutral-100 dark:bg-neutral-900 text-black dark:text-white px-4 py-4 rounded-lg disabled:placeholder-neutral-300 dark:disabled:placeholder-neutral-700 transition-colors font-medium focus:outline-0 focus:ring-2 ring-sky-500/40'
+            'remove-arrows block flex-1 min-w-0 w-full bg-neutral-100 dark:bg-neutral-800 text-black dark:text-white px-4 py-4 rounded-lg disabled:placeholder-neutral-300 dark:disabled:placeholder-neutral-700 transition-colors font-medium focus:outline-0 focus:ring-2 ring-sky-500/40'
           }
           name="toValue"
           id="toValue"
@@ -179,20 +161,22 @@ export default function RedelegateForm() {
             isDisabled={!isConnected}
             options={shuffleArray(
               validators
-                ?.filter((item: any) => item.status === 'BOND_STATUS_BONDED')
-                .map((validator: any) => {
+                ?.filter((validator: Validator) => validator.status === 'BOND_STATUS_BONDED')
+                .map((validator: Validator) => {
                   return {
                     name: validator?.description?.moniker,
                     value: validator?.operator_address
                   }
                 })
             )}
-            onChange={(item: any) => {
-              setRedelegateValidator(validators.find((validator: any) => validator.operator_address === item.value))
+            onChange={(item: Validator) => {
+              setRedelegateValidator(
+                validators.find((validator: Validator) => validator.operator_address === item.value)
+              )
             }}
             isSearchable={true}
             filterOption={customFilter}
-            formatOptionLabel={(validator: any) => {
+            formatOptionLabel={(validator: Validator) => {
               return (
                 <div className="flex items-center">
                   <span className="font-semibold text-base">{validator?.name}</span>
@@ -218,7 +202,7 @@ export default function RedelegateForm() {
       </div>
 
       {/* Footer */}
-      <div className="flex flex-col sm:flex-row-reverse justify-start mt-4 gap-2">
+      <div className="col-span-12 flex flex-col sm:flex-row-reverse justify-start gap-2">
         <Button onClick={handleSubmit} color="primary" size="large">
           Redelegate
         </Button>
@@ -227,6 +211,6 @@ export default function RedelegateForm() {
           Back
         </Button>
       </div>
-    </>
+    </div>
   )
 }

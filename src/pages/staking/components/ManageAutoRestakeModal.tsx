@@ -1,32 +1,23 @@
-import React, { useContext } from 'react'
-import { toast } from 'react-toastify'
+import { useContext } from 'react'
 import { MsgSetAutoRestake } from 'secretjs'
 import { StakingContext, ValidatorRestakeStatus } from 'pages/staking/Staking'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faXmark } from '@fortawesome/free-solid-svg-icons'
 import RestakeValidatorItem from './RestakeValidatorItem'
 import { restakeThreshold } from 'utils/commons'
 import { useSecretNetworkClientStore } from 'store/secretNetworkClient'
 import Modal from 'components/UI/Modal/Modal'
 import Button from 'components/UI/Button/Button'
+import toast from 'react-hot-toast'
+import { Validator } from 'types/Validator'
 
 interface Props {
   open: boolean
   onClose: any
 }
 
-const ManageAutoRestakeModal = (props: Props) => {
-  const { secretNetworkClient, walletAddress, isConnected } = useSecretNetworkClientStore()
+export default function ManageAutoRestakeModal(props: Props) {
+  const { secretNetworkClient, isConnected } = useSecretNetworkClientStore()
 
-  const {
-    delegatorDelegations,
-    delegationTotalRewards,
-    validators,
-    restakeChoices,
-    setRestakeChoices,
-    reload,
-    setReload
-  } = useContext(StakingContext)
+  const { delegatorDelegations, validators, restakeChoices, reload, setReload } = useContext(StakingContext)
 
   if (!props.open) return null
 
@@ -40,98 +31,76 @@ const ManageAutoRestakeModal = (props: Props) => {
     }
   }
 
-  function changeRestakeForValidators(validatorRestakeStatuses: ValidatorRestakeStatus[]) {
-    async function submit() {
-      if (!isConnected) return
+  async function changeRestakeForValidators(validatorRestakeStatuses: ValidatorRestakeStatus[]) {
+    if (!isConnected) return
 
-      const validatorObjects = validators.filter((validator: any) => {
-        return validatorRestakeStatuses.find(
-          (status: ValidatorRestakeStatus) => validator.operator_address === status.validatorAddress
-        )
+    const validatorObjects = validators.filter((validator: Validator) => {
+      return validatorRestakeStatuses.find(
+        (status: ValidatorRestakeStatus) => validator.operator_address === status.validatorAddress
+      )
+    })
+
+    try {
+      const toastId = toast.loading(
+        `Setting Auto Restaking for validators: ${validatorObjects
+          .map((validator: Validator) => {
+            const matchedStatus = validatorRestakeStatuses.find(
+              (status) => status.validatorAddress === validator.operator_address
+            )
+            return `${matchedStatus?.autoRestake ? 'Enabling for' : 'Disabling for'} ${validator?.description?.moniker}`
+          })
+          .join(', ')}`
+      )
+      const txs: MsgSetAutoRestake[] = validatorRestakeStatuses.map((status: ValidatorRestakeStatus) => {
+        return new MsgSetAutoRestake({
+          delegator_address: secretNetworkClient?.address,
+          validator_address: status.validatorAddress,
+          enabled: status.autoRestake
+        })
       })
 
-      try {
-        const toastId = toast.loading(
-          `Setting Auto Restaking for validators: ${validatorObjects
-            .map((validator: any) => {
-              const matchedStatus = validatorRestakeStatuses.find(
-                (status) => status.validatorAddress === validator.operator_address
-              )
-              return `${matchedStatus?.autoRestake ? 'Enabling for' : 'Disabling for'} ${validator?.description
-                ?.moniker}`
-            })
-            .join(', ')}`,
-          { closeButton: true }
-        )
-        const txs = validatorRestakeStatuses.map((status: ValidatorRestakeStatus) => {
-          return new MsgSetAutoRestake({
-            delegator_address: secretNetworkClient?.address,
-            validator_address: status.validatorAddress,
-            enabled: status.autoRestake
-          })
+      await secretNetworkClient.tx
+        .broadcast(txs, {
+          gasLimit: 100_000 * txs.length,
+          gasPriceInFeeDenom: 0.25,
+          feeDenom: 'uscrt'
         })
-
-        await secretNetworkClient.tx
-          .broadcast(txs, {
-            gasLimit: 100_000 * txs.length,
-            gasPriceInFeeDenom: 0.25,
-            feeDenom: 'uscrt'
-          })
-          .catch((error: any) => {
-            console.error(error)
-            if (error?.tx?.rawLog) {
-              toast.update(toastId, {
-                render: `Setting Auto Restaking failed: ${error.tx.rawLog}`,
-                type: 'error',
-                isLoading: false,
-                closeOnClick: true
-              })
+        .catch((error: any) => {
+          console.error(error)
+          toast.dismiss(toastId)
+          if (error?.tx?.rawLog) {
+            toast.error(`Setting Auto Restaking failed: ${error.tx.rawLog}`)
+          } else {
+            toast.error(`Setting Auto Restaking failed: ${error.message}`)
+          }
+        })
+        .then((tx: any) => {
+          console.log(tx)
+          if (tx) {
+            if (tx.code === 0) {
+              toast.success(
+                `Set Auto Restaking successfully for validators ${validatorObjects
+                  .map((validator: Validator) => {
+                    return validator?.description?.moniker
+                  })
+                  .join(', ')}`
+              )
             } else {
-              toast.update(toastId, {
-                render: `Setting Auto Restaking failed: ${error.message}`,
-                type: 'error',
-                isLoading: false,
-                closeOnClick: true
-              })
+              toast.error(`Setting Auto Restaking failed: ${tx.rawLog}`)
             }
-          })
-          .then((tx: any) => {
-            console.log(tx)
-            if (tx) {
-              if (tx.code === 0) {
-                toast.update(toastId, {
-                  render: `Set Auto Restaking successfully for validators ${validatorObjects
-                    .map((validator: any) => {
-                      return validator?.description?.moniker
-                    })
-                    .join(', ')}`,
-                  type: 'success',
-                  isLoading: false,
-                  closeOnClick: true
-                })
-              } else {
-                toast.update(toastId, {
-                  render: `Setting Auto Restaking failed: ${tx.rawLog}`,
-                  type: 'error',
-                  isLoading: false,
-                  closeOnClick: true
-                })
-              }
-            }
-          })
-      } finally {
-        setReload(!reload)
-      }
+          }
+        })
+    } finally {
+      setReload(!reload)
     }
-    submit()
   }
 
-  const CommittedDelegators = () => {
+  function CommittedDelegators() {
     return (
       <div className="my-validators w-full">
         {delegatorDelegations.map((delegation: any, i: number) => {
           const validator = validators.find(
-            (item: any) => item.operator_address == delegation.delegation.validator_address
+            (item: Validator) => item.operator_address == delegation.delegation.validator_address
           )
           return (
             <RestakeValidatorItem
@@ -175,5 +144,3 @@ const ManageAutoRestakeModal = (props: Props) => {
     </Modal>
   )
 }
-
-export default ManageAutoRestakeModal

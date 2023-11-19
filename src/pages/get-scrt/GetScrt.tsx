@@ -9,9 +9,10 @@ import Select from 'react-select'
 import mixpanel from 'mixpanel-browser'
 import { Nullable } from 'types/Nullable'
 import { useSecretNetworkClientStore } from 'store/secretNetworkClient'
+import Title from 'components/Title'
 
 function GetSCRT() {
-  const { secretNetworkClient: secretjs, walletAddress } = useSecretNetworkClientStore()
+  const { secretNetworkClient, walletAddress } = useSecretNetworkClientStore()
 
   const [loading, setLoading] = useState(false)
 
@@ -59,7 +60,7 @@ function GetSCRT() {
     transakQueryStrings.environment = 'PRODUCTION'
   }
   transakQueryStrings.cryptoCurrencyList = 'SCRT'
-  transakQueryStrings.walletAddress = secretjs?.address
+  transakQueryStrings.walletAddress = secretNetworkClient?.address
   transakQueryStrings.disableWalletAddressForm = false
   transakQueryStrings.themeColor = '000000'
   transakQueryStrings.defaultCryptoCurrency = 'SCRT'
@@ -81,15 +82,9 @@ function GetSCRT() {
         <title>{pageTitle} | Get SCRT</title>
       </Helmet>
 
-      {/* <TransakModal open={false} onClose={undefined} /> */}
-
       <div className="max-w-2xl mx-auto px-6">
         {/* Title */}
-        <div className="text-center mb-4">
-          <h1 className="font-semibold text-4xl inline text-transparent bg-clip-text bg-gradient-to-r from-cyan-500 to-purple-500">
-            Get SCRT
-          </h1>
-        </div>
+        <Title title="Get SCRT" />
 
         <p className="mb-8  text-neutral-600 dark:text-neutral-400 leading-7 text-justify">
           You can get SCRT by swapping tokens on a{` `}
@@ -165,7 +160,7 @@ function GetSCRT() {
                 <div className="animate-pulse bg-neutral-300/40 dark:bg-neutral-700/40 w-screen h-screen"></div>
               )}
               <iframe
-                src={`https://app.kado.money/?apiKey=acd1e5a5-8a25-4b2d-b303-b5e113457ef1&onRevCurrency=SCRT&product=BUY&network=SECRET&=onToAddress=${secretjs?.address}`}
+                src={`https://app.kado.money/?apiKey=acd1e5a5-8a25-4b2d-b303-b5e113457ef1&onRevCurrency=SCRT&product=BUY&network=SECRET&=onToAddress=${secretNetworkClient?.address}`}
                 width="100%"
                 height="100%"
                 onLoad={() => setLoading(false)}

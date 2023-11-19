@@ -1,6 +1,5 @@
 import React from 'react'
 import { Window as KeplrWindow } from '@keplr-wallet/types'
-import { BreakpointProvider } from 'react-socks'
 import 'assets/scss/index.scss'
 import { Buffer } from 'buffer'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
@@ -13,6 +12,7 @@ import { Wrap } from 'pages/wrap/Wrap'
 import Apps from 'pages/apps/Apps'
 import { Staking } from 'pages/staking/Staking'
 import { Send } from 'pages/send/Send'
+import Portfolio from 'pages/portfolio/Portfolio'
 
 // Contexts
 import { ThemeContextProvider } from 'context/ThemeContext'
@@ -76,19 +76,17 @@ class ErrorBoundary extends React.Component<{ children: any }, { hasError: boole
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement)
 
 root.render(
-  <BreakpointProvider>
-    <HelmetProvider>
-      <BrowserRouter>
-        <ThemeContextProvider>
-          <APIContextProvider>
-            <DefaultLayout>
-              <App />
-            </DefaultLayout>
-          </APIContextProvider>
-        </ThemeContextProvider>
-      </BrowserRouter>
-    </HelmetProvider>
-  </BreakpointProvider>
+  <HelmetProvider>
+    <BrowserRouter>
+      <ThemeContextProvider>
+        <APIContextProvider>
+          <DefaultLayout>
+            <App />
+          </DefaultLayout>
+        </APIContextProvider>
+      </ThemeContextProvider>
+    </BrowserRouter>
+  </HelmetProvider>
 )
 
 export default function App() {
@@ -101,6 +99,7 @@ export default function App() {
         <Route path="/bridge" element={<Bridge />} />
         <Route path="/get-scrt" element={<GetSCRT />} />
         <Route path="/staking" element={<Staking />} />
+        <Route path="/portfolio" element={<Portfolio />} />
         <Route path="/send" element={<Send />} />
         <Route path="/apps" element={<Apps />} />
       </Routes>

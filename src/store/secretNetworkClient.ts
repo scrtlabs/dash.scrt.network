@@ -2,15 +2,16 @@ import { SecretNetworkClient } from 'secretjs'
 import { FeeGrantStatus } from 'types/FeeGrantStatus'
 import { Nullable } from 'types/Nullable'
 import { allTokens, sleep } from 'utils/commons'
-import { Token, tokens } from 'utils/config'
+import { Chain, Token, chains, tokens } from 'utils/config'
 import { create } from 'zustand'
 import { WalletAPIType } from 'types/WalletAPIType'
 import BigNumber from 'bignumber.js'
 import { WalletService } from 'services/wallet.service'
+import { IbcService } from 'services/ibc.service'
 
-interface TokenBalances {
+export interface TokenBalances {
   balance: Nullable<BigNumber>
-  secretBalance: Nullable<BigNumber | GetBalanceError>
+  secretBalance?: Nullable<BigNumber | GetBalanceError>
 }
 
 export type GetBalanceError = 'viewingKeyError' | 'GenericFetchError'
@@ -36,6 +37,9 @@ interface SecretNetworkClientState {
   getBalance: (token: Token, secretToken?: boolean) => Nullable<BigNumber | GetBalanceError>
   balanceMapping: Map<Token, TokenBalances>
   setBalanceMapping: () => void
+  ibcBalanceMapping: Map<Chain, Map<Token, TokenBalances>>
+  setIbcBalanceMapping: (chain: Chain) => void
+  getIbcBalance: (chain: Chain, token: Token) => Nullable<BigNumber | GetBalanceError>
 }
 
 export const useSecretNetworkClientStore = create<SecretNetworkClientState>()((set, get) => ({
@@ -127,6 +131,29 @@ export const useSecretNetworkClientStore = create<SecretNetworkClientState>()((s
         return tokenBalances.balance
       } else if (secretToken) {
         return tokenBalances.secretBalance
+      }
+    }
+    return null
+  },
+  ibcBalanceMapping: null,
+  setIbcBalanceMapping: async (chain: Chain) => {
+    const supportedTokens = IbcService.getSupportedIbcTokensByChain(chain)
+    const IbcBalances = await WalletService.fetchIbcChainBalances({ chain: chain, tokens: supportedTokens })
+    const ibcBalanceMapping = new Map()
+    set({ ibcBalanceMapping: ibcBalanceMapping.set(chain, IbcBalances) })
+  },
+  getIbcBalance(chain: Chain, token: Token) {
+    if (!get().isInitialized) {
+      get().init()
+    }
+    console.log(get().ibcBalanceMapping)
+    if (get().ibcBalanceMapping !== null) {
+      if (get().ibcBalanceMapping.get(chain) !== undefined) {
+        const tokenBalances: TokenBalances = get().ibcBalanceMapping.get(chain).get(token)
+        if (tokenBalances) {
+          console.log(Number(get().ibcBalanceMapping.get(chain).get(token).balance))
+          return tokenBalances.balance
+        }
       }
     }
     return null

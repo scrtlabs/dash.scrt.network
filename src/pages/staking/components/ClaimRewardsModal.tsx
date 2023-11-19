@@ -1,7 +1,4 @@
 import { useContext, useState } from 'react'
-import { toast } from 'react-toastify'
-import { MsgWithdrawDelegationReward } from 'secretjs'
-import { faucetAddress } from 'utils/commons'
 import { StakingContext } from 'pages/staking/Staking'
 import FeeGrant from '../../../components/FeeGrant/FeeGrant'
 import BigNumber from 'bignumber.js'
@@ -21,7 +18,6 @@ interface Props {
 export default function ClaimRewardsModal(props: Props) {
   const [generalSuccessMessage, setGeneralSuccessMessage] = useState<String>('')
   const [generalErrorMessage, setGeneralErrorMessage] = useState<String>('')
-  const [isLoading, setIsWaiting] = useState<boolean>(false)
 
   const { secretNetworkClient, scrtBalance, feeGrantStatus, requestFeeGrant, isConnected } =
     useSecretNetworkClientStore()
@@ -37,13 +33,11 @@ export default function ClaimRewardsModal(props: Props) {
   }
 
   async function handleClaimRewards() {
-    setIsWaiting(true)
-    const result: any = await StakingService.performClaimStakingRewards({
+    await StakingService.performClaimStakingRewards({
       delegatorDelegations: delegatorDelegations,
       secretNetworkClient: secretNetworkClient,
-      feeGrantStatus: 'success'
+      feeGrantStatus: feeGrantStatus
     })
-    setIsWaiting(false)
   }
 
   return (
@@ -65,40 +59,6 @@ export default function ClaimRewardsModal(props: Props) {
           </div>
           <div>
             <FeeGrant />
-          </div>
-          <div>
-            {isLoading ? (
-              <div className="text-sm font-normal flex items-center gap-2 justify-center">
-                <svg
-                  className="animate-spin h-5 w-5 text-black dark:text-white"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                >
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                  <path
-                    className="opacity-75"
-                    fill="currentColor"
-                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                  ></path>
-                </svg>
-                <span>Processing...</span>
-              </div>
-            ) : null}
-
-            {generalSuccessMessage && (
-              <div className="text-emerald-500 dark:text-emerald-500 text-sm font-normal flex items-center gap-2 justify-center">
-                <FontAwesomeIcon icon={faCircleCheck} />
-                <span>{generalSuccessMessage}</span>
-              </div>
-            )}
-
-            {generalErrorMessage && (
-              <div className="text-red-500 dark:text-red-500 text-sm font-normal flex items-center gap-2 justify-center">
-                <FontAwesomeIcon icon={faTriangleExclamation} />
-                <span>{generalErrorMessage}</span>
-              </div>
-            )}
           </div>
           <Button onClick={handleClaimRewards} color="emerald" size="large">
             Claim Rewards

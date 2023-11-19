@@ -9,7 +9,7 @@ export default function PercentagePicker(props: Props) {
       <button
         type="button"
         onClick={() => props.setAmountByPercentage(25)}
-        className="bg-neutral-300 dark:bg-neutral-800 py-1.5 px-2.5 rounded-l-lg hover:bg-neutral-400 dark:hover:bg-neutral-600 transition"
+        className="bg-gray-300 dark:bg-neutral-800 py-1.5 px-2.5 rounded-l-lg enabled:hover:bg-gray-400 enabled:dark:hover:bg-neutral-600 transition"
         disabled={props.disabled}
       >
         25%
@@ -17,7 +17,7 @@ export default function PercentagePicker(props: Props) {
       <button
         type="button"
         onClick={() => props.setAmountByPercentage(50)}
-        className="bg-neutral-300 dark:bg-neutral-800 py-1.5 px-2.5 hover:bg-neutral-400 dark:hover:bg-neutral-600 transition"
+        className="bg-gray-300 dark:bg-neutral-800 py-1.5 px-2.5 enabled:hover:bg-gray-400 enabled:dark:hover:bg-neutral-600 transition"
         disabled={props.disabled}
       >
         50%
@@ -25,7 +25,7 @@ export default function PercentagePicker(props: Props) {
       <button
         type="button"
         onClick={() => props.setAmountByPercentage(75)}
-        className="bg-neutral-300 dark:bg-neutral-800 py-1.5 px-2.5 hover:bg-neutral-400 dark:hover:bg-neutral-600 transition"
+        className="bg-gray-300 dark:bg-neutral-800 py-1.5 px-2.5 enabled:hover:bg-gray-400 enabled:dark:hover:bg-neutral-600 transition"
         disabled={props.disabled}
       >
         75%
@@ -33,7 +33,7 @@ export default function PercentagePicker(props: Props) {
       <button
         type="button"
         onClick={() => props.setAmountByPercentage(100)}
-        className="bg-neutral-300 dark:bg-neutral-800 py-1.5 px-2.5 rounded-r-lg hover:bg-neutral-400 dark:hover:bg-neutral-600 transition"
+        className="bg-gray-300 dark:bg-neutral-800 py-1.5 px-2.5 rounded-r-lg enabled:hover:bg-gray-400 enabled:dark:hover:bg-neutral-600 transition"
         disabled={props.disabled}
       >
         100%

@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js'
 import { Nullable } from 'types/Nullable'
-import { allTokens, formatUsdString } from 'utils/commons'
+import { allTokens, toUsdString } from 'utils/commons'
 import { Token, tokens } from 'utils/config'
 import { create } from 'zustand'
 
@@ -21,15 +21,9 @@ export const useTokenPricesStore = create<TokenPricesState>()((set, get) => ({
   priceMapping: new Map<Token, number>(),
   isInitialized: false,
   init: () => {
-    let coinGeckoIdsString: string = ''
     let prices: CoinPrice[]
 
-    allTokens.forEach((token, index) => {
-      coinGeckoIdsString = coinGeckoIdsString.concat(token.coingecko_id)
-      if (index !== tokens.length - 1) {
-        coinGeckoIdsString = coinGeckoIdsString.concat(',')
-      }
-    })
+    let coinGeckoIdsString: string = allTokens.map((token) => token.coingecko_id).join(',')
 
     fetch(`https://api.coingecko.com/api/v3/simple/price?ids=${coinGeckoIdsString}&vs_currencies=USD`)
       .then((resp) => resp.json())
@@ -41,10 +35,21 @@ export const useTokenPricesStore = create<TokenPricesState>()((set, get) => ({
         prices = formattedPrices
 
         const priceMapping = new Map<Token, number>()
-        tokens.forEach((token: Token) => {
+        allTokens.forEach((token: Token) => {
           priceMapping.set(token, prices.find((price: any) => price.coingecko_id === token.coingecko_id).priceUsd)
         })
 
+        set({
+          priceMapping: priceMapping,
+          isInitialized: true
+        })
+      })
+      .catch((error) => {
+        console.error(error)
+        const priceMapping = new Map<Token, number>()
+        tokens.forEach((token: Token) => {
+          priceMapping.set(token, undefined)
+        })
         set({
           priceMapping: priceMapping,
           isInitialized: true
@@ -57,7 +62,7 @@ export const useTokenPricesStore = create<TokenPricesState>()((set, get) => ({
     }
     const tokenPrice = get().priceMapping.get(token)
     if (tokenPrice !== undefined) {
-      return formatUsdString(tokenPrice)
+      return toUsdString(tokenPrice)
     }
     return null
   },
@@ -68,7 +73,7 @@ export const useTokenPricesStore = create<TokenPricesState>()((set, get) => ({
     const tokenPrice = get().priceMapping.get(token)
     if (tokenPrice !== undefined) {
       const result = new BigNumber(tokenPrice).multipliedBy(amount).dividedBy(`1e${token.decimals}`)
-      return formatUsdString(Number(result))
+      return toUsdString(Number(result))
     }
     return null
   }

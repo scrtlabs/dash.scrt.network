@@ -1,10 +1,10 @@
 import { useFormik } from 'formik'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { sendSchema } from 'pages/send/sendSchema'
 import { GetBalanceError, useSecretNetworkClientStore } from 'store/secretNetworkClient'
 import Select from 'react-select'
 import { Token, chains } from 'utils/config'
-import NewBalanceUI from 'components/NewBalanceUI'
+import BalanceUI from 'components/BalanceUI'
 import PercentagePicker from 'components/PercentagePicker'
 import Tooltip from '@mui/material/Tooltip'
 import { faCircleCheck, faInfoCircle, faTriangleExclamation } from '@fortawesome/free-solid-svg-icons'
@@ -14,8 +14,47 @@ import FeeGrant from 'components/FeeGrant/FeeGrant'
 import { allTokens } from 'utils/commons'
 import { FeeGrantStatus } from 'types/FeeGrantStatus'
 import BigNumber from 'bignumber.js'
+import toast, { Toaster } from 'react-hot-toast'
+import { useSearchParams } from 'react-router-dom'
+import { Nullable } from 'types/Nullable'
 
 export default function SendForm() {
+  // URL params
+  const [searchParams, setSearchParams] = useSearchParams()
+  const tokenUrlParam = searchParams.get('token')
+  const recipientUrlParam = searchParams.get('recipient')
+  const memoUrlParam = searchParams.get('memo')
+
+  const tokenSelectOptions = SendService.getSupportedTokens()
+
+  const isValidTokenParam = () => {
+    return !!tokenSelectOptions.find((token: Token) => token.name.toLowerCase() === tokenUrlParam.toLowerCase())
+  }
+
+  useEffect(() => {
+    // sets token by searchParam
+    let foundToken: Nullable<Token> = null
+    if (tokenUrlParam) {
+      foundToken = tokenSelectOptions.find((token: Token) => token.name.toLowerCase() === tokenUrlParam)
+    }
+    if (foundToken) {
+      formik.setFieldValue('token', foundToken)
+      formik.setFieldTouched('token')
+    }
+
+    // sets recipient by searchParam
+    if (recipientUrlParam) {
+      formik.setFieldValue('recipient', recipientUrlParam)
+      formik.setFieldTouched('recipient')
+    }
+
+    // sets memo by SearchParam
+    if (memoUrlParam) {
+      formik.setFieldValue('memo', memoUrlParam)
+      formik.setFieldTouched('memo')
+    }
+  }, [])
+
   const {
     secretNetworkClient,
     walletAddress,
@@ -25,12 +64,6 @@ export default function SendForm() {
     connectWallet,
     getBalance
   } = useSecretNetworkClientStore()
-
-  const [generalSuccessMessage, setGeneralSuccessMessage] = useState<String>('')
-  const [generalErrorMessage, setGeneralErrorMessage] = useState<String>('')
-  const [isLoading, setIsWaiting] = useState<boolean>(false)
-
-  const tokenSelectOptions = SendService.getSupportedTokens()
 
   interface IFormValues {
     amount: string
@@ -53,23 +86,20 @@ export default function SendForm() {
     validateOnChange: true,
     onSubmit: async (values) => {
       try {
-        setGeneralErrorMessage('')
-        setGeneralSuccessMessage('')
-        setIsWaiting(true)
-        const res = await SendService.performSending({
+        const res = SendService.performSending({
           ...values,
           secretNetworkClient
         })
-        setIsWaiting(false)
-
-        if (res.success) {
-          setGeneralSuccessMessage(`Sending successful!`)
-        } else {
-          throw new Error()
-        }
+        toast.promise(res, {
+          loading: `Waiting to send ${
+            formik.values.token.address === 'native' || formik.values.token.is_snip20 ? null : 's'
+          } ${formik.values.amount} ${formik.values.token.name}...`,
+          success: 'Sending successful!',
+          error: 'Sending unsuccessful!'
+        })
       } catch (error: any) {
         console.error(error)
-        setGeneralErrorMessage(`Sending unsuccessful!`)
+        toast.error(`Sending unsuccessful!`)
       }
     }
   })
@@ -86,10 +116,9 @@ export default function SendForm() {
     ) {
       formik.setFieldValue(
         'amount',
-        (balance as BigNumber)
-          .dividedBy(`1e${formik.values.token.decimals}`)
-          .times(percentage / 100)
-          .toFormat()
+        Number((balance as BigNumber).dividedBy(`1e${formik.values.token.decimals}`).times(percentage / 100)).toFixed(
+          formik.values.token.decimals
+        )
       )
     }
     formik.setFieldTouched('amount', true)
@@ -114,17 +143,28 @@ export default function SendForm() {
     )
   }
 
+  useEffect(() => {
+    var params = {}
+    params = {
+      ...params,
+      token: formik.values.token.name.toLowerCase(),
+      recipient: formik.values.recipient.toLowerCase(),
+      memo: formik.values.memo
+    }
+    setSearchParams(params)
+  }, [formik.values])
+
   return (
     <form onSubmit={formik.handleSubmit} className="w-full flex flex-col gap-4">
       {/* Amount */}
-      <div className="bg-neutral-200 dark:bg-neutral-700 p-4 rounded-xl">
+      <div className="bg-gray-200 dark:bg-neutral-700 p-4 rounded-xl">
         {/* Title Bar */}
         <div className="flex flex-col sm:flex-row justify-between items-center mb-2 text-center sm:text-left">
           <span className="font-extrabold">Amount</span>
           {/* Validation Error Message */}
-          {formik.touched.amount && formik.errors.amount ? (
+          {formik.touched.amount && formik.errors.amount && (
             <span className="text-red-500 dark:text-red-500 text-xs font-normal">{formik.errors.amount}</span>
-          ) : null}
+          )}
         </div>
         {/* Input Fields */}
         <div className="flex">
@@ -150,7 +190,7 @@ export default function SendForm() {
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
             className={
-              'dark:placeholder-neutral-600 text-right focus:z-10 block flex-1 min-w-0 w-full bg-neutral-100 dark:bg-neutral-800 text-black dark:text-white px-4 rounded-r-lg disabled:placeholder-neutral-300 dark:disabled:placeholder-neutral-700 transition-colors font-medium focus:outline-0 focus:ring-2 ring-sky-500/40' +
+              'dark:placeholder-neutral-600 text-right focus:z-10 block flex-1 min-w-0 w-full bg-white dark:bg-neutral-800 text-black dark:text-white px-4 rounded-r-lg disabled:placeholder-neutral-300 dark:disabled:placeholder-neutral-700 transition-colors font-medium focus:outline-0 focus:ring-2 ring-sky-500/40' +
               (formik.touched.amount && formik.errors.amount ? '  border border-red-500 dark:border-red-500' : '')
             }
             placeholder="0"
@@ -161,7 +201,7 @@ export default function SendForm() {
         {/* Balance | [25%|50%|75%|100%] */}
         <div className="flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 mt-2">
           <div className="flex-1 text-xs">
-            <NewBalanceUI
+            <BalanceUI
               token={allTokens.find((token: Token) => token.name === formik.values.token.name)}
               chain={chains['Secret Network']}
               isSecretToken={formik.values.token.address !== 'native'}
@@ -174,7 +214,7 @@ export default function SendForm() {
       </div>
 
       {/* *** Recipient *** */}
-      <div className="bg-neutral-200 dark:bg-neutral-700 p-4 rounded-xl">
+      <div className="bg-gray-200 dark:bg-neutral-700 p-4 rounded-xl">
         {/* Title Bar */}
         <div className="flex justify-between items-center mb-2">
           <span className="flex-1 font-semibold mb-2 text-center sm:text-left">
@@ -187,9 +227,9 @@ export default function SendForm() {
           </span>
 
           {/* Validation Error Message */}
-          {formik.touched.recipient && formik.errors.recipient ? (
+          {formik.touched.recipient && formik.errors.recipient && (
             <span className="text-red-500 dark:text-red-500 text-xs font-normal">{formik.errors.recipient}</span>
-          ) : null}
+          )}
         </div>
 
         {/* Input Field */}
@@ -202,8 +242,10 @@ export default function SendForm() {
             onBlur={formik.handleBlur}
             type="text"
             className={
-              'dark:placeholder-neutral-600 py-2 text-left focus:z-10 block flex-1 min-w-0 w-full bg-neutral-100 dark:bg-neutral-800 text-black dark:text-white px-4 rounded-md disabled:placeholder-neutral-300 dark:disabled:placeholder-neutral-700 transition-colors font-medium focus:outline-0 focus:ring-2 ring-sky-500/40' +
-              (formik.touched.recipient && formik.errors.recipient ? '  border border-red-500 dark:border-red-500' : '')
+              'dark:placeholder-neutral-600 py-2 text-left focus:z-10 block flex-1 min-w-0 w-full bg-white dark:bg-neutral-800 text-black dark:text-white px-4 rounded-md disabled:placeholder-neutral-300 dark:disabled:placeholder-neutral-700 transition-colors font-medium focus:outline-0 focus:ring-2 ring-sky-500/40' +
+              (formik.touched.recipient && formik.errors.recipient
+                ? ' ring-1 ring-red-500 dark:ring-red-500 text-red-500 dark:text-red-500'
+                : '')
             }
             placeholder="secret1..."
             disabled={!isConnected}
@@ -212,7 +254,7 @@ export default function SendForm() {
       </div>
 
       {/* *** Memo *** */}
-      <div className="bg-neutral-200 dark:bg-neutral-700 p-4 rounded-xl">
+      <div className="bg-gray-200 dark:bg-neutral-700 p-4 rounded-xl">
         {/* Title Bar */}
         <div className="flex justify-between items-center mb-2">
           <span className="flex-1 font-semibold mb-2 text-center sm:text-left">
@@ -225,9 +267,9 @@ export default function SendForm() {
           </span>
 
           {/* Validation Error Message */}
-          {formik.touched.memo && formik.errors.memo ? (
+          {formik.touched.memo && formik.errors.memo && (
             <span className="text-red-500 dark:text-red-500 text-xs font-normal">{formik.errors.memo}</span>
-          ) : null}
+          )}
         </div>
 
         {/* Input Field */}
@@ -240,7 +282,7 @@ export default function SendForm() {
             onBlur={formik.handleBlur}
             type="text"
             className={
-              'dark:placeholder-neutral-600 py-2 text-left focus:z-10 block flex-1 min-w-0 w-full bg-neutral-100 dark:bg-neutral-800 text-black dark:text-white px-4 rounded-md disabled:placeholder-neutral-300 dark:disabled:placeholder-neutral-700 transition-colors font-medium focus:outline-0 focus:ring-2 ring-sky-500/40' +
+              'dark:placeholder-neutral-600 py-2 text-left focus:z-10 block flex-1 min-w-0 w-full bg-white dark:bg-neutral-800 text-black dark:text-white px-4 rounded-md disabled:placeholder-neutral-300 dark:disabled:placeholder-neutral-700 transition-colors font-medium focus:outline-0 focus:ring-2 ring-sky-500/40' +
               (formik.touched.memo && formik.errors.memo ? '  border border-red-500 dark:border-red-500' : '')
             }
             disabled={!isConnected}
@@ -250,39 +292,6 @@ export default function SendForm() {
 
       {/* Fee Grant */}
       <FeeGrant />
-
-      {isLoading ? (
-        <div className="text-sm font-normal flex items-center gap-2 justify-center">
-          <svg
-            className="animate-spin h-5 w-5 text-black dark:text-white"
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-          >
-            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-            <path
-              className="opacity-75"
-              fill="currentColor"
-              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-            ></path>
-          </svg>
-          <span>Processing...</span>
-        </div>
-      ) : null}
-
-      {generalSuccessMessage && (
-        <div className="text-emerald-500 dark:text-emerald-500 text-sm font-normal flex items-center gap-2 justify-center">
-          <FontAwesomeIcon icon={faCircleCheck} />
-          <span>{generalSuccessMessage}</span>
-        </div>
-      )}
-
-      {generalErrorMessage && (
-        <div className="text-red-500 dark:text-red-500 text-sm font-normal flex items-center gap-2 justify-center">
-          <FontAwesomeIcon icon={faTriangleExclamation} />
-          <span>{generalErrorMessage}</span>
-        </div>
-      )}
 
       {/* Submit Button */}
       <button
@@ -296,12 +305,12 @@ export default function SendForm() {
       </button>
 
       {/* Debug Info */}
-      {import.meta.env.VITE_DEBUG_MODE === 'true' ? (
+      {import.meta.env.VITE_DEBUG_MODE === 'true' && (
         <div className="text-sky-500 text-xs p-2 bg-blue-500/20 rounded">
           <div className="mb-4 font-semibold">Debug Info (Dev Mode)</div>
           formik.errors: {JSON.stringify(formik.errors)}
         </div>
-      ) : null}
+      )}
     </form>
   )
 }

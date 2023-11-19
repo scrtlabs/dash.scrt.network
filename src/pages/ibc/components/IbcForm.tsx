@@ -1,10 +1,10 @@
 import { useFormik } from 'formik'
 import { ibcSchema } from './ibcSchema'
-import { useSecretNetworkClientStore } from 'store/secretNetworkClient'
+import { GetBalanceError, useSecretNetworkClientStore } from 'store/secretNetworkClient'
 import { useEffect, useState } from 'react'
 import { IbcMode } from 'types/IbcMode'
 import Select from 'react-select'
-import { Chain, Token, chains, tokens } from 'utils/config'
+import { Chain, Deposit, Token, chains, tokens } from 'utils/config'
 import IbcSelect from './IbcSelect'
 import Tooltip from '@mui/material/Tooltip'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -13,19 +13,128 @@ import AddressInfo from './AddressInfo'
 import PercentagePicker from 'components/PercentagePicker'
 import { IbcService } from 'services/ibc.service'
 import FeeGrant from 'components/FeeGrant/FeeGrant'
-import NewBalanceUI from 'components/NewBalanceUI'
+import BalanceUI from 'components/BalanceUI'
 import { FeeGrantStatus } from 'types/FeeGrantStatus'
+import BridgingFees from './BridgingFees'
+import BigNumber from 'bignumber.js'
+import { allTokens } from 'utils/commons'
+import { useSearchParams } from 'react-router-dom'
+import { NotificationService } from 'services/notification.service'
 
 export default function IbcForm() {
-  const { feeGrantStatus, secretNetworkClient, walletAddress, isConnected } = useSecretNetworkClientStore()
+  // URL params
+  const [searchParams, setSearchParams] = useSearchParams()
+  const modeUrlParam = searchParams.get('mode')
+  const chainUrlParam = searchParams.get('chain')
+  const tokenUrlParam = searchParams.get('token')
 
-  const [isLoading, setIsWaiting] = useState<boolean>(false)
-  const [generalSuccessMessage, setGeneralSuccessMessage] = useState<String>('')
-  const [generalErrorMessage, setGeneralErrorMessage] = useState<String>('')
+  const selectableChains = IbcService.getSupportedChains()
+
+  function isValidChainUrlParam(): boolean {
+    return !!Object.values(chains).find(
+      (chain: Chain) => chain.chain_name.toLowerCase() === chainUrlParam.toLowerCase()
+    )
+  }
+
+  function isValidTokenUrlParam(chain: Chain): boolean {
+    return !!IbcService.getSupportedIbcTokensByChain(chain).find(
+      (token: Token) => token.name.toLowerCase() === tokenUrlParam.toLowerCase()
+    )
+  }
+
+  useEffect(() => {
+    if (modeUrlParam?.toLowerCase() === 'deposit') {
+      formik.setFieldValue('ibcMode', 'deposit')
+    }
+    if (modeUrlParam?.toLowerCase() === 'withdrawal') {
+      formik.setFieldValue('ibcMode', 'withdrawal')
+    }
+    if (chainUrlParam && isValidChainUrlParam()) {
+      const selectedChain = selectableChains.find(
+        (chain: Chain) => chain.chain_name.toLowerCase() === chainUrlParam.toLowerCase()
+      )
+      formik.setFieldValue('chain', selectedChain)
+      if (tokenUrlParam && isValidTokenUrlParam(selectedChain)) {
+        formik.setFieldValue(
+          'token',
+          IbcService.getSupportedIbcTokensByChain(selectedChain).find(
+            (token: Token) => token.name.toLowerCase() === tokenUrlParam.toLowerCase()
+          )
+        )
+      }
+    }
+  }, [chainUrlParam, tokenUrlParam, modeUrlParam])
+
+  const { feeGrantStatus, secretNetworkClient, walletAddress, isConnected, getBalance, getIbcBalance } =
+    useSecretNetworkClientStore()
+
+  const formik = useFormik<IFormValues>({
+    initialValues: {
+      chain: selectableChains.find((chain: Chain) => chain.chain_name === 'Osmosis'),
+      token: IbcService.getSupportedIbcTokensByChain(
+        selectableChains.find((chain: Chain) => chain.chain_name === 'Osmosis')
+      ).find((token: Token) => token.name === 'SCRT'),
+      ibcMode: 'deposit',
+      amount: '',
+      feeGrantStatus: feeGrantStatus
+    },
+    validationSchema: ibcSchema,
+    validateOnBlur: false,
+    validateOnChange: true,
+    onSubmit: async (values) => {
+      try {
+        console.log(values)
+        IbcService.performIbcTransfer({
+          ...values,
+          secretNetworkClient
+        })
+      } catch (error: any) {
+        console.error(error)
+        NotificationService.notify(`Transfer unsuccessful!`, 'error')
+      }
+    }
+  })
+
+  useEffect(() => {
+    var params = {}
+    params = {
+      chain: formik.values.chain.chain_name.toLowerCase(),
+      mode: formik.values.ibcMode,
+      token: formik.values.token.name.toLowerCase()
+    }
+    setSearchParams(params)
+  }, [formik.values.chain, formik.values.ibcMode, formik.values.token])
 
   // handles [25% | 50% | 75% | Max] Button-Group
   function setAmountByPercentage(percentage: number) {
-    formik.setFieldValue('amount', percentage.toString()) // TODO: Fix
+    if (formik.values.ibcMode === 'withdrawal') {
+      const balance = getBalance(
+        formik.values.token,
+        formik.values.ibcMode === 'withdrawal' && formik.values.token.name !== 'SCRT'
+      )
+      if (
+        (balance !== ('viewingKeyError' as GetBalanceError) || balance !== ('GenericFetchError' as GetBalanceError)) &&
+        balance !== null
+      ) {
+        formik.setFieldValue(
+          'amount',
+          Number((balance as BigNumber).dividedBy(`1e${formik.values.token.decimals}`).times(percentage / 100)).toFixed(
+            formik.values.token.decimals
+          )
+        )
+      }
+    } else if (formik.values.ibcMode === 'deposit') {
+      const IbcBalance = getIbcBalance(formik.values.chain, formik.values.token)
+      if (IbcBalance !== null) {
+        formik.setFieldValue(
+          'amount',
+          Number(
+            (IbcBalance as BigNumber).dividedBy(`1e${formik.values.token.decimals}`).times(percentage / 100)
+          ).toFixed(formik.values.token.decimals)
+        )
+      }
+    }
+    formik.setFieldTouched('amount', true)
   }
 
   function toggleIbcMode() {
@@ -35,8 +144,6 @@ export default function IbcForm() {
       formik.setFieldValue('ibcMode', 'deposit')
     }
   }
-
-  const selectableChains = IbcService.getSupportedChains()
 
   const ChainSelect = () => {
     return (
@@ -69,41 +176,6 @@ export default function IbcForm() {
     feeGrantStatus: FeeGrantStatus
   }
 
-  const formik = useFormik<IFormValues>({
-    initialValues: {
-      chain: selectableChains.find((chain: Chain) => chain.chain_name === 'Osmosis'),
-      token: IbcService.getSupportedIbcTokensByChain(
-        selectableChains.find((chain: Chain) => chain.chain_name === 'Osmosis')
-      ).find((token: Token) => token.name === 'SCRT'),
-      ibcMode: 'deposit',
-      amount: '',
-      feeGrantStatus: feeGrantStatus
-    },
-    validationSchema: ibcSchema,
-    validateOnBlur: false,
-    validateOnChange: true,
-    onSubmit: async (values) => {
-      try {
-        setGeneralErrorMessage('')
-        setGeneralSuccessMessage('')
-        setIsWaiting(true)
-        const res = await IbcService.performIbcTransfer({
-          ...values,
-          secretNetworkClient: secretNetworkClient
-        })
-        setIsWaiting(false)
-        if (res.success) {
-          setGeneralSuccessMessage(`IBC transfer successful!`)
-        } else {
-          throw new Error(res.errorMsg)
-        }
-      } catch (error: any) {
-        console.error(error)
-        setGeneralErrorMessage(`IBC transfer failed!`)
-      }
-    }
-  })
-
   function getSupportedTokens(): Token[] {
     let tempSelectedChain = formik.values.chain
     let supportedTokens = IbcService.getSupportedIbcTokensByChain(tempSelectedChain)
@@ -116,7 +188,9 @@ export default function IbcForm() {
   useEffect(() => {
     const supportedTokensBySelectedChain: Token[] = getSupportedTokens()
     setSupportedTokens(supportedTokensBySelectedChain)
-    formik.setFieldValue('token', supportedTokensBySelectedChain[0])
+    if (!supportedTokensBySelectedChain.includes(formik.values.token)) {
+      formik.setFieldValue('token', supportedTokensBySelectedChain[0])
+    }
 
     async function fetchSourceChainAddress() {
       const sourceChainAddr = await IbcService.getChainSecretJs(formik.values.chain)
@@ -133,7 +207,7 @@ export default function IbcForm() {
         className="w-full flex flex-col gap-4 text-neutral-800 dark:text-neutral-200 bg-white dark:bg-neutral-800"
       >
         {/* [From|To] Picker */}
-        <div className="flex flex-col md:flex-row mb-8">
+        <div className="flex flex-col md:flex-row">
           {/* *** From *** */}
           <div className="flex-initial w-full md:w-1/3">
             {/* circle */}
@@ -194,9 +268,10 @@ export default function IbcForm() {
                 >
                   <span>
                     <button
+                      type="button"
                       onClick={toggleIbcMode}
                       className={
-                        'focus:outline-none focus-visible:ring-2 ring-sky-500/40 inline-block bg-neutral-200 dark:bg-neutral-700 px-3 py-2 text-cyan-500 dark:text-cyan-500 transition-colors rounded-xl disabled:text-neutral-500 dark:disabled:text-neutral-500' +
+                        'focus:outline-none focus-visible:ring-2 ring-sky-500/40 inline-block bg-gray-200 dark:bg-neutral-700 px-3 py-2 text-cyan-500 dark:text-cyan-500 transition-colors rounded-xl disabled:text-neutral-500 dark:disabled:text-neutral-500' +
                         (secretNetworkClient?.address ? 'hover:text-cyan-700 dark:hover:text-cyan-300' : '')
                       }
                       disabled={!isConnected}
@@ -246,7 +321,7 @@ export default function IbcForm() {
               {formik.values.ibcMode === 'deposit' && (
                 <div
                   style={{ paddingTop: '.76rem', paddingBottom: '.76rem' }}
-                  className="flex items-center w-full text-sm font-semibold select-none bg-neutral-200 dark:bg-neutral-800 rounded text-neutral-800 dark:text-neutral-200 focus:bg-neutral-300 dark:focus:bg-neutral-700 disabled:hover:bg-neutral-200 dark:disabled:hover:bg-neutral-800 border border-neutral-300 dark:border-neutral-600"
+                  className="flex items-center w-full text-sm font-semibold select-none bg-white dark:bg-neutral-800 rounded text-neutral-800 dark:text-neutral-200 focus:bg-neutral-300 dark:focus:bg-neutral-700 disabled:hover:bg-neutral-200 dark:disabled:hover:bg-neutral-800 border border-neutral-300 dark:border-neutral-600"
                 >
                   <div className="flex-1 px-3 text-center">
                     <span>Secret Network</span>
@@ -263,13 +338,13 @@ export default function IbcForm() {
           destAddress={formik.values.ibcMode === 'withdrawal' ? sourceChainAddress : walletAddress}
         />
 
-        <div className="bg-neutral-200 dark:bg-neutral-700 p-4 rounded-xl">
+        <div className="bg-gray-200 dark:bg-neutral-700 p-4 rounded-xl">
           {/* Title Bar */}
           <div className="flex flex-col sm:flex-row justify-between items-center mb-2 text-center sm:text-left">
             <span className="font-extrabold">Token</span>
-            {formik.touched.amount && formik.errors.amount ? (
+            {formik.touched.amount && formik.errors.amount && (
               <span className="text-red-500 dark:text-red-500 text-xs font-normal">{formik.errors.amount}</span>
-            ) : null}
+            )}
           </div>
           <div className="flex" id="inputWrapper">
             <Select
@@ -313,7 +388,7 @@ export default function IbcForm() {
           {/* Balance | [25%|50%|75%|Max] */}
           <div className="flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 mt-3">
             <div className="flex-1 text-xs">
-              <NewBalanceUI
+              <BalanceUI
                 token={formik.values.token}
                 chain={formik.values.ibcMode === 'withdrawal' ? chains['Secret Network'] : formik.values.chain}
                 isSecretToken={formik.values.ibcMode === 'withdrawal' && formik.values.token.name !== 'SCRT'}
@@ -326,40 +401,16 @@ export default function IbcForm() {
         </div>
 
         {/* Fee Grant */}
-        {formik.values.ibcMode === 'withdrawal' ? <FeeGrant /> : null}
+        {formik.values.ibcMode === 'withdrawal' && <FeeGrant />}
 
-        {isLoading ? (
-          <div className="text-sm font-normal flex items-center gap-2 justify-center">
-            <svg
-              className="animate-spin h-5 w-5 text-black dark:text-white"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-            >
-              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-              <path
-                className="opacity-75"
-                fill="currentColor"
-                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-              ></path>
-            </svg>
-            <span>Processing...</span>
-          </div>
-        ) : null}
-
-        {generalSuccessMessage ? (
-          <div className="text-emerald-500 dark:text-emerald-500 text-sm font-normal flex items-center gap-2 justify-center">
-            <FontAwesomeIcon icon={faCircleCheck} />
-            <span>{generalSuccessMessage}</span>
-          </div>
-        ) : null}
-
-        {generalSuccessMessage ? (
-          <div className="text-emerald-500 dark:text-emerald-500 text-sm font-normal flex items-center gap-2 justify-center">
-            <FontAwesomeIcon icon={faCircleCheck} />
-            <span>{generalSuccessMessage}</span>
-          </div>
-        ) : null}
+        {formik.values.token.is_ics20 && formik.values.chain.chain_name != 'Axelar' && (
+          <BridgingFees
+            chain={formik.values.chain}
+            token={formik.values.token}
+            amount={formik.values.amount}
+            ibcMode={formik.values.ibcMode}
+          />
+        )}
 
         {/* Submit Button */}
         <button
@@ -373,12 +424,12 @@ export default function IbcForm() {
         </button>
 
         {/* Debug Info */}
-        {import.meta.env.VITE_DEBUG_MODE === 'true' ? (
+        {import.meta.env.VITE_DEBUG_MODE === 'true' && (
           <div className="text-sky-500 text-xs p-2 bg-blue-500/20 rounded">
             <div className="mb-4 font-semibold">Debug Info (Dev Mode)</div>
             formik.errors: {JSON.stringify(formik.errors)}
           </div>
-        ) : null}
+        )}
       </form>
     </>
   )

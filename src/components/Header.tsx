@@ -1,3 +1,5 @@
+import Title from './Title'
+
 interface Props {
   title: string
   description?: string
@@ -7,14 +9,10 @@ const Header = (props: Props) => {
   return (
     <>
       {/* Title */}
-      <div className="text-center mb-4">
-        <h1 className="font-bold text-4xl inline text-transparent bg-clip-text bg-gradient-to-r from-cyan-500 to-purple-500">
-          {props.title}
-        </h1>
-      </div>
+      <Title title={props.title} />
       {/* Description */}
       {props.description && (
-        <p className="sm:max-w-lg mx-auto mb-6 text-center text-neutral-500 dark:text-neutral-500">
+        <p className="mt-4 sm:max-w-lg mx-auto mb-6 text-center text-neutral-500 dark:text-neutral-500">
           {props.description}
         </p>
       )}

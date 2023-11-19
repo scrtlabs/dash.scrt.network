@@ -1,14 +1,14 @@
 import BigNumber from 'bignumber.js'
 import React, { useContext, useEffect, useState } from 'react'
 import { APIContext } from 'context/APIContext'
-import { formatNumber, formatUsdString, faucetAddress } from 'utils/commons'
+import { formatNumber, toUsdString, faucetAddress } from 'utils/commons'
 import { StakingContext } from 'pages/staking/Staking'
-import { toast } from 'react-toastify'
 import FeeGrant from '../../../../components/FeeGrant/FeeGrant'
 import { useSecretNetworkClientStore } from 'store/secretNetworkClient'
 import { scrtToken } from 'utils/tokens'
 import PercentagePicker from 'components/PercentagePicker'
 import Button from 'components/UI/Button/Button'
+import toast from 'react-hot-toast'
 
 export default function StakingForm() {
   const { selectedValidator, setView } = useContext(StakingContext)
@@ -23,9 +23,7 @@ export default function StakingForm() {
   }
 
   useEffect(() => {
-    const scrtBalanceUsdString = formatUsdString(
-      new BigNumber(amountString!).multipliedBy(Number(currentPrice)).toNumber()
-    )
+    const scrtBalanceUsdString = toUsdString(new BigNumber(amountString!).multipliedBy(Number(currentPrice)).toNumber())
     setAmountInDollarString(scrtBalanceUsdString)
   }, [amountString])
 
@@ -58,43 +56,27 @@ export default function StakingForm() {
           )
           .catch((error: any) => {
             console.error(error)
+            toast.dismiss(toastId)
             if (error?.tx?.rawLog) {
-              toast.update(toastId, {
-                render: `Staking failed: ${error.tx.rawLog}`,
-                type: 'error',
-                isLoading: false,
-                closeOnClick: true
-              })
+              toast.error(`Staking failed: ${error.tx.rawLog}`)
             } else {
-              toast.update(toastId, {
-                render: `Staking failed: ${error.message}`,
-                type: 'error',
-                isLoading: false,
-                closeOnClick: true
-              })
+              toast.error(`Staking failed: ${error.message}`)
             }
           })
           .then((tx: any) => {
             console.log(tx)
             if (tx) {
               if (tx.code === 0) {
-                toast.update(toastId, {
-                  render: `Staking ${amountString} SCRT successfully with validator: ${selectedValidator?.description?.moniker}`,
-                  type: 'success',
-                  isLoading: false,
-                  closeOnClick: true
-                })
+                toast.success(
+                  `Staking ${amountString} SCRT successfully with validator: ${selectedValidator?.description?.moniker}`
+                )
               } else {
-                toast.update(toastId, {
-                  render: `Staking failed: ${tx.rawLog}`,
-                  type: 'error',
-                  isLoading: false,
-                  closeOnClick: true
-                })
+                toast.error(`Staking failed: ${tx.rawLog}`)
               }
             }
           })
-      } finally {
+      } catch (e: any) {
+        console.error(e)
       }
     }
     submit()
@@ -114,8 +96,8 @@ export default function StakingForm() {
   }
 
   return (
-    <>
-      <div className="bg-neutral-200 dark:bg-neutral-800 p-4 rounded-xl my-4">
+    <div className="grid grid-cols-12 gap-4">
+      <div className="col-span-12 p-4 rounded-xl bg-gray-200 dark:bg-neutral-700 text-black dark:text-white">
         <div className="font-semibold mb-2 text-center sm:text-left">Amount to Stake</div>
 
         <input
@@ -125,7 +107,7 @@ export default function StakingForm() {
           min="0"
           step="0.000001"
           className={
-            'block flex-1 min-w-0 w-full bg-neutral-100 dark:bg-neutral-900 text-black dark:text-white px-4 py-4 rounded-lg disabled:placeholder-neutral-300 dark:disabled:placeholder-neutral-700 transition-colors font-medium focus:outline-0 focus:ring-2 ring-sky-500/40'
+            'block flex-1 min-w-0 w-full bg-neutral-100 dark:bg-neutral-800 text-black dark:text-white px-4 py-4 rounded-lg disabled:placeholder-neutral-300 dark:disabled:placeholder-neutral-700 transition-colors font-medium focus:outline-0 focus:ring-2 ring-sky-500/40'
           }
           name="toValue"
           id="toValue"
@@ -148,7 +130,7 @@ export default function StakingForm() {
       </div>
 
       {/* Footer */}
-      <div className="flex flex-col sm:flex-row-reverse justify-start mt-4 gap-2">
+      <div className="col-span-12 flex flex-col sm:flex-row-reverse justify-start gap-2">
         <Button size="large" color="primary" onClick={handleSubmit}>
           Delegate
         </Button>
@@ -161,6 +143,6 @@ export default function StakingForm() {
           Back
         </Button>
       </div>
-    </>
+    </div>
   )
 }

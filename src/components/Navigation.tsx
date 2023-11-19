@@ -13,7 +13,8 @@ import {
   faShuffle,
   faCreditCard,
   faPaperPlane,
-  faChartPie
+  faChartPie,
+  faPieChart
 } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import React, { useState } from 'react'
@@ -31,10 +32,6 @@ export function Navigation({
 
   function toggleIsExtendedMenuOpen() {
     setIsExtendedMenuOpen(!isExtendedMenuOpen)
-  }
-
-  function toggleIsWalletMenuOpen() {
-    setIsWalletMenuOpen(!isWalletMenuOpen)
   }
 
   return (
@@ -66,7 +63,7 @@ export function Navigation({
             to="/"
             className={({ isActive }) =>
               isActive
-                ? 'text-black dark:text-white bg-gradient-to-r from-neutral-200 via-neutral-200 to-neutral-200/10 dark:from-neutral-700 dark:via-neutral-700 dark:to-neutral-700/10 block w-full px-8 py-3 rounded-xl transition-colors font-semibold cursor-default'
+                ? 'text-black dark:text-white bg-gradient-to-r from-gray-200 via-gray-200 to-gray-200/10 dark:from-neutral-700 dark:via-neutral-700 dark:to-neutral-700/10 block w-full px-8 py-3 rounded-xl transition-colors font-semibold cursor-default'
                 : 'text-neutral-700 dark:text-neutral-300 cursor-pointer hover:text-black dark:hover:text-white block w-full px-8 py-3 rounded-xl transition-colors'
             }
           >
@@ -79,7 +76,7 @@ export function Navigation({
             to="/ibc"
             className={({ isActive }) =>
               isActive
-                ? 'text-black dark:text-white bg-gradient-to-r from-neutral-200 via-neutral-200 to-neutral-200/10 dark:from-neutral-700 dark:via-neutral-700 dark:to-neutral-700/10 block w-full px-8 py-3 rounded-xl transition-colors font-semibold cursor-default'
+                ? 'text-black dark:text-white bg-gradient-to-r from-gray-200 via-gray-200 to-gray-200/10 dark:from-neutral-700 dark:via-neutral-700 dark:to-neutral-700/10 block w-full px-8 py-3 rounded-xl transition-colors font-semibold cursor-default'
                 : 'text-neutral-700 dark:text-neutral-300 cursor-pointer hover:text-black dark:hover:text-white block w-full px-8 py-3 rounded-xl transition-colors'
             }
           >
@@ -92,7 +89,7 @@ export function Navigation({
             to="/wrap"
             className={({ isActive }) =>
               isActive
-                ? 'text-black dark:text-white bg-gradient-to-r from-neutral-200 via-neutral-200 to-neutral-200/10 dark:from-neutral-700 dark:via-neutral-700 dark:to-neutral-700/10 block w-full px-8 py-3 rounded-xl transition-colors font-semibold cursor-default'
+                ? 'text-black dark:text-white bg-gradient-to-r from-gray-200 via-gray-200 to-gray-200/10 dark:from-neutral-700 dark:via-neutral-700 dark:to-neutral-700/10 block w-full px-8 py-3 rounded-xl transition-colors font-semibold cursor-default'
                 : 'text-neutral-700 dark:text-neutral-300 cursor-pointer hover:text-black dark:hover:text-white block w-full px-8 py-3 rounded-xl transition-colors'
             }
           >
@@ -105,7 +102,7 @@ export function Navigation({
             to="/bridge"
             className={({ isActive }) =>
               isActive
-                ? 'isActiveNavLink text-black dark:text-white bg-gradient-to-r from-neutral-200 via-neutral-200 to-neutral-200/10 dark:from-neutral-700 dark:via-neutral-700 dark:to-neutral-700/10 block w-full px-8 py-3 rounded-xl transition-colors font-semibold cursor-default'
+                ? 'isActiveNavLink text-black dark:text-white bg-gradient-to-r from-gray-200 via-gray-200 to-gray-200/10 dark:from-neutral-700 dark:via-neutral-700 dark:to-neutral-700/10 block w-full px-8 py-3 rounded-xl transition-colors font-semibold cursor-default'
                 : 'isInactiveNavLink text-neutral-700 dark:text-neutral-300 cursor-pointer hover:text-black dark:hover:text-white block w-full px-8 py-3 rounded-xl transition-colors'
             }
           >
@@ -127,7 +124,7 @@ export function Navigation({
             to="/get-scrt"
             className={({ isActive }) =>
               isActive
-                ? 'isActiveNavLink text-black dark:text-white bg-gradient-to-r from-neutral-200 via-neutral-200 to-neutral-200/10 dark:from-neutral-700 dark:via-neutral-700 dark:to-neutral-700/10 block w-full px-8 py-3 rounded-xl transition-colors font-semibold cursor-default'
+                ? 'isActiveNavLink text-black dark:text-white bg-gradient-to-r from-gray-200 via-gray-200 to-gray-200/10 dark:from-neutral-700 dark:via-neutral-700 dark:to-neutral-700/10 block w-full px-8 py-3 rounded-xl transition-colors font-semibold cursor-default'
                 : 'isInactiveNavLink text-neutral-700 dark:text-neutral-300 cursor-pointer hover:text-black dark:hover:text-white block w-full px-8 py-3 rounded-xl transition-colors'
             }
           >
@@ -135,70 +132,51 @@ export function Navigation({
             <span>Get SCRT</span>
           </NavLink>
         </li>
-        <div className="mt-12 text-center lg:text-left">
-          <button
-            onClick={() => toggleIsWalletMenuOpen()}
-            className="px-8 py-3 w-full font-semibold text-neutral-700 dark:text-neutral-300 hover:text-black dark:hover:text-white transition-colors mb-4 flex items-center"
+        <li>
+          <NavLink
+            to="/staking"
+            className={({ isActive }) =>
+              isActive
+                ? 'text-black dark:text-white bg-gradient-to-r from-gray-200 via-gray-200 to-gray-200/10 dark:from-neutral-700 dark:via-neutral-700 dark:to-neutral-700/10 block w-full px-8 py-3 rounded-xl transition-colors font-semibold cursor-default'
+                : 'text-neutral-700 dark:text-neutral-300 cursor-pointer hover:text-black dark:hover:text-white block w-full px-8 py-3 rounded-xl transition-colors'
+            }
           >
-            <div className="flex-1 lg:flex-initial">
-              <FontAwesomeIcon icon={faWallet} className="mr-2" />
-              <span>Wallet</span>
-              <FontAwesomeIcon
-                icon={faChevronDown}
-                className={'flex-initial ml-4' + (isWalletMenuOpen ? ' fa-rotate-180' : '')}
-              />
-            </div>
-          </button>
-          <div className={`text-sm font-semibold ${isWalletMenuOpen ? 'block' : 'hidden'}`} id="extended-menu">
-            <ul className="space-y-6 font-medium">
-              <li>
-                <NavLink
-                  to="/staking"
-                  className={({ isActive }) =>
-                    isActive
-                      ? 'text-black dark:text-white bg-gradient-to-r from-neutral-200 via-neutral-200 to-neutral-200/10 dark:from-neutral-700 dark:via-neutral-700 dark:to-neutral-700/10 block w-full px-8 py-3 rounded-xl transition-colors font-semibold cursor-default'
-                      : 'text-neutral-700 dark:text-neutral-300 cursor-pointer hover:text-black dark:hover:text-white block w-full px-8 py-3 rounded-xl transition-colors'
-                  }
-                >
-                  <FontAwesomeIcon icon={faCoins} className="mr-2" />
-                  <span>Staking</span>
-                </NavLink>
-              </li>
-              <li>
-                <NavLink
-                  to="/balances"
-                  className={({ isActive }) =>
-                    isActive
-                      ? 'text-black dark:text-white bg-gradient-to-r from-neutral-200 via-neutral-200 to-neutral-200/10 dark:from-neutral-700 dark:via-neutral-700 dark:to-neutral-700/10 block w-full px-8 py-3 rounded-xl transition-colors font-semibold cursor-default'
-                      : 'text-neutral-700 dark:text-neutral-300 cursor-pointer hover:text-black dark:hover:text-white block w-full px-8 py-3 rounded-xl transition-colors'
-                  }
-                >
-                  <FontAwesomeIcon icon={faChartPie} className="mr-2" />
-                  <span>Balances</span>
-                </NavLink>
-              </li>
-              <li>
-                <NavLink
-                  to="/send"
-                  className={({ isActive }) =>
-                    isActive
-                      ? 'text-black dark:text-white bg-gradient-to-r from-neutral-200 via-neutral-200 to-neutral-200/10 dark:from-neutral-700 dark:via-neutral-700 dark:to-neutral-700/10 block w-full px-8 py-3 rounded-xl transition-colors font-semibold cursor-default'
-                      : 'text-neutral-700 dark:text-neutral-300 cursor-pointer hover:text-black dark:hover:text-white block w-full px-8 py-3 rounded-xl transition-colors'
-                  }
-                >
-                  <FontAwesomeIcon icon={faPaperPlane} className="mr-2" />
-                  <span>Send</span>
-                </NavLink>
-              </li>
-            </ul>
-          </div>
-        </div>
+            <FontAwesomeIcon icon={faCoins} className="mr-2" />
+            <span>Staking</span>
+          </NavLink>
+        </li>
+        <li>
+          <NavLink
+            to="/portfolio"
+            className={({ isActive }) =>
+              isActive
+                ? 'text-black dark:text-white bg-gradient-to-r from-neutral-200 via-neutral-200 to-neutral-200/10 dark:from-neutral-700 dark:via-neutral-700 dark:to-neutral-700/10 block w-full px-8 py-3 rounded-xl transition-colors font-semibold cursor-default'
+                : 'text-neutral-700 dark:text-neutral-300 cursor-pointer hover:text-black dark:hover:text-white block w-full px-8 py-3 rounded-xl transition-colors'
+            }
+          >
+            <FontAwesomeIcon icon={faPieChart} className="mr-2" />
+            <span>Portfolio</span>
+          </NavLink>
+        </li>
+        <li>
+          <NavLink
+            to="/send"
+            className={({ isActive }) =>
+              isActive
+                ? 'text-black dark:text-white bg-gradient-to-r from-gray-200 via-gray-200 to-gray-200/10 dark:from-neutral-700 dark:via-neutral-700 dark:to-neutral-700/10 block w-full px-8 py-3 rounded-xl transition-colors font-semibold cursor-default'
+                : 'text-neutral-700 dark:text-neutral-300 cursor-pointer hover:text-black dark:hover:text-white block w-full px-8 py-3 rounded-xl transition-colors'
+            }
+          >
+            <FontAwesomeIcon icon={faPaperPlane} className="mr-2" />
+            <span>Send</span>
+          </NavLink>
+        </li>
         <li>
           <NavLink
             to="/apps"
             className={({ isActive }) =>
               isActive
-                ? 'isActiveNavLink text-black dark:text-white bg-gradient-to-r from-neutral-200 via-neutral-200 to-neutral-200/10 dark:from-neutral-700 dark:via-neutral-700 dark:to-neutral-700/10 block w-full px-8 py-3 rounded-xl transition-colors font-semibold cursor-default'
+                ? 'isActiveNavLink text-black dark:text-white bg-gradient-to-r from-gray-200 via-gray-200 to-gray-200/10 dark:from-neutral-700 dark:via-neutral-700 dark:to-neutral-700/10 block w-full px-8 py-3 rounded-xl transition-colors font-semibold cursor-default'
                 : 'isInactiveNavLink text-neutral-700 dark:text-neutral-300 cursor-pointer hover:text-black dark:hover:text-white block w-full px-8 py-3 rounded-xl transition-colors'
             }
           >

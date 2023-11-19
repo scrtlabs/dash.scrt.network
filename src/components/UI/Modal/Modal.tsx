@@ -54,26 +54,30 @@ function Modal({ size = 'sm', ...props }: Props) {
 
   return (
     <>
-      {/* Outter */}
+      {/* Outer */}
       <div className="z-50 fixed inset-0 bg-black/80">
         <div className="absolute inset-0 overflow-y-scroll">
-          <div className={` mt-4 md:mt-24 mb-24 ${sizeClass()} mx-auto `}>
+          <div className={`mt-4 md:mt-24 mb-24 ${sizeClass()} mx-auto`}>
+            {/* Inner */}
             <div ref={modalRef} className="mx-4 bg-white dark:bg-neutral-900 p-8 rounded-2xl">
               {/* Head */}
-              <div className={`flex mb-6${!props.title ? ' justify-end' : ' items-center gap-4'}`}>
-                {props.title || props.subTitle ? (
+              <div className={`flex mb-6 ${props.title || props.subTitle ? 'items-center gap-4' : 'justify-end'}`}>
+                {/* Title and Subtitle */}
+                {(props.title || props.subTitle) && (
                   <div className="flex-1 flex-col">
-                    {props.title ? <div className="flex-1 text-xl font-semibold">{props.title}</div> : null}
-                    {props.subTitle ? (
-                      <div className="mt-2 flex-1 text-sm text-neutral-500 dark:text-neutral-500 font-semibold">
+                    {props.title && <div className="text-xl font-semibold">{props.title}</div>}
+                    {props.subTitle && (
+                      <div className="mt-2 text-sm text-neutral-500 dark:text-neutral-500 font-semibold">
                         {props.subTitle}
                       </div>
-                    ) : null}
+                    )}
                   </div>
-                ) : null}
+                )}
+                {/* Close Button */}
                 <button
+                  type="button"
                   onClick={props.onClose}
-                  className="dark:bg-neutral-800 dark:text-neutral-400 dark:hover:text-white bg-neutral-100 hover:bg-neutral-200 dark:hover:bg-neutral-700 transition-colors py-2 px-2.5 rounded-full"
+                  className="dark:bg-neutral-800 dark:text-neutral-400 dark:hover:text-white bg-neutral-100 hover:bg-neutral-200 dark:hover:bg-neutral-700 transition-colors py-2 px-2.5 rounded-xl"
                 >
                   <FontAwesomeIcon icon={faXmark} className="fa-fw" />
                 </button>

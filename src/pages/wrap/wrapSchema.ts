@@ -10,7 +10,7 @@ export const wrapSchema = yup.object().shape({
     .typeError('Please enter a valid amount')
     .transform((_value, originalValue) => Number(originalValue.replace(/,/, '.'))) // transforms comma to dot
     .required('Please enter a valid amount'),
-  token: yup.mixed().oneOf(tokens, 'Invalid token').required('Token is required'),
+  token: yup.mixed().required('Token is required'),
   wrappingMode: yup
     .string()
     .test('isWrappingMode', 'Invalid Wrapping Mode', (value) => isWrappingMode(value))

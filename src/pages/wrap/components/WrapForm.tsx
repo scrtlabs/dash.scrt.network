@@ -1,22 +1,24 @@
-import { faCircleCheck, faRightLeft, faTriangleExclamation } from '@fortawesome/free-solid-svg-icons'
+import { faRightLeft } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import Select from 'react-select'
 import BigNumber from 'bignumber.js'
 import { useFormik } from 'formik'
-import React, { useEffect, useState } from 'react'
-import { NativeTokenBalanceUi, WrappedTokenBalanceUi } from 'components/BalanceUI'
+import { useEffect, useState } from 'react'
 import FeeGrant from 'components/FeeGrant/FeeGrant'
 import PercentagePicker from 'components/PercentagePicker'
-import { WrappingMode } from 'types/WrappingMode'
+import { WrappingMode, isWrappingMode } from 'types/WrappingMode'
 import { Token, tokens } from 'utils/config'
-import { useSecretNetworkClientStore } from 'store/secretNetworkClient'
+import { GetBalanceError, useSecretNetworkClientStore } from 'store/secretNetworkClient'
 import { wrapSchema } from 'pages/wrap/wrapSchema'
 import Tooltip from '@mui/material/Tooltip'
 import { WrapService } from 'services/wrap.service'
-import NewBalanceUI from 'components/NewBalanceUI'
+import BalanceUI from 'components/BalanceUI'
 import { FeeGrantStatus } from 'types/FeeGrantStatus'
+import toast from 'react-hot-toast'
+import { useSearchParams } from 'react-router-dom'
+import { Nullable } from 'types/Nullable'
 
-function WrapForm() {
+export default function WrapForm() {
   const {
     secretNetworkClient,
     walletAddress,
@@ -24,70 +26,14 @@ function WrapForm() {
     requestFeeGrant,
     isConnected,
     connectWallet,
-    scrtBalance
+    scrtBalance,
+    getBalance
   } = useSecretNetworkClientStore()
 
   const handleClick = () => {
     if (!isConnected) {
       connectWallet()
     }
-  }
-
-  function toggleWrappingMode() {
-    if (formik.values.wrappingMode === 'wrap') {
-      formik.setFieldValue('wrappingMode', 'unwrap')
-    } else {
-      formik.setFieldValue('wrappingMode', 'wrap')
-    }
-  }
-
-  const [nativeBalance, setNativeBalance] = useState<any>()
-  const [tokenBalance, setTokenBalance] = useState<any>()
-
-  const secretToken: Token = tokens.find((token) => token.name === 'SCRT')
-  const [selectedToken, setSelectedToken] = useState<Token>(secretToken)
-  const [selectedTokenPrice, setSelectedTokenPrice] = useState<number>(0)
-  const [amountString, setAmountString] = useState<string>('0')
-
-  // handles [25% | 50% | 75% | Max] Button-Group
-  function setAmountByPercentage(percentage: number) {
-    let maxValue = '0'
-    if (formik.values.wrappingMode === 'wrap') {
-      maxValue = nativeBalance
-    } else {
-      maxValue = tokenBalance
-    }
-
-    if (maxValue) {
-      let availableAmount = new BigNumber(maxValue).dividedBy(`1e${selectedToken.decimals}`)
-      let potentialInput = availableAmount.toNumber() * (percentage * 0.01)
-      if (percentage === 100 && potentialInput > 0.05 && selectedToken.name === 'SCRT') {
-        potentialInput = potentialInput - 0.05
-      }
-      if (Number(potentialInput) < 0) {
-        setAmountString('')
-      } else {
-        setAmountString(potentialInput.toFixed(selectedToken.decimals))
-      }
-    }
-  }
-
-  // auto focus on connect
-  useEffect(() => {
-    if (isConnected) {
-      document.getElementById('amount-top').focus()
-    }
-  }, [isConnected])
-
-  const [isLoading, setIsWaiting] = useState<boolean>(false)
-  const [generalSuccessMessage, setGeneralSuccessMessage] = useState<String>('')
-  const [generalErrorMessage, setGeneralErrorMessage] = useState<String>('')
-
-  interface IFormValues {
-    amount: string
-    token: Token
-    wrappingMode: WrappingMode
-    feeGrantStatus: FeeGrantStatus
   }
 
   const formik = useFormik<IFormValues>({
@@ -102,32 +48,23 @@ function WrapForm() {
     validateOnChange: true,
     onSubmit: async (values) => {
       try {
-        setGeneralErrorMessage('')
-        setGeneralSuccessMessage('')
-        setIsWaiting(true)
-        const res = await WrapService.performWrapping({
+        const res = WrapService.performWrapping({
           ...values,
           secretNetworkClient
         })
-        setIsWaiting(false)
-
-        if (res.success) {
-          setGeneralSuccessMessage(`${formik.values.wrappingMode === 'wrap' ? 'Wrapping' : 'Unwrapping'} Successful!`)
-        } else {
-          throw new Error()
-        }
+        toast.promise(res, {
+          loading: `Waiting to ${formik.values.wrappingMode === 'wrap' ? 'wrap' : 'unwrap'} ${formik.values.amount} ${
+            formik.values.token.name
+          }...`,
+          success: `${formik.values.wrappingMode === 'wrap' ? 'Wrapping' : 'Unwrapping'} successful!`,
+          error: `${formik.values.wrappingMode === 'wrap' ? 'Wrapping' : 'Unwrapping'} unsuccessful!`
+        })
       } catch (error: any) {
         console.error(error)
-        setGeneralErrorMessage(`${formik.values.wrappingMode === 'wrap' ? 'Wrapping' : 'Unwrapping'} unsuccessful!`)
+        toast.error(`${formik.values.wrappingMode === 'wrap' ? 'Wrapping' : 'Unwrapping'} unsuccessful!`)
       }
     }
   })
-
-  // reset messages on form change
-  useEffect(() => {
-    setGeneralErrorMessage('')
-    setGeneralSuccessMessage('')
-  }, [formik.values])
 
   function handleTokenSelect(token: Token) {
     formik.setFieldValue('token', token)
@@ -135,17 +72,97 @@ function WrapForm() {
     formik.setFieldTouched('amount', false)
   }
 
+  // URL params
+  const [searchParams, setSearchParams] = useSearchParams()
+  const wrappingModeUrlParam = searchParams.get('mode')
+  const tokenUrlParam = searchParams.get('token')
+
+  useEffect(() => {
+    // sets token by searchParam
+    let foundToken: Nullable<Token> = null
+    if (tokenUrlParam) {
+      foundToken = tokens.find((token: Token) => token.name.toLowerCase() === tokenUrlParam)
+    }
+    if (foundToken) {
+      formik.setFieldValue('token', foundToken)
+    }
+
+    // sets wrappingMode by searchParam
+    if (wrappingModeUrlParam && isWrappingMode(wrappingModeUrlParam)) {
+      formik.setFieldValue('wrappingMode', wrappingModeUrlParam)
+      formik.setFieldTouched('wrappingMode')
+    }
+  }, [])
+
+  useEffect(() => {
+    var params = {}
+    if (formik.values.wrappingMode) {
+      params = { ...params, mode: formik.values.wrappingMode.toLowerCase() }
+    }
+    if (formik.values.token) {
+      params = { ...params, token: formik.values.token.name.toLowerCase() }
+    }
+    setSearchParams(params)
+  }, [formik.values.wrappingMode, formik.values.token])
+
+  function toggleWrappingMode() {
+    if (formik.values.wrappingMode === 'wrap') {
+      formik.setFieldValue('wrappingMode', 'unwrap')
+    } else {
+      formik.setFieldValue('wrappingMode', 'wrap')
+    }
+  }
+
+  const secretToken: Token = tokens.find((token) => token.name === 'SCRT')
+
+  useEffect(() => {
+    if (Number(scrtBalance) === 0 && scrtBalance !== null) {
+      formik.setFieldValue('wrappingMode', 'unwrap')
+      formik.setFieldValue('token', secretToken)
+    }
+  }, [scrtBalance])
+
+  function setAmountByPercentage(percentage: number) {
+    const balance = getBalance(formik.values.token, formik.values.wrappingMode === 'unwrap')
+    if (
+      (balance !== ('viewingKeyError' as GetBalanceError) || balance !== ('GenericFetchError' as GetBalanceError)) &&
+      balance !== null
+    ) {
+      formik.setFieldValue(
+        'amount',
+        Number((balance as BigNumber).dividedBy(`1e${formik.values.token.decimals}`).times(percentage / 100)).toFixed(
+          formik.values.token.decimals
+        )
+      )
+    }
+    formik.setFieldTouched('amount', true)
+  }
+
+  // auto focus on connect
+  useEffect(() => {
+    if (isConnected) {
+      document.getElementById('amount-top').focus()
+    }
+  }, [isConnected])
+
+  interface IFormValues {
+    amount: string
+    token: Token
+    wrappingMode: WrappingMode
+    feeGrantStatus: FeeGrantStatus
+  }
+
   return (
     <div onClick={handleClick}>
       <form onSubmit={formik.handleSubmit} className="w-full flex flex-col gap-4">
         {/* *** From *** */}
-        <div className="bg-neutral-200 dark:bg-neutral-700 p-4 rounded-xl">
+        <div className="bg-gray-200 dark:bg-neutral-700 p-4 rounded-xl">
           {/* Title Bar */}
           <div className="flex flex-col sm:flex-row justify-between items-center mb-2 text-center sm:text-left">
             <span className="font-extrabold">From</span>
-            {formik.touched.amount && formik.errors.amount ? (
+            {formik.touched.amount && formik.errors.amount && (
               <span className="text-red-500 dark:text-red-500 text-xs font-normal">{formik.errors.amount}</span>
-            ) : null}
+            )}
           </div>
 
           {/* Input Field */}
@@ -182,7 +199,7 @@ function WrapForm() {
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
               className={
-                'dark:placeholder-neutral-600 text-right focus:z-10 block flex-1 min-w-0 w-full bg-neutral-100 dark:bg-neutral-800 text-black dark:text-white px-4 rounded-r-lg disabled:placeholder-neutral-300 dark:disabled:placeholder-neutral-700 transition-colors font-medium focus:outline-0 focus-visible:ring-2 focus-visible:ring-sky-500/60' +
+                'dark:placeholder-neutral-600 text-right focus:z-10 block flex-1 min-w-0 w-full bg-white dark:bg-neutral-800 text-black dark:text-white px-4 rounded-r-lg disabled:placeholder-neutral-300 dark:disabled:placeholder-neutral-700 transition-colors font-medium focus:outline-0 focus-visible:ring-2 focus-visible:ring-sky-500/60' +
                 (formik.touched.amount && formik.errors.amount ? '  border border-red-500 dark:border-red-500' : '')
               }
               placeholder="0"
@@ -191,19 +208,17 @@ function WrapForm() {
           </div>
 
           {/* Balance | [25%|50%|75%|Max] */}
-          <div className="flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 mt-2">
-            <div className="flex-1 text-xs">
-              <NewBalanceUI
-                token={tokens.find((token) => token.name.toLowerCase() === 'scrt')}
-                isSecretToken={formik.values.wrappingMode === 'unwrap'}
-              />
+          {(Number(scrtBalance) !== 0 && scrtBalance !== null) || formik.values.wrappingMode !== 'unwrap' ? (
+            <div className="flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 mt-2">
+              <div className="flex-1 text-xs">
+                <BalanceUI token={formik.values.token} isSecretToken={formik.values.wrappingMode === 'unwrap'} />
+              </div>
+              <div className="sm:flex-initial text-xs">
+                <PercentagePicker setAmountByPercentage={setAmountByPercentage} disabled={!isConnected} />
+              </div>
             </div>
-            <div className="sm:flex-initial text-xs">
-              <PercentagePicker setAmountByPercentage={setAmountByPercentage} disabled={!isConnected} />
-            </div>
-          </div>
+          ) : null}
         </div>
-
         {/* Wrapping Mode Switch */}
         <div className="text-center">
           <Tooltip
@@ -218,7 +233,7 @@ function WrapForm() {
                 type="button"
                 disabled={!isConnected}
                 className={
-                  'inline-block bg-neutral-200 dark:bg-neutral-700 px-3 py-2 text-cyan-500 dark:text-cyan-500 transition-colors rounded-xl disabled:text-neutral-500 dark:disabled:text-neutral-500 focus:outline-0 focus:ring-2 ring-sky-500/40' +
+                  'inline-block bg-gray-200 dark:bg-neutral-700 px-3 py-2 text-cyan-500 dark:text-cyan-500 transition-colors rounded-xl disabled:text-neutral-500 dark:disabled:text-neutral-500 focus:outline-0 focus:ring-2 ring-sky-500/40' +
                   (isConnected ? ' hover:text-cyan-600 dark:hover:text-cyan-300' : '')
                 }
               >
@@ -228,7 +243,7 @@ function WrapForm() {
           </Tooltip>
         </div>
 
-        <div className="bg-neutral-200 dark:bg-neutral-700 p-4 rounded-xl">
+        <div className="bg-gray-200 dark:bg-neutral-700 p-4 rounded-xl">
           <div className="mb-2 text-center sm:text-left">
             <span className="font-extrabold">To</span>
           </div>
@@ -265,52 +280,26 @@ function WrapForm() {
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
               className={
-                'dark:placeholder-neutral-600 text-right focus:z-10 block flex-1 min-w-0 w-full bg-neutral-100 dark:bg-neutral-800 text-black dark:text-white px-4 rounded-r-lg disabled:placeholder-neutral-300 dark:disabled:placeholder-neutral-700 transition-colors font-medium focus:outline-0 focus-visible:ring-2 ring-sky-500/60'
+                'dark:placeholder-neutral-600 text-right focus:z-10 block flex-1 min-w-0 w-full bg-white dark:bg-neutral-800 text-black dark:text-white px-4 rounded-r-lg disabled:placeholder-neutral-300 dark:disabled:placeholder-neutral-700 transition-colors font-medium focus:outline-0 focus-visible:ring-2 ring-sky-500/60'
               }
               placeholder="0"
               disabled={!isConnected}
             />
           </div>
-          <div className="flex-1 text-xs mt-3 text-center sm:text-left h-[1rem]">
-            <NewBalanceUI token={formik.values.token} isSecretToken={formik.values.wrappingMode === 'wrap'} />
-          </div>
+          {(Number(scrtBalance) !== 0 && scrtBalance !== null) || formik.values.wrappingMode !== 'wrap' ? (
+            <div className="flex-1 text-xs mt-3 text-center sm:text-left h-[1rem]">
+              <BalanceUI
+                token={formik.values.token}
+                isSecretToken={
+                  Number(scrtBalance) !== 0 && scrtBalance !== null && formik.values.wrappingMode === 'wrap'
+                }
+              />
+            </div>
+          ) : null}
         </div>
 
         {/* Fee Grant */}
         <FeeGrant />
-
-        {isLoading ? (
-          <div className="text-sm font-normal flex items-center gap-2 justify-center">
-            <svg
-              className="animate-spin h-5 w-5 text-black dark:text-white"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-            >
-              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-              <path
-                className="opacity-75"
-                fill="currentColor"
-                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-              ></path>
-            </svg>
-            <span>Processing...</span>
-          </div>
-        ) : null}
-
-        {generalSuccessMessage && (
-          <div className="text-emerald-500 dark:text-emerald-500 text-sm font-normal flex items-center gap-2 justify-center">
-            <FontAwesomeIcon icon={faCircleCheck} />
-            <span>{generalSuccessMessage}</span>
-          </div>
-        )}
-
-        {generalErrorMessage && (
-          <div className="text-red-500 dark:text-red-500 text-sm font-normal flex items-center gap-2 justify-center">
-            <FontAwesomeIcon icon={faTriangleExclamation} />
-            <span>{generalErrorMessage}</span>
-          </div>
-        )}
 
         {/* Submit Button */}
         <button
@@ -324,21 +313,13 @@ function WrapForm() {
         </button>
 
         {/* Debug Info */}
-        {import.meta.env.VITE_DEBUG_MODE === 'true' ? (
+        {import.meta.env.VITE_DEBUG_MODE === 'true' && (
           <div className="text-sky-500 text-xs p-2 bg-blue-500/20 rounded">
             <div className="mb-4 font-semibold">Debug Info (Dev Mode)</div>
             formik.errors: {JSON.stringify(formik.errors)}
           </div>
-        ) : null}
-
-        {/* amount={amountString}
-              nativeCurrency={selectedToken.name}
-              wrappedAmount={amountString}
-              wrappedCurrency={'s' + selectedToken.name}
-              wrappingMode={wrappingMode} */}
+        )}
       </form>
     </div>
   )
 }
-
-export default WrapForm
