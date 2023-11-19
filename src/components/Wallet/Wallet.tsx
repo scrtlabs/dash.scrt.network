@@ -15,13 +15,7 @@ import BalanceUI from 'components/BalanceUI'
 import { NotificationService } from 'services/notification.service'
 
 function Wallet() {
-  const {
-    isConnected,
-    secretNetworkClient: secretjs,
-    walletAddress,
-    connectWallet,
-    disconnectWallet
-  } = useSecretNetworkClientStore()
+  const { isConnected, walletAddress, connectWallet, disconnectWallet } = useSecretNetworkClientStore()
 
   const [isMenuVisible, setIsMenuVisible] = useState<boolean>(false)
   const [isGetWalletModalOpen, setIsGetWalletModalOpen] = useState<boolean>(false)

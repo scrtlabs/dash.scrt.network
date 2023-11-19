@@ -85,8 +85,7 @@ async function performIbcDeposit(
     'loading'
   )
 
-  // IBC Logic
-  let { deposit_channel_id, deposit_gas, deposit_gas_denom, lcd: lcdSrcChain } = selectedSource
+  let { deposit_channel_id, deposit_gas, deposit_gas_denom } = selectedSource
 
   const deposit: Deposit = token.deposits.filter((deposit: Deposit) => deposit.chain_name === props.chain.chain_name)[0]
 
@@ -421,7 +420,7 @@ async function performIbcWithdrawal(
     .multipliedBy(`1e${token.decimals}`)
     .toFixed(0, BigNumber.ROUND_DOWN)
 
-  let { withdraw_channel_id, withdraw_gas, lcd: lcdDstChain } = selectedDest
+  let { withdraw_channel_id, withdraw_gas } = selectedDest
 
   const withdrawalChain: Withdraw = token.withdrawals.filter(
     (withdrawal: Withdraw) => withdrawal.chain_name === selectedDest.chain_name
@@ -540,90 +539,48 @@ async function performIbcWithdrawal(
           broadcastMode: BroadcastMode.Sync
         }
       )
-    } else if (token.name === 'SCRT') {
-      const routing = await getSkipIBCRouting(selectedDest, 'withdrawal', token, new BigNumber(props.amount))
-
-      const useSKIPRouting = routing?.operations?.length > 1
-
-      let receiver = null
-      let forwardingMemo = null
-      if (useSKIPRouting) {
-        receiver = await getReceiverAddress((routing.operations[1] as any).transfer.chainID)
-        forwardingMemo = await composePMFMemo(routing.operations, sourceChainNetworkClient.address)
-      } else {
-        receiver = sourceChainNetworkClient.address
-      }
-
-      tx = await props.secretNetworkClient.tx.ibc.transfer(
-        {
-          sender: props.secretNetworkClient?.address,
-          receiver: receiver,
-          source_channel: useSKIPRouting ? (routing.operations[0] as any).transfer.channel : withdraw_channel_id,
-          source_port: useSKIPRouting ? (routing.operations[0] as any).transfer.port : 'transfer',
-          token: {
-            amount,
-            denom: withdrawalChain.denom
-          },
-          memo: useSKIPRouting ? forwardingMemo : '',
-          timeout_timestamp: String(Math.floor(Date.now() / 1000) + 10 * 60) // 10 minute timeout
-        },
-        {
-          broadcastCheckIntervalMs: 10000,
-          gasLimit: withdraw_gas,
-          gasPriceInFeeDenom: 0.1,
-          feeDenom: 'uscrt',
-          feeGranter: props.feeGrantStatus === 'success' ? faucetAddress : '',
-          ibcTxsOptions: {
-            resolveResponses: true,
-            resolveResponsesCheckIntervalMs: 250,
-            resolveResponsesTimeoutMs: 12 * 60 * 1000
-          },
-          broadcastMode: BroadcastMode.Sync
-        }
-      )
     } else {
       const routing = await getSkipIBCRouting(selectedDest, 'withdrawal', token, new BigNumber(props.amount))
 
       const useSKIPRouting = routing?.operations?.length > 1
 
-      let receiver = null
-      let forwardingMemo = null
+      const receiver = useSKIPRouting
+        ? await getReceiverAddress((routing.operations[1] as any).transfer.chainID)
+        : sourceChainNetworkClient.address
 
-      if (useSKIPRouting) {
-        receiver = await getReceiverAddress((routing.operations[1] as any).transfer.chainID)
-        forwardingMemo = await composePMFMemo(routing.operations, sourceChainNetworkClient.address)
-      } else {
-        receiver = sourceChainNetworkClient.address
-      }
+      // KEEP this " " inside of the quotes, otherwise singing will fail (don't ask me why)
+      const forwardingMemo = useSKIPRouting
+        ? await composePMFMemo(routing.operations, sourceChainNetworkClient.address)
+        : ' '
 
+      const redeemMsg = new MsgExecuteContract({
+        sender: props.secretNetworkClient?.address,
+        contract_address: token.address,
+        code_hash: token.code_hash,
+        sent_funds: [],
+        msg: {
+          redeem: {
+            amount,
+            denom: token.withdrawals[0].denom,
+            padding: randomPadding()
+          }
+        }
+      })
+
+      const transferMsg = new MsgTransfer({
+        sender: props.secretNetworkClient?.address,
+        receiver: receiver,
+        source_channel: useSKIPRouting ? (routing.operations[0] as any).transfer.channel : withdraw_channel_id,
+        source_port: useSKIPRouting ? (routing.operations[0] as any).transfer.port : 'transfer',
+        token: {
+          amount,
+          denom: withdrawalChain.denom
+        },
+        memo: forwardingMemo,
+        timeout_timestamp: String(Math.floor(Date.now() / 1000) + 10 * 60) // 10 minute timeout
+      })
       tx = await props.secretNetworkClient.tx.broadcast(
-        [
-          new MsgExecuteContract({
-            sender: props.secretNetworkClient?.address,
-            contract_address: token.address,
-            code_hash: token.code_hash,
-            sent_funds: [],
-            msg: {
-              redeem: {
-                amount,
-                denom: token.withdrawals[0].denom,
-                padding: randomPadding()
-              }
-            }
-          } as any),
-          new MsgTransfer({
-            sender: props.secretNetworkClient?.address,
-            receiver: receiver,
-            source_channel: useSKIPRouting ? (routing.operations[0] as any).transfer.channel : withdraw_channel_id,
-            source_port: useSKIPRouting ? (routing.operations[0] as any).transfer.port : 'transfer',
-            token: {
-              amount,
-              denom: withdrawalChain.denom
-            },
-            memo: useSKIPRouting ? forwardingMemo : '',
-            timeout_timestamp: String(Math.floor(Date.now() / 1000) + 10 * 60) // 10 minute timeout
-          })
-        ],
+        token.name === 'SCRT' ? [transferMsg] : [redeemMsg, transferMsg],
         {
           broadcastCheckIntervalMs: 10000,
           gasLimit: 150_000,

@@ -83,9 +83,10 @@ export default function IbcForm() {
     validateOnChange: true,
     onSubmit: async (values) => {
       try {
+        console.log(values)
         IbcService.performIbcTransfer({
           ...values,
-          secretNetworkClient: secretNetworkClient
+          secretNetworkClient
         })
       } catch (error: any) {
         console.error(error)

@@ -5,12 +5,8 @@ import { Chain, Token, chains, tokens } from 'utils/config'
 import { scrtToken } from 'utils/tokens'
 import { useTokenPricesStore } from 'store/TokenPrices'
 import { GetBalanceError, useSecretNetworkClientStore } from 'store/secretNetworkClient'
-import Tooltip from '@mui/material/Tooltip'
-import { toUsdString } from 'utils/commons'
 import { faKey } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { IbcService } from 'services/ibc.service'
-import { WalletService } from 'services/wallet.service'
 
 interface IProps {
   token: Token
