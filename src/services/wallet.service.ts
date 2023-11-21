@@ -1,7 +1,7 @@
 import { SecretNetworkClient } from 'secretjs'
 import { FeeGrantStatus } from 'types/FeeGrantStatus'
 import { Nullable } from 'types/Nullable'
-import { allTokens, faucetURL, sleep } from 'utils/commons'
+import { allTokens, batchQueryCodeHash, batchQueryContractAddress, faucetURL, sleep } from 'utils/commons'
 import { Chain, SECRET_CHAIN_ID, SECRET_LCD, Token, chains, tokens } from 'utils/config'
 import { isMobile } from 'react-device-detect'
 import { scrtToken } from 'utils/tokens'
@@ -250,9 +250,6 @@ const getsTokenBalance = async (
 
   return sBalance
 }
-
-const batchQueryContractAddress = 'secret17gnlxnwux0szd7qhl90ym8lw22qvedjz4v09dm'
-const batchQueryCodeHash = '72a09535b77b76862f7b568baf1ddbe158a2e4bbd0f0879c69ada9b398e31c1f'
 
 const getBatchsTokenBalance = async (
   secretNetworkClient: any,
