@@ -1,7 +1,6 @@
 import * as yup from 'yup'
 import { isWrappingMode } from 'types/WrappingMode'
 import { tokens } from 'utils/config'
-import { isFeeGrantStatus } from 'types/FeeGrantStatus'
 
 export const wrapSchema = yup.object().shape({
   amount: yup
@@ -14,9 +13,5 @@ export const wrapSchema = yup.object().shape({
   wrappingMode: yup
     .string()
     .test('isWrappingMode', 'Invalid Wrapping Mode', (value) => isWrappingMode(value))
-    .required('Please pick a Wrapping Mode'),
-  feeGrantStatus: yup
-    .mixed()
-    .test('is-fee-grant-status', 'Invalid fee grant status', (value: any) => isFeeGrantStatus(value))
-    .required('Fee grant status is required')
+    .required('Please pick a Wrapping Mode')
 })

@@ -75,8 +75,7 @@ export default function IbcForm() {
         selectableChains.find((chain: Chain) => chain.chain_name === 'Osmosis')
       ).find((token: Token) => token.name === 'SCRT'),
       ibcMode: 'deposit',
-      amount: '',
-      feeGrantStatus: feeGrantStatus
+      amount: ''
     },
     validationSchema: ibcSchema,
     validateOnBlur: false,
@@ -86,7 +85,8 @@ export default function IbcForm() {
         console.log(values)
         IbcService.performIbcTransfer({
           ...values,
-          secretNetworkClient
+          secretNetworkClient,
+          feeGrantStatus
         })
       } catch (error: any) {
         console.error(error)
@@ -173,7 +173,6 @@ export default function IbcForm() {
     token: Token
     ibcMode: IbcMode
     amount: string
-    feeGrantStatus: FeeGrantStatus
   }
 
   function getSupportedTokens(): Token[] {

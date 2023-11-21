@@ -1,6 +1,5 @@
 import * as yup from 'yup'
 import { validateAddress } from 'secretjs'
-import { isFeeGrantStatus } from 'types/FeeGrantStatus'
 
 export const sendSchema = yup.object().shape({
   amount: yup
@@ -17,9 +16,5 @@ export const sendSchema = yup.object().shape({
       if (!value) return false
       return validateAddress(value).isValid
     }),
-  memo: yup.string().max(255, 'Memo too long'),
-  feeGrantStatus: yup
-    .mixed()
-    .test('is-fee-grant-status', 'Invalid fee grant status', (value: any) => isFeeGrantStatus(value))
-    .required('Fee grant status is required')
+  memo: yup.string().max(255, 'Memo too long')
 })

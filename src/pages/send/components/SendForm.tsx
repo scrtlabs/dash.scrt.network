@@ -12,7 +12,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { SendService } from 'services/send.service'
 import FeeGrant from 'components/FeeGrant/FeeGrant'
 import { allTokens } from 'utils/commons'
-import { FeeGrantStatus } from 'types/FeeGrantStatus'
 import BigNumber from 'bignumber.js'
 import toast, { Toaster } from 'react-hot-toast'
 import { useSearchParams } from 'react-router-dom'
@@ -70,7 +69,6 @@ export default function SendForm() {
     token: Token
     recipient: string
     memo: string
-    feeGrantStatus: FeeGrantStatus
   }
 
   const formik = useFormik<IFormValues>({
@@ -78,8 +76,7 @@ export default function SendForm() {
       amount: '',
       token: tokenSelectOptions[1],
       recipient: '',
-      memo: '',
-      feeGrantStatus: feeGrantStatus
+      memo: ''
     },
     validationSchema: sendSchema,
     validateOnBlur: false,
@@ -88,7 +85,8 @@ export default function SendForm() {
       try {
         const res = SendService.performSending({
           ...values,
-          secretNetworkClient
+          secretNetworkClient,
+          feeGrantStatus
         })
         toast.promise(res, {
           loading: `Waiting to send ${

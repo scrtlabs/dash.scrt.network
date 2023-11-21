@@ -1,7 +1,6 @@
 import * as yup from 'yup'
 import { isIbcMode } from 'types/IbcMode'
 import { Token, chains, tokens } from 'utils/config'
-import { isFeeGrantStatus } from 'types/FeeGrantStatus'
 
 export const ibcSchema = yup.object().shape({
   amount: yup
@@ -20,9 +19,5 @@ export const ibcSchema = yup.object().shape({
   ibcMode: yup
     .string()
     .test('isIbcMode', 'Invalid IBC Mode', (value) => isIbcMode(value))
-    .required('Please pick an IBC Mode'),
-  feeGrantStatus: yup
-    .mixed()
-    .test('is-fee-grant-status', 'Invalid fee grant status', (value: any) => isFeeGrantStatus(value))
-    .required('Fee grant status is required')
+    .required('Please pick an IBC Mode')
 })

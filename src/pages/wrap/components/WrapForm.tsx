@@ -40,17 +40,18 @@ export default function WrapForm() {
     initialValues: {
       amount: '',
       token: tokens.find((token: Token) => token.name === 'SCRT'),
-      wrappingMode: 'wrap',
-      feeGrantStatus: feeGrantStatus
+      wrappingMode: 'wrap'
     },
     validationSchema: wrapSchema,
     validateOnBlur: false,
     validateOnChange: true,
     onSubmit: async (values) => {
       try {
+        console.log('dfgsdhgsdhdgfhg')
         const res = WrapService.performWrapping({
           ...values,
-          secretNetworkClient
+          secretNetworkClient,
+          feeGrantStatus
         })
         toast.promise(res, {
           loading: `Waiting to ${formik.values.wrappingMode === 'wrap' ? 'wrap' : 'unwrap'} ${formik.values.amount} ${
@@ -149,7 +150,6 @@ export default function WrapForm() {
     amount: string
     token: Token
     wrappingMode: WrappingMode
-    feeGrantStatus: FeeGrantStatus
   }
 
   return (
