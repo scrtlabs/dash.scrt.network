@@ -12,7 +12,7 @@ import { GetBalanceError } from 'store/secretNetworkClient'
 import { IbcService } from './ibc.service'
 import { faBalanceScale } from '@fortawesome/free-solid-svg-icons'
 import { TokenBalances } from 'store/secretNetworkClient'
-import { batchQuery } from '@shadeprotocol/shadejs'
+import { BatchQueryParsedResponse, batchQuery } from '@shadeprotocol/shadejs'
 
 const connectKeplr = async () => {
   const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
@@ -259,13 +259,6 @@ const getBatchsTokenBalance = async (
   if (!secretNetworkClient) {
     return null
   }
-
-  type BatchQueryParsedResponseItem = {
-    id: string | number
-    response: any
-  }
-
-  type BatchQueryParsedResponse = BatchQueryParsedResponseItem[]
 
   const viewingKeys = new Map<Token, string>()
   const balances = new Map<Token, string>()
