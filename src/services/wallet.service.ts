@@ -12,6 +12,7 @@ import { GetBalanceError } from 'store/secretNetworkClient'
 import { IbcService } from './ibc.service'
 import { faBalanceScale } from '@fortawesome/free-solid-svg-icons'
 import { TokenBalances } from 'store/secretNetworkClient'
+import { batchQuery } from '@shadeprotocol/shadejs'
 
 const connectKeplr = async () => {
   const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
@@ -250,6 +251,83 @@ const getsTokenBalance = async (
   return sBalance
 }
 
+const batchQueryContractAddress = 'secret17gnlxnwux0szd7qhl90ym8lw22qvedjz4v09dm'
+const batchQueryCodeHash = '72a09535b77b76862f7b568baf1ddbe158a2e4bbd0f0879c69ada9b398e31c1f'
+
+const getBatchsTokenBalance = async (
+  secretNetworkClient: any,
+  walletAddress: string,
+  tokens: Token[]
+): Promise<Nullable<Map<Token, string>>> => {
+  if (!secretNetworkClient) {
+    return null
+  }
+
+  type BatchQueryParsedResponseItem = {
+    id: string | number
+    response: any
+  }
+
+  type BatchQueryParsedResponse = BatchQueryParsedResponseItem[]
+
+  const viewingKeys = new Map<Token, string>()
+  const balances = new Map<Token, string>()
+
+  let validTokens: Token[] = []
+
+  // Collect valid tokens and viewing keys
+  for (const token of tokens) {
+    const key = await getWalletViewingKey(token.address)
+    if (!key) {
+      viewingKeys.set(token, 'viewingKeyError')
+      balances.set(token, 'viewingKeyError')
+      continue
+    }
+    viewingKeys.set(token, key)
+    validTokens.push(token)
+  }
+
+  // Prepare batch queries for valid tokens
+  const queries = validTokens.map((token) => ({
+    id: token.address,
+    contract: {
+      address: token.address,
+      codeHash: token.code_hash
+    },
+    queryMsg: {
+      balance: { address: walletAddress, key: viewingKeys.get(token) }
+    }
+  }))
+
+  // Execute batch query
+  let batchQueryResults: BatchQueryParsedResponse
+  try {
+    batchQueryResults = await batchQuery({
+      contractAddress: batchQueryContractAddress,
+      codeHash: batchQueryCodeHash,
+      queries: queries
+    })
+  } catch (error) {
+    console.error('Error executing batch query: ', error)
+    return null
+  }
+
+  // Process batch query results
+  batchQueryResults.forEach(({ id, response }) => {
+    const token = validTokens.find((token) => token.address === id)
+    if (token) {
+      if (response.viewing_key_error) {
+        console.error(response.viewing_key_error.msg)
+        balances.set(token, 'viewingKeyError')
+      } else {
+        balances.set(token, response.balance.amount)
+      }
+    }
+  })
+
+  return balances
+}
+
 const getScrtTokenBalance = async (secretNetworkClient: any, walletAddress: string) => {
   try {
     const response = await secretNetworkClient.query.bank.balance({
@@ -347,8 +425,10 @@ async function getBalancesForTokens(props: IGetBalancesForTokensProps): Promise<
       }
     })
 
+    const secretBalances = await getBatchsTokenBalance(props.secretNetworkClient, props.walletAddress, allTokens)
+
     for (const token of allTokens) {
-      const secretBalance = await getsTokenBalance(props.secretNetworkClient, props.walletAddress, token)
+      const secretBalance = secretBalances.get(token)
       const currentEntry = newBalanceMapping.get(token)
 
       if (currentEntry) {
