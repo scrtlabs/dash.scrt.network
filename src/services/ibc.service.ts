@@ -105,7 +105,7 @@ async function performIbcDeposit(
           selectedSource,
           'deposit',
           token,
-          new BigNumber(props.amount)
+          new BigNumber(props.amount).multipliedBy(`1e${props.token.decimals}`)
         )
 
         const useSKIPRouting = routing?.operations?.length > 1
@@ -145,7 +145,12 @@ async function performIbcDeposit(
           }
         )
       } else {
-        const routing = await getSkipIBCRouting(selectedSource, 'deposit', token, new BigNumber(props.amount))
+        const routing = await getSkipIBCRouting(
+          selectedSource,
+          'deposit',
+          token,
+          new BigNumber(props.amount).multipliedBy(`1e${props.token.decimals}`)
+        )
 
         const useSKIPRouting = routing?.operations?.length > 1
 
@@ -540,7 +545,12 @@ async function performIbcWithdrawal(
         }
       )
     } else {
-      const routing = await getSkipIBCRouting(selectedDest, 'withdrawal', token, new BigNumber(props.amount))
+      const routing = await getSkipIBCRouting(
+        selectedDest,
+        'withdrawal',
+        token,
+        new BigNumber(props.amount).multipliedBy(`1e${props.token.decimals}`)
+      )
 
       const useSKIPRouting = routing?.operations?.length > 1
 
