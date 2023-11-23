@@ -167,19 +167,16 @@ async function performIbcDeposit(
           }
         })
 
-        let receiver = null
-        let forwardingMemo = null
-
-        if (useSKIPRouting) {
-          forwardingMemo = await composePMFMemo(
-            routing.operations,
-            'secret198lmmh2fpj3weqhjczptkzl9pxygs23yn6dsev',
-            autoWrapJsonString
-          )
-          receiver = await getReceiverAddress((routing.operations[1] as any).transfer.chainID)
-        } else {
-          receiver = 'secret198lmmh2fpj3weqhjczptkzl9pxygs23yn6dsev'
-        }
+        const receiver = useSKIPRouting
+          ? await getReceiverAddress((routing.operations[1] as any).transfer.chainID)
+          : 'secret198lmmh2fpj3weqhjczptkzl9pxygs23yn6dsev'
+        const forwardingMemo = useSKIPRouting
+          ? await composePMFMemo(
+              routing.operations,
+              'secret198lmmh2fpj3weqhjczptkzl9pxygs23yn6dsev',
+              autoWrapJsonString
+            )
+          : null
 
         tx = await sourceChainNetworkClient.tx.ibc.transfer(
           {
@@ -740,6 +737,7 @@ async function getSkipIBCRouting(chain: Chain, IbcMode: IbcMode, token: Token, a
     return route
   } catch (error) {
     console.error(error)
+    throw error
   }
   return null
 }
