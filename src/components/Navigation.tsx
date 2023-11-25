@@ -1,3 +1,4 @@
+import { faReact } from '@fortawesome/free-brands-svg-icons'
 import {
   faArrowUpRightFromSquare,
   faBook,
@@ -156,6 +157,19 @@ export function Navigation({
           >
             <FontAwesomeIcon icon={faPieChart} className="mr-2" />
             <span>Portfolio</span>
+          </NavLink>
+        </li>
+        <li>
+          <NavLink
+            to="/powertools"
+            className={({ isActive }) =>
+              isActive
+                ? 'text-black dark:text-white bg-gradient-to-r from-gray-200 via-gray-200 to-gray-200/10 dark:from-neutral-700 dark:via-neutral-700 dark:to-neutral-700/10 block w-full px-8 py-3 rounded-xl transition-colors font-semibold cursor-default'
+                : 'text-neutral-700 dark:text-neutral-300 cursor-pointer hover:text-black dark:hover:text-white block w-full px-8 py-3 rounded-xl transition-colors'
+            }
+          >
+            <FontAwesomeIcon icon={faReact} className="mr-2" />
+            <span>Power Tools</span>
           </NavLink>
         </li>
         <li>

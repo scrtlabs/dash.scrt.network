@@ -24,6 +24,7 @@ import Bridge from 'pages/bridge/Bridge'
 import GetSCRT from 'pages/get-scrt/GetScrt'
 import Dashboard from 'pages/dashboard/Dashboard'
 import DefaultLayout from 'layouts/DefaultLayout'
+import Powertools from 'pages/powertools/Powertools'
 
 if (import.meta.env.VITE_MIXPANEL_ENABLED === 'true') {
   mixpanel.init(import.meta.env.VITE_MIXPANEL_PROJECT_TOKEN, { debug: true })
@@ -102,6 +103,7 @@ export default function App() {
         <Route path="/portfolio" element={<Portfolio />} />
         <Route path="/send" element={<Send />} />
         <Route path="/apps" element={<Apps />} />
+        <Route path="/powertools" element={<Powertools />} />
       </Routes>
     </>
   )
