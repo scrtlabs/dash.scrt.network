@@ -291,7 +291,7 @@ export const chains: { [chain_name: string]: Chain } = {
   },
   Nolus: {
     chain_name: 'Nolus',
-    deposit_channel_id: 'channel-',
+    deposit_channel_id: 'channel-XX',
     deposit_gas: 150_000,
     deposit_gas_denom: 'unls',
     withdraw_channel_id: 'channel-783',
@@ -461,6 +461,8 @@ export type Deposit = {
   channel_id?: string
   /** gas limit for ibc transfer from the chain to Secret Network (snip20) */
   gas?: number
+  /** Flag needed when assets needs more than 1 hop for chains for SKIP API **/
+  needsSkip?: boolean
 }
 
 export type Withdraw = {
@@ -474,6 +476,8 @@ export type Withdraw = {
   channel_id?: string
   /** gas limit for ibc transfer from Secret Network to the chain (snip20) */
   gas?: number
+  /** Flag needed when assets needs more than 1 hop for chains for SKIP API **/
+  needsSkip?: boolean
 }
 
 // Native tokens of chains (and tokens from external chains)
@@ -705,6 +709,7 @@ export const tokens: Token[] = [
       },
       {
         chain_name: 'Nolus',
+        needsSkip: true,
         denom: ibcDenom(
           [
             {
@@ -891,6 +896,7 @@ export const tokens: Token[] = [
       },
       {
         chain_name: 'Nolus',
+        needsSkip: true,
         denom: 'uscrt'
       },
       {
@@ -1000,6 +1006,7 @@ export const tokens: Token[] = [
       },
       {
         chain_name: 'Osmosis',
+        needsSkip: true,
         denom: ibcDenom(
           [
             {
@@ -1026,6 +1033,7 @@ export const tokens: Token[] = [
       },
       {
         chain_name: 'Osmosis',
+        needsSkip: true,
         denom: ibcDenom(
           [
             {
@@ -1772,6 +1780,7 @@ export const tokens: Token[] = [
     deposits: [
       {
         chain_name: 'Osmosis',
+        needsSkip: true,
         denom: ibcDenom(
           [
             {
@@ -1790,6 +1799,7 @@ export const tokens: Token[] = [
     withdrawals: [
       {
         chain_name: 'Osmosis',
+        needsSkip: true,
         denom: ibcDenom(
           [
             {
