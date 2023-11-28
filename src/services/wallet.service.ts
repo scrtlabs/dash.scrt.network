@@ -97,7 +97,7 @@ const requestFeeGrantService = async (feeGrantStatus: FeeGrantStatus, walletAddr
     console.debug('User requested Fee Grant. Fee Grant has already been granted. Therefore doing nothing...')
   } else {
     try {
-      const result = await (await fetch(`https://faucet2.secretsaturn.net/claim/${walletAddress}`)).json()
+      const result = await (await fetch(`${faucetURL}/${walletAddress}`)).json()
       console.log(result)
       if (result?.feegrant) {
         newFeeGrantStatus = 'success'
