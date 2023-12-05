@@ -3,8 +3,9 @@ import Select from 'react-select'
 import { MessageType } from 'types/MessageType'
 import { Nullable } from 'types/Nullable'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faTrash } from '@fortawesome/free-solid-svg-icons'
+import { faGripVertical, faInfoCircle, faTrash } from '@fortawesome/free-solid-svg-icons'
 import Tooltip from '@mui/material/Tooltip'
+import { messages } from './imported/Messages'
 
 interface Props {
   message?: any
@@ -13,7 +14,7 @@ interface Props {
 }
 
 function Message(props: Props) {
-  const [messageType, setMessageType] = useState<Nullable<MessageType>>(null)
+  const [messageType, setMessageType] = useState<Nullable<any>>(null)
   const options = [
     'MultiSend',
     'Send',
@@ -37,14 +38,23 @@ function Message(props: Props) {
     'CreateVestingAccount'
   ]
 
-  const selectOptions: { value: MessageType; label: string }[] = options.map((option) => ({
-    value: option as MessageType,
-    label: option as string
-  }))
+  const selectOptions: { value: any; label: string }[] = Object.keys(messages)
+    .sort((a, b) => {
+      const module = messages[a].module.localeCompare(messages[b].module)
+      if (module !== 0) {
+        return module
+      } else {
+        return a.localeCompare(b)
+      }
+    })
+    .map((option) => ({
+      value: option,
+      label: option as string
+    }))
 
   return (
-    <>
-      <div className="inline-flex items-center justify-center w-full mt-8">
+    <div>
+      <div className="inline-flex items-center justify-center w-full">
         <hr className="w-full h-px my-8 bg-gray-200 border-0 dark:bg-neutral-700" />
         <span className="inline-flex items-center gap-2 select-none absolute px-3 text-black -translate-x-1/2 bg-white left-1/2 dark:text-white dark:bg-neutral-900 text-sm font-bold">
           {/* Draggable to change order */}
@@ -87,7 +97,21 @@ function Message(props: Props) {
           className="w-full my-4 p-3 placeholder-neutral-600 dark:placeholder-neutral-500 resize-none dark:bg-neutral-800 text-black border dark:border-neutral-700 dark:text-white"
         />
       </div>
-    </>
+
+      {/* Relevant Info */}
+      {/* <div className="bg-neutral-800 p-4 rounded-lg border dark:text-sky-500 dark:border-sky-800 text-sm">
+        <div className="flex gap-2 items-center font-bold mb-2">
+          <FontAwesomeIcon icon={faInfoCircle} />
+          Relevant Info
+        </div>
+        <div className="flex flex-col gap-2">
+          <div>
+            <span className="font-bold">Balance: </span>
+            0.914483 SCRT
+          </div>
+        </div>
+      </div> */}
+    </div>
   )
 }
 
