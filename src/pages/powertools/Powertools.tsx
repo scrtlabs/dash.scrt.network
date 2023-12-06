@@ -16,6 +16,7 @@ import { SECRET_LCD } from 'utils/config'
 
 function Powertools() {
   const [secretjs, setSecretjs] = useState<Nullable<SecretNetworkClient>>(null)
+  const [apiUrl, setApiUrl] = useState<string>(SECRET_LCD)
   const [apiStatus, setApiStatus] = useState<ApiStatus>('loading')
   const [denom, setDenom] = useState<string>('uscrt')
   const [chainId, setChainId] = useState<string>('')
