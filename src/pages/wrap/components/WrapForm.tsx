@@ -17,6 +17,7 @@ import { FeeGrantStatus } from 'types/FeeGrantStatus'
 import toast from 'react-hot-toast'
 import { useSearchParams } from 'react-router-dom'
 import { Nullable } from 'types/Nullable'
+import { WalletService } from 'services/wallet.service'
 
 export default function WrapForm() {
   const {
@@ -27,12 +28,14 @@ export default function WrapForm() {
     isConnected,
     connectWallet,
     scrtBalance,
-    getBalance
+    getBalance,
+    setIsGetWalletModalOpen,
+    setIsConnectWalletModalOpen
   } = useSecretNetworkClientStore()
 
   const handleClick = () => {
     if (!isConnected) {
-      connectWallet()
+      WalletService.handleConnectWallet(setIsConnectWalletModalOpen, setIsGetWalletModalOpen)
     }
   }
 
