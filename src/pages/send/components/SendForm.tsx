@@ -89,9 +89,9 @@ export default function SendForm() {
           feeGrantStatus
         })
         toast.promise(res, {
-          loading: `Waiting to send ${
+          loading: `Waiting to send ${formik.values.amount} ${
             formik.values.token.address === 'native' || formik.values.token.is_snip20 ? null : 's'
-          } ${formik.values.amount} ${formik.values.token.name}...`,
+          }${formik.values.token.name}...`,
           success: 'Sending successful!',
           error: 'Sending unsuccessful!'
         })

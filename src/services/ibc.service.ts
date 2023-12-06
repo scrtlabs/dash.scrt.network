@@ -89,6 +89,8 @@ async function performIbcDeposit(
 
   const deposit: Deposit = token.deposits.filter((deposit: Deposit) => deposit.chain_name === props.chain.chain_name)[0]
 
+  const useSKIPRouting = deposit.needsSkip === true
+
   deposit_channel_id = deposit.channel_id || deposit_channel_id
   deposit_gas = deposit.gas || deposit_gas
 
@@ -101,23 +103,21 @@ async function performIbcDeposit(
     if (!['Evmos', 'Injective'].includes(props.chain.chain_name) && !token.is_ics20) {
       // Regular cosmos chain (not ethermint signing)
       if (token.name === 'SCRT') {
-        const routing: RouteResponse = await getSkipIBCRouting(
-          selectedSource,
-          'deposit',
-          token,
-          new BigNumber(props.amount).multipliedBy(`1e${props.token.decimals}`)
-        )
+        const routing = useSKIPRouting
+          ? await getSkipIBCRouting(
+              selectedSource,
+              'deposit',
+              token,
+              new BigNumber(props.amount).multipliedBy(`1e${props.token.decimals}`)
+            )
+          : null
 
-        const useSKIPRouting = routing?.operations?.length > 1
-
-        let receiver = null
-        let forwardingMemo = null
-        if (routing?.operations.length > 1) {
-          receiver = await getReceiverAddress((routing.operations[1] as any).transfer.chainID)
-          forwardingMemo = await composePMFMemo(routing.operations, props.secretNetworkClient.address)
-        } else {
-          receiver = props.secretNetworkClient.address
-        }
+        const receiver = useSKIPRouting
+          ? await getReceiverAddress((routing.operations[1] as any).transfer.chainID)
+          : props.secretNetworkClient.address
+        const forwardingMemo = useSKIPRouting
+          ? await composePMFMemo(routing.operations, props.secretNetworkClient.address)
+          : null
 
         tx = await sourceChainNetworkClient.tx.ibc.transfer(
           {
@@ -145,14 +145,14 @@ async function performIbcDeposit(
           }
         )
       } else {
-        const routing = await getSkipIBCRouting(
-          selectedSource,
-          'deposit',
-          token,
-          new BigNumber(props.amount).multipliedBy(`1e${props.token.decimals}`)
-        )
-
-        const useSKIPRouting = routing?.operations?.length > 1
+        const routing = useSKIPRouting
+          ? await getSkipIBCRouting(
+              selectedSource,
+              'deposit',
+              token,
+              new BigNumber(props.amount).multipliedBy(`1e${props.token.decimals}`)
+            )
+          : null
 
         const autoWrapJsonString = JSON.stringify({
           wasm: {
@@ -428,6 +428,8 @@ async function performIbcWithdrawal(
     (withdrawal: Withdraw) => withdrawal.chain_name === selectedDest.chain_name
   )[0]
 
+  const useSKIPRouting = withdrawalChain.needsSkip === true
+
   withdraw_channel_id = withdrawalChain.channel_id || withdraw_channel_id
   withdraw_gas = withdrawalChain.gas || withdraw_gas
 
@@ -542,14 +544,14 @@ async function performIbcWithdrawal(
         }
       )
     } else {
-      const routing = await getSkipIBCRouting(
-        selectedDest,
-        'withdrawal',
-        token,
-        new BigNumber(props.amount).multipliedBy(`1e${props.token.decimals}`)
-      )
-
-      const useSKIPRouting = routing?.operations?.length > 1
+      const routing = useSKIPRouting
+        ? await getSkipIBCRouting(
+            selectedDest,
+            'withdrawal',
+            token,
+            new BigNumber(props.amount).multipliedBy(`1e${props.token.decimals}`)
+          )
+        : null
 
       const receiver = useSKIPRouting
         ? await getReceiverAddress((routing.operations[1] as any).transfer.chainID)
@@ -739,7 +741,6 @@ async function getSkipIBCRouting(chain: Chain, IbcMode: IbcMode, token: Token, a
     console.error(error)
     throw error
   }
-  return null
 }
 
 async function getReceiverAddress(chainID: string): Promise<string> {
