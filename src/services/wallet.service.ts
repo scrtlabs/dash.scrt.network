@@ -113,35 +113,26 @@ const requestFeeGrantService = async (feeGrantStatus: FeeGrantStatus, walletAddr
   if (feeGrantStatus === 'success') {
     console.debug('User requested Fee Grant. Fee Grant has already been granted. Therefore doing nothing...')
   } else {
-    let result
     try {
-      result = await fetch(faucetURL, {
-        method: 'POST',
-        body: JSON.stringify({ Address: walletAddress }),
-        headers: { 'Content-Type': 'application/json' }
-      })
+      const result = await (await fetch(`${faucetURL}/${walletAddress}`)).json()
+      console.log(result)
+      if (result?.feegrant) {
+        newFeeGrantStatus = 'success'
+        // toast.success(
+        //   `Successfully sent new fee grant (0.1 SCRT) to address ${secretAddress}`
+        // );
+      } else {
+        console.error(result?.error)
+        newFeeGrantStatus = 'fail'
+        // toast.error(
+        //   `Fee Grant for address ${secretAddress} failed with status code: ${result.status}`
+        // );
+      }
     } catch (error) {
       console.error(error)
       newFeeGrantStatus = 'fail'
       // toast.error(
       //   `Fee Grant for address ${secretAddress} failed with error: ${error}`
-      // );
-    }
-
-    if (result?.ok === true) {
-      newFeeGrantStatus = 'success'
-      // toast.success(
-      //   `Successfully sent new fee grant (0.1 SCRT) to address ${secretAddress}`
-      // );
-    } else if ((await result?.text()) === 'Existing Fee Grant did not expire\n') {
-      newFeeGrantStatus = 'success'
-      // toast.success(
-      //   `Your address ${secretAddress} already has an existing fee grant`
-      // );
-    } else {
-      newFeeGrantStatus = 'fail'
-      // toast.error(
-      //   `Fee Grant for address ${secretAddress} failed with status code: ${result.status}`
       // );
     }
   }
