@@ -167,7 +167,7 @@ const APIContextProvider = ({ children }: any) => {
   const [defiLamaApiData_TVL, setDefiLamaApiData_TVL] = useState()
   const [currentPrice, setCurrentPrice] = useState(Number)
   const [externalApiData, setExternalApiData] = useState()
-  const [secretAnalyticslApiData, setSecretAnalyticslApiData] = useState()
+  const [L5AnalyticslApiData, setL5AnalyticslApiData] = useState()
   const [volume, setVolume] = useState(Number)
   const [marketCap, setMarketCap] = useState(Number)
 
@@ -226,13 +226,13 @@ const APIContextProvider = ({ children }: any) => {
       .then((response) => {
         setExternalApiData(response)
       })
-
-    /*     let secretAnalyticsApiDataUrl = `https://api.secretanalytics.xyz/network`;
-    fetch(secretAnalyticsApiDataUrl)
+    let L5AnalyticsApiDataUrl = `https://api.lavenderfive.com/networks`
+    fetch(L5AnalyticsApiDataUrl)
       .then((response) => response.json())
       .then((response) => {
-        setSecretAnalyticslApiData(response);
-      }); */
+        console.log(response['secretnetwork'])
+        setL5AnalyticslApiData(response['secretnetwork'])
+      })
   }, [])
 
   const providerValue = {
@@ -256,8 +256,8 @@ const APIContextProvider = ({ children }: any) => {
     setCurrentPrice,
     externalApiData,
     setExternalApiData,
-    secretAnalyticslApiData,
-    setSecretAnalyticslApiData,
+    L5AnalyticslApiData,
+    setL5AnalyticslApiData,
     bondedToken,
     setBondedToken,
     notBondedToken,
