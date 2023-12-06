@@ -9,13 +9,13 @@ import { faPlus } from '@fortawesome/free-solid-svg-icons'
 import { SecretNetworkClient } from 'secretjs'
 import { balanceFormat } from './components/imported/Messages'
 import { useSecretNetworkClientStore } from 'store/secretNetworkClient'
-import { reconnectWallet } from './components/imported/WalletStuff'
 import { Nullable } from 'types/Nullable'
+import { WalletService } from 'services/wallet.service'
+import { isWalletAPIType } from 'types/WalletAPIType'
+import { SECRET_LCD } from 'utils/config'
 
 function Powertools() {
   const [secretjs, setSecretjs] = useState<Nullable<SecretNetworkClient>>(null)
-  const [walletAddress, setWalletAddress] = useState<string>('')
-  const [apiUrl, setApiUrl] = useState<string>('https://lcd.mainnet.secretsaturn.net')
   const [apiStatus, setApiStatus] = useState<ApiStatus>('loading')
   const [denom, setDenom] = useState<string>('uscrt')
   const [chainId, setChainId] = useState<string>('')
@@ -28,8 +28,6 @@ function Powertools() {
 
   const [messages, setMessages] = useState<any[]>([''])
 
-  const { secretNetworkClient } = useSecretNetworkClientStore()
-
   function deleteMessage(i: number) {
     if (messages.length > 1) {
       setMessages((prevMessages) => prevMessages.filter((_, index) => index !== i))
@@ -40,24 +38,45 @@ function Powertools() {
     setMessages((prevMessages) => [...prevMessages, ''])
   }
 
-  const refreshNodeStatus = async (querySecretjs: SecretNetworkClient, showLoading: boolean = true) => {
+  const {
+    isConnected,
+    walletAddress,
+    connectWallet,
+    disconnectWallet,
+    isGetWalletModalOpen,
+    setIsGetWalletModalOpen,
+    isConnectWalletModalOpen,
+    setIsConnectWalletModalOpen,
+    walletAPIType
+  } = useSecretNetworkClientStore()
+
+  const refreshNodeStatus = async (showLoading: boolean = true) => {
     try {
       if (showLoading) {
         setApiStatus('loading')
       }
 
-      const { block } = await querySecretjs.query.tendermint.getLatestBlock({})
+      const secretjsquery = new SecretNetworkClient({
+        url: apiUrl,
+        chainId: ''
+      })
+      const { block } = await secretjsquery.query.tendermint.getLatestBlock({})
       let minimum_gas_price: string | undefined
       try {
-        ;({ minimum_gas_price } = await querySecretjs.query.node.config({}))
+        ;({ minimum_gas_price } = await secretjsquery.query.node.config({}))
       } catch (error) {
         // Bug on must chains - this endpoint isn't connected
       }
-      const { params } = await querySecretjs.query.staking.params({})
+      const { params } = await secretjsquery.query.staking.params({})
 
       setDenom(params!.bond_denom!)
 
       const newChainId = block?.header?.chain_id!
+
+      if (newChainId != 'secret-4' && newChainId != 'pulsar-3') {
+        throw Error('Chain-ID must be secret-4 or pulsar-3. You cannot use a different chain than Secret Network.')
+      }
+
       const newBlockHeight = balanceFormat(Number(block?.header?.height))
 
       let newGasPrice: string | undefined
@@ -66,19 +85,15 @@ function Powertools() {
       }
 
       const blockTimeAgo = Math.floor((Date.now() - Date.parse(block?.header?.time as string)) / 1000)
-      let blockTimeAgoString = `${blockTimeAgo}s ago`
-      if (blockTimeAgo <= 0) {
-        blockTimeAgoString = 'now'
-      }
+      const blockTimeAgoString = blockTimeAgo <= 0 ? 'now' : `${blockTimeAgo}s ago`
+
+      const { walletAddress, secretjs } = await WalletService.connectWallet(walletAPIType, apiUrl, newChainId)
+      setSecretjs(secretjs)
 
       setChainId(newChainId)
       setApiStatus('online') // TODO: why always runs here??
       setBlockHeight(newBlockHeight)
       setGasPrice(newGasPrice)
-
-      if (secretjs) {
-        reconnectWallet(setSecretjs, setWalletAddress, apiUrl, newChainId)
-      }
     } catch (error) {
       let errorMessage: string
       if (error instanceof Error) {
@@ -89,7 +104,6 @@ function Powertools() {
 
       setApiStatus('offline')
       setChainId('')
-      setApiStatus('online')
       setBlockHeight('')
       setGasPrice('')
       // setChainStatus(
@@ -102,29 +116,7 @@ function Powertools() {
   }
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      setApiUrl((apiUrl) => {
-        const secretjs = new SecretNetworkClient({
-          url: apiUrl,
-          chainId: ''
-        })
-
-        refreshNodeStatus(secretjs, false)
-
-        return apiUrl
-      })
-    }, 10000)
-
-    return () => clearInterval(interval)
-  }, [])
-
-  useEffect(() => {
-    const secretjs = new SecretNetworkClient({
-      url: apiUrl,
-      chainId: ''
-    })
-
-    refreshNodeStatus(secretjs, true)
+    refreshNodeStatus(true)
   }, [apiUrl])
 
   return (
@@ -141,7 +133,7 @@ function Powertools() {
         <ApiStatusIcon apiStatus={apiStatus} />
         {apiStatus !== 'loading' ? (
           <div className="flex items-center gap-4">
-            <div>Chain: {chainId}</div>
+            <div>Chain-ID: {chainId}</div>
             <div>Block Height: {blockHeight}</div>
             <div>Gas Price: {gasPrice}</div>
           </div>
@@ -160,7 +152,13 @@ function Powertools() {
           Add Message
         </Button>
       </div>
-      <Button className="w-full" size="large" onClick={handleSendTx}>
+      <Button
+        className={
+          'enabled:bg-gradient-to-r enabled:from-cyan-600 enabled:to-purple-600 enabled:hover:from-cyan-500 enabled:hover:to-purple-500 transition-colors text-white font-extrabold py-3 w-full rounded-lg disabled:bg-neutral-500 focus:outline-none focus-visible:ring-4 ring-sky-500/40'
+        }
+        size="large"
+        onClick={handleSendTx}
+      >
         Send Tx
       </Button>
     </div>

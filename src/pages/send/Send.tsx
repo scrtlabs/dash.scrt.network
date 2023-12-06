@@ -5,9 +5,11 @@ import { Helmet } from 'react-helmet-async'
 import mixpanel from 'mixpanel-browser'
 import { useSecretNetworkClientStore } from 'store/secretNetworkClient'
 import SendForm from './components/SendForm'
+import { WalletService } from 'services/wallet.service'
 
 export function Send() {
-  const { connectWallet, isConnected } = useSecretNetworkClientStore()
+  const { connectWallet, isConnected, setIsConnectWalletModalOpen, setIsGetWalletModalOpen } =
+    useSecretNetworkClientStore()
 
   useEffect(() => {
     if (import.meta.env.VITE_MIXPANEL_ENABLED === 'true') {
@@ -21,7 +23,7 @@ export function Send() {
 
   const handleClick = () => {
     if (!isConnected) {
-      connectWallet()
+      WalletService.handleConnectWallet(setIsConnectWalletModalOpen, setIsGetWalletModalOpen)
     }
   }
 

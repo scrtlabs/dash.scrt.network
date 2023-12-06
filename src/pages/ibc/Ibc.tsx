@@ -11,6 +11,7 @@ import { useSecretNetworkClientStore } from 'store/secretNetworkClient'
 import Title from 'components/Title'
 import IbcForm from './components/IbcForm'
 import { IbcService } from 'services/ibc.service'
+import { WalletService } from 'services/wallet.service'
 
 export function Ibc() {
   const [isWrapModalOpen, setIsWrapModalOpen] = useState<boolean>(false)
@@ -19,7 +20,7 @@ export function Ibc() {
 
   const [ibcMode, setIbcMode] = useState<IbcMode>('deposit')
 
-  const { isConnected, connectWallet } = useSecretNetworkClientStore()
+  const { isConnected, setIsConnectWalletModalOpen, setIsGetWalletModalOpen } = useSecretNetworkClientStore()
 
   const [selectedSource, setSelectedSource] = useState(
     selectedToken.deposits.find((deposit: Deposit) => deposit.chain_name.toLowerCase() === 'osmosis')
@@ -27,7 +28,7 @@ export function Ibc() {
 
   const handleClick = () => {
     if (!isConnected) {
-      connectWallet()
+      WalletService.handleConnectWallet(setIsConnectWalletModalOpen, setIsGetWalletModalOpen)
     }
   }
 
@@ -105,7 +106,10 @@ export function Ibc() {
         {/* Title */}
         <Title className="mb-6" title="IBC Transfer" tooltip={message} />
         {/* Content */}
-        <div className="rounded-3xl px-6 py-6 bg-white border border-neutral-200 dark:border-neutral-700 dark:bg-neutral-800">
+        <div
+          onClick={handleClick}
+          className="rounded-3xl px-6 py-6 bg-white border border-neutral-200 dark:border-neutral-700 dark:bg-neutral-800"
+        >
           <IbcForm />
         </div>
       </div>

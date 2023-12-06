@@ -24,6 +24,8 @@ interface SecretNetworkClientState {
   setWalletAddress: (walletAddress: string) => void
   secretNetworkClient: Nullable<SecretNetworkClient>
   setSecretNetworkClient: (secretjs: Object) => void
+  walletAPIType: Nullable<WalletAPIType>
+  setWalletAPIType: (walletAPIType: WalletAPIType) => void
   connectWallet: (walletAPIType?: WalletAPIType) => void
   disconnectWallet: () => void
   feeGrantStatus: FeeGrantStatus
@@ -40,6 +42,10 @@ interface SecretNetworkClientState {
   ibcBalanceMapping: Map<Chain, Map<Token, TokenBalances>>
   setIbcBalanceMapping: (chain: Chain) => void
   getIbcBalance: (chain: Chain, token: Token) => Nullable<BigNumber | GetBalanceError>
+  isGetWalletModalOpen: boolean
+  setIsGetWalletModalOpen: (isGetWalletModalOpen: boolean) => void
+  isConnectWalletModalOpen: boolean
+  setIsConnectWalletModalOpen: (isConnectWalletModalOpen: boolean) => void
 }
 
 export const useSecretNetworkClientStore = create<SecretNetworkClientState>()((set, get) => ({
@@ -52,13 +58,13 @@ export const useSecretNetworkClientStore = create<SecretNetworkClientState>()((s
   setWalletAddress: (walletAddress: string) => set({ walletAddress }),
   secretNetworkClient: null,
   setSecretNetworkClient: (secretNetworkClient: any) => set({ secretNetworkClient: secretNetworkClient }),
+  walletAPIType: null,
+  setWalletAPIType: (walletAPIType: WalletAPIType) => set({ walletAPIType }),
   connectWallet: async (walletAPIType?: WalletAPIType) => {
     const { setScrtBalance, setsScrtBalance, setBalanceMapping, getBalance } = get()
-    const { walletAddress, secretjs: secretNetworkClient } = await WalletService.connectWallet(
-      walletAPIType,
-      get().secretNetworkClient
-    )
+    const { walletAddress, secretjs: secretNetworkClient } = await WalletService.connectWallet(walletAPIType)
     set({
+      walletAPIType,
       walletAddress,
       secretNetworkClient,
       isConnected: !!(walletAddress && secretNetworkClient)
@@ -98,13 +104,10 @@ export const useSecretNetworkClientStore = create<SecretNetworkClientState>()((s
     const { setBalanceMapping } = get()
     await WalletService.setWalletViewingKey(token.address)
     try {
-      // setLoadingTokenBalance(true);
       await sleep(1000) // sometimes query nodes lag
       setBalanceMapping()
     } catch (e) {
       console.error(e)
-    } finally {
-      // setLoadingTokenBalance(false);
     }
   },
   balanceMapping: null,
@@ -157,5 +160,10 @@ export const useSecretNetworkClientStore = create<SecretNetworkClientState>()((s
       }
     }
     return null
-  }
+  },
+  isGetWalletModalOpen: false,
+  setIsGetWalletModalOpen: (isGetWalletModalOpen: any) => set({ isGetWalletModalOpen: isGetWalletModalOpen }),
+  isConnectWalletModalOpen: false,
+  setIsConnectWalletModalOpen: (isConnectWalletModalOpen: any) =>
+    set({ isConnectWalletModalOpen: isConnectWalletModalOpen })
 }))

@@ -13,16 +13,24 @@ import { ManageBalances } from './ManageBalances/ManageBalances'
 import Button from '../UI/Button/Button'
 import BalanceUI from 'components/BalanceUI'
 import { NotificationService } from 'services/notification.service'
+import { WalletService } from 'services/wallet.service'
 
 function Wallet() {
-  const { isConnected, walletAddress, connectWallet, disconnectWallet } = useSecretNetworkClientStore()
+  const {
+    isConnected,
+    walletAddress,
+    connectWallet,
+    disconnectWallet,
+    isGetWalletModalOpen,
+    setIsGetWalletModalOpen,
+    isConnectWalletModalOpen,
+    setIsConnectWalletModalOpen
+  } = useSecretNetworkClientStore()
 
   const [isMenuVisible, setIsMenuVisible] = useState<boolean>(false)
-  const [isGetWalletModalOpen, setIsGetWalletModalOpen] = useState<boolean>(false)
-  const [isConnectWalletModalOpen, setIsConnectWalletModalOpen] = useState<boolean>(false)
 
   useEffect(() => {
-    connectWallet()
+    WalletService.handleConnectWallet(setIsConnectWalletModalOpen, setIsGetWalletModalOpen)
   }, [])
 
   const handleManageViewingKeys = () => {
@@ -32,7 +40,7 @@ function Wallet() {
   useEffect(() => {
     let isAutoConnectEnabled = localStorage.getItem('autoConnect') === 'true'
     if (isAutoConnectEnabled) {
-      connectWallet()
+      WalletService.handleConnectWallet(setIsConnectWalletModalOpen, setIsGetWalletModalOpen)
     }
   }, [])
 
@@ -74,18 +82,6 @@ function Wallet() {
         </Button>
       </div>
     )
-  }
-
-  function handleConnectWallet() {
-    if (window.keplr && (window as any).leap) {
-      setIsConnectWalletModalOpen(true)
-    } else if (window.keplr && !(window as any).leap) {
-      connectWallet('keplr')
-    } else if (!window.keplr && (window as any).leap) {
-      connectWallet('leap')
-    } else {
-      setIsGetWalletModalOpen(true)
-    }
   }
 
   function ContextMenu() {
@@ -239,7 +235,7 @@ function Wallet() {
       ) : (
         <button
           id="keplr-button"
-          onClick={handleConnectWallet}
+          onClick={() => WalletService.handleConnectWallet(setIsConnectWalletModalOpen, setIsGetWalletModalOpen)}
           className="w-full sm:w-auto rounded-lg px-4 py-3 bg-white dark:bg-neutral-700 hover:dark:bg-neutral-600 select-none cursor-pointer transition-colors"
         >
           <div className="flex items-center font-semibold text-sm">

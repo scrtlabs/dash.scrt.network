@@ -14,7 +14,7 @@ import { faBalanceScale } from '@fortawesome/free-solid-svg-icons'
 import { TokenBalances } from 'store/secretNetworkClient'
 import { BatchQueryParsedResponse, batchQuery } from '@shadeprotocol/shadejs'
 
-const connectKeplr = async () => {
+const connectKeplr = async (lcd: string, chainID: string) => {
   const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
 
   while (!window.keplr || !window.getEnigmaUtils || !window.getOfflineSignerOnlyAmino) {
@@ -35,8 +35,8 @@ const connectKeplr = async () => {
   const walletAddress = accounts[0].address
 
   const secretjs: SecretNetworkClient = new SecretNetworkClient({
-    url: SECRET_LCD,
-    chainId: SECRET_CHAIN_ID,
+    url: lcd,
+    chainID: SECRET_CHAIN_ID,
     wallet: keplrOfflineSigner,
     walletAddress,
     encryptionUtils: window.getEnigmaUtils(SECRET_CHAIN_ID)
@@ -47,7 +47,7 @@ const connectKeplr = async () => {
   return { walletAddress, secretjs }
 }
 
-const connectLeap = async () => {
+const connectLeap = async (lcd: string, chainID: string) => {
   if (!(window as any).leap && isMobile) {
     // const urlSearchParams = new URLSearchParams();
     // urlSearchParams.append("network", chainId);
@@ -66,8 +66,8 @@ const connectLeap = async () => {
     const [{ address: walletAddress }] = await wallet.getAccounts()
 
     const secretjs: SecretNetworkClient = new SecretNetworkClient({
-      url: SECRET_LCD,
-      chainId: SECRET_CHAIN_ID,
+      url: lcd,
+      chainId: chainID,
       wallet,
       walletAddress,
       encryptionUtils: (window as any).leap.getEnigmaUtils(SECRET_CHAIN_ID)
@@ -79,15 +79,32 @@ const connectLeap = async () => {
   }
 }
 
-const connectWallet = async (walletAPIType: WalletAPIType = 'keplr', secretNetworkClient: SecretNetworkClient) => {
+const connectWallet = async (
+  walletAPIType: WalletAPIType = 'keplr',
+  lcd: string = SECRET_LCD,
+  chainID: string = SECRET_CHAIN_ID
+) => {
   let walletAddress: string
+  let secretNetworkClient: SecretNetworkClient
   if (walletAPIType === 'keplr') {
-    ;({ walletAddress, secretjs: secretNetworkClient } = await connectKeplr())
+    ;({ walletAddress, secretjs: secretNetworkClient } = await connectKeplr(lcd, chainID))
   } else {
-    ;({ walletAddress, secretjs: secretNetworkClient } = await connectLeap())
+    ;({ walletAddress, secretjs: secretNetworkClient } = await connectLeap(lcd, chainID))
   }
 
   return { walletAddress, secretjs: secretNetworkClient }
+}
+
+function handleConnectWallet(setIsConnectWalletModalOpen: any, setIsGetWalletModalOpen: any) {
+  if (window.keplr && (window as any).leap) {
+    setIsConnectWalletModalOpen(true)
+  } else if (window.keplr && !(window as any).leap) {
+    connectWallet('keplr')
+  } else if (!window.keplr && (window as any).leap) {
+    connectWallet('leap')
+  } else {
+    setIsGetWalletModalOpen(true)
+  }
 }
 
 const requestFeeGrantService = async (feeGrantStatus: FeeGrantStatus, walletAddress: String) => {
@@ -463,6 +480,7 @@ async function getBalancesForTokens(props: IGetBalancesForTokensProps): Promise<
 
 export const WalletService = {
   connectWallet,
+  handleConnectWallet,
   requestFeeGrantService,
   setWalletViewingKey,
   getWalletViewingKey,
