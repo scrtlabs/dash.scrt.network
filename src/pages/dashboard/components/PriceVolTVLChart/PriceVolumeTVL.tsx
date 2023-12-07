@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect, useState } from 'react'
+import { createContext, useContext, useEffect, useState } from 'react'
 import { formatNumber } from 'utils/commons'
 import { ThemeContext } from 'context/ThemeContext'
 import { APIContext } from 'context/APIContext'

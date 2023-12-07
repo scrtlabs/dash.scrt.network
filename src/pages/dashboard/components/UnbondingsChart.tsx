@@ -1,7 +1,8 @@
-import React, { createContext, useContext, useEffect, useState } from 'react'
+import { createContext, useContext, useEffect, useState } from 'react'
 import { formatNumber } from 'utils/commons'
 import { ThemeContext } from 'context/ThemeContext'
 import { APIContext } from 'context/APIContext'
+import Tooltip from '@mui/material/Tooltip'
 
 import {
   Chart as ChartJS,
@@ -9,13 +10,15 @@ import {
   LinearScale,
   BarElement,
   Title,
-  Tooltip,
+  Tooltip as ChartTooltip,
   Legend,
   BarController
 } from 'chart.js'
 import { Bar } from 'react-chartjs-2'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faInfoCircle } from '@fortawesome/free-solid-svg-icons'
 
-ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, BarController)
+ChartJS.register(CategoryScale, LinearScale, BarElement, Title, ChartTooltip, Legend, BarController)
 
 export default function UnbondingsChart(props: any) {
   const { L5AnalyticslApiData } = useContext(APIContext)
@@ -123,7 +126,18 @@ export default function UnbondingsChart(props: any) {
 
   return (
     <>
-      <h2 className="text-center text-2xl font-semibold pt-2.5 pb-0">SCRT Unbonding</h2>
+      <div>
+        <h2 className="text-center text-xl font-semibold pt-2.5 pb-0">
+          SCRT Unbonding
+          <div className="inline-block">
+            <Tooltip title={`Shows the unbonded (unstaked) SCRT per day`} placement="right" arrow>
+              <span className="text-neutral-600 dark:text-neutral-400 hover:text-black dark:hover:text-white transition-colors cursor-pointer ml-2 text-sm">
+                <FontAwesomeIcon icon={faInfoCircle} />
+              </span>
+            </Tooltip>
+          </div>
+        </h2>
+      </div>
       {totalUnbonding ? (
         <h3 className="text-center text-lg pt-0 pb-2.5">Total: {Math.round(totalUnbonding).toLocaleString()} SCRT</h3>
       ) : null}
