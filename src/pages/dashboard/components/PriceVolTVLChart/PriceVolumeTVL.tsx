@@ -44,8 +44,6 @@ export default function PriceVolumeTVL(props: any) {
 
   const { theme, setTheme } = useContext(ThemeContext)
 
-  const [marketData, setMarketData] = useState([])
-
   const [chartType, setChartType] = useState<ChartType>('Price')
   const [chartRange, setChartRange] = useState<ChartRange>('Month')
   const [chartData, setChartData] = useState<any>([])
@@ -74,7 +72,20 @@ export default function PriceVolumeTVL(props: any) {
     labels: chartData.map(
       (x: any[]) =>
         ({
-          x: chartRange === 'Day' ? new Date(x[0]).toLocaleTimeString() : new Date(x[0]).toLocaleDateString()
+          x:
+            chartRange === 'Day'
+              ? `${new Date(x[0]).toLocaleTimeString(undefined, {
+                  hour: '2-digit',
+                  minute: '2-digit'
+                })} / ${new Date(x[0]).toLocaleDateString(undefined, {
+                  month: '2-digit',
+                  day: '2-digit'
+                })}`
+              : `${new Date(x[0]).toLocaleDateString(undefined, {
+                  year: '2-digit',
+                  month: '2-digit',
+                  day: '2-digit'
+                })}`
         }).x
     ),
     datasets: [

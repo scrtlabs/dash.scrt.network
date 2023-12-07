@@ -11,7 +11,7 @@ import {
   Title,
   Tooltip,
   Legend,
-  BarController // Import BarController
+  BarController
 } from 'chart.js'
 import { Bar } from 'react-chartjs-2'
 
@@ -50,6 +50,7 @@ export default function UnbondingsChart(props: any) {
   const labels = chartData.map(([date]: any) => {
     const dateObj = new Date(date)
     return dateObj.toLocaleDateString(undefined, {
+      year: '2-digit',
       month: '2-digit',
       day: '2-digit'
     })
