@@ -11,7 +11,6 @@ import { balanceFormat } from './components/imported/Messages'
 import { useSecretNetworkClientStore } from 'store/secretNetworkClient'
 import { Nullable } from 'types/Nullable'
 import { WalletService } from 'services/wallet.service'
-import { isWalletAPIType } from 'types/WalletAPIType'
 import { SECRET_LCD } from 'utils/config'
 
 function Powertools() {
@@ -39,17 +38,7 @@ function Powertools() {
     setMessages((prevMessages) => [...prevMessages, ''])
   }
 
-  const {
-    isConnected,
-    walletAddress,
-    connectWallet,
-    disconnectWallet,
-    isGetWalletModalOpen,
-    setIsGetWalletModalOpen,
-    isConnectWalletModalOpen,
-    setIsConnectWalletModalOpen,
-    walletAPIType
-  } = useSecretNetworkClientStore()
+  const { walletAPIType } = useSecretNetworkClientStore()
 
   const refreshNodeStatus = async (showLoading: boolean = true) => {
     try {
@@ -143,7 +132,7 @@ function Powertools() {
 
       <div className="flex flex-col gap-4 my-4">
         {messages.map((item: any, i: number) => {
-          return <Message key={i} message={item} number={i + 1} onDelete={() => deleteMessage(i)} />
+          return <Message key={i} message={item} number={i + 1} secretjs={secretjs} onDelete={() => deleteMessage(i)} />
         })}
       </div>
 

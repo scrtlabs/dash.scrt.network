@@ -1,16 +1,17 @@
 import React, { useState } from 'react'
 import Select from 'react-select'
-import { MessageType } from 'types/MessageType'
 import { Nullable } from 'types/Nullable'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faGripVertical, faInfoCircle, faTrash } from '@fortawesome/free-solid-svg-icons'
+import { faGripVertical, faTrash } from '@fortawesome/free-solid-svg-icons'
 import Tooltip from '@mui/material/Tooltip'
 import { messages } from './imported/Messages'
+import { SecretNetworkClient } from 'secretjs'
 
 interface Props {
   message?: any
   number: number
   onDelete: any
+  secretjs?: Nullable<SecretNetworkClient>
 }
 
 function Message(props: Props) {
@@ -52,6 +53,18 @@ function Message(props: Props) {
       label: option as string
     }))
 
+  const onTypeSelect = () => {
+    console.log(
+      'Test Content',
+      messages.MsgExecuteContract.example(
+        props.secretjs,
+        props.secretjs?.address, // pass old as null if not needed
+        'prefix', // replace with your prefix
+        'uscrt' // replace with your denomination
+      )
+    )
+  }
+
   return (
     <div>
       <div className="inline-flex items-center justify-center w-full">
@@ -87,6 +100,7 @@ function Message(props: Props) {
           isSearchable={false}
           onChange={(selectedOption) => {
             setMessageType(selectedOption.value)
+            onTypeSelect()
           }}
           classNamePrefix="react-select"
         />
