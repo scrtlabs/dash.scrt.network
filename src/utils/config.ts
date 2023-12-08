@@ -68,6 +68,19 @@ export const chains: { [chain_name: string]: Chain } = {
     chain_image: '/akt.svg',
     explorer_account: 'https://www.mintscan.io/akash/account/'
   },
+  Andromeda: {
+    chain_name: 'Andromeda',
+    deposit_channel_id: 'channel-0',
+    deposit_gas: 150_000,
+    deposit_gas_denom: 'uandr',
+    withdraw_channel_id: 'channel-93',
+    withdraw_gas: 30_000,
+    chain_id: 'andromeda-1',
+    bech32_prefix: 'andr',
+    lcd: 'https://andro.api.m.stavr.tech',
+    chain_image: '/andr.png',
+    explorer_account: 'https://explorer.stavr.tech/Andromeda-Mainnet/account/'
+  },
   Archway: {
     chain_name: 'Archway',
     deposit_channel_id: 'channel-21',
@@ -516,6 +529,18 @@ export const tokens: Token[] = [
         )
       },
       {
+        chain_name: 'Andromeda',
+        denom: ibcDenom(
+          [
+            {
+              incomingChannelId: chains['Andromeda'].deposit_channel_id,
+              incomingPortId: 'transfer'
+            }
+          ],
+          'uscrt'
+        )
+      },
+      {
         chain_name: 'Archway',
         denom: ibcDenom(
           [
@@ -831,6 +856,10 @@ export const tokens: Token[] = [
         denom: 'uscrt'
       },
       {
+        chain_name: 'Andromeda',
+        denom: 'uscrt'
+      },
+      {
         chain_name: 'Archway',
         denom: 'uscrt'
       },
@@ -958,6 +987,35 @@ export const tokens: Token[] = [
             }
           ],
           'uakt'
+        )
+      }
+    ]
+  },
+  {
+    name: 'ANDR',
+    description: 'Andromeda Governance Token',
+    address: 'XX',
+    code_hash: 'XX',
+    image: '/andr.png',
+    decimals: 6,
+    coingecko_id: '',
+    deposits: [
+      {
+        chain_name: 'Andromeda',
+        denom: 'uandr'
+      }
+    ],
+    withdrawals: [
+      {
+        chain_name: 'Andromeda',
+        denom: ibcDenom(
+          [
+            {
+              incomingChannelId: chains['Andromeda'].withdraw_channel_id,
+              incomingPortId: 'transfer'
+            }
+          ],
+          'uandr'
         )
       }
     ]
