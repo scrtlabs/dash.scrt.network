@@ -70,10 +70,10 @@ export const chains: { [chain_name: string]: Chain } = {
   },
   Andromeda: {
     chain_name: 'Andromeda',
-    deposit_channel_id: 'channel-0',
+    deposit_channel_id: 'channel-2',
     deposit_gas: 150_000,
     deposit_gas_denom: 'uandr',
-    withdraw_channel_id: 'channel-93',
+    withdraw_channel_id: 'channel-97',
     withdraw_gas: 30_000,
     chain_id: 'andromeda-1',
     bech32_prefix: 'andr',
@@ -994,8 +994,8 @@ export const tokens: Token[] = [
   {
     name: 'ANDR',
     description: 'Andromeda Governance Token',
-    address: 'XX',
-    code_hash: 'XX',
+    address: 'secret1dks96n3jz64dyulzjnjazt6cqemr0x0qgn7sd7',
+    code_hash: '638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e',
     image: '/andr.png',
     decimals: 6,
     coingecko_id: '',
