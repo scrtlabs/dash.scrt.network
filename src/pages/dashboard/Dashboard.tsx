@@ -11,6 +11,7 @@ import { formatNumber } from 'utils/commons'
 import { APIContext } from 'context/APIContext'
 import { Helmet } from 'react-helmet-async'
 import { trackMixPanelEvent, dashboardPageTitle, dashboardPageDescription, dashboardJsonLdSchema } from 'utils/commons'
+import UnbondingsChart from './components/UnbondingsChart'
 
 function Dashboard() {
   const {
@@ -270,6 +271,9 @@ function Dashboard() {
           {/* Item */}
           <div className="col-span-12 rounded-xl bg-white border border-neutral-200 dark:border-neutral-700 dark:bg-neutral-800 p-4">
             <PriceVolumeTVL />
+          </div>
+          <div className="col-span-12 rounded-xl bg-white border border-neutral-200 dark:border-neutral-700 dark:bg-neutral-800 p-4">
+            <UnbondingsChart />
           </div>
           {/* Item */}
           {/* <div className='col-span-12 xl:col-span-6 bg-neutral-800 p-4 rounded-xl'>
