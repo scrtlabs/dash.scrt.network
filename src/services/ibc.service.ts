@@ -129,7 +129,7 @@ async function performIbcDeposit(
               amount: amount,
               denom: token.deposits.filter((deposit: Deposit) => deposit.chain_name === props.chain.chain_name)[0].denom
             },
-            memo: useSKIPRouting ? forwardingMemo : '',
+            memo: useSKIPRouting ? forwardingMemo : ' ',
             timeout_timestamp: String(Math.floor(Date.now() / 1000) + 10 * 60) // 10 minute timeout
           },
           {
