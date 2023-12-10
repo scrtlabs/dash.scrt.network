@@ -39,21 +39,21 @@ interface TProps {
 }
 
 async function getChainSecretJs(chain: Chain): Promise<SecretNetworkClient> {
-  while (!(window as any).wallet || !(window as any).wallet.getOfflineSignerOnlyAmino) {
+  while (!window.wallet || !window.wallet.getOfflineSignerOnlyAmino) {
     await sleep(100)
   }
 
   const { chain_id, lcd } = chains[chain.chain_name]
 
   try {
-    await (window as any).wallet.enable(chain_id)
+    await window.wallet.enable(chain_id)
   } catch {
-    await suggestChainToWallet((window as any).wallet, chain.chain_id)
-    await (window as any).wallet.enable(chain_id)
+    await suggestChainToWallet(window.wallet, chain.chain_id)
+    await window.wallet.enable(chain_id)
   }
 
-  if ((window as any).wallet) {
-    ;(window as any).wallet.defaultOptions = {
+  if (window.wallet) {
+    window.wallet.defaultOptions = {
       sign: {
         preferNoSetFee: false,
         disableBalanceCheck: true
@@ -61,7 +61,7 @@ async function getChainSecretJs(chain: Chain): Promise<SecretNetworkClient> {
     }
   }
 
-  const sourceOfflineSigner = (window as any).wallet.getOfflineSignerOnlyAmino(chain_id)
+  const sourceOfflineSigner = window.wallet.getOfflineSignerOnlyAmino(chain_id)
   const depositFromAccounts = await sourceOfflineSigner.getAccounts()
 
   const secretNetworkClient = new SecretNetworkClient({
@@ -317,7 +317,7 @@ async function performIbcDeposit(
       }
 
       // Sign the tx
-      const sig = await (window as any).wallet?.signDirect(
+      const sig = await window.wallet?.signDirect(
         selectedSource.chain_id,
         sourceChainNetworkClient.address,
         {
@@ -744,7 +744,7 @@ async function getSkipIBCRouting(chain: Chain, IbcMode: IbcMode, token: Token, a
 }
 
 async function getReceiverAddress(chainID: string): Promise<string> {
-  const wallet = (window as any).wallet.getOfflineSignerOnlyAmino(chainID)
+  const wallet = window.wallet.getOfflineSignerOnlyAmino(chainID)
   const [{ address: walletAddress }] = await wallet.getAccounts()
   return walletAddress
 }

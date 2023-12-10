@@ -81,7 +81,7 @@ function Powertools() {
       setSecretjs(secretjs)
 
       setChainId(newChainId)
-      setApiStatus('online') // TODO: why always runs here??
+      setApiStatus('online')
       setBlockHeight(newBlockHeight)
       setGasPrice(newGasPrice)
     } catch (error) {
@@ -121,7 +121,7 @@ function Powertools() {
           placeholder="API URL"
         />
         <ApiStatusIcon apiStatus={apiStatus} />
-        {apiStatus !== 'loading' ? (
+        {apiStatus !== 'loading' && apiStatus !== 'offline' ? (
           <div className="flex items-center gap-4">
             <div>Chain-ID: {chainId}</div>
             <div>Block Height: {blockHeight}</div>

@@ -1,9 +1,8 @@
-import { useContext, useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import CopyToClipboard from 'react-copy-to-clipboard'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCopy, faDesktop, faMobileScreen, faWallet, faXmark } from '@fortawesome/free-solid-svg-icons'
 import { useHoverOutside } from 'utils/useHoverOutside'
-import { APIContext } from 'context/APIContext'
 import { trackMixPanelEvent } from 'utils/commons'
 import { useSecretNetworkClientStore } from 'store/secretNetworkClient'
 import { scrtToken } from 'utils/tokens'
@@ -13,7 +12,6 @@ import { ManageBalances } from './ManageBalances/ManageBalances'
 import Button from '../UI/Button/Button'
 import BalanceUI from 'components/BalanceUI'
 import { NotificationService } from 'services/notification.service'
-import { WalletService } from 'services/wallet.service'
 
 function Wallet() {
   const {
@@ -29,10 +27,6 @@ function Wallet() {
 
   const [isMenuVisible, setIsMenuVisible] = useState<boolean>(false)
 
-  useEffect(() => {
-    WalletService.handleConnectWallet(setIsConnectWalletModalOpen, setIsGetWalletModalOpen)
-  }, [])
-
   const handleManageViewingKeys = () => {
     setIsManageViewingkeysModalOpen(true)
   }
@@ -40,7 +34,7 @@ function Wallet() {
   useEffect(() => {
     let isAutoConnectEnabled = localStorage.getItem('autoConnect') === 'true'
     if (isAutoConnectEnabled) {
-      WalletService.handleConnectWallet(setIsConnectWalletModalOpen, setIsGetWalletModalOpen)
+      handleConnectWallet()
     }
   }, [])
 
@@ -113,6 +107,18 @@ function Wallet() {
   }
 
   const [isManageViewingkeysModalOpen, setIsManageViewingkeysModalOpen] = useState<boolean>(false)
+
+  function handleConnectWallet() {
+    if (window.keplr && window.leap) {
+      setIsConnectWalletModalOpen(true)
+    } else if (window.keplr && !window.leap) {
+      connectWallet('keplr')
+    } else if (!window.keplr && window.leap) {
+      connectWallet('leap')
+    } else {
+      setIsGetWalletModalOpen(true)
+    }
+  }
 
   return (
     <>
@@ -234,8 +240,7 @@ function Wallet() {
         </div>
       ) : (
         <button
-          id="keplr-button"
-          onClick={() => WalletService.handleConnectWallet(setIsConnectWalletModalOpen, setIsGetWalletModalOpen)}
+          onClick={() => handleConnectWallet()}
           className="w-full sm:w-auto rounded-lg px-4 py-3 bg-white dark:bg-neutral-700 hover:dark:bg-neutral-600 select-none cursor-pointer transition-colors"
         >
           <div className="flex items-center font-semibold text-sm">

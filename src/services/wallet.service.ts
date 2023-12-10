@@ -8,7 +8,7 @@ import { scrtToken } from 'utils/tokens'
 import { WalletAPIType } from 'types/WalletAPIType'
 import BigNumber from 'bignumber.js'
 import { QueryAllBalancesResponse } from 'secretjs/dist/grpc_gateway/cosmos/bank/v1beta1/query.pb'
-import { GetBalanceError } from 'store/secretNetworkClient'
+import { GetBalanceError, useSecretNetworkClientStore } from 'store/secretNetworkClient'
 import { IbcService } from './ibc.service'
 import { faBalanceScale } from '@fortawesome/free-solid-svg-icons'
 import { TokenBalances } from 'store/secretNetworkClient'
@@ -42,13 +42,13 @@ const connectKeplr = async (lcd: string, chainID: string) => {
     encryptionUtils: window.getEnigmaUtils(SECRET_CHAIN_ID)
   })
 
-  ;(window as any).wallet = window.keplr
+  window.wallet = window.keplr
 
   return { walletAddress, secretjs }
 }
 
 const connectLeap = async (lcd: string, chainID: string) => {
-  if (!(window as any).leap && isMobile) {
+  if (!window.leap && isMobile) {
     // const urlSearchParams = new URLSearchParams();
     // urlSearchParams.append("network", chainId);
     // urlSearchParams.append("url", window.location.href);
@@ -56,13 +56,13 @@ const connectLeap = async (lcd: string, chainID: string) => {
     // localStorage.setItem("preferedWalletApi", "Fina");
     // window.dispatchEvent(new Event("storage"));
   } else {
-    while (!(window as any).leap || !window.getEnigmaUtils || !window.getOfflineSignerOnlyAmino) {
+    while (!window.leap || !window.getEnigmaUtils || !window.getOfflineSignerOnlyAmino) {
       await sleep(50)
     }
 
-    await (window as any).leap.enable(SECRET_CHAIN_ID)
+    await window.leap.enable(SECRET_CHAIN_ID)
 
-    const wallet = (window as any).leap.getOfflineSignerOnlyAmino(SECRET_CHAIN_ID)
+    const wallet = window.leap.getOfflineSignerOnlyAmino(SECRET_CHAIN_ID)
     const [{ address: walletAddress }] = await wallet.getAccounts()
 
     const secretjs: SecretNetworkClient = new SecretNetworkClient({
@@ -70,10 +70,10 @@ const connectLeap = async (lcd: string, chainID: string) => {
       chainId: chainID,
       wallet,
       walletAddress,
-      encryptionUtils: (window as any).leap.getEnigmaUtils(SECRET_CHAIN_ID)
+      encryptionUtils: window.leap.getEnigmaUtils(SECRET_CHAIN_ID)
     })
 
-    ;(window as any).wallet = (window as any).leap
+    window.wallet = window.leap
 
     return { walletAddress, secretjs }
   }
@@ -86,25 +86,13 @@ const connectWallet = async (
 ) => {
   let walletAddress: string
   let secretNetworkClient: SecretNetworkClient
-  if (walletAPIType === 'keplr') {
-    ;({ walletAddress, secretjs: secretNetworkClient } = await connectKeplr(lcd, chainID))
-  } else {
+  if (walletAPIType === 'leap') {
     ;({ walletAddress, secretjs: secretNetworkClient } = await connectLeap(lcd, chainID))
+  } else {
+    ;({ walletAddress, secretjs: secretNetworkClient } = await connectKeplr(lcd, chainID))
   }
 
   return { walletAddress, secretjs: secretNetworkClient }
-}
-
-function handleConnectWallet(setIsConnectWalletModalOpen: any, setIsGetWalletModalOpen: any) {
-  if (window.keplr && (window as any).leap) {
-    setIsConnectWalletModalOpen(true)
-  } else if (window.keplr && !(window as any).leap) {
-    connectWallet('keplr')
-  } else if (!window.keplr && (window as any).leap) {
-    connectWallet('leap')
-  } else {
-    setIsGetWalletModalOpen(true)
-  }
 }
 
 const requestFeeGrantService = async (feeGrantStatus: FeeGrantStatus, walletAddress: String) => {
@@ -140,20 +128,20 @@ const requestFeeGrantService = async (feeGrantStatus: FeeGrantStatus, walletAddr
 }
 
 const setWalletViewingKey = async (token: string) => {
-  if (!window.keplr && !(window as any).leap) {
+  if (!window.keplr && !window.leap) {
     console.error('Wallet not present')
     return
   }
-  await (window as any).wallet.suggestToken(SECRET_CHAIN_ID, token)
+  await window.wallet.suggestToken(SECRET_CHAIN_ID, token)
 }
 
 const getWalletViewingKey = async (token: string): Promise<Nullable<string>> => {
-  if (!window.keplr && !(window as any).leap) {
+  if (!window.keplr && !window.leap) {
     console.error('Wallet not present')
     return null
   }
   try {
-    return await (window as any).wallet?.getSecret20ViewingKey(SECRET_CHAIN_ID, token)
+    return await window.wallet?.getSecret20ViewingKey(SECRET_CHAIN_ID, token)
   } catch (error) {
     console.error(error)
     return null
@@ -470,8 +458,7 @@ async function getBalancesForTokens(props: IGetBalancesForTokensProps): Promise<
 }
 
 export const WalletService = {
-  connectWallet,
-  handleConnectWallet,
+  connectWallet: connectWallet,
   requestFeeGrantService,
   setWalletViewingKey,
   getWalletViewingKey,

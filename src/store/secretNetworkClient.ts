@@ -61,6 +61,7 @@ export const useSecretNetworkClientStore = create<SecretNetworkClientState>()((s
   walletAPIType: null,
   setWalletAPIType: (walletAPIType: WalletAPIType) => set({ walletAPIType }),
   connectWallet: async (walletAPIType?: WalletAPIType) => {
+    localStorage.setItem('autoConnect', 'true')
     const { setScrtBalance, setsScrtBalance, setBalanceMapping, getBalance } = get()
     const { walletAddress, secretjs: secretNetworkClient } = await WalletService.connectWallet(walletAPIType)
     set({
@@ -73,14 +74,16 @@ export const useSecretNetworkClientStore = create<SecretNetworkClientState>()((s
     setsScrtBalance()
     setBalanceMapping()
   },
-  disconnectWallet: () =>
+  disconnectWallet: () => {
     set({
       walletAddress: null,
       secretNetworkClient: null,
       isConnected: false,
       scrtBalance: null,
       sScrtBalance: null
-    }),
+    })
+    localStorage.setItem('autoConnect', 'false')
+  },
   feeGrantStatus: 'untouched',
   requestFeeGrant: async () => {
     const { feeGrantStatus, walletAddress } = get()
