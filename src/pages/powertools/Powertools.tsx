@@ -28,12 +28,15 @@ function Powertools() {
 
   const [messages, setMessages] = useState<any[]>([''])
 
-  function deleteMessage(i: number) {
-    if (messages.length > 1) {
-      setMessages((prevMessages) => prevMessages.filter((_, index) => index !== i))
+  function deleteMessage(index: number): void {
+    if (messages.length > 1 && index >= 0 && index < messages.length) {
+      // Create a new array without the message at the specified index
+      const updatedMessages = [...messages.slice(0, index), ...messages.slice(index + 1)]
+
+      // Update the state with the new array
+      setMessages(updatedMessages)
     }
   }
-
   function handleAddMessage() {
     setMessages((prevMessages) => [...prevMessages, ''])
   }
@@ -77,8 +80,12 @@ function Powertools() {
       const blockTimeAgo = Math.floor((Date.now() - Date.parse(block?.header?.time as string)) / 1000)
       const blockTimeAgoString = blockTimeAgo <= 0 ? 'now' : `${blockTimeAgo}s ago`
 
-      const { walletAddress, secretjs } = await WalletService.connectWallet(walletAPIType, apiUrl, newChainId)
-      setSecretjs(secretjs)
+      const { walletAddress, secretjs: importedSecretjs } = await WalletService.connectWallet(
+        walletAPIType,
+        apiUrl,
+        newChainId
+      )
+      setSecretjs(importedSecretjs)
 
       setChainId(newChainId)
       setApiStatus('online')
@@ -132,7 +139,7 @@ function Powertools() {
 
       <div className="flex flex-col gap-4 my-4">
         {messages.map((item: any, i: number) => {
-          return <Message key={i} message={item} number={i + 1} secretjs={secretjs} onDelete={() => deleteMessage(i)} />
+          return <Message key={i} number={i + 1} secretjs={secretjs} denom={denom} onDelete={() => deleteMessage(i)} />
         })}
       </div>
 

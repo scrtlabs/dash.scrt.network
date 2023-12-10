@@ -6,16 +6,18 @@ import { faGripVertical, faTrash } from '@fortawesome/free-solid-svg-icons'
 import Tooltip from '@mui/material/Tooltip'
 import { messages } from './imported/Messages'
 import { SecretNetworkClient } from 'secretjs'
+import { useSecretNetworkClientStore } from 'store/secretNetworkClient'
 
 interface Props {
-  message?: any
+  key: number
   number: number
   onDelete: any
   secretjs?: Nullable<SecretNetworkClient>
+  denom: string
 }
 
 function Message(props: Props) {
-  const [messageType, setMessageType] = useState<Nullable<any>>(null)
+  const [messageType, setMessageType] = useState<Nullable<string>>(null)
   const options = [
     'MultiSend',
     'Send',
@@ -39,6 +41,8 @@ function Message(props: Props) {
     'CreateVestingAccount'
   ]
 
+  const [error, setError] = useState<string>('')
+
   const selectOptions: { value: any; label: string }[] = Object.keys(messages)
     .sort((a, b) => {
       const module = messages[a].module.localeCompare(messages[b].module)
@@ -53,16 +57,31 @@ function Message(props: Props) {
       label: option as string
     }))
 
+  const [textareaContent, setTextareaContent] = useState<string>('')
+
   const onTypeSelect = () => {
-    console.log(
-      'Test Content',
-      messages.MsgExecuteContract.example(
-        props.secretjs,
-        props.secretjs?.address, // pass old as null if not needed
-        'prefix', // replace with your prefix
-        'uscrt' // replace with your denomination
-      )
-    )
+    const newContent: string = JSON.stringify(messages[messageType].example(props.secretjs, null, '', props.denom)) // TODO: Fix
+    setTextareaContent(JSON.stringify(JSON.parse(newContent), null, 2))
+  }
+
+  const handleBlur = () => {
+    if (messageType) {
+      try {
+        setTextareaContent(JSON.stringify(JSON.parse(textareaContent), null, 2))
+      } catch (error) {
+        setError(error.toString())
+      }
+    }
+  }
+
+  // Content Textarea height (min. 6 lines)
+  const contentRowsCount = () => {
+    const textareaLines: number = textareaContent.split('\n').length
+    if (textareaLines >= 6) {
+      return textareaLines
+    } else {
+      return 6
+    }
   }
 
   return (
@@ -80,7 +99,8 @@ function Message(props: Props) {
             </button>
           </Tooltip> */}
           <span>Message #{props.number}</span>
-          <Tooltip title="Delete Message">
+          {/* TODO: Delete Function */}
+          {/* <Tooltip title="Delete Message">
             <button
               type="button"
               onClick={props.onDelete}
@@ -88,7 +108,7 @@ function Message(props: Props) {
             >
               <FontAwesomeIcon icon={faTrash} className="" />
             </button>
-          </Tooltip>
+          </Tooltip> */}
         </span>
       </div>
       <div>
@@ -105,11 +125,17 @@ function Message(props: Props) {
           classNamePrefix="react-select"
         />
 
-        <textarea
-          rows={6}
-          placeholder="Content"
-          className="w-full my-4 p-3 placeholder-neutral-600 dark:placeholder-neutral-500 resize-none dark:bg-neutral-800 text-black border dark:border-neutral-700 dark:text-white"
-        />
+        <div className="my-4">
+          <textarea
+            value={textareaContent}
+            onChange={(e) => setTextareaContent(e.target.value)}
+            onBlur={handleBlur}
+            rows={contentRowsCount()}
+            placeholder="Content"
+            className="w-full p-3 placeholder-neutral-600 dark:placeholder-neutral-500 resize-none dark:bg-neutral-800 text-black border dark:border-neutral-700 dark:text-white"
+          />
+          {error ? <div className="text-red-500 text-sm">{error}</div> : null}
+        </div>
       </div>
 
       {/* Relevant Info */}
