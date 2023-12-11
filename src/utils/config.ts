@@ -103,7 +103,7 @@ export const chains: { [chain_name: string]: Chain } = {
     withdraw_gas: 30_000,
     chain_id: 'axelar-dojo-1',
     bech32_prefix: 'axelar',
-    lcd: 'https://api-axelar-ia.cosmosia.notional.ventures',
+    lcd: 'https://lcd-axelar.imperator.co:443',
     chain_image: '/axl.svg',
     explorer_account: 'https://axelarscan.io/account/'
   },
@@ -142,7 +142,7 @@ export const chains: { [chain_name: string]: Chain } = {
     withdraw_gas: 30_000,
     chain_id: 'chihuahua-1',
     bech32_prefix: 'chihuahua',
-    lcd: 'https://api-chihuahua-ia.cosmosia.notional.ventures',
+    lcd: 'https://chihuahua-api.lavenderfive.com',
     chain_image: '/huahua.svg',
     explorer_account: 'https://ping.pub/chihuahua/account/'
   },
@@ -181,7 +181,7 @@ export const chains: { [chain_name: string]: Chain } = {
     withdraw_gas: 30_000,
     chain_id: 'cosmoshub-4',
     bech32_prefix: 'cosmos',
-    lcd: 'https://api-cosmoshub-ia.cosmosia.notional.ventures',
+    lcd: 'https://cosmoshub-api.lavenderfive.com:443',
     chain_image: '/atom.svg',
     explorer_account: 'https://www.mintscan.io/cosmos/account/'
   },
@@ -233,7 +233,7 @@ export const chains: { [chain_name: string]: Chain } = {
     withdraw_gas: 30_000,
     chain_id: 'gravity-bridge-3',
     bech32_prefix: 'gravity',
-    lcd: 'https://api-gravitybridge-ia.cosmosia.notional.ventures',
+    lcd: 'https://gravitybridge-api.lavenderfive.com/',
     chain_image: '/grav.svg',
     explorer_account: 'https://www.mintscan.io/gravity-bridge/account/'
   },
@@ -272,7 +272,7 @@ export const chains: { [chain_name: string]: Chain } = {
     withdraw_gas: 30_000,
     chain_id: 'juno-1',
     bech32_prefix: 'juno',
-    lcd: 'https://api-juno-ia.cosmosia.notional.ventures/',
+    lcd: 'https://juno-api.lavenderfive.com:443',
     chain_image: '/juno.svg',
     explorer_account: 'https://www.mintscan.io/juno/account/'
   },
@@ -326,7 +326,7 @@ export const chains: { [chain_name: string]: Chain } = {
     bech32_prefix: 'kujira',
     lcd: 'https://kujira-api.polkachu.com/',
     chain_image: '/kuji.svg',
-    explorer_account: 'https://kujira.explorers.guru/account/'
+    explorer_account: 'https://ping.pub/kujira/account/'
   },
   Osmosis: {
     chain_name: 'Osmosis',
@@ -376,7 +376,7 @@ export const chains: { [chain_name: string]: Chain } = {
     withdraw_gas: 30_000,
     chain_id: 'sentinelhub-2',
     bech32_prefix: 'sent',
-    lcd: 'https://api-sentinel-ia.cosmosia.notional.ventures',
+    lcd: 'https://lcd-sentinel.whispernode.com:443',
     chain_image: '/dvpn.svg',
     explorer_account: 'https://www.mintscan.io/sentinel/account/'
   },
@@ -1810,7 +1810,7 @@ export const tokens: Token[] = [
     deposits: [
       {
         chain_name: 'Kujira',
-        denom: 'uusk'
+        denom: 'factory/kujira1qk00h5atutpsv900x202pxx42npjr9thg58dnqpa72f2p7m2luase444a7/uusk'
       }
     ],
     withdrawals: [
@@ -1823,7 +1823,7 @@ export const tokens: Token[] = [
               incomingPortId: 'transfer'
             }
           ],
-          'uusk'
+          'factory:kujira1qk00h5atutpsv900x202pxx42npjr9thg58dnqpa72f2p7m2luase444a7:uusk'
         )
       }
     ]
