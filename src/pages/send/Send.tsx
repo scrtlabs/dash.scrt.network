@@ -23,7 +23,6 @@ export function Send() {
 
   const handleClick = () => {
     if (!isConnected) {
-      WalletService.handleConnectWallet(setIsConnectWalletModalOpen, setIsGetWalletModalOpen)
     }
   }
 

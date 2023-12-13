@@ -14,10 +14,8 @@ import PercentagePicker from 'components/PercentagePicker'
 import { IbcService } from 'services/ibc.service'
 import FeeGrant from 'components/FeeGrant/FeeGrant'
 import BalanceUI from 'components/BalanceUI'
-import { FeeGrantStatus } from 'types/FeeGrantStatus'
 import BridgingFees from './BridgingFees'
 import BigNumber from 'bignumber.js'
-import { allTokens } from 'utils/commons'
 import { useSearchParams } from 'react-router-dom'
 import { NotificationService } from 'services/notification.service'
 
@@ -351,7 +349,7 @@ export default function IbcForm() {
               value={formik.values.token}
               onChange={(token: Token) => formik.setFieldValue('token', token)}
               isSearchable={false}
-              isDisabled={!secretNetworkClient?.address}
+              isDisabled={!isConnected}
               formatOptionLabel={(token: Token) => (
                 <div className="flex items-center">
                   <img

@@ -59,7 +59,7 @@ function Message(props: Props) {
 
   const [textareaContent, setTextareaContent] = useState<string>('')
 
-  const onTypeSelect = () => {
+  const onTypeSelect = (messageType: any) => {
     const newContent: string = JSON.stringify(messages[messageType].example(props.secretjs, null, '', props.denom)) // TODO: Fix
     setTextareaContent(JSON.stringify(JSON.parse(newContent), null, 2))
   }
@@ -120,7 +120,7 @@ function Message(props: Props) {
           isSearchable={false}
           onChange={(selectedOption) => {
             setMessageType(selectedOption.value)
-            onTypeSelect()
+            onTypeSelect(selectedOption.value)
           }}
           classNamePrefix="react-select"
         />

@@ -42,6 +42,9 @@ interface SecretNetworkClientState {
   ibcBalanceMapping: Map<Chain, Map<Token, TokenBalances>>
   setIbcBalanceMapping: (chain: Chain) => void
   getIbcBalance: (chain: Chain, token: Token) => Nullable<BigNumber | GetBalanceError>
+  balanceRefreshIntervalId: any
+  startBalanceRefresh: () => void
+  stopBalanceRefresh: () => void
   isGetWalletModalOpen: boolean
   setIsGetWalletModalOpen: (isGetWalletModalOpen: boolean) => void
   isConnectWalletModalOpen: boolean
@@ -62,7 +65,7 @@ export const useSecretNetworkClientStore = create<SecretNetworkClientState>()((s
   setWalletAPIType: (walletAPIType: WalletAPIType) => set({ walletAPIType }),
   connectWallet: async (walletAPIType?: WalletAPIType) => {
     localStorage.setItem('autoConnect', 'true')
-    const { setScrtBalance, setsScrtBalance, setBalanceMapping, getBalance } = get()
+    const { setScrtBalance, setsScrtBalance, setBalanceMapping, startBalanceRefresh } = get()
     const { walletAddress, secretjs: secretNetworkClient } = await WalletService.connectWallet(walletAPIType)
     set({
       walletAPIType,
@@ -73,6 +76,7 @@ export const useSecretNetworkClientStore = create<SecretNetworkClientState>()((s
     setScrtBalance()
     setsScrtBalance()
     setBalanceMapping()
+    startBalanceRefresh()
   },
   disconnectWallet: () => {
     set({
@@ -82,6 +86,8 @@ export const useSecretNetworkClientStore = create<SecretNetworkClientState>()((s
       scrtBalance: null,
       sScrtBalance: null
     })
+    const { stopBalanceRefresh } = get()
+    stopBalanceRefresh()
     localStorage.setItem('autoConnect', 'false')
   },
   feeGrantStatus: 'untouched',
@@ -163,6 +169,25 @@ export const useSecretNetworkClientStore = create<SecretNetworkClientState>()((s
       }
     }
     return null
+  },
+  balanceRefreshIntervalId: null,
+  startBalanceRefresh: (intervalMs = 15000) => {
+    const intervalId = setInterval(() => {
+      set({
+        balanceMapping: null,
+        ibcBalanceMapping: null
+      })
+      const { setBalanceMapping } = get()
+      setBalanceMapping()
+    }, intervalMs)
+    set({ balanceRefreshIntervalId: intervalId })
+  },
+  stopBalanceRefresh: () => {
+    const { balanceRefreshIntervalId } = get()
+    if (balanceRefreshIntervalId) {
+      clearInterval(balanceRefreshIntervalId)
+      set({ balanceRefreshIntervalId: null })
+    }
   },
   isGetWalletModalOpen: false,
   setIsGetWalletModalOpen: (isGetWalletModalOpen: any) => set({ isGetWalletModalOpen: isGetWalletModalOpen }),
