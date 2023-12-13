@@ -94,8 +94,7 @@ export default function IbcForm() {
   })
 
   useEffect(() => {
-    var params = {}
-    params = {
+    const params = {
       chain: formik.values.chain.chain_name.toLowerCase(),
       mode: formik.values.ibcMode,
       token: formik.values.token.name.toLowerCase()
@@ -143,29 +142,6 @@ export default function IbcForm() {
     }
   }
 
-  const ChainSelect = () => {
-    return (
-      <Select
-        options={selectableChains}
-        value={formik.values.chain}
-        onChange={(chain: Chain) => {
-          formik.setFieldValue('chain', chain)
-        }}
-        isSearchable={false}
-        isDisabled={!isConnected}
-        formatOptionLabel={(option) => (
-          <IbcSelect
-            imgSrc={`/img/assets/${chains[option.chain_name].chain_image}`}
-            altText={`/img/assets/${chains[option.chain_name].chain_name} asset logo`}
-            optionName={option.chain_name}
-          />
-        )}
-        className="react-select-container"
-        classNamePrefix="react-select"
-      />
-    )
-  }
-
   interface IFormValues {
     chain: Chain
     token: Token
@@ -196,7 +172,6 @@ export default function IbcForm() {
     fetchSourceChainAddress()
   }, [formik.values.chain])
 
-  // return <Deposit />
   return (
     <>
       <form
@@ -241,7 +216,26 @@ export default function IbcForm() {
             {/* Chain Picker */}
             <div className="-mt-3 relative z-10 w-full">
               {/* {value} */}
-              {formik.values.ibcMode === 'deposit' && <ChainSelect />}
+              {formik.values.ibcMode === 'deposit' && (
+                <Select
+                  options={selectableChains}
+                  value={formik.values.chain}
+                  onChange={(chain: Chain) => {
+                    formik.setFieldValue('chain', chain)
+                  }}
+                  isSearchable={false}
+                  isDisabled={!isConnected}
+                  formatOptionLabel={(option) => (
+                    <IbcSelect
+                      imgSrc={`/img/assets/${chains[option.chain_name].chain_image}`}
+                      altText={`/img/assets/${chains[option.chain_name].chain_name} asset logo`}
+                      optionName={option.chain_name}
+                    />
+                  )}
+                  className="react-select-container"
+                  classNamePrefix="react-select"
+                />
+              )}
               {formik.values.ibcMode === 'withdrawal' && (
                 <div
                   style={{ paddingTop: '.76rem', paddingBottom: '.76rem' }}
@@ -257,12 +251,7 @@ export default function IbcForm() {
           <div className="flex-1 py-2 md:py-0">
             <div className="md:relative" id="ibcSwitchButton">
               <div className="md:absolute md:top-1/2 md:left-1/2 md:transform md:-translate-x-1/2 md:-translate-y-1/2 text-center md:text-left">
-                <Tooltip
-                  title={`Switch chains`}
-                  placement="bottom"
-                  disableHoverListener={!secretNetworkClient?.address}
-                  arrow
-                >
+                <Tooltip title={`Switch chains`} placement="bottom" disableHoverListener={!isConnected} arrow>
                   <span>
                     <button
                       type="button"
@@ -314,7 +303,26 @@ export default function IbcForm() {
             </div>
             {/* Chain Picker */}
             <div className="md:-mt-3 md:relative z-10 w-full">
-              {formik.values.ibcMode === 'withdrawal' && <ChainSelect />}
+              {formik.values.ibcMode === 'withdrawal' && (
+                <Select
+                  options={selectableChains}
+                  value={formik.values.chain}
+                  onChange={(chain: Chain) => {
+                    formik.setFieldValue('chain', chain)
+                  }}
+                  isSearchable={false}
+                  isDisabled={!isConnected}
+                  formatOptionLabel={(option) => (
+                    <IbcSelect
+                      imgSrc={`/img/assets/${chains[option.chain_name].chain_image}`}
+                      altText={`/img/assets/${chains[option.chain_name].chain_name} asset logo`}
+                      optionName={option.chain_name}
+                    />
+                  )}
+                  className="react-select-container"
+                  classNamePrefix="react-select"
+                />
+              )}
               {formik.values.ibcMode === 'deposit' && (
                 <div
                   style={{ paddingTop: '.76rem', paddingBottom: '.76rem' }}

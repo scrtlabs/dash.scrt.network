@@ -171,7 +171,7 @@ export const useSecretNetworkClientStore = create<SecretNetworkClientState>()((s
     return null
   },
   balanceRefreshIntervalId: null,
-  startBalanceRefresh: (intervalMs = 15000) => {
+  startBalanceRefresh: (intervalMs = 10000) => {
     const intervalId = setInterval(() => {
       set({
         balanceMapping: null,
