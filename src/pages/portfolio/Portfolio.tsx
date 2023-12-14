@@ -9,6 +9,7 @@ import Title from 'components/Title'
 import AddressQR from './components/AddressQR'
 import { SendService } from 'services/send.service'
 import { useSecretNetworkClientStore } from 'store/secretNetworkClient'
+import BalanceChart from './components/BalanceChart'
 
 export default function Portfolio() {
   //Search Query
@@ -55,6 +56,11 @@ export default function Portfolio() {
         {secretNetworkClient && (
           <div className="w-full justify-left mb-12">
             <AddressQR />
+            <div className="col-span-12 md:col-span-6 lg:col-span-12 xl:col-span-6 2xl:col-span-4">
+              <div className="rounded-xl bg-white border border-neutral-200 dark:border-neutral-700 dark:bg-neutral-800 px-6 py-8">
+                <BalanceChart />
+              </div>
+            </div>
           </div>
         )}
         <div />

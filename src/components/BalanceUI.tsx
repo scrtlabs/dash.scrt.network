@@ -41,14 +41,11 @@ export default function BalanceUI({
     if (chain === chains['Secret Network']) {
       setBalance(null)
       const newBalance = getBalance(token, isSecretToken)
-      console.debug(newBalance)
       if (newBalance !== null && newBalance instanceof BigNumber) {
         setBalance(newBalance.toNumber())
       } else if (newBalance === ('viewingKeyError' as GetBalanceError)) {
-        console.debug('Viewing Key not found.')
         setBalance('viewingKeyError' as GetBalanceError)
       } else if (newBalance === ('GenericFetchError' as GetBalanceError)) {
-        console.debug('Viewing Key not found.')
         setBalance('GenericFetchError' as GetBalanceError)
       } else {
         setBalance(null)
@@ -58,7 +55,6 @@ export default function BalanceUI({
     if (chain !== chains['Secret Network']) {
       setBalance(null)
       const IbcBalance = getIbcBalance(chain, token)
-      console.debug(IbcBalance)
       if (IbcBalance !== null && IbcBalance instanceof BigNumber) {
         setBalance(IbcBalance.toNumber())
       } else {
