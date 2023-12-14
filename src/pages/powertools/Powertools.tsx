@@ -13,6 +13,11 @@ import { Nullable } from 'types/Nullable'
 import { WalletService } from 'services/wallet.service'
 import { SECRET_LCD } from 'utils/config'
 
+export type TMessage = {
+  type: string
+  content: string
+}
+
 function Powertools() {
   const [secretjs, setSecretjs] = useState<Nullable<SecretNetworkClient>>(null)
   const [apiUrl, setApiUrl] = useState<string>(SECRET_LCD)
@@ -26,7 +31,19 @@ function Powertools() {
     alert('Send Tx: WIP')
   }
 
-  const [messages, setMessages] = useState<any[]>([''])
+  const [messages, setMessages] = useState<Nullable<TMessage>[]>([{ type: '', content: '' }])
+
+  const updateMessageType = (index: number, newType: string) => {
+    setMessages((currentMessages) =>
+      currentMessages.map((message, i) => (i === index ? { ...message, type: newType } : message))
+    )
+  }
+
+  const updateMessageContent = (index: number, newContent: string) => {
+    setMessages((currentMessages) =>
+      currentMessages.map((message, i) => (i === index ? { ...message, content: newContent } : message))
+    )
+  }
 
   function deleteMessage(index: number): void {
     if (messages.length > 1 && index >= 0 && index < messages.length) {
@@ -35,10 +52,13 @@ function Powertools() {
 
       // Update the state with the new array
       setMessages(updatedMessages)
+    } else {
+      setMessages([{ type: '', content: '' }])
     }
   }
   function handleAddMessage() {
-    setMessages((prevMessages) => [...prevMessages, ''])
+    const emptyMessage: TMessage = { type: '', content: '' }
+    setMessages((prevMessages) => [...prevMessages, emptyMessage])
   }
 
   const { walletAPIType } = useSecretNetworkClientStore()
@@ -137,9 +157,27 @@ function Powertools() {
         ) : null}
       </div>
 
+      <div className="bg-orange-900 p-2 rounded text-sm">
+        <b>Global</b>
+        <br />
+        {JSON.stringify(messages)}
+      </div>
+
       <div className="flex flex-col gap-4 my-4">
         {messages.map((item: any, i: number) => {
-          return <Message key={i} number={i + 1} secretjs={secretjs} denom={denom} onDelete={() => deleteMessage(i)} />
+          return (
+            <Message
+              key={i}
+              type={messages[i].type}
+              content={messages[i].content}
+              updateType={(type: string) => updateMessageType(i, type)}
+              updateContent={(content: string) => updateMessageContent(i, content)}
+              number={i + 1}
+              secretjs={secretjs}
+              denom={denom}
+              onDelete={() => deleteMessage(i)}
+            />
+          )
         })}
       </div>
 
