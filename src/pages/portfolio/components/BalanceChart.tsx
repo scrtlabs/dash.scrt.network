@@ -1,6 +1,5 @@
 import { useContext, useEffect, useRef, useState } from 'react'
-import { allTokens, formatNumber } from 'utils/commons'
-import { APIContext } from 'context/APIContext'
+import { formatNumber } from 'utils/commons'
 
 import {
   Chart as ChartJS,
@@ -25,12 +24,9 @@ ChartJS.register(CategoryScale, LinearScale, PointElement, ArcElement, LineEleme
 export default function BalanceChart() {
   const chartRef = useRef<ChartJS<'doughnut', number[], string>>(null)
 
-  const { secretNetworkClient, balanceMapping } = useSecretNetworkClientStore()
-  const { getPrice } = useTokenPricesStore()
+  const { balanceMapping } = useSecretNetworkClientStore()
 
   const { theme } = useContext(ThemeContext)
-
-  const [otherToken, setOtherToken] = useState(null)
 
   const [data, setData] = useState({
     labels: [''],
@@ -92,16 +88,10 @@ export default function BalanceChart() {
 
       ctx.save()
 
-      ctx.font = 'bold 0.9rem sans-serif'
+      ctx.font = 'bold 1.5rem sans-serif'
       ctx.fillStyle = theme === 'dark' ? '#fff' : '#000'
       ctx.textAlign = 'center'
-      ctx.fillText(`Total Supply`, width / 2, height / 2.25 + top)
-      ctx.restore()
-
-      ctx.font = '400 2rem sans-serif'
-      ctx.fillStyle = theme === 'dark' ? '#fff' : '#000'
-      ctx.textAlign = 'center'
-      ctx.fillText(`${formatNumber(3234534, 2)}`, width / 2, height / 1.75 + top)
+      ctx.fillText(`Balances`, width / 2, height / 1.85)
       ctx.restore()
     }
   }
@@ -123,7 +113,7 @@ export default function BalanceChart() {
         labels: {
           color: theme === 'dark' ? '#fff' : '#000',
           font: {
-            size: 11
+            size: 12
           },
           usePointStyle: true,
           pointStyle: 'circle',
@@ -152,13 +142,13 @@ export default function BalanceChart() {
     <>
       <div>
         {/* Chart */}
-        <div className="w-full h-[250px] xl:h-[300px]">
+        <div className="w-full h-[150px] xl:h-[250px]">
           {data != undefined && options != undefined && centerText != undefined ? (
             <Doughnut
               id="stakingChartDoughnut"
               data={data}
               options={options as any}
-              //plugins={[centerText]}
+              plugins={[centerText]}
               ref={chartRef}
               redraw
             />

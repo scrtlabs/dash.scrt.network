@@ -52,14 +52,13 @@ export default function Portfolio() {
 
       <Title title={'Portfolio'} />
       {/* All Balances */}
-      <div className="max-w-6xl mx-auto mt-8">
+      <div className="max-w-6xl mx-auto mt-8 px-4">
         {secretNetworkClient && (
-          <div className="w-full justify-left mb-12">
+          <div className="flex flex-col gap-4 mb-4">
             <AddressQR />
-            <div className="col-span-12 md:col-span-6 lg:col-span-12 xl:col-span-6 2xl:col-span-4">
-              <div className="rounded-xl bg-white border border-neutral-200 dark:border-neutral-700 dark:bg-neutral-800 px-6 py-8">
-                <BalanceChart />
-              </div>
+
+            <div className="rounded-xl bg-white border border-neutral-200 dark:border-neutral-700 dark:bg-neutral-800 px-6 py-8">
+              <BalanceChart />
             </div>
           </div>
         )}
