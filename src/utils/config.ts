@@ -1598,6 +1598,35 @@ export const tokens: Token[] = [
     ]
   },
   {
+    name: 'NSTK',
+    description: 'Unstake Governance Token',
+    address: 'secret16l5g98d45gqvvn2g79q23h8flfq65cvr9r6c72',
+    code_hash: '638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e',
+    image: '/nstk.svg',
+    decimals: 6,
+    coingecko_id: 'unstake-fi',
+    deposits: [
+      {
+        chain_name: 'Kujira',
+        denom: 'factory/kujira1aaudpfr9y23lt9d45hrmskphpdfaq9ajxd3ukh/unstk'
+      }
+    ],
+    withdrawals: [
+      {
+        chain_name: 'Kujira',
+        denom: ibcDenom(
+          [
+            {
+              incomingChannelId: chains['Kujira'].withdraw_channel_id,
+              incomingPortId: 'transfer'
+            }
+          ],
+          'factory:kujira1aaudpfr9y23lt9d45hrmskphpdfaq9ajxd3ukh:unstk'
+        )
+      }
+    ]
+  },
+  {
     name: 'LUNA',
     description: 'Terra Governance Token',
     address: 'secret149e7c5j7w24pljg6em6zj2p557fuyhg8cnk7z8',
