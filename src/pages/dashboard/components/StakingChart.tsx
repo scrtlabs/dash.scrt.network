@@ -14,8 +14,6 @@ import {
   ArcElement
 } from 'chart.js'
 import { Doughnut } from 'react-chartjs-2'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faArrowUpRightFromSquare } from '@fortawesome/free-solid-svg-icons'
 import { ThemeContext } from 'context/ThemeContext'
 import { trackMixPanelEvent } from 'utils/commons'
 import { Link } from 'react-router-dom'

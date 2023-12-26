@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect, useState } from 'react'
+import { createContext, useContext, useEffect, useState } from 'react'
 import { formatNumber } from 'utils/commons'
 import { ThemeContext } from 'context/ThemeContext'
 import { APIContext } from 'context/APIContext'
@@ -44,8 +44,6 @@ export default function PriceVolumeTVL(props: any) {
 
   const { theme, setTheme } = useContext(ThemeContext)
 
-  const [marketData, setMarketData] = useState([])
-
   const [chartType, setChartType] = useState<ChartType>('Price')
   const [chartRange, setChartRange] = useState<ChartRange>('Month')
   const [chartData, setChartData] = useState<any>([])
@@ -74,7 +72,20 @@ export default function PriceVolumeTVL(props: any) {
     labels: chartData.map(
       (x: any[]) =>
         ({
-          x: chartRange === 'Day' ? new Date(x[0]).toLocaleTimeString() : new Date(x[0]).toLocaleDateString()
+          x:
+            chartRange === 'Day'
+              ? `${new Date(x[0]).toLocaleTimeString(undefined, {
+                  hour: '2-digit',
+                  minute: '2-digit'
+                })} / ${new Date(x[0]).toLocaleDateString(undefined, {
+                  month: '2-digit',
+                  day: '2-digit'
+                })}`
+              : `${new Date(x[0]).toLocaleDateString(undefined, {
+                  year: '2-digit',
+                  month: '2-digit',
+                  day: '2-digit'
+                })}`
         }).x
     ),
     datasets: [
@@ -82,7 +93,7 @@ export default function PriceVolumeTVL(props: any) {
         label: chartType,
         data: chartData.map((x: any[]) => ({ x: x[0], y: x[1] })),
         fill: 'start',
-        borderColor: theme === 'dark' ? '#06b6d4' : '#06b6d4',
+        borderColor: 'rgba(0, 123, 255, 1)',
         tension: 0.1,
         pointHitRadius: '5'
       }
@@ -94,7 +105,7 @@ export default function PriceVolumeTVL(props: any) {
     beforeDatasetsDraw: (chart: any, args: any, options: any) => {
       const ctx = chart.ctx
       ctx.save()
-      ;(ctx.shadowColor = theme === 'dark' ? '#06b6d4' : '#06b6d4'), (ctx.shadowBlur = 4)
+      ;(ctx.shadowColor = 'rgba(0, 123, 255, 1)'), (ctx.shadowBlur = 2)
       ctx.shadowOffsetX = 0
       ctx.shadowOffsetY = 0
     },
@@ -113,7 +124,7 @@ export default function PriceVolumeTVL(props: any) {
       },
       tooltip: {
         xAlign: true,
-        color: theme === 'dark' ? '#06b6d4' : '#06b6d4',
+        color: 'rgba(0, 123, 255, 1)',
         callbacks: {
           label: function (context: any) {
             let label = context.dataset.label || ''
@@ -122,7 +133,7 @@ export default function PriceVolumeTVL(props: any) {
               label += ': '
             }
             if (context.parsed.y !== null) {
-              label += new Intl.NumberFormat('en-US', {
+              label += new Intl.NumberFormat(undefined, {
                 style: 'currency',
                 currency: 'USD'
               }).format(context.parsed.y)
@@ -195,7 +206,7 @@ export default function PriceVolumeTVL(props: any) {
         </div>
       </div>
       <div className="w-full h-[300px] xl:h-[400px]">
-        <Line data={data as any} options={options as any} plugins={[glowPlugin]} />
+        <Line data={data as any} options={options as any} plugins={[]} />
       </div>
     </PriceVolumeHistoryContext.Provider>
   )
