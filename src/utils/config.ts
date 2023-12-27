@@ -331,13 +331,13 @@ export const chains: { [chain_name: string]: Chain } = {
   Osmosis: {
     chain_name: 'Osmosis',
     deposit_channel_id: 'channel-88',
-    deposit_gas: 300_000,
+    deposit_gas: 700_000,
     deposit_gas_denom: 'uosmo',
     withdraw_channel_id: 'channel-1',
     withdraw_gas: 30_000,
     chain_id: 'osmosis-1',
     bech32_prefix: 'osmo',
-    lcd: 'https://osmosis-api.polkachu.com',
+    lcd: 'https://lcd.osmosis.zone',
     chain_image: '/osmo.svg',
     explorer_account: 'https://www.mintscan.io/osmosis/account/'
   },
