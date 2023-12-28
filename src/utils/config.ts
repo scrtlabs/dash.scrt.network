@@ -337,7 +337,7 @@ export const chains: { [chain_name: string]: Chain } = {
     withdraw_gas: 30_000,
     chain_id: 'osmosis-1',
     bech32_prefix: 'osmo',
-    lcd: 'https://lcd.osmosis.zone',
+    lcd: 'https://osmosis-rest.publicnode.com',
     chain_image: '/osmo.svg',
     explorer_account: 'https://www.mintscan.io/osmosis/account/'
   },
