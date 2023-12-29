@@ -998,7 +998,7 @@ export const tokens: Token[] = [
     code_hash: '638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e',
     image: '/andr.png',
     decimals: 6,
-    coingecko_id: '',
+    coingecko_id: 'andromeda-2',
     deposits: [
       {
         chain_name: 'Andromeda',
@@ -1593,6 +1593,35 @@ export const tokens: Token[] = [
             }
           ],
           'transfer/channel-2/4'
+        )
+      }
+    ]
+  },
+  {
+    name: 'NSTK',
+    description: 'Unstake Governance Token',
+    address: 'secret16l5g98d45gqvvn2g79q23h8flfq65cvr9r6c72',
+    code_hash: '638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e',
+    image: '/nstk.svg',
+    decimals: 6,
+    coingecko_id: 'unstake-fi',
+    deposits: [
+      {
+        chain_name: 'Kujira',
+        denom: 'factory/kujira1aaudpfr9y23lt9d45hrmskphpdfaq9ajxd3ukh/unstk'
+      }
+    ],
+    withdrawals: [
+      {
+        chain_name: 'Kujira',
+        denom: ibcDenom(
+          [
+            {
+              incomingChannelId: chains['Kujira'].withdraw_channel_id,
+              incomingPortId: 'transfer'
+            }
+          ],
+          'factory:kujira1aaudpfr9y23lt9d45hrmskphpdfaq9ajxd3ukh:unstk'
         )
       }
     ]
@@ -3686,6 +3715,119 @@ export const ICSTokens: Token[] = [
         chain_name: 'Terra',
         axelar_chain_name: CHAINS.MAINNET.TERRA,
         denom: ibcDenom([{ incomingChannelId: 'channel-6', incomingPortId: 'transfer' }], 'dai-wei'),
+        channel_id: 'channel-6',
+        gas: 300_000
+      }
+    ],
+    withdrawals: [
+      {
+        chain_name: 'Axelar',
+        axelar_chain_name: CHAINS.MAINNET.AXELAR,
+        denom: 'secret1yxjmepvyl2c25vnt53cr2dpn8amknwausxee83',
+        channel_id: 'channel-61',
+        gas: 350_000
+      },
+      {
+        chain_name: 'Carbon',
+        axelar_chain_name: CHAINS.MAINNET.CARBON,
+        denom: 'secret1yxjmepvyl2c25vnt53cr2dpn8amknwausxee83',
+        channel_id: 'channel-61',
+        gas: 350_000
+      },
+      {
+        chain_name: 'Juno',
+        axelar_chain_name: CHAINS.MAINNET.JUNO,
+        denom: 'secret1yxjmepvyl2c25vnt53cr2dpn8amknwausxee83',
+        channel_id: 'channel-61',
+        gas: 350_000
+      },
+      {
+        chain_name: 'Kujira',
+        axelar_chain_name: CHAINS.MAINNET.KUJIRA,
+        denom: 'secret1yxjmepvyl2c25vnt53cr2dpn8amknwausxee83',
+        channel_id: 'channel-61',
+        gas: 350_000
+      },
+      {
+        chain_name: 'Osmosis',
+        axelar_chain_name: CHAINS.MAINNET.OSMOSIS,
+        denom: 'secret1yxjmepvyl2c25vnt53cr2dpn8amknwausxee83',
+        channel_id: 'channel-61',
+        gas: 350_000
+      },
+      {
+        chain_name: 'Stargaze',
+        axelar_chain_name: CHAINS.MAINNET.STARGAZE,
+        denom: 'secret1yxjmepvyl2c25vnt53cr2dpn8amknwausxee83',
+        channel_id: 'channel-61',
+        gas: 350_000
+      },
+      {
+        chain_name: 'Terra',
+        axelar_chain_name: CHAINS.MAINNET.TERRA,
+        denom: 'secret1yxjmepvyl2c25vnt53cr2dpn8amknwausxee83',
+        channel_id: 'channel-61',
+        gas: 350_000
+      }
+    ]
+  },
+  {
+    name: 'aLINK',
+    description: 'LINK from Axelar',
+    is_ics20: true,
+    address: 'secret1walthx26qaas50nwzg2rsqttlkf58q3hvjha5k',
+    code_hash: '638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e',
+    image: '/alink.svg',
+    decimals: 18,
+    coingecko_id: 'chainlink',
+    axelar_denom: 'link-wei',
+    deposits: [
+      {
+        chain_name: 'Axelar',
+        axelar_chain_name: CHAINS.MAINNET.AXELAR,
+        denom: 'link-wei',
+        channel_id: 'channel-69',
+        gas: 300_000
+      },
+      {
+        chain_name: 'Carbon',
+        axelar_chain_name: CHAINS.MAINNET.CARBON,
+        denom: ibcDenom([{ incomingChannelId: 'channel-7', incomingPortId: 'transfer' }], 'link-wei'),
+        channel_id: 'channel-7',
+        gas: 300_000
+      },
+      {
+        chain_name: 'Juno',
+        axelar_chain_name: CHAINS.MAINNET.JUNO,
+        denom: ibcDenom([{ incomingChannelId: 'channel-71', incomingPortId: 'transfer' }], 'link-wei'),
+        channel_id: 'channel-71',
+        gas: 300_000
+      },
+      {
+        chain_name: 'Kujira',
+        axelar_chain_name: CHAINS.MAINNET.KUJIRA,
+        denom: ibcDenom([{ incomingChannelId: 'channel-9', incomingPortId: 'transfer' }], 'link-wei'),
+        channel_id: 'channel-9',
+        gas: 300_000
+      },
+      {
+        chain_name: 'Osmosis',
+        axelar_chain_name: CHAINS.MAINNET.OSMOSIS,
+        denom: ibcDenom([{ incomingChannelId: 'channel-208', incomingPortId: 'transfer' }], 'link-wei'),
+        channel_id: 'channel-208',
+        gas: 300_000
+      },
+      {
+        chain_name: 'Stargaze',
+        axelar_chain_name: CHAINS.MAINNET.STARGAZE,
+        denom: ibcDenom([{ incomingChannelId: 'channel-50', incomingPortId: 'transfer' }], 'link-wei'),
+        channel_id: 'channel-50',
+        gas: 300_000
+      },
+      {
+        chain_name: 'Terra',
+        axelar_chain_name: CHAINS.MAINNET.TERRA,
+        denom: ibcDenom([{ incomingChannelId: 'channel-6', incomingPortId: 'transfer' }], 'link-wei'),
         channel_id: 'channel-6',
         gas: 300_000
       }
