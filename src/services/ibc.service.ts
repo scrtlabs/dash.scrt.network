@@ -345,7 +345,8 @@ async function performIbcDeposit(
           resolveResponses: true,
           resolveResponsesCheckIntervalMs: 250,
           resolveResponsesTimeoutMs: 10.25 * 60 * 1000
-        }
+        },
+        broadcastMode: BroadcastMode.Sync
       })
     }
 

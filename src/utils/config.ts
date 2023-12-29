@@ -2399,7 +2399,7 @@ export const snips: Token[] = [
           'cw20:secret17ljp7wwesff85ewt8xlauxjt7zrlr2hh27wgvr'
         ),
         channel_id: 'channel-476',
-        gas: 300_000
+        gas: 700_000
       },
       {
         chain_name: 'Kujira',
@@ -2464,7 +2464,7 @@ export const snips: Token[] = [
           'cw20:secret1s09x2xvfd2lp2skgzm29w2xtena7s8fq98v852'
         ),
         channel_id: 'channel-476',
-        gas: 300_000
+        gas: 700_000
       },
       {
         chain_name: 'Kujira',
@@ -2523,7 +2523,7 @@ export const snips: Token[] = [
           'cw20:secret1yxcexylwyxlq58umhgsjgstgcg2a0ytfy4d9lt'
         ),
         channel_id: 'channel-476',
-        gas: 300_000
+        gas: 700_000
       },
       {
         chain_name: 'Kujira',
@@ -2671,7 +2671,7 @@ export const snips: Token[] = [
           'cw20:secret197dvnt9yjxwn8sjdlx05f7zuk27lsdxtfnwxse'
         ),
         channel_id: 'channel-476',
-        gas: 300_000
+        gas: 700_000
       },
       {
         chain_name: 'Kujira',
@@ -2730,7 +2730,7 @@ export const snips: Token[] = [
           'cw20:secret1rgm2m5t530tdzyd99775n6vzumxa5luxcllml4'
         ),
         channel_id: 'channel-476',
-        gas: 300_000
+        gas: 700_000
       },
       {
         chain_name: 'Kujira',
@@ -2798,7 +2798,7 @@ export const snips: Token[] = [
           'cw20:secret1fl449muk5yq8dlad7a22nje4p5d2pnsgymhjfd'
         ),
         channel_id: 'channel-476',
-        gas: 300_000
+        gas: 700_000
       },
       {
         chain_name: 'Kujira',
@@ -2863,7 +2863,7 @@ export const snips: Token[] = [
           'cw20:secret1k6u0cy4feepm6pehnz804zmwakuwdapm69tuc4'
         ),
         channel_id: 'channel-476',
-        gas: 300_000
+        gas: 700_000
       },
       {
         chain_name: 'Kujira',
@@ -2959,7 +2959,7 @@ export const ICSTokens: Token[] = [
         axelar_chain_name: CHAINS.MAINNET.OSMOSIS,
         denom: ibcDenom([{ incomingChannelId: 'channel-208', incomingPortId: 'transfer' }], 'uusdc'),
         channel_id: 'channel-208',
-        gas: 300_000
+        gas: 700_000
       },
       {
         chain_name: 'Stargaze',
@@ -3115,7 +3115,7 @@ export const ICSTokens: Token[] = [
         axelar_chain_name: CHAINS.MAINNET.OSMOSIS,
         denom: ibcDenom([{ incomingChannelId: 'channel-208', incomingPortId: 'transfer' }], 'weth-wei'),
         channel_id: 'channel-208',
-        gas: 300_000
+        gas: 700_000
       },
       {
         chain_name: 'Stargaze',
@@ -3235,7 +3235,7 @@ export const ICSTokens: Token[] = [
         axelar_chain_name: CHAINS.MAINNET.OSMOSIS,
         denom: ibcDenom([{ incomingChannelId: 'channel-208', incomingPortId: 'transfer' }], 'wsteth-wei'),
         channel_id: 'channel-208',
-        gas: 300_000
+        gas: 700_000
       },
       {
         chain_name: 'Stargaze',
@@ -3355,7 +3355,7 @@ export const ICSTokens: Token[] = [
         axelar_chain_name: CHAINS.MAINNET.OSMOSIS,
         denom: ibcDenom([{ incomingChannelId: 'channel-208', incomingPortId: 'transfer' }], 'wbtc-satoshi'),
         channel_id: 'channel-208',
-        gas: 300_000
+        gas: 700_000
       },
       {
         chain_name: 'Stargaze',
@@ -3468,7 +3468,7 @@ export const ICSTokens: Token[] = [
         axelar_chain_name: CHAINS.MAINNET.OSMOSIS,
         denom: ibcDenom([{ incomingChannelId: 'channel-208', incomingPortId: 'transfer' }], 'wbnb-wei'),
         channel_id: 'channel-208',
-        gas: 300_000
+        gas: 700_000
       },
       {
         chain_name: 'Stargaze',
@@ -3567,7 +3567,7 @@ export const ICSTokens: Token[] = [
         axelar_chain_name: CHAINS.MAINNET.OSMOSIS,
         denom: ibcDenom([{ incomingChannelId: 'channel-208', incomingPortId: 'transfer' }], 'busd-wei'),
         channel_id: 'channel-208',
-        gas: 300_000
+        gas: 700_000
       },
       {
         chain_name: 'Stargaze',
@@ -3673,7 +3673,7 @@ export const ICSTokens: Token[] = [
         axelar_chain_name: CHAINS.MAINNET.OSMOSIS,
         denom: ibcDenom([{ incomingChannelId: 'channel-208', incomingPortId: 'transfer' }], 'dai-wei'),
         channel_id: 'channel-208',
-        gas: 300_000
+        gas: 700_000
       },
       {
         chain_name: 'Stargaze',
@@ -3779,7 +3779,7 @@ export const ICSTokens: Token[] = [
         axelar_chain_name: CHAINS.MAINNET.OSMOSIS,
         denom: ibcDenom([{ incomingChannelId: 'channel-208', incomingPortId: 'transfer' }], 'uni-wei'),
         channel_id: 'channel-208',
-        gas: 300_000
+        gas: 700_000
       },
       {
         chain_name: 'Stargaze',
@@ -3892,7 +3892,7 @@ export const ICSTokens: Token[] = [
         axelar_chain_name: CHAINS.MAINNET.OSMOSIS,
         denom: ibcDenom([{ incomingChannelId: 'channel-208', incomingPortId: 'transfer' }], 'uusdt'),
         channel_id: 'channel-208',
-        gas: 300_000
+        gas: 700_000
       },
       {
         chain_name: 'Stargaze',
@@ -4005,7 +4005,7 @@ export const ICSTokens: Token[] = [
         axelar_chain_name: CHAINS.MAINNET.OSMOSIS,
         denom: ibcDenom([{ incomingChannelId: 'channel-208', incomingPortId: 'transfer' }], 'frax-wei'),
         channel_id: 'channel-208',
-        gas: 300_000
+        gas: 700_000
       },
       {
         chain_name: 'Stargaze',
