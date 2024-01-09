@@ -86,7 +86,7 @@ export type SupportedMessage =
   | MsgWithdrawValidatorCommission
   | MsgSetAutoRestake
 
-export const messages: {
+export const MessageDefinitions: {
   [name: string]: {
     module: string
     example: (secretjs: SecretNetworkClient, old: any, prefix: string, denom: string) => any
@@ -352,7 +352,12 @@ export const messages: {
   },
   MsgFundCommunityPool: {
     module: 'distribution',
-    example: (secretjs: SecretNetworkClient, old: MsgFundCommunityPoolParams): MsgFundCommunityPoolParams => {
+    example: (
+      secretjs: SecretNetworkClient,
+      old: MsgFundCommunityPoolParams,
+      prefix: string,
+      denom: string
+    ): MsgFundCommunityPoolParams => {
       if (old) {
         old.depositor = secretjs.address
         return old
@@ -372,7 +377,12 @@ export const messages: {
   },
   MsgInstantiateContract: {
     module: 'compute',
-    example: (secretjs: SecretNetworkClient, old: MsgInstantiateContractParams): MsgInstantiateContractParams => {
+    example: (
+      secretjs: SecretNetworkClient,
+      old: MsgInstantiateContractParams,
+      prefix: string,
+      denom: string
+    ): MsgInstantiateContractParams => {
       if (old) {
         old.sender = secretjs.address
         return old
@@ -611,7 +621,12 @@ export const messages: {
   },
   MsgVoteWeighted: {
     module: 'gov',
-    example: (secretjs: SecretNetworkClient, old: MsgVoteWeightedParams): MsgVoteWeightedParams => {
+    example: (
+      secretjs: SecretNetworkClient,
+      old: MsgVoteWeightedParams,
+      prefix: string,
+      denom: string
+    ): MsgVoteWeightedParams => {
       if (old) {
         old.voter = secretjs.address
         return old

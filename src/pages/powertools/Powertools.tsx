@@ -7,7 +7,7 @@ import Button from 'components/UI/Button/Button'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPlus } from '@fortawesome/free-solid-svg-icons'
 import { SecretNetworkClient } from 'secretjs'
-import { balanceFormat } from './components/imported/Messages'
+import { MessageDefinitions, balanceFormat } from './components/imported/Messages'
 import { useSecretNetworkClientStore } from 'store/secretNetworkClient'
 import { Nullable } from 'types/Nullable'
 import { WalletService } from 'services/wallet.service'
@@ -26,12 +26,27 @@ function Powertools() {
   const [chainId, setChainId] = useState<string>('')
   const [blockHeight, setBlockHeight] = useState<string>('')
   const [gasPrice, setGasPrice] = useState<string>('')
-
-  function handleSendTx() {
-    alert('Send Tx: WIP')
-  }
-
   const [messages, setMessages] = useState<Nullable<TMessage>[]>([{ type: '', content: '' }])
+
+  async function handleSendTx() {
+    try {
+      console.log(messages)
+      const txMessages = messages.map((message) => {
+        return MessageDefinitions[message.type].converter(
+          JSON.parse(message.content),
+          'test', // actually prefix
+          denom
+        )
+      })
+
+      const tx = await secretjs.tx.broadcast(txMessages, {
+        gasLimit: 150_000
+      })
+      if (tx.code === 0) {
+      }
+    } finally {
+    }
+  }
 
   const updateMessageType = (index: number, newType: string) => {
     setMessages((currentMessages) =>

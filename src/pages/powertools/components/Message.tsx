@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import Select from 'react-select'
 import { Nullable } from 'types/Nullable'
-import { messages } from './imported/Messages'
+import { MessageDefinitions } from './imported/Messages'
 import { SecretNetworkClient } from 'secretjs'
 import { TMessage } from '../Powertools'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -46,9 +46,9 @@ function Message(props: Props) {
 
   const [error, setError] = useState<string>('')
 
-  const selectOptions: { value: any; label: string }[] = Object.keys(messages)
+  const selectOptions: { value: any; label: string }[] = Object.keys(MessageDefinitions)
     .sort((a, b) => {
-      const module = messages[a].module.localeCompare(messages[b].module)
+      const module = MessageDefinitions[a].module.localeCompare(MessageDefinitions[b].module)
       if (module !== 0) {
         return module
       } else {
@@ -62,7 +62,9 @@ function Message(props: Props) {
 
   const onTypeSelect = (messageType: any) => {
     props.updateType(messageType)
-    const newContent: string = JSON.stringify(messages[messageType].example(props.secretjs, null, '', props.denom)) // TODO: Fix
+    const newContent: string = JSON.stringify(
+      MessageDefinitions[messageType].example(props.secretjs, null, '', props.denom)
+    )
     props.updateContent(JSON.stringify(JSON.parse(newContent), null, 2))
   }
 
@@ -105,7 +107,6 @@ function Message(props: Props) {
             </button>
           </Tooltip> */}
           <span>Message #{props.number}</span>
-          {/* TODO: Delete Function */}
           <Tooltip title="Delete Message">
             <button
               type="button"
