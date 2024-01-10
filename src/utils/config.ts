@@ -1656,6 +1656,35 @@ export const tokens: Token[] = [
     ]
   },
   {
+    name: 'LVN',
+    description: 'Levana native Token',
+    address: 'secret1swrj0fqza3g98d7agm2nmukjfe44h7f5n8aavp',
+    code_hash: '638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e',
+    image: '/lvn.svg',
+    decimals: 6,
+    coingecko_id: 'levana-protocol',
+    deposits: [
+      {
+        chain_name: 'Osmosis',
+        denom: 'factory/osmo1mlng7pz4pnyxtpq0akfwall37czyk9lukaucsrn30ameplhhshtqdvfm5c/ulvn'
+      }
+    ],
+    withdrawals: [
+      {
+        chain_name: 'Osmosis',
+        denom: ibcDenom(
+          [
+            {
+              incomingChannelId: chains['Osmosis'].withdraw_channel_id,
+              incomingPortId: 'transfer'
+            }
+          ],
+          'factory/osmo1mlng7pz4pnyxtpq0akfwall37czyk9lukaucsrn30ameplhhshtqdvfm5c/ulvn'
+        )
+      }
+    ]
+  },
+  {
     name: 'MNTA',
     description: 'Manta DAO Governance Token',
     address: 'secret15rxfz2w2tallu9gr9zjxj8wav2lnz4gl9pjccj',
