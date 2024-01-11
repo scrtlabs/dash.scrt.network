@@ -1685,6 +1685,35 @@ export const tokens: Token[] = [
     ]
   },
   {
+    name: 'milkTIA',
+    description: 'MilkyWay Staked TIA',
+    address: 'secret1h08ru5kul3yajg7tqj6vq9k6rccnfw2yqy8glc',
+    code_hash: '638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e',
+    image: '/milktia.svg',
+    decimals: 6,
+    coingecko_id: 'milkyway-staked-tia',
+    deposits: [
+      {
+        chain_name: 'Osmosis',
+        denom: 'factory/osmo1f5vfcph2dvfeqcqkhetwv75fda69z7e5c2dldm3kvgj23crkv6wqcn47a0/umilkTIA'
+      }
+    ],
+    withdrawals: [
+      {
+        chain_name: 'Osmosis',
+        denom: ibcDenom(
+          [
+            {
+              incomingChannelId: chains['Osmosis'].withdraw_channel_id,
+              incomingPortId: 'transfer'
+            }
+          ],
+          'factory/osmo1f5vfcph2dvfeqcqkhetwv75fda69z7e5c2dldm3kvgj23crkv6wqcn47a0/umilkTIA'
+        )
+      }
+    ]
+  },
+  {
     name: 'MNTA',
     description: 'Manta DAO Governance Token',
     address: 'secret15rxfz2w2tallu9gr9zjxj8wav2lnz4gl9pjccj',
