@@ -1,17 +1,19 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Select from 'react-select'
 import { Nullable } from 'types/Nullable'
-import { MessageDefinitions } from './imported/Messages'
+import { MessageDefinitions } from './Messages'
 import { SecretNetworkClient } from 'secretjs'
 import { TMessage } from '../Powertools'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faTrash } from '@fortawesome/free-solid-svg-icons'
+import { faInfoCircle, faTrash } from '@fortawesome/free-solid-svg-icons'
 import Tooltip from '@mui/material/Tooltip'
+import { CircularProgress } from '@mui/material'
 
 interface Props {
   number: number
   onDelete: any
   secretjs?: Nullable<SecretNetworkClient>
+  prefix: string
   denom: string
   type: string
   content: string
@@ -21,30 +23,24 @@ interface Props {
 
 function Message(props: Props) {
   const [messageType, setMessageType] = useState<Nullable<string>>(null)
-  const options = [
-    'MultiSend',
-    'Send',
-    'ExecuteContract',
-    'InstantiateContract',
-    'FundCommunityPool',
-    'SetAutoRestake',
-    'SetWithdrawAddress',
-    'WithdrawDelegatorReward',
-    'WithdrawValidatorCommission',
-    'Deposit',
-    'Vote',
-    'VoteWeighted',
-    'Transfer',
-    'Unjail',
-    'BeginRedelegate',
-    'CreateValidator',
-    'Delegate',
-    'EditValidator',
-    'Undelegate',
-    'CreateVestingAccount'
-  ]
+  const [isLoadingInfo, setIsLoadingInfo] = useState<boolean>(false)
+  const [relevantInfo, setRelevantInfo] = useState<any>(null)
 
   const [error, setError] = useState<string>('')
+
+  useEffect(() => {
+    ;(async () => {
+      if (MessageDefinitions[props.type]?.relevantInfo && props.secretjs) {
+        setIsLoadingInfo(true)
+        setRelevantInfo(
+          await MessageDefinitions[props.type].relevantInfo!(props.secretjs, props.prefix, props.denom, props.content)
+        )
+        setIsLoadingInfo(false)
+      } else {
+        setRelevantInfo(null)
+      }
+    })()
+  }, [props.type, props.secretjs])
 
   const selectOptions: { value: any; label: string }[] = Object.keys(MessageDefinitions)
     .sort((a, b) => {
@@ -145,18 +141,30 @@ function Message(props: Props) {
       </div>
 
       {/* Relevant Info */}
-      {/* <div className="bg-neutral-800 p-4 rounded-lg border dark:text-sky-500 dark:border-sky-800 text-sm">
-        <div className="flex gap-2 items-center font-bold mb-2">
-          <FontAwesomeIcon icon={faInfoCircle} />
-          Relevant Info
-        </div>
-        <div className="flex flex-col gap-2">
-          <div>
-            <span className="font-bold">Balance: </span>
-            0.914483 SCRT
+      {isLoadingInfo ? (
+        <div className="bg-neutral-800 p-4 rounded-lg border dark:text-sky-500 dark:border-sky-800 text-sm">
+          <div className="flex gap-2 items-center font-bold mb-2">
+            <FontAwesomeIcon icon={faInfoCircle} />
+            Relevant Info
+          </div>
+          <div className="flex flex-col gap-2">
+            <div className="flex items-center p-4 gap-4">
+              <CircularProgress size="1rem" />
+            </div>
           </div>
         </div>
-      </div> */}
+      ) : null}
+      {relevantInfo && relevantInfo !== null ? (
+        <div className="bg-neutral-800 p-4 rounded-lg border dark:text-sky-500 dark:border-sky-800 text-sm overflow-auto break-all">
+          <div className="flex gap-2 items-center font-bold mb-2">
+            <FontAwesomeIcon icon={faInfoCircle} />
+            Relevant Info
+          </div>
+          <div className="flex flex-col gap-2">
+            <div>{relevantInfo}</div>
+          </div>
+        </div>
+      ) : null}
     </div>
   )
 }

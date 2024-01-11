@@ -7,11 +7,12 @@ import Button from 'components/UI/Button/Button'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPlus } from '@fortawesome/free-solid-svg-icons'
 import { SecretNetworkClient } from 'secretjs'
-import { MessageDefinitions, balanceFormat } from './components/imported/Messages'
+import { MessageDefinitions, balanceFormat } from './components/Messages'
 import { useSecretNetworkClientStore } from 'store/secretNetworkClient'
 import { Nullable } from 'types/Nullable'
 import { WalletService } from 'services/wallet.service'
 import { SECRET_LCD } from 'utils/config'
+import { useSearchParams } from 'react-router-dom'
 
 export type TMessage = {
   type: string
@@ -26,17 +27,31 @@ function Powertools() {
   const [chainId, setChainId] = useState<string>('')
   const [blockHeight, setBlockHeight] = useState<string>('')
   const [gasPrice, setGasPrice] = useState<string>('')
-  const [messages, setMessages] = useState<Nullable<TMessage>[]>([{ type: '', content: '' }])
+  const [prefix, setPrefix] = useState<string>('secret')
+
+  const [searchParams, setSearchParams] = useSearchParams()
+  const initialMessages = parseSearchParams(searchParams)
+
+  function parseSearchParams(params: any) {
+    const messagesParam = params.get('messages')
+    if (!messagesParam) {
+      return [{ type: '', content: '' }]
+    }
+    try {
+      return JSON.parse(decodeURIComponent(messagesParam))
+    } catch (e) {
+      console.error('Error parsing messages from URL:', e)
+      return [{ type: '', content: '' }]
+    }
+  }
+
+  const [messages, setMessages] = useState<Nullable<TMessage>[]>(initialMessages)
 
   async function handleSendTx() {
     try {
       console.log(messages)
       const txMessages = messages.map((message) => {
-        return MessageDefinitions[message.type].converter(
-          JSON.parse(message.content),
-          'test', // actually prefix
-          denom
-        )
+        return MessageDefinitions[message.type].converter(JSON.parse(message.content), prefix, denom)
       })
 
       const tx = await secretjs.tx.broadcast(txMessages, {
@@ -59,6 +74,12 @@ function Powertools() {
       currentMessages.map((message, i) => (i === index ? { ...message, content: newContent } : message))
     )
   }
+
+  // Serialize and update the URL when messages state changes
+  useEffect(() => {
+    const serializedMessages = encodeURIComponent(JSON.stringify(messages))
+    setSearchParams({ messages: serializedMessages })
+  }, [messages, setSearchParams])
 
   function deleteMessage(index: number): void {
     if (messages.length > 1 && index >= 0 && index < messages.length) {
@@ -120,8 +141,8 @@ function Powertools() {
         apiUrl,
         newChainId
       )
+      setPrefix(importedSecretjs.address.replace(/^([a-z]+)1.*$/, '$1'))
       setSecretjs(importedSecretjs)
-
       setChainId(newChainId)
       setApiStatus('online')
       setBlockHeight(newBlockHeight)
@@ -189,6 +210,7 @@ function Powertools() {
               updateContent={(content: string) => updateMessageContent(i, content)}
               number={i + 1}
               secretjs={secretjs}
+              prefix={prefix}
               denom={denom}
               onDelete={() => deleteMessage(i)}
             />

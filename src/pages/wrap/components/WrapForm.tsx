@@ -20,18 +20,8 @@ import { Nullable } from 'types/Nullable'
 import { WalletService } from 'services/wallet.service'
 
 export default function WrapForm() {
-  const {
-    secretNetworkClient,
-    walletAddress,
-    feeGrantStatus,
-    requestFeeGrant,
-    isConnected,
-    connectWallet,
-    scrtBalance,
-    getBalance,
-    setIsGetWalletModalOpen,
-    setIsConnectWalletModalOpen
-  } = useSecretNetworkClientStore()
+  const { secretNetworkClient, walletAddress, feeGrantStatus, isConnected, scrtBalance, getBalance } =
+    useSecretNetworkClientStore()
 
   const handleClick = () => {
     if (!isConnected) {

@@ -21,8 +21,6 @@ interface IProps {
 }
 
 export default function BridgingFees(props: IProps) {
-  const { isConnected, connectWallet } = useSecretNetworkClientStore()
-
   const [axelarTransferFee, setAxelarTransferFee] = useState<Coin>(undefined)
   const [usdPriceString, setUsdPriceString] = useState<string>(null)
 

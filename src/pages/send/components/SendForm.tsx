@@ -54,15 +54,8 @@ export default function SendForm() {
     }
   }, [])
 
-  const {
-    secretNetworkClient,
-    walletAddress,
-    feeGrantStatus,
-    requestFeeGrant,
-    isConnected,
-    connectWallet,
-    getBalance
-  } = useSecretNetworkClientStore()
+  const { secretNetworkClient, walletAddress, feeGrantStatus, requestFeeGrant, isConnected, getBalance } =
+    useSecretNetworkClientStore()
 
   interface IFormValues {
     amount: string

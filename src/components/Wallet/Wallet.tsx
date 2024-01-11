@@ -12,6 +12,7 @@ import { ManageBalances } from './ManageBalances/ManageBalances'
 import Button from '../UI/Button/Button'
 import BalanceUI from 'components/BalanceUI'
 import { NotificationService } from 'services/notification.service'
+import { WalletAPIType } from 'types/WalletAPIType'
 
 function Wallet() {
   const {

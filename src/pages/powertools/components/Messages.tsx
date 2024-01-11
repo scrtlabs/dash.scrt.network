@@ -17,7 +17,6 @@ import {
   MsgEditValidator,
   MsgEditValidatorParams,
   MsgExec,
-  MsgExecuteContract,
   MsgExecuteContractParams,
   MsgFundCommunityPool,
   MsgFundCommunityPoolParams,
@@ -56,6 +55,7 @@ import {
   toBase64,
   VoteOption
 } from 'secretjs'
+import { allTokens } from 'utils/commons'
 
 export type SupportedMessage =
   | MsgBeginRedelegate
@@ -91,13 +91,7 @@ export const MessageDefinitions: {
     module: string
     example: (secretjs: SecretNetworkClient, old: any, prefix: string, denom: string) => any
     converter: (input: any, prefix: string, denom: string) => SupportedMessage
-    relevantInfo?: (
-      secretjs: SecretNetworkClient,
-      prefix: string,
-      denom: string,
-      msgInput: string,
-      setMsgInput: (input: string) => void
-    ) => Promise<any>
+    relevantInfo?: (secretjs: SecretNetworkClient, prefix: string, denom: string, msgInput: string) => Promise<any>
   }
 } = {
   MsgSend: {
@@ -724,8 +718,7 @@ async function bankRelevantInfo(
   secretjs: SecretNetworkClient,
   prefix: string,
   denom: string,
-  msgInput: string,
-  setMsgInput: (input: string) => void
+  msgInput: string
 ): Promise<any> {
   try {
     const { balances } = await secretjs.query.bank.allBalances({
@@ -763,9 +756,9 @@ async function bankRelevantInfo(
       ?.sort((a, b) => (a.denom?.startsWith('ibc/') ? 1 : -1))
       .map((c) => (
         <tr key={`${c.amount}${c.denom}`}>
-          <td style={{ overflowWrap: 'break-word' }}>{c.amount}</td>
-          <td style={{ overflowWrap: 'anywhere' }}>{c.denom}</td>
-          <td style={{ overflowWrap: 'break-word' }}>
+          <td>{c.amount}</td>
+          <td>{c.denom}</td>
+          <td>
             {c.denom === denom
               ? `${(() => {
                   const { humanDenom, decimals } = humanizeDenom(denom)
@@ -786,7 +779,7 @@ async function bankRelevantInfo(
         return 'No balance'
       } else {
         return (
-          <table>
+          <table className="">
             <thead>
               <tr>
                 <th>Balance</th>
@@ -814,8 +807,7 @@ async function stakingRelevantInfo(
   secretjs: SecretNetworkClient,
   prefix: string,
   denom: string,
-  msgInput: string,
-  setMsgInput: (input: string) => void
+  msgInput: string
 ): Promise<any> {
   try {
     const { balance } = await secretjs.query.bank.balance({
@@ -859,25 +851,11 @@ async function stakingRelevantInfo(
     const delegations = delegation_responses?.map((d) => {
       return (
         <tr key={`${d.delegation?.validator_address}`}>
-          <td style={{ overflowWrap: 'break-word' }}>{`${d.balance?.amount}${d.balance?.denom}`}</td>
-
+          <td style={{ overflowWrap: 'break-word' }}>{`${d.balance?.amount} ${d.balance?.denom}`}</td>
           <td style={{ display: 'flex', placeItems: 'center', gap: '0.4em' }}>
             <span style={{ overflowWrap: 'anywhere' }}>
               {d.delegation?.validator_address} ({validators[d.delegation?.validator_address!]})
             </span>
-            <Tooltip title={`Click to use ${validators[d.delegation?.validator_address!]} in content`} placement="top">
-              <img
-                src="/plus.svg"
-                style={{
-                  width: '1em',
-                  cursor: 'pointer'
-                  /* , borderRadius: 10 */
-                }}
-                onClick={async () =>
-                  setMsgInput(msgInput.replace(/secretvaloper1example/, d.delegation?.validator_address!))
-                }
-              />
-            </Tooltip>
           </td>
           <td style={{ overflowWrap: 'break-word' }}>{pendingRewards[d.delegation?.validator_address!]}</td>
         </tr>
@@ -930,32 +908,15 @@ function humanizeDenom(baseDenom: string): {
   let humanDenom: string | undefined
   let decimals = 6
 
-  switch (strippedBaseDenom) {
-    case 'inj':
-      humanDenom = 'INJ'
-      decimals = 18
-      break
-    case 'uusd':
-      humanDenom = 'UST'
-      break
-    case 'rowan':
-      humanDenom = 'ROWAN'
-      decimals = 18
-      break
-    case 'aevmos':
-      humanDenom = 'EVMOS'
-      decimals = 18
-      break
-    default:
-      break
+  let token = allTokens.find((token) => token.deposits[0].denom == strippedBaseDenom)
+
+  if (token) {
+    humanDenom = token.name
+    decimals = token.decimals
   }
 
   if (!humanDenom) {
-    humanDenom = baseDenom.toUpperCase().slice(1)
-  }
-
-  if (nonDirect) {
-    humanDenom += ' (non-direct)'
+    humanDenom = baseDenom.toUpperCase()
   }
 
   return { humanDenom, decimals }

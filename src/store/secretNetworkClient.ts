@@ -54,6 +54,10 @@ interface SecretNetworkClientState {
 export const useSecretNetworkClientStore = create<SecretNetworkClientState>()((set, get) => ({
   isInitialized: false,
   init: () => {
+    const autoConnect = localStorage.getItem('autoConnect')
+    if (autoConnect === 'keplr' || autoConnect === 'leap') {
+      get().connectWallet(autoConnect as WalletAPIType)
+    }
     set({ isInitialized: true })
   },
   isConnected: false,
@@ -64,7 +68,6 @@ export const useSecretNetworkClientStore = create<SecretNetworkClientState>()((s
   walletAPIType: null,
   setWalletAPIType: (walletAPIType: WalletAPIType) => set({ walletAPIType }),
   connectWallet: async (walletAPIType?: WalletAPIType) => {
-    localStorage.setItem('autoConnect', 'true')
     const { setScrtBalance, setsScrtBalance, setBalanceMapping, startBalanceRefresh } = get()
     const { walletAddress, secretjs: secretNetworkClient } = await WalletService.connectWallet(walletAPIType)
     set({
@@ -73,6 +76,7 @@ export const useSecretNetworkClientStore = create<SecretNetworkClientState>()((s
       secretNetworkClient,
       isConnected: !!(walletAddress && secretNetworkClient)
     })
+    localStorage.setItem('autoConnect', walletAPIType)
     setScrtBalance()
     setsScrtBalance()
     setBalanceMapping()

@@ -8,8 +8,7 @@ import SendForm from './components/SendForm'
 import { WalletService } from 'services/wallet.service'
 
 export function Send() {
-  const { connectWallet, isConnected, setIsConnectWalletModalOpen, setIsGetWalletModalOpen } =
-    useSecretNetworkClientStore()
+  const { isConnected, setIsConnectWalletModalOpen, setIsGetWalletModalOpen } = useSecretNetworkClientStore()
 
   useEffect(() => {
     if (import.meta.env.VITE_MIXPANEL_ENABLED === 'true') {
