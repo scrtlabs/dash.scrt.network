@@ -17,17 +17,20 @@ import {
   MsgEditValidator,
   MsgEditValidatorParams,
   MsgExec,
+  MsgExecuteContract,
   MsgExecuteContractParams,
   MsgFundCommunityPool,
   MsgFundCommunityPoolParams,
   MsgGrant,
   MsgGrantAllowance,
+  MsgGrantAllowanceParams,
   MsgInstantiateContract,
   MsgInstantiateContractParams,
   MsgMultiSend,
   MsgMultiSendParams,
   MsgRevoke,
   MsgRevokeAllowance,
+  MsgRevokeAllowanceParams,
   MsgSend,
   MsgSendParams,
   MsgSetAutoRestake,
@@ -35,7 +38,9 @@ import {
   MsgSetWithdrawAddress,
   MsgSetWithdrawAddressParams,
   MsgStoreCode,
+  MsgStoreCodeParams,
   MsgSubmitProposal,
+  MsgSubmitProposalParams,
   MsgTransfer,
   MsgTransferParams,
   MsgUndelegate,
@@ -85,6 +90,9 @@ export type SupportedMessage =
   | MsgWithdrawDelegatorReward
   | MsgWithdrawValidatorCommission
   | MsgSetAutoRestake
+  | MsgStoreCode
+  | MsgGrantAllowance
+  | MsgRevokeAllowance
 
 export const MessageDefinitions: {
   [name: string]: {
@@ -464,16 +472,45 @@ export const MessageDefinitions: {
   //   example: (secretjs: SecretNetworkClient,old: MsgExecParams): MsgExecParams => ({}),
   //   converter: (input: any): SupportedMessage => {},
   // },
-  // MsgGrantAllowance: {
-  //   module: "feegrant",
-  //   example: (secretjs: SecretNetworkClient,old: MsgGrantAllowanceParams): MsgGrantAllowanceParams => ({}),
-  //   converter: (input: any): SupportedMessage => {},
-  // },
-  // MsgRevokeAllowance: {
-  //   module: "feegrant",
-  //   example: (secretjs: SecretNetworkClient,old: MsgRevokeAllowanceParams): MsgRevokeAllowanceParams => ({}),
-  //   converter: (input: any): SupportedMessage => {},
-  // },
+  MsgGrantAllowance: {
+    module: 'feegrant',
+    example: (
+      secretjs: SecretNetworkClient,
+      old: MsgTransferParams,
+      prefix: string,
+      denom: string
+    ): MsgGrantAllowanceParams => {
+      return {
+        granter: secretjs.address,
+        grantee: `${prefix}1example`,
+        allowance: {
+          //@ts-ignore
+          spend_limit: `1${denom}`,
+          expiration: null
+        }
+      }
+    },
+    converter: (input: any): SupportedMessage => {
+      input.allowance.spend_limit = coinsFromString(input.allowance.spend_limit)
+      console.log(input)
+      return new MsgGrantAllowance(input)
+    }
+  },
+  MsgRevokeAllowance: {
+    module: 'feegrant',
+    example: (
+      secretjs: SecretNetworkClient,
+      old: MsgRevokeAllowanceParams,
+      prefix: string,
+      denom: string
+    ): MsgRevokeAllowanceParams => {
+      return {
+        granter: secretjs.address,
+        grantee: `${prefix}1example`
+      }
+    },
+    converter: (input: any): SupportedMessage => new MsgRevokeAllowance(input)
+  },
   MsgSetWithdrawAddress: {
     module: 'distribution',
     example: (
@@ -494,15 +531,47 @@ export const MessageDefinitions: {
     },
     converter: (input: any): SupportedMessage => new MsgSetWithdrawAddress(input)
   },
-  // MsgStoreCode: {
-  //   module: "compute",
-  //   example: (secretjs: SecretNetworkClient,old: MsgStoreCodeParams): MsgStoreCodeParams => ({}),
-  //   converter: (input: any): SupportedMessage => {},
-  // },
+  MsgStoreCode: {
+    module: 'compute',
+    example: (
+      secretjs: SecretNetworkClient,
+      old: MsgTransferParams,
+      prefix: string,
+      denom: string
+    ): MsgStoreCodeParams => {
+      return {
+        sender: secretjs.address,
+        //@ts-ignore
+        wasm_byte_code: '',
+        source: '',
+        builder: ''
+      }
+    },
+    converter: (input: any): SupportedMessage => {
+      input.wasm_byte_code = Buffer.from(input.wasm_byte_code, 'base64')
+      return new MsgStoreCode(input)
+    }
+  },
   // MsgSubmitProposal: {
   //   module: "gov",
-  //   example: (secretjs: SecretNetworkClient,old: MsgSubmitProposalParams): MsgSubmitProposalParams => ({}),
-  //   converter: (input: any): SupportedMessage => {},
+  //   example: (
+  //     secretjs: SecretNetworkClient,
+  //     old: MsgSubmitProposalParams,
+  //     prefix: string,
+  //     denom: string
+  //   ): MsgSubmitProposalParams => {
+  //     return {
+  //       content: '',
+  //       type: '',
+  //       //@ts-ignore
+  //       initial_deposit:`1${denom}`,
+  //       proposer: secretjs.address
+  //     };
+  //   },
+  //   converter: (input: any): SupportedMessage => {
+  //     input.initial_deposit = coinFromString(input.initial_deposit)
+  //     return new MsgSubmitProposal(input)
+  //   }
   // },
   MsgTransfer: {
     module: 'ibc-transfer',

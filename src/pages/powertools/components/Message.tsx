@@ -59,7 +59,7 @@ function Message(props: Props) {
   const onTypeSelect = (messageType: any) => {
     props.updateType(messageType)
     const newContent: string = JSON.stringify(
-      MessageDefinitions[messageType].example(props.secretjs, null, '', props.denom)
+      MessageDefinitions[messageType].example(props.secretjs, null, props.prefix, props.denom)
     )
     props.updateContent(JSON.stringify(JSON.parse(newContent), null, 2))
   }
