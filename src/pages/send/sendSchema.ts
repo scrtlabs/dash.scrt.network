@@ -6,7 +6,6 @@ export const sendSchema = yup.object().shape({
     .number()
     .min(0.00001, 'Please enter a valid amount')
     .typeError('Please enter a valid amount')
-    .transform((_value, originalValue) => Number(originalValue.replace(/,/, '.'))) // transforms comma to dot
     .required('Please enter a valid amount'),
   token: yup.mixed().required('Token is required'), // TODO: (low prio) add check with SendService.getSupportedTokens()
   recipient: yup

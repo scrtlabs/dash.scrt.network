@@ -6,13 +6,14 @@ import Message from './components/Message'
 import Button from 'components/UI/Button/Button'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPlus } from '@fortawesome/free-solid-svg-icons'
-import { SecretNetworkClient } from 'secretjs'
+import { BroadcastMode, SecretNetworkClient } from 'secretjs'
 import { MessageDefinitions, balanceFormat } from './components/Messages'
 import { useSecretNetworkClientStore } from 'store/secretNetworkClient'
 import { Nullable } from 'types/Nullable'
 import { WalletService } from 'services/wallet.service'
 import { SECRET_LCD } from 'utils/config'
 import { useSearchParams } from 'react-router-dom'
+import { NotificationService } from 'services/notification.service'
 
 export type TMessage = {
   type: string
@@ -48,17 +49,27 @@ function Powertools() {
   const [messages, setMessages] = useState<Nullable<TMessage>[]>(initialMessages)
 
   async function handleSendTx() {
+    const toastId = NotificationService.notify('Sending transaction...', 'loading')
     try {
-      console.log(messages)
       const txMessages = messages.map((message) => {
         return MessageDefinitions[message.type].converter(JSON.parse(message.content), prefix, denom)
       })
 
       const tx = await secretjs.tx.broadcast(txMessages, {
-        gasLimit: 150_000
+        gasLimit: 300_000,
+        broadcastCheckIntervalMs: 10000,
+        gasPriceInFeeDenom: 0.1,
+        feeDenom: 'uscrt',
+        broadcastMode: BroadcastMode.Sync
       })
+
       if (tx.code === 0) {
+        NotificationService.notify('Transaction sent successfully!', 'success', toastId)
+      } else {
+        NotificationService.notify(`Transaction failed to send with error: ${tx.rawLog}`, 'error', toastId)
       }
+    } catch (error: any) {
+      NotificationService.notify(`An error occurred: ${error.message}`, 'error', toastId)
     } finally {
     }
   }
