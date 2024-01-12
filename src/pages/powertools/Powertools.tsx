@@ -51,10 +51,16 @@ function Powertools() {
   async function handleSendTx() {
     const toastId = NotificationService.notify('Sending transaction...', 'loading')
     try {
+      const hasEmptyTypeAndContent = messages.some(
+        (message) => message && message.type === '' && message.content === ''
+      )
+      if (hasEmptyTypeAndContent) {
+        throw Error('Messages must not be empty!')
+      }
       const txMessages = messages.map((message) => {
         return MessageDefinitions[message.type].converter(JSON.parse(message.content), prefix, denom)
       })
-
+      console.log(txMessages)
       const tx = await secretjs.tx.broadcast(txMessages, {
         gasLimit: 300_000,
         broadcastCheckIntervalMs: 10000,

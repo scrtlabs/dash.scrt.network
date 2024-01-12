@@ -1,4 +1,3 @@
-import { Bech32Address } from '@keplr-wallet/cosmos'
 import { tokens, snips, ICSTokens } from './config'
 import mixpanel from 'mixpanel-browser'
 

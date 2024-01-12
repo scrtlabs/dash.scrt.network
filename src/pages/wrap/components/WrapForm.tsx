@@ -21,11 +21,6 @@ export default function WrapForm() {
   const { secretNetworkClient, walletAddress, feeGrantStatus, isConnected, scrtBalance, getBalance } =
     useSecretNetworkClientStore()
 
-  const handleClick = () => {
-    if (!isConnected) {
-    }
-  }
-
   const formik = useFormik<IFormValues>({
     initialValues: {
       amount: '',
@@ -142,7 +137,7 @@ export default function WrapForm() {
   }
 
   return (
-    <div onClick={handleClick}>
+    <div>
       <form onSubmit={formik.handleSubmit} className="w-full flex flex-col gap-4">
         {/* *** From *** */}
         <div className="bg-gray-200 dark:bg-neutral-700 p-4 rounded-xl">

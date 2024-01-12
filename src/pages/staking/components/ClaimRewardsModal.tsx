@@ -6,8 +6,6 @@ import { useSecretNetworkClientStore } from 'store/secretNetworkClient'
 import { scrtToken } from 'utils/tokens'
 import Modal from 'components/UI/Modal/Modal'
 import { StakingService } from 'services/staking.service'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCircleCheck, faTriangleExclamation } from '@fortawesome/free-solid-svg-icons'
 import Button from 'components/UI/Button/Button'
 
 interface Props {

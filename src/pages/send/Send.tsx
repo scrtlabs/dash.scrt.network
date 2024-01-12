@@ -5,7 +5,6 @@ import { Helmet } from 'react-helmet-async'
 import mixpanel from 'mixpanel-browser'
 import { useSecretNetworkClientStore } from 'store/secretNetworkClient'
 import SendForm from './components/SendForm'
-import { WalletService } from 'services/wallet.service'
 
 export function Send() {
   const { isConnected, setIsConnectWalletModalOpen, setIsGetWalletModalOpen } = useSecretNetworkClientStore()
@@ -19,11 +18,6 @@ export function Send() {
       mixpanel.track('Open Wrap Tab')
     }
   }, [])
-
-  const handleClick = () => {
-    if (!isConnected) {
-    }
-  }
 
   return (
     <>
@@ -53,10 +47,7 @@ export function Send() {
         {/* Title*/}
         <Title title={`Send`} tooltip={`Transfer your assets to a given address`} className="mb-6" />
         {/* Content */}
-        <div
-          onClick={handleClick}
-          className="rounded-3xl px-6 py-6 bg-white border border-neutral-200 dark:border-neutral-700 dark:bg-neutral-800"
-        >
+        <div className="rounded-3xl px-6 py-6 bg-white border border-neutral-200 dark:border-neutral-700 dark:bg-neutral-800">
           <SendForm />
         </div>
       </div>

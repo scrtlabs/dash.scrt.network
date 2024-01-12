@@ -1,7 +1,4 @@
 import { useState, useEffect } from 'react'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faInfoCircle } from '@fortawesome/free-solid-svg-icons'
-import Tooltip from '@mui/material/Tooltip'
 import { Helmet } from 'react-helmet-async'
 import { Chain, Deposit, Token, chains, tokens } from 'utils/config'
 import { IbcMode } from 'types/IbcMode'
@@ -11,27 +8,19 @@ import { useSecretNetworkClientStore } from 'store/secretNetworkClient'
 import Title from 'components/Title'
 import IbcForm from './components/IbcForm'
 import { IbcService } from 'services/ibc.service'
-import { WalletService } from 'services/wallet.service'
 
 export function Ibc() {
-  const [isWrapModalOpen, setIsWrapModalOpen] = useState<boolean>(false)
-
   const [selectedToken, setSelectedToken] = useState<Token>(tokens.filter((token: Token) => token.name === 'SCRT')[0])
 
   const [ibcMode, setIbcMode] = useState<IbcMode>('deposit')
 
-  const { isConnected, setIsConnectWalletModalOpen, setIsGetWalletModalOpen } = useSecretNetworkClientStore()
+  const { isConnected } = useSecretNetworkClientStore()
 
   const [selectedSource, setSelectedSource] = useState(
     selectedToken.deposits.find((deposit: Deposit) => deposit.chain_name.toLowerCase() === 'osmosis')
   )
 
-  const handleClick = () => {
-    if (!isConnected) {
-    }
-  }
-
-  const [searchParams, setSearchParams] = useSearchParams()
+  const [searchParams] = useSearchParams()
   const modeUrlParam = searchParams.get('mode')
   const chainUrlParam = searchParams.get('chain')
   const tokenUrlParam = searchParams.get('token')
@@ -105,10 +94,7 @@ export function Ibc() {
         {/* Title */}
         <Title className="mb-6" title="IBC Transfer" tooltip={message} />
         {/* Content */}
-        <div
-          onClick={handleClick}
-          className="rounded-3xl px-6 py-6 bg-white border border-neutral-200 dark:border-neutral-700 dark:bg-neutral-800"
-        >
+        <div className="rounded-3xl px-6 py-6 bg-white border border-neutral-200 dark:border-neutral-700 dark:bg-neutral-800">
           <IbcForm />
         </div>
       </div>

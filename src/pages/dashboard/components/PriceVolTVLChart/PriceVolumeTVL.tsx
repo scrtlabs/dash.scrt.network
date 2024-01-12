@@ -25,24 +25,10 @@ type ChartRange = 'Day' | 'Month' | 'Year'
 export const PriceVolumeHistoryContext = createContext(null)
 
 export default function PriceVolumeTVL(props: any) {
-  const {
-    coingeckoApiData_Day,
-    setCoinGeckoApiData_Day,
-    coingeckoApiData_Month,
-    setCoinGeckoApiData_Month,
-    coingeckoApiData_Year,
-    setCoinGeckoApiData_Year,
-    defiLamaApiData_Year,
-    setDefiLamaApiData_Year,
-    currentPrice,
-    setCurrentPrice,
-    volume,
-    setVolume,
-    marketCap,
-    setMarketCap
-  } = useContext(APIContext)
+  const { coingeckoApiData_Day, coingeckoApiData_Month, coingeckoApiData_Year, defiLamaApiData_Year } =
+    useContext(APIContext)
 
-  const { theme, setTheme } = useContext(ThemeContext)
+  const { theme } = useContext(ThemeContext)
 
   const [chartType, setChartType] = useState<ChartType>('Price')
   const [chartRange, setChartRange] = useState<ChartRange>('Month')

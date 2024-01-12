@@ -14,7 +14,7 @@ import Button from 'components/UI/Button/Button'
 import { NotificationService } from 'services/notification.service'
 
 export default function AddressQR() {
-  const { theme, setTheme } = useContext(ThemeContext)
+  const { theme } = useContext(ThemeContext)
 
   const { secretNetworkClient, walletAddress } = useSecretNetworkClientStore()
 
