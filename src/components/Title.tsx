@@ -1,4 +1,3 @@
-import React, { ReactNode } from 'react'
 import Tooltip from '@mui/material/Tooltip'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faInfoCircle } from '@fortawesome/free-solid-svg-icons'

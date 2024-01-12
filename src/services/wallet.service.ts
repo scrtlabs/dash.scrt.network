@@ -103,7 +103,6 @@ const requestFeeGrantService = async (feeGrantStatus: FeeGrantStatus, walletAddr
   } else {
     try {
       const result = await (await fetch(`${faucetURL}/${walletAddress}`)).json()
-      console.log(result)
       if (result?.feegrant) {
         newFeeGrantStatus = 'success'
         // toast.success(

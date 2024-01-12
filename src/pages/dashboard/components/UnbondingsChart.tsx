@@ -29,7 +29,6 @@ export default function UnbondingsChart(props: any) {
 
   useEffect(() => {
     if (L5AnalyticslApiData) {
-      console.log(L5AnalyticslApiData['unbonding_by_date'])
       const dataArray = Object.entries(L5AnalyticslApiData['unbonding_by_date']).map(([date, balance]) => [
         date,
         balance

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import CopyToClipboard from 'react-copy-to-clipboard'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCopy, faDesktop, faMobileScreen, faWallet, faXmark } from '@fortawesome/free-solid-svg-icons'

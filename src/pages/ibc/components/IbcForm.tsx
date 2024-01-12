@@ -8,7 +8,7 @@ import { Chain, Deposit, Token, chains, tokens } from 'utils/config'
 import IbcSelect from './IbcSelect'
 import Tooltip from '@mui/material/Tooltip'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCircleCheck, faRightLeft } from '@fortawesome/free-solid-svg-icons'
+import { faRightLeft } from '@fortawesome/free-solid-svg-icons'
 import AddressInfo from './AddressInfo'
 import PercentagePicker from 'components/PercentagePicker'
 import { IbcService } from 'services/ibc.service'
@@ -80,7 +80,6 @@ export default function IbcForm() {
     validateOnChange: true,
     onSubmit: async (values) => {
       try {
-        console.log(values)
         IbcService.performIbcTransfer({
           ...values,
           secretNetworkClient,

@@ -492,7 +492,6 @@ export const MessageDefinitions: {
     },
     converter: (input: any): SupportedMessage => {
       input.allowance.spend_limit = coinsFromString(input.allowance.spend_limit)
-      console.log(input)
       return new MsgGrantAllowance(input)
     }
   },

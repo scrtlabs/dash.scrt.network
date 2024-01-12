@@ -25,7 +25,8 @@ function Dashboard() {
     secretFoundationTax,
     communityTax,
     volume,
-    marketCap
+    marketCap,
+    L5AnalyticslApiData
   } = useContext(APIContext)
 
   useEffect(() => {
@@ -117,20 +118,16 @@ function Dashboard() {
 
       secretjsquery?.query?.tendermint.getLatestBlock('')?.then((res1) => {
         setBlockHeight(res1.block.header.height)
-        secretjsquery?.query?.tendermint
-          .getBlockByHeight({
-            height: (Number(res1.block.header.height) - 1).toString()
-          })
-          ?.then((res2) => {
-            const timestamp1 = new Date(res1.block.header.time as any)
-            const timestamp2 = new Date(res2.block.header.time as any)
-            const diffInSeconds = Math.abs((timestamp1 as any) - (timestamp2 as any)) / 1000
-            setBlockTime(diffInSeconds.toFixed(2))
-          })
       })
     }
     queryData()
   }, [])
+
+  useEffect(() => {
+    if (L5AnalyticslApiData) {
+      setBlockTime(L5AnalyticslApiData['actual_blocktime'].toFixed(2))
+    }
+  }, [L5AnalyticslApiData])
 
   // volume & market cap
   const [volumeFormattedString, setVolumeFormattedString] = useState('')

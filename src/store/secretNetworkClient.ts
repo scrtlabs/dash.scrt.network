@@ -142,7 +142,6 @@ export const useSecretNetworkClientStore = create<SecretNetworkClientState>()((s
       if (!tokenBalances) {
         return null
       }
-
       if (!secretToken) {
         return tokenBalances.balance
       } else if (secretToken) {
@@ -162,12 +161,10 @@ export const useSecretNetworkClientStore = create<SecretNetworkClientState>()((s
     if (!get().isInitialized) {
       get().init()
     }
-    console.log(get().ibcBalanceMapping)
     if (get().ibcBalanceMapping !== null) {
       if (get().ibcBalanceMapping.get(chain) !== undefined) {
         const tokenBalances: TokenBalances = get().ibcBalanceMapping.get(chain).get(token)
         if (tokenBalances) {
-          console.log(Number(get().ibcBalanceMapping.get(chain).get(token).balance))
           return tokenBalances.balance
         }
       }

@@ -13,11 +13,9 @@ import { wrapSchema } from 'pages/wrap/wrapSchema'
 import Tooltip from '@mui/material/Tooltip'
 import { WrapService } from 'services/wrap.service'
 import BalanceUI from 'components/BalanceUI'
-import { FeeGrantStatus } from 'types/FeeGrantStatus'
 import toast from 'react-hot-toast'
 import { useSearchParams } from 'react-router-dom'
 import { Nullable } from 'types/Nullable'
-import { WalletService } from 'services/wallet.service'
 
 export default function WrapForm() {
   const { secretNetworkClient, walletAddress, feeGrantStatus, isConnected, scrtBalance, getBalance } =
@@ -39,7 +37,6 @@ export default function WrapForm() {
     validateOnChange: true,
     onSubmit: async (values) => {
       try {
-        console.log('dfgsdhgsdhdgfhg')
         const res = WrapService.performWrapping({
           ...values,
           secretNetworkClient,

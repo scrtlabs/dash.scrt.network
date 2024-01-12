@@ -1,8 +1,6 @@
 import BigNumber from 'bignumber.js'
 import { useEffect, useState } from 'react'
-import { Nullable } from 'types/Nullable'
 import { Chain, Token, chains, tokens } from 'utils/config'
-import { scrtToken } from 'utils/tokens'
 import { useTokenPricesStore } from 'store/TokenPrices'
 import { GetBalanceError, useSecretNetworkClientStore } from 'store/secretNetworkClient'
 import { faKey } from '@fortawesome/free-solid-svg-icons'
@@ -105,7 +103,7 @@ export default function BalanceUI({
           <button
             type="button"
             onClick={() => setViewingKey(token)}
-            className="text-left flex items-center font-semibold bg-neutral-100 dark:bg-neutral-900 px-1.5 py-0.5 rounded-md border-neutral-300 dark:border-neutral-700 transition hover:bg-neutral-300 dark:hover:bg-neutral-700 focus:bg-neutral-500 dark:focus:bg-neutral-500 cursor-pointer disabled:text-neutral-500 dark:disabled:text-neutral-500 disabled:hover:bg-neutral-100 dark:disabled:hover:bg-neutral-900 disabled:cursor-default"
+            className="text-left flex items-center font-medium text-sm bg-neutral-100 dark:bg-neutral-900 px-1.5 py-0.5 rounded-md border-neutral-300 dark:border-neutral-700 transition hover:bg-neutral-300 dark:hover:bg-neutral-700 focus:bg-neutral-500 dark:focus:bg-neutral-500 cursor-pointer disabled:text-neutral-500 dark:disabled:text-neutral-500 disabled:hover:bg-neutral-100 dark:disabled:hover:bg-neutral-900 disabled:cursor-default"
           >
             <FontAwesomeIcon icon={faKey} className="mr-2" />
             <span className="text-left">Set Viewing Key</span>

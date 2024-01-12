@@ -359,8 +359,6 @@ async function performIbcDeposit(
         toastId
       )
     } else {
-      console.log(`Receiving ${props.amount} ${token.name} on Secret Network from ${props.chain.chain_name}...`)
-
       NotificationService.notify(
         `Receiving ${props.amount} ${token.name} on Secret Network from ${props.chain.chain_name}...`,
         'loading',
@@ -616,7 +614,6 @@ async function performIbcWithdrawal(
         toastId
       )
     } else {
-      console.log(`Receiving ${props.amount} ${token.name} on ${selectedDest.chain_name}...`)
       NotificationService.notify(
         `Receiving ${props.amount} ${token.name} on ${selectedDest.chain_name}...`,
         'loading',
@@ -626,7 +623,6 @@ async function performIbcWithdrawal(
       const ibcResp = await tx.ibcResponses[0]
 
       if (ibcResp.type === 'ack') {
-        console.log(`Received ${props.amount} ${token.name} on ${selectedDest.chain_name}`)
         NotificationService.notify(
           `Received ${props.amount} ${token.name} on ${selectedDest.chain_name}`,
           'success',
@@ -699,9 +695,7 @@ async function fetchSourceBalance(address: string, chain: Chain, token: Token): 
     }
 
     const { balances } = await response.json()
-
     const targetDenom = token.deposits.filter((deposit: any) => deposit.chain_name === chain.chain_name)[0]?.denom
-
     const balanceObj = balances.find((balance: any) => balance.denom === targetDenom)
 
     return balanceObj ? BigNumber(balanceObj.amount) : BigNumber(0)
