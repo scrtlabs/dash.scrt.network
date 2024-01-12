@@ -2,7 +2,6 @@ import { faInfoCircle } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import Tooltip from '@mui/material/Tooltip'
 import ActionableStatus from './components/ActionableStatus'
-import { useEffect } from 'react'
 import { useSecretNetworkClientStore } from 'store/secretNetworkClient'
 
 export default function FeeGrant() {

@@ -226,12 +226,11 @@ const APIContextProvider = ({ children }: any) => {
       .then((response) => {
         setExternalApiData(response)
       })
-    let L5AnalyticsApiDataUrl = `https://api.lavenderfive.com/networks`
+    let L5AnalyticsApiDataUrl = `https://api.lavenderfive.com/networks/secretnetwork`
     fetch(L5AnalyticsApiDataUrl)
       .then((response) => response.json())
       .then((response) => {
-        console.log(response['secretnetwork'])
-        setL5AnalyticslApiData(response['secretnetwork'])
+        setL5AnalyticslApiData(response)
       })
   }, [])
 

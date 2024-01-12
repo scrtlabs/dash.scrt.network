@@ -1773,6 +1773,7 @@ export const tokens: Token[] = [
   },
   {
     name: 'PICA',
+    description: 'Picasso Token',
     address: 'secret1e0y9vf4xr9wffyxsvlz35jzl5st2srkdl8frac',
     code_hash: '5a085bd8ed89de92b35134ddd12505a602c7759ea25fb5c089ba03c8535b3042',
     image: '/pica.svg',
@@ -1917,6 +1918,7 @@ export const tokens: Token[] = [
   },
   {
     name: 'USDC (Noble)',
+    description: 'Native USDC Stablecoin via Noble',
     address: 'secret1chsejpk9kfj4vt9ec6xvyguw539gsdtr775us2',
     code_hash: '5a085bd8ed89de92b35134ddd12505a602c7759ea25fb5c089ba03c8535b3042',
     image: '/ausdc.svg',

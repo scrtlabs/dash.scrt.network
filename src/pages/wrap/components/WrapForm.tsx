@@ -13,28 +13,13 @@ import { wrapSchema } from 'pages/wrap/wrapSchema'
 import Tooltip from '@mui/material/Tooltip'
 import { WrapService } from 'services/wrap.service'
 import BalanceUI from 'components/BalanceUI'
-import { FeeGrantStatus } from 'types/FeeGrantStatus'
 import toast from 'react-hot-toast'
 import { useSearchParams } from 'react-router-dom'
 import { Nullable } from 'types/Nullable'
 
 export default function WrapForm() {
-  const {
-    secretNetworkClient,
-    walletAddress,
-    feeGrantStatus,
-    requestFeeGrant,
-    isConnected,
-    connectWallet,
-    scrtBalance,
-    getBalance
-  } = useSecretNetworkClientStore()
-
-  const handleClick = () => {
-    if (!isConnected) {
-      connectWallet()
-    }
-  }
+  const { secretNetworkClient, walletAddress, feeGrantStatus, isConnected, scrtBalance, getBalance } =
+    useSecretNetworkClientStore()
 
   const formik = useFormik<IFormValues>({
     initialValues: {
@@ -47,7 +32,6 @@ export default function WrapForm() {
     validateOnChange: true,
     onSubmit: async (values) => {
       try {
-        console.log('dfgsdhgsdhdgfhg')
         const res = WrapService.performWrapping({
           ...values,
           secretNetworkClient,
@@ -153,7 +137,7 @@ export default function WrapForm() {
   }
 
   return (
-    <div onClick={handleClick}>
+    <div>
       <form onSubmit={formik.handleSubmit} className="w-full flex flex-col gap-4">
         {/* *** From *** */}
         <div className="bg-gray-200 dark:bg-neutral-700 p-4 rounded-xl">
@@ -194,12 +178,12 @@ export default function WrapForm() {
             <input
               id="amount-top"
               name="amount"
-              type="text"
+              type="number"
               value={formik.values.amount}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
               className={
-                'dark:placeholder-neutral-600 text-right focus:z-10 block flex-1 min-w-0 w-full bg-white dark:bg-neutral-800 text-black dark:text-white px-4 rounded-r-lg disabled:placeholder-neutral-300 dark:disabled:placeholder-neutral-700 transition-colors font-medium focus:outline-0 focus-visible:ring-2 focus-visible:ring-sky-500/60' +
+                '[-moz-appearance:_textfield] [&::-webkit-inner-spin-button]:m-0 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:m-0 [&::-webkit-outer-spin-button]:appearance-none dark:placeholder-neutral-600 text-right focus:z-10 block flex-1 min-w-0 w-full bg-white dark:bg-neutral-800 text-black dark:text-white px-4 rounded-r-lg disabled:placeholder-neutral-300 dark:disabled:placeholder-neutral-700 transition-colors font-medium focus:outline-0 focus-visible:ring-2 focus-visible:ring-sky-500/60' +
                 (formik.touched.amount && formik.errors.amount ? '  border border-red-500 dark:border-red-500' : '')
               }
               placeholder="0"
@@ -275,12 +259,12 @@ export default function WrapForm() {
             />
             <input
               name="amount"
-              type="text"
+              type="number"
               value={formik.values.amount}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
               className={
-                'dark:placeholder-neutral-600 text-right focus:z-10 block flex-1 min-w-0 w-full bg-white dark:bg-neutral-800 text-black dark:text-white px-4 rounded-r-lg disabled:placeholder-neutral-300 dark:disabled:placeholder-neutral-700 transition-colors font-medium focus:outline-0 focus-visible:ring-2 ring-sky-500/60'
+                '[-moz-appearance:_textfield] [&::-webkit-inner-spin-button]:m-0 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:m-0 [&::-webkit-outer-spin-button]:appearance-none dark:placeholder-neutral-600 text-right focus:z-10 block flex-1 min-w-0 w-full bg-white dark:bg-neutral-800 text-black dark:text-white px-4 rounded-r-lg disabled:placeholder-neutral-300 dark:disabled:placeholder-neutral-700 transition-colors font-medium focus:outline-0 focus-visible:ring-2 ring-sky-500/60'
               }
               placeholder="0"
               disabled={!isConnected}

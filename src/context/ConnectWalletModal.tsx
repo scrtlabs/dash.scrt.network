@@ -13,8 +13,8 @@ export const ConnectWalletModal = (props: IConnectWalletModalProps) => {
 
   const { connectWallet, isConnected } = useSecretNetworkClientStore()
 
-  let isLeapAPIAvailable = (window as any).leap ? true : false
-  let isKeplrAPIAvailable = (window as any).leap ? true : false
+  let isLeapAPIAvailable = window.leap ? true : false
+  let isKeplrAPIAvailable = window.leap ? true : false
 
   // connection? => close modal
   useEffect(() => {

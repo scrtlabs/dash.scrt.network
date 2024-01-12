@@ -1,8 +1,8 @@
 import BigNumber from 'bignumber.js'
-import React, { useContext, useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { APIContext } from 'context/APIContext'
 import { faSearch } from '@fortawesome/free-solid-svg-icons'
-import { formatNumber, toUsdString, faucetAddress, shuffleArray } from 'utils/commons'
+import { toUsdString, faucetAddress, shuffleArray } from 'utils/commons'
 import { StakingContext } from 'pages/staking/Staking'
 import FeeGrant from '../../../../components/FeeGrant/FeeGrant'
 import Select, { components } from 'react-select'
@@ -22,7 +22,7 @@ export default function RedelegateForm() {
 
   const { currentPrice } = useContext(APIContext)
 
-  const { theme, setTheme } = useContext(ThemeContext)
+  const { theme } = useContext(ThemeContext)
 
   const [redelegateValidator, setRedelegateValidator] = useState<any>()
 

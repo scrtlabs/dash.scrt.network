@@ -30,18 +30,8 @@ interface Props {
 const ValidatorModal = (props: Props) => {
   const [imgUrl, setImgUrl] = useState<Nullable<string>>(null)
 
-  const {
-    currentPrice,
-    setCurrentPrice,
-    inflation,
-    communityTax,
-    communityPool,
-    pool,
-    totalSupply,
-    bondedToken,
-    notBondedToken,
-    secretFoundationTax
-  } = useContext(APIContext)
+  const { currentPrice, inflation, communityTax, totalSupply, bondedToken, secretFoundationTax } =
+    useContext(APIContext)
 
   const { scrtBalance, feeGrantStatus, requestFeeGrant, secretNetworkClient, walletAddress, isConnected } =
     useSecretNetworkClientStore()

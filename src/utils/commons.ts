@@ -1,4 +1,3 @@
-import { Bech32Address } from '@keplr-wallet/cosmos'
 import { tokens, snips, ICSTokens } from './config'
 import mixpanel from 'mixpanel-browser'
 
@@ -49,7 +48,6 @@ export function trackMixPanelEvent(event: string) {
     })
     mixpanel.identify('Dashboard-App')
     mixpanel.track(event)
-    console.log(event)
   }
 }
 
@@ -71,8 +69,6 @@ export async function suggestChainToWallet(wallet: any, chainId: string) {
   if (!chainInfo) {
     console.error('Chain not found')
   }
-  console.log(chainInfo)
-  // Use chainInfo to suggest the chain to the wallet
   await wallet.experimentalSuggestChain(chainInfo)
 }
 

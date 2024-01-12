@@ -1,5 +1,5 @@
 import { useFormik } from 'formik'
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { sendSchema } from 'pages/send/sendSchema'
 import { GetBalanceError, useSecretNetworkClientStore } from 'store/secretNetworkClient'
 import Select from 'react-select'
@@ -7,13 +7,13 @@ import { Token, chains } from 'utils/config'
 import BalanceUI from 'components/BalanceUI'
 import PercentagePicker from 'components/PercentagePicker'
 import Tooltip from '@mui/material/Tooltip'
-import { faCircleCheck, faInfoCircle, faTriangleExclamation } from '@fortawesome/free-solid-svg-icons'
+import { faInfoCircle } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { SendService } from 'services/send.service'
 import FeeGrant from 'components/FeeGrant/FeeGrant'
 import { allTokens } from 'utils/commons'
 import BigNumber from 'bignumber.js'
-import toast, { Toaster } from 'react-hot-toast'
+import toast from 'react-hot-toast'
 import { useSearchParams } from 'react-router-dom'
 import { Nullable } from 'types/Nullable'
 
@@ -54,15 +54,8 @@ export default function SendForm() {
     }
   }, [])
 
-  const {
-    secretNetworkClient,
-    walletAddress,
-    feeGrantStatus,
-    requestFeeGrant,
-    isConnected,
-    connectWallet,
-    getBalance
-  } = useSecretNetworkClientStore()
+  const { secretNetworkClient, walletAddress, feeGrantStatus, requestFeeGrant, isConnected, getBalance } =
+    useSecretNetworkClientStore()
 
   interface IFormValues {
     amount: string
@@ -183,12 +176,12 @@ export default function SendForm() {
           <input
             id="amount"
             name="amount"
-            type="text"
+            type="number"
             value={formik.values.amount}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
             className={
-              'dark:placeholder-neutral-600 text-right focus:z-10 block flex-1 min-w-0 w-full bg-white dark:bg-neutral-800 text-black dark:text-white px-4 rounded-r-lg disabled:placeholder-neutral-300 dark:disabled:placeholder-neutral-700 transition-colors font-medium focus:outline-0 focus:ring-2 ring-sky-500/40' +
+              '[-moz-appearance:_textfield] [&::-webkit-inner-spin-button]:m-0 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:m-0 [&::-webkit-outer-spin-button]:appearance-none dark:placeholder-neutral-600 text-right focus:z-10 block flex-1 min-w-0 w-full bg-white dark:bg-neutral-800 text-black dark:text-white px-4 rounded-r-lg disabled:placeholder-neutral-300 dark:disabled:placeholder-neutral-700 transition-colors font-medium focus:outline-0 focus:ring-2 ring-sky-500/40' +
               (formik.touched.amount && formik.errors.amount ? '  border border-red-500 dark:border-red-500' : '')
             }
             placeholder="0"
