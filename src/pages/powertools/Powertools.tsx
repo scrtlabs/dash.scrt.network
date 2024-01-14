@@ -14,6 +14,8 @@ import { WalletService } from 'services/wallet.service'
 import { SECRET_LCD } from 'utils/config'
 import { useSearchParams } from 'react-router-dom'
 import { NotificationService } from 'services/notification.service'
+import Modal from 'components/UI/Modal/Modal'
+import CopyToClipboard from 'react-copy-to-clipboard'
 
 export type TMessage = {
   type: string
@@ -189,68 +191,111 @@ function Powertools() {
     refreshNodeStatus(true)
   }, [apiUrl])
 
+  const [isViewMessageModalOpen, setIsViewMessageModalOpen] = useState<boolean>(false)
+
   return (
-    <div className="container max-w-6xl mx-auto px-4">
-      <Header title={'Power Tools'} description="Send complex transactions." />
-      <div className="flex items-center gap-4">
-        <input
-          value={apiUrl}
-          onChange={(e) => setApiUrl(e.target.value)}
-          type="text"
-          className="block w-full sm:w-72 p-2.5 text-sm rounded-lg text-neutral-800 dark:text-white bg-white dark:bg-neutral-800 placeholder-neutral-600 dark:placeholder-neutral-400 border border-neutral-300 dark:border-neutral-700 focus:outline-none focus:ring-2 focus:ring-cyan-500 dark:focus:ring-cyan-500"
-          placeholder="API URL"
-        />
-        <ApiStatusIcon apiStatus={apiStatus} />
-        {apiStatus !== 'loading' && apiStatus !== 'offline' ? (
-          <div className="flex items-center gap-4">
-            <div>Chain-ID: {chainId}</div>
-            <div>Block Height: {blockHeight}</div>
-            <div>Gas Price: {gasPrice}</div>
-          </div>
-        ) : null}
-      </div>
+    <>
+      <Modal
+        title={'Power Tools – Full Message'}
+        isOpen={isViewMessageModalOpen}
+        onClose={() => {
+          setIsViewMessageModalOpen(false)
+          document.body.classList.remove('overflow-hidden')
+        }}
+      >
+        <div className="my-4 dark:bg-neutral-800 bg-neutral-200 p-2 rounded text-sm text-black dark:text-white">
+          {JSON.stringify(messages)}
+        </div>
+        <div className="flex gap-4 items-center justify-end">
+          <CopyToClipboard
+            text={JSON.stringify(messages)}
+            onCopy={() => {
+              NotificationService.notify('Message copied to clipboard!', 'success')
+            }}
+          >
+            <Button type="button">Copy to Clipboard</Button>
+          </CopyToClipboard>
+          <Button
+            type="button"
+            color="secondary"
+            onClick={() => {
+              setIsViewMessageModalOpen(false)
+              document.body.classList.remove('overflow-hidden')
+            }}
+          >
+            Close
+          </Button>
+        </div>
+      </Modal>
+      <div className="container max-w-6xl mx-auto px-4">
+        <Header title={'Power Tools'} description="Send complex transactions." />
+        <div className="flex items-center gap-4">
+          <input
+            value={apiUrl}
+            onChange={(e) => setApiUrl(e.target.value)}
+            type="text"
+            className="block w-full sm:w-72 p-2.5 text-sm rounded-lg text-neutral-800 dark:text-white bg-white dark:bg-neutral-800 placeholder-neutral-600 dark:placeholder-neutral-400 border border-neutral-300 dark:border-neutral-700 focus:outline-none focus:ring-2 focus:ring-cyan-500 dark:focus:ring-cyan-500"
+            placeholder="API URL"
+          />
+          <ApiStatusIcon apiStatus={apiStatus} />
+          {apiStatus !== 'loading' && apiStatus !== 'offline' ? (
+            <div className="flex items-center gap-4">
+              <div>Chain-ID: {chainId}</div>
+              <div>Block Height: {blockHeight}</div>
+              <div>Gas Price: {gasPrice}</div>
+            </div>
+          ) : null}
+        </div>
 
-      <div className="bg-orange-900 p-2 rounded text-sm">
-        <b>Global</b>
-        <br />
-        {JSON.stringify(messages)}
-      </div>
+        <div className="flex flex-col gap-4 my-4">
+          {messages.map((item: any, i: number) => {
+            return (
+              <Message
+                key={i}
+                type={messages[i].type}
+                content={messages[i].content}
+                updateType={(type: string) => updateMessageType(i, type)}
+                updateContent={(content: string) => updateMessageContent(i, content)}
+                number={i + 1}
+                secretjs={secretjs}
+                prefix={prefix}
+                denom={denom}
+                onDelete={() => deleteMessage(i)}
+              />
+            )
+          })}
+        </div>
 
-      <div className="flex flex-col gap-4 my-4">
-        {messages.map((item: any, i: number) => {
-          return (
-            <Message
-              key={i}
-              type={messages[i].type}
-              content={messages[i].content}
-              updateType={(type: string) => updateMessageType(i, type)}
-              updateContent={(content: string) => updateMessageContent(i, content)}
-              number={i + 1}
-              secretjs={secretjs}
-              prefix={prefix}
-              denom={denom}
-              onDelete={() => deleteMessage(i)}
-            />
-          )
-        })}
-      </div>
+        <div className="inline-flex justify-center w-full mb-8">
+          <Button type="button" color="secondary" onClick={handleAddMessage}>
+            <FontAwesomeIcon icon={faPlus} className="mr-2" />
+            Add Message
+          </Button>
+        </div>
 
-      <div className="inline-flex justify-center w-full mb-8">
-        <Button type="button" color="secondary" onClick={handleAddMessage}>
-          <FontAwesomeIcon icon={faPlus} className="mr-2" />
-          Add Message
+        <div className="flex">
+          <Button
+            type="button"
+            className="mb-4 mx-auto"
+            color="secondary"
+            onClick={() => setIsViewMessageModalOpen(true)}
+          >
+            View full message
+          </Button>
+        </div>
+
+        <Button
+          type="submit"
+          className={
+            'enabled:bg-gradient-to-r enabled:from-cyan-600 enabled:to-purple-600 enabled:hover:from-cyan-500 enabled:hover:to-purple-500 transition-colors text-white font-extrabold py-3 w-full rounded-lg disabled:bg-neutral-500 focus:outline-none focus-visible:ring-4 ring-sky-500/40'
+          }
+          size="large"
+          onClick={handleSendTx}
+        >
+          Send Tx
         </Button>
       </div>
-      <Button
-        className={
-          'enabled:bg-gradient-to-r enabled:from-cyan-600 enabled:to-purple-600 enabled:hover:from-cyan-500 enabled:hover:to-purple-500 transition-colors text-white font-extrabold py-3 w-full rounded-lg disabled:bg-neutral-500 focus:outline-none focus-visible:ring-4 ring-sky-500/40'
-        }
-        size="large"
-        onClick={handleSendTx}
-      >
-        Send Tx
-      </Button>
-    </div>
+    </>
   )
 }
 
