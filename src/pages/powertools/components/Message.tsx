@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import Select from 'react-select'
 import { Nullable } from 'types/Nullable'
 import { MessageDefinitions } from './Messages'
@@ -8,6 +8,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faInfoCircle, faTrash } from '@fortawesome/free-solid-svg-icons'
 import Tooltip from '@mui/material/Tooltip'
 import { CircularProgress } from '@mui/material'
+import { ThemeContext } from 'context/ThemeContext'
 
 interface Props {
   number: number
@@ -25,6 +26,7 @@ function Message(props: Props) {
   const [messageType, setMessageType] = useState<Nullable<string>>(null)
   const [isLoadingInfo, setIsLoadingInfo] = useState<boolean>(false)
   const [relevantInfo, setRelevantInfo] = useState<any>(null)
+  const { theme } = useContext(ThemeContext)
 
   const [error, setError] = useState<string>('')
 
@@ -88,6 +90,21 @@ function Message(props: Props) {
     }
   }
 
+  const customChainFilterOption = (option: any, inputValue: string) => {
+    const chainName = option.data.chain_name.toLowerCase()
+    return chainName.includes(inputValue.toLowerCase())
+  }
+
+  const customChainStyles = {
+    input: (styles: any) => ({
+      ...styles,
+      color: theme === 'light' ? 'black !important' : 'white !important',
+      fontFamily: 'Montserrat, sans-serif',
+      fontWeight: 600,
+      fontSize: '14px'
+    })
+  }
+
   return (
     <div>
       <div className="inline-flex items-center justify-center w-full">
@@ -120,7 +137,9 @@ function Message(props: Props) {
           isDisabled={false}
           options={selectOptions}
           value={selectOptions.find((opt) => opt.value === props.type)}
-          isSearchable={false}
+          isSearchable={true}
+          filterOption={customChainFilterOption}
+          styles={customChainStyles}
           onChange={(selectedOption) => {
             onTypeSelect(selectedOption.value)
           }}
