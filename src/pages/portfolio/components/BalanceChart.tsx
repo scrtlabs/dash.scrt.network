@@ -10,7 +10,9 @@ import {
   Title,
   Tooltip as ChartTooltip,
   Legend,
-  ArcElement
+  ArcElement,
+  Plugin,
+  Chart
 } from 'chart.js'
 import { Doughnut } from 'react-chartjs-2'
 import { ThemeContext } from 'context/ThemeContext'
@@ -78,7 +80,40 @@ export default function BalanceChart() {
     }
   }, [balanceMapping])
 
-  const centerText = {
+  var images: HTMLImageElement[] = []
+  function preloadImages() {
+    const imageSrcs = [
+      'https://images.pexels.com/photos/18898418/pexels-photo-18898418/free-photo-of-close-up-of-a-branch-with-green-and-yellow-leaves.jpeg?auto=compress&cs=tinysrgb&w=800&lazy=load'
+    ]
+    imageSrcs.forEach((src) => {
+      const img = new Image()
+      img.onload = () => images.push(img)
+      img.src = src
+    })
+  }
+  preloadImages()
+
+  const imageLegendPlugin: Plugin = {
+    id: 'imageLegendPlugin',
+    afterDraw: (chart: Chart) => {
+      let ctx = chart.ctx
+      let legend = chart.legend
+      if (legend) {
+        legend.legendItems.forEach((item: any, i: number) => {
+          let x = legend.left + 10
+          let y = legend.top + i * 50 + 20 / 2 - 15 / 2
+
+          let size = 15 // Size of the image
+
+          if (images[0]) {
+            ctx.drawImage(images[0], x, y, size, size)
+          }
+        })
+      }
+    }
+  }
+
+  const centerText: Plugin = {
     id: 'centerText',
     afterDatasetsDraw(chart: any, args: any, options: any) {
       const {
@@ -144,14 +179,16 @@ export default function BalanceChart() {
         {/* Chart */}
         <div className="w-full h-[150px] xl:h-[250px]">
           {data != undefined && options != undefined && centerText != undefined ? (
-            <Doughnut
-              id="stakingChartDoughnut"
-              data={data}
-              options={options as any}
-              plugins={[centerText]}
-              ref={chartRef}
-              redraw
-            />
+            <>
+              <Doughnut
+                id="stakingChartDoughnut"
+                data={data}
+                options={options as any}
+                plugins={[centerText, imageLegendPlugin]}
+                ref={chartRef}
+                redraw
+              />
+            </>
           ) : (
             <div className="animate-pulse bg-neutral-300 dark:bg-neutral-800 rounded col-span-2 w-full h-full min-h-[250px] xl:min-h-[300px] mx-auto"></div>
           )}
