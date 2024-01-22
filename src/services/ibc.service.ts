@@ -2,7 +2,7 @@ import { AxelarAssetTransfer, AxelarQueryAPI, CHAINS, Environment } from '@axela
 import { createTxIBCMsgTransfer } from '@tharsis/transactions'
 import BigNumber from 'bignumber.js'
 import { cosmos } from '@tharsis/proto/dist/proto/cosmos/tx/v1beta1/tx'
-import { SkipRouter, SKIP_API_URL, Operation, RouteResponse } from '@skip-router/core'
+import { SkipRouter, SKIP_API_URL, Operation } from '@skip-router/core'
 import {
   BroadcastMode,
   IbcResponse,

@@ -2443,6 +2443,35 @@ export const tokens: Token[] = [
     ]
   },
   {
+    name: 'WHALE',
+    description: 'Migaloo Governance Token',
+    address: 'secret1pcftk3ny87zm6thuxyfrtrlm2t8yev5unuvx6c',
+    code_hash: '638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e',
+    image: '/migaloo.svg',
+    decimals: 6,
+    coingecko_id: 'white-whale',
+    deposits: [
+      {
+        chain_name: 'Migaloo',
+        denom: 'uwhale'
+      }
+    ],
+    withdrawals: [
+      {
+        chain_name: 'Migaloo',
+        denom: ibcDenom(
+          [
+            {
+              incomingChannelId: chains['Migaloo'].withdraw_channel_id,
+              incomingPortId: 'transfer'
+            }
+          ],
+          'uwhale'
+        )
+      }
+    ]
+  },
+  {
     name: 'XPRT',
     description: 'Persistance Governance Token',
     address: 'secret1gnrrqjj5e2pwn4g262xjyypptu0ge3z3tps3nn',
