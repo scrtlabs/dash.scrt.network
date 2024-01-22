@@ -5,7 +5,7 @@ import { tokens } from 'utils/config'
 export const wrapSchema = yup.object().shape({
   amount: yup
     .number()
-    .min(0.00001, 'Please enter a valid amount')
+    .min(0.000001, 'Please enter a valid amount')
     .typeError('Please enter a valid amount')
     .required('Please enter a valid amount'),
   token: yup.mixed().required('Token is required'),

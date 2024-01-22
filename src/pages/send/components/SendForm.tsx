@@ -149,7 +149,10 @@ export default function SendForm() {
 
   const customTokenFilterOption = (option: any, inputValue: string) => {
     const tokenName = option.data.name.toLowerCase()
-    return tokenName.includes(inputValue.toLowerCase())
+    return (
+      tokenName?.toLowerCase().includes(inputValue?.toLowerCase()) ||
+      ('s' + tokenName)?.toLowerCase().includes(inputValue?.toLowerCase())
+    )
   }
 
   const customTokenSelectStyle = {
@@ -171,7 +174,7 @@ export default function SendForm() {
     const menuIsOpen = props.selectProps.menuIsOpen
     return (
       <components.Control {...props}>
-        <div className="flex items-center">
+        <div className="flex items-center justify-end w-full">
           {menuIsOpen && <FontAwesomeIcon icon={faSearch} className="w-5 h-5 ml-2" />}
           {children}
         </div>
