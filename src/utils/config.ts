@@ -276,6 +276,19 @@ export const chains: { [chain_name: string]: Chain } = {
     chain_image: '/juno.svg',
     explorer_account: 'https://www.mintscan.io/juno/account/'
   },
+  Migaloo: {
+    chain_name: 'Migaloo',
+    deposit_channel_id: 'channel-4',
+    deposit_gas: 150_000,
+    deposit_gas_denom: 'uwhale',
+    withdraw_channel_id: 'channel-57',
+    withdraw_gas: 30_000,
+    chain_id: 'migaloo-1',
+    bech32_prefix: 'migaloo',
+    lcd: 'https://migaloo-api.cosmosrescue.com',
+    chain_image: '/migaloo.svg',
+    explorer_account: 'https://migaloo.explorers.guru/account/'
+  },
   Neutron: {
     chain_name: 'Neutron',
     deposit_channel_id: 'channel-XX',
@@ -284,7 +297,7 @@ export const chains: { [chain_name: string]: Chain } = {
     withdraw_channel_id: 'channel-XX',
     withdraw_gas: 30_000,
     chain_id: 'neutron-1',
-    bech32_prefix: 'noble',
+    bech32_prefix: 'neutron',
     lcd: 'https://rest-kralum.neutron-1.neutron.org',
     chain_image: '/ntrn.svg',
     explorer_account: 'https://www.mintscan.io/neutron/account/'
@@ -2427,6 +2440,35 @@ export const tokens: Token[] = [
           'utia'
         )
       } */
+    ]
+  },
+  {
+    name: 'WHALE',
+    description: 'Migaloo Governance Token',
+    address: 'secret1pcftk3ny87zm6thuxyfrtrlm2t8yev5unuvx6c',
+    code_hash: '638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e',
+    image: '/migaloo.svg',
+    decimals: 6,
+    coingecko_id: 'white-whale',
+    deposits: [
+      {
+        chain_name: 'Migaloo',
+        denom: 'uwhale'
+      }
+    ],
+    withdrawals: [
+      {
+        chain_name: 'Migaloo',
+        denom: ibcDenom(
+          [
+            {
+              incomingChannelId: chains['Migaloo'].withdraw_channel_id,
+              incomingPortId: 'transfer'
+            }
+          ],
+          'uwhale'
+        )
+      }
     ]
   },
   {
