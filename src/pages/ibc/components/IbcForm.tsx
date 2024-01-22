@@ -366,6 +366,7 @@ export default function IbcForm() {
                     formik.setFieldValue('chain', chain)
                   }}
                   isSearchable={true}
+                  components={{ Control: CustomControl }}
                   filterOption={customChainFilterOption}
                   styles={customChainSelectStyle}
                   isDisabled={!isConnected}
