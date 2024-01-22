@@ -276,6 +276,19 @@ export const chains: { [chain_name: string]: Chain } = {
     chain_image: '/juno.svg',
     explorer_account: 'https://www.mintscan.io/juno/account/'
   },
+  Migaloo: {
+    chain_name: 'Migaloo',
+    deposit_channel_id: 'channel-4',
+    deposit_gas: 150_000,
+    deposit_gas_denom: 'uwhale',
+    withdraw_channel_id: 'channel-57',
+    withdraw_gas: 30_000,
+    chain_id: 'migaloo-1',
+    bech32_prefix: 'migaloo',
+    lcd: 'https://migaloo-api.cosmosrescue.com',
+    chain_image: '/migaloo.svg',
+    explorer_account: 'https://migaloo.explorers.guru/account/'
+  },
   Neutron: {
     chain_name: 'Neutron',
     deposit_channel_id: 'channel-XX',
@@ -284,7 +297,7 @@ export const chains: { [chain_name: string]: Chain } = {
     withdraw_channel_id: 'channel-XX',
     withdraw_gas: 30_000,
     chain_id: 'neutron-1',
-    bech32_prefix: 'noble',
+    bech32_prefix: 'neutron',
     lcd: 'https://rest-kralum.neutron-1.neutron.org',
     chain_image: '/ntrn.svg',
     explorer_account: 'https://www.mintscan.io/neutron/account/'
