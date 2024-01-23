@@ -1,14 +1,14 @@
 import { useFormik } from 'formik'
 import { ibcSchema } from './ibcSchema'
 import { GetBalanceError, useSecretNetworkClientStore } from 'store/secretNetworkClient'
-import { useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { IbcMode } from 'types/IbcMode'
-import Select from 'react-select'
-import { Chain, Deposit, Token, chains, tokens } from 'utils/config'
+import Select, { components } from 'react-select'
+import { Chain, Token, chains } from 'utils/config'
 import IbcSelect from './IbcSelect'
 import Tooltip from '@mui/material/Tooltip'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faRightLeft } from '@fortawesome/free-solid-svg-icons'
+import { faRightLeft, faSearch } from '@fortawesome/free-solid-svg-icons'
 import AddressInfo from './AddressInfo'
 import PercentagePicker from 'components/PercentagePicker'
 import { IbcService } from 'services/ibc.service'
@@ -18,6 +18,7 @@ import BridgingFees from './BridgingFees'
 import BigNumber from 'bignumber.js'
 import { useSearchParams } from 'react-router-dom'
 import { NotificationService } from 'services/notification.service'
+import { ThemeContext } from 'context/ThemeContext'
 
 export default function IbcForm() {
   // URL params
@@ -65,6 +66,8 @@ export default function IbcForm() {
 
   const { feeGrantStatus, secretNetworkClient, walletAddress, isConnected, getBalance, getIbcBalance } =
     useSecretNetworkClientStore()
+
+  const { theme } = useContext(ThemeContext)
 
   const formik = useFormik<IFormValues>({
     initialValues: {
@@ -171,6 +174,56 @@ export default function IbcForm() {
     fetchSourceChainAddress()
   }, [formik.values.chain])
 
+  const customChainFilterOption = (option: any, inputValue: string) => {
+    const chainName = option.data.chain_name.toLowerCase()
+    return chainName.includes(inputValue.toLowerCase())
+  }
+
+  const customTokenFilterOption = (option: any, inputValue: string) => {
+    const tokenName = option.data.name.toLowerCase()
+    return (
+      tokenName?.toLowerCase().includes(inputValue?.toLowerCase()) ||
+      ('s' + tokenName)?.toLowerCase().includes(inputValue?.toLowerCase())
+    )
+  }
+
+  const customChainSelectStyle = {
+    input: (styles: any) => ({
+      ...styles,
+      color: theme === 'light' ? 'black !important' : 'white !important',
+      fontFamily: 'Montserrat, sans-serif',
+      fontWeight: 600,
+      fontSize: '14px'
+    })
+  }
+
+  const customTokenSelectStyle = {
+    input: (styles: any) => ({
+      ...styles,
+      color: theme === 'light' ? 'black !important' : 'white !important',
+      fontFamily: 'Montserrat, sans-serif',
+      fontWeight: 600,
+      fontSize: '14px'
+    }),
+    container: (container: any) => ({
+      ...container,
+      width: 'auto',
+      minWidth: '30%'
+    })
+  }
+
+  const CustomControl = ({ children, ...props }: any) => {
+    const menuIsOpen = props.selectProps.menuIsOpen
+    return (
+      <components.Control {...props}>
+        <div className="flex items-center justify-end w-full">
+          {menuIsOpen && <FontAwesomeIcon icon={faSearch} className="w-5 h-5 ml-2" />}
+          {children}
+        </div>
+      </components.Control>
+    )
+  }
+
   return (
     <>
       <form
@@ -222,7 +275,10 @@ export default function IbcForm() {
                   onChange={(chain: Chain) => {
                     formik.setFieldValue('chain', chain)
                   }}
-                  isSearchable={false}
+                  isSearchable={true}
+                  components={{ Control: CustomControl }}
+                  filterOption={customChainFilterOption}
+                  styles={customChainSelectStyle}
                   isDisabled={!isConnected}
                   formatOptionLabel={(option) => (
                     <IbcSelect
@@ -309,7 +365,10 @@ export default function IbcForm() {
                   onChange={(chain: Chain) => {
                     formik.setFieldValue('chain', chain)
                   }}
-                  isSearchable={false}
+                  isSearchable={true}
+                  components={{ Control: CustomControl }}
+                  filterOption={customChainFilterOption}
+                  styles={customChainSelectStyle}
                   isDisabled={!isConnected}
                   formatOptionLabel={(option) => (
                     <IbcSelect
@@ -355,7 +414,10 @@ export default function IbcForm() {
               options={supportedTokens}
               value={formik.values.token}
               onChange={(token: Token) => formik.setFieldValue('token', token)}
-              isSearchable={false}
+              isSearchable={true}
+              components={{ Control: CustomControl }}
+              filterOption={customTokenFilterOption}
+              styles={customTokenSelectStyle}
               isDisabled={!isConnected}
               formatOptionLabel={(token: Token) => (
                 <div className="flex items-center">

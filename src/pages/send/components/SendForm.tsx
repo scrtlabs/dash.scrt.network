@@ -1,13 +1,13 @@
 import { useFormik } from 'formik'
-import { useEffect } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { sendSchema } from 'pages/send/sendSchema'
 import { GetBalanceError, useSecretNetworkClientStore } from 'store/secretNetworkClient'
-import Select from 'react-select'
+import Select, { components } from 'react-select'
 import { Token, chains } from 'utils/config'
 import BalanceUI from 'components/BalanceUI'
 import PercentagePicker from 'components/PercentagePicker'
 import Tooltip from '@mui/material/Tooltip'
-import { faInfoCircle } from '@fortawesome/free-solid-svg-icons'
+import { faInfoCircle, faSearch } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { SendService } from 'services/send.service'
 import FeeGrant from 'components/FeeGrant/FeeGrant'
@@ -16,6 +16,7 @@ import BigNumber from 'bignumber.js'
 import toast from 'react-hot-toast'
 import { useSearchParams } from 'react-router-dom'
 import { Nullable } from 'types/Nullable'
+import { ThemeContext } from 'context/ThemeContext'
 
 export default function SendForm() {
   // URL params
@@ -25,6 +26,8 @@ export default function SendForm() {
   const memoUrlParam = searchParams.get('memo')
 
   const tokenSelectOptions = SendService.getSupportedTokens()
+
+  const { theme } = useContext(ThemeContext)
 
   const isValidTokenParam = () => {
     return !!tokenSelectOptions.find((token: Token) => token.name.toLowerCase() === tokenUrlParam.toLowerCase())
@@ -54,8 +57,7 @@ export default function SendForm() {
     }
   }, [])
 
-  const { secretNetworkClient, walletAddress, feeGrantStatus, requestFeeGrant, isConnected, getBalance } =
-    useSecretNetworkClientStore()
+  const { secretNetworkClient, feeGrantStatus, isConnected, getBalance } = useSecretNetworkClientStore()
 
   interface IFormValues {
     amount: string
@@ -145,6 +147,41 @@ export default function SendForm() {
     setSearchParams(params)
   }, [formik.values])
 
+  const customTokenFilterOption = (option: any, inputValue: string) => {
+    const tokenName = option.data.name.toLowerCase()
+    return (
+      tokenName?.toLowerCase().includes(inputValue?.toLowerCase()) ||
+      ('s' + tokenName)?.toLowerCase().includes(inputValue?.toLowerCase())
+    )
+  }
+
+  const customTokenSelectStyle = {
+    input: (styles: any) => ({
+      ...styles,
+      color: theme === 'light' ? 'black !important' : 'white !important',
+      fontFamily: 'Montserrat, sans-serif',
+      fontWeight: 600,
+      fontSize: '14px'
+    }),
+    container: (container: any) => ({
+      ...container,
+      width: 'auto',
+      minWidth: '30%'
+    })
+  }
+
+  const CustomControl = ({ children, ...props }: any) => {
+    const menuIsOpen = props.selectProps.menuIsOpen
+    return (
+      <components.Control {...props}>
+        <div className="flex items-center justify-end w-full">
+          {menuIsOpen && <FontAwesomeIcon icon={faSearch} className="w-5 h-5 ml-2" />}
+          {children}
+        </div>
+      </components.Control>
+    )
+  }
+
   return (
     <form onSubmit={formik.handleSubmit} className="w-full flex flex-col gap-4">
       {/* Amount */}
@@ -167,7 +204,10 @@ export default function SendForm() {
             value={formik.values.token}
             onChange={(token: Token) => handleTokenSelect(token)}
             onBlur={formik.handleBlur}
-            isSearchable={false}
+            isSearchable={true}
+            components={{ Control: CustomControl }}
+            filterOption={customTokenFilterOption}
+            styles={customTokenSelectStyle}
             formatOptionLabel={(token: Token) => <TokenSelectFormatOptionLabel token={token} />}
             className="react-select-wrap-container"
             classNamePrefix="react-select-wrap"

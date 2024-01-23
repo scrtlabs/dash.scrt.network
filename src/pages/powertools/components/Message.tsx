@@ -1,13 +1,14 @@
-import React, { useEffect, useState } from 'react'
-import Select from 'react-select'
+import React, { useContext, useEffect, useState } from 'react'
+import Select, { components } from 'react-select'
 import { Nullable } from 'types/Nullable'
 import { MessageDefinitions } from './Messages'
 import { SecretNetworkClient } from 'secretjs'
 import { TMessage } from '../Powertools'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faInfoCircle, faTrash } from '@fortawesome/free-solid-svg-icons'
+import { faInfoCircle, faSearch, faTrash } from '@fortawesome/free-solid-svg-icons'
 import Tooltip from '@mui/material/Tooltip'
 import { CircularProgress } from '@mui/material'
+import { ThemeContext } from 'context/ThemeContext'
 
 interface Props {
   number: number
@@ -25,6 +26,7 @@ function Message(props: Props) {
   const [messageType, setMessageType] = useState<Nullable<string>>(null)
   const [isLoadingInfo, setIsLoadingInfo] = useState<boolean>(false)
   const [relevantInfo, setRelevantInfo] = useState<any>(null)
+  const { theme } = useContext(ThemeContext)
 
   const [error, setError] = useState<string>('')
 
@@ -88,6 +90,33 @@ function Message(props: Props) {
     }
   }
 
+  const customMsgFilterOption = (option: any, inputValue: string) => {
+    const msgName = option.data.label.toLowerCase()
+    return msgName.includes(inputValue.toLowerCase())
+  }
+
+  const customMsgStyles = {
+    input: (styles: any) => ({
+      ...styles,
+      color: theme === 'light' ? 'black !important' : 'white !important',
+      fontFamily: 'Montserrat, sans-serif',
+      fontWeight: 600,
+      fontSize: '14px'
+    })
+  }
+
+  const CustomControl = ({ children, ...props }: any) => {
+    const menuIsOpen = props.selectProps.menuIsOpen
+    return (
+      <components.Control {...props}>
+        <div className="flex items-center justify-end w-full">
+          {menuIsOpen && <FontAwesomeIcon icon={faSearch} className="w-5 h-5 ml-2" />}
+          {children}
+        </div>
+      </components.Control>
+    )
+  }
+
   return (
     <div>
       <div className="inline-flex items-center justify-center w-full">
@@ -120,7 +149,10 @@ function Message(props: Props) {
           isDisabled={false}
           options={selectOptions}
           value={selectOptions.find((opt) => opt.value === props.type)}
-          isSearchable={false}
+          isSearchable={true}
+          components={{ Control: CustomControl }}
+          filterOption={customMsgFilterOption}
+          styles={customMsgStyles}
           onChange={(selectedOption) => {
             onTypeSelect(selectedOption.value)
           }}

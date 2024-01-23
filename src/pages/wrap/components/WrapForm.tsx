@@ -1,9 +1,9 @@
-import { faRightLeft } from '@fortawesome/free-solid-svg-icons'
+import { faRightLeft, faSearch } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import Select from 'react-select'
+import Select, { components } from 'react-select'
 import BigNumber from 'bignumber.js'
 import { useFormik } from 'formik'
-import { useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import FeeGrant from 'components/FeeGrant/FeeGrant'
 import PercentagePicker from 'components/PercentagePicker'
 import { WrappingMode, isWrappingMode } from 'types/WrappingMode'
@@ -16,10 +16,12 @@ import BalanceUI from 'components/BalanceUI'
 import toast from 'react-hot-toast'
 import { useSearchParams } from 'react-router-dom'
 import { Nullable } from 'types/Nullable'
+import { ThemeContext } from 'context/ThemeContext'
 
 export default function WrapForm() {
-  const { secretNetworkClient, walletAddress, feeGrantStatus, isConnected, scrtBalance, getBalance } =
-    useSecretNetworkClientStore()
+  const { secretNetworkClient, feeGrantStatus, isConnected, scrtBalance, getBalance } = useSecretNetworkClientStore()
+
+  const { theme } = useContext(ThemeContext)
 
   const formik = useFormik<IFormValues>({
     initialValues: {
@@ -130,6 +132,41 @@ export default function WrapForm() {
     }
   }, [isConnected])
 
+  const customTokenFilterOption = (option: any, inputValue: string) => {
+    const tokenName = option.data.name.toLowerCase()
+    return (
+      tokenName?.toLowerCase().includes(inputValue?.toLowerCase()) ||
+      ('s' + tokenName)?.toLowerCase().includes(inputValue?.toLowerCase())
+    )
+  }
+
+  const customTokenSelectStyle = {
+    input: (styles: any) => ({
+      ...styles,
+      color: theme === 'light' ? 'black !important' : 'white !important',
+      fontFamily: 'Montserrat, sans-serif',
+      fontWeight: 600,
+      fontSize: '14px'
+    }),
+    container: (container: any) => ({
+      ...container,
+      width: 'auto',
+      minWidth: '30%'
+    })
+  }
+
+  const CustomControl = ({ children, ...props }: any) => {
+    const menuIsOpen = props.selectProps.menuIsOpen
+    return (
+      <components.Control {...props}>
+        <div className="flex items-center justify-end w-full">
+          {menuIsOpen && <FontAwesomeIcon icon={faSearch} className="w-5 h-5 ml-2" />}
+          {children}
+        </div>
+      </components.Control>
+    )
+  }
+
   interface IFormValues {
     amount: string
     token: Token
@@ -158,7 +195,10 @@ export default function WrapForm() {
               value={formik.values.token}
               onChange={(token: Token) => handleTokenSelect(token)}
               onBlur={formik.handleBlur}
-              isSearchable={false}
+              isSearchable={true}
+              components={{ Control: CustomControl }}
+              filterOption={customTokenFilterOption}
+              styles={customTokenSelectStyle}
               formatOptionLabel={(token: Token) => (
                 <div className="flex items-center">
                   <img
@@ -240,7 +280,10 @@ export default function WrapForm() {
               value={formik.values.token}
               onChange={(token: Token) => handleTokenSelect(token)}
               onBlur={formik.handleBlur}
-              isSearchable={false}
+              isSearchable={true}
+              components={{ Control: CustomControl }}
+              filterOption={customTokenFilterOption}
+              styles={customTokenSelectStyle}
               formatOptionLabel={(token) => (
                 <div className="flex items-center">
                   <img
