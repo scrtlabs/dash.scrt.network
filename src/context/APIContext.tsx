@@ -45,7 +45,9 @@ const APIContextProvider = ({ children }: any) => {
 
       secretjsquery?.query?.distribution
         ?.communityPool('')
-        ?.then((res) => setCommunityPool(Math.floor((res.pool[1] as any).amount / 1e6)))
+        ?.then((res) =>
+          setCommunityPool(Math.floor(Number(res.pool.find((entry) => entry.denom === 'uscrt').amount) / 1e6))
+        )
 
       secretjsquery?.query?.bank
         ?.balance({
