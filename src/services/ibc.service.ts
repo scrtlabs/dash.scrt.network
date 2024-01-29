@@ -17,7 +17,7 @@ import {
 import { FeeGrantStatus } from 'types/FeeGrantStatus'
 import { IbcMode } from 'types/IbcMode'
 import { sleep, faucetAddress, randomPadding, allTokens, suggestChainToWallet } from 'utils/commons'
-import { Chain, Deposit, Token, Withdraw, chains, tokens } from 'utils/config'
+import { Chain, Deposit, Token, Withdraw, chains } from 'utils/config'
 import Long from 'long'
 import { TxRaw } from 'secretjs/dist/protobuf/cosmos/tx/v1beta1/tx'
 import mixpanel from 'mixpanel-browser'
