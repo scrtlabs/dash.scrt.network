@@ -1785,6 +1785,35 @@ export const tokens: Token[] = [
     ]
   },
   {
+    name: 'PAGE',
+    description: 'PageDAO',
+    address: 'secret1hhvfxy44e4gp6k7n4e37t7uyqa54dnp68egugg',
+    code_hash: '638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e',
+    image: '/page.png',
+    decimals: 8,
+    coingecko_id: '',
+    deposits: [
+      {
+        chain_name: 'Gravity Bridge',
+        denom: 'gravity0x60e683C6514Edd5F758A55b6f393BeBBAfaA8d5e'
+      }
+    ],
+    withdrawals: [
+      {
+        chain_name: 'Gravity Bridge',
+        denom: ibcDenom(
+          [
+            {
+              incomingChannelId: chains['Gravity Bridge'].withdraw_channel_id,
+              incomingPortId: 'transfer'
+            }
+          ],
+          'gravity0x60e683C6514Edd5F758A55b6f393BeBBAfaA8d5e'
+        )
+      }
+    ]
+  },
+  {
     name: 'PICA',
     description: 'Picasso Token',
     address: 'secret1e0y9vf4xr9wffyxsvlz35jzl5st2srkdl8frac',
