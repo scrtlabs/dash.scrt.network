@@ -2506,11 +2506,11 @@ export const tokens: Token[] = [
 export const snips: Token[] = [
   {
     name: 'ADM',
-    description: 'Secret Admirers Token',
+    description: 'Admirari DAO / Secret Admirers Token',
     is_snip20: true,
     address: 'secret1zzuffktc25904mwus8ched6q6p5ewksy80m33h',
     code_hash: '6ee652c96cc3b954ea763d55b039a53784a4b15f28ccac14134c8f91e2d4c91c',
-    image: '/shd.svg',
+    image: '/adm.png',
     decimals: 6,
     coingecko_id: '',
     deposits: [
@@ -2518,7 +2518,7 @@ export const snips: Token[] = [
         chain_name: 'Composable',
         denom: ibcDenom(
           [{ incomingChannelId: 'channel-26', incomingPortId: 'transfer' }],
-          'cw20:secret153wu605vvp934xhd4k9dtd640zsep5jkesstdm'
+          'cw20:secret1zzuffktc25904mwus8ched6q6p5ewksy80m33h'
         ),
         channel_id: 'channel-26',
         gas: 300_000
@@ -2527,7 +2527,7 @@ export const snips: Token[] = [
         chain_name: 'Archway',
         denom: ibcDenom(
           [{ incomingChannelId: 'channel-39', incomingPortId: 'transfer' }],
-          'cw20:secret153wu605vvp934xhd4k9dtd640zsep5jkesstdm'
+          'cw20:secret1zzuffktc25904mwus8ched6q6p5ewksy80m33h'
         ),
         channel_id: 'channel-39',
         gas: 300_000
@@ -2536,7 +2536,7 @@ export const snips: Token[] = [
         chain_name: 'Osmosis',
         denom: ibcDenom(
           [{ incomingChannelId: 'channel-476', incomingPortId: 'transfer' }],
-          'cw20:secret153wu605vvp934xhd4k9dtd640zsep5jkesstdm'
+          'cw20:secret1zzuffktc25904mwus8ched6q6p5ewksy80m33h'
         ),
         channel_id: 'channel-476',
         gas: 300_000
@@ -2545,7 +2545,7 @@ export const snips: Token[] = [
         chain_name: 'Kujira',
         denom: ibcDenom(
           [{ incomingChannelId: 'channel-44', incomingPortId: 'transfer' }],
-          'cw20:secret153wu605vvp934xhd4k9dtd640zsep5jkesstdm'
+          'cw20:secret1zzuffktc25904mwus8ched6q6p5ewksy80m33h'
         ),
         channel_id: 'channel-44',
         gas: 300_000
@@ -2554,7 +2554,7 @@ export const snips: Token[] = [
         chain_name: 'Juno',
         denom: ibcDenom(
           [{ incomingChannelId: 'channel-163', incomingPortId: 'transfer' }],
-          'cw20:secret153wu605vvp934xhd4k9dtd640zsep5jkesstdm'
+          'cw20:secret1zzuffktc25904mwus8ched6q6p5ewksy80m33h'
         ),
         channel_id: 'channel-163',
         gas: 300_000
@@ -2563,31 +2563,31 @@ export const snips: Token[] = [
     withdrawals: [
       {
         chain_name: 'Archway',
-        denom: 'secret153wu605vvp934xhd4k9dtd640zsep5jkesstdm',
+        denom: 'secret1zzuffktc25904mwus8ched6q6p5ewksy80m33h',
         channel_id: 'channel-90',
         gas: 350_000
       },
       {
         chain_name: 'Composable',
-        denom: 'secret153wu605vvp934xhd4k9dtd640zsep5jkesstdm',
+        denom: 'secret1zzuffktc25904mwus8ched6q6p5ewksy80m33h',
         channel_id: 'channel-83',
         gas: 350_000
       },
       {
         chain_name: 'Osmosis',
-        denom: 'secret153wu605vvp934xhd4k9dtd640zsep5jkesstdm',
+        denom: 'secret1zzuffktc25904mwus8ched6q6p5ewksy80m33h',
         channel_id: 'channel-44',
         gas: 350_000
       },
       {
         chain_name: 'Kujira',
-        denom: 'secret153wu605vvp934xhd4k9dtd640zsep5jkesstdm',
+        denom: 'secret1zzuffktc25904mwus8ched6q6p5ewksy80m33h',
         channel_id: 'channel-46',
         gas: 350_000
       },
       {
         chain_name: 'Juno',
-        denom: 'secret153wu605vvp934xhd4k9dtd640zsep5jkesstdm',
+        denom: 'secret1zzuffktc25904mwus8ched6q6p5ewksy80m33h',
         channel_id: 'channel-45',
         gas: 350_000
       }
