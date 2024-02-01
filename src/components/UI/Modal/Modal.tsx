@@ -64,7 +64,7 @@ function Modal({ size = 'sm', ...props }: Props) {
               <div className={`flex mb-6 ${props.title || props.subTitle ? 'items-center gap-4' : 'justify-end'}`}>
                 {/* Title and Subtitle */}
                 {(props.title || props.subTitle) && (
-                  <div className="flex-1 flex-col">
+                  <div className="text-left flex-1 flex-col">
                     {props.title && <div className="text-xl font-semibold">{props.title}</div>}
                     {props.subTitle && (
                       <div className="mt-2 text-sm text-neutral-500 dark:text-neutral-500 font-semibold">

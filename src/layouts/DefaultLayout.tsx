@@ -1,4 +1,4 @@
-import { faBars, faSun } from '@fortawesome/free-solid-svg-icons'
+import { faBars, faGear, faSun } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import Footer from 'components/Footer'
 import { Navigation } from 'components/Navigation'
@@ -10,6 +10,7 @@ import { Nullable } from 'types/Nullable'
 import Wallet from 'components/Wallet/Wallet'
 import toast, { ToastBar, Toaster, ToasterProps } from 'react-hot-toast'
 import FeedbackButton from 'components/FeedbackButton'
+import Settings from 'components/Settings/Settings'
 
 export const NavigationContext = createContext<Nullable<boolean>>(null)
 
@@ -117,6 +118,11 @@ export const DefaultLayout = ({ children }: any) => {
 
               <div className="flex-1 sm:flex-initial sm:flex sm:justify-end">
                 <Wallet />
+              </div>
+
+              {/* Settings */}
+              <div className="flex-initial">
+                <Settings />
               </div>
             </div>
 

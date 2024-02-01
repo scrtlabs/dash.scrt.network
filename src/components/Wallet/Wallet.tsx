@@ -1,7 +1,7 @@
 import { useContext, useEffect, useRef, useState } from 'react'
 import CopyToClipboard from 'react-copy-to-clipboard'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCopy, faDesktop, faMobileScreen, faWallet, faXmark } from '@fortawesome/free-solid-svg-icons'
+import { faCopy, faDesktop, faGear, faMobileScreen, faWallet, faXmark } from '@fortawesome/free-solid-svg-icons'
 import { useHoverOutside } from 'utils/useHoverOutside'
 import { APIContext } from 'context/APIContext'
 import { trackMixPanelEvent } from 'utils/commons'
@@ -97,6 +97,8 @@ function Wallet() {
 
           {/* Balances */}
           <Balances />
+
+          <hr className="h-px my-8 bg-neutral-200 border-0 dark:bg-neutral-700" />
 
           {/* Disconnect Button */}
           <Button onClick={disconnectWallet} color="red" size="small" className="w-full">
