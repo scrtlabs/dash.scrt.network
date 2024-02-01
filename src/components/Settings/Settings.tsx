@@ -6,6 +6,48 @@ import React, { useState } from 'react'
 
 function Settings() {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
+
+  const themes = [
+    {
+      label: 'Dark Mode',
+      value: 'dark'
+    },
+    {
+      label: 'Light Mode',
+      value: 'light'
+    }
+  ]
+
+  const currencies = [
+    {
+      label: 'USD',
+      value: 'usd'
+    },
+    {
+      label: 'EUR',
+      value: 'eur'
+    },
+    {
+      label: 'JPY',
+      value: 'jpy'
+    },
+    {
+      label: 'GBP',
+      value: 'gbp'
+    },
+    {
+      label: 'AUD',
+      value: 'aud'
+    },
+    {
+      label: 'CAD',
+      value: 'cad'
+    },
+    {
+      label: 'CHF',
+      value: 'chf'
+    }
+  ]
   return (
     <>
       <Modal
@@ -14,11 +56,31 @@ function Settings() {
         title="Settings"
         subTitle="Settings are saved in the local storage in your browser."
       >
-        <label htmlFor="theme">Theme</label>
-        <select id="theme">
-          <option value="dark">Dark Mode</option>
-          <option value="light">Light Mode</option>
-        </select>
+        <div>
+          <label htmlFor="theme">Theme</label>
+          <select id="theme">
+            {themes.map((theme: any, index: number) => {
+              return (
+                <option key={index} value={theme.value}>
+                  {theme.label}
+                </option>
+              )
+            })}
+          </select>
+        </div>
+
+        <div>
+          <label htmlFor="currency">Currency</label>
+          <select id="currency">
+            {currencies.map((currency: any, index: number) => {
+              return (
+                <option key={index} value={currency.value}>
+                  {currency.label}
+                </option>
+              )
+            })}
+          </select>
+        </div>
       </Modal>
       <Tooltip title={`Settings`} placement="bottom" arrow>
         <button
