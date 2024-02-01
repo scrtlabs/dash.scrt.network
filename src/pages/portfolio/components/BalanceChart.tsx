@@ -12,12 +12,11 @@ import {
   Legend,
   ArcElement,
   Plugin,
-  Chart
+  Chart,
+  LegendItem
 } from 'chart.js'
 import { Doughnut } from 'react-chartjs-2'
 import { ThemeContext } from 'context/ThemeContext'
-import { Token } from 'utils/config'
-import { useTokenPricesStore } from 'store/TokenPrices'
 import { useSecretNetworkClientStore } from 'store/secretNetworkClient'
 import BigNumber from 'bignumber.js'
 
@@ -93,26 +92,6 @@ export default function BalanceChart() {
   }
   preloadImages()
 
-  const imageLegendPlugin: Plugin = {
-    id: 'imageLegendPlugin',
-    afterDraw: (chart: Chart) => {
-      let ctx = chart.ctx
-      let legend = chart.legend
-      if (legend) {
-        legend.legendItems.forEach((item: any, i: number) => {
-          let x = legend.left + 10
-          let y = legend.top + i * 50 + 20 / 2 - 15 / 2
-
-          let size = 15 // Size of the image
-
-          if (images[0]) {
-            ctx.drawImage(images[0], x, y, size, size)
-          }
-        })
-      }
-    }
-  }
-
   const centerText: Plugin = {
     id: 'centerText',
     afterDatasetsDraw(chart: any, args: any, options: any) {
@@ -123,10 +102,16 @@ export default function BalanceChart() {
 
       ctx.save()
 
-      ctx.font = 'bold 1.5rem sans-serif'
+      ctx.font = '300 1.5rem sans-serif'
       ctx.fillStyle = theme === 'dark' ? '#fff' : '#000'
       ctx.textAlign = 'center'
-      ctx.fillText(`Balances`, width / 2, height / 1.85)
+      ctx.fillText(`Your`, width / 2, height / 2.25 + top)
+      ctx.restore()
+
+      ctx.font = 'bold 1.75rem sans-serif'
+      ctx.fillStyle = theme === 'dark' ? '#fff' : '#000'
+      ctx.textAlign = 'center'
+      ctx.fillText(`Portfolio`, width / 2, height / 1.65 + top)
       ctx.restore()
     }
   }
@@ -142,7 +127,7 @@ export default function BalanceChart() {
     },
     plugins: {
       legend: {
-        display: true,
+        display: false,
         position: 'right',
         onClick: null as any,
         labels: {
@@ -159,13 +144,7 @@ export default function BalanceChart() {
         enabled: true,
         callbacks: {
           label: function (context: any) {
-            let label = context.label || ''
-            if (label) {
-              label += ': '
-            }
-            if (context.parsed !== null) {
-              label += `${formatNumber(context.parsed, 2)} ${context.label}`
-            }
+            let label = `${formatNumber(context.parsed, 2)} ${context.label}`
             return label
           }
         }
@@ -183,8 +162,8 @@ export default function BalanceChart() {
               <Doughnut
                 id="stakingChartDoughnut"
                 data={data}
+                plugins={[centerText]}
                 options={options as any}
-                plugins={[centerText, imageLegendPlugin]}
                 ref={chartRef}
                 redraw
               />

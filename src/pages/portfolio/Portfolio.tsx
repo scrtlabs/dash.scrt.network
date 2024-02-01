@@ -54,11 +54,15 @@ export default function Portfolio() {
       {/* All Balances */}
       <div className="max-w-6xl mx-auto mt-8 px-4">
         {secretNetworkClient && (
-          <div className="flex flex-col gap-4 mb-4">
-            <AddressQR />
+          <div className="grid grid-cols-12 gap-4 mb-4">
+            <div className="col-span-12 lg:col-span-8 md:col-span-8">
+              <AddressQR />
+            </div>
 
-            <div className="rounded-xl bg-white border border-neutral-200 dark:border-neutral-700 dark:bg-neutral-800 px-6 py-8">
-              <BalanceChart />
+            <div className="col-span-12 lg:col-span-4 md:col-span-4">
+              <div className="mx-auto rounded-xl bg-white border border-neutral-200 dark:border-neutral-700 dark:bg-neutral-800 px-6 py-8">
+                <BalanceChart />
+              </div>
             </div>
           </div>
         )}
