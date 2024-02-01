@@ -2510,7 +2510,7 @@ export const snips: Token[] = [
     is_snip20: true,
     address: 'secret1zzuffktc25904mwus8ched6q6p5ewksy80m33h',
     code_hash: '6ee652c96cc3b954ea763d55b039a53784a4b15f28ccac14134c8f91e2d4c91c',
-    image: '/adm.png',
+    image: '/adm.svg',
     decimals: 6,
     coingecko_id: '',
     deposits: [
