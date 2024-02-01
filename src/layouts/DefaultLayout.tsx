@@ -112,9 +112,9 @@ export const DefaultLayout = ({ children }: any) => {
                 </button>
               </div>
 
-              <div className="flex-initial sm:flex-1 text-right space-x-2">
+              {/* <div className="flex-initial sm:flex-1 text-right space-x-2">
                 <ThemeSwitch />
-              </div>
+              </div> */}
 
               <div className="flex-1 sm:flex-initial sm:flex sm:justify-end">
                 <Wallet />
