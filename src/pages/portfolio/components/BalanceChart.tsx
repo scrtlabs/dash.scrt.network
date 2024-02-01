@@ -153,26 +153,24 @@ export default function BalanceChart() {
   }
 
   return (
-    <>
-      <div>
-        {/* Chart */}
-        <div className="w-full h-[150px] xl:h-[250px]">
-          {data != undefined && options != undefined && centerText != undefined ? (
-            <>
-              <Doughnut
-                id="stakingChartDoughnut"
-                data={data}
-                plugins={[centerText]}
-                options={options as any}
-                ref={chartRef}
-                redraw
-              />
-            </>
-          ) : (
-            <div className="animate-pulse bg-neutral-300 dark:bg-neutral-800 rounded col-span-2 w-full h-full min-h-[250px] xl:min-h-[300px] mx-auto"></div>
-          )}
-        </div>
+    <div>
+      {/* Chart */}
+      <div className="w-full h-[150px]">
+        {data != undefined && options != undefined && centerText != undefined ? (
+          <>
+            <Doughnut
+              id="stakingChartDoughnut"
+              data={data}
+              plugins={[centerText]}
+              options={options as any}
+              ref={chartRef}
+              redraw
+            />
+          </>
+        ) : (
+          <div className="animate-pulse bg-neutral-300 dark:bg-neutral-800 rounded col-span-2 w-full h-full min-h-[250px] xl:min-h-[300px] mx-auto"></div>
+        )}
       </div>
-    </>
+    </div>
   )
 }
