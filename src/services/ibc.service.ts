@@ -215,7 +215,7 @@ async function performIbcDeposit(
         depositAddress = destinationAddress
       } else {
         NotificationService.notify(
-          `Getting Axelar deposit address for sending to Secret Network from ${props.chain.chain_name}...`,
+          `Getting Axelar deposit address for sending to Secret Network from ${props.chain.chain_name}`,
           'loading',
           toastId
         )
@@ -361,7 +361,7 @@ async function performIbcDeposit(
       )
     } else {
       NotificationService.notify(
-        `Receiving ${props.amount} ${token.name} on Secret Network from ${props.chain.chain_name}...`,
+        `Receiving ${props.amount} ${token.name} on Secret Network from ${props.chain.chain_name}`,
         'loading',
         toastId
       )
@@ -489,7 +489,7 @@ async function performIbcWithdrawal(
         depositAddress = destinationAddress
       } else {
         NotificationService.notify(
-          `Getting Axelar deposit address for sending to Secret Network from ${props.chain.chain_name}...`,
+          `Getting Axelar deposit address for sending to Secret Network from ${props.chain.chain_name}`,
           'loading',
           toastId
         )
@@ -616,7 +616,7 @@ async function performIbcWithdrawal(
       )
     } else {
       NotificationService.notify(
-        `Receiving ${props.amount} ${token.name} on ${selectedDest.chain_name}...`,
+        `Receiving ${props.amount} ${token.name} on ${selectedDest.chain_name}`,
         'loading',
         toastId
       )
