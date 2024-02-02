@@ -102,7 +102,7 @@ async function performIbcDeposit(
     let tx: TxResponse
     if (!['Evmos', 'Injective'].includes(props.chain.chain_name) && !token.is_ics20) {
       // Regular cosmos chain (not ethermint signing)
-      if (token.name === 'SCRT') {
+      if (token.name === 'SCRT' || token.is_snip20) {
         const routing = useSKIPRouting
           ? await getSkipIBCRouting(
               selectedSource,

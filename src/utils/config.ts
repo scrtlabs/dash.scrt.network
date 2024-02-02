@@ -2825,21 +2825,21 @@ export const snips: Token[] = [
     coingecko_id: 'shade-protocol',
     deposits: [
       {
-        chain_name: 'Composable',
-        denom: ibcDenom(
-          [{ incomingChannelId: 'channel-26', incomingPortId: 'transfer' }],
-          'cw20:secret153wu605vvp934xhd4k9dtd640zsep5jkesstdm'
-        ),
-        channel_id: 'channel-26',
-        gas: 300_000
-      },
-      {
         chain_name: 'Archway',
         denom: ibcDenom(
           [{ incomingChannelId: 'channel-39', incomingPortId: 'transfer' }],
           'cw20:secret153wu605vvp934xhd4k9dtd640zsep5jkesstdm'
         ),
         channel_id: 'channel-39',
+        gas: 300_000
+      },
+      {
+        chain_name: 'Composable',
+        denom: ibcDenom(
+          [{ incomingChannelId: 'channel-26', incomingPortId: 'transfer' }],
+          'cw20:secret153wu605vvp934xhd4k9dtd640zsep5jkesstdm'
+        ),
+        channel_id: 'channel-26',
         gas: 300_000
       },
       {
@@ -2867,6 +2867,15 @@ export const snips: Token[] = [
           'cw20:secret153wu605vvp934xhd4k9dtd640zsep5jkesstdm'
         ),
         channel_id: 'channel-163',
+        gas: 300_000
+      },
+      {
+        chain_name: 'Migaloo',
+        denom: ibcDenom(
+          [{ incomingChannelId: 'channel-103', incomingPortId: 'transfer' }],
+          'cw20:secret153wu605vvp934xhd4k9dtd640zsep5jkesstdm'
+        ),
+        channel_id: 'channel-103',
         gas: 300_000
       }
     ],
@@ -2899,6 +2908,12 @@ export const snips: Token[] = [
         chain_name: 'Juno',
         denom: 'secret153wu605vvp934xhd4k9dtd640zsep5jkesstdm',
         channel_id: 'channel-45',
+        gas: 350_000
+      },
+      {
+        chain_name: 'Migaloo',
+        denom: 'secret153wu605vvp934xhd4k9dtd640zsep5jkesstdm',
+        channel_id: 'channel-129',
         gas: 350_000
       }
     ]
