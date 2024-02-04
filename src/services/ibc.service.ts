@@ -117,15 +117,27 @@ async function performIbcDeposit(
                 toUtf8(
                   JSON.stringify({
                     channel: deposit_channel_id,
-                    remote_address: props.secretNetworkClient.address,
-                    timeout: 900
+                    remote_address: 'secret198lmmh2fpj3weqhjczptkzl9pxygs23yn6dsev',
+                    timeout: 900,
+                    memo: JSON.stringify({
+                      wasm: {
+                        contract: 'secret198lmmh2fpj3weqhjczptkzl9pxygs23yn6dsev',
+                        msg: {
+                          wrap_deposit: {
+                            snip20_address: token.address,
+                            snip20_code_hash: token.code_hash,
+                            recipient_address: props.secretNetworkClient.address
+                          }
+                        }
+                      }
+                    })
                   })
                 )
               ),
               channel: deposit_channel_id,
               timeout: 900,
               contract: 'terra1e0mrzy8077druuu42vs0hu7ugguade0cj65dgtauyaw4gsl4kv0qtdf2au', //cw20-ics20 contract on Terra
-              remote_address: props.secretNetworkClient.address
+              remote_address: 'secret198lmmh2fpj3weqhjczptkzl9pxygs23yn6dsev'
             }
           },
           []

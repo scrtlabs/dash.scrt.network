@@ -1007,7 +1007,7 @@ export const tokens: Token[] = [
   {
     name: 'ampLUNA',
     description: 'ERIS liquid staked LUNA',
-    address: 'XXXX',
+    address: 'secret1cycwquhh63qmc0qgfe76eed6a6yj5x4vzlu3rc',
     code_hash: '638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e',
     image: '/ampluna.svg',
     decimals: 6,
@@ -1022,10 +1022,11 @@ export const tokens: Token[] = [
     withdrawals: [
       {
         chain_name: 'Terra',
+        channel_id: 'channel-127',
         denom: ibcDenom(
           [
             {
-              incomingChannelId: chains['Terra'].withdraw_channel_id,
+              incomingChannelId: 'channel-127',
               incomingPortId: 'transfer'
             }
           ],
