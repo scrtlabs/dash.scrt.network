@@ -435,7 +435,7 @@ export const chains: { [chain_name: string]: Chain } = {
   Terra: {
     chain_name: 'Terra',
     deposit_channel_id: 'channel-3',
-    deposit_gas: 150_000,
+    deposit_gas: 300_000,
     deposit_gas_denom: 'uluna',
     withdraw_channel_id: 'channel-16',
     withdraw_gas: 30_000,
@@ -1000,6 +1000,36 @@ export const tokens: Token[] = [
             }
           ],
           'uakt'
+        )
+      }
+    ]
+  },
+  {
+    name: 'ampLUNA',
+    description: 'ERIS liquid staked LUNA',
+    address: 'XXXX',
+    code_hash: '638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e',
+    image: '/ampluna.svg',
+    decimals: 6,
+    coingecko_id: 'eris-amplified-luna',
+    deposits: [
+      {
+        chain_name: 'Terra',
+        channel_id: 'channel-382',
+        denom: 'cw20:terra1ecgazyd0waaj3g7l9cmy5gulhxkps2gmxu9ghducvuypjq68mq2s5lvsct'
+      }
+    ],
+    withdrawals: [
+      {
+        chain_name: 'Terra',
+        denom: ibcDenom(
+          [
+            {
+              incomingChannelId: chains['Terra'].withdraw_channel_id,
+              incomingPortId: 'transfer'
+            }
+          ],
+          'cw20:terra1ecgazyd0waaj3g7l9cmy5gulhxkps2gmxu9ghducvuypjq68mq2s5lvsct'
         )
       }
     ]
