@@ -1,16 +1,6 @@
 import { useEffect, useState, useContext, createContext } from 'react'
-import { MsgExecuteContract, BroadcastMode } from 'secretjs'
 import { Token, tokens } from 'utils/config'
-import {
-  sleep,
-  faucetURL,
-  faucetAddress,
-  viewingKeyErrorString,
-  wrapPageTitle,
-  wrapPageDescription,
-  wrapJsonLdSchema,
-  randomPadding
-} from 'utils/commons'
+import { wrapPageTitle, wrapPageDescription, wrapJsonLdSchema } from 'utils/commons'
 import { Helmet } from 'react-helmet-async'
 import FeeGrantInfoModal from './components/FeeGrantInfoModal'
 import mixpanel from 'mixpanel-browser'

@@ -1,10 +1,10 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Window as KeplrWindow } from '@keplr-wallet/types'
 import 'assets/scss/index.scss'
 import { Buffer } from 'buffer'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import ReactDOM from 'react-dom/client'
-import { Helmet, HelmetProvider } from 'react-helmet-async'
+import { HelmetProvider } from 'react-helmet-async'
 
 // Pages
 import { Ibc } from 'pages/ibc/Ibc'
@@ -24,6 +24,8 @@ import Bridge from 'pages/bridge/Bridge'
 import GetSCRT from 'pages/get-scrt/GetScrt'
 import Dashboard from 'pages/dashboard/Dashboard'
 import DefaultLayout from 'layouts/DefaultLayout'
+import Powertools from 'pages/powertools/Powertools'
+import { useSecretNetworkClientStore } from 'store/secretNetworkClient'
 
 if (import.meta.env.VITE_MIXPANEL_ENABLED === 'true') {
   mixpanel.init(import.meta.env.VITE_MIXPANEL_PROJECT_TOKEN, { debug: true })
@@ -90,6 +92,12 @@ root.render(
 )
 
 export default function App() {
+  const { init, isConnected, walletAddress } = useSecretNetworkClientStore()
+
+  useEffect(() => {
+    init()
+  }, [])
+
   return (
     <>
       <Routes>
@@ -102,6 +110,7 @@ export default function App() {
         <Route path="/portfolio" element={<Portfolio />} />
         <Route path="/send" element={<Send />} />
         <Route path="/apps" element={<Apps />} />
+        <Route path="/powertools" element={<Powertools />} />
       </Routes>
     </>
   )

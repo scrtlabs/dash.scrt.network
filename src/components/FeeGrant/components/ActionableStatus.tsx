@@ -1,9 +1,8 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { faCheckCircle, faXmarkCircle } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import Button from 'components/UI/Button/Button'
 import { useSecretNetworkClientStore } from 'store/secretNetworkClient'
-import { sleep } from 'utils/commons'
 import toast from 'react-hot-toast'
 
 export default function ActionableStatus() {

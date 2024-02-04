@@ -17,7 +17,7 @@ function Bridge() {
     trackMixPanelEvent('Open Bridge Tab')
   }, [])
 
-  const { theme, toggleTheme } = useContext(ThemeContext)
+  const { theme } = useContext(ThemeContext)
   const [isSquidModalOpen, setIsSquidModalOpen] = useState(false)
   const [isHoudiniModalOpen, setIsHoudiniModalOpen] = useState(false)
 

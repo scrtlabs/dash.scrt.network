@@ -2,7 +2,7 @@ import { SecretNetworkClient } from 'secretjs'
 import { FeeGrantStatus } from 'types/FeeGrantStatus'
 import { Nullable } from 'types/Nullable'
 import { allTokens, batchQueryCodeHash, batchQueryContractAddress, faucetURL, sleep } from 'utils/commons'
-import { Chain, SECRET_CHAIN_ID, SECRET_LCD, Token, chains, tokens } from 'utils/config'
+import { Chain, SECRET_CHAIN_ID, SECRET_LCD, Token } from 'utils/config'
 import { isMobile } from 'react-device-detect'
 import { scrtToken } from 'utils/tokens'
 import { WalletAPIType } from 'types/WalletAPIType'
@@ -10,11 +10,10 @@ import BigNumber from 'bignumber.js'
 import { QueryAllBalancesResponse } from 'secretjs/dist/grpc_gateway/cosmos/bank/v1beta1/query.pb'
 import { GetBalanceError } from 'store/secretNetworkClient'
 import { IbcService } from './ibc.service'
-import { faBalanceScale } from '@fortawesome/free-solid-svg-icons'
 import { TokenBalances } from 'store/secretNetworkClient'
 import { BatchQueryParsedResponse, batchQuery } from '@shadeprotocol/shadejs'
 
-const connectKeplr = async () => {
+const connectKeplr = async (lcd: string, chainID: string) => {
   const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
 
   while (!window.keplr || !window.getEnigmaUtils || !window.getOfflineSignerOnlyAmino) {
@@ -35,20 +34,20 @@ const connectKeplr = async () => {
   const walletAddress = accounts[0].address
 
   const secretjs: SecretNetworkClient = new SecretNetworkClient({
-    url: SECRET_LCD,
+    url: lcd,
     chainId: SECRET_CHAIN_ID,
     wallet: keplrOfflineSigner,
     walletAddress,
     encryptionUtils: window.getEnigmaUtils(SECRET_CHAIN_ID)
   })
 
-  ;(window as any).wallet = window.keplr
+  window.wallet = window.keplr
 
   return { walletAddress, secretjs }
 }
 
-const connectLeap = async () => {
-  if (!(window as any).leap && isMobile) {
+const connectLeap = async (lcd: string, chainID: string) => {
+  if (!window.leap && isMobile) {
     // const urlSearchParams = new URLSearchParams();
     // urlSearchParams.append("network", chainId);
     // urlSearchParams.append("url", window.location.href);
@@ -56,35 +55,40 @@ const connectLeap = async () => {
     // localStorage.setItem("preferedWalletApi", "Fina");
     // window.dispatchEvent(new Event("storage"));
   } else {
-    while (!(window as any).leap || !window.getEnigmaUtils || !window.getOfflineSignerOnlyAmino) {
+    while (!window.leap || !window.getEnigmaUtils || !window.getOfflineSignerOnlyAmino) {
       await sleep(50)
     }
 
-    await (window as any).leap.enable(SECRET_CHAIN_ID)
+    await window.leap.enable(SECRET_CHAIN_ID)
 
-    const wallet = (window as any).leap.getOfflineSignerOnlyAmino(SECRET_CHAIN_ID)
+    const wallet = window.leap.getOfflineSignerOnlyAmino(SECRET_CHAIN_ID)
     const [{ address: walletAddress }] = await wallet.getAccounts()
 
     const secretjs: SecretNetworkClient = new SecretNetworkClient({
-      url: SECRET_LCD,
-      chainId: SECRET_CHAIN_ID,
+      url: lcd,
+      chainId: chainID,
       wallet,
       walletAddress,
-      encryptionUtils: (window as any).leap.getEnigmaUtils(SECRET_CHAIN_ID)
+      encryptionUtils: window.leap.getEnigmaUtils(SECRET_CHAIN_ID)
     })
 
-    ;(window as any).wallet = (window as any).leap
+    window.wallet = window.leap
 
     return { walletAddress, secretjs }
   }
 }
 
-const connectWallet = async (walletAPIType: WalletAPIType = 'keplr', secretNetworkClient: SecretNetworkClient) => {
+const connectWallet = async (
+  walletAPIType: WalletAPIType = 'keplr',
+  lcd: string = SECRET_LCD,
+  chainID: string = SECRET_CHAIN_ID
+) => {
   let walletAddress: string
-  if (walletAPIType === 'keplr') {
-    ;({ walletAddress, secretjs: secretNetworkClient } = await connectKeplr())
+  let secretNetworkClient: SecretNetworkClient
+  if (walletAPIType === 'leap') {
+    ;({ walletAddress, secretjs: secretNetworkClient } = await connectLeap(lcd, chainID))
   } else {
-    ;({ walletAddress, secretjs: secretNetworkClient } = await connectLeap())
+    ;({ walletAddress, secretjs: secretNetworkClient } = await connectKeplr(lcd, chainID))
   }
 
   return { walletAddress, secretjs: secretNetworkClient }
@@ -98,7 +102,6 @@ const requestFeeGrantService = async (feeGrantStatus: FeeGrantStatus, walletAddr
   } else {
     try {
       const result = await (await fetch(`${faucetURL}/${walletAddress}`)).json()
-      console.log(result)
       if (result?.feegrant) {
         newFeeGrantStatus = 'success'
         // toast.success(
@@ -123,20 +126,20 @@ const requestFeeGrantService = async (feeGrantStatus: FeeGrantStatus, walletAddr
 }
 
 const setWalletViewingKey = async (token: string) => {
-  if (!window.keplr && !(window as any).leap) {
+  if (!window.keplr && !window.leap) {
     console.error('Wallet not present')
     return
   }
-  await (window as any).wallet.suggestToken(SECRET_CHAIN_ID, token)
+  await window.wallet.suggestToken(SECRET_CHAIN_ID, token)
 }
 
 const getWalletViewingKey = async (token: string): Promise<Nullable<string>> => {
-  if (!window.keplr && !(window as any).leap) {
+  if (!window.keplr && !window.leap) {
     console.error('Wallet not present')
     return null
   }
   try {
-    return await (window as any).wallet?.getSecret20ViewingKey(SECRET_CHAIN_ID, token)
+    return await window.wallet?.getSecret20ViewingKey(SECRET_CHAIN_ID, token)
   } catch (error) {
     console.error(error)
     return null
@@ -453,7 +456,7 @@ async function getBalancesForTokens(props: IGetBalancesForTokensProps): Promise<
 }
 
 export const WalletService = {
-  connectWallet,
+  connectWallet: connectWallet,
   requestFeeGrantService,
   setWalletViewingKey,
   getWalletViewingKey,

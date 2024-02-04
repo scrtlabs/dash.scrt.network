@@ -1,9 +1,8 @@
-import { useContext, useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import CopyToClipboard from 'react-copy-to-clipboard'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCopy, faDesktop, faMobileScreen, faWallet, faXmark } from '@fortawesome/free-solid-svg-icons'
 import { useHoverOutside } from 'utils/useHoverOutside'
-import { APIContext } from 'context/APIContext'
 import { trackMixPanelEvent } from 'utils/commons'
 import { useSecretNetworkClientStore } from 'store/secretNetworkClient'
 import { scrtToken } from 'utils/tokens'
@@ -15,15 +14,18 @@ import BalanceUI from 'components/BalanceUI'
 import { NotificationService } from 'services/notification.service'
 
 function Wallet() {
-  const { isConnected, walletAddress, connectWallet, disconnectWallet } = useSecretNetworkClientStore()
+  const {
+    isConnected,
+    walletAddress,
+    connectWallet,
+    disconnectWallet,
+    isGetWalletModalOpen,
+    setIsGetWalletModalOpen,
+    isConnectWalletModalOpen,
+    setIsConnectWalletModalOpen
+  } = useSecretNetworkClientStore()
 
   const [isMenuVisible, setIsMenuVisible] = useState<boolean>(false)
-  const [isGetWalletModalOpen, setIsGetWalletModalOpen] = useState<boolean>(false)
-  const [isConnectWalletModalOpen, setIsConnectWalletModalOpen] = useState<boolean>(false)
-
-  useEffect(() => {
-    connectWallet()
-  }, [])
 
   const handleManageViewingKeys = () => {
     setIsManageViewingkeysModalOpen(true)
@@ -32,7 +34,7 @@ function Wallet() {
   useEffect(() => {
     let isAutoConnectEnabled = localStorage.getItem('autoConnect') === 'true'
     if (isAutoConnectEnabled) {
-      connectWallet()
+      handleConnectWallet()
     }
   }, [])
 
@@ -76,18 +78,6 @@ function Wallet() {
     )
   }
 
-  function handleConnectWallet() {
-    if (window.keplr && (window as any).leap) {
-      setIsConnectWalletModalOpen(true)
-    } else if (window.keplr && !(window as any).leap) {
-      connectWallet('keplr')
-    } else if (!window.keplr && (window as any).leap) {
-      connectWallet('leap')
-    } else {
-      setIsGetWalletModalOpen(true)
-    }
-  }
-
   function ContextMenu() {
     return (
       <div className="absolute pt-10 right-4 z-40 top-[3.7rem]">
@@ -117,6 +107,18 @@ function Wallet() {
   }
 
   const [isManageViewingkeysModalOpen, setIsManageViewingkeysModalOpen] = useState<boolean>(false)
+
+  function handleConnectWallet() {
+    if (window.keplr && window.leap) {
+      setIsConnectWalletModalOpen(true)
+    } else if (window.keplr && !window.leap) {
+      connectWallet('keplr')
+    } else if (!window.keplr && window.leap) {
+      connectWallet('leap')
+    } else {
+      setIsGetWalletModalOpen(true)
+    }
+  }
 
   return (
     <>
@@ -238,8 +240,7 @@ function Wallet() {
         </div>
       ) : (
         <button
-          id="keplr-button"
-          onClick={handleConnectWallet}
+          onClick={() => handleConnectWallet()}
           className="w-full sm:w-auto rounded-lg px-4 py-3 bg-white dark:bg-neutral-700 hover:dark:bg-neutral-600 select-none cursor-pointer transition-colors"
         >
           <div className="flex items-center font-semibold text-sm">

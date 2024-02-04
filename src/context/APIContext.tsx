@@ -45,7 +45,9 @@ const APIContextProvider = ({ children }: any) => {
 
       secretjsquery?.query?.distribution
         ?.communityPool('')
-        ?.then((res) => setCommunityPool(Math.floor((res.pool[1] as any).amount / 1e6)))
+        ?.then((res) =>
+          setCommunityPool(Math.floor(Number(res.pool.find((entry) => entry.denom === 'uscrt').amount) / 1e6))
+        )
 
       secretjsquery?.query?.bank
         ?.balance({
@@ -226,12 +228,11 @@ const APIContextProvider = ({ children }: any) => {
       .then((response) => {
         setExternalApiData(response)
       })
-    let L5AnalyticsApiDataUrl = `https://api.lavenderfive.com/networks`
+    let L5AnalyticsApiDataUrl = `https://api.lavenderfive.com/networks/secretnetwork`
     fetch(L5AnalyticsApiDataUrl)
       .then((response) => response.json())
       .then((response) => {
-        console.log(response['secretnetwork'])
-        setL5AnalyticslApiData(response['secretnetwork'])
+        setL5AnalyticslApiData(response)
       })
   }, [])
 

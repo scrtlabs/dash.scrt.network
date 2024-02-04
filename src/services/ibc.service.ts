@@ -2,7 +2,7 @@ import { AxelarAssetTransfer, AxelarQueryAPI, CHAINS, Environment } from '@axela
 import { createTxIBCMsgTransfer } from '@tharsis/transactions'
 import BigNumber from 'bignumber.js'
 import { cosmos } from '@tharsis/proto/dist/proto/cosmos/tx/v1beta1/tx'
-import { SkipRouter, SKIP_API_URL, Operation, RouteResponse } from '@skip-router/core'
+import { SkipRouter, SKIP_API_URL, Operation } from '@skip-router/core'
 import {
   BroadcastMode,
   IbcResponse,
@@ -17,7 +17,7 @@ import {
 import { FeeGrantStatus } from 'types/FeeGrantStatus'
 import { IbcMode } from 'types/IbcMode'
 import { sleep, faucetAddress, randomPadding, allTokens, suggestChainToWallet } from 'utils/commons'
-import { Chain, Deposit, Token, Withdraw, chains, tokens } from 'utils/config'
+import { Chain, Deposit, Token, Withdraw, chains } from 'utils/config'
 import Long from 'long'
 import { TxRaw } from 'secretjs/dist/protobuf/cosmos/tx/v1beta1/tx'
 import mixpanel from 'mixpanel-browser'
@@ -39,21 +39,21 @@ interface TProps {
 }
 
 async function getChainSecretJs(chain: Chain): Promise<SecretNetworkClient> {
-  while (!(window as any).wallet || !(window as any).wallet.getOfflineSignerOnlyAmino) {
+  while (!window.wallet || !window.wallet.getOfflineSignerOnlyAmino) {
     await sleep(100)
   }
 
   const { chain_id, lcd } = chains[chain.chain_name]
 
   try {
-    await (window as any).wallet.enable(chain_id)
+    await window.wallet.enable(chain_id)
   } catch {
-    await suggestChainToWallet((window as any).wallet, chain.chain_id)
-    await (window as any).wallet.enable(chain_id)
+    await suggestChainToWallet(window.wallet, chain.chain_id)
+    await window.wallet.enable(chain_id)
   }
 
-  if ((window as any).wallet) {
-    ;(window as any).wallet.defaultOptions = {
+  if (window.wallet) {
+    window.wallet.defaultOptions = {
       sign: {
         preferNoSetFee: false,
         disableBalanceCheck: true
@@ -61,7 +61,7 @@ async function getChainSecretJs(chain: Chain): Promise<SecretNetworkClient> {
     }
   }
 
-  const sourceOfflineSigner = (window as any).wallet.getOfflineSignerOnlyAmino(chain_id)
+  const sourceOfflineSigner = window.wallet.getOfflineSignerOnlyAmino(chain_id)
   const depositFromAccounts = await sourceOfflineSigner.getAccounts()
 
   const secretNetworkClient = new SecretNetworkClient({
@@ -102,7 +102,7 @@ async function performIbcDeposit(
     let tx: TxResponse
     if (!['Evmos', 'Injective'].includes(props.chain.chain_name) && !token.is_ics20) {
       // Regular cosmos chain (not ethermint signing)
-      if (token.name === 'SCRT') {
+      if (token.name === 'SCRT' || token.is_snip20) {
         const routing = useSKIPRouting
           ? await getSkipIBCRouting(
               selectedSource,
@@ -215,7 +215,7 @@ async function performIbcDeposit(
         depositAddress = destinationAddress
       } else {
         NotificationService.notify(
-          `Getting Axelar deposit address for sending to Secret Network from ${props.chain.chain_name}...`,
+          `Getting Axelar deposit address for sending to Secret Network from ${props.chain.chain_name}`,
           'loading',
           toastId
         )
@@ -317,7 +317,7 @@ async function performIbcDeposit(
       }
 
       // Sign the tx
-      const sig = await (window as any).wallet?.signDirect(
+      const sig = await window.wallet?.signDirect(
         selectedSource.chain_id,
         sourceChainNetworkClient.address,
         {
@@ -345,7 +345,8 @@ async function performIbcDeposit(
           resolveResponses: true,
           resolveResponsesCheckIntervalMs: 250,
           resolveResponsesTimeoutMs: 10.25 * 60 * 1000
-        }
+        },
+        broadcastMode: BroadcastMode.Sync
       })
     }
 
@@ -359,10 +360,8 @@ async function performIbcDeposit(
         toastId
       )
     } else {
-      console.log(`Receiving ${props.amount} ${token.name} on Secret Network from ${props.chain.chain_name}...`)
-
       NotificationService.notify(
-        `Receiving ${props.amount} ${token.name} on Secret Network from ${props.chain.chain_name}...`,
+        `Receiving ${props.amount} ${token.name} on Secret Network from ${props.chain.chain_name}`,
         'loading',
         toastId
       )
@@ -490,7 +489,7 @@ async function performIbcWithdrawal(
         depositAddress = destinationAddress
       } else {
         NotificationService.notify(
-          `Getting Axelar deposit address for sending to Secret Network from ${props.chain.chain_name}...`,
+          `Getting Axelar deposit address for sending to Secret Network from ${props.chain.chain_name}`,
           'loading',
           toastId
         )
@@ -616,9 +615,8 @@ async function performIbcWithdrawal(
         toastId
       )
     } else {
-      console.log(`Receiving ${props.amount} ${token.name} on ${selectedDest.chain_name}...`)
       NotificationService.notify(
-        `Receiving ${props.amount} ${token.name} on ${selectedDest.chain_name}...`,
+        `Receiving ${props.amount} ${token.name} on ${selectedDest.chain_name}`,
         'loading',
         toastId
       )
@@ -626,7 +624,6 @@ async function performIbcWithdrawal(
       const ibcResp = await tx.ibcResponses[0]
 
       if (ibcResp.type === 'ack') {
-        console.log(`Received ${props.amount} ${token.name} on ${selectedDest.chain_name}`)
         NotificationService.notify(
           `Received ${props.amount} ${token.name} on ${selectedDest.chain_name}`,
           'success',
@@ -699,9 +696,7 @@ async function fetchSourceBalance(address: string, chain: Chain, token: Token): 
     }
 
     const { balances } = await response.json()
-
     const targetDenom = token.deposits.filter((deposit: any) => deposit.chain_name === chain.chain_name)[0]?.denom
-
     const balanceObj = balances.find((balance: any) => balance.denom === targetDenom)
 
     return balanceObj ? BigNumber(balanceObj.amount) : BigNumber(0)
@@ -744,7 +739,7 @@ async function getSkipIBCRouting(chain: Chain, IbcMode: IbcMode, token: Token, a
 }
 
 async function getReceiverAddress(chainID: string): Promise<string> {
-  const wallet = (window as any).wallet.getOfflineSignerOnlyAmino(chainID)
+  const wallet = window.wallet.getOfflineSignerOnlyAmino(chainID)
   const [{ address: walletAddress }] = await wallet.getAccounts()
   return walletAddress
 }

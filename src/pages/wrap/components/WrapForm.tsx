@@ -1,9 +1,9 @@
-import { faRightLeft } from '@fortawesome/free-solid-svg-icons'
+import { faRightLeft, faSearch } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import Select from 'react-select'
+import Select, { components } from 'react-select'
 import BigNumber from 'bignumber.js'
 import { useFormik } from 'formik'
-import { useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import FeeGrant from 'components/FeeGrant/FeeGrant'
 import PercentagePicker from 'components/PercentagePicker'
 import { WrappingMode, isWrappingMode } from 'types/WrappingMode'
@@ -13,28 +13,15 @@ import { wrapSchema } from 'pages/wrap/wrapSchema'
 import Tooltip from '@mui/material/Tooltip'
 import { WrapService } from 'services/wrap.service'
 import BalanceUI from 'components/BalanceUI'
-import { FeeGrantStatus } from 'types/FeeGrantStatus'
 import toast from 'react-hot-toast'
 import { useSearchParams } from 'react-router-dom'
 import { Nullable } from 'types/Nullable'
+import { ThemeContext } from 'context/ThemeContext'
 
 export default function WrapForm() {
-  const {
-    secretNetworkClient,
-    walletAddress,
-    feeGrantStatus,
-    requestFeeGrant,
-    isConnected,
-    connectWallet,
-    scrtBalance,
-    getBalance
-  } = useSecretNetworkClientStore()
+  const { secretNetworkClient, feeGrantStatus, isConnected, scrtBalance, getBalance } = useSecretNetworkClientStore()
 
-  const handleClick = () => {
-    if (!isConnected) {
-      connectWallet()
-    }
-  }
+  const { theme } = useContext(ThemeContext)
 
   const formik = useFormik<IFormValues>({
     initialValues: {
@@ -47,7 +34,6 @@ export default function WrapForm() {
     validateOnChange: true,
     onSubmit: async (values) => {
       try {
-        console.log('dfgsdhgsdhdgfhg')
         const res = WrapService.performWrapping({
           ...values,
           secretNetworkClient,
@@ -146,6 +132,41 @@ export default function WrapForm() {
     }
   }, [isConnected])
 
+  const customTokenFilterOption = (option: any, inputValue: string) => {
+    const tokenName = option.data.name.toLowerCase()
+    return (
+      tokenName?.toLowerCase().includes(inputValue?.toLowerCase()) ||
+      ('s' + tokenName)?.toLowerCase().includes(inputValue?.toLowerCase())
+    )
+  }
+
+  const customTokenSelectStyle = {
+    input: (styles: any) => ({
+      ...styles,
+      color: theme === 'light' ? 'black !important' : 'white !important',
+      fontFamily: 'Montserrat, sans-serif',
+      fontWeight: 600,
+      fontSize: '14px'
+    }),
+    container: (container: any) => ({
+      ...container,
+      width: 'auto',
+      minWidth: '30%'
+    })
+  }
+
+  const CustomControl = ({ children, ...props }: any) => {
+    const menuIsOpen = props.selectProps.menuIsOpen
+    return (
+      <components.Control {...props}>
+        <div className="flex items-center justify-end w-full">
+          {menuIsOpen && <FontAwesomeIcon icon={faSearch} className="w-5 h-5 ml-2" />}
+          {children}
+        </div>
+      </components.Control>
+    )
+  }
+
   interface IFormValues {
     amount: string
     token: Token
@@ -153,7 +174,7 @@ export default function WrapForm() {
   }
 
   return (
-    <div onClick={handleClick}>
+    <div>
       <form onSubmit={formik.handleSubmit} className="w-full flex flex-col gap-4">
         {/* *** From *** */}
         <div className="bg-gray-200 dark:bg-neutral-700 p-4 rounded-xl">
@@ -174,7 +195,10 @@ export default function WrapForm() {
               value={formik.values.token}
               onChange={(token: Token) => handleTokenSelect(token)}
               onBlur={formik.handleBlur}
-              isSearchable={false}
+              isSearchable={true}
+              components={{ Control: CustomControl }}
+              filterOption={customTokenFilterOption}
+              styles={customTokenSelectStyle}
               formatOptionLabel={(token: Token) => (
                 <div className="flex items-center">
                   <img
@@ -194,12 +218,12 @@ export default function WrapForm() {
             <input
               id="amount-top"
               name="amount"
-              type="text"
+              type="number"
               value={formik.values.amount}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
               className={
-                'dark:placeholder-neutral-600 text-right focus:z-10 block flex-1 min-w-0 w-full bg-white dark:bg-neutral-800 text-black dark:text-white px-4 rounded-r-lg disabled:placeholder-neutral-300 dark:disabled:placeholder-neutral-700 transition-colors font-medium focus:outline-0 focus-visible:ring-2 focus-visible:ring-sky-500/60' +
+                '[-moz-appearance:_textfield] [&::-webkit-inner-spin-button]:m-0 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:m-0 [&::-webkit-outer-spin-button]:appearance-none dark:placeholder-neutral-600 text-right focus:z-10 block flex-1 min-w-0 w-full bg-white dark:bg-neutral-800 text-black dark:text-white px-4 rounded-r-lg disabled:placeholder-neutral-300 dark:disabled:placeholder-neutral-700 transition-colors font-medium focus:outline-0 focus-visible:ring-2 focus-visible:ring-sky-500/60' +
                 (formik.touched.amount && formik.errors.amount ? '  border border-red-500 dark:border-red-500' : '')
               }
               placeholder="0"
@@ -256,7 +280,10 @@ export default function WrapForm() {
               value={formik.values.token}
               onChange={(token: Token) => handleTokenSelect(token)}
               onBlur={formik.handleBlur}
-              isSearchable={false}
+              isSearchable={true}
+              components={{ Control: CustomControl }}
+              filterOption={customTokenFilterOption}
+              styles={customTokenSelectStyle}
               formatOptionLabel={(token) => (
                 <div className="flex items-center">
                   <img
@@ -275,12 +302,12 @@ export default function WrapForm() {
             />
             <input
               name="amount"
-              type="text"
+              type="number"
               value={formik.values.amount}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
               className={
-                'dark:placeholder-neutral-600 text-right focus:z-10 block flex-1 min-w-0 w-full bg-white dark:bg-neutral-800 text-black dark:text-white px-4 rounded-r-lg disabled:placeholder-neutral-300 dark:disabled:placeholder-neutral-700 transition-colors font-medium focus:outline-0 focus-visible:ring-2 ring-sky-500/60'
+                '[-moz-appearance:_textfield] [&::-webkit-inner-spin-button]:m-0 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:m-0 [&::-webkit-outer-spin-button]:appearance-none dark:placeholder-neutral-600 text-right focus:z-10 block flex-1 min-w-0 w-full bg-white dark:bg-neutral-800 text-black dark:text-white px-4 rounded-r-lg disabled:placeholder-neutral-300 dark:disabled:placeholder-neutral-700 transition-colors font-medium focus:outline-0 focus-visible:ring-2 ring-sky-500/60'
               }
               placeholder="0"
               disabled={!isConnected}

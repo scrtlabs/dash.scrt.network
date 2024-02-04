@@ -9,7 +9,6 @@ import { APIContext } from 'context/APIContext'
 import { trackMixPanelEvent as trackEvent } from 'utils/commons'
 import FilterTag from './components/FilterTag'
 import SkeletonLoaders from './components/SkeletonLoaders/SkeletonLoaders'
-import Button from 'components/UI/Button/Button'
 
 function Apps() {
   const { dappsData, dappsDataSorted, tags } = useContext(APIContext)

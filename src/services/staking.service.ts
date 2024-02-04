@@ -1,10 +1,6 @@
-import BigNumber from 'bignumber.js'
-import mixpanel from 'mixpanel-browser'
-import { BroadcastMode, MsgExecuteContract, MsgSend, MsgWithdrawDelegationReward, SecretNetworkClient } from 'secretjs'
+import { MsgWithdrawDelegationReward, SecretNetworkClient } from 'secretjs'
 import { FeeGrantStatus } from 'types/FeeGrantStatus'
-import { Nullable } from 'types/Nullable'
-import { faucetAddress, randomPadding } from 'utils/commons'
-import { Token, tokens } from 'utils/config'
+import { faucetAddress } from 'utils/commons'
 import { NotificationService } from './notification.service'
 
 interface Props {

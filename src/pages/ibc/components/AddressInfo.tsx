@@ -13,7 +13,7 @@ interface IProps {
 }
 
 export default function AddressInfo(props: IProps) {
-  const { isConnected, connectWallet } = useSecretNetworkClientStore()
+  const { isConnected } = useSecretNetworkClientStore()
 
   const dataMissing = !props.srcChain || !props.srcAddress || !props.destChain || !props.destChain
 

@@ -1,25 +1,24 @@
 import { useFormik } from 'formik'
 import { ibcSchema } from './ibcSchema'
 import { GetBalanceError, useSecretNetworkClientStore } from 'store/secretNetworkClient'
-import { useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { IbcMode } from 'types/IbcMode'
-import Select from 'react-select'
-import { Chain, Deposit, Token, chains, tokens } from 'utils/config'
+import Select, { components } from 'react-select'
+import { Chain, Token, chains } from 'utils/config'
 import IbcSelect from './IbcSelect'
 import Tooltip from '@mui/material/Tooltip'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCircleCheck, faRightLeft } from '@fortawesome/free-solid-svg-icons'
+import { faRightLeft, faSearch } from '@fortawesome/free-solid-svg-icons'
 import AddressInfo from './AddressInfo'
 import PercentagePicker from 'components/PercentagePicker'
 import { IbcService } from 'services/ibc.service'
 import FeeGrant from 'components/FeeGrant/FeeGrant'
 import BalanceUI from 'components/BalanceUI'
-import { FeeGrantStatus } from 'types/FeeGrantStatus'
 import BridgingFees from './BridgingFees'
 import BigNumber from 'bignumber.js'
-import { allTokens } from 'utils/commons'
 import { useSearchParams } from 'react-router-dom'
 import { NotificationService } from 'services/notification.service'
+import { ThemeContext } from 'context/ThemeContext'
 
 export default function IbcForm() {
   // URL params
@@ -68,6 +67,8 @@ export default function IbcForm() {
   const { feeGrantStatus, secretNetworkClient, walletAddress, isConnected, getBalance, getIbcBalance } =
     useSecretNetworkClientStore()
 
+  const { theme } = useContext(ThemeContext)
+
   const formik = useFormik<IFormValues>({
     initialValues: {
       chain: selectableChains.find((chain: Chain) => chain.chain_name === 'Osmosis'),
@@ -82,7 +83,6 @@ export default function IbcForm() {
     validateOnChange: true,
     onSubmit: async (values) => {
       try {
-        console.log(values)
         IbcService.performIbcTransfer({
           ...values,
           secretNetworkClient,
@@ -96,8 +96,7 @@ export default function IbcForm() {
   })
 
   useEffect(() => {
-    var params = {}
-    params = {
+    const params = {
       chain: formik.values.chain.chain_name.toLowerCase(),
       mode: formik.values.ibcMode,
       token: formik.values.token.name.toLowerCase()
@@ -145,29 +144,6 @@ export default function IbcForm() {
     }
   }
 
-  const ChainSelect = () => {
-    return (
-      <Select
-        options={selectableChains}
-        value={formik.values.chain}
-        onChange={(chain: Chain) => {
-          formik.setFieldValue('chain', chain)
-        }}
-        isSearchable={false}
-        isDisabled={!isConnected}
-        formatOptionLabel={(option) => (
-          <IbcSelect
-            imgSrc={`/img/assets/${chains[option.chain_name].chain_image}`}
-            altText={`/img/assets/${chains[option.chain_name].chain_name} asset logo`}
-            optionName={option.chain_name}
-          />
-        )}
-        className="react-select-container"
-        classNamePrefix="react-select"
-      />
-    )
-  }
-
   interface IFormValues {
     chain: Chain
     token: Token
@@ -198,7 +174,56 @@ export default function IbcForm() {
     fetchSourceChainAddress()
   }, [formik.values.chain])
 
-  // return <Deposit />
+  const customChainFilterOption = (option: any, inputValue: string) => {
+    const chainName = option.data.chain_name.toLowerCase()
+    return chainName.includes(inputValue.toLowerCase())
+  }
+
+  const customTokenFilterOption = (option: any, inputValue: string) => {
+    const tokenName = option.data.name.toLowerCase()
+    return (
+      tokenName?.toLowerCase().includes(inputValue?.toLowerCase()) ||
+      ('s' + tokenName)?.toLowerCase().includes(inputValue?.toLowerCase())
+    )
+  }
+
+  const customChainSelectStyle = {
+    input: (styles: any) => ({
+      ...styles,
+      color: theme === 'light' ? 'black !important' : 'white !important',
+      fontFamily: 'Montserrat, sans-serif',
+      fontWeight: 600,
+      fontSize: '14px'
+    })
+  }
+
+  const customTokenSelectStyle = {
+    input: (styles: any) => ({
+      ...styles,
+      color: theme === 'light' ? 'black !important' : 'white !important',
+      fontFamily: 'Montserrat, sans-serif',
+      fontWeight: 600,
+      fontSize: '14px'
+    }),
+    container: (container: any) => ({
+      ...container,
+      width: 'auto',
+      minWidth: '30%'
+    })
+  }
+
+  const CustomControl = ({ children, ...props }: any) => {
+    const menuIsOpen = props.selectProps.menuIsOpen
+    return (
+      <components.Control {...props}>
+        <div className="flex items-center justify-end w-full">
+          {menuIsOpen && <FontAwesomeIcon icon={faSearch} className="w-5 h-5 ml-2" />}
+          {children}
+        </div>
+      </components.Control>
+    )
+  }
+
   return (
     <>
       <form
@@ -243,7 +268,29 @@ export default function IbcForm() {
             {/* Chain Picker */}
             <div className="-mt-3 relative z-10 w-full">
               {/* {value} */}
-              {formik.values.ibcMode === 'deposit' && <ChainSelect />}
+              {formik.values.ibcMode === 'deposit' && (
+                <Select
+                  options={selectableChains}
+                  value={formik.values.chain}
+                  onChange={(chain: Chain) => {
+                    formik.setFieldValue('chain', chain)
+                  }}
+                  isSearchable={true}
+                  components={{ Control: CustomControl }}
+                  filterOption={customChainFilterOption}
+                  styles={customChainSelectStyle}
+                  isDisabled={!isConnected}
+                  formatOptionLabel={(option) => (
+                    <IbcSelect
+                      imgSrc={`/img/assets/${chains[option.chain_name].chain_image}`}
+                      altText={`/img/assets/${chains[option.chain_name].chain_name} asset logo`}
+                      optionName={option.chain_name}
+                    />
+                  )}
+                  className="react-select-container"
+                  classNamePrefix="react-select"
+                />
+              )}
               {formik.values.ibcMode === 'withdrawal' && (
                 <div
                   style={{ paddingTop: '.76rem', paddingBottom: '.76rem' }}
@@ -259,12 +306,7 @@ export default function IbcForm() {
           <div className="flex-1 py-2 md:py-0">
             <div className="md:relative" id="ibcSwitchButton">
               <div className="md:absolute md:top-1/2 md:left-1/2 md:transform md:-translate-x-1/2 md:-translate-y-1/2 text-center md:text-left">
-                <Tooltip
-                  title={`Switch chains`}
-                  placement="bottom"
-                  disableHoverListener={!secretNetworkClient?.address}
-                  arrow
-                >
+                <Tooltip title={`Switch chains`} placement="bottom" disableHoverListener={!isConnected} arrow>
                   <span>
                     <button
                       type="button"
@@ -316,7 +358,29 @@ export default function IbcForm() {
             </div>
             {/* Chain Picker */}
             <div className="md:-mt-3 md:relative z-10 w-full">
-              {formik.values.ibcMode === 'withdrawal' && <ChainSelect />}
+              {formik.values.ibcMode === 'withdrawal' && (
+                <Select
+                  options={selectableChains}
+                  value={formik.values.chain}
+                  onChange={(chain: Chain) => {
+                    formik.setFieldValue('chain', chain)
+                  }}
+                  isSearchable={true}
+                  components={{ Control: CustomControl }}
+                  filterOption={customChainFilterOption}
+                  styles={customChainSelectStyle}
+                  isDisabled={!isConnected}
+                  formatOptionLabel={(option) => (
+                    <IbcSelect
+                      imgSrc={`/img/assets/${chains[option.chain_name].chain_image}`}
+                      altText={`/img/assets/${chains[option.chain_name].chain_name} asset logo`}
+                      optionName={option.chain_name}
+                    />
+                  )}
+                  className="react-select-container"
+                  classNamePrefix="react-select"
+                />
+              )}
               {formik.values.ibcMode === 'deposit' && (
                 <div
                   style={{ paddingTop: '.76rem', paddingBottom: '.76rem' }}
@@ -350,8 +414,11 @@ export default function IbcForm() {
               options={supportedTokens}
               value={formik.values.token}
               onChange={(token: Token) => formik.setFieldValue('token', token)}
-              isSearchable={false}
-              isDisabled={!secretNetworkClient?.address}
+              isSearchable={true}
+              components={{ Control: CustomControl }}
+              filterOption={customTokenFilterOption}
+              styles={customTokenSelectStyle}
+              isDisabled={!isConnected}
               formatOptionLabel={(token: Token) => (
                 <div className="flex items-center">
                   <img
@@ -371,12 +438,12 @@ export default function IbcForm() {
             <input
               id="amount"
               name="amount"
-              type="text"
+              type="number"
               value={formik.values.amount}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
               className={
-                'dark:placeholder-neutral-600 remove-arrows text-right focus:z-10 block flex-1 min-w-0 w-full bg-neutral-100 dark:bg-neutral-800 text-black dark:text-white px-4 rounded-r-lg disabled:placeholder-neutral-300 dark:disabled:placeholder-neutral-700 transition-colors font-medium focus:outline-0 focus:ring-2 ring-sky-500/40' +
+                '[-moz-appearance:_textfield] [&::-webkit-inner-spin-button]:m-0 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:m-0 [&::-webkit-outer-spin-button]:appearance-none dark:placeholder-neutral-600 remove-arrows text-right focus:z-10 block flex-1 min-w-0 w-full bg-neutral-100 dark:bg-neutral-800 text-black dark:text-white px-4 rounded-r-lg disabled:placeholder-neutral-300 dark:disabled:placeholder-neutral-700 transition-colors font-medium focus:outline-0 focus:ring-2 ring-sky-500/40' +
                 (false ? '  border border-red-500 dark:border-red-500' : '')
               }
               placeholder="0"

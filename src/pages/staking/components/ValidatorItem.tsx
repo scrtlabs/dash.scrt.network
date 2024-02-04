@@ -20,16 +20,7 @@ interface Props {
 }
 
 const ValidatorItem = (props: Props) => {
-  const {
-    inflation,
-    communityTax,
-    communityPool,
-    pool,
-    totalSupply,
-    bondedToken,
-    notBondedToken,
-    secretFoundationTax
-  } = useContext(APIContext)
+  const { inflation, communityTax, totalSupply, bondedToken, secretFoundationTax } = useContext(APIContext)
 
   const [imgUrl, setImgUrl] = useState<any>()
   const [stakingAPR, setStakingAPR] = useState<any>()
