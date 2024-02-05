@@ -43,7 +43,7 @@ export default function AddressQR() {
                       className="flex-initial text-neutral-500 dark:text-neutral-400 hover:text-black dark:hover:text-white transition-colors truncate"
                     >
                       <span className="inline 2xl:hidden">
-                        {walletAddress.slice(0, 10)}...{walletAddress.slice(-10)}
+                        {walletAddress.slice(0, 12)}...{walletAddress.slice(-12)}
                       </span>
                       <span className="hidden 2xl:inline">{walletAddress}</span>
                     </a>

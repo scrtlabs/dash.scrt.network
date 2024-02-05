@@ -19,6 +19,8 @@ import { Doughnut } from 'react-chartjs-2'
 import { ThemeContext } from 'context/ThemeContext'
 import { useSecretNetworkClientStore } from 'store/secretNetworkClient'
 import BigNumber from 'bignumber.js'
+import { useTokenPricesStore } from 'store/TokenPrices'
+import { Token } from 'utils/config'
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, ArcElement, LineElement, Title, ChartTooltip, Legend)
 
@@ -26,6 +28,7 @@ export default function BalanceChart() {
   const chartRef = useRef<ChartJS<'doughnut', number[], string>>(null)
 
   const { balanceMapping } = useSecretNetworkClientStore()
+  const { getValuePrice, priceMapping } = useTokenPricesStore()
 
   const { theme } = useContext(ThemeContext)
 
@@ -40,57 +43,105 @@ export default function BalanceChart() {
     ]
   })
 
-  const createLabel = (label: string, value: number) => {
-    return `${label}: ${formatNumber(value, 2)}`
+  const createLabel = (label: string, value: number, token: Token, balance: BigNumber) => {
+    const valuePrice = getValuePrice(token, balance)
+    if (valuePrice !== null) {
+      return `${BigNumber(balance).dividedBy(`1e${token.decimals}`).toNumber()} ${label} (${getValuePrice(
+        token,
+        balance
+      )})`
+    } else {
+      return `${BigNumber(balance).dividedBy(`1e${token.decimals}`).toNumber()} ${label}`
+    }
   }
 
   useEffect(() => {
     if (balanceMapping) {
-      console.log(balanceMapping)
       const dataValues = []
 
       for (let [token, balance] of balanceMapping) {
         if (balance.secretBalance !== null && balance.secretBalance instanceof BigNumber) {
+          let tokenPrice = priceMapping.get(token)
+          if (tokenPrice === undefined) {
+            tokenPrice = 1
+          }
           dataValues.push({
             label: `s${token.name}`,
-            value: BigNumber(balance.secretBalance).dividedBy(`1e${token.decimals}`).toNumber()
+            value: BigNumber(balance.secretBalance)
+              .dividedBy(`1e${token.decimals}`)
+              .multipliedBy(tokenPrice)
+              .toNumber(),
+            balance: balance.secretBalance,
+            token: token
           })
         }
         if (balance.balance && token.name === 'SCRT') {
+          let tokenPrice = priceMapping.get(token)
+          if (tokenPrice === undefined) {
+            tokenPrice = 1
+          }
           dataValues.push({
             label: `${token.name}`,
-            value: BigNumber(balance.balance).dividedBy(`1e${token.decimals}`).toNumber()
+            value: BigNumber(balance.balance).dividedBy(`1e${token.decimals}`).multipliedBy(tokenPrice).toNumber(),
+            balance: balance.balance,
+            token: token
           })
         }
+        async function getAverageColor(imgSrc: string): Promise<string> {
+          return new Promise((resolve, reject) => {
+            const img = new Image()
+            img.onload = () => {
+              const canvas = document.createElement('canvas')
+              const ctx = canvas.getContext('2d')!
+              canvas.width = 2
+              canvas.height = 2
+              ctx.drawImage(img, 0, 0, 2, 2)
+              const imageData = ctx.getImageData(0, 0, 2, 2)
+              const data = imageData.data
+              const pixelCount = data.length / 4
+              let r = 0,
+                g = 0,
+                b = 0
+
+              for (let i = 0; i < data.length; i += 4) {
+                r += data[i]
+                g += data[i + 1]
+                b += data[i + 2]
+              }
+
+              resolve(
+                `rgb(${Math.floor(r / pixelCount)}, ${Math.floor(g / pixelCount)}, ${Math.floor(b / pixelCount)})`
+              )
+            }
+            img.onerror = reject
+            img.src = imgSrc
+          })
+        }
+
+        async function setDatasetColors(dataValues: any[]) {
+          const backgroundColors = await Promise.all(
+            dataValues.map(async (item) => {
+              const imgSrc = `/img/assets/${item.token.image}`
+              const averageColor = await getAverageColor(imgSrc)
+              return averageColor
+            })
+          )
+
+          setData({
+            labels: dataValues.map((item) => createLabel(item.label, item.value, item.token, item.balance)),
+            datasets: [
+              {
+                data: dataValues.map((item) => item.value),
+                backgroundColor: backgroundColors,
+                hoverBackgroundColor: backgroundColors
+              }
+            ]
+          })
+        }
+        setDatasetColors(dataValues)
       }
-
-      const backgroundColors = ['#06b6d4', '#8b5cf6', '#FF4500', '#008080', '#32CD32', '#ff8800', '#FF1493']
-
-      setData({
-        labels: dataValues.map((item) => createLabel(item.label, item.value)),
-        datasets: [
-          {
-            data: dataValues.map((item) => item.value),
-            backgroundColor: backgroundColors,
-            hoverBackgroundColor: backgroundColors
-          }
-        ]
-      })
     }
   }, [balanceMapping])
-
-  var images: HTMLImageElement[] = []
-  function preloadImages() {
-    const imageSrcs = [
-      'https://images.pexels.com/photos/18898418/pexels-photo-18898418/free-photo-of-close-up-of-a-branch-with-green-and-yellow-leaves.jpeg?auto=compress&cs=tinysrgb&w=800&lazy=load'
-    ]
-    imageSrcs.forEach((src) => {
-      const img = new Image()
-      img.onload = () => images.push(img)
-      img.src = src
-    })
-  }
-  preloadImages()
 
   const centerText: Plugin = {
     id: 'centerText',
@@ -102,13 +153,13 @@ export default function BalanceChart() {
 
       ctx.save()
 
-      ctx.font = '300 1.5rem sans-serif'
+      ctx.font = '300 1rem Montserrat'
       ctx.fillStyle = theme === 'dark' ? '#fff' : '#000'
       ctx.textAlign = 'center'
       ctx.fillText(`Your`, width / 2, height / 2.25 + top)
       ctx.restore()
 
-      ctx.font = 'bold 1.75rem sans-serif'
+      ctx.font = 'bold 1.25rem Montserrat'
       ctx.fillStyle = theme === 'dark' ? '#fff' : '#000'
       ctx.textAlign = 'center'
       ctx.fillText(`Portfolio`, width / 2, height / 1.65 + top)
@@ -123,28 +174,17 @@ export default function BalanceChart() {
     borderWidth: 0,
     animation: {
       animateRotate: true,
-      responsiveAnimationDuration: false
+      responsiveAnimationDuration: true
     },
     plugins: {
       legend: {
-        display: false,
-        position: 'right',
-        onClick: null as any,
-        labels: {
-          color: theme === 'dark' ? '#fff' : '#000',
-          font: {
-            size: 12
-          },
-          usePointStyle: true,
-          pointStyle: 'circle',
-          padding: 7
-        }
+        display: false
       },
       tooltip: {
         enabled: true,
         callbacks: {
           label: function (context: any) {
-            let label = `${formatNumber(context.parsed, 2)} ${context.label}`
+            let label = ``
             return label
           }
         }
@@ -159,7 +199,7 @@ export default function BalanceChart() {
         {data != undefined && options != undefined && centerText != undefined ? (
           <>
             <Doughnut
-              id="stakingChartDoughnut"
+              id="BalanceChartDoughnut"
               data={data}
               plugins={[centerText]}
               options={options as any}
