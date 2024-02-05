@@ -4,11 +4,10 @@ import { validateAddress } from 'secretjs'
 export const sendSchema = yup.object().shape({
   amount: yup
     .number()
-    .min(0.00001, 'Please enter a valid amount')
+    .min(0.000001, 'Please enter a valid amount')
     .typeError('Please enter a valid amount')
-    .transform((_value, originalValue) => Number(originalValue.replace(/,/, '.'))) // transforms comma to dot
     .required('Please enter a valid amount'),
-  token: yup.mixed().required('Token is required'), // TODO: (low prio) add check with SendService.getSupportedTokens()
+  token: yup.mixed().required('Token is required'),
   recipient: yup
     .string()
     .required('Add a recipient')

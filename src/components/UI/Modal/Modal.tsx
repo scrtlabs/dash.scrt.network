@@ -15,10 +15,6 @@ interface Props {
 }
 
 function Modal({ size = 'sm', ...props }: Props) {
-  if (!props.isOpen) {
-    return null
-  }
-
   const sizeClass = () => {
     switch (size) {
       case '2xl':
@@ -52,10 +48,14 @@ function Modal({ size = 'sm', ...props }: Props) {
   const modalRef = useRef(null)
   useClickOutside(modalRef, () => props.onClose())
 
+  if (!props.isOpen) {
+    return null
+  }
+
   return (
     <>
       {/* Outer */}
-      <div className="z-50 fixed inset-0 bg-black/80">
+      <div className="z-50 fixed inset-0 bg-black/80 dark:text-white">
         <div className="absolute inset-0 overflow-y-scroll">
           <div className={`mt-4 md:mt-24 mb-24 ${sizeClass()} mx-auto`}>
             {/* Inner */}
@@ -84,7 +84,7 @@ function Modal({ size = 'sm', ...props }: Props) {
               </div>
 
               {/* Body */}
-              <div className="text-neutral-500">{props.children}</div>
+              <div>{props.children}</div>
             </div>
           </div>
         </div>

@@ -1,7 +1,4 @@
 import { useState, useEffect } from 'react'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faInfoCircle } from '@fortawesome/free-solid-svg-icons'
-import Tooltip from '@mui/material/Tooltip'
 import { Helmet } from 'react-helmet-async'
 import { Chain, Deposit, Token, chains, tokens } from 'utils/config'
 import { IbcMode } from 'types/IbcMode'
@@ -13,25 +10,17 @@ import IbcForm from './components/IbcForm'
 import { IbcService } from 'services/ibc.service'
 
 export function Ibc() {
-  const [isWrapModalOpen, setIsWrapModalOpen] = useState<boolean>(false)
-
   const [selectedToken, setSelectedToken] = useState<Token>(tokens.filter((token: Token) => token.name === 'SCRT')[0])
 
   const [ibcMode, setIbcMode] = useState<IbcMode>('deposit')
 
-  const { isConnected, connectWallet } = useSecretNetworkClientStore()
+  const { isConnected } = useSecretNetworkClientStore()
 
   const [selectedSource, setSelectedSource] = useState(
     selectedToken.deposits.find((deposit: Deposit) => deposit.chain_name.toLowerCase() === 'osmosis')
   )
 
-  const handleClick = () => {
-    if (!isConnected) {
-      connectWallet()
-    }
-  }
-
-  const [searchParams, setSearchParams] = useSearchParams()
+  const [searchParams] = useSearchParams()
   const modeUrlParam = searchParams.get('mode')
   const chainUrlParam = searchParams.get('chain')
   const tokenUrlParam = searchParams.get('token')

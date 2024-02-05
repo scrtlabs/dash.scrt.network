@@ -52,7 +52,7 @@ const BalanceItem = (props: Props) => {
           <div className="flex flex-col items-center">
             <div className="description text-xs text-neutral-500 dark:text-neutral-400 mb-2">Price</div>
             {assetPrice ? (
-              <div className="font-semibold">{assetPrice}</div>
+              <div className="text-sm font-medium">{assetPrice}</div>
             ) : (
               <div className="dark:group-odd:bg-neutral-600 animate-pulse group-odd:bg-neutral-300/40 group-even:bg-neutral-300/40 dark:group-even:bg-neutral-700/40 rounded col-span-2 w-16 h-7 mx-auto"></div>
             )}
@@ -63,7 +63,7 @@ const BalanceItem = (props: Props) => {
         {secretNetworkClient?.address && (
           <div className="flex-initial min-w-[11rem] flex flex-col items-center">
             <div className="description text-xs text-neutral-500 dark:text-neutral-400 mb-2">Balance</div>
-            <div className="text-xs">
+            <div className="text-sm font-medium">
               <BalanceUI
                 token={allTokens.find((token: Token) => token.name === props.token.name)}
                 isSecretToken={props.token?.address !== 'native'}

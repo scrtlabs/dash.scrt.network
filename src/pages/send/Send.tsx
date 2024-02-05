@@ -7,7 +7,7 @@ import { useSecretNetworkClientStore } from 'store/secretNetworkClient'
 import SendForm from './components/SendForm'
 
 export function Send() {
-  const { connectWallet, isConnected } = useSecretNetworkClientStore()
+  const { isConnected, setIsConnectWalletModalOpen, setIsGetWalletModalOpen } = useSecretNetworkClientStore()
 
   useEffect(() => {
     if (import.meta.env.VITE_MIXPANEL_ENABLED === 'true') {
@@ -18,12 +18,6 @@ export function Send() {
       mixpanel.track('Open Wrap Tab')
     }
   }, [])
-
-  const handleClick = () => {
-    if (!isConnected) {
-      connectWallet()
-    }
-  }
 
   return (
     <>
@@ -53,10 +47,7 @@ export function Send() {
         {/* Title*/}
         <Title title={`Send`} tooltip={`Transfer your assets to a given address`} className="mb-6" />
         {/* Content */}
-        <div
-          onClick={handleClick}
-          className="rounded-3xl px-6 py-6 bg-white border border-neutral-200 dark:border-neutral-700 dark:bg-neutral-800"
-        >
+        <div className="rounded-3xl px-6 py-6 bg-white border border-neutral-200 dark:border-neutral-700 dark:bg-neutral-800">
           <SendForm />
         </div>
       </div>

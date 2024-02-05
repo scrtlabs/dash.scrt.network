@@ -1,5 +1,4 @@
 import BigNumber from 'bignumber.js'
-import mixpanel from 'mixpanel-browser'
 import { BroadcastMode, MsgExecuteContract, MsgSend, SecretNetworkClient } from 'secretjs'
 import { FeeGrantStatus } from 'types/FeeGrantStatus'
 import { Nullable } from 'types/Nullable'

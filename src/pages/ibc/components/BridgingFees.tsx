@@ -1,15 +1,11 @@
-import React, { useContext, useEffect, useState } from 'react'
-import CopyToClipboard from 'react-copy-to-clipboard'
-import { Chain, ICSTokens, Token, chains } from 'utils/config'
-import { useSecretNetworkClientStore } from 'store/secretNetworkClient'
+import { useEffect, useState } from 'react'
+import { Chain, ICSTokens, Token } from 'utils/config'
 import Tooltip from '@mui/material/Tooltip'
-import { faCopy, faInfoCircle } from '@fortawesome/free-solid-svg-icons'
+import { faInfoCircle } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import BigNumber from 'bignumber.js'
 import { IbcMode } from 'types/IbcMode'
-import { GasToken } from '@axelar-network/axelarjs-sdk'
 import { IbcService } from 'services/ibc.service'
-import { amber } from '@mui/material/colors'
 import { Coin } from 'secretjs'
 import { useTokenPricesStore } from 'store/TokenPrices'
 
@@ -21,8 +17,6 @@ interface IProps {
 }
 
 export default function BridgingFees(props: IProps) {
-  const { isConnected, connectWallet } = useSecretNetworkClientStore()
-
   const [axelarTransferFee, setAxelarTransferFee] = useState<Coin>(undefined)
   const [usdPriceString, setUsdPriceString] = useState<string>(null)
 

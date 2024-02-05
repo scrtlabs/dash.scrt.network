@@ -53,12 +53,16 @@ body {
   @apply py-1 bg-neutral-200 dark:bg-neutral-800 border-gray-500 dark:border-gray-500;
   border-radius: 0.5rem 0 0 0.5rem !important;
   &:hover {
-    background-color: #525252 !important;
+    background-color: #737373 !important;
   }
 }
 
 .react-select-wrap__single-value {
   @apply text-black dark:text-white;
+}
+
+.react-select-wrap__control:hover .react-select-wrap__single-value {
+  color: #ffffff !important;
 }
 
 .react-select-wrap__menu,

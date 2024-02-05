@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef, useContext } from 'react'
+import { useEffect, useState, useRef, useContext } from 'react'
 import { faGlobe, faRepeat } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import Tooltip from '@mui/material/Tooltip'
@@ -7,7 +7,6 @@ import { randomDelay, restakeThreshold, sleep } from 'utils/commons'
 import BigNumber from 'bignumber.js'
 import { formatNumber } from 'utils/commons'
 import { scrtToken } from 'utils/tokens'
-import ValidatorItem from './ValidatorItem'
 import { Validator } from 'secretjs/dist/grpc_gateway/cosmos/staking/v1beta1/staking.pb'
 import { Nullable } from 'types/Nullable'
 
@@ -24,8 +23,6 @@ interface Props {
 
 const MyValidatorsItem = (props: Props) => {
   const stakedAmountString = BigNumber(props.stakedAmount!).dividedBy(`1e6`).toString()
-
-  const { currentPrice, setCurrentPrice } = useContext(APIContext)
 
   const [imgUrl, setImgUrl] = useState<Nullable<string>>()
 
