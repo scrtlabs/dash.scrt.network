@@ -195,8 +195,8 @@ export default function BalanceChart() {
   return (
     <div>
       {/* Chart */}
-      <div className="w-full h-[150px]">
-        {data != undefined && options != undefined && centerText != undefined ? (
+      <div className="w-full h-[200px]">
+        {data != undefined && options != undefined && centerText != undefined && balanceMapping != undefined ? (
           <>
             <Doughnut
               id="BalanceChartDoughnut"
@@ -208,7 +208,7 @@ export default function BalanceChart() {
             />
           </>
         ) : (
-          <div className="animate-pulse bg-neutral-300 dark:bg-neutral-800 rounded col-span-2 w-full h-full min-h-[250px] xl:min-h-[300px] mx-auto"></div>
+          <div className="animate-pulse bg-neutral-300 dark:bg-neutral-800 rounded col-span-2 w-full h-full h-[200px] mx-auto"></div>
         )}
       </div>
     </div>

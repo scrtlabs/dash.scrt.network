@@ -40,12 +40,9 @@ export default function AddressQR() {
                       href={`${chains['Secret Network'].explorer_account}${walletAddress}`}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex-initial text-neutral-500 dark:text-neutral-400 hover:text-black dark:hover:text-white transition-colors truncate"
+                      className="flex flex-col items-start text-neutral-500 dark:text-neutral-400 hover:text-black dark:hover:text-white transition-colors break-all"
                     >
-                      <span className="inline 2xl:hidden">
-                        {walletAddress.slice(0, 12)}...{walletAddress.slice(-12)}
-                      </span>
-                      <span className="hidden 2xl:inline">{walletAddress}</span>
+                      <span>{walletAddress}</span>
                     </a>
                   </Tooltip>
                 )}
