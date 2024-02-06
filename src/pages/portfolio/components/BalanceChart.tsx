@@ -47,10 +47,10 @@ export default function BalanceChart() {
   const prevPriceMappingRef = useRef<Map<Token, number> | undefined>()
 
   useEffect(() => {
-    if (prevBalanceMappingRef.current === balanceMapping && prevPriceMappingRef.current === priceMapping) {
-      return
-    }
-    if (balanceMapping !== null) {
+    if (
+      balanceMapping !== null &&
+      (prevBalanceMappingRef.current !== balanceMapping || prevPriceMappingRef.current !== priceMapping)
+    ) {
       const dataValues = []
 
       for (let [token, balance] of balanceMapping) {
@@ -205,7 +205,7 @@ export default function BalanceChart() {
     <div>
       {/* Chart */}
       <div className="w-full h-[200px]">
-        {data !== defaultData && centerText != undefined && balanceMapping !== null ? (
+        {data !== defaultData && centerText !== undefined ? (
           <>
             <Doughnut
               id="BalanceChartDoughnut"

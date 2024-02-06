@@ -18,7 +18,7 @@ interface TokenPricesState {
 }
 
 export const useTokenPricesStore = create<TokenPricesState>()((set, get) => ({
-  priceMapping: new Map<Token, number>(),
+  priceMapping: null,
   isInitialized: false,
   init: () => {
     let prices: CoinPrice[]
@@ -40,8 +40,7 @@ export const useTokenPricesStore = create<TokenPricesState>()((set, get) => ({
         })
 
         set({
-          priceMapping: priceMapping,
-          isInitialized: true
+          priceMapping: priceMapping
         })
       })
       .catch((error) => {
@@ -51,10 +50,13 @@ export const useTokenPricesStore = create<TokenPricesState>()((set, get) => ({
           priceMapping.set(token, undefined)
         })
         set({
-          priceMapping: priceMapping,
-          isInitialized: true
+          priceMapping: priceMapping
         })
       })
+    set({
+      priceMapping: new Map<Token, number>(),
+      isInitialized: true
+    })
   },
   getPrice: (token: Token) => {
     if (!get().isInitialized) {
