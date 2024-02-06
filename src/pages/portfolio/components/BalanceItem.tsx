@@ -1,12 +1,8 @@
-import { useEffect, useState, useContext } from 'react'
-import { randomDelay, sleep, toUsdString, viewingKeyErrorString, allTokens } from 'utils/commons'
-import { APIContext } from 'context/APIContext'
+import { allTokens } from 'utils/commons'
 import { Token } from 'utils/config'
 import { useSecretNetworkClientStore } from 'store/secretNetworkClient'
 import { useTokenPricesStore } from 'store/TokenPrices'
-import { WalletService } from 'services/wallet.service'
 import BalanceUI from 'components/BalanceUI'
-import Button from 'components/UI/Button/Button'
 
 interface Props {
   token?: Token
@@ -54,7 +50,7 @@ const BalanceItem = (props: Props) => {
             {assetPrice ? (
               <div className="text-sm font-medium">{assetPrice}</div>
             ) : (
-              <div className="dark:group-odd:bg-neutral-600 animate-pulse group-odd:bg-neutral-300/40 group-even:bg-neutral-300/40 dark:group-even:bg-neutral-700/40 rounded col-span-2 w-16 h-7 mx-auto"></div>
+              <span className="animate-pulse bg-neutral-300/40 dark:bg-neutral-600 rounded w-20 h-5 ml-2"></span>
             )}
           </div>
         )}
