@@ -17,7 +17,7 @@ import {
 } from 'chart.js'
 import { Doughnut } from 'react-chartjs-2'
 import { ThemeContext } from 'context/ThemeContext'
-import { useSecretNetworkClientStore } from 'store/secretNetworkClient'
+import { TokenBalances, useSecretNetworkClientStore } from 'store/secretNetworkClient'
 import BigNumber from 'bignumber.js'
 import { useTokenPricesStore } from 'store/TokenPrices'
 import { Token } from 'utils/config'
@@ -32,31 +32,25 @@ export default function BalanceChart() {
 
   const { theme } = useContext(ThemeContext)
 
-  const [data, setData] = useState({
+  const defaultData = {
     labels: [''],
     datasets: [
       {
-        data: [],
-        backgroundColor: [],
-        hoverBackgroundColor: []
+        data: [] as any,
+        backgroundColor: [] as any,
+        hoverBackgroundColor: [] as any
       }
     ]
-  })
-
-  const createLabel = (label: string, value: number, token: Token, balance: BigNumber) => {
-    const valuePrice = getValuePrice(token, balance)
-    if (valuePrice !== null) {
-      return `${BigNumber(balance).dividedBy(`1e${token.decimals}`).toNumber()} ${label} (${getValuePrice(
-        token,
-        balance
-      )})`
-    } else {
-      return `${BigNumber(balance).dividedBy(`1e${token.decimals}`).toNumber()} ${label}`
-    }
   }
+  const [data, setData] = useState(defaultData)
+  const prevBalanceMappingRef = useRef<Map<Token, TokenBalances> | undefined>()
+  const prevPriceMappingRef = useRef<Map<Token, number> | undefined>()
 
   useEffect(() => {
-    if (balanceMapping) {
+    if (prevBalanceMappingRef.current === balanceMapping && prevPriceMappingRef.current === priceMapping) {
+      return
+    }
+    if (balanceMapping !== null) {
       const dataValues = []
 
       for (let [token, balance] of balanceMapping) {
@@ -95,8 +89,8 @@ export default function BalanceChart() {
               const ctx = canvas.getContext('2d')!
               canvas.width = 2
               canvas.height = 2
-              ctx.drawImage(img, 0, 0, 2, 2)
-              const imageData = ctx.getImageData(0, 0, 2, 2)
+              ctx.drawImage(img, 0, 0, canvas.width, canvas.height)
+              const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height)
               const data = imageData.data
               const pixelCount = data.length / 4
               let r = 0,
@@ -126,8 +120,7 @@ export default function BalanceChart() {
               return averageColor
             })
           )
-
-          setData({
+          const data = {
             labels: dataValues.map((item) => createLabel(item.label, item.value, item.token, item.balance)),
             datasets: [
               {
@@ -136,12 +129,27 @@ export default function BalanceChart() {
                 hoverBackgroundColor: backgroundColors
               }
             ]
-          })
+          }
+          setData(data)
         }
         setDatasetColors(dataValues)
+        prevBalanceMappingRef.current = balanceMapping
+        prevPriceMappingRef.current = priceMapping
       }
     }
-  }, [balanceMapping])
+  }, [balanceMapping, priceMapping])
+
+  const createLabel = (label: string, value: number, token: Token, balance: BigNumber) => {
+    const valuePrice = getValuePrice(token, balance)
+    if (valuePrice !== null) {
+      return `${BigNumber(balance).dividedBy(`1e${token.decimals}`).toNumber()} ${label} (${getValuePrice(
+        token,
+        balance
+      )})`
+    } else {
+      return `${BigNumber(balance).dividedBy(`1e${token.decimals}`).toNumber()} ${label}`
+    }
+  }
 
   const centerText: Plugin = {
     id: 'centerText',
@@ -185,6 +193,7 @@ export default function BalanceChart() {
         callbacks: {
           label: function (context: any) {
             let label = ``
+            console.log(data)
             return label
           }
         }
@@ -196,7 +205,7 @@ export default function BalanceChart() {
     <div>
       {/* Chart */}
       <div className="w-full h-[200px]">
-        {data != undefined && options != undefined && centerText != undefined && balanceMapping != undefined ? (
+        {data !== defaultData && centerText != undefined && balanceMapping !== null ? (
           <>
             <Doughnut
               id="BalanceChartDoughnut"
@@ -208,7 +217,7 @@ export default function BalanceChart() {
             />
           </>
         ) : (
-          <div className="animate-pulse bg-neutral-300 dark:bg-neutral-800 rounded col-span-2 w-full h-full h-[200px] mx-auto"></div>
+          <div className="animate-pulse bg-neutral-300 dark:bg-neutral-800 rounded col-span-2 w-full h-[200px] mx-auto"></div>
         )}
       </div>
     </div>
