@@ -44,7 +44,6 @@ declare global {
   interface Window extends KeplrWindow {}
 }
 window.addEventListener('keplr_keystorechange', () => {
-  console.log('Key store in Keplr is changed. Refreshing page.')
   location.reload()
 })
 

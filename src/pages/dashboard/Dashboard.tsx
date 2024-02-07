@@ -146,8 +146,6 @@ function Dashboard() {
     }
   }, [volume, marketCap, defiLamaApiData_TVL])
 
-  const [circulatingSupply, setCirculatingSupply] = useState(0)
-
   useEffect(() => {
     if (externalApiData) {
       const queryData = async () => {

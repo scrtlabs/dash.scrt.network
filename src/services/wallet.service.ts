@@ -198,53 +198,6 @@ const getsScrtTokenBalance = async (
   return sScrtBalance
 }
 
-const getsTokenBalance = async (
-  secretNetworkClient: any,
-  walletAddress: string,
-  token: Token
-): Promise<Nullable<string>> => {
-  if (!secretNetworkClient) {
-    return null
-  }
-
-  let sBalance: string
-
-  const key = await getWalletViewingKey(token.address)
-  if (!key) {
-    sBalance = 'viewingKeyError' as GetBalanceError
-    return sBalance
-  }
-
-  interface IResult {
-    viewing_key_error: any
-    balance: {
-      amount: string
-    }
-  }
-
-  try {
-    const result: IResult = await secretNetworkClient?.query?.compute?.queryContract({
-      contract_address: token.address,
-      code_hash: token.code_hash,
-      query: {
-        balance: { address: walletAddress, key }
-      }
-    })
-
-    if (result.viewing_key_error) {
-      console.error(result.viewing_key_error.msg)
-      sBalance = 'viewingKeyError' as GetBalanceError
-    } else {
-      sBalance = result.balance.amount
-    }
-  } catch (error) {
-    console.error(`Error getting balance for s${scrtToken.name}: `, error)
-    sBalance = 'GenericFetchError' as GetBalanceError
-  }
-
-  return sBalance
-}
-
 const getBatchsTokenBalance = async (
   secretNetworkClient: any,
   walletAddress: string,
@@ -462,7 +415,6 @@ export const WalletService = {
   getWalletViewingKey,
   isViewingKeyAvailable,
   getsScrtTokenBalance,
-  getsTokenBalance,
   getScrtTokenBalance,
   getBalancesForTokens,
   fetchIbcChainBalances

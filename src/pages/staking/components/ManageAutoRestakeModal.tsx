@@ -75,7 +75,6 @@ export default function ManageAutoRestakeModal(props: Props) {
           }
         })
         .then((tx: any) => {
-          console.log(tx)
           if (tx) {
             if (tx.code === 0) {
               toast.success(

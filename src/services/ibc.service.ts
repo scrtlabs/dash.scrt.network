@@ -569,7 +569,7 @@ async function performIbcWithdrawal(
         msg: {
           redeem: {
             amount,
-            denom: token.withdrawals[0].denom,
+            denom: withdrawalChain.denom,
             padding: randomPadding()
           }
         }
@@ -591,7 +591,7 @@ async function performIbcWithdrawal(
         token.name === 'SCRT' ? [transferMsg] : [redeemMsg, transferMsg],
         {
           broadcastCheckIntervalMs: 10000,
-          gasLimit: 150_000,
+          gasLimit: withdraw_gas,
           gasPriceInFeeDenom: 0.1,
           feeDenom: 'uscrt',
           feeGranter: props.feeGrantStatus === 'success' ? faucetAddress : '',

@@ -62,7 +62,6 @@ function Powertools() {
       const txMessages = messages.map((message) => {
         return MessageDefinitions[message.type].converter(JSON.parse(message.content), prefix, denom)
       })
-      console.log(txMessages)
       const tx = await secretjs.tx.broadcast(txMessages, {
         gasLimit: 300_000,
         broadcastCheckIntervalMs: 10000,

@@ -127,7 +127,7 @@ export default function StakingChart() {
       ctx.fillText(`Total Supply`, width / 2, height / 2.25 + top)
       ctx.restore()
 
-      ctx.font = '400 2rem Montserrat'
+      ctx.font = '400 1.5rem Montserrat'
       ctx.fillStyle = theme === 'dark' ? '#fff' : '#000'
       ctx.textAlign = 'center'
       ctx.fillText(`${formatNumber(totalSupply, 2)}`, width / 2, height / 1.75 + top)

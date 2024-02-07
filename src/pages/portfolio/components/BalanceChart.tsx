@@ -49,6 +49,7 @@ export default function BalanceChart() {
   useEffect(() => {
     if (
       balanceMapping !== null &&
+      priceMapping !== null &&
       (prevBalanceMappingRef.current !== balanceMapping || prevPriceMappingRef.current !== priceMapping)
     ) {
       const dataValues = []
@@ -193,7 +194,6 @@ export default function BalanceChart() {
         callbacks: {
           label: function (context: any) {
             let label = ``
-            console.log(data)
             return label
           }
         }

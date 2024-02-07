@@ -63,7 +63,6 @@ export default function UndelegateForm() {
             }
           })
           .then((tx: any) => {
-            console.log(tx)
             toast.dismiss(toastId)
             if (tx) {
               if (tx.code === 0) {

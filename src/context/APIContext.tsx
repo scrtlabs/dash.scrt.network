@@ -15,7 +15,6 @@ const APIContextProvider = ({ children }: any) => {
   const [totalSupply, setTotalSupply] = useState(Number)
   const [bondedToken, setBondedToken] = useState(Number)
   const [notBondedToken, setNotBondedToken] = useState(Number)
-  const [distributionRewardToken, setDistributionRewardToken] = useState(Number)
   const [sSCRTTokenSupply, setSSCRTTokenSupply] = useState(Number)
   const [stkdSCRTTokenSupply, setStkdSCRTTokenSupply] = useState(Number)
   const [IBCTokenSupply, setIBCTokenSupply] = useState(Number)

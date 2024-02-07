@@ -1,6 +1,6 @@
 import { faGlobe, faXmark } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { ReactNode, useContext, useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { APIContext } from 'context/APIContext'
 import { toUsdString, formatNumber } from 'utils/commons'
 import BigNumber from 'bignumber.js'
