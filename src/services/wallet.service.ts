@@ -20,7 +20,7 @@ const connectKeplr = async (lcd: string, chainID: string) => {
     await sleep(50)
   }
 
-  await window.keplr.enable(SECRET_CHAIN_ID)
+  await window.keplr.enable(chainID)
   window.keplr.defaultOptions = {
     sign: {
       preferNoSetFee: false,
@@ -28,17 +28,17 @@ const connectKeplr = async (lcd: string, chainID: string) => {
     }
   }
 
-  const keplrOfflineSigner = window.getOfflineSignerOnlyAmino(SECRET_CHAIN_ID)
+  const keplrOfflineSigner = window.getOfflineSignerOnlyAmino(chainID)
   const accounts = await keplrOfflineSigner.getAccounts()
 
   const walletAddress = accounts[0].address
 
   const secretjs: SecretNetworkClient = new SecretNetworkClient({
     url: lcd,
-    chainId: SECRET_CHAIN_ID,
+    chainId: chainID,
     wallet: keplrOfflineSigner,
     walletAddress,
-    encryptionUtils: window.getEnigmaUtils(SECRET_CHAIN_ID)
+    encryptionUtils: window.getEnigmaUtils(chainID)
   })
 
   window.wallet = window.keplr
@@ -59,9 +59,9 @@ const connectLeap = async (lcd: string, chainID: string) => {
       await sleep(50)
     }
 
-    await window.leap.enable(SECRET_CHAIN_ID)
+    await window.leap.enable(chainID)
 
-    const wallet = window.leap.getOfflineSignerOnlyAmino(SECRET_CHAIN_ID)
+    const wallet = window.leap.getOfflineSignerOnlyAmino(chainID)
     const [{ address: walletAddress }] = await wallet.getAccounts()
 
     const secretjs: SecretNetworkClient = new SecretNetworkClient({
@@ -69,7 +69,7 @@ const connectLeap = async (lcd: string, chainID: string) => {
       chainId: chainID,
       wallet,
       walletAddress,
-      encryptionUtils: window.leap.getEnigmaUtils(SECRET_CHAIN_ID)
+      encryptionUtils: window.leap.getEnigmaUtils(chainID)
     })
 
     window.wallet = window.leap
@@ -90,7 +90,6 @@ const connectWallet = async (
   } else {
     ;({ walletAddress, secretjs: secretNetworkClient } = await connectKeplr(lcd, chainID))
   }
-
   return { walletAddress, secretjs: secretNetworkClient }
 }
 

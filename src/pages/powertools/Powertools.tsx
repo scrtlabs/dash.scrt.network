@@ -151,9 +151,6 @@ function Powertools() {
         newGasPrice = minimum_gas_price.replace(/0*([a-z]+)$/, '$1')
       }
 
-      const blockTimeAgo = Math.floor((Date.now() - Date.parse(block?.header?.time as string)) / 1000)
-      const blockTimeAgoString = blockTimeAgo <= 0 ? 'now' : `${blockTimeAgo}s ago`
-
       const { walletAddress, secretjs: importedSecretjs } = await WalletService.connectWallet(
         walletAPIType,
         apiUrl,
@@ -177,12 +174,6 @@ function Powertools() {
       setChainId('')
       setBlockHeight('')
       setGasPrice('')
-      // setChainStatus(
-      //   <div style={{ display: 'flex', placeItems: 'center', gap: '0.5rem' }}>
-      //     <ErrorIcon />
-      //     <span>Error: {errorMessage}</span>
-      //   </div>
-      // )
     }
   }
 
@@ -195,7 +186,7 @@ function Powertools() {
   return (
     <>
       <Modal
-        title={'Power Tools – Full Message'}
+        title={'Power Tools – Full Message'}
         isOpen={isViewMessageModalOpen}
         onClose={() => {
           setIsViewMessageModalOpen(false)

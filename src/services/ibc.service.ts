@@ -133,12 +133,12 @@ async function performIbcDeposit(
             timeout_timestamp: String(Math.floor(Date.now() / 1000) + 10 * 60) // 10 minute timeout
           },
           {
-            broadcastCheckIntervalMs: 10000,
+            broadcastCheckIntervalMs: 1000,
             gasLimit: deposit_gas,
             feeDenom: deposit_gas_denom,
             ibcTxsOptions: {
               resolveResponses: true,
-              resolveResponsesCheckIntervalMs: 250,
+              resolveResponsesCheckIntervalMs: 1000,
               resolveResponsesTimeoutMs: 12 * 60 * 1000
             },
             broadcastMode: BroadcastMode.Sync
@@ -192,12 +192,12 @@ async function performIbcDeposit(
             memo: useSKIPRouting ? forwardingMemo : autoWrapJsonString
           },
           {
-            broadcastCheckIntervalMs: 10000,
+            broadcastCheckIntervalMs: 1000,
             gasLimit: deposit_gas,
             feeDenom: deposit_gas_denom,
             ibcTxsOptions: {
               resolveResponses: true,
-              resolveResponsesCheckIntervalMs: 250,
+              resolveResponsesCheckIntervalMs: 1000,
               resolveResponsesTimeoutMs: 12 * 60 * 1000
             },
             broadcastMode: BroadcastMode.Sync
@@ -244,12 +244,12 @@ async function performIbcDeposit(
           timeout_timestamp: (Math.floor(Date.now() / 1000) + 10 * 60).toString() // 10 minute timeout
         },
         {
-          broadcastCheckIntervalMs: 10000,
+          broadcastCheckIntervalMs: 1000,
           gasLimit: deposit_gas,
           feeDenom: deposit_gas_denom,
           ibcTxsOptions: {
             resolveResponses: true,
-            resolveResponsesCheckIntervalMs: 250,
+            resolveResponsesCheckIntervalMs: 1000,
             resolveResponsesTimeoutMs: 10.25 * 60 * 1000
           },
           broadcastMode: BroadcastMode.Sync
@@ -343,7 +343,7 @@ async function performIbcDeposit(
       tx = await sourceChainNetworkClient.tx.broadcastSignedTx(txBytes, {
         ibcTxsOptions: {
           resolveResponses: true,
-          resolveResponsesCheckIntervalMs: 250,
+          resolveResponsesCheckIntervalMs: 1000,
           resolveResponsesTimeoutMs: 10.25 * 60 * 1000
         },
         broadcastMode: BroadcastMode.Sync
@@ -464,14 +464,14 @@ async function performIbcWithdrawal(
           }
         },
         {
-          broadcastCheckIntervalMs: 10000,
+          broadcastCheckIntervalMs: 1000,
           gasLimit: withdraw_gas,
           gasPriceInFeeDenom: 0.1,
           feeDenom: 'uscrt',
           feeGranter: props.feeGrantStatus === 'success' ? faucetAddress : '',
           ibcTxsOptions: {
             resolveResponses: true,
-            resolveResponsesCheckIntervalMs: 250,
+            resolveResponsesCheckIntervalMs: 1000,
             resolveResponsesTimeoutMs: 12 * 60 * 1000
           },
           broadcastMode: BroadcastMode.Sync
@@ -529,14 +529,14 @@ async function performIbcWithdrawal(
           }
         },
         {
-          broadcastCheckIntervalMs: 10000,
+          broadcastCheckIntervalMs: 1000,
           gasLimit: withdraw_gas,
           gasPriceInFeeDenom: 0.1,
           feeDenom: 'uscrt',
           feeGranter: props.feeGrantStatus === 'success' ? faucetAddress : '',
           ibcTxsOptions: {
             resolveResponses: true,
-            resolveResponsesCheckIntervalMs: 10_000,
+            resolveResponsesCheckIntervalMs: 1000,
             resolveResponsesTimeoutMs: 12 * 60 * 1000
           },
           broadcastMode: BroadcastMode.Sync
@@ -590,14 +590,14 @@ async function performIbcWithdrawal(
       tx = await props.secretNetworkClient.tx.broadcast(
         token.name === 'SCRT' ? [transferMsg] : [redeemMsg, transferMsg],
         {
-          broadcastCheckIntervalMs: 10000,
+          broadcastCheckIntervalMs: 1000,
           gasLimit: withdraw_gas,
           gasPriceInFeeDenom: 0.1,
           feeDenom: 'uscrt',
           feeGranter: props.feeGrantStatus === 'success' ? faucetAddress : '',
           ibcTxsOptions: {
             resolveResponses: true,
-            resolveResponsesCheckIntervalMs: 250,
+            resolveResponsesCheckIntervalMs: 1000,
             resolveResponsesTimeoutMs: 12 * 60 * 1000
           },
           broadcastMode: BroadcastMode.Sync

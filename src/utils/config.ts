@@ -45,10 +45,10 @@ export const chains: { [chain_name: string]: Chain } = {
   Agoric: {
     chain_name: 'Agoric',
     deposit_channel_id: 'channel-10',
-    deposit_gas: 150_000,
+    deposit_gas: 200_000,
     deposit_gas_denom: 'ubld',
     withdraw_channel_id: 'channel-51',
-    withdraw_gas: 30_000,
+    withdraw_gas: 150_000,
     chain_id: 'agoric-3',
     bech32_prefix: 'agoric',
     lcd: 'https://main.api.agoric.net',
@@ -58,10 +58,10 @@ export const chains: { [chain_name: string]: Chain } = {
   Akash: {
     chain_name: 'Akash',
     deposit_channel_id: 'channel-43',
-    deposit_gas: 150_000,
+    deposit_gas: 200_000,
     deposit_gas_denom: 'uakt',
     withdraw_channel_id: 'channel-21',
-    withdraw_gas: 30_000,
+    withdraw_gas: 150_000,
     chain_id: 'akashnet-2',
     bech32_prefix: 'akash',
     lcd: 'https://akash-api.lavenderfive.com',
@@ -71,10 +71,10 @@ export const chains: { [chain_name: string]: Chain } = {
   Andromeda: {
     chain_name: 'Andromeda',
     deposit_channel_id: 'channel-2',
-    deposit_gas: 150_000,
+    deposit_gas: 200_000,
     deposit_gas_denom: 'uandr',
     withdraw_channel_id: 'channel-97',
-    withdraw_gas: 30_000,
+    withdraw_gas: 150_000,
     chain_id: 'andromeda-1',
     bech32_prefix: 'andr',
     lcd: 'https://andro.api.m.stavr.tech',
@@ -84,10 +84,10 @@ export const chains: { [chain_name: string]: Chain } = {
   Archway: {
     chain_name: 'Archway',
     deposit_channel_id: 'channel-21',
-    deposit_gas: 150_000,
+    deposit_gas: 200_000,
     deposit_gas_denom: 'aarch',
     withdraw_channel_id: 'channel-84',
-    withdraw_gas: 30_000,
+    withdraw_gas: 150_000,
     chain_id: 'archway-1',
     bech32_prefix: 'archway',
     lcd: 'https://archway-api.lavenderfive.com:443',
@@ -97,10 +97,10 @@ export const chains: { [chain_name: string]: Chain } = {
   Axelar: {
     chain_name: 'Axelar',
     deposit_channel_id: 'channel-12',
-    deposit_gas: 150_000,
+    deposit_gas: 200_000,
     deposit_gas_denom: 'uaxl',
     withdraw_channel_id: 'channel-20',
-    withdraw_gas: 30_000,
+    withdraw_gas: 150_000,
     chain_id: 'axelar-dojo-1',
     bech32_prefix: 'axelar',
     lcd: 'https://lcd-axelar.imperator.co:443',
@@ -110,10 +110,10 @@ export const chains: { [chain_name: string]: Chain } = {
   Carbon: {
     chain_name: 'Carbon',
     deposit_channel_id: 'channel-XX',
-    deposit_gas: 150_000,
+    deposit_gas: 200_000,
     deposit_gas_denom: 'dswth',
     withdraw_channel_id: 'channel-XX',
-    withdraw_gas: 30_000,
+    withdraw_gas: 150_000,
     chain_id: 'carbon-1',
     bech32_prefix: 'swth',
     lcd: 'https://carbon-api.lavenderfive.com:443',
@@ -123,10 +123,10 @@ export const chains: { [chain_name: string]: Chain } = {
   Celestia: {
     chain_name: 'Celestia',
     deposit_channel_id: 'channel-14',
-    deposit_gas: 150_000,
+    deposit_gas: 200_000,
     deposit_gas_denom: 'utia',
     withdraw_channel_id: 'channel-91',
-    withdraw_gas: 30_000,
+    withdraw_gas: 150_000,
     chain_id: 'celestia',
     bech32_prefix: 'celestia',
     lcd: 'https://celestia-api.lavenderfive.com:443',
@@ -136,10 +136,10 @@ export const chains: { [chain_name: string]: Chain } = {
   Chihuahua: {
     chain_name: 'Chihuahua',
     deposit_channel_id: 'channel-16',
-    deposit_gas: 150_000,
+    deposit_gas: 200_000,
     deposit_gas_denom: 'uhuahua',
     withdraw_channel_id: 'channel-11',
-    withdraw_gas: 30_000,
+    withdraw_gas: 150_000,
     chain_id: 'chihuahua-1',
     bech32_prefix: 'chihuahua',
     lcd: 'https://chihuahua-api.lavenderfive.com',
@@ -149,10 +149,10 @@ export const chains: { [chain_name: string]: Chain } = {
   Comdex: {
     chain_name: 'Comdex',
     deposit_channel_id: 'channel-65',
-    deposit_gas: 150_000,
+    deposit_gas: 200_000,
     deposit_gas_denom: 'ucmdx',
     withdraw_channel_id: 'channel-63',
-    withdraw_gas: 30_000,
+    withdraw_gas: 150_000,
     chain_id: 'comdex-1',
     bech32_prefix: 'comdex',
     lcd: 'https://comdex-api.lavenderfive.com/',
@@ -162,10 +162,10 @@ export const chains: { [chain_name: string]: Chain } = {
   Composable: {
     chain_name: 'Composable',
     deposit_channel_id: 'channel-14',
-    deposit_gas: 150_000,
+    deposit_gas: 200_000,
     deposit_gas_denom: 'ppica',
     withdraw_channel_id: 'channel-80',
-    withdraw_gas: 30_000,
+    withdraw_gas: 150_000,
     chain_id: 'centauri-1',
     bech32_prefix: 'centauri',
     lcd: 'https://composable-api.lavenderfive.com',
@@ -175,10 +175,10 @@ export const chains: { [chain_name: string]: Chain } = {
   'Cosmos Hub': {
     chain_name: 'Cosmos Hub',
     deposit_channel_id: 'channel-235',
-    deposit_gas: 150_000,
+    deposit_gas: 200_000,
     deposit_gas_denom: 'uatom',
     withdraw_channel_id: 'channel-0',
-    withdraw_gas: 30_000,
+    withdraw_gas: 150_000,
     chain_id: 'cosmoshub-4',
     bech32_prefix: 'cosmos',
     lcd: 'https://cosmoshub-api.lavenderfive.com:443',
@@ -188,36 +188,23 @@ export const chains: { [chain_name: string]: Chain } = {
   dYdX: {
     chain_name: 'dYdX',
     deposit_channel_id: 'channel-2',
-    deposit_gas: 150_000,
+    deposit_gas: 250_000,
     deposit_gas_denom: 'adydx',
     withdraw_channel_id: 'channel-89',
-    withdraw_gas: 50_000,
+    withdraw_gas: 150_000,
     chain_id: 'dydx-mainnet-1',
     bech32_prefix: 'dydx',
     lcd: 'https://dydx-api.lavenderfive.com:443',
     chain_image: '/dydx.svg',
     explorer_account: 'https://www.mintscan.io/dydx/account/'
   },
-  /*   Crescent: {
-    chain_name: 'Crescent',
-    deposit_channel_id: 'channel-10',
-    deposit_gas: 150_000,
-    deposit_gas_denom: 'ucre',
-    withdraw_channel_id: 'channel-24',
-    withdraw_gas: 30_000,
-    chain_id: 'crescent-1',
-    bech32_prefix: 'cre',
-    lcd: 'https://mainnet.crescent.network:1317',
-    chain_image: '/cre.svg',
-    explorer_account: 'https://www.mintscan.io/crescent/account/',
-  }, */
   Evmos: {
     chain_name: 'Evmos',
     deposit_channel_id: 'channel-15',
     deposit_gas: 350_000,
     deposit_gas_denom: 'aevmos',
     withdraw_channel_id: 'channel-18',
-    withdraw_gas: 30_000,
+    withdraw_gas: 150_000,
     chain_id: 'evmos_9001-2',
     bech32_prefix: 'evmos',
     lcd: 'https://evmos-api.lavenderfive.com',
@@ -227,10 +214,10 @@ export const chains: { [chain_name: string]: Chain } = {
   'Gravity Bridge': {
     chain_name: 'Gravity Bridge',
     deposit_channel_id: 'channel-79',
-    deposit_gas: 150_000,
+    deposit_gas: 200_000,
     deposit_gas_denom: 'ugraviton',
     withdraw_channel_id: 'channel-17',
-    withdraw_gas: 30_000,
+    withdraw_gas: 150_000,
     chain_id: 'gravity-bridge-3',
     bech32_prefix: 'gravity',
     lcd: 'https://gravitybridge-api.lavenderfive.com/',
@@ -243,7 +230,7 @@ export const chains: { [chain_name: string]: Chain } = {
     deposit_gas: 350_000,
     deposit_gas_denom: 'inj',
     withdraw_channel_id: 'channel-23',
-    withdraw_gas: 30_000,
+    withdraw_gas: 150_000,
     chain_id: 'injective-1',
     bech32_prefix: 'inj',
     lcd: 'https://injective-api.lavenderfive.com',
@@ -253,10 +240,10 @@ export const chains: { [chain_name: string]: Chain } = {
   Jackal: {
     chain_name: 'Jackal',
     deposit_channel_id: 'channel-2',
-    deposit_gas: 150_000,
+    deposit_gas: 200_000,
     deposit_gas_denom: 'ujkl',
     withdraw_channel_id: 'channel-62',
-    withdraw_gas: 30_000,
+    withdraw_gas: 150_000,
     chain_id: 'jackal-1',
     bech32_prefix: 'jkl',
     lcd: 'https://api.jackal.nodestake.top',
@@ -269,7 +256,7 @@ export const chains: { [chain_name: string]: Chain } = {
     deposit_gas: 150_000,
     deposit_gas_denom: 'ujuno',
     withdraw_channel_id: 'channel-8',
-    withdraw_gas: 30_000,
+    withdraw_gas: 150_000,
     chain_id: 'juno-1',
     bech32_prefix: 'juno',
     lcd: 'https://juno-api.lavenderfive.com:443',
@@ -279,10 +266,10 @@ export const chains: { [chain_name: string]: Chain } = {
   Migaloo: {
     chain_name: 'Migaloo',
     deposit_channel_id: 'channel-4',
-    deposit_gas: 150_000,
+    deposit_gas: 200_000,
     deposit_gas_denom: 'uwhale',
     withdraw_channel_id: 'channel-57',
-    withdraw_gas: 30_000,
+    withdraw_gas: 150_000,
     chain_id: 'migaloo-1',
     bech32_prefix: 'migaloo',
     lcd: 'https://migaloo-api.cosmosrescue.com',
@@ -292,10 +279,10 @@ export const chains: { [chain_name: string]: Chain } = {
   Neutron: {
     chain_name: 'Neutron',
     deposit_channel_id: 'channel-XX',
-    deposit_gas: 150_000,
+    deposit_gas: 200_000,
     deposit_gas_denom: 'untrn',
     withdraw_channel_id: 'channel-XX',
-    withdraw_gas: 30_000,
+    withdraw_gas: 150_000,
     chain_id: 'neutron-1',
     bech32_prefix: 'neutron',
     lcd: 'https://rest-kralum.neutron-1.neutron.org',
@@ -305,10 +292,10 @@ export const chains: { [chain_name: string]: Chain } = {
   Noble: {
     chain_name: 'Noble',
     deposit_channel_id: 'channel-17',
-    deposit_gas: 150_000,
+    deposit_gas: 200_000,
     deposit_gas_denom: 'uusdc',
     withdraw_channel_id: 'channel-88',
-    withdraw_gas: 30_000,
+    withdraw_gas: 150_000,
     chain_id: 'noble-1',
     bech32_prefix: 'noble',
     lcd: 'https://noble-api.polkachu.com',
@@ -318,10 +305,10 @@ export const chains: { [chain_name: string]: Chain } = {
   Nolus: {
     chain_name: 'Nolus',
     deposit_channel_id: 'channel-XX',
-    deposit_gas: 150_000,
+    deposit_gas: 200_000,
     deposit_gas_denom: 'unls',
     withdraw_channel_id: 'channel-783',
-    withdraw_gas: 30_000,
+    withdraw_gas: 150_000,
     chain_id: 'pirin-1',
     bech32_prefix: 'nolus',
     lcd: 'https://nolus-api.lavenderfive.com:443',
@@ -331,10 +318,10 @@ export const chains: { [chain_name: string]: Chain } = {
   Kujira: {
     chain_name: 'Kujira',
     deposit_channel_id: 'channel-10',
-    deposit_gas: 150_000,
+    deposit_gas: 200_000,
     deposit_gas_denom: 'ukuji',
     withdraw_channel_id: 'channel-22',
-    withdraw_gas: 30_000,
+    withdraw_gas: 150_000,
     chain_id: 'kaiyo-1',
     bech32_prefix: 'kujira',
     lcd: 'https://kujira-api.polkachu.com/',
@@ -347,7 +334,7 @@ export const chains: { [chain_name: string]: Chain } = {
     deposit_gas: 700_000,
     deposit_gas_denom: 'uosmo',
     withdraw_channel_id: 'channel-1',
-    withdraw_gas: 30_000,
+    withdraw_gas: 150_000,
     chain_id: 'osmosis-1',
     bech32_prefix: 'osmo',
     lcd: 'https://osmosis-rest.publicnode.com',
@@ -360,7 +347,7 @@ export const chains: { [chain_name: string]: Chain } = {
     deposit_gas: 300_000,
     deposit_gas_denom: 'uxprt',
     withdraw_channel_id: 'channel-64',
-    withdraw_gas: 30_000,
+    withdraw_gas: 150_000,
     chain_id: 'core-1',
     bech32_prefix: 'persistence',
     lcd: 'https://persistence-api.polkachu.com',
@@ -373,7 +360,7 @@ export const chains: { [chain_name: string]: Chain } = {
     deposit_gas: 300_000,
     deposit_gas_denom: 'uqck',
     withdraw_channel_id: 'channel-65',
-    withdraw_gas: 30_000,
+    withdraw_gas: 150_000,
     chain_id: 'quicksilver-2',
     bech32_prefix: 'quick',
     lcd: 'https://quicksilver-api.lavenderfive.com:443',
@@ -383,36 +370,23 @@ export const chains: { [chain_name: string]: Chain } = {
   Sentinel: {
     chain_name: 'Sentinel',
     deposit_channel_id: 'channel-50',
-    deposit_gas: 150_000,
+    deposit_gas: 200_000,
     deposit_gas_denom: 'udvpn',
     withdraw_channel_id: 'channel-3',
-    withdraw_gas: 30_000,
+    withdraw_gas: 150_000,
     chain_id: 'sentinelhub-2',
     bech32_prefix: 'sent',
     lcd: 'https://lcd-sentinel.whispernode.com:443',
     chain_image: '/dvpn.svg',
     explorer_account: 'https://www.mintscan.io/sentinel/account/'
   },
-  /*   Sifchain: {
-    chain_name: 'Sifchain',
-    deposit_channel_id: 'channel-65',
-    deposit_gas: 150_000,
-    deposit_gas_denom: 'urowan',
-    withdraw_channel_id: 'channel-15',
-    withdraw_gas: 30_000,
-    chain_id: 'sifchain-1',
-    bech32_prefix: 'sif',
-    lcd: 'https://api-sifchain-ia.cosmosia.notional.ventures',
-    chain_image: '/rowan.svg',
-    explorer_account: 'https://www.mintscan.io/sifchain/account/',
-  }, */
   Stargaze: {
     chain_name: 'Stargaze',
     deposit_channel_id: 'channel-48',
-    deposit_gas: 150_000,
+    deposit_gas: 200_000,
     deposit_gas_denom: 'ustars',
     withdraw_channel_id: 'channel-19',
-    withdraw_gas: 30_000,
+    withdraw_gas: 150_000,
     chain_id: 'stargaze-1',
     bech32_prefix: 'stars',
     lcd: 'https://rest.stargaze-apis.com',
@@ -422,10 +396,10 @@ export const chains: { [chain_name: string]: Chain } = {
   Stride: {
     chain_name: 'Stride',
     deposit_channel_id: 'channel-40',
-    deposit_gas: 150_000,
+    deposit_gas: 200_000,
     deposit_gas_denom: 'ustrd',
     withdraw_channel_id: 'channel-37',
-    withdraw_gas: 30_000,
+    withdraw_gas: 150_000,
     chain_id: 'stride-1',
     bech32_prefix: 'stride',
     lcd: 'https://stride-api.lavenderfive.com',
@@ -435,10 +409,10 @@ export const chains: { [chain_name: string]: Chain } = {
   Terra: {
     chain_name: 'Terra',
     deposit_channel_id: 'channel-3',
-    deposit_gas: 150_000,
+    deposit_gas: 200_000,
     deposit_gas_denom: 'uluna',
     withdraw_channel_id: 'channel-16',
-    withdraw_gas: 30_000,
+    withdraw_gas: 150_000,
     chain_id: 'phoenix-1',
     bech32_prefix: 'terra',
     lcd: 'https://phoenix-lcd.terra.dev',
@@ -649,18 +623,6 @@ export const tokens: Token[] = [
           'uscrt'
         )
       },
-      /*       {
-        chain_name: 'Crescent',
-        denom: ibcDenom(
-          [
-            {
-              incomingChannelId: chains['Crescent'].deposit_channel_id,
-              incomingPortId: 'transfer',
-            },
-          ],
-          'uscrt'
-        ),
-      }, */
       {
         chain_name: 'Evmos',
         denom: ibcDenom(
@@ -810,18 +772,6 @@ export const tokens: Token[] = [
           'uscrt'
         )
       },
-      /*       {
-        chain_name: 'Sifchain',
-        denom: ibcDenom(
-          [
-            {
-              incomingChannelId: chains['Sifchain'].deposit_channel_id,
-              incomingPortId: 'transfer',
-            },
-          ],
-          'uscrt'
-        ),
-      }, */
       {
         chain_name: 'Stargaze',
         denom: ibcDenom(
@@ -904,10 +854,6 @@ export const tokens: Token[] = [
         chain_name: 'dYdX',
         denom: 'uscrt'
       },
-      /*       {
-        chain_name: 'Crescent',
-        denom: 'uscrt',
-      }, */
       {
         chain_name: 'Evmos',
         denom: 'uscrt'
@@ -957,10 +903,6 @@ export const tokens: Token[] = [
         chain_name: 'Sentinel',
         denom: 'uscrt'
       },
-      /*       {
-        chain_name: 'Sifchain',
-        denom: 'uscrt',
-      }, */
       {
         chain_name: 'Stargaze',
         denom: 'uscrt'
@@ -1204,35 +1146,6 @@ export const tokens: Token[] = [
       }
     ]
   },
-  /*  {
-    name: 'CRE',
-    address: 'secret1tatdlkyznf00m3a7hftw5daaq2nk38ugfphuyr',
-    code_hash:
-      '5a085bd8ed89de92b35134ddd12505a602c7759ea25fb5c089ba03c8535b3042',
-    image: '/cre.svg',
-    decimals: 6,
-    coingecko_id: 'crescent-network',
-    deposits: [
-      {
-        chain_name: 'Crescent',
-        denom: 'ucre',
-      },
-    ],
-    withdrawals: [
-      {
-        chain_name: 'Crescent',
-        denom: ibcDenom(
-          [
-            {
-              incomingChannelId: chains['Crescent'].withdraw_channel_id,
-              incomingPortId: 'transfer',
-            },
-          ],
-          'ucre'
-        ),
-      },
-    ],
-  }, */
   {
     name: 'DOT',
     description: 'Polkadot Governance Token',
@@ -2013,35 +1926,6 @@ export const tokens: Token[] = [
       }
     ]
   },
-  /* {
-    name: 'ROWAN',
-    address: 'secret159p22zvq2wzsdtqhm2plp4wg33srxp2hf0qudc',
-    code_hash:
-      '5a085bd8ed89de92b35134ddd12505a602c7759ea25fb5c089ba03c8535b3042',
-    image: '/rowan.svg',
-    decimals: 18,
-    coingecko_id: 'sifchain',
-    deposits: [
-      {
-        chain_name: 'Sifchain',
-        denom: 'rowan',
-      },
-    ],
-    withdrawals: [
-      {
-        chain_name: 'Sifchain',
-        denom: ibcDenom(
-          [
-            {
-              incomingChannelId: chains['Sifchain'].withdraw_channel_id,
-              incomingPortId: 'transfer',
-            },
-          ],
-          'rowan'
-        ),
-      },
-    ],
-  }, */
   {
     name: 'STARS',
     description: 'Stargaze Governance Token',
