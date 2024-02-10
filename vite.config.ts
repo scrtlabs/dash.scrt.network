@@ -17,9 +17,10 @@ export default defineConfig({
     host: true,
     port: 3000
   },
-  build: {
-    rollupOptions: {
-      external: ['@buf/evmos_evmos.bufbuild_es/evmos/vesting/v1/tx_pb.js']
+  resolve: {
+    alias: {
+      // Redirect the broken import from @evmos/transactions
+      '@buf/evmos_evmos.bufbuild_es/evmos/vesting/v1/tx_pb.js': '@buf/evmos_evmos.bufbuild_es/evmos/vesting/v2/tx_pb.js'
     }
   }
 })
