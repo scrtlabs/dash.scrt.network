@@ -208,7 +208,7 @@ export const chains: { [chain_name: string]: Chain } = {
     chain_id: 'dymension_1100-1',
     bech32_prefix: 'dym',
     lcd: 'https://dymension-api.lavenderfive.com:443',
-    chain_image: '/dymension.svg',
+    chain_image: '/dymension.png',
     explorer_account: 'https://www.mintscan.io/dymension/account/'
   },
   /*   Evmos: {
