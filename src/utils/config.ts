@@ -1267,7 +1267,7 @@ export const tokens: Token[] = [
     description: 'Dymension governance token',
     address: 'secret1vfe63g7ndhqq9qu8v4n97fj69rcmr5fy0dun75',
     code_hash: '638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e',
-    image: '/dymension.svg',
+    image: '/dymension.png',
     decimals: 18,
     coingecko_id: 'dymension',
     deposits: [
