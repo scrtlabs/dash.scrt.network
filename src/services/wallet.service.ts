@@ -140,7 +140,7 @@ const getWalletViewingKey = async (token: string): Promise<Nullable<string>> => 
   try {
     return await window.wallet?.getSecret20ViewingKey(SECRET_CHAIN_ID, token)
   } catch (error) {
-    console.error(error)
+    console.debug(error)
     return null
   }
 }
@@ -214,11 +214,13 @@ const getBatchsTokenBalance = async (
   // Collect valid tokens and viewing keys
   for (const token of tokens) {
     const key = await getWalletViewingKey(token.address)
+
     if (!key) {
       viewingKeys.set(token, 'viewingKeyError')
       balances.set(token, 'viewingKeyError')
       continue
     }
+    console.log(`Found viewing key: ${key} for token ${token.name}`)
     viewingKeys.set(token, key)
     validTokens.push(token)
   }
@@ -408,7 +410,7 @@ async function getBalancesForTokens(props: IGetBalancesForTokensProps): Promise<
 }
 
 export const WalletService = {
-  connectWallet: connectWallet,
+  connectWallet,
   requestFeeGrantService,
   setWalletViewingKey,
   getWalletViewingKey,

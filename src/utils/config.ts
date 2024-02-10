@@ -2699,6 +2699,110 @@ export const snips: Token[] = [
     ]
   },
   {
+    name: 'FINA',
+    description: 'Fina.cash Token',
+    is_snip20: true,
+    address: 'secret1s3z9xkpdsrhk86300tqnv6u466jmdmlegew2ve',
+    code_hash: 'cfecd51a022c520c55429d974363fd7f065d20474af6a362da8737f73b7d9e80',
+    image: '/fina.png',
+    decimals: 6,
+    coingecko_id: 'fina',
+    deposits: [
+      {
+        chain_name: 'Archway',
+        denom: ibcDenom(
+          [{ incomingChannelId: 'channel-39', incomingPortId: 'transfer' }],
+          'cw20:secret1s3z9xkpdsrhk86300tqnv6u466jmdmlegew2ve'
+        ),
+        channel_id: 'channel-39',
+        gas: 300_000
+      },
+      {
+        chain_name: 'Composable',
+        denom: ibcDenom(
+          [{ incomingChannelId: 'channel-26', incomingPortId: 'transfer' }],
+          'cw20:secret1s3z9xkpdsrhk86300tqnv6u466jmdmlegew2ve'
+        ),
+        channel_id: 'channel-26',
+        gas: 300_000
+      },
+      {
+        chain_name: 'Osmosis',
+        denom: ibcDenom(
+          [{ incomingChannelId: 'channel-476', incomingPortId: 'transfer' }],
+          'cw20:secret1s3z9xkpdsrhk86300tqnv6u466jmdmlegew2ve'
+        ),
+        channel_id: 'channel-476',
+        gas: 300_000
+      },
+      {
+        chain_name: 'Kujira',
+        denom: ibcDenom(
+          [{ incomingChannelId: 'channel-44', incomingPortId: 'transfer' }],
+          'cw20:secret1s3z9xkpdsrhk86300tqnv6u466jmdmlegew2ve'
+        ),
+        channel_id: 'channel-44',
+        gas: 300_000
+      },
+      {
+        chain_name: 'Juno',
+        denom: ibcDenom(
+          [{ incomingChannelId: 'channel-163', incomingPortId: 'transfer' }],
+          'cw20:secret1s3z9xkpdsrhk86300tqnv6u466jmdmlegew2ve'
+        ),
+        channel_id: 'channel-163',
+        gas: 300_000
+      },
+      {
+        chain_name: 'Migaloo',
+        denom: ibcDenom(
+          [{ incomingChannelId: 'channel-103', incomingPortId: 'transfer' }],
+          'cw20:secret1s3z9xkpdsrhk86300tqnv6u466jmdmlegew2ve'
+        ),
+        channel_id: 'channel-103',
+        gas: 300_000
+      }
+    ],
+    withdrawals: [
+      {
+        chain_name: 'Archway',
+        denom: 'secret1s3z9xkpdsrhk86300tqnv6u466jmdmlegew2ve',
+        channel_id: 'channel-90',
+        gas: 350_000
+      },
+      {
+        chain_name: 'Composable',
+        denom: 'secret1s3z9xkpdsrhk86300tqnv6u466jmdmlegew2ve',
+        channel_id: 'channel-83',
+        gas: 350_000
+      },
+      {
+        chain_name: 'Osmosis',
+        denom: 'secret1s3z9xkpdsrhk86300tqnv6u466jmdmlegew2ve',
+        channel_id: 'channel-44',
+        gas: 350_000
+      },
+      {
+        chain_name: 'Kujira',
+        denom: 'secret1s3z9xkpdsrhk86300tqnv6u466jmdmlegew2ve',
+        channel_id: 'channel-46',
+        gas: 350_000
+      },
+      {
+        chain_name: 'Juno',
+        denom: 'secret1s3z9xkpdsrhk86300tqnv6u466jmdmlegew2ve',
+        channel_id: 'channel-45',
+        gas: 350_000
+      },
+      {
+        chain_name: 'Migaloo',
+        denom: 'secret1s3z9xkpdsrhk86300tqnv6u466jmdmlegew2ve',
+        channel_id: 'channel-129',
+        gas: 350_000
+      }
+    ]
+  },
+  {
     name: 'SHD',
     description: 'Shade Protocol Governance Token',
     is_snip20: true,
