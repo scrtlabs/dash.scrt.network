@@ -16,5 +16,11 @@ export default defineConfig({
   server: {
     host: true,
     port: 3000
+  },
+  resolve: {
+    alias: {
+      // Redirect the broken import from @evmos/transactions
+      '@buf/evmos_evmos.bufbuild_es/evmos/vesting/v1/tx_pb.js': '@buf/evmos_evmos.bufbuild_es/evmos/vesting/v2/tx_pb.js'
+    }
   }
 })

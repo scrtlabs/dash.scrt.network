@@ -198,7 +198,20 @@ export const chains: { [chain_name: string]: Chain } = {
     chain_image: '/dydx.svg',
     explorer_account: 'https://www.mintscan.io/dydx/account/'
   },
-  Evmos: {
+  Dymension: {
+    chain_name: 'Dymension',
+    deposit_channel_id: 'channel-35',
+    deposit_gas: 250_000,
+    deposit_gas_denom: 'adym',
+    withdraw_channel_id: 'channel-130',
+    withdraw_gas: 150_000,
+    chain_id: 'dymension_1100-1',
+    bech32_prefix: 'dym',
+    lcd: 'https://dymension-api.lavenderfive.com:443',
+    chain_image: '/dymension.png',
+    explorer_account: 'https://www.mintscan.io/dymension/account/'
+  },
+  /*   Evmos: {
     chain_name: 'Evmos',
     deposit_channel_id: 'channel-15',
     deposit_gas: 350_000,
@@ -210,7 +223,7 @@ export const chains: { [chain_name: string]: Chain } = {
     lcd: 'https://evmos-api.lavenderfive.com',
     chain_image: '/evmos.svg',
     explorer_account: 'https://www.mintscan.io/evmos/account/'
-  },
+  }, */
   'Gravity Bridge': {
     chain_name: 'Gravity Bridge',
     deposit_channel_id: 'channel-79',
@@ -624,6 +637,18 @@ export const tokens: Token[] = [
         )
       },
       {
+        chain_name: 'Dymension',
+        denom: ibcDenom(
+          [
+            {
+              incomingChannelId: chains['Dymension'].deposit_channel_id,
+              incomingPortId: 'transfer'
+            }
+          ],
+          'uscrt'
+        )
+      },
+      /*       {
         chain_name: 'Evmos',
         denom: ibcDenom(
           [
@@ -634,7 +659,7 @@ export const tokens: Token[] = [
           ],
           'uscrt'
         )
-      },
+      }, */
       {
         chain_name: 'Gravity Bridge',
         denom: ibcDenom(
@@ -855,9 +880,13 @@ export const tokens: Token[] = [
         denom: 'uscrt'
       },
       {
-        chain_name: 'Evmos',
+        chain_name: 'Dymension',
         denom: 'uscrt'
       },
+      /*       {
+        chain_name: 'Evmos',
+        denom: 'uscrt'
+      }, */
       {
         chain_name: 'Gravity Bridge',
         denom: 'uscrt'
@@ -1234,6 +1263,35 @@ export const tokens: Token[] = [
     ]
   },
   {
+    name: 'DYM',
+    description: 'Dymension governance token',
+    address: 'secret1vfe63g7ndhqq9qu8v4n97fj69rcmr5fy0dun75',
+    code_hash: '638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e',
+    image: '/dymension.png',
+    decimals: 18,
+    coingecko_id: 'dymension',
+    deposits: [
+      {
+        chain_name: 'Dymension',
+        denom: 'adym'
+      }
+    ],
+    withdrawals: [
+      {
+        chain_name: 'Dymension',
+        denom: ibcDenom(
+          [
+            {
+              incomingChannelId: chains['Dymension'].withdraw_channel_id,
+              incomingPortId: 'transfer'
+            }
+          ],
+          'adym'
+        )
+      }
+    ]
+  },
+  /* {
     name: 'EVMOS',
     description: 'Evmos Governance Token',
     address: 'secret1grg9unv2ue8cf98t50ea45prce7gcrj2n232kq',
@@ -1261,7 +1319,7 @@ export const tokens: Token[] = [
         )
       }
     ]
-  },
+  }, */
   {
     name: 'GRAV',
     description: 'Gravity Bridge Governance Token',
