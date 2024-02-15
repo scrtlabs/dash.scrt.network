@@ -1,0 +1,1639 @@
+{
+  "data": [
+    {
+      "id": 15,
+      "attributes": {
+        "name": "Stashh",
+        "createdAt": "2021-10-13T20:17:38.211Z",
+        "updatedAt": "2022-04-17T19:40:12.397Z",
+        "publishedAt": "2021-10-13T20:17:40.966Z",
+        "locale": "en",
+        "link": "https://stashh.io/",
+        "sort": null,
+        "description": "Mint, buy, and trade the first NFTs with native privacy and access control, known as Secret NFTs.",
+        "cta_title": null,
+        "logo": {
+          "data": {
+            "id": 470,
+            "attributes": {
+              "name": "dapp=stashh.png",
+              "alternativeText": "",
+              "caption": "",
+              "width": 128,
+              "height": 128,
+              "formats": null,
+              "hash": "dapp_stashh_1b5ff9f3a5",
+              "ext": ".png",
+              "mime": "image/png",
+              "size": 15.87,
+              "url": "https://ik.imagekit.io/secretnetwork/images/dapp_stashh_1b5ff9f3a5_lo5nfGSI-6.png",
+              "previewUrl": null,
+              "provider": "imagekit",
+              "provider_metadata": { "fileId": "621d3bc3597e20742374883e" },
+              "createdAt": "2022-02-28T21:16:51.792Z",
+              "updatedAt": "2022-02-28T21:16:51.803Z"
+            }
+          }
+        },
+        "type": [{ "id": 25, "name": "NFTs" }],
+        "localizations": { "data": [] }
+      }
+    },
+    {
+      "id": 16,
+      "attributes": {
+        "name": "Shade Protocol",
+        "createdAt": "2021-10-13T20:18:28.553Z",
+        "updatedAt": "2022-02-28T21:57:50.690Z",
+        "publishedAt": "2021-10-13T20:18:30.155Z",
+        "locale": "en",
+        "link": "https://shadeprotocol.io/",
+        "sort": null,
+        "description": "An array of connected privacy-preserving DeFi applications built on Secret Network.",
+        "cta_title": null,
+        "logo": {
+          "data": {
+            "id": 460,
+            "attributes": {
+              "name": "dapp=shade.png",
+              "alternativeText": "",
+              "caption": "",
+              "width": 128,
+              "height": 128,
+              "formats": null,
+              "hash": "dapp_shade_206fbe8b01",
+              "ext": ".png",
+              "mime": "image/png",
+              "size": 8.39,
+              "url": "https://ik.imagekit.io/secretnetwork/images/dapp_shade_206fbe8b01_U9LBd0ib1-.png",
+              "previewUrl": null,
+              "provider": "imagekit",
+              "provider_metadata": { "fileId": "621d3bc39c480408def88ae5" },
+              "createdAt": "2022-02-28T21:16:51.582Z",
+              "updatedAt": "2022-02-28T21:16:51.602Z"
+            }
+          }
+        },
+        "type": [{ "id": 24, "name": "defi" }],
+        "localizations": { "data": [] }
+      }
+    },
+    {
+      "id": 19,
+      "attributes": {
+        "name": "Legendao",
+        "createdAt": "2022-02-24T19:48:52.300Z",
+        "updatedAt": "2022-03-01T12:16:20.223Z",
+        "publishedAt": "2022-02-24T19:48:54.378Z",
+        "locale": "en",
+        "link": "https://legendao.io/",
+        "sort": 15,
+        "description": "A play-to-mint NFT platform that enables creators to launch their NFT projects in a unique, gamified way.",
+        "cta_title": null,
+        "logo": {
+          "data": {
+            "id": 444,
+            "attributes": {
+              "name": "LegenDAO.png",
+              "alternativeText": "",
+              "caption": "",
+              "width": 128,
+              "height": 128,
+              "formats": {},
+              "hash": "Legen_DAO_50bba9ea5b",
+              "ext": ".png",
+              "mime": "image/png",
+              "size": 20.53,
+              "url": "https://ik.imagekit.io/secretnetwork/images/Legen_DAO_50bba9ea5b_tQG5m-PJd.png",
+              "previewUrl": null,
+              "provider": "imagekit",
+              "provider_metadata": { "fileId": "621d41899c480408def89ccf" },
+              "createdAt": "2022-02-24T19:48:16.031Z",
+              "updatedAt": "2022-02-28T21:41:29.997Z"
+            }
+          }
+        },
+        "type": [
+          { "id": 28, "name": "NFTs" },
+          { "id": 35, "name": "games" }
+        ],
+        "localizations": { "data": [] }
+      }
+    },
+    {
+      "id": 24,
+      "attributes": {
+        "name": "Stake Easy",
+        "createdAt": "2022-03-09T17:30:28.730Z",
+        "updatedAt": "2022-03-09T17:30:30.092Z",
+        "publishedAt": "2022-03-09T17:30:30.066Z",
+        "locale": "en",
+        "link": "https://stakeeasy.finance/",
+        "sort": null,
+        "description": "The privacy-preserving liquid staking solution for Secret Network.",
+        "cta_title": null,
+        "logo": {
+          "data": {
+            "id": 445,
+            "attributes": {
+              "name": "logoText.82239a7508e3b237357a.png",
+              "alternativeText": "",
+              "caption": "",
+              "width": 128,
+              "height": 128,
+              "formats": {},
+              "hash": "logo_Text_82239a7508e3b237357a_287085f67d",
+              "ext": ".png",
+              "mime": "image/png",
+              "size": 5.76,
+              "url": "https://ik.imagekit.io/secretnetwork/images/logo_Text_82239a7508e3b237357a_287085f67d_hU7gLGM1M.png",
+              "previewUrl": null,
+              "provider": "imagekit",
+              "provider_metadata": { "fileId": "621d46699c480408def8aa28" },
+              "createdAt": "2022-02-24T19:49:50.388Z",
+              "updatedAt": "2022-02-28T22:02:17.795Z"
+            }
+          }
+        },
+        "type": [{ "id": 38, "name": "defi" }],
+        "localizations": { "data": [] }
+      }
+    },
+    {
+      "id": 31,
+      "attributes": {
+        "name": "onenet.",
+        "createdAt": "2022-07-26T01:30:49.896Z",
+        "updatedAt": "2022-07-26T01:36:59.452Z",
+        "publishedAt": "2022-07-26T01:36:59.438Z",
+        "locale": "en",
+        "link": "https://launchonenet.io/ ",
+        "sort": 31,
+        "description": "An all-in-one game distribution platform for Secret Network and the Cosmos ecosystem.",
+        "cta_title": null,
+        "logo": {
+          "data": {
+            "id": 749,
+            "attributes": {
+              "name": "Onenet Logo.png",
+              "alternativeText": "Onenet Logo.png",
+              "caption": "Onenet Logo.png",
+              "width": 128,
+              "height": 128,
+              "formats": null,
+              "hash": "Onenet_Logo_2d652c5bc9",
+              "ext": ".png",
+              "mime": "image/png",
+              "size": 4.12,
+              "url": "https://ik.imagekit.io/secretnetwork/images/Onenet_Logo_2d652c5bc9_ML20xHI43.png",
+              "previewUrl": null,
+              "provider": "strapi-provider-upload-imagekit",
+              "provider_metadata": { "fileId": "62df43c3268133089ee81daa" },
+              "createdAt": "2022-07-26T01:30:43.587Z",
+              "updatedAt": "2022-07-26T01:30:43.587Z"
+            }
+          }
+        },
+        "type": [{ "id": 57, "name": "games" }],
+        "localizations": { "data": [] }
+      }
+    },
+    {
+      "id": 26,
+      "attributes": {
+        "name": "Secret Time Capsule",
+        "createdAt": "2022-03-21T21:04:04.480Z",
+        "updatedAt": "2022-12-19T21:35:59.006Z",
+        "publishedAt": "2022-03-21T21:13:39.363Z",
+        "locale": "en",
+        "link": "https://secrettimecapsule.net/",
+        "sort": null,
+        "description": "The first blockchain dApp to send messages and crypto coins into the future. Have fun, stake SCRTs and maximize your rewards!",
+        "cta_title": null,
+        "logo": {
+          "data": {
+            "id": 1028,
+            "attributes": {
+              "name": "timecapsule.png",
+              "alternativeText": "timecapsule.png",
+              "caption": "timecapsule.png",
+              "width": 431,
+              "height": 426,
+              "formats": {
+                "thumbnail": {
+                  "ext": ".png",
+                  "url": "https://ik.imagekit.io/secretnetwork/images/thumbnail_timecapsule_7d8decd5c9_kNAer_JzQ.png",
+                  "hash": "thumbnail_timecapsule_7d8decd5c9",
+                  "mime": "image/png",
+                  "name": "thumbnail_timecapsule.png",
+                  "path": null,
+                  "size": 37.13,
+                  "width": 158,
+                  "height": 156,
+                  "provider_metadata": { "fileId": "63a0d8f2e809dd54b07c33ae" }
+                }
+              },
+              "hash": "timecapsule_7d8decd5c9",
+              "ext": ".png",
+              "mime": "image/png",
+              "size": 23.33,
+              "url": "https://ik.imagekit.io/secretnetwork/images/timecapsule_7d8decd5c9_C3Hc58o3r.png",
+              "previewUrl": null,
+              "provider": "strapi-provider-upload-imagekit",
+              "provider_metadata": { "fileId": "63a0d8f2e809dd54b07c33aa" },
+              "createdAt": "2022-12-19T21:34:42.648Z",
+              "updatedAt": "2022-12-19T21:34:42.648Z"
+            }
+          }
+        },
+        "type": [
+          { "id": 66, "name": "communications" },
+          { "id": 77, "name": "defi" }
+        ],
+        "localizations": { "data": [] }
+      }
+    },
+    {
+      "id": 35,
+      "attributes": {
+        "name": "Bushi",
+        "createdAt": "2022-07-26T01:35:26.405Z",
+        "updatedAt": "2023-05-16T16:47:37.904Z",
+        "publishedAt": "2022-07-26T01:37:21.763Z",
+        "locale": "en",
+        "link": "https://www.launchonenet.io/bushi",
+        "sort": 35,
+        "description": "A competitive third-person shooter that blurs the lines between traditional games, web3 gaming, and esports.",
+        "cta_title": null,
+        "logo": {
+          "data": {
+            "id": 754,
+            "attributes": {
+              "name": "Bushi Logo.png",
+              "alternativeText": "Bushi Logo.png",
+              "caption": "Bushi Logo.png",
+              "width": 128,
+              "height": 128,
+              "formats": null,
+              "hash": "Bushi_Logo_e7f4a6035a",
+              "ext": ".png",
+              "mime": "image/png",
+              "size": 4.86,
+              "url": "https://ik.imagekit.io/secretnetwork/images/Bushi_Logo_e7f4a6035a_u53uS1dcu.png",
+              "previewUrl": null,
+              "provider": "strapi-provider-upload-imagekit",
+              "provider_metadata": { "fileId": "62df44dafd4662fc700e82ef" },
+              "createdAt": "2022-07-26T01:35:23.004Z",
+              "updatedAt": "2022-07-26T01:35:23.004Z"
+            }
+          }
+        },
+        "type": [{ "id": 61, "name": "games" }],
+        "localizations": { "data": [] }
+      }
+    },
+    {
+      "id": 25,
+      "attributes": {
+        "name": "Data Vault",
+        "createdAt": "2022-03-21T21:01:24.509Z",
+        "updatedAt": "2023-05-16T16:48:34.747Z",
+        "publishedAt": "2022-03-21T21:13:35.671Z",
+        "locale": "en",
+        "link": "https://secretbazaar.io/",
+        "sort": null,
+        "description": "The world’s first decentralized privacy-preserving content management and data exchange protocol.",
+        "cta_title": null,
+        "logo": {
+          "data": {
+            "id": 567,
+            "attributes": {
+              "name": "dava.png",
+              "alternativeText": "",
+              "caption": "",
+              "width": 128,
+              "height": 128,
+              "formats": null,
+              "hash": "dava_957cbedba4",
+              "ext": ".png",
+              "mime": "image/png",
+              "size": 19.04,
+              "url": "https://ik.imagekit.io/secretnetwork/images/dava_957cbedba4_macvuNgj6Z.png",
+              "previewUrl": null,
+              "provider": "imagekit",
+              "provider_metadata": { "fileId": "6238e784d9e21dfed67f59ac" },
+              "createdAt": "2022-03-21T21:00:52.817Z",
+              "updatedAt": "2022-03-21T21:00:52.831Z"
+            }
+          }
+        },
+        "type": [
+          { "id": 45, "name": "defi" },
+          { "id": 46, "name": "social" }
+        ],
+        "localizations": { "data": [] }
+      }
+    },
+    {
+      "id": 36,
+      "attributes": {
+        "name": "V-IRL",
+        "createdAt": "2022-07-26T01:36:15.090Z",
+        "updatedAt": "2022-11-14T19:18:36.859Z",
+        "publishedAt": "2022-07-26T01:37:09.828Z",
+        "locale": "en",
+        "link": " https://www.v-irl.com/",
+        "sort": 36,
+        "description": "Bridging Virtual assets to real life. The world's first anonymous on-chain redemptions. Merch, authentication, ticketing/access, and more.",
+        "cta_title": null,
+        "logo": {
+          "data": {
+            "id": 755,
+            "attributes": {
+              "name": "V-IRL Logo.png",
+              "alternativeText": "V-IRL Logo.png",
+              "caption": "V-IRL Logo.png",
+              "width": 128,
+              "height": 128,
+              "formats": null,
+              "hash": "V_IRL_Logo_bad455cf9a",
+              "ext": ".png",
+              "mime": "image/png",
+              "size": 1.58,
+              "url": "https://ik.imagekit.io/secretnetwork/images/V_IRL_Logo_bad455cf9a_Lt6VmuQ84.png",
+              "previewUrl": null,
+              "provider": "strapi-provider-upload-imagekit",
+              "provider_metadata": { "fileId": "62df450ba3507611f865e00a" },
+              "createdAt": "2022-07-26T01:36:11.819Z",
+              "updatedAt": "2022-07-26T01:36:11.819Z"
+            }
+          }
+        },
+        "type": [{ "id": 62, "name": "NFTs" }],
+        "localizations": { "data": [] }
+      }
+    },
+    {
+      "id": 39,
+      "attributes": {
+        "name": "CertUP",
+        "createdAt": "2022-08-11T17:55:35.930Z",
+        "updatedAt": "2022-08-11T18:09:56.951Z",
+        "publishedAt": "2022-08-11T18:09:56.940Z",
+        "locale": "en",
+        "link": "https://certup.net/",
+        "sort": null,
+        "description": "Revolutionising official document distribution, verification and publication through Secret NFTs.",
+        "cta_title": null,
+        "logo": {
+          "data": {
+            "id": 768,
+            "attributes": {
+              "name": "CertUP Logo.png",
+              "alternativeText": "CertUP Logo.png",
+              "caption": "CertUP Logo.png",
+              "width": 128,
+              "height": 128,
+              "formats": null,
+              "hash": "Cert_UP_Logo_014ac8ed6b",
+              "ext": ".png",
+              "mime": "image/png",
+              "size": 1.16,
+              "url": "https://ik.imagekit.io/secretnetwork/images/Cert_UP_Logo_014ac8ed6b_1m7Lm6NPa.png",
+              "previewUrl": null,
+              "provider": "strapi-provider-upload-imagekit",
+              "provider_metadata": { "fileId": "62f545c91a2b5e65b6ef8638" },
+              "createdAt": "2022-08-11T18:09:13.612Z",
+              "updatedAt": "2022-08-11T18:09:13.612Z"
+            }
+          }
+        },
+        "type": [{ "id": 65, "name": "NFTs" }],
+        "localizations": { "data": [] }
+      }
+    },
+    {
+      "id": 7,
+      "attributes": {
+        "name": "Lorem Ipsum",
+        "createdAt": "2021-06-10T19:09:15.644Z",
+        "updatedAt": "2022-09-28T13:23:48.858Z",
+        "publishedAt": "2021-06-10T19:09:19.637Z",
+        "locale": "en",
+        "link": "https://geeks.pics/",
+        "sort": null,
+        "description": "Lorem Ipsum – the first Metaverse on Secret Network and IBC with privacy features.",
+        "cta_title": null,
+        "logo": {
+          "data": {
+            "id": 851,
+            "attributes": {
+              "name": "Lorem Ipsum New Logo.png",
+              "alternativeText": "Lorem Ipsum New Logo.png",
+              "caption": "Lorem Ipsum New Logo.png",
+              "width": 1998,
+              "height": 1998,
+              "formats": {
+                "large": {
+                  "ext": ".png",
+                  "url": "https://ik.imagekit.io/secretnetwork/images/large_Lorem_Ipsum_New_Logo_3977ba6f8f_OB36iK6ds.png",
+                  "hash": "large_Lorem_Ipsum_New_Logo_3977ba6f8f",
+                  "mime": "image/png",
+                  "name": "large_Lorem Ipsum New Logo.png",
+                  "path": null,
+                  "size": 69.07,
+                  "width": 1000,
+                  "height": 1000,
+                  "provider_metadata": { "fileId": "6331ea023226066c5c616974" }
+                },
+                "small": {
+                  "ext": ".png",
+                  "url": "https://ik.imagekit.io/secretnetwork/images/small_Lorem_Ipsum_New_Logo_3977ba6f8f_T-l6Gq7Is.png",
+                  "hash": "small_Lorem_Ipsum_New_Logo_3977ba6f8f",
+                  "mime": "image/png",
+                  "name": "small_Lorem Ipsum New Logo.png",
+                  "path": null,
+                  "size": 27.95,
+                  "width": 500,
+                  "height": 500,
+                  "provider_metadata": { "fileId": "6331ea023226066c5c616967" }
+                },
+                "medium": {
+                  "ext": ".png",
+                  "url": "https://ik.imagekit.io/secretnetwork/images/medium_Lorem_Ipsum_New_Logo_3977ba6f8f_SLfoeLv6y.png",
+                  "hash": "medium_Lorem_Ipsum_New_Logo_3977ba6f8f",
+                  "mime": "image/png",
+                  "name": "medium_Lorem Ipsum New Logo.png",
+                  "path": null,
+                  "size": 47.33,
+                  "width": 750,
+                  "height": 750,
+                  "provider_metadata": { "fileId": "6331ea023226066c5c61697d" }
+                },
+                "thumbnail": {
+                  "ext": ".png",
+                  "url": "https://ik.imagekit.io/secretnetwork/images/thumbnail_Lorem_Ipsum_New_Logo_3977ba6f8f_dBaiaOijP.png",
+                  "hash": "thumbnail_Lorem_Ipsum_New_Logo_3977ba6f8f",
+                  "mime": "image/png",
+                  "name": "thumbnail_Lorem Ipsum New Logo.png",
+                  "path": null,
+                  "size": 7.72,
+                  "width": 156,
+                  "height": 156,
+                  "provider_metadata": { "fileId": "6331ea003226066c5c616712" }
+                }
+              },
+              "hash": "Lorem_Ipsum_New_Logo_3977ba6f8f",
+              "ext": ".png",
+              "mime": "image/png",
+              "size": 27.73,
+              "url": "https://ik.imagekit.io/secretnetwork/images/Lorem_Ipsum_New_Logo_3977ba6f8f_2WwXtBp1c.png",
+              "previewUrl": null,
+              "provider": "strapi-provider-upload-imagekit",
+              "provider_metadata": { "fileId": "6331ea003226066c5c6166ef" },
+              "createdAt": "2022-09-26T18:05:54.876Z",
+              "updatedAt": "2022-09-26T18:05:54.876Z"
+            }
+          }
+        },
+        "type": [
+          { "id": 33, "name": "NFTs" },
+          { "id": 13, "name": "games" }
+        ],
+        "localizations": { "data": [] }
+      }
+    },
+    {
+      "id": 42,
+      "attributes": {
+        "name": "YOIU",
+        "createdAt": "2022-12-07T20:16:06.267Z",
+        "updatedAt": "2023-05-16T17:13:54.334Z",
+        "publishedAt": "2022-12-07T20:21:14.807Z",
+        "locale": "en",
+        "link": "https://twitter.com/yoiu_io",
+        "sort": null,
+        "description": "A gateway to future IDO's of tech startups, fueled by secret tokens.",
+        "cta_title": "Visit Site",
+        "logo": {
+          "data": {
+            "id": 978,
+            "attributes": {
+              "name": "yoiu.png",
+              "alternativeText": "yoiu.png",
+              "caption": "yoiu.png",
+              "width": 640,
+              "height": 640,
+              "formats": {
+                "small": {
+                  "ext": ".png",
+                  "url": "https://ik.imagekit.io/secretnetwork/images/small_yoiu_f225ee0f53_PU7mLbkLVj.png",
+                  "hash": "small_yoiu_f225ee0f53",
+                  "mime": "image/png",
+                  "name": "small_yoiu.png",
+                  "path": null,
+                  "size": 98.38,
+                  "width": 500,
+                  "height": 500,
+                  "provider_metadata": { "fileId": "63935719e809dd54b0b40d1a" }
+                },
+                "thumbnail": {
+                  "ext": ".png",
+                  "url": "https://ik.imagekit.io/secretnetwork/images/thumbnail_yoiu_f225ee0f53_ND8bR1AtM.png",
+                  "hash": "thumbnail_yoiu_f225ee0f53",
+                  "mime": "image/png",
+                  "name": "thumbnail_yoiu.png",
+                  "path": null,
+                  "size": 22.56,
+                  "width": 156,
+                  "height": 156,
+                  "provider_metadata": { "fileId": "63935719e809dd54b0b40cec" }
+                }
+              },
+              "hash": "yoiu_f225ee0f53",
+              "ext": ".png",
+              "mime": "image/png",
+              "size": 20.82,
+              "url": "https://ik.imagekit.io/secretnetwork/images/yoiu_f225ee0f53_CKEJHPFFV.png",
+              "previewUrl": null,
+              "provider": "strapi-provider-upload-imagekit",
+              "provider_metadata": { "fileId": "63935719e809dd54b0b40cde" },
+              "createdAt": "2022-12-09T15:41:14.148Z",
+              "updatedAt": "2022-12-09T15:41:14.148Z"
+            }
+          }
+        },
+        "type": [
+          { "id": 70, "name": "defi" },
+          { "id": 71, "name": "social" }
+        ],
+        "localizations": { "data": [] }
+      }
+    },
+    {
+      "id": 38,
+      "attributes": {
+        "name": "ActiList",
+        "createdAt": "2022-08-11T17:39:13.873Z",
+        "updatedAt": "2022-10-19T14:29:10.833Z",
+        "publishedAt": "2022-08-11T18:09:49.098Z",
+        "locale": "en",
+        "link": "https://actilist.io",
+        "sort": null,
+        "description": "Interactive NFT marketplace with secret auctions and customizable access control.",
+        "cta_title": null,
+        "logo": {
+          "data": {
+            "id": 872,
+            "attributes": {
+              "name": "actiii.png",
+              "alternativeText": "actiii.png",
+              "caption": "actiii.png",
+              "width": 250,
+              "height": 250,
+              "formats": {
+                "thumbnail": {
+                  "ext": ".png",
+                  "url": "https://ik.imagekit.io/secretnetwork/images/thumbnail_actiii_0bfc731011_fKAv9fxe4p.png",
+                  "hash": "thumbnail_actiii_0bfc731011",
+                  "mime": "image/png",
+                  "name": "thumbnail_actiii.png",
+                  "path": null,
+                  "size": 4.76,
+                  "width": 156,
+                  "height": 156,
+                  "provider_metadata": { "fileId": "63500996bf51c1dc806fa9d2" }
+                }
+              },
+              "hash": "actiii_0bfc731011",
+              "ext": ".png",
+              "mime": "image/png",
+              "size": 2.3,
+              "url": "https://ik.imagekit.io/secretnetwork/images/actiii_0bfc731011_1eMhswD8v.png",
+              "previewUrl": null,
+              "provider": "strapi-provider-upload-imagekit",
+              "provider_metadata": { "fileId": "63500996bf51c1dc806fa9c9" },
+              "createdAt": "2022-10-19T14:28:38.658Z",
+              "updatedAt": "2022-10-19T14:28:38.658Z"
+            }
+          }
+        },
+        "type": [{ "id": 64, "name": "NFTs" }],
+        "localizations": { "data": [] }
+      }
+    },
+    {
+      "id": 44,
+      "attributes": {
+        "name": "BIDSHOP",
+        "createdAt": "2022-12-09T15:50:49.282Z",
+        "updatedAt": "2022-12-09T15:51:14.673Z",
+        "publishedAt": "2022-12-09T15:51:14.664Z",
+        "locale": "en",
+        "link": "https://www.bidshop.io/",
+        "sort": null,
+        "description": "The first and only trustless NFT marketplace with encrypted & secret bidding.",
+        "cta_title": "Visit Site",
+        "logo": {
+          "data": {
+            "id": 980,
+            "attributes": {
+              "name": "bidshop.png",
+              "alternativeText": "bidshop.png",
+              "caption": "bidshop.png",
+              "width": 500,
+              "height": 500,
+              "formats": {
+                "thumbnail": {
+                  "ext": ".png",
+                  "url": "https://ik.imagekit.io/secretnetwork/images/thumbnail_bidshop_97052c9fec_Nn642ZWF40.png",
+                  "hash": "thumbnail_bidshop_97052c9fec",
+                  "mime": "image/png",
+                  "name": "thumbnail_bidshop.png",
+                  "path": null,
+                  "size": 16.93,
+                  "width": 156,
+                  "height": 156,
+                  "provider_metadata": { "fileId": "639358cde809dd54b0b7734c" }
+                }
+              },
+              "hash": "bidshop_97052c9fec",
+              "ext": ".png",
+              "mime": "image/png",
+              "size": 15.5,
+              "url": "https://ik.imagekit.io/secretnetwork/images/bidshop_97052c9fec_NXI0niWBp.png",
+              "previewUrl": null,
+              "provider": "strapi-provider-upload-imagekit",
+              "provider_metadata": { "fileId": "639358cde809dd54b0b77345" },
+              "createdAt": "2022-12-09T15:48:30.225Z",
+              "updatedAt": "2022-12-09T15:48:30.225Z"
+            }
+          }
+        },
+        "type": [
+          { "id": 73, "name": "NFTs" },
+          { "id": 74, "name": "games" }
+        ],
+        "localizations": { "data": [] }
+      }
+    },
+    {
+      "id": 23,
+      "attributes": {
+        "name": "Button Swap",
+        "createdAt": "2022-03-07T16:56:21.503Z",
+        "updatedAt": "2023-04-05T20:22:39.992Z",
+        "publishedAt": "2022-03-07T16:56:23.877Z",
+        "locale": "en",
+        "link": "https://btn.group/secret_network/button_swap",
+        "sort": null,
+        "description": "A DEX aggregator, giving you the most optimal swap routes across Secret Network DEXs.",
+        "cta_title": null,
+        "logo": {
+          "data": {
+            "id": 479,
+            "attributes": {
+              "name": "dapp=btn.group.png",
+              "alternativeText": "",
+              "caption": "",
+              "width": 128,
+              "height": 128,
+              "formats": null,
+              "hash": "dapp_btn_group_506992a414",
+              "ext": ".png",
+              "mime": "image/png",
+              "size": 3.77,
+              "url": "https://ik.imagekit.io/secretnetwork/images/dapp_btn_group_506992a414_OGGGyv_0NG.png",
+              "previewUrl": null,
+              "provider": "imagekit",
+              "provider_metadata": { "fileId": "622634c956c8975d44da9292" },
+              "createdAt": "2022-03-07T16:37:30.158Z",
+              "updatedAt": "2022-03-07T16:37:30.192Z"
+            }
+          }
+        },
+        "type": [
+          { "id": 36, "name": "defi" },
+          { "id": 41, "name": "amm" }
+        ],
+        "localizations": { "data": [] }
+      }
+    },
+    {
+      "id": 46,
+      "attributes": {
+        "name": "PriFi Labs",
+        "createdAt": "2023-01-05T18:13:12.844Z",
+        "updatedAt": "2023-01-05T18:22:40.639Z",
+        "publishedAt": "2023-01-05T18:13:14.582Z",
+        "locale": "en",
+        "link": "https://prifilabs.com/",
+        "sort": null,
+        "description": "PriFi Labs experiments and designs trustless solutions to help businesses and users to have enhanced protection in Web3.",
+        "cta_title": "Visit Site",
+        "logo": {
+          "data": {
+            "id": 1043,
+            "attributes": {
+              "name": "prifiw.png",
+              "alternativeText": "prifiw.png",
+              "caption": "prifiw.png",
+              "width": 250,
+              "height": 250,
+              "formats": {
+                "thumbnail": {
+                  "ext": ".png",
+                  "url": "https://ik.imagekit.io/secretnetwork/images/thumbnail_prifiw_3f394c00a6_xtn3rR0wi.png",
+                  "hash": "thumbnail_prifiw_3f394c00a6",
+                  "mime": "image/png",
+                  "name": "thumbnail_prifiw.png",
+                  "path": null,
+                  "size": 7.01,
+                  "width": 156,
+                  "height": 156,
+                  "provider_metadata": { "fileId": "63b71308e809dd54b072fecc" }
+                }
+              },
+              "hash": "prifiw_3f394c00a6",
+              "ext": ".png",
+              "mime": "image/png",
+              "size": 1.75,
+              "url": "https://ik.imagekit.io/secretnetwork/images/prifiw_3f394c00a6_MQVbTriV0.png",
+              "previewUrl": null,
+              "provider": "strapi-provider-upload-imagekit",
+              "provider_metadata": { "fileId": "63b71308e809dd54b072feb7" },
+              "createdAt": "2023-01-05T18:12:25.238Z",
+              "updatedAt": "2023-01-05T18:12:25.238Z"
+            }
+          }
+        },
+        "type": [],
+        "localizations": { "data": [] }
+      }
+    },
+    {
+      "id": 21,
+      "attributes": {
+        "name": "Secret Dreamscape",
+        "createdAt": "2022-02-24T19:51:46.937Z",
+        "updatedAt": "2023-07-13T19:16:58.469Z",
+        "publishedAt": "2022-02-24T19:51:59.668Z",
+        "locale": "en",
+        "link": "https://secretdreamscape.com/",
+        "sort": 16,
+        "description": "A multiplayer card game that combines the addictive nature of word building with the social nuance of betting games.",
+        "cta_title": null,
+        "logo": {
+          "data": {
+            "id": 446,
+            "attributes": {
+              "name": "SDD.PNG",
+              "alternativeText": "Secret Dreamscape",
+              "caption": "",
+              "width": 128,
+              "height": 128,
+              "formats": {},
+              "hash": "SDD_e90034a6f6",
+              "ext": ".PNG",
+              "mime": "image/png",
+              "size": 18.42,
+              "url": "https://ik.imagekit.io/secretnetwork/images/SDD_e90034a6f6_minf4qfxn6-.PNG",
+              "previewUrl": null,
+              "provider": "imagekit",
+              "provider_metadata": { "fileId": "621d443171dd2864d7503584" },
+              "createdAt": "2022-02-24T19:50:52.873Z",
+              "updatedAt": "2022-02-28T21:52:58.739Z"
+            }
+          }
+        },
+        "type": [
+          { "id": 32, "name": "NFTs" },
+          { "id": 30, "name": "games" }
+        ],
+        "localizations": { "data": [] }
+      }
+    },
+    {
+      "id": 47,
+      "attributes": {
+        "name": "Eqoty",
+        "createdAt": "2023-01-05T18:34:40.949Z",
+        "updatedAt": "2023-01-05T19:36:45.551Z",
+        "publishedAt": "2023-01-05T18:34:42.840Z",
+        "locale": "en",
+        "link": "https://eqoty.io/",
+        "sort": null,
+        "description": "The first content-protected marketplace for utility-backed music NFTs.",
+        "cta_title": "Visit Site",
+        "logo": {
+          "data": {
+            "id": 1046,
+            "attributes": {
+              "name": "eqotyb.png",
+              "alternativeText": "eqotyb.png",
+              "caption": "eqotyb.png",
+              "width": 500,
+              "height": 500,
+              "formats": {
+                "thumbnail": {
+                  "ext": ".png",
+                  "url": "https://ik.imagekit.io/secretnetwork/images/thumbnail_eqotyb_a53851f4dd_fsMjaWiEX.png",
+                  "hash": "thumbnail_eqotyb_a53851f4dd",
+                  "mime": "image/png",
+                  "name": "thumbnail_eqotyb.png",
+                  "path": null,
+                  "size": 3.29,
+                  "width": 156,
+                  "height": 156,
+                  "provider_metadata": { "fileId": "63b726cae809dd54b0982c34" }
+                }
+              },
+              "hash": "eqotyb_a53851f4dd",
+              "ext": ".png",
+              "mime": "image/png",
+              "size": 3.34,
+              "url": "https://ik.imagekit.io/secretnetwork/images/eqotyb_a53851f4dd_SW5_jrsi3.png",
+              "previewUrl": null,
+              "provider": "strapi-provider-upload-imagekit",
+              "provider_metadata": { "fileId": "63b726cae809dd54b0982c37" },
+              "createdAt": "2023-01-05T19:36:42.595Z",
+              "updatedAt": "2023-01-05T19:36:42.595Z"
+            }
+          }
+        },
+        "type": [{ "id": 78, "name": "NFTs" }],
+        "localizations": { "data": [] }
+      }
+    },
+    {
+      "id": 30,
+      "attributes": {
+        "name": "Secret Bridges",
+        "createdAt": "2022-03-22T01:13:13.837Z",
+        "updatedAt": "2023-07-07T19:39:54.604Z",
+        "publishedAt": "2022-03-22T01:13:16.575Z",
+        "locale": "en",
+        "link": "https://dashboard.scrt.network/bridge",
+        "sort": null,
+        "description": "Bridge assets from IBC, EVM, and other ecosystems to Secret.",
+        "cta_title": null,
+        "logo": {
+          "data": {
+            "id": 750,
+            "attributes": {
+              "name": "Bridges Logo 2.png",
+              "alternativeText": "Bridges Logo 2.png",
+              "caption": "Bridges Logo 2.png",
+              "width": 128,
+              "height": 128,
+              "formats": null,
+              "hash": "Bridges_Logo_2_32f36a3c58",
+              "ext": ".png",
+              "mime": "image/png",
+              "size": 3,
+              "url": "https://ik.imagekit.io/secretnetwork/images/Bridges_Logo_2_32f36a3c58_NP9oBOxR9.png",
+              "previewUrl": null,
+              "provider": "strapi-provider-upload-imagekit",
+              "provider_metadata": { "fileId": "62df43f7fd466238ea0e8267" },
+              "createdAt": "2022-07-26T01:31:36.073Z",
+              "updatedAt": "2022-07-26T01:31:36.073Z"
+            }
+          }
+        },
+        "type": [{ "id": 53, "name": "defi" }],
+        "localizations": { "data": [] }
+      }
+    },
+    {
+      "id": 32,
+      "attributes": {
+        "name": "AmberDAO",
+        "createdAt": "2022-07-26T01:32:33.374Z",
+        "updatedAt": "2023-05-16T16:46:53.114Z",
+        "publishedAt": "2022-07-26T01:37:18.614Z",
+        "locale": "en",
+        "link": "https://amberdao.io/",
+        "sort": 32,
+        "description": "A community-driven, privacy-preserving store of value token built on Secret Network.",
+        "cta_title": null,
+        "logo": {
+          "data": {
+            "id": 751,
+            "attributes": {
+              "name": "AmberDao Logo.png",
+              "alternativeText": "AmberDao Logo.png",
+              "caption": "AmberDao Logo.png",
+              "width": 128,
+              "height": 128,
+              "formats": null,
+              "hash": "Amber_Dao_Logo_fd192c1e11",
+              "ext": ".png",
+              "mime": "image/png",
+              "size": 6,
+              "url": "https://ik.imagekit.io/secretnetwork/images/Amber_Dao_Logo_fd192c1e11_NaDWj0aOA.png",
+              "previewUrl": null,
+              "provider": "strapi-provider-upload-imagekit",
+              "provider_metadata": { "fileId": "62df442d2681335608e81ded" },
+              "createdAt": "2022-07-26T01:32:29.780Z",
+              "updatedAt": "2022-07-26T01:32:29.780Z"
+            }
+          }
+        },
+        "type": [{ "id": 58, "name": "defi" }],
+        "localizations": { "data": [] }
+      }
+    },
+    {
+      "id": 40,
+      "attributes": {
+        "name": "Secret Tokens",
+        "createdAt": "2022-08-24T15:42:48.702Z",
+        "updatedAt": "2023-05-16T17:08:44.766Z",
+        "publishedAt": "2022-08-24T15:42:53.965Z",
+        "locale": "en",
+        "link": "https://dashboard.scrt.network/wrap",
+        "sort": null,
+        "description": "Wrapping Coins as Secret Tokens immediately supercharges them with private balances and private transfers.",
+        "cta_title": null,
+        "logo": {
+          "data": {
+            "id": 777,
+            "attributes": {
+              "name": "stoken.png",
+              "alternativeText": "stoken.png",
+              "caption": "stoken.png",
+              "width": 250,
+              "height": 250,
+              "formats": {
+                "thumbnail": {
+                  "ext": ".png",
+                  "url": "https://ik.imagekit.io/secretnetwork/images/thumbnail_stoken_2f0fb694df_m6UJl4Wg5.png",
+                  "hash": "thumbnail_stoken_2f0fb694df",
+                  "mime": "image/png",
+                  "name": "thumbnail_stoken.png",
+                  "path": null,
+                  "size": 26.15,
+                  "width": 156,
+                  "height": 156,
+                  "provider_metadata": { "fileId": "63064da197ae425bc45024e3" }
+                }
+              },
+              "hash": "stoken_2f0fb694df",
+              "ext": ".png",
+              "mime": "image/png",
+              "size": 8.97,
+              "url": "https://ik.imagekit.io/secretnetwork/images/stoken_2f0fb694df_bMVioaSGb.png",
+              "previewUrl": null,
+              "provider": "strapi-provider-upload-imagekit",
+              "provider_metadata": { "fileId": "63064da097ae4203a05024dc" },
+              "createdAt": "2022-08-24T16:11:14.235Z",
+              "updatedAt": "2022-08-24T16:11:14.235Z"
+            }
+          }
+        },
+        "type": [],
+        "localizations": { "data": [] }
+      }
+    },
+    {
+      "id": 50,
+      "attributes": {
+        "name": "BlackJack",
+        "createdAt": "2023-05-16T17:20:08.552Z",
+        "updatedAt": "2023-05-16T17:20:11.446Z",
+        "publishedAt": "2023-05-16T17:20:11.436Z",
+        "locale": "en",
+        "link": "https://aart-blackjack.anther.info/landingpage",
+        "sort": null,
+        "description": "A shedding card game built on Secret, making use of privacy-preserving smart contracts.",
+        "cta_title": "Visit Site",
+        "logo": {
+          "data": {
+            "id": 1350,
+            "attributes": {
+              "name": "blackjack.png",
+              "alternativeText": null,
+              "caption": null,
+              "width": 500,
+              "height": 500,
+              "formats": {
+                "thumbnail": {
+                  "ext": ".png",
+                  "url": "https://ik.imagekit.io/secretnetwork/images/thumbnail_blackjack_21ad501117_1J5Vy50UWy.png",
+                  "hash": "thumbnail_blackjack_21ad501117",
+                  "mime": "image/png",
+                  "name": "thumbnail_blackjack.png",
+                  "path": null,
+                  "size": 29.14,
+                  "width": 156,
+                  "height": 156,
+                  "provider_metadata": { "fileId": "6463bad9e809dd54b02be79a" }
+                }
+              },
+              "hash": "blackjack_21ad501117",
+              "ext": ".png",
+              "mime": "image/png",
+              "size": 71.69,
+              "url": "https://ik.imagekit.io/secretnetwork/images/blackjack_21ad501117_OCc2FU9di.png",
+              "previewUrl": null,
+              "provider": "strapi-provider-upload-imagekit",
+              "provider_metadata": { "fileId": "6463bad9e809dd54b02be7a5" },
+              "createdAt": "2023-05-16T17:18:17.498Z",
+              "updatedAt": "2023-05-16T17:18:17.498Z"
+            }
+          }
+        },
+        "type": [{ "id": 82, "name": "games" }],
+        "localizations": { "data": [] }
+      }
+    },
+    {
+      "id": 43,
+      "attributes": {
+        "name": "Abakhus",
+        "createdAt": "2022-12-07T20:20:34.583Z",
+        "updatedAt": "2023-06-07T15:35:31.509Z",
+        "publishedAt": "2022-12-07T20:21:08.165Z",
+        "locale": "en",
+        "link": "https://abakhus.io/",
+        "sort": null,
+        "description": "A protocol to secure health and life science data.",
+        "cta_title": null,
+        "logo": {
+          "data": {
+            "id": 1415,
+            "attributes": {
+              "name": "abak.jpeg",
+              "alternativeText": null,
+              "caption": null,
+              "width": 399,
+              "height": 399,
+              "formats": {
+                "thumbnail": {
+                  "ext": ".jpeg",
+                  "url": "https://ik.imagekit.io/secretnetwork/images/thumbnail_abak_ac4896396e_nYlF6_Ridh.jpeg",
+                  "hash": "thumbnail_abak_ac4896396e",
+                  "mime": "image/jpeg",
+                  "name": "thumbnail_abak.jpeg",
+                  "path": null,
+                  "size": 2.52,
+                  "width": 156,
+                  "height": 156,
+                  "provider_metadata": { "fileId": "6480a3bf06370748f26182ae" }
+                }
+              },
+              "hash": "abak_ac4896396e",
+              "ext": ".jpeg",
+              "mime": "image/jpeg",
+              "size": 8.18,
+              "url": "https://ik.imagekit.io/secretnetwork/images/abak_ac4896396e_vxSiezw8y.jpeg",
+              "previewUrl": null,
+              "provider": "strapi-provider-upload-imagekit",
+              "provider_metadata": { "fileId": "6480a3bf06370748f26182a1" },
+              "createdAt": "2023-06-07T15:35:28.116Z",
+              "updatedAt": "2023-06-07T15:35:28.116Z"
+            }
+          }
+        },
+        "type": [
+          { "id": 72, "name": "communications" },
+          { "id": 81, "name": "data" }
+        ],
+        "localizations": { "data": [] }
+      }
+    },
+    {
+      "id": 51,
+      "attributes": {
+        "name": "Secret Dashboard",
+        "createdAt": "2023-07-07T19:35:37.490Z",
+        "updatedAt": "2023-07-07T19:35:39.838Z",
+        "publishedAt": "2023-07-07T19:35:39.828Z",
+        "locale": "en",
+        "link": "https://dash.scrt.network/",
+        "sort": null,
+        "description": "An interface providing access to essential Secret Network functions and data.",
+        "cta_title": "Visit Site",
+        "logo": {
+          "data": {
+            "id": 1466,
+            "attributes": {
+              "name": "dashb.png",
+              "alternativeText": null,
+              "caption": null,
+              "width": 512,
+              "height": 512,
+              "formats": {
+                "small": {
+                  "ext": ".png",
+                  "url": "https://ik.imagekit.io/secretnetwork/images/small_dashb_e1299d7523_QwkrgHrFr.png",
+                  "hash": "small_dashb_e1299d7523",
+                  "mime": "image/png",
+                  "name": "small_dashb.png",
+                  "path": null,
+                  "size": 33.57,
+                  "width": 500,
+                  "height": 500,
+                  "provider_metadata": { "fileId": "64a8690206370748f213259b" }
+                },
+                "thumbnail": {
+                  "ext": ".png",
+                  "url": "https://ik.imagekit.io/secretnetwork/images/thumbnail_dashb_e1299d7523_DxEY5i4jT.png",
+                  "hash": "thumbnail_dashb_e1299d7523",
+                  "mime": "image/png",
+                  "name": "thumbnail_dashb.png",
+                  "path": null,
+                  "size": 10.04,
+                  "width": 156,
+                  "height": 156,
+                  "provider_metadata": { "fileId": "64a8690206370748f213235d" }
+                }
+              },
+              "hash": "dashb_e1299d7523",
+              "ext": ".png",
+              "mime": "image/png",
+              "size": 5.3,
+              "url": "https://ik.imagekit.io/secretnetwork/images/dashb_e1299d7523_mQkttVayr.png",
+              "previewUrl": null,
+              "provider": "strapi-provider-upload-imagekit",
+              "provider_metadata": { "fileId": "64a8690206370748f2132334" },
+              "createdAt": "2023-07-07T19:35:30.903Z",
+              "updatedAt": "2023-07-07T19:35:30.903Z"
+            }
+          }
+        },
+        "type": [
+          { "id": 83, "name": "defi" },
+          { "id": 84, "name": "data" },
+          { "id": 85, "name": null }
+        ],
+        "localizations": { "data": [] }
+      }
+    },
+    {
+      "id": 49,
+      "attributes": {
+        "name": "Secret Admirers",
+        "createdAt": "2023-03-08T18:04:42.208Z",
+        "updatedAt": "2023-07-07T19:36:31.872Z",
+        "publishedAt": "2023-03-08T18:04:45.377Z",
+        "locale": "en",
+        "link": "https://twitter.com/AdmirariDAO",
+        "sort": null,
+        "description": "A decentralized and privacy-preserving adult content subscription platform.",
+        "cta_title": null,
+        "logo": {
+          "data": {
+            "id": 1467,
+            "attributes": {
+              "name": "secadm.jpeg",
+              "alternativeText": null,
+              "caption": null,
+              "width": 400,
+              "height": 400,
+              "formats": {
+                "thumbnail": {
+                  "ext": ".jpeg",
+                  "url": "https://ik.imagekit.io/secretnetwork/images/thumbnail_secadm_e92dc01c7d_KJRPbrMPW.jpeg",
+                  "hash": "thumbnail_secadm_e92dc01c7d",
+                  "mime": "image/jpeg",
+                  "name": "thumbnail_secadm.jpeg",
+                  "path": null,
+                  "size": 4.72,
+                  "width": 156,
+                  "height": 156,
+                  "provider_metadata": { "fileId": "64a8693b06370748f213fddc" }
+                }
+              },
+              "hash": "secadm_e92dc01c7d",
+              "ext": ".jpeg",
+              "mime": "image/jpeg",
+              "size": 17.05,
+              "url": "https://ik.imagekit.io/secretnetwork/images/secadm_e92dc01c7d_vH-bLkpkX.jpeg",
+              "previewUrl": null,
+              "provider": "strapi-provider-upload-imagekit",
+              "provider_metadata": { "fileId": "64a8693a06370748f213f9ae" },
+              "createdAt": "2023-07-07T19:36:28.208Z",
+              "updatedAt": "2023-07-07T19:36:28.208Z"
+            }
+          }
+        },
+        "type": [
+          { "id": 79, "name": "social" },
+          { "id": 80, "name": "NFTs" }
+        ],
+        "localizations": { "data": [] }
+      }
+    },
+    {
+      "id": 14,
+      "attributes": {
+        "name": "Alter",
+        "createdAt": "2021-10-13T20:13:50.006Z",
+        "updatedAt": "2022-08-10T16:20:25.728Z",
+        "publishedAt": "2021-10-13T20:13:51.495Z",
+        "locale": "en",
+        "link": "https://altermail.live/",
+        "sort": 1,
+        "description": "A private and secure messaging app that protects your data and identity when communicating online. ",
+        "cta_title": "Visit site",
+        "logo": {
+          "data": {
+            "id": 406,
+            "attributes": {
+              "name": "alter.png",
+              "alternativeText": "",
+              "caption": "",
+              "width": 128,
+              "height": 128,
+              "formats": {},
+              "hash": "alter_f51dbe4916",
+              "ext": ".png",
+              "mime": "image/png",
+              "size": 7.63,
+              "url": "https://ik.imagekit.io/secretnetwork/images/alter_f51dbe4916_esXgp8g8j.png",
+              "previewUrl": null,
+              "provider": "imagekit",
+              "provider_metadata": { "fileId": "621d194eeabde23374ff1d90" },
+              "createdAt": "2021-12-20T15:31:26.375Z",
+              "updatedAt": "2022-02-28T18:49:50.706Z"
+            }
+          }
+        },
+        "type": [{ "id": 23, "name": "communications" }],
+        "localizations": { "data": [] }
+      }
+    },
+    {
+      "id": 37,
+      "attributes": {
+        "name": "Serenity Shield",
+        "createdAt": "2022-08-10T18:28:21.047Z",
+        "updatedAt": "2022-08-10T18:28:23.319Z",
+        "publishedAt": "2022-08-10T18:28:23.311Z",
+        "locale": "en",
+        "link": "https://serenityshield.io/",
+        "sort": null,
+        "description": "Serenity Shield provides a tool for backing up your seed phrase and other sensitive data, allowing recovery in an emergency event.",
+        "cta_title": null,
+        "logo": {
+          "data": {
+            "id": 758,
+            "attributes": {
+              "name": "Serenity Shield Logo.png",
+              "alternativeText": "Serenity Shield Logo.png",
+              "caption": "Serenity Shield Logo.png",
+              "width": 128,
+              "height": 128,
+              "formats": null,
+              "hash": "Serenity_Shield_Logo_0e5e4c6737",
+              "ext": ".png",
+              "mime": "image/png",
+              "size": 1.5,
+              "url": "https://ik.imagekit.io/secretnetwork/images/Serenity_Shield_Logo_0e5e4c6737_7GV7QGAFN.png",
+              "previewUrl": null,
+              "provider": "strapi-provider-upload-imagekit",
+              "provider_metadata": { "fileId": "62f3f8bb1d2022bac46273d0" },
+              "createdAt": "2022-08-10T18:28:12.461Z",
+              "updatedAt": "2022-08-10T18:28:12.461Z"
+            }
+          }
+        },
+        "type": [{ "id": 63, "name": "defi" }],
+        "localizations": { "data": [] }
+      }
+    },
+    {
+      "id": 52,
+      "attributes": {
+        "name": "ShillStake",
+        "createdAt": "2023-08-23T19:35:14.296Z",
+        "updatedAt": "2023-08-23T19:35:16.828Z",
+        "publishedAt": "2023-08-23T19:35:16.815Z",
+        "locale": "en",
+        "link": "https://shillstake.io/",
+        "sort": null,
+        "description": "Stake Secret NFTs and Earn Rewards",
+        "cta_title": null,
+        "logo": {
+          "data": {
+            "id": 1513,
+            "attributes": {
+              "name": "shillstake.png",
+              "alternativeText": null,
+              "caption": null,
+              "width": 120,
+              "height": 120,
+              "formats": null,
+              "hash": "shillstake_6a6689939a",
+              "ext": ".png",
+              "mime": "image/png",
+              "size": 1.68,
+              "url": "https://ik.imagekit.io/secretnetwork/images/shillstake_6a6689939a_LXXm3YOgd.png",
+              "previewUrl": null,
+              "provider": "strapi-provider-upload-imagekit",
+              "provider_metadata": { "fileId": "64e65f4688c257da33bfe646" },
+              "createdAt": "2023-08-23T19:34:31.215Z",
+              "updatedAt": "2023-08-23T19:34:31.215Z"
+            }
+          }
+        },
+        "type": [{ "id": 86, "name": "NFTs" }],
+        "localizations": { "data": [] }
+      }
+    },
+    {
+      "id": 53,
+      "attributes": {
+        "name": "Whisprs",
+        "createdAt": "2023-09-21T13:03:00.699Z",
+        "updatedAt": "2023-09-21T13:03:03.069Z",
+        "publishedAt": "2023-09-21T13:03:03.059Z",
+        "locale": "en",
+        "link": "https://whisprs.co/",
+        "sort": null,
+        "description": "Send encrypted messages to any Cosmos based wallet address",
+        "cta_title": "Visit Site",
+        "logo": {
+          "data": {
+            "id": 1520,
+            "attributes": {
+              "name": "favicon.png",
+              "alternativeText": null,
+              "caption": null,
+              "width": 152,
+              "height": 115,
+              "formats": null,
+              "hash": "favicon_1ddd016da6",
+              "ext": ".png",
+              "mime": "image/png",
+              "size": 1.44,
+              "url": "https://ik.imagekit.io/secretnetwork/images/favicon_1ddd016da6_RbudtOnkDX.png",
+              "previewUrl": null,
+              "provider": "strapi-provider-upload-imagekit",
+              "provider_metadata": { "fileId": "650c3e7288c257da33f5ed3c" },
+              "createdAt": "2023-09-21T13:00:34.892Z",
+              "updatedAt": "2023-09-21T13:00:34.892Z"
+            }
+          }
+        },
+        "type": [{ "id": 87, "name": "communications" }],
+        "localizations": { "data": [] }
+      }
+    },
+    {
+      "id": 54,
+      "attributes": {
+        "name": "wallet79",
+        "createdAt": "2023-10-13T18:51:26.856Z",
+        "updatedAt": "2023-10-13T18:51:29.330Z",
+        "publishedAt": "2023-10-13T18:51:29.229Z",
+        "locale": "en",
+        "link": "https://wallet79.com/",
+        "sort": null,
+        "description": "Matches people with jobs and education using digital signatures, while preserving data privacy.",
+        "cta_title": "Visit Site",
+        "logo": {
+          "data": {
+            "id": 1569,
+            "attributes": {
+              "name": "wallet79 logo.png",
+              "alternativeText": null,
+              "caption": null,
+              "width": 1000,
+              "height": 1000,
+              "formats": {
+                "small": {
+                  "ext": ".png",
+                  "url": "https://ik.imagekit.io/secretnetwork/images/small_wallet79_logo_dd31a1d3c8_wOQgv6rca.png",
+                  "hash": "small_wallet79_logo_dd31a1d3c8",
+                  "mime": "image/png",
+                  "name": "small_wallet79 logo.png",
+                  "path": null,
+                  "size": 40.97,
+                  "width": 500,
+                  "height": 500,
+                  "provider_metadata": { "fileId": "65298eef88c257da33cde910" }
+                },
+                "medium": {
+                  "ext": ".png",
+                  "url": "https://ik.imagekit.io/secretnetwork/images/medium_wallet79_logo_dd31a1d3c8_2HtozQaDe.png",
+                  "hash": "medium_wallet79_logo_dd31a1d3c8",
+                  "mime": "image/png",
+                  "name": "medium_wallet79 logo.png",
+                  "path": null,
+                  "size": 77.42,
+                  "width": 750,
+                  "height": 750,
+                  "provider_metadata": { "fileId": "65298eef88c257da33cde8f5" }
+                },
+                "thumbnail": {
+                  "ext": ".png",
+                  "url": "https://ik.imagekit.io/secretnetwork/images/thumbnail_wallet79_logo_dd31a1d3c8_Q1Im-k7I0R.png",
+                  "hash": "thumbnail_wallet79_logo_dd31a1d3c8",
+                  "mime": "image/png",
+                  "name": "thumbnail_wallet79 logo.png",
+                  "path": null,
+                  "size": 8.74,
+                  "width": 156,
+                  "height": 156,
+                  "provider_metadata": { "fileId": "65298eee88c257da33cde685" }
+                }
+              },
+              "hash": "wallet79_logo_dd31a1d3c8",
+              "ext": ".png",
+              "mime": "image/png",
+              "size": 20.25,
+              "url": "https://ik.imagekit.io/secretnetwork/images/wallet79_logo_dd31a1d3c8_bL0GR1F5d.png",
+              "previewUrl": null,
+              "provider": "strapi-provider-upload-imagekit",
+              "provider_metadata": { "fileId": "65298eee88c257da33cde6b3" },
+              "createdAt": "2023-10-13T18:39:45.442Z",
+              "updatedAt": "2023-10-13T18:39:45.442Z"
+            }
+          }
+        },
+        "type": [{ "id": 88, "name": "data" }],
+        "localizations": { "data": [] }
+      }
+    },
+    {
+      "id": 56,
+      "attributes": {
+        "name": "PrimeVault",
+        "createdAt": "2023-10-13T19:12:52.819Z",
+        "updatedAt": "2023-10-13T19:12:55.099Z",
+        "publishedAt": "2023-10-13T19:12:55.085Z",
+        "locale": "en",
+        "link": "https://www.primevault.com/",
+        "sort": null,
+        "description": "Next-gen custody, trading and risk infrastructure for institutional CeDeFi and enterprise digital asset operations",
+        "cta_title": null,
+        "logo": {
+          "data": {
+            "id": 1571,
+            "attributes": {
+              "name": "primevault.png",
+              "alternativeText": null,
+              "caption": null,
+              "width": 300,
+              "height": 300,
+              "formats": {
+                "thumbnail": {
+                  "ext": ".png",
+                  "url": "https://ik.imagekit.io/secretnetwork/images/thumbnail_primevault_880f1d0fb2_vzVIXzbsA.png",
+                  "hash": "thumbnail_primevault_880f1d0fb2",
+                  "mime": "image/png",
+                  "name": "thumbnail_primevault.png",
+                  "path": null,
+                  "size": 2.18,
+                  "width": 156,
+                  "height": 156,
+                  "provider_metadata": { "fileId": "6529968788c257da33ee67ee" }
+                }
+              },
+              "hash": "primevault_880f1d0fb2",
+              "ext": ".png",
+              "mime": "image/png",
+              "size": 0.79,
+              "url": "https://ik.imagekit.io/secretnetwork/images/primevault_880f1d0fb2_F0DabWdo4.png",
+              "previewUrl": null,
+              "provider": "strapi-provider-upload-imagekit",
+              "provider_metadata": { "fileId": "6529968788c257da33ee6832" },
+              "createdAt": "2023-10-13T19:12:08.447Z",
+              "updatedAt": "2023-10-13T19:12:08.447Z"
+            }
+          }
+        },
+        "type": [
+          { "id": 91, "name": "defi" },
+          { "id": 92, "name": "data" }
+        ],
+        "localizations": { "data": [] }
+      }
+    },
+    {
+      "id": 55,
+      "attributes": {
+        "name": "Heartland Finance",
+        "createdAt": "2023-10-13T18:58:22.608Z",
+        "updatedAt": "2023-10-13T19:13:11.331Z",
+        "publishedAt": "2023-10-13T19:13:11.324Z",
+        "locale": "en",
+        "link": "https://www.heartland-finance.com/",
+        "sort": null,
+        "description": "A gateway to DeFi for institutional investors.",
+        "cta_title": null,
+        "logo": {
+          "data": {
+            "id": 1570,
+            "attributes": {
+              "name": "heartfi.png",
+              "alternativeText": null,
+              "caption": null,
+              "width": 500,
+              "height": 500,
+              "formats": {
+                "thumbnail": {
+                  "ext": ".png",
+                  "url": "https://ik.imagekit.io/secretnetwork/images/thumbnail_heartfi_e369e2e07b_or_OlWSZr.png",
+                  "hash": "thumbnail_heartfi_e369e2e07b",
+                  "mime": "image/png",
+                  "name": "thumbnail_heartfi.png",
+                  "path": null,
+                  "size": 10.37,
+                  "width": 156,
+                  "height": 156,
+                  "provider_metadata": { "fileId": "6529928a88c257da33dc0b5d" }
+                }
+              },
+              "hash": "heartfi_e369e2e07b",
+              "ext": ".png",
+              "mime": "image/png",
+              "size": 6.37,
+              "url": "https://ik.imagekit.io/secretnetwork/images/heartfi_e369e2e07b_m5psQCOuR.png",
+              "previewUrl": null,
+              "provider": "strapi-provider-upload-imagekit",
+              "provider_metadata": { "fileId": "6529928888c257da33dc03a0" },
+              "createdAt": "2023-10-13T18:55:08.535Z",
+              "updatedAt": "2023-10-13T18:55:08.535Z"
+            }
+          }
+        },
+        "type": [
+          { "id": 89, "name": "defi" },
+          { "id": 90, "name": "data" }
+        ],
+        "localizations": { "data": [] }
+      }
+    },
+    {
+      "id": 57,
+      "attributes": {
+        "name": "Obi",
+        "createdAt": "2023-10-13T19:15:52.595Z",
+        "updatedAt": "2023-10-13T19:15:54.833Z",
+        "publishedAt": "2023-10-13T19:15:54.734Z",
+        "locale": "en",
+        "link": "https://obi.money/",
+        "sort": null,
+        "description": "Provides convenient user account solutions for web3 and traditional enterprises who offer non-custodial web3 products to their users.",
+        "cta_title": null,
+        "logo": {
+          "data": {
+            "id": 1572,
+            "attributes": {
+              "name": "obi.png",
+              "alternativeText": null,
+              "caption": null,
+              "width": 550,
+              "height": 550,
+              "formats": {
+                "small": {
+                  "ext": ".png",
+                  "url": "https://ik.imagekit.io/secretnetwork/images/small_obi_8dc8aa5a02_85HDrRDb5S.png",
+                  "hash": "small_obi_8dc8aa5a02",
+                  "mime": "image/png",
+                  "name": "small_obi.png",
+                  "path": null,
+                  "size": 17,
+                  "width": 500,
+                  "height": 500,
+                  "provider_metadata": { "fileId": "6529973e88c257da33f1751a" }
+                },
+                "thumbnail": {
+                  "ext": ".png",
+                  "url": "https://ik.imagekit.io/secretnetwork/images/thumbnail_obi_8dc8aa5a02_9rq8Fby1T.png",
+                  "hash": "thumbnail_obi_8dc8aa5a02",
+                  "mime": "image/png",
+                  "name": "thumbnail_obi.png",
+                  "path": null,
+                  "size": 4.47,
+                  "width": 156,
+                  "height": 156,
+                  "provider_metadata": { "fileId": "6529973f88c257da33f17778" }
+                }
+              },
+              "hash": "obi_8dc8aa5a02",
+              "ext": ".png",
+              "mime": "image/png",
+              "size": 4.51,
+              "url": "https://ik.imagekit.io/secretnetwork/images/obi_8dc8aa5a02_uQ-5YTG8-.png",
+              "previewUrl": null,
+              "provider": "strapi-provider-upload-imagekit",
+              "provider_metadata": { "fileId": "6529973e88c257da33f17517" },
+              "createdAt": "2023-10-13T19:15:11.656Z",
+              "updatedAt": "2023-10-13T19:15:11.656Z"
+            }
+          }
+        },
+        "type": [
+          { "id": 94, "name": "defi" },
+          { "id": 93, "name": "data" }
+        ],
+        "localizations": { "data": [] }
+      }
+    }
+  ],
+  "meta": { "pagination": { "page": 1, "pageSize": 1000, "pageCount": 1, "total": 33 } }
+}

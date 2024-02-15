@@ -1,7 +1,7 @@
 import BigNumber from 'bignumber.js'
 import { createContext, useEffect, useRef, useState } from 'react'
 import { SecretNetworkClient } from 'secretjs'
-import { allTokens, dAppsURL, randomDelay, sleep, sortDAppsArray } from 'utils/commons'
+import { allTokens, randomDelay, sleep, sortDAppsArray } from 'utils/commons'
 import { SECRET_LCD, SECRET_CHAIN_ID, chains } from 'utils/config'
 
 const APIContext = createContext(null)
@@ -123,7 +123,7 @@ const APIContextProvider = ({ children }: any) => {
   }, [])
 
   const fetchDappsURL = () => {
-    fetch(dAppsURL)
+    fetch('../../dAppData.json')
       .then((response) => {
         if (!response.ok) throw new Error()
         else return response.json()
