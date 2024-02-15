@@ -6,8 +6,6 @@ export const viewingKeyErrorString = '🧐'
 export const faucetURL = 'https://faucet.secretsaturn.net/claim'
 export const faucetAddress = 'secret1tq6y8waegggp4fv2fcxk3zmpsmlfadyc7lsd69'
 
-export const dAppsURL = 'https://secretadmin.scrt.network/api/ecosystem-dapps?populate=deep&pagination[pageSize]=1000'
-
 export const batchQueryContractAddress = 'secret17gnlxnwux0szd7qhl90ym8lw22qvedjz4v09dm'
 export const batchQueryCodeHash = '72a09535b77b76862f7b568baf1ddbe158a2e4bbd0f0879c69ada9b398e31c1f'
 
