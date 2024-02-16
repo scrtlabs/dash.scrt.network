@@ -363,7 +363,7 @@ export const chains: { [chain_name: string]: Chain } = {
     withdraw_gas: 150_000,
     chain_id: 'core-1',
     bech32_prefix: 'persistence',
-    lcd: 'https://persistence-api.polkachu.com',
+    lcd: 'https://persistence-rest.publicnode.com',
     chain_image: '/xprt.svg',
     explorer_account: 'https://www.mintscan.io/persistence/account/'
   },
@@ -1815,7 +1815,7 @@ export const tokens: Token[] = [
   },
   {
     name: 'pSTAKE',
-    description: 'Persistance pSTAKE',
+    description: 'Persistence pSTAKE',
     address: 'secret1umeg3u5y949vz6jkgq0n4rhefsr84ws3duxmnz',
     code_hash: '638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e',
     image: '/pstake.svg',
@@ -2174,7 +2174,7 @@ export const tokens: Token[] = [
   },
   {
     name: 'stkATOM',
-    description: 'Persistance ATOM Staking Derivative',
+    description: 'Persistence ATOM Staking Derivative',
     address: 'secret16vjfe24un4z7d3sp9vd0cmmfmz397nh2njpw3e',
     code_hash: '638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e',
     image: '/stkatom.svg',
@@ -2444,7 +2444,7 @@ export const tokens: Token[] = [
   },
   {
     name: 'XPRT',
-    description: 'Persistance Governance Token',
+    description: 'Persistence Governance Token',
     address: 'secret1gnrrqjj5e2pwn4g262xjyypptu0ge3z3tps3nn',
     code_hash: '638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e',
     image: '/xprt.svg',
@@ -2923,6 +2923,15 @@ export const snips: Token[] = [
         ),
         channel_id: 'channel-103',
         gas: 300_000
+      },
+      {
+        chain_name: 'Persistence',
+        denom: ibcDenom(
+          [{ incomingChannelId: 'channel-159', incomingPortId: 'transfer' }],
+          'cw20:secret153wu605vvp934xhd4k9dtd640zsep5jkesstdm'
+        ),
+        channel_id: 'channel-159',
+        gas: 300_000
       }
     ],
     withdrawals: [
@@ -2960,6 +2969,12 @@ export const snips: Token[] = [
         chain_name: 'Migaloo',
         denom: 'secret153wu605vvp934xhd4k9dtd640zsep5jkesstdm',
         channel_id: 'channel-129',
+        gas: 350_000
+      },
+      {
+        chain_name: 'Persistence',
+        denom: 'secret153wu605vvp934xhd4k9dtd640zsep5jkesstdm',
+        channel_id: 'channel-132',
         gas: 350_000
       }
     ]
