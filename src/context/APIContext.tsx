@@ -1,7 +1,8 @@
 import BigNumber from 'bignumber.js'
 import { createContext, useEffect, useRef, useState } from 'react'
 import { SecretNetworkClient } from 'secretjs'
-import { allTokens, dAppsURL, randomDelay, sleep, sortDAppsArray } from 'utils/commons'
+import { useUserPreferencesStore } from 'store/UserPreferences'
+import { allTokens, coinGeckoCurrencyMap, dAppsURL, randomDelay, sleep, sortDAppsArray } from 'utils/commons'
 import { SECRET_LCD, SECRET_CHAIN_ID, chains } from 'utils/config'
 
 const APIContext = createContext(null)
@@ -173,23 +174,25 @@ const APIContextProvider = ({ children }: any) => {
   const [volume, setVolume] = useState(Number)
   const [marketCap, setMarketCap] = useState(Number)
 
+  const { currency } = useUserPreferencesStore()
+
   useEffect(() => {
     // Coingecko API
-    let coingeckoApiUrl_Day = `https://api.coingecko.com/api/v3/coins/secret/market_chart?vs_currency=usd&days=1`
+    let coingeckoApiUrl_Day = `https://api.coingecko.com/api/v3/coins/secret/market_chart?vs_currency=${coinGeckoCurrencyMap[currency]}&days=1`
     fetch(coingeckoApiUrl_Day)
       .then((response) => response.json())
       .then((response) => {
         setCoinGeckoApiData_Day(response)
       })
 
-    let coingeckoApiUrl_Month = `https://api.coingecko.com/api/v3/coins/secret/market_chart?vs_currency=usd&days=30`
+    let coingeckoApiUrl_Month = `https://api.coingecko.com/api/v3/coins/secret/market_chart?vs_currency=${coinGeckoCurrencyMap[currency]}&days=30`
     fetch(coingeckoApiUrl_Month)
       .then((response) => response.json())
       .then((response) => {
         setCoinGeckoApiData_Month(response)
       })
 
-    let coingeckoApiUrl_Year = `https://api.coingecko.com/api/v3/coins/secret/market_chart?vs_currency=usd&days=365`
+    let coingeckoApiUrl_Year = `https://api.coingecko.com/api/v3/coins/secret/market_chart?vs_currency=${coinGeckoCurrencyMap[currency]}&days=365`
     fetch(coingeckoApiUrl_Year)
       .then((response) => response.json())
       .then((response) => {
@@ -213,13 +216,13 @@ const APIContextProvider = ({ children }: any) => {
       })
 
     // Coingecko Market Price, Market Cap & Volume
-    let coingeckoMarketCapVolumeUrl = `https://api.coingecko.com/api/v3/simple/price?ids=secret&vs_currencies=USD&include_market_cap=true&include_24hr_vol=true&include_24hr_change=true`
+    let coingeckoMarketCapVolumeUrl = `https://api.coingecko.com/api/v3/simple/price?ids=secret&vs_currencies=usd,eur,jpy,gbp,aud,cad,chf&include_market_cap=true&include_24hr_vol=true&include_24hr_change=true` // includes all supported currencies
     fetch(coingeckoMarketCapVolumeUrl)
       .then((response) => response.json())
       .then((response) => {
-        setCurrentPrice(response.secret.usd)
-        setMarketCap(response.secret.usd_market_cap)
-        setVolume(response.secret.usd_24h_vol)
+        setCurrentPrice(response.secret[coinGeckoCurrencyMap[currency]]) // e.g. response.secret.usd
+        setMarketCap(response.secret[coinGeckoCurrencyMap[currency] + '_market_cap']) // e.g. response.secret.usd_market_cap
+        setVolume(response.secret[coinGeckoCurrencyMap[currency] + '_24h_vol']) // e.g. response.secret.usd_24h_vol
       })
 
     let mintscanApiDataUrl = `https://dev.api.mintscan.io/v1/secret/status`

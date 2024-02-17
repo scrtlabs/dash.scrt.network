@@ -7,11 +7,12 @@ import QuadTile from './components/QuadTile'
 import SocialMedia from './components/SocialMedia'
 import { SECRET_LCD, SECRET_CHAIN_ID } from 'utils/config'
 import StakingChart from './components/StakingChart'
-import { formatNumber } from 'utils/commons'
+import { currencySymbols, formatNumber } from 'utils/commons'
 import { APIContext } from 'context/APIContext'
 import { Helmet } from 'react-helmet-async'
 import { trackMixPanelEvent, dashboardPageTitle, dashboardPageDescription, dashboardJsonLdSchema } from 'utils/commons'
 import UnbondingsChart from './components/UnbondingsChart'
+import { useUserPreferencesStore } from 'store/UserPreferences'
 
 function Dashboard() {
   const {
@@ -134,15 +135,21 @@ function Dashboard() {
   const [marketCapFormattedString, setMarketCapFormattedString] = useState('')
   const [TVLFormattedString, setTVLFormattedString] = useState('')
 
+  const { currency } = useUserPreferencesStore()
+
   useEffect(() => {
     if (volume) {
-      setVolumeFormattedString('$' + formatNumber(parseInt(volume.toFixed(0).toString()), 2))
+      setVolumeFormattedString(currencySymbols[currency] + formatNumber(parseInt(volume.toFixed(0).toString()), 2))
     }
     if (marketCap) {
-      setMarketCapFormattedString('$' + formatNumber(parseInt(marketCap.toFixed(0).toString()), 2))
+      setMarketCapFormattedString(
+        currencySymbols[currency] + formatNumber(parseInt(marketCap.toFixed(0).toString()), 2)
+      )
     }
     if (defiLamaApiData_TVL) {
-      setTVLFormattedString('$' + formatNumber(parseInt(defiLamaApiData_TVL.toFixed(0).toString()), 2))
+      setTVLFormattedString(
+        currencySymbols[currency] + formatNumber(parseInt(defiLamaApiData_TVL.toFixed(0).toString()), 2)
+      )
     }
   }, [volume, marketCap, defiLamaApiData_TVL])
 
