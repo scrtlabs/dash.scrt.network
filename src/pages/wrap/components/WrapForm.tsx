@@ -16,12 +16,13 @@ import BalanceUI from 'components/BalanceUI'
 import toast from 'react-hot-toast'
 import { useSearchParams } from 'react-router-dom'
 import { Nullable } from 'types/Nullable'
-import { ThemeContext } from 'context/ThemeContext'
+import { useUserPreferencesStore } from 'store/UserPreferences'
 
 export default function WrapForm() {
+  const { debugMode } = useUserPreferencesStore()
   const { secretNetworkClient, feeGrantStatus, isConnected, scrtBalance, getBalance } = useSecretNetworkClientStore()
 
-  const { theme } = useContext(ThemeContext)
+  const { theme } = useUserPreferencesStore()
 
   const formik = useFormik<IFormValues>({
     initialValues: {
@@ -340,7 +341,7 @@ export default function WrapForm() {
         </button>
 
         {/* Debug Info */}
-        {import.meta.env.VITE_DEBUG_MODE === 'true' && (
+        {debugMode && (
           <div className="text-sky-500 text-xs p-2 bg-blue-500/20 rounded">
             <div className="mb-4 font-semibold">Debug Info (Dev Mode)</div>
             formik.errors: {JSON.stringify(formik.errors)}

@@ -1,11 +1,10 @@
-import { faBars, faGear, faSun } from '@fortawesome/free-solid-svg-icons'
+import { faBars } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import Footer from 'components/Footer'
 import { Navigation } from 'components/Navigation'
-import { useState, createContext, useEffect, useContext } from 'react'
+import { useState, createContext, useEffect } from 'react'
 import { useLocation } from 'react-router-dom'
 import FloatingCTAButton from 'components/FloatingCTAButton'
-import { ThemeSwitch } from 'components/ThemeSwitch'
 import { Nullable } from 'types/Nullable'
 import Wallet from 'components/Wallet/Wallet'
 import toast, { ToastBar, Toaster, ToasterProps } from 'react-hot-toast'
@@ -111,8 +110,6 @@ export const DefaultLayout = ({ children }: any) => {
                   <FontAwesomeIcon icon={faBars} size="xl" />
                 </button>
               </div>
-
-              <div className="flex-initial sm:flex-1 text-right space-x-2">{/* <ThemeSwitch /> */}</div>
 
               <div className="flex-1 sm:flex-initial sm:flex sm:justify-end">
                 <Wallet />

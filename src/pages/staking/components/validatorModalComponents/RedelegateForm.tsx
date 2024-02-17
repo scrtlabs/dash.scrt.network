@@ -6,7 +6,6 @@ import { toUsdString, faucetAddress, shuffleArray } from 'utils/commons'
 import { StakingContext } from 'pages/staking/Staking'
 import FeeGrant from '../../../../components/FeeGrant/FeeGrant'
 import Select, { components } from 'react-select'
-import { ThemeContext } from 'context/ThemeContext'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useSecretNetworkClientStore } from 'store/secretNetworkClient'
 import { scrtToken } from 'utils/tokens'
@@ -14,6 +13,7 @@ import PercentagePicker from 'components/PercentagePicker'
 import Button from 'components/UI/Button/Button'
 import toast from 'react-hot-toast'
 import { Validator } from 'types/Validator'
+import { useUserPreferencesStore } from 'store/UserPreferences'
 
 export default function RedelegateForm() {
   const { delegatorDelegations, validators, selectedValidator, setView, reload, setReload } = useContext(StakingContext)
@@ -22,7 +22,7 @@ export default function RedelegateForm() {
 
   const { currentPrice } = useContext(APIContext)
 
-  const { theme } = useContext(ThemeContext)
+  const { theme } = useUserPreferencesStore()
 
   const [redelegateValidator, setRedelegateValidator] = useState<any>()
 

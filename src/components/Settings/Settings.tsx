@@ -1,22 +1,27 @@
-import React, { useState } from 'react'
-import { faBug, faGear, faSave } from '@fortawesome/free-solid-svg-icons'
+import { useEffect, useState } from 'react'
+import { faBug, faChevronDown, faGear } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import Tooltip from '@mui/material/Tooltip'
 import Button from 'components/UI/Button/Button'
 import Modal from 'components/UI/Modal/Modal'
 import { useFormik } from 'formik'
-import { settingsSchema } from './settingsSchema'
+// import { settingsSchema } from './settingsSchema'
 import { NotificationService } from 'services/notification.service'
+import { Theme } from 'types/Theme'
+import { Currency } from 'types/Currency'
+import { useUserPreferencesStore } from 'store/UserPreferences'
 
 function Settings() {
+  const { theme, setTheme, debugMode, setDebugMode, currency, setCurrency } = useUserPreferencesStore()
+
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
 
-  type Option = {
+  type ThemeOption = {
     label: string
-    value: any
+    value: Theme
   }
 
-  const themeOptions: Option[] = [
+  const themeOptions: ThemeOption[] = [
     {
       label: 'Dark Mode',
       value: 'dark'
@@ -27,34 +32,39 @@ function Settings() {
     }
   ]
 
-  const currencyOptions: Option[] = [
+  type CurrencyOption = {
+    label: string
+    value: Currency
+  }
+
+  const currencyOptions: CurrencyOption[] = [
     {
       label: 'USD',
-      value: 'usd'
+      value: 'USD'
     },
     {
       label: 'EUR',
-      value: 'eur'
+      value: 'EUR'
     },
     {
       label: 'JPY',
-      value: 'jpy'
+      value: 'JPY'
     },
     {
       label: 'GBP',
-      value: 'gbp'
+      value: 'GBP'
     },
     {
       label: 'AUD',
-      value: 'aud'
+      value: 'AUD'
     },
     {
       label: 'CAD',
-      value: 'cad'
+      value: 'CAD'
     },
     {
       label: 'CHF',
-      value: 'chf'
+      value: 'CHF'
     }
   ]
 
@@ -66,17 +76,22 @@ function Settings() {
 
   const formik = useFormik<TFormValues>({
     initialValues: {
-      theme: themeOptions[0].value,
-      currency: currencyOptions[0].value,
-      debugMode: false
+      theme: theme,
+      currency: currency,
+      debugMode: debugMode
     },
     // validationSchema: settingsSchema,
     validateOnBlur: false,
     validateOnChange: true,
     onSubmit: async (values) => {
       try {
+        setTheme(values.theme as Theme)
+        setCurrency(values.currency as Currency)
+        setDebugMode(values.debugMode)
+        NotificationService.notify(`Your preferences have been saved!`, 'success')
+        setIsModalOpen(false)
       } catch (error: any) {
-        console.error(error)
+        console.error('error after submitting settings:', error)
         NotificationService.notify(`An error occured while saving user settings!`, 'error')
       }
     }
@@ -86,67 +101,103 @@ function Settings() {
     <>
       <Modal
         onClose={() => setIsModalOpen(false)}
-        isOpen={true || isModalOpen}
+        isOpen={isModalOpen}
         title="Settings"
         subTitle="Settings are saved in the local storage in your browser."
       >
-        <form>
+        <form onSubmit={formik.handleSubmit}>
           <div className="flex flex-col gap-4">
             {/* Theme */}
             <div className="flex flex-col gap-2">
-              <label htmlFor="themeSelect" className="font-bold text-sm">
+              <label htmlFor="theme" className="font-bold text-sm">
                 Theme
               </label>
-              <select id="themeSelect" className="dark:bg-neutral-800 border dark:border-neutral-700 p-2 rounded-lg">
-                {themeOptions.map((theme: any, index: number) => {
-                  return (
-                    <option key={index} value={theme.value}>
-                      {theme.label}
-                    </option>
-                  )
-                })}
-              </select>
+              <div className="relative">
+                <span className="absolute inset-y-0 right-0 flex items-center">
+                  <FontAwesomeIcon icon={faChevronDown} className="text-xs mr-4" />
+                </span>
+                <select
+                  id="theme"
+                  value={formik.values.theme}
+                  onBlur={formik.handleBlur}
+                  onChange={formik.handleChange}
+                  className="w-full appearance-none dark:bg-neutral-800 border dark:border-neutral-700 py-2 px-4 rounded-lg focus:outline-none focus-visible:ring-4 enabled:ring-sky-500/40 dark:enabled:ring-sky-600/40"
+                >
+                  {themeOptions.map((theme: any, index: number) => {
+                    return (
+                      <option key={index} value={theme.value}>
+                        {theme.label}
+                      </option>
+                    )
+                  })}
+                </select>
+              </div>
             </div>
 
             {/* Currency */}
             <div className="flex flex-col gap-2">
-              <label htmlFor="currencySelect" className="font-bold text-sm">
+              <label htmlFor="currency" className="font-bold text-sm">
                 Currency
               </label>
-              <select id="currencySelect" className="dark:bg-neutral-800 border dark:border-neutral-700 p-2 rounded-lg">
-                {currencyOptions.map((currency: any, index: number) => {
-                  return (
-                    <option key={index} value={currency.value}>
-                      {currency.label}
-                    </option>
-                  )
-                })}
-              </select>
+              <div className="relative">
+                <span className="absolute inset-y-0 right-0 flex items-center">
+                  <FontAwesomeIcon icon={faChevronDown} className="text-xs mr-4" />
+                </span>
+                <select
+                  id="currency"
+                  className="w-full appearance-none dark:bg-neutral-800 border dark:border-neutral-700 py-2 px-4 rounded-lg focus:outline-none focus-visible:ring-4 enabled:ring-sky-500/40 dark:enabled:ring-sky-600/40"
+                  value={formik.values.currency}
+                  onBlur={formik.handleBlur}
+                  onChange={formik.handleChange}
+                >
+                  {currencyOptions.map((currency: any, index: number) => {
+                    return (
+                      <option key={index} value={currency.value}>
+                        {currency.label}
+                      </option>
+                    )
+                  })}
+                </select>
+              </div>
             </div>
 
             {/* Debug Mode */}
-            <div className="flex items-center gap-3 mt-3 mb-2">
+            <label htmlFor="debugMode" className="mt-2 inline-flex items-center cursor-pointer">
               <input
-                id="default-checkbox"
+                id="debugMode"
+                checked={formik.values.debugMode}
+                onBlur={formik.handleBlur}
+                onChange={formik.handleChange}
                 type="checkbox"
-                value=""
-                className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                className="sr-only peer"
               />
-              <label htmlFor="default-checkbox" className="text-sm font-medium text-gray-900 dark:text-gray-300">
+              <div className="relative w-11 h-6 bg-neutral-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-purple-300 dark:peer-focus:ring-purple-800 rounded-full peer dark:bg-neutral-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-neutral-300 after:border after:rounded-full after:w-5 after:h-5 after:transition-all dark:border-neutral-600 peer-checked:bg-purple-600"></div>
+              <span className="ms-3 text-sm font-medium text-neutral-900 dark:text-neutral-300">
                 <FontAwesomeIcon icon={faBug} className="mr-2 text-green-700 dark:text-green-600" />
                 Debug Mode
-              </label>
-            </div>
+              </span>
+            </label>
 
             <div>
-              <Button className="mt-2 px-6" color="emerald">
-                Save
+              <Button className="mt-2 px-6" color="primary" type="submit">
+                Save Changes
               </Button>
             </div>
+
+            {/* Debug Info */}
+            {debugMode && (
+              <div className="text-sky-500 text-xs p-2 bg-blue-500/20 rounded">
+                <div className="mb-4 font-semibold">Debug Info</div>
+                <div className="flex flex-col gap-2">
+                  <span> formik.values: {JSON.stringify(formik.values)}</span>
+                  <span>formik.errors: {JSON.stringify(formik.errors)}</span>
+                </div>
+              </div>
+            )}
           </div>
         </form>
       </Modal>
-      <Tooltip title={`Settings`} placement="bottom" arrow>
+      <Tooltip title={`Settings`} placement="left" arrow>
         <button
           onClick={() => setIsModalOpen(true)}
           className="text-black dark:text-white hover:text-neutral-600 dark:hover:text-neutral-400 transition-colors"

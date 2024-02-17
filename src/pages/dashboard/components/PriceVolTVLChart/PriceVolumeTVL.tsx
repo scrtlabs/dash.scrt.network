@@ -1,6 +1,5 @@
 import { createContext, useContext, useEffect, useState } from 'react'
 import { formatNumber } from 'utils/commons'
-import { ThemeContext } from 'context/ThemeContext'
 import { APIContext } from 'context/APIContext'
 
 import {
@@ -16,6 +15,7 @@ import {
 import { Line } from 'react-chartjs-2'
 import TypeSwitch from './components/TypeSwitch'
 import RangeSwitch from './components/RangeSwitch'
+import { useUserPreferencesStore } from 'store/UserPreferences'
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend)
 
@@ -28,7 +28,7 @@ export default function PriceVolumeTVL(props: any) {
   const { coingeckoApiData_Day, coingeckoApiData_Month, coingeckoApiData_Year, defiLamaApiData_Year } =
     useContext(APIContext)
 
-  const { theme } = useContext(ThemeContext)
+  const { theme } = useUserPreferencesStore()
 
   const [chartType, setChartType] = useState<ChartType>('Price')
   const [chartRange, setChartRange] = useState<ChartRange>('Month')

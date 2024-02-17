@@ -16,9 +16,9 @@ import {
   LegendItem
 } from 'chart.js'
 import { Doughnut } from 'react-chartjs-2'
-import { ThemeContext } from 'context/ThemeContext'
 import { useSecretNetworkClientStore } from 'store/secretNetworkClient'
 import BigNumber from 'bignumber.js'
+import { useUserPreferencesStore } from 'store/UserPreferences'
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, ArcElement, LineElement, Title, ChartTooltip, Legend)
 
@@ -27,7 +27,7 @@ export default function BalanceChart() {
 
   const { balanceMapping } = useSecretNetworkClientStore()
 
-  const { theme } = useContext(ThemeContext)
+  const { theme } = useUserPreferencesStore()
 
   const [data, setData] = useState({
     labels: [''],

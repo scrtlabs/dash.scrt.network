@@ -7,17 +7,17 @@ import mixpanel from 'mixpanel-browser'
 import { useEffect, useState, useContext } from 'react'
 import { trackMixPanelEvent } from 'utils/commons'
 import SquidModal from './SquidModal'
-import { ThemeContext } from 'context/ThemeContext'
 import HoudiniModal from './HoudiniModal'
 import { useSecretNetworkClientStore } from 'store/secretNetworkClient'
 import Title from 'components/Title'
+import { useUserPreferencesStore } from 'store/UserPreferences'
 
 function Bridge() {
   useEffect(() => {
     trackMixPanelEvent('Open Bridge Tab')
   }, [])
 
-  const { theme } = useContext(ThemeContext)
+  const { theme } = useUserPreferencesStore()
   const [isSquidModalOpen, setIsSquidModalOpen] = useState(false)
   const [isHoudiniModalOpen, setIsHoudiniModalOpen] = useState(false)
 

@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import Select, { components } from 'react-select'
 import { Nullable } from 'types/Nullable'
 import { MessageDefinitions } from './Messages'
@@ -8,7 +8,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faInfoCircle, faSearch, faTrash } from '@fortawesome/free-solid-svg-icons'
 import Tooltip from '@mui/material/Tooltip'
 import { CircularProgress } from '@mui/material'
-import { ThemeContext } from 'context/ThemeContext'
+import { useUserPreferencesStore } from 'store/UserPreferences'
 
 interface Props {
   number: number
@@ -26,7 +26,7 @@ function Message(props: Props) {
   const [messageType, setMessageType] = useState<Nullable<string>>(null)
   const [isLoadingInfo, setIsLoadingInfo] = useState<boolean>(false)
   const [relevantInfo, setRelevantInfo] = useState<any>(null)
-  const { theme } = useContext(ThemeContext)
+  const { theme } = useUserPreferencesStore()
 
   const [error, setError] = useState<string>('')
 

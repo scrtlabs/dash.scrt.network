@@ -14,9 +14,9 @@ import {
   ArcElement
 } from 'chart.js'
 import { Doughnut } from 'react-chartjs-2'
-import { ThemeContext } from 'context/ThemeContext'
 import { trackMixPanelEvent } from 'utils/commons'
 import { Link } from 'react-router-dom'
+import { useUserPreferencesStore } from 'store/UserPreferences'
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, ArcElement, LineElement, Title, ChartTooltip, Legend)
 
@@ -33,7 +33,7 @@ export default function StakingChart() {
     IBCTokenSupply
   } = useContext(APIContext)
 
-  const { theme } = useContext(ThemeContext)
+  const { theme } = useUserPreferencesStore()
 
   const [otherToken, setOtherToken] = useState(null)
 
