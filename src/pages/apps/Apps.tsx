@@ -9,9 +9,16 @@ import { APIContext } from 'context/APIContext'
 import { trackMixPanelEvent as trackEvent } from 'utils/commons'
 import FilterTag from './components/FilterTag'
 import SkeletonLoaders from './components/SkeletonLoaders/SkeletonLoaders'
+import he from 'he'
 
 function Apps() {
   const { dappsData, dappsDataSorted, tags } = useContext(APIContext)
+
+  function extractText(htmlString: string) {
+    const parser = new DOMParser()
+    const doc = parser.parseFromString(htmlString, 'text/html')
+    return doc.body.textContent || ''
+  }
 
   // Mixpanel
   useEffect(() => {
@@ -36,19 +43,19 @@ function Apps() {
   const [searchText, setSearchText] = useState<string>('')
 
   // results apps that match on the search input and chosen tags
-  function filteredDappsData() {
-    let items = dappsDataSorted
-    if (searchText !== '') {
-      items = items.filter((app: any) => app.attributes.name.toLowerCase().includes(searchText.toLowerCase()))
-    }
+  // function filteredDappsData() {
+  //   let items = dappsDataSorted
+  //   if (searchText !== '') {
+  //     items = items.filter((app: any) => app.attributes.name.toLowerCase().includes(searchText.toLowerCase()))
+  //   }
 
-    if (tagsToBeFilteredBy?.length > 0) {
-      items = items.filter((item: any) =>
-        item.attributes.type.map((item: any) => item.name).find((tag: any) => tagsToBeFilteredBy.includes(tag))
-      )
-    }
-    return items
-  }
+  //   if (tagsToBeFilteredBy?.length > 0) {
+  //     items = items.filter((item: any) =>
+  //       item.attributes.type.map((item: any) => item.name).find((tag: any) => tagsToBeFilteredBy.includes(tag))
+  //     )
+  //   }
+  //   return items
+  // }
 
   return (
     <>
@@ -111,19 +118,19 @@ function Apps() {
         <div className="grid grid-cols-12 gap-4 auto-rows-auto">
           {dappsData?.length > 0 && (
             <>
-              {filteredDappsData().map((dapp: any) => (
+              {dappsDataSorted.map((dapp: any, index: number) => (
                 <AppTile
-                  key={dapp.attributes.name}
-                  name={dapp.attributes.name}
-                  description={dapp.attributes.description}
-                  tags={dapp.attributes.type.map((item: any) => item.name)}
-                  image={dapp.attributes.logo.data.attributes.url}
-                  url={dapp.attributes.link}
+                  key={index}
+                  name={dapp.title?.rendered ? he.decode(dapp.title?.rendered) : ''}
+                  description={dapp.content?.rendered ? he.decode(extractText(dapp.content?.rendered)) : ''}
+                  // tags={dapp.attributes.type.map((item: any) => item.name)}
+                  image={dapp.yoast_head_json?.twitter_image || dapp.yoast_head_json?.og_image[0]?.url || null}
+                  // url={dapp.attributes.link}
                 />
               ))}
             </>
           )}
-          {dappsData.length <= 0 && <SkeletonLoaders />}
+          {/* {dappsData.length <= 0 && <SkeletonLoaders />}*/}
         </div>
       </div>
     </>

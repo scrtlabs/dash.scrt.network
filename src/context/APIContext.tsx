@@ -123,13 +123,14 @@ const APIContextProvider = ({ children }: any) => {
   }, [])
 
   const fetchDappsURL = () => {
-    fetch('../../dAppData.json')
+    fetch('https://scrt.network/wp-json/wp/v2/apps?per_page=100')
       .then((response) => {
         if (!response.ok) throw new Error()
         else return response.json()
       })
       .then((jsonData) => {
-        setDappsData(jsonData.data)
+        console.log('jsonData', jsonData)
+        setDappsData(jsonData)
       })
       .catch((error) => {
         console.error(error)
@@ -146,18 +147,18 @@ const APIContextProvider = ({ children }: any) => {
     if (dappsData && dappsDataSorted.length === 0 && dappsData?.length !== 0) {
       setDappsDataSorted(sortDAppsArray(dappsData))
       // Tag-Filter
-      let allTags: string[] = []
+      // let allTags: string[] = []
 
-      dappsData.forEach((dapp) => {
-        dapp.attributes.type
-          .map((item: any) => item.name)
-          .forEach((tag: any) => {
-            if (!allTags.find((tagItem) => tagItem === tag)) {
-              allTags.push(tag)
-            }
-          })
-      })
-      setTags(allTags.sort())
+      // dappsData.forEach((dapp) => {
+      //   dapp.attributes.type
+      //     .map((item: any) => item.name)
+      //     .forEach((tag: any) => {
+      //       if (!allTags.find((tagItem) => tagItem === tag)) {
+      //         allTags.push(tag)
+      //       }
+      //     })
+      // })
+      // setTags(allTags.sort())
     }
   }, [dappsData])
 

@@ -1,10 +1,11 @@
+import { Nullable } from 'types/Nullable'
 import Tag from './Tag'
 import mixpanel from 'mixpanel-browser'
 
 interface Props {
   name: string
   description: string
-  image?: string
+  image?: Nullable<string>
   tags?: string[]
   url?: string
 }

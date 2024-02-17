@@ -1,3 +1,4 @@
+import he from 'he'
 import { tokens, snips, ICSTokens } from './config'
 import mixpanel from 'mixpanel-browser'
 
@@ -128,7 +129,11 @@ export const shuffleArray = (array: any[]) => {
 }
 
 export const sortDAppsArray = (array: any[]) => {
-  const sortedArray = [...array].sort((a, b) => a.attributes.name.localeCompare(b.attributes.name))
+  const sortedArray = [...array].sort((a, b) => {
+    const titleA = a.title?.rendered ? he.decode(a.title.rendered) : ''
+    const titleB = b.title?.rendered ? he.decode(b.title.rendered) : ''
+    return titleA.localeCompare(titleB)
+  })
   return sortedArray
 }
 
