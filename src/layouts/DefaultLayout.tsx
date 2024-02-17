@@ -111,7 +111,7 @@ export const DefaultLayout = ({ children }: any) => {
                 </button>
               </div>
 
-              <div className="flex-1 sm:flex-initial sm:flex sm:justify-end">
+              <div className="flex-1 sm:flex-initial sm:flex sm:justify-end ml-auto">
                 <Wallet />
               </div>
 
