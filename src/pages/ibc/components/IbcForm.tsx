@@ -69,7 +69,7 @@ export default function IbcForm() {
 
   const { theme } = useContext(ThemeContext)
 
-  const formik = useFormik<IFormValues>({
+  const formik = useFormik<TFormValues>({
     initialValues: {
       chain: selectableChains.find((chain: Chain) => chain.chain_name === 'Osmosis'),
       token: IbcService.getSupportedIbcTokensByChain(
@@ -144,7 +144,7 @@ export default function IbcForm() {
     }
   }
 
-  interface IFormValues {
+  type TFormValues = {
     chain: Chain
     token: Token
     ibcMode: IbcMode
