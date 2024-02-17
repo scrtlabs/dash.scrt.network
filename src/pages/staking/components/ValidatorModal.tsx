@@ -1,8 +1,8 @@
-import { faGlobe, faXmark } from '@fortawesome/free-solid-svg-icons'
+import { faGlobe } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { ReactNode, useContext, useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { APIContext } from 'context/APIContext'
-import { toUsdString, formatNumber } from 'utils/commons'
+import { formatNumber, toCurrencyString } from 'utils/commons'
 import BigNumber from 'bignumber.js'
 import { SECRET_LCD, SECRET_CHAIN_ID } from 'utils/config'
 import CopyToClipboard from 'react-copy-to-clipboard'
@@ -318,7 +318,7 @@ const ValidatorModal = (props: Props) => {
                   <span className="text-neutral-400 text-xs">{` SCRT`}</span>
                 </div>
                 <div className="font-semibold text-neutral-400 mt-0.5 text-sm">
-                  {toUsdString(
+                  {toCurrencyString(
                     new BigNumber(scrtBalance!)
                       .dividedBy(`1e${scrtToken.decimals}`)
                       .multipliedBy(Number(currentPrice))
@@ -345,7 +345,7 @@ const ValidatorModal = (props: Props) => {
                     <span className="text-neutral-400 text-xs">{` SCRT`}</span>
                   </div>
                   <div className="font-semibold text-neutral-400 mt-0.5 text-sm">
-                    {toUsdString(
+                    {toCurrencyString(
                       new BigNumber(
                         delegatorDelegations?.find(
                           (delegatorDelegation: any) =>
@@ -365,7 +365,7 @@ const ValidatorModal = (props: Props) => {
                     {0}
                     <span className="text-neutral-400 text-xs">{` SCRT`}</span>
                   </div>
-                  <div className="font-semibold text-neutral-400 mt-0.5 text-sm">{toUsdString(0)}</div>
+                  <div className="font-semibold text-neutral-400 mt-0.5 text-sm">{toCurrencyString(0)}</div>
                 </div>
               ))}
 

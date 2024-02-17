@@ -1,7 +1,7 @@
 import BigNumber from 'bignumber.js'
 import { useContext, useEffect, useState } from 'react'
 import { APIContext } from 'context/APIContext'
-import { toUsdString, faucetAddress } from 'utils/commons'
+import { faucetAddress, toCurrencyString } from 'utils/commons'
 import { StakingContext } from 'pages/staking/Staking'
 import FeeGrant from '../../../../components/FeeGrant/FeeGrant'
 import { useSecretNetworkClientStore } from 'store/secretNetworkClient'
@@ -16,15 +16,17 @@ export default function StakingForm() {
   const { currentPrice } = useContext(APIContext)
 
   const [amountString, setAmountString] = useState<string>('0')
-  const [amountInDollarString, setAmountInDollarString] = useState<string>('')
+  const [amountInDollarString, setAmountInCurrencyString] = useState<string>('')
 
   const handleInputChange = (e: any) => {
     setAmountString(e.target.value)
   }
 
   useEffect(() => {
-    const scrtBalanceUsdString = toUsdString(new BigNumber(amountString!).multipliedBy(Number(currentPrice)).toNumber())
-    setAmountInDollarString(scrtBalanceUsdString)
+    const scrtBalanceCurrencyString = toCurrencyString(
+      new BigNumber(amountString!).multipliedBy(Number(currentPrice)).toNumber()
+    )
+    setAmountInCurrencyString(scrtBalanceCurrencyString)
   }, [amountString])
 
   const handleSubmit = () => {

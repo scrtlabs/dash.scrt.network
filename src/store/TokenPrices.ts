@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js'
 import { Nullable } from 'types/Nullable'
-import { allTokens, toUsdString } from 'utils/commons'
+import { allTokens, toCurrencyString } from 'utils/commons'
 import { Token, tokens } from 'utils/config'
 import { create } from 'zustand'
 
@@ -62,7 +62,7 @@ export const useTokenPricesStore = create<TokenPricesState>()((set, get) => ({
     }
     const tokenPrice = get().priceMapping.get(token)
     if (tokenPrice !== undefined) {
-      return toUsdString(tokenPrice)
+      return toCurrencyString(tokenPrice)
     }
     return null
   },
@@ -73,7 +73,7 @@ export const useTokenPricesStore = create<TokenPricesState>()((set, get) => ({
     const tokenPrice = get().priceMapping.get(token)
     if (tokenPrice !== undefined) {
       const result = new BigNumber(tokenPrice).multipliedBy(amount).dividedBy(`1e${token.decimals}`)
-      return toUsdString(Number(result))
+      return toCurrencyString(Number(result))
     }
     return null
   }

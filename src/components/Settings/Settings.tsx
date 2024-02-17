@@ -88,8 +88,8 @@ function Settings() {
         setTheme(values.theme as Theme)
         setCurrency(values.currency as Currency)
         setDebugMode(values.debugMode)
-        NotificationService.notify(`Your preferences have been saved!`, 'success')
         setIsModalOpen(false)
+        window.location.reload()
       } catch (error: any) {
         console.error('error after submitting settings:', error)
         NotificationService.notify(`An error occured while saving user settings!`, 'error')

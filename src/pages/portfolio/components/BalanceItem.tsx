@@ -1,12 +1,8 @@
-import { useEffect, useState, useContext } from 'react'
-import { randomDelay, sleep, toUsdString, viewingKeyErrorString, allTokens } from 'utils/commons'
-import { APIContext } from 'context/APIContext'
+import { allTokens } from 'utils/commons'
 import { Token } from 'utils/config'
 import { useSecretNetworkClientStore } from 'store/secretNetworkClient'
 import { useTokenPricesStore } from 'store/TokenPrices'
-import { WalletService } from 'services/wallet.service'
 import BalanceUI from 'components/BalanceUI'
-import Button from 'components/UI/Button/Button'
 
 interface Props {
   token?: Token

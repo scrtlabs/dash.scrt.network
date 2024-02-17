@@ -2,7 +2,7 @@ import BigNumber from 'bignumber.js'
 import { useContext, useEffect, useState } from 'react'
 import { APIContext } from 'context/APIContext'
 import { faSearch } from '@fortawesome/free-solid-svg-icons'
-import { toUsdString, faucetAddress, shuffleArray } from 'utils/commons'
+import { faucetAddress, shuffleArray, toCurrencyString } from 'utils/commons'
 import { StakingContext } from 'pages/staking/Staking'
 import FeeGrant from '../../../../components/FeeGrant/FeeGrant'
 import Select, { components } from 'react-select'
@@ -34,7 +34,9 @@ export default function RedelegateForm() {
   }
 
   useEffect(() => {
-    const scrtBalanceUsdString = toUsdString(new BigNumber(amountString!).multipliedBy(Number(currentPrice)).toNumber())
+    const scrtBalanceUsdString = toCurrencyString(
+      new BigNumber(amountString!).multipliedBy(Number(currentPrice)).toNumber()
+    )
     setAmountInDollarString(scrtBalanceUsdString)
   }, [amountString])
 

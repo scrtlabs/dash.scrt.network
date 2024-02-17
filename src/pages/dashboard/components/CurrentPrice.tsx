@@ -1,6 +1,6 @@
 import { faArrowUpRightFromSquare } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { toCurrencyString, toUsdString, trackMixPanelEvent } from 'utils/commons'
+import { toCurrencyString, trackMixPanelEvent } from 'utils/commons'
 import { Link } from 'react-router-dom'
 import { useUserPreferencesStore } from 'store/UserPreferences'
 
