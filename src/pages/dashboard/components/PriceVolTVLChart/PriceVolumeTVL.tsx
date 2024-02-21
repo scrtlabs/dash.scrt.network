@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useState } from 'react'
-import { formatNumber } from 'utils/commons'
+import { formatNumber, toCurrencyString } from 'utils/commons'
 import { APIContext } from 'context/APIContext'
 
 import {
@@ -25,6 +25,7 @@ type ChartRange = 'Day' | 'Month' | 'Year'
 export const PriceVolumeHistoryContext = createContext(null)
 
 export default function PriceVolumeTVL(props: any) {
+  const { currency } = useUserPreferencesStore()
   const { coingeckoApiData_Day, coingeckoApiData_Month, coingeckoApiData_Year, defiLamaApiData_Year } =
     useContext(APIContext)
 
@@ -150,7 +151,7 @@ export default function PriceVolumeTVL(props: any) {
         ticks: {
           color: theme === 'dark' ? '#fff' : '#000',
           callback: function (value: any, index: any, ticks: any) {
-            return '$' + formatNumber(value, 2)
+            return toCurrencyString(value, currency)
           }
         },
         border: {

@@ -22,7 +22,15 @@ const APIContextProvider = ({ children }: any) => {
   const [sSCRTTokenSupply, setSSCRTTokenSupply] = useState(Number)
   const [stkdSCRTTokenSupply, setStkdSCRTTokenSupply] = useState(Number)
   const [IBCTokenSupply, setIBCTokenSupply] = useState(Number)
-  const [currencyPricing, setCurrencyPricing] = useState<any>(null)
+  const [currencyPricing, setCurrencyPricing] = useState<any>({
+    usd: 1,
+    eur: 0.924884,
+    jpy: 149.82,
+    gbp: 0.791714,
+    aud: 1.52,
+    cad: 1.35,
+    chf: 0.879271
+  })
 
   const [inflation, setInflation] = useState(0)
 
@@ -36,13 +44,19 @@ const APIContextProvider = ({ children }: any) => {
     inputAmount: number,
     outputCurrency: Currency
   ): Nullable<number> {
-    if (!currencyPricing[inputCurrency] || !currencyPricing[outputCurrency]) {
+    if (inputCurrency === outputCurrency) return inputAmount
+
+    if (
+      !currencyPricing ||
+      !currencyPricing[coinGeckoCurrencyMap[inputCurrency]] ||
+      !currencyPricing[coinGeckoCurrencyMap[outputCurrency]]
+    ) {
       return null
     }
 
-    const amountInUsd = inputAmount / currencyPricing[inputCurrency]
+    const amountInUsd = inputAmount / currencyPricing[coinGeckoCurrencyMap[inputCurrency]]
 
-    const convertedAmount = amountInUsd * currencyPricing[outputCurrency]
+    const convertedAmount = amountInUsd * currencyPricing[coinGeckoCurrencyMap[outputCurrency]]
 
     return convertedAmount
   }
@@ -172,7 +186,8 @@ const APIContextProvider = ({ children }: any) => {
         else return response.json()
       })
       .then((jsonData) => {
-        setCurrencyPricing(jsonData.usd || null)
+        const fullData = { ...jsonData, usd: 1 }
+        setCurrencyPricing(fullData)
       })
       .catch((error) => {
         console.error(error)
@@ -333,7 +348,8 @@ const APIContextProvider = ({ children }: any) => {
     volume,
     setVolume,
     marketCap,
-    setMarketCap
+    setMarketCap,
+    convertCurrency
   }
 
   return <APIContext.Provider value={providerValue}>{children}</APIContext.Provider>

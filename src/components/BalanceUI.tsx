@@ -1,10 +1,13 @@
 import BigNumber from 'bignumber.js'
-import { useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { Chain, Token, chains, tokens } from 'utils/config'
 import { useTokenPricesStore } from 'store/TokenPrices'
 import { GetBalanceError, useSecretNetworkClientStore } from 'store/secretNetworkClient'
 import { faKey } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { toCurrencyString } from 'utils/commons'
+import { APIContext } from 'context/APIContext'
+import { useUserPreferencesStore } from 'store/UserPreferences'
 
 interface IProps {
   token: Token
@@ -32,7 +35,7 @@ export default function BalanceUI({
   const { getValuePrice, priceMapping } = useTokenPricesStore()
 
   const [balance, setBalance] = useState<number | string>(null)
-  const [usdPriceString, setUsdPriceString] = useState<string>(null)
+  const [currencyPriceString, setCurrencyPriceString] = useState<string>(null)
   const tokenName = (isSecretToken ? 's' : '') + token.name
 
   useEffect(() => {
@@ -62,9 +65,18 @@ export default function BalanceUI({
     }
   }, [balanceMapping, ibcBalanceMapping, token, isSecretToken, chain])
 
+  const { convertCurrency } = useContext(APIContext)
+  const { currency } = useUserPreferencesStore()
+
   useEffect(() => {
     if (priceMapping !== null && balance !== null) {
-      setUsdPriceString(getValuePrice(token, BigNumber(balance)))
+      const valuePrice = getValuePrice(token, BigNumber(balance))
+      if (valuePrice) {
+        console.log('valuePrice', valuePrice)
+        const priceInCurrency = convertCurrency('USD', valuePrice, currency)
+        setCurrencyPriceString(toCurrencyString(priceInCurrency))
+      } else {
+      }
     }
   }, [priceMapping, token, balance])
 
@@ -90,7 +102,7 @@ export default function BalanceUI({
               ).toLocaleString(undefined, {
                 maximumFractionDigits: token.decimals
               })} ${isSecretToken && !token.is_snip20 ? 's' : ''}${token.name} ${
-                token.coingecko_id && usdPriceString ? ` (${usdPriceString})` : ''
+                token.coingecko_id && currencyPriceString ? ` (${currencyPriceString})` : ''
               }`}</span>
             </>
           )}
