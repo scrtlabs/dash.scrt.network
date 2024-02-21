@@ -128,7 +128,7 @@ export const shuffleArray = (array: any[]) => {
 }
 
 export const sortDAppsArray = (array: any[]) => {
-  const sortedArray = [...array].sort((a, b) => a.attributes.name.localeCompare(b.attributes.name))
+  const sortedArray = [...array].sort((a, b) => a.name.localeCompare(b.name))
   return sortedArray
 }
 

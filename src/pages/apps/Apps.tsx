@@ -39,13 +39,11 @@ function Apps() {
   function filteredDappsData() {
     let items = dappsDataSorted
     if (searchText !== '') {
-      items = items.filter((app: any) => app.attributes.name.toLowerCase().includes(searchText.toLowerCase()))
+      items = items.filter((app: any) => app.name.toLowerCase().includes(searchText.toLowerCase()))
     }
 
     if (tagsToBeFilteredBy?.length > 0) {
-      items = items.filter((item: any) =>
-        item.attributes.type.map((item: any) => item.name).find((tag: any) => tagsToBeFilteredBy.includes(tag))
-      )
+      items = items.filter((item: any) => item.tags.find((tag: any) => tagsToBeFilteredBy.includes(tag)))
     }
     return items
   }
@@ -111,14 +109,14 @@ function Apps() {
         <div className="grid grid-cols-12 gap-4 auto-rows-auto">
           {dappsData?.length > 0 && (
             <>
-              {filteredDappsData().map((dapp: any) => (
+              {filteredDappsData().map((dapp: any, index: number) => (
                 <AppTile
-                  key={dapp.attributes.name}
-                  name={dapp.attributes.name}
-                  description={dapp.attributes.description}
-                  tags={dapp.attributes.type.map((item: any) => item.name)}
-                  image={dapp.attributes.logo.data.attributes.url}
-                  url={dapp.attributes.link}
+                  key={index}
+                  name={dapp.name}
+                  description={dapp.description}
+                  tags={dapp.tags}
+                  image={dapp.icon}
+                  url={dapp.link}
                 />
               ))}
             </>

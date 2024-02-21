@@ -129,7 +129,7 @@ const APIContextProvider = ({ children }: any) => {
         else return response.json()
       })
       .then((jsonData) => {
-        setDappsData(jsonData.data)
+        setDappsData(jsonData)
       })
       .catch((error) => {
         console.error(error)
@@ -149,13 +149,11 @@ const APIContextProvider = ({ children }: any) => {
       let allTags: string[] = []
 
       dappsData.forEach((dapp) => {
-        dapp.attributes.type
-          .map((item: any) => item.name)
-          .forEach((tag: any) => {
-            if (!allTags.find((tagItem) => tagItem === tag)) {
-              allTags.push(tag)
-            }
-          })
+        dapp.tags.forEach((tag: any) => {
+          if (!allTags.find((tagItem) => tagItem === tag)) {
+            allTags.push(tag)
+          }
+        })
       })
       setTags(allTags.sort())
     }
