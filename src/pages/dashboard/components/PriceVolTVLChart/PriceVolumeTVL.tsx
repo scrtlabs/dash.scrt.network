@@ -120,10 +120,7 @@ export default function PriceVolumeTVL(props: any) {
               label += ': '
             }
             if (context.parsed.y !== null) {
-              label += new Intl.NumberFormat(undefined, {
-                style: 'currency',
-                currency: 'USD'
-              }).format(context.parsed.y)
+              label += toCurrencyString(context.parsed.y, currency)
             }
             return label
           }
