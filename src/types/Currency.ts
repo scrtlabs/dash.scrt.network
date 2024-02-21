@@ -1,3 +1,5 @@
+import { Nullable } from './Nullable'
+
 export type Currency = 'USD' | 'EUR' | 'JPY' | 'GBP' | 'AUD' | 'CAD' | 'CHF'
 
 export function isCurrency(x: any): boolean {

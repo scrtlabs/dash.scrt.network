@@ -2,6 +2,8 @@ import BigNumber from 'bignumber.js'
 import { createContext, useEffect, useRef, useState } from 'react'
 import { SecretNetworkClient } from 'secretjs'
 import { useUserPreferencesStore } from 'store/UserPreferences'
+import { Currency } from 'types/Currency'
+import { Nullable } from 'types/Nullable'
 import { allTokens, coinGeckoCurrencyMap, dAppsURL, randomDelay, sleep, sortDAppsArray } from 'utils/commons'
 import { SECRET_LCD, SECRET_CHAIN_ID, chains } from 'utils/config'
 
@@ -20,6 +22,7 @@ const APIContextProvider = ({ children }: any) => {
   const [sSCRTTokenSupply, setSSCRTTokenSupply] = useState(Number)
   const [stkdSCRTTokenSupply, setStkdSCRTTokenSupply] = useState(Number)
   const [IBCTokenSupply, setIBCTokenSupply] = useState(Number)
+  const [currencyPricing, setCurrencyPricing] = useState<any>(null)
 
   const [inflation, setInflation] = useState(0)
 
@@ -27,6 +30,22 @@ const APIContextProvider = ({ children }: any) => {
   const [secretFoundationTax, setSecretFoundationTax] = useState('')
 
   const [communityPool, setCommunityPool] = useState(Number) // in uscrt
+
+  function convertCurrency(
+    inputCurrency: Currency = 'USD',
+    inputAmount: number,
+    outputCurrency: Currency
+  ): Nullable<number> {
+    if (!currencyPricing[inputCurrency] || !currencyPricing[outputCurrency]) {
+      return null
+    }
+
+    const amountInUsd = inputAmount / currencyPricing[inputCurrency]
+
+    const convertedAmount = amountInUsd * currencyPricing[outputCurrency]
+
+    return convertedAmount
+  }
 
   useEffect(() => {
     const queryData = async () => {
@@ -144,6 +163,28 @@ const APIContextProvider = ({ children }: any) => {
     fetchDappsURL()
   }, [])
 
+  const COINGECKO_CURRENCIES_URL =
+    'https://api.coingecko.com/api/v3/simple/price?ids=usd&vs_currencies=eur,jpy,gbp,aud,cad,chf'
+  const fetchCurrencyPricingURL = () => {
+    fetch(COINGECKO_CURRENCIES_URL)
+      .then((response) => {
+        if (!response.ok) throw new Error()
+        else return response.json()
+      })
+      .then((jsonData) => {
+        setCurrencyPricing(jsonData.usd || null)
+      })
+      .catch((error) => {
+        console.error(error)
+
+        setTimeout(() => fetchCurrencyPricingURL(), 3000)
+      })
+  }
+
+  useEffect(() => {
+    fetchCurrencyPricingURL()
+  }, [])
+
   useEffect(() => {
     if (dappsData && dappsDataSorted.length === 0 && dappsData?.length !== 0) {
       setDappsDataSorted(sortDAppsArray(dappsData))
@@ -166,8 +207,9 @@ const APIContextProvider = ({ children }: any) => {
   const [coingeckoApiData_Day, setCoinGeckoApiData_Day] = useState()
   const [coingeckoApiData_Month, setCoinGeckoApiData_Month] = useState()
   const [coingeckoApiData_Year, setCoinGeckoApiData_Year] = useState()
-  const [defiLamaApiData_Year, setDefiLamaApiData_Year] = useState()
-  const [defiLamaApiData_TVL, setDefiLamaApiData_TVL] = useState()
+  const [defiLamaApiData_Year, setDefiLamaApiData_Year] =
+    useState<Nullable<{ date: string; totalLiquidity: number }[]>>(null)
+  const [defiLamaApiData_TVL, setDefiLamaApiData_TVL] = useState<any>(null)
   const [currentPrice, setCurrentPrice] = useState(Number)
   const [externalApiData, setExternalApiData] = useState()
   const [L5AnalyticslApiData, setL5AnalyticslApiData] = useState()
@@ -178,46 +220,52 @@ const APIContextProvider = ({ children }: any) => {
 
   useEffect(() => {
     // Coingecko API
-    let coingeckoApiUrl_Day = `https://api.coingecko.com/api/v3/coins/secret/market_chart?vs_currency=${coinGeckoCurrencyMap[currency]}&days=1`
-    fetch(coingeckoApiUrl_Day)
+    const COINGECKO_API_URL_SCRT_DAY = `https://api.coingecko.com/api/v3/coins/secret/market_chart?vs_currency=${coinGeckoCurrencyMap[currency]}&days=1`
+    fetch(COINGECKO_API_URL_SCRT_DAY)
       .then((response) => response.json())
       .then((response) => {
         setCoinGeckoApiData_Day(response)
       })
 
-    let coingeckoApiUrl_Month = `https://api.coingecko.com/api/v3/coins/secret/market_chart?vs_currency=${coinGeckoCurrencyMap[currency]}&days=30`
-    fetch(coingeckoApiUrl_Month)
+    const COINGECKO_API_URL_SCRT_MONTH = `https://api.coingecko.com/api/v3/coins/secret/market_chart?vs_currency=${coinGeckoCurrencyMap[currency]}&days=30`
+    fetch(COINGECKO_API_URL_SCRT_MONTH)
       .then((response) => response.json())
       .then((response) => {
         setCoinGeckoApiData_Month(response)
       })
 
-    let coingeckoApiUrl_Year = `https://api.coingecko.com/api/v3/coins/secret/market_chart?vs_currency=${coinGeckoCurrencyMap[currency]}&days=365`
-    fetch(coingeckoApiUrl_Year)
+    const COINGECKO_API_URL_SCRT_YEAR = `https://api.coingecko.com/api/v3/coins/secret/market_chart?vs_currency=${coinGeckoCurrencyMap[currency]}&days=365`
+    fetch(COINGECKO_API_URL_SCRT_YEAR)
       .then((response) => response.json())
       .then((response) => {
         setCoinGeckoApiData_Year(response)
       })
 
-    let defiLamaApiUrl_Year = `https://api.llama.fi/charts/secret`
-    fetch(defiLamaApiUrl_Year)
+    const DEFI_LLAMA_API_URL_YEAR = `https://api.llama.fi/charts/secret`
+    fetch(DEFI_LLAMA_API_URL_YEAR)
       .then((response) => response.json())
       .then((response) => {
         setDefiLamaApiData_Year(
-          response.map((x: any[]) => [parseInt((x as any).date) * 1000, (x as any).totalLiquidityUSD])
+          response.map((item: { date: string; totalLiquidityUSD: number }) => ({
+            date: parseInt(item.date) * 1000,
+            totalLiquidity:
+              currency !== 'USD' ? convertCurrency('USD', item.totalLiquidityUSD, currency) : item.totalLiquidityUSD
+          }))
         )
       })
 
-    let defiLamaApiUrl_TVL = `https://api.llama.fi/chains`
-    fetch(defiLamaApiUrl_TVL)
+    const DEFI_LLAMA_API_URL_TVL = `https://api.llama.fi/chains`
+    fetch(DEFI_LLAMA_API_URL_TVL)
       .then((response) => response.json())
       .then((response) => {
-        setDefiLamaApiData_TVL(response.filter((item: any) => item?.gecko_id === 'secret')[0]?.tvl)
+        const tvlInUsd = response.filter((item: any) => item?.gecko_id === 'secret')[0]?.tvl || null
+        const tvlInCorrectCurrency = convertCurrency('USD', tvlInUsd, currency)
+        setDefiLamaApiData_TVL(tvlInCorrectCurrency)
       })
 
     // Coingecko Market Price, Market Cap & Volume
-    let coingeckoMarketCapVolumeUrl = `https://api.coingecko.com/api/v3/simple/price?ids=secret&vs_currencies=usd,eur,jpy,gbp,aud,cad,chf&include_market_cap=true&include_24hr_vol=true&include_24hr_change=true` // includes all supported currencies
-    fetch(coingeckoMarketCapVolumeUrl)
+    const COINGECKO_API_URL_MARKET_CAP_VOLUME = `https://api.coingecko.com/api/v3/simple/price?ids=secret&vs_currencies=usd,eur,jpy,gbp,aud,cad,chf&include_market_cap=true&include_24hr_vol=true&include_24hr_change=true` // includes all supported currencies
+    fetch(COINGECKO_API_URL_MARKET_CAP_VOLUME)
       .then((response) => response.json())
       .then((response) => {
         setCurrentPrice(response.secret[coinGeckoCurrencyMap[currency]]) // e.g. response.secret.usd
@@ -225,14 +273,14 @@ const APIContextProvider = ({ children }: any) => {
         setVolume(response.secret[coinGeckoCurrencyMap[currency] + '_24h_vol']) // e.g. response.secret.usd_24h_vol
       })
 
-    let mintscanApiDataUrl = `https://dev.api.mintscan.io/v1/secret/status`
-    fetch(mintscanApiDataUrl)
+    const MINTSCAN_API_URL_SECRET_STATUS = `https://dev.api.mintscan.io/v1/secret/status`
+    fetch(MINTSCAN_API_URL_SECRET_STATUS)
       .then((response) => response.json())
       .then((response) => {
         setExternalApiData(response)
       })
-    let L5AnalyticsApiDataUrl = `https://api.lavenderfive.com/networks/secretnetwork`
-    fetch(L5AnalyticsApiDataUrl)
+    const LAVENDERFIVE_API_URL_SECRET_STATUS = `https://api.lavenderfive.com/networks/secretnetwork`
+    fetch(LAVENDERFIVE_API_URL_SECRET_STATUS)
       .then((response) => response.json())
       .then((response) => {
         setL5AnalyticslApiData(response)
