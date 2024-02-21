@@ -74,7 +74,7 @@ export default function BalanceUI({
       if (valuePrice) {
         console.log('valuePrice', valuePrice)
         const priceInCurrency = convertCurrency('USD', valuePrice, currency)
-        setCurrencyPriceString(toCurrencyString(priceInCurrency))
+        setCurrencyPriceString(toCurrencyString(priceInCurrency, currency))
       } else {
       }
     }
