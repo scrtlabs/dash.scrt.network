@@ -38,7 +38,7 @@ function Wallet() {
     }
   }, [])
 
-  const keplrRef = useRef()
+  const keplrRef = useRef<any>()
   useHoverOutside(keplrRef, () => setIsMenuVisible(false))
 
   function CopyableAddress() {
@@ -80,7 +80,7 @@ function Wallet() {
 
   function ContextMenu() {
     return (
-      <div className="absolute pt-10 right-4 z-40 top-[3.7rem]">
+      <div className="absolute pt-4 right-4 z-40 mt-[2.7rem]">
         <div className="bg-white dark:bg-neutral-800 border text-xs border-neutral-200 dark:border-neutral-700 p-4 w-auto rounded-lg flex-row space-y-4">
           {/* Copyable Wallet Address */}
           <CopyableAddress />

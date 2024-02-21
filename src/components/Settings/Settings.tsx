@@ -197,14 +197,16 @@ function Settings() {
           </div>
         </form>
       </Modal>
-      <Tooltip title={`Settings`} placement="left" arrow>
-        <button
-          onClick={() => setIsModalOpen(true)}
-          className="text-black dark:text-white hover:text-neutral-600 dark:hover:text-neutral-400 transition-colors"
-        >
-          <FontAwesomeIcon icon={faGear} />
-        </button>
-      </Tooltip>
+      <div>
+        <Tooltip title={`Settings`} placement="left" arrow>
+          <button
+            onClick={() => setIsModalOpen(true)}
+            className="text-black dark:text-white hover:text-neutral-600 dark:hover:text-neutral-400 transition-colors"
+          >
+            <FontAwesomeIcon icon={faGear} />
+          </button>
+        </Tooltip>
+      </div>
     </>
   )
 }
