@@ -1,5 +1,5 @@
 import { useContext } from 'react'
-import { MsgSetAutoRestake } from 'secretjs'
+import { MsgSetAutoRestake, validateAddress } from 'secretjs'
 import { StakingContext, ValidatorRestakeStatus } from 'pages/staking/Staking'
 import RestakeValidatorItem from './RestakeValidatorItem'
 import { restakeThreshold } from 'utils/commons'
@@ -17,15 +17,23 @@ interface Props {
 export default function ManageAutoRestakeModal(props: Props) {
   const { secretNetworkClient, isConnected } = useSecretNetworkClientStore()
 
-  const { delegatorDelegations, validators, restakeChoices, reload, setReload } = useContext(StakingContext)
+  const { delegatorDelegations, validators, restakeChoices, reload, setReload, restakeEntries } =
+    useContext(StakingContext)
 
   if (!props.open) return null
 
   function doRestake() {
-    const filteredRestakeChoices = restakeChoices.filter(
-      (validator: ValidatorRestakeStatus) => Number(validator.stakedAmount) >= restakeThreshold
-    )
-
+    const filteredRestakeChoices = restakeChoices.filter((validator: ValidatorRestakeStatus) => {
+      return (
+        Number(validator.stakedAmount) >= restakeThreshold &&
+        !!restakeEntries.find(
+          (restakeEntry: ValidatorRestakeStatus) =>
+            restakeEntry.autoRestake !== validator.autoRestake &&
+            restakeEntry.validatorAddress == validator.validatorAddress
+        )
+      )
+    })
+    console.log(filteredRestakeChoices)
     if (filteredRestakeChoices.length > 0) {
       changeRestakeForValidators(filteredRestakeChoices)
     }

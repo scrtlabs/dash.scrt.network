@@ -101,7 +101,7 @@ export const Staking = () => {
 
   //Auto Restake
   const [restakeChoices, setRestakeChoices] = useState<ValidatorRestakeStatus[]>([])
-  const [restakeEntries, setRestakeEntries] = useState<any>()
+  const [restakeEntries, setRestakeEntries] = useState<ValidatorRestakeStatus[]>([])
 
   //Search Query
   const [searchQuery, setSearchQuery] = useState<string>('')
@@ -190,7 +190,17 @@ export const Staking = () => {
         const { validators } = await secretNetworkClient.query.distribution.restakingEntries({
           delegator: secretNetworkClient?.address
         })
-        setRestakeEntries(validators)
+        //Restake Entries are the restake entries from the chain, these stay and will not be changed.
+        setRestakeEntries(
+          delegation_responses.map((validator: any) => ({
+            validatorAddress: validator?.delegation?.validator_address,
+            autoRestake: validators.some((item: any) => {
+              return item === validator?.delegation?.validator_address
+            }),
+            stakedAmount: validator?.balance?.amount
+          }))
+        )
+        //Restake Entries INITALLY are the restake entries from the chain, user changes these.
         setRestakeChoices(
           delegation_responses.map((validator: any) => ({
             validatorAddress: validator?.delegation?.validator_address,
@@ -270,7 +280,9 @@ export const Staking = () => {
     reload,
     setReload,
     restakeChoices,
-    setRestakeChoices
+    setRestakeChoices,
+    restakeEntries,
+    setRestakeEntries
   }
 
   return (

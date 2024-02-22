@@ -9,6 +9,7 @@ import { formatNumber } from 'utils/commons'
 import { scrtToken } from 'utils/tokens'
 import { Validator } from 'secretjs/dist/grpc_gateway/cosmos/staking/v1beta1/staking.pb'
 import { Nullable } from 'types/Nullable'
+import { ValidatorRestakeStatus } from '../Staking'
 
 interface Props {
   name: string
@@ -64,7 +65,9 @@ const MyValidatorsItem = (props: Props) => {
   }, [props.identity, identityRef])
 
   const isRestakeEnabled = (validator: Validator) => {
-    return props.restakeEntries.find((validatorAddress: string) => validatorAddress === validator.operator_address)
+    return props.restakeEntries.find(
+      (restakeValidator: ValidatorRestakeStatus) => restakeValidator.validatorAddress === validator.operator_address
+    )
   }
 
   const isAboveRestakeThreshold = (stakedAmount: number) => {
