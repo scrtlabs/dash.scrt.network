@@ -11,6 +11,7 @@ import { ThemeContext } from 'context/ThemeContext'
 import HoudiniModal from './HoudiniModal'
 import { useSecretNetworkClientStore } from 'store/secretNetworkClient'
 import Title from 'components/Title'
+import SwingModal from './SwingModal'
 
 function Bridge() {
   useEffect(() => {
@@ -19,6 +20,7 @@ function Bridge() {
 
   const { theme } = useContext(ThemeContext)
   const [isSquidModalOpen, setIsSquidModalOpen] = useState(false)
+  const [isSwingModalOpen, setIsSwingModalOpen] = useState(false)
   const [isHoudiniModalOpen, setIsHoudiniModalOpen] = useState(false)
 
   const { walletAddress } = useSecretNetworkClientStore()
@@ -98,6 +100,28 @@ function Bridge() {
           theme={theme}
         />
         <p>
+          You can also use Swing Swap to bridge your assets into Secret Network.
+          <a
+            target="_blank"
+            className="text-white block my-6 p-3 w-full text-center font-semibold bg-cyan-600 dark:bg-cyan-600 rounded-lg text-sm hover:bg-cyan-500 dark:hover:bg-cyan-500 focus:bg-cyan-600 dark:focus:bg-cyan-600 transition-colors"
+            onClick={() => {
+              trackMixPanelEvent('Clicked Squid Router Modal (from Bridge page)')
+              setIsSwingModalOpen(true)
+            }}
+          >
+            Use Swing Swap
+          </a>
+        </p>
+        <SwingModal
+          open={isSwingModalOpen}
+          onClose={() => {
+            setIsSwingModalOpen(false)
+            document.body.classList.remove('overflow-hidden')
+          }}
+          theme={theme}
+          secretAddress={''}
+        />
+        <p>
           Or anonymously bridge your assets into SCRT using Houdini Swap.
           <a
             target="_blank"
@@ -139,30 +163,6 @@ function Bridge() {
             Go to IBC Transfers
           </Link>
         </p>
-        {/*  <p>
-          Use the{" "}
-          <a
-            href="https://ipfs.trivium.network/ipns/k51qzi5uqu5dhovcugri8aul3itkct8lvnodtnv2y3o1saotkjsa7ao1aq0dqa/"
-            target="_blank"
-            className="pb-0.5 border-b border-neutral-400 dark:border-neutral-600 hover:text-black dark:hover:text-white hover:border-black dark:hover:border-white transition-colors"
-          >
-            Monero Bridge
-          </a>{" "}
-          to bridge your XMR from Monero to Secret Network.
-          <a
-            href="https://ipfs.trivium.network/ipns/k51qzi5uqu5dhovcugri8aul3itkct8lvnodtnv2y3o1saotkjsa7ao1aq0dqa/"
-            target="_blank"
-            className="text-white block my-6 p-3 w-full text-center font-semibold bg-cyan-600 dark:bg-cyan-600 rounded-lg text-sm hover:bg-cyan-500 dark:hover:bg-cyan-500 focus:bg-cyan-600 dark:focus:bg-cyan-600 transition-colors"
-            onClick={() => {
-              trackMixPanelEvent(
-                "Clicked Monero Bridge link (from Bridge page)"
-              );
-            }}
-          >
-            Go to Monero Bridge
-            <FontAwesomeIcon icon={faArrowUpRightFromSquare} className="ml-2" />
-          </a>
-        </p> */}
       </div>
     </>
   )
