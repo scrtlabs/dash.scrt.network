@@ -80,7 +80,6 @@ function Settings() {
       currency: currency,
       debugMode: debugMode
     },
-    // validationSchema: settingsSchema,
     validateOnBlur: false,
     validateOnChange: true,
     onSubmit: async (values) => {
