@@ -1,9 +1,8 @@
-import { useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import Select, { components } from 'react-select'
 import { Nullable } from 'types/Nullable'
 import { MessageDefinitions } from './Messages'
 import { SecretNetworkClient } from 'secretjs'
-import { TMessage } from '../Powertools'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faInfoCircle, faSearch, faTrash } from '@fortawesome/free-solid-svg-icons'
 import Tooltip from '@mui/material/Tooltip'
@@ -65,10 +64,6 @@ function Message(props: Props) {
     )
     props.updateContent(JSON.stringify(JSON.parse(newContent), null, 2))
   }
-
-  // const handleChange = (e: any) => {
-  //   props.updateMessage({})
-  // }
 
   const handleBlur = () => {
     if (messageType) {

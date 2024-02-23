@@ -63,7 +63,7 @@ export default function StakingChart() {
   }, [bondedToken, notBondedToken, totalSupply, communityPool, sSCRTTokenSupply, stkdSCRTTokenSupply, IBCTokenSupply])
 
   const createLabel = (label: string, value: number) => {
-    return `${label}: ${formatNumber(value, 2)}`
+    return `${label}: ${formatNumber(value, 2)} SCRT`
   }
 
   useEffect(() => {
@@ -121,13 +121,13 @@ export default function StakingChart() {
 
       ctx.save()
 
-      ctx.font = 'bold 0.9rem sans-serif'
+      ctx.font = 'bold 0.9rem Montserrat'
       ctx.fillStyle = theme === 'dark' ? '#fff' : '#000'
       ctx.textAlign = 'center'
       ctx.fillText(`Total Supply`, width / 2, height / 2.25 + top)
       ctx.restore()
 
-      ctx.font = '400 2rem sans-serif'
+      ctx.font = '400 1.5rem Montserrat'
       ctx.fillStyle = theme === 'dark' ? '#fff' : '#000'
       ctx.textAlign = 'center'
       ctx.fillText(`${formatNumber(totalSupply, 2)}`, width / 2, height / 1.75 + top)
@@ -163,13 +163,7 @@ export default function StakingChart() {
         enabled: true,
         callbacks: {
           label: function (context: any) {
-            let label = context.dataset.label || ''
-            if (label) {
-              label += ': '
-            }
-            if (context.parsed !== null) {
-              label += `${formatNumber(context.parsed, 2)} SCRT`
-            }
+            let label = ''
             return label
           }
         }

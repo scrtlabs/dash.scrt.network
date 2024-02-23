@@ -50,7 +50,7 @@ const BalanceItem = (props: Props) => {
             {assetPrice ? (
               <div className="text-sm font-medium">{assetPrice}</div>
             ) : (
-              <div className="dark:group-odd:bg-neutral-600 animate-pulse group-odd:bg-neutral-300/40 group-even:bg-neutral-300/40 dark:group-even:bg-neutral-700/40 rounded col-span-2 w-16 h-7 mx-auto"></div>
+              <span className="animate-pulse bg-neutral-300/40 dark:bg-neutral-600 rounded w-20 h-5 ml-2"></span>
             )}
           </div>
         )}

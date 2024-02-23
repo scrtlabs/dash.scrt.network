@@ -1,0 +1,338 @@
+[
+  {
+    "name": "Stashh",
+    "link": "https://stashh.io/",
+    "description": "Mint, buy, and trade the first NFTs with native privacy and access control, known as Secret NFTs.",
+    "icon": "/img/dapps/dapp_stashh_1b5ff9f3a5_lo5nfGSI-6.webp",
+    "tags": ["dApp", "NFTs"]
+  },
+  {
+    "name": "Shade Protocol",
+    "link": "https://shadeprotocol.io/",
+    "description": "An array of connected privacy-preserving DeFi applications built on Secret Network.",
+    "icon": "/img/dapps/dapp_shade_206fbe8b01_U9LBd0ib1-.webp",
+    "tags": ["dApp", "DeFi"]
+  },
+  {
+    "name": "Legendao",
+    "link": "https://legendao.io/",
+    "description": "A play-to-mint NFT platform that enables creators to launch their NFT projects in a unique, gamified way.",
+    "icon": "/img/dapps/Legen_DAO_50bba9ea5b_tQG5m-PJd.webp",
+    "tags": ["dApp", "Games"]
+  },
+  {
+    "name": "Stake Easy",
+    "link": "https://stakeeasy.finance/",
+    "description": "The privacy-preserving liquid staking solution for Secret Network.",
+    "icon": "/img/dapps/seasy.webp",
+    "tags": ["dApp", "DeFi"]
+  },
+  {
+    "name": "Bushi",
+    "link": "https://www.launchonenet.io/bushi",
+    "description": "A competitive third-person shooter that blurs the lines between traditional games, web3 gaming, and esports.",
+    "icon": "/img/dapps/Bushi_Logo_e7f4a6035a_u53uS1dcu.webp",
+    "tags": ["Games"]
+  },
+  {
+    "name": "Data Vault",
+    "link": "https://secretbazaar.io/",
+    "description": "The world’s first decentralized privacy-preserving content management and data exchange protocol.",
+    "icon": "/img/dapps/dava_957cbedba4_macvuNgj6Z.webp",
+    "tags": ["dApp", "Data"]
+  },
+  {
+    "name": "V-IRL",
+    "link": " https://www.v-irl.com/",
+    "description": "Bridging Virtual assets to real life. The world's first anonymous on-chain redemptions. Merch, authentication, ticketing/access, and more.",
+    "icon": "/img/dapps/V_IRL_Logo_bad455cf9a_Lt6VmuQ84.webp",
+    "tags": ["dApp", "NFTs"]
+  },
+  {
+    "name": "CertUP",
+    "link": "https://certup.net/",
+    "description": "Revolutionising official document distribution, verification and publication through Secret NFTs.",
+    "icon": "/img/dapps/Cert_UP_Logo_014ac8ed6b_1m7Lm6NPa.png",
+    "tags": ["dApp", "Data", "NFTs"]
+  },
+  {
+    "name": "YOIU",
+    "link": "https://twitter.com/yoiu_io",
+    "description": "A gateway to future IDO's of tech startups, fueled by secret tokens.",
+    "icon": "/img/dapps/small_yoiu_f225ee0f53_PU7mLbkLVj.webp",
+    "tags": ["dApp", "DeFi"]
+  },
+  {
+    "name": "ActiList",
+    "link": "https://actilist.io",
+    "description": "Interactive NFT marketplace with secret auctions and customizable access control.",
+    "icon": "/img/dapps/actiii_0bfc731011_1eMhswD8v.webp",
+    "tags": ["dApp", "NFTs"]
+  },
+  {
+    "name": "Button Swap",
+    "link": "https://btn.group/secret_network/button_swap",
+    "description": "A DEX aggregator, giving you the most optimal swap routes across Secret Network DEXs.",
+    "icon": "/img/dapps/dapp_btn_group_506992a414_OGGGyv_0NG.webp",
+    "tags": ["dApp", "DeFi"]
+  },
+  {
+    "name": "PriFi Labs",
+    "link": "https://prifilabs.com/",
+    "description": "PriFi Labs experiments and designs trustless solutions to help businesses and users to have enhanced protection in Web3.",
+    "icon": "/img/dapps/prifiw_3f394c00a6_MQVbTriV0.png",
+    "tags": ["dApp", "Data"]
+  },
+  {
+    "name": "Eqoty",
+    "link": "https://eqoty.io/",
+    "description": "The first content-protected marketplace for utility-backed music NFTs.",
+    "icon": "/img/dapps/eqotyb_a53851f4dd_SW5_jrsi3.webp",
+    "tags": ["dApp", "Data", "NFTs"]
+  },
+  {
+    "name": "Secret Bridges",
+    "link": "https://dash.scrt.network/bridge",
+    "description": "Bridge assets from IBC, EVM, and other ecosystems to Secret.",
+    "icon": "/img/dapps/Bridges_Logo_2_32f36a3c58_NP9oBOxR9.webp",
+    "tags": ["Tool"]
+  },
+  {
+    "name": "AmberDAO",
+    "link": "https://amberdao.io/",
+    "description": "A community-driven, privacy-preserving store of value token built on Secret Network.",
+    "icon": "/img/dapps/Amber_Dao_Logo_fd192c1e11_NaDWj0aOA.webp",
+    "tags": ["dApp", "DeFi"]
+  },
+  {
+    "name": "Secret Tokens",
+    "link": "https://dashboard.scrt.network/wrap",
+    "description": "Wrapping Coins as Secret Tokens immediately supercharges them with private balances and private transfers.",
+    "icon": "/img/dapps/stoken_2f0fb694df_bMVioaSGb.webp",
+    "tags": ["dApp", "Data"]
+  },
+  {
+    "name": "BlackJack",
+    "link": "https://aart-blackjack.anther.info/landingpage",
+    "description": "A shedding card game built on Secret, making use of privacy-preserving smart contracts.",
+    "icon": "/img/dapps/blackjack_21ad501117_OCc2FU9di.webp",
+    "tags": ["dApp", "Games"]
+  },
+  {
+    "name": "Abakhus",
+    "link": "https://abakhus.io/",
+    "description": "A protocol to secure health and life science data.",
+    "icon": "/img/dapps/abak_ac4896396e_vxSiezw8y.webp",
+    "tags": ["dApp", "Communications", "Data"]
+  },
+  {
+    "name": "Secret Dashboard",
+    "link": "https://dash.scrt.network/",
+    "description": "An interface providing access to essential Secret Network functions and data.",
+    "icon": "/img/dapps/small_dashb_e1299d7523_QwkrgHrFr.webp",
+    "tags": ["Data"]
+  },
+  {
+    "name": "Secret Admirers",
+    "link": "https://twitter.com/AdmirariDAO",
+    "description": "A decentralized and privacy-preserving adult content subscription platform.",
+    "icon": "/img/dapps/secadm_e92dc01c7d_vH-bLkpkX.webp",
+    "tags": ["dApp", "Data", "NFTs"]
+  },
+  {
+    "name": "Alter",
+    "link": "https://altermail.live/",
+    "description": "A private and secure messaging app that protects your data and identity when communicating online. ",
+    "icon": "/img/dapps/alter_f51dbe4916_esXgp8g8j.webp",
+    "tags": ["dApp", "Communications"]
+  },
+  {
+    "name": "Serenity Shield",
+    "link": "https://serenityshield.io/",
+    "description": "Serenity Shield provides a tool for backing up your seed phrase and other sensitive data, allowing recovery in an emergency event.",
+    "icon": "/img/dapps/Serenity_Shield_Logo_0e5e4c6737_7GV7QGAFN.png",
+    "tags": ["dApp", "Data"]
+  },
+  {
+    "name": "ShillStake",
+    "link": "https://shillstake.io/",
+    "description": "Stake Secret NFTs and Earn Rewards",
+    "icon": "/img/dapps/shillstake_6a6689939a_LXXm3YOgd.png",
+    "tags": ["dApp", "DeFi", "NFTs"]
+  },
+  {
+    "name": "Whisprs",
+    "link": "https://whisprs.co/",
+    "description": "Send encrypted messages to any Cosmos based wallet address",
+    "icon": "/img/dapps/favicon_1ddd016da6_RbudtOnkDX.png",
+    "tags": ["dApp", "Communications"]
+  },
+  {
+    "name": "wallet79",
+    "link": "https://wallet79.com/",
+    "description": "Matches people with jobs and education using digital signatures, while preserving data privacy.",
+    "icon": "/img/dapps/small_wallet79_logo_dd31a1d3c8_wOQgv6rca.png",
+    "tags": ["dApp", "Data"]
+  },
+  {
+    "name": "PrimeVault",
+    "link": "https://www.primevault.com/",
+    "description": "Next-gen custody, trading and risk infrastructure for institutional CeDeFi and enterprise digital asset operations",
+    "icon": "/img/dapps/primevault_880f1d0fb2_F0DabWdo4.png",
+    "tags": ["DeFi", "Data"]
+  },
+  {
+    "name": "Heartland Finance",
+    "link": "https://www.heartland-finance.com/",
+    "description": "A gateway to DeFi for institutional investors.",
+    "icon": "/img/dapps/heartfi_e369e2e07b_m5psQCOuR.png",
+    "tags": ["dApp", "DeFi"]
+  },
+  {
+    "name": "Obi",
+    "link": "https://obi.money/",
+    "description": "Provides convenient user account solutions for web3 and traditional enterprises who offer non-custodial web3 products to their users.",
+    "icon": "/img/dapps/Obi-Logo.svg",
+    "tags": ["dApp", "Data", "DeFi"]
+  },
+  {
+    "name": "Citadel.one",
+    "link": "https://app.citadel.one/login",
+    "description": "Citadel.One’s wallet simplifies staking, shows a transaction history, and other tools to get more out of your crypto.",
+    "icon": "/img/dapps/cone.webp",
+    "tags": ["Wallet"]
+  },
+  {
+    "name": "CryptoClerk",
+    "link": "https://cryptoclerk.xyz/",
+    "description": "Track staking rewards, view your history, and transact via Keplr on a variety of Cosmos-based blockchains.",
+    "icon": "/img/dapps/clerk.webp",
+    "tags": ["Data", "Tool"]
+  },
+  {
+    "name": "Fina Card",
+    "link": "https://scrt.network/wp-content/uploads/2023/11/finacard.webp",
+    "description": "Fina VISA prepaid card allows you to connect with any wallet, top up with any cryptocurrency, through any crypto network.",
+    "icon": "/img/dapps/finacard.webp",
+    "tags": ["DeFi", "Tool"]
+  },
+  {
+    "name": "Fina Wallet",
+    "link": "https://scrt.network/wp-content/uploads/2023/11/finawallet.webp",
+    "description": "The first mobile Secret wallet with dApp integration.",
+    "icon": "/img/dapps/finawallet.webp",
+    "tags": ["Wallet"]
+  },
+  {
+    "name": "GOV.DAO",
+    "link": "https://govdao.io/",
+    "description": "Building DAO tech for easy integration by Web3 projects.",
+    "icon": "/img/dapps/GOV.DAO-2.png",
+    "tags": ["Governance"]
+  },
+  {
+    "name": "Keplr Wallet",
+    "link": "https://wallet.keplr.app/",
+    "description": "The interchain wallet for the Cosmos ecosystem.",
+    "icon": "/img/dapps/keplr.webp",
+    "tags": ["Wallet"]
+  },
+  {
+    "name": "Leap Wallet",
+    "link": "https://www.leapwallet.io/",
+    "description": "A wallet supporting many Cosmos chains, supporting both desktop and mobile devices.",
+    "icon": "/img/dapps/leapwallet.png",
+    "tags": ["Wallet"]
+  },
+  {
+    "name": "Mintscan",
+    "link": "https://www.mintscan.io/secret",
+    "description": "A block explorer for the Cosmos ecosystem, developed by Cosmostation.",
+    "icon": "/img/dapps/mintscan.webp",
+    "tags": ["Tool"]
+  },
+  {
+    "name": "Omniflix inSync",
+    "link": "https://secret.omniflix.co/",
+    "description": "A staking and governance dashboard.",
+    "icon": "/img/dapps/omni.webp",
+    "tags": ["Tool"]
+  },
+  {
+    "name": "PageDAO",
+    "link": "https://pagedao.org/",
+    "description": "Revolutionizing the literary economy with NFT Books.",
+    "icon": "/img/dapps/pageDAO.svg",
+    "tags": []
+  },
+  {
+    "name": "Reclaim Protocol",
+    "link": "https://www.reclaimprotocol.org/",
+    "description": "Reclaim lets users transfer their online identity and reputation from any website to yours.",
+    "icon": "/img/dapps/Screenshot-2024-02-15-at-7.37.22-PM.png",
+    "tags": ["Data"]
+  },
+  {
+    "name": "Restake",
+    "link": "https://restake.app/",
+    "description": "Auto-compound staking rewards from many different Cosmos chains.",
+    "icon": "/img/dapps/restake.png",
+    "tags": ["Tool"]
+  },
+  {
+    "name": "Satoshi’s Palace",
+    "link": "https://satoshi-palace.com/",
+    "description": "An upcoming decentralized crypto betting exchange.",
+    "icon": "/img/dapps/logoMain_512x512_BG_ColorGradient.png",
+    "tags": ["Games"]
+  },
+  {
+    "name": "Secret Ledger App",
+    "link": "https://support.ledger.com/hc/en-us/articles/6094079699357-Secret-SCRT?docs=true",
+    "description": "A custom app for using Secret on Ledger devices.",
+    "icon": "/img/dapps/ledgerapp.webp",
+    "tags": ["Wallet"]
+  },
+  {
+    "name": "Sienna",
+    "link": "https://sienna.network/",
+    "description": "Privacy-first & cross-chain defi platform. Privately swap, lend and convert your tokens into their private equivalent.",
+    "icon": "/img/dapps/siennaswa.webp",
+    "tags": ["dApp", "DeFi"]
+  },
+  {
+    "name": "SNIP-20 Transfer History",
+    "link": "https://trivium.network/tools",
+    "description": "View the transfer history of secret tokens in your wallet.",
+    "icon": "/img/dapps/trivium.webp",
+    "tags": ["Tool"]
+  },
+  {
+    "name": "Starshell Wallet",
+    "link": "https://starshell.net/",
+    "description": "A privacy-preserving, free, and open-source Web3 wallet built for Secret Network and the Cosmos ecosystem.",
+    "icon": "/img/dapps/starshell.webp",
+    "tags": ["Wallet"]
+  },
+  {
+    "name": "Testnet Faucet",
+    "link": "https://faucet.pulsar.scrttestnet.com/",
+    "description": "Get some testnet SCRT for gas fees and start developing on Secret!",
+    "icon": "/img/dapps/testnetfaucet.svg",
+    "tags": ["Tool"]
+  },
+  {
+    "name": "Transaction Decrypter",
+    "link": "https://trivium.network/tools",
+    "description": "Decrypt your Secret Network transactions. View inputs and outputs.",
+    "icon": "/img/dapps/trivium.webp",
+    "tags": ["Tool"]
+  },
+  {
+    "name": "Yieldmos",
+    "link": "https://www.yieldmos.com/",
+    "description": "Boost yields by auto compounding your staking and LP rewards with validators of your choice.",
+    "icon": "/img/dapps/yieldmos.png",
+    "tags": ["DeFi", "Tool"]
+  }
+]

@@ -20,7 +20,7 @@ const connectKeplr = async (lcd: string, chainID: string) => {
     await sleep(50)
   }
 
-  await window.keplr.enable(SECRET_CHAIN_ID)
+  await window.keplr.enable(chainID)
   window.keplr.defaultOptions = {
     sign: {
       preferNoSetFee: false,
@@ -28,17 +28,17 @@ const connectKeplr = async (lcd: string, chainID: string) => {
     }
   }
 
-  const keplrOfflineSigner = window.getOfflineSignerOnlyAmino(SECRET_CHAIN_ID)
+  const keplrOfflineSigner = window.getOfflineSignerOnlyAmino(chainID)
   const accounts = await keplrOfflineSigner.getAccounts()
 
   const walletAddress = accounts[0].address
 
   const secretjs: SecretNetworkClient = new SecretNetworkClient({
     url: lcd,
-    chainId: SECRET_CHAIN_ID,
+    chainId: chainID,
     wallet: keplrOfflineSigner,
     walletAddress,
-    encryptionUtils: window.getEnigmaUtils(SECRET_CHAIN_ID)
+    encryptionUtils: window.getEnigmaUtils(chainID)
   })
 
   window.wallet = window.keplr
@@ -59,9 +59,9 @@ const connectLeap = async (lcd: string, chainID: string) => {
       await sleep(50)
     }
 
-    await window.leap.enable(SECRET_CHAIN_ID)
+    await window.leap.enable(chainID)
 
-    const wallet = window.leap.getOfflineSignerOnlyAmino(SECRET_CHAIN_ID)
+    const wallet = window.leap.getOfflineSignerOnlyAmino(chainID)
     const [{ address: walletAddress }] = await wallet.getAccounts()
 
     const secretjs: SecretNetworkClient = new SecretNetworkClient({
@@ -69,7 +69,7 @@ const connectLeap = async (lcd: string, chainID: string) => {
       chainId: chainID,
       wallet,
       walletAddress,
-      encryptionUtils: window.leap.getEnigmaUtils(SECRET_CHAIN_ID)
+      encryptionUtils: window.leap.getEnigmaUtils(chainID)
     })
 
     window.wallet = window.leap
@@ -90,7 +90,6 @@ const connectWallet = async (
   } else {
     ;({ walletAddress, secretjs: secretNetworkClient } = await connectKeplr(lcd, chainID))
   }
-
   return { walletAddress, secretjs: secretNetworkClient }
 }
 
@@ -141,7 +140,7 @@ const getWalletViewingKey = async (token: string): Promise<Nullable<string>> => 
   try {
     return await window.wallet?.getSecret20ViewingKey(SECRET_CHAIN_ID, token)
   } catch (error) {
-    console.error(error)
+    console.debug(error)
     return null
   }
 }
@@ -198,53 +197,6 @@ const getsScrtTokenBalance = async (
   return sScrtBalance
 }
 
-const getsTokenBalance = async (
-  secretNetworkClient: any,
-  walletAddress: string,
-  token: Token
-): Promise<Nullable<string>> => {
-  if (!secretNetworkClient) {
-    return null
-  }
-
-  let sBalance: string
-
-  const key = await getWalletViewingKey(token.address)
-  if (!key) {
-    sBalance = 'viewingKeyError' as GetBalanceError
-    return sBalance
-  }
-
-  interface IResult {
-    viewing_key_error: any
-    balance: {
-      amount: string
-    }
-  }
-
-  try {
-    const result: IResult = await secretNetworkClient?.query?.compute?.queryContract({
-      contract_address: token.address,
-      code_hash: token.code_hash,
-      query: {
-        balance: { address: walletAddress, key }
-      }
-    })
-
-    if (result.viewing_key_error) {
-      console.error(result.viewing_key_error.msg)
-      sBalance = 'viewingKeyError' as GetBalanceError
-    } else {
-      sBalance = result.balance.amount
-    }
-  } catch (error) {
-    console.error(`Error getting balance for s${scrtToken.name}: `, error)
-    sBalance = 'GenericFetchError' as GetBalanceError
-  }
-
-  return sBalance
-}
-
 const getBatchsTokenBalance = async (
   secretNetworkClient: any,
   walletAddress: string,
@@ -262,11 +214,13 @@ const getBatchsTokenBalance = async (
   // Collect valid tokens and viewing keys
   for (const token of tokens) {
     const key = await getWalletViewingKey(token.address)
+
     if (!key) {
       viewingKeys.set(token, 'viewingKeyError')
       balances.set(token, 'viewingKeyError')
       continue
     }
+    console.log(`Found viewing key: ${key} for token ${token.name}`)
     viewingKeys.set(token, key)
     validTokens.push(token)
   }
@@ -456,13 +410,12 @@ async function getBalancesForTokens(props: IGetBalancesForTokensProps): Promise<
 }
 
 export const WalletService = {
-  connectWallet: connectWallet,
+  connectWallet,
   requestFeeGrantService,
   setWalletViewingKey,
   getWalletViewingKey,
   isViewingKeyAvailable,
   getsScrtTokenBalance,
-  getsTokenBalance,
   getScrtTokenBalance,
   getBalancesForTokens,
   fetchIbcChainBalances

@@ -39,12 +39,9 @@ export default function AddressQR() {
                       href={`${chains['Secret Network'].explorer_account}${walletAddress}`}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex-initial text-neutral-500 dark:text-neutral-400 hover:text-black dark:hover:text-white transition-colors truncate"
+                      className="flex flex-col items-start text-neutral-500 dark:text-neutral-400 hover:text-black dark:hover:text-white transition-colors break-all"
                     >
-                      <span className="inline 2xl:hidden">
-                        {walletAddress.slice(0, 10)}...{walletAddress.slice(-10)}
-                      </span>
-                      <span className="hidden 2xl:inline">{walletAddress}</span>
+                      <span>{walletAddress}</span>
                     </a>
                   </Tooltip>
                 )}
@@ -105,7 +102,7 @@ export default function AddressQR() {
               value={walletAddress}
               quietZone={0}
               logoImage={`/img/assets/${secretToken?.image}`}
-              size={110}
+              size={130}
               logoHeight={25}
               logoWidth={25}
               ecLevel={'L'}

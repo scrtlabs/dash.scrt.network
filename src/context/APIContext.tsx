@@ -18,7 +18,6 @@ const APIContextProvider = ({ children }: any) => {
   const [totalSupply, setTotalSupply] = useState(Number)
   const [bondedToken, setBondedToken] = useState(Number)
   const [notBondedToken, setNotBondedToken] = useState(Number)
-  const [distributionRewardToken, setDistributionRewardToken] = useState(Number)
   const [sSCRTTokenSupply, setSSCRTTokenSupply] = useState(Number)
   const [stkdSCRTTokenSupply, setStkdSCRTTokenSupply] = useState(Number)
   const [IBCTokenSupply, setIBCTokenSupply] = useState(Number)
@@ -160,13 +159,13 @@ const APIContextProvider = ({ children }: any) => {
   }, [])
 
   const fetchDappsURL = () => {
-    fetch(dAppsURL)
+    fetch('../../dAppData.json')
       .then((response) => {
         if (!response.ok) throw new Error()
         else return response.json()
       })
       .then((jsonData) => {
-        setDappsData(jsonData.data)
+        setDappsData(jsonData)
       })
       .catch((error) => {
         console.error(error)
@@ -209,13 +208,11 @@ const APIContextProvider = ({ children }: any) => {
       let allTags: string[] = []
 
       dappsData.forEach((dapp) => {
-        dapp.attributes.type
-          .map((item: any) => item.name)
-          .forEach((tag: any) => {
-            if (!allTags.find((tagItem) => tagItem === tag)) {
-              allTags.push(tag)
-            }
-          })
+        dapp.tags.forEach((tag: any) => {
+          if (!allTags.find((tagItem) => tagItem === tag)) {
+            allTags.push(tag)
+          }
+        })
       })
       setTags(allTags.sort())
     }

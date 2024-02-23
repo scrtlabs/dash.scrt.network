@@ -46,7 +46,6 @@ const performClaimStakingRewards = async (props: Props) => {
         }
       })
       .then((tx: any) => {
-        console.log(tx)
         if (tx) {
           if (tx.code === 0) {
             NotificationService.notify(`Claimed staking rewards successfully`, 'success', toastId)

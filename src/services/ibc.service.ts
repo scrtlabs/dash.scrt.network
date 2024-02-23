@@ -1,7 +1,6 @@
 import { AxelarAssetTransfer, AxelarQueryAPI, CHAINS, Environment } from '@axelar-network/axelarjs-sdk'
-import { createTxIBCMsgTransfer } from '@tharsis/transactions'
+import { createTxIBCMsgTransfer } from '@evmos/transactions'
 import BigNumber from 'bignumber.js'
-import { cosmos } from '@tharsis/proto/dist/proto/cosmos/tx/v1beta1/tx'
 import { SkipRouter, SKIP_API_URL, Operation } from '@skip-router/core'
 import {
   BroadcastMode,
@@ -100,7 +99,7 @@ async function performIbcDeposit(
 
   try {
     let tx: TxResponse
-    if (!['Evmos', 'Injective'].includes(props.chain.chain_name) && !token.is_ics20) {
+    if (!['Evmos', 'Injective', 'Dymension'].includes(props.chain.chain_name) && !token.is_ics20) {
       // Regular cosmos chain (not ethermint signing)
       if (token.name === 'SCRT' || token.is_snip20) {
         const routing = useSKIPRouting
@@ -133,12 +132,12 @@ async function performIbcDeposit(
             timeout_timestamp: String(Math.floor(Date.now() / 1000) + 10 * 60) // 10 minute timeout
           },
           {
-            broadcastCheckIntervalMs: 10000,
+            broadcastCheckIntervalMs: 1000,
             gasLimit: deposit_gas,
             feeDenom: deposit_gas_denom,
             ibcTxsOptions: {
               resolveResponses: true,
-              resolveResponsesCheckIntervalMs: 250,
+              resolveResponsesCheckIntervalMs: 1000,
               resolveResponsesTimeoutMs: 12 * 60 * 1000
             },
             broadcastMode: BroadcastMode.Sync
@@ -192,12 +191,12 @@ async function performIbcDeposit(
             memo: useSKIPRouting ? forwardingMemo : autoWrapJsonString
           },
           {
-            broadcastCheckIntervalMs: 10000,
+            broadcastCheckIntervalMs: 1000,
             gasLimit: deposit_gas,
             feeDenom: deposit_gas_denom,
             ibcTxsOptions: {
               resolveResponses: true,
-              resolveResponsesCheckIntervalMs: 250,
+              resolveResponsesCheckIntervalMs: 1000,
               resolveResponsesTimeoutMs: 12 * 60 * 1000
             },
             broadcastMode: BroadcastMode.Sync
@@ -244,12 +243,12 @@ async function performIbcDeposit(
           timeout_timestamp: (Math.floor(Date.now() / 1000) + 10 * 60).toString() // 10 minute timeout
         },
         {
-          broadcastCheckIntervalMs: 10000,
+          broadcastCheckIntervalMs: 1000,
           gasLimit: deposit_gas,
           feeDenom: deposit_gas_denom,
           ibcTxsOptions: {
             resolveResponses: true,
-            resolveResponsesCheckIntervalMs: 250,
+            resolveResponsesCheckIntervalMs: 1000,
             resolveResponsesTimeoutMs: 10.25 * 60 * 1000
           },
           broadcastMode: BroadcastMode.Sync
@@ -258,51 +257,63 @@ async function performIbcDeposit(
     } else {
       // Handle IBC transfers from Ethermint chains like Evmos & Injective
 
-      // Get Evmos/Injective account_number & sequence
-      const {
-        account: {
-          base_account: { account_number: accountNumber, sequence: accountSequence }
-        }
-      }: {
-        account: {
-          base_account: {
-            account_number: string
-            sequence: string
-          }
-        }
-      } = await (
+      // Get account_number & sequence
+      const account_data = await (
         await fetch(`${selectedSource.lcd}/cosmos/auth/v1beta1/accounts/${sourceChainNetworkClient.address}`)
       ).json()
+
+      const accountNumber = ['Evmos', 'Injective'].includes(props.chain.chain_name)
+        ? account_data.account.base_account.account_number
+        : account_data.account.account_number
+      const accountSequence = ['Evmos', 'Injective'].includes(props.chain.chain_name)
+        ? account_data.account.base_account.sequence
+        : account_data.account.sequence
 
       // Get account pubkey
       // Can't get it from the chain because an account without txs won't have its pubkey listed on-chain
       const evmosProtoSigner = window.getOfflineSigner!(selectedSource.chain_id)
       const [{ pubkey }]: readonly AccountData[] = await evmosProtoSigner.getAccounts()
 
+      const autoWrapJsonString = JSON.stringify({
+        wasm: {
+          contract: 'secret198lmmh2fpj3weqhjczptkzl9pxygs23yn6dsev',
+          msg: {
+            wrap_deposit: {
+              snip20_address: token.address,
+              snip20_code_hash: token.code_hash,
+              recipient_address: props.secretNetworkClient.address
+            }
+          }
+        }
+      })
+
       // Create IBC MsgTransfer tx
       const txIbcMsgTransfer = createTxIBCMsgTransfer(
         {
-          chainId: 9001, // Evmos EIP155, this is ignored in Injective
-          cosmosChainId: selectedSource.chain_id
+          chain: {
+            chainId: 9001, // Evmos EIP155, this is ignored in Injective
+            cosmosChainId: selectedSource.chain_id
+          },
+          sender: {
+            accountAddress: sourceChainNetworkClient.address,
+            accountNumber: Number(accountNumber),
+            sequence: Number(accountSequence),
+            pubkey: toBase64(pubkey)
+          },
+          fee: {
+            gas: deposit_gas.toString(),
+            amount: '0', // filled in by Keplr
+            denom: 'aevmos' // filled in by Keplr
+          },
+          memo: ''
         },
-        {
-          accountAddress: sourceChainNetworkClient.address,
-          accountNumber: Number(accountNumber),
-          sequence: Number(accountSequence),
-          pubkey: toBase64(pubkey)
-        },
-        {
-          gas: deposit_gas.toString(),
-          amount: '0', // filled in by Keplr
-          denom: 'aevmos' // filled in by Keplr
-        },
-        '',
         {
           sourcePort: 'transfer',
           sourceChannel: deposit_channel_id,
           amount: amount,
           denom: token.deposits.filter((deposit: Deposit) => deposit.chain_name === props.chain.chain_name)[0].denom,
-          receiver: props.secretNetworkClient.address,
+          receiver: 'secret198lmmh2fpj3weqhjczptkzl9pxygs23yn6dsev',
+          memo: autoWrapJsonString,
           revisionNumber: 0,
           revisionHeight: 0,
           timeoutTimestamp: `${Math.floor(Date.now() / 1000) + 10 * 60}000000000` // 10 minute timeout (ns)
@@ -310,10 +321,8 @@ async function performIbcDeposit(
       )
 
       if (selectedSource.chain_name === 'Injective') {
-        const signer_info = txIbcMsgTransfer.signDirect.authInfo.signer_infos[0].toObject()
-        signer_info.public_key!.type_url = '/injective.crypto.v1beta1.ethsecp256k1.PubKey'
-
-        txIbcMsgTransfer.signDirect.authInfo.signer_infos[0] = cosmos.tx.v1beta1.SignerInfo.fromObject(signer_info)
+        const signer_info = txIbcMsgTransfer.signDirect.authInfo.signerInfos[0]
+        signer_info.publicKey!.typeUrl = '/injective.crypto.v1beta1.ethsecp256k1.PubKey'
       }
 
       // Sign the tx
@@ -321,8 +330,8 @@ async function performIbcDeposit(
         selectedSource.chain_id,
         sourceChainNetworkClient.address,
         {
-          bodyBytes: txIbcMsgTransfer.signDirect.body.serializeBinary(),
-          authInfoBytes: txIbcMsgTransfer.signDirect.authInfo.serializeBinary(),
+          bodyBytes: txIbcMsgTransfer.signDirect.body.toBinary(),
+          authInfoBytes: txIbcMsgTransfer.signDirect.authInfo.toBinary(),
           chainId: selectedSource.chain_id,
           accountNumber: new Long(Number(accountNumber))
         },
@@ -343,7 +352,7 @@ async function performIbcDeposit(
       tx = await sourceChainNetworkClient.tx.broadcastSignedTx(txBytes, {
         ibcTxsOptions: {
           resolveResponses: true,
-          resolveResponsesCheckIntervalMs: 250,
+          resolveResponsesCheckIntervalMs: 1000,
           resolveResponsesTimeoutMs: 10.25 * 60 * 1000
         },
         broadcastMode: BroadcastMode.Sync
@@ -464,14 +473,14 @@ async function performIbcWithdrawal(
           }
         },
         {
-          broadcastCheckIntervalMs: 10000,
+          broadcastCheckIntervalMs: 1000,
           gasLimit: withdraw_gas,
           gasPriceInFeeDenom: 0.1,
           feeDenom: 'uscrt',
           feeGranter: props.feeGrantStatus === 'success' ? faucetAddress : '',
           ibcTxsOptions: {
             resolveResponses: true,
-            resolveResponsesCheckIntervalMs: 250,
+            resolveResponsesCheckIntervalMs: 1000,
             resolveResponsesTimeoutMs: 12 * 60 * 1000
           },
           broadcastMode: BroadcastMode.Sync
@@ -529,14 +538,14 @@ async function performIbcWithdrawal(
           }
         },
         {
-          broadcastCheckIntervalMs: 10000,
+          broadcastCheckIntervalMs: 1000,
           gasLimit: withdraw_gas,
           gasPriceInFeeDenom: 0.1,
           feeDenom: 'uscrt',
           feeGranter: props.feeGrantStatus === 'success' ? faucetAddress : '',
           ibcTxsOptions: {
             resolveResponses: true,
-            resolveResponsesCheckIntervalMs: 10_000,
+            resolveResponsesCheckIntervalMs: 1000,
             resolveResponsesTimeoutMs: 12 * 60 * 1000
           },
           broadcastMode: BroadcastMode.Sync
@@ -569,7 +578,7 @@ async function performIbcWithdrawal(
         msg: {
           redeem: {
             amount,
-            denom: token.withdrawals[0].denom,
+            denom: withdrawalChain.denom,
             padding: randomPadding()
           }
         }
@@ -590,14 +599,14 @@ async function performIbcWithdrawal(
       tx = await props.secretNetworkClient.tx.broadcast(
         token.name === 'SCRT' ? [transferMsg] : [redeemMsg, transferMsg],
         {
-          broadcastCheckIntervalMs: 10000,
-          gasLimit: 150_000,
+          broadcastCheckIntervalMs: 1000,
+          gasLimit: withdraw_gas,
           gasPriceInFeeDenom: 0.1,
           feeDenom: 'uscrt',
           feeGranter: props.feeGrantStatus === 'success' ? faucetAddress : '',
           ibcTxsOptions: {
             resolveResponses: true,
-            resolveResponsesCheckIntervalMs: 250,
+            resolveResponsesCheckIntervalMs: 1000,
             resolveResponsesTimeoutMs: 12 * 60 * 1000
           },
           broadcastMode: BroadcastMode.Sync

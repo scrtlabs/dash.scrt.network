@@ -20,7 +20,7 @@ const HoudiniModal = (props: Props) => {
       {/* Outer */}
       <div
         className="fixed top-0 left-0 right-0 bottom-0 bg-black/80 dark:bg-black/80 z-50 flex items-center justify-center"
-        onClick={props.onClose}
+        //onClick={props.onClose}
       >
         {/* Inner */}
         <div className="relative onEnter_fadeInDown h-full overflow-scroll scrollbar-hide flex items-center justify-center">
@@ -51,7 +51,7 @@ const HoudiniModal = (props: Props) => {
                 }&tokenLockOut=true`}
                 height="100%"
                 width="100%"
-                style={{ maxHeight: '800px' }}
+                style={{ maxHeight: '800px', minWidth: '400px' }}
                 onLoad={() => setLoading(false)}
               ></iframe>
             </div>

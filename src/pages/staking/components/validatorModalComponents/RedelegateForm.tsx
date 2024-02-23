@@ -78,7 +78,6 @@ export default function RedelegateForm() {
             }
           })
           .then((tx: any) => {
-            console.log(tx)
             if (tx) {
               if (tx.code === 0) {
                 toast.success(
