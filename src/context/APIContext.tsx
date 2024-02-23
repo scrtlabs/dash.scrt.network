@@ -1,10 +1,10 @@
 import BigNumber from 'bignumber.js'
-import { createContext, useEffect, useRef, useState } from 'react'
+import { createContext, useEffect, useState } from 'react'
 import { SecretNetworkClient } from 'secretjs'
 import { useUserPreferencesStore } from 'store/UserPreferences'
 import { Currency } from 'types/Currency'
 import { Nullable } from 'types/Nullable'
-import { allTokens, coinGeckoCurrencyMap, dAppsURL, randomDelay, sleep, sortDAppsArray } from 'utils/commons'
+import { allTokens, coinGeckoCurrencyMap, sortDAppsArray } from 'utils/commons'
 import { SECRET_LCD, SECRET_CHAIN_ID, chains } from 'utils/config'
 
 const APIContext = createContext(null)
