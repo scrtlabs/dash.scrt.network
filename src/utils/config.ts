@@ -350,7 +350,7 @@ export const chains: { [chain_name: string]: Chain } = {
     withdraw_gas: 150_000,
     chain_id: 'Oraichain',
     bech32_prefix: 'orai',
-    lcd: 'http://lcd.orai.io',
+    lcd: 'https://lcd.orai.io',
     chain_image: '/orai.svg',
     explorer_account: 'https://scan.orai.io/account/'
   },
