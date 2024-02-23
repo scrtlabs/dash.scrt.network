@@ -73,7 +73,9 @@ export default function BalanceUI({
       const valuePrice = getValuePrice(token, BigNumber(balance))
       if (valuePrice) {
         const priceInCurrency = convertCurrency('USD', valuePrice, currency)
-        setCurrencyPriceString(toCurrencyString(priceInCurrency, currency))
+        if (priceInCurrency !== null) {
+          setCurrencyPriceString(toCurrencyString(priceInCurrency, currency))
+        }
       } else {
       }
     }
