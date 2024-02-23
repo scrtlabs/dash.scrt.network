@@ -341,6 +341,19 @@ export const chains: { [chain_name: string]: Chain } = {
     chain_image: '/kuji.svg',
     explorer_account: 'https://ping.pub/kujira/account/'
   },
+  Oraichain: {
+    chain_name: 'Oraichain',
+    deposit_channel_id: 'channel-217',
+    deposit_gas: 700_000,
+    deposit_gas_denom: 'orai',
+    withdraw_channel_id: 'channel-135',
+    withdraw_gas: 150_000,
+    chain_id: 'Oraichain',
+    bech32_prefix: 'orai',
+    lcd: 'http://lcd.orai.io',
+    chain_image: '/orai.svg',
+    explorer_account: 'https://scan.orai.io/account/'
+  },
   Osmosis: {
     chain_name: 'Osmosis',
     deposit_channel_id: 'channel-88',
@@ -750,6 +763,18 @@ export const tokens: Token[] = [
         )
       },
       {
+        chain_name: 'Oraichain',
+        denom: ibcDenom(
+          [
+            {
+              incomingChannelId: chains['Oraichain'].deposit_channel_id,
+              incomingPortId: 'transfer'
+            }
+          ],
+          'uscrt'
+        )
+      },
+      {
         chain_name: 'Osmosis',
         denom: ibcDenom(
           [
@@ -914,6 +939,10 @@ export const tokens: Token[] = [
       {
         chain_name: 'Nolus',
         needsSkip: true,
+        denom: 'uscrt'
+      },
+      {
+        chain_name: 'Oraichain',
         denom: 'uscrt'
       },
       {
@@ -1722,6 +1751,35 @@ export const tokens: Token[] = [
             }
           ],
           'factory:kujira1643jxg8wasy5cfcn7xm8rd742yeazcksqlg4d7:umnta'
+        )
+      }
+    ]
+  },
+  {
+    name: 'ORAI',
+    description: 'Oraichain Governance Token',
+    address: 'secret1sv0nxz6athw5qm0hsxl90376c9zhrxhhprhjph',
+    code_hash: '638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e',
+    image: '/orai.svg',
+    decimals: 6,
+    coingecko_id: 'oraichain-token',
+    deposits: [
+      {
+        chain_name: 'Oraichain',
+        denom: 'orai'
+      }
+    ],
+    withdrawals: [
+      {
+        chain_name: 'Oraichain',
+        denom: ibcDenom(
+          [
+            {
+              incomingChannelId: chains['Oraichain'].withdraw_channel_id,
+              incomingPortId: 'transfer'
+            }
+          ],
+          'orai'
         )
       }
     ]
