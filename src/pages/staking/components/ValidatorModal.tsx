@@ -25,6 +25,7 @@ interface Props {
   open: boolean
   onClose: any
   restakeEntries: any
+  onAutoRestake?: any
 }
 
 const ValidatorModal = (props: Props) => {
@@ -39,6 +40,11 @@ const ValidatorModal = (props: Props) => {
   const [realYield, setRealYield] = useState<Nullable<number>>(null)
 
   const { delegatorDelegations, selectedValidator, view, setView } = useContext(StakingContext)
+
+  function handleAutoRestake() {
+    props.onAutoRestake()
+    props.onClose()
+  }
 
   useEffect(() => {
     if (
@@ -394,6 +400,9 @@ const ValidatorModal = (props: Props) => {
                       </Button>
                       <Button onClick={() => setView('undelegate')} color="secondary" size="large">
                         Undelegate
+                      </Button>
+                      <Button onClick={handleAutoRestake} color="secondary" size="large">
+                        Auto Restake
                       </Button>
                     </>
                   )}

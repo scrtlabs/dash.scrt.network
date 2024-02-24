@@ -314,7 +314,12 @@ export const Staking = () => {
 
         <ClaimRewardsModal open={isClaimRewardsModalOpen} onClose={handleClaimRewardsModal} />
 
-        <ValidatorModal open={!!selectedValidator} restakeEntries={restakeEntries} onClose={handleStakingModalClose} />
+        <ValidatorModal
+          open={!!selectedValidator}
+          restakeEntries={restakeEntries}
+          onClose={handleStakingModalClose}
+          onAutoRestake={() => setIsManageAutoRestakeModalOpen(true)}
+        />
 
         {/* Title */}
         <Title title={'Staking'} />
