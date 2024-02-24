@@ -2419,6 +2419,59 @@ export const tokens: Token[] = [
     ]
   },
   {
+    name: 'stTIA',
+    description: 'Stride TIA Staking Derivative',
+    address: 'secret1l5d0vncwnlln0tz0m4tp9rgm740xl7th6es0q0',
+    code_hash: '638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e',
+    image: '/sttia.svg',
+    decimals: 6,
+    coingecko_id: 'stride-staked-tia',
+    deposits: [
+      /*  {
+        chain_name: 'Osmosis',
+        denom: ibcDenom(
+          [
+            {
+              incomingChannelId: 'channel-326',
+              incomingPortId: 'transfer'
+            }
+          ],
+          'stuosmo'
+        )
+      }, */
+      {
+        chain_name: 'Stride',
+        denom: 'stutia'
+      }
+    ],
+    withdrawals: [
+      /*  {
+        chain_name: 'Osmosis',
+        denom: ibcDenom(
+          [
+            {
+              incomingChannelId: chains['Stride'].withdraw_channel_id,
+              incomingPortId: 'transfer'
+            }
+          ],
+          'stuosmo'
+        )
+      }, */
+      {
+        chain_name: 'Stride',
+        denom: ibcDenom(
+          [
+            {
+              incomingChannelId: chains['Stride'].withdraw_channel_id,
+              incomingPortId: 'transfer'
+            }
+          ],
+          'stutia'
+        )
+      }
+    ]
+  },
+  {
     name: 'TIA',
     description: 'Celestia Governance Token',
     address: 'secret1s9h6mrp4k9gll4zfv5h78ll68hdq8ml7jrnn20',
