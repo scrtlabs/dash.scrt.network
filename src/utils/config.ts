@@ -2556,7 +2556,7 @@ export const tokens: Token[] = [
   {
     name: 'UMEE',
     description: 'UX Chain Governance Token',
-    address: 'XX',
+    address: 'secret1f6yg0typy608r567xekwyn3qf0k902llue9w2l',
     code_hash: '638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e',
     image: '/umee.svg',
     decimals: 6,
@@ -3094,6 +3094,15 @@ export const snips: Token[] = [
         gas: 300_000
       },
       {
+        chain_name: 'Oraichain',
+        denom: ibcDenom(
+          [{ incomingChannelId: 'channel-222', incomingPortId: 'transfer' }],
+          'cw20:secret153wu605vvp934xhd4k9dtd640zsep5jkesstdm'
+        ),
+        channel_id: 'channel-222',
+        gas: 300_000
+      },
+      {
         chain_name: 'Persistence',
         denom: ibcDenom(
           [{ incomingChannelId: 'channel-159', incomingPortId: 'transfer' }],
@@ -3138,6 +3147,12 @@ export const snips: Token[] = [
         chain_name: 'Migaloo',
         denom: 'secret153wu605vvp934xhd4k9dtd640zsep5jkesstdm',
         channel_id: 'channel-129',
+        gas: 350_000
+      },
+      {
+        chain_name: 'Oraichain',
+        denom: 'secret153wu605vvp934xhd4k9dtd640zsep5jkesstdm',
+        channel_id: 'channel-140',
         gas: 350_000
       },
       {
