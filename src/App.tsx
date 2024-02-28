@@ -29,7 +29,7 @@ import { useSecretNetworkClientStore } from 'store/secretNetworkClient'
 import { useUserPreferencesStore } from 'store/UserPreferences'
 import { debugModeOverride } from 'utils/commons'
 
-const { debugMode } = useUserPreferencesStore()
+const { debugMode } = useUserPreferencesStore.getState()
 
 if (import.meta.env.VITE_MIXPANEL_ENABLED === 'true') {
   mixpanel.init(import.meta.env.VITE_MIXPANEL_PROJECT_TOKEN, { debug: true })

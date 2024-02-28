@@ -21,8 +21,6 @@ import { TokenBalances } from 'store/secretNetworkClient'
 import { BatchQueryParsedResponse, batchQuery } from '@shadeprotocol/shadejs'
 import { useUserPreferencesStore } from 'store/UserPreferences'
 
-const { debugMode } = useUserPreferencesStore.getState()
-
 const connectKeplr = async (lcd: string, chainID: string) => {
   const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
 
@@ -104,6 +102,8 @@ const connectWallet = async (
 }
 
 const requestFeeGrantService = async (feeGrantStatus: FeeGrantStatus, walletAddress: String) => {
+  const { debugMode } = useUserPreferencesStore.getState()
+
   let newFeeGrantStatus: FeeGrantStatus = feeGrantStatus
 
   if (feeGrantStatus === 'success') {
@@ -145,6 +145,8 @@ const setWalletViewingKey = async (token: string) => {
 }
 
 const getWalletViewingKey = async (token: string): Promise<Nullable<string>> => {
+  const { debugMode } = useUserPreferencesStore.getState()
+
   if (!window.keplr && !window.leap) {
     console.error('Wallet not present')
     return null
