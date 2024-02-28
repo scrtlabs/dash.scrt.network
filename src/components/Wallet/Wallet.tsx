@@ -1,7 +1,15 @@
 import { useEffect, useRef, useState } from 'react'
 import CopyToClipboard from 'react-copy-to-clipboard'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCopy, faDesktop, faGear, faMobileScreen, faWallet, faXmark } from '@fortawesome/free-solid-svg-icons'
+import {
+  faArrowRightFromBracket,
+  faCopy,
+  faDesktop,
+  faGear,
+  faMobileScreen,
+  faWallet,
+  faXmark
+} from '@fortawesome/free-solid-svg-icons'
 import { useHoverOutside } from 'utils/useHoverOutside'
 import { trackMixPanelEvent } from 'utils/commons'
 import { useSecretNetworkClientStore } from 'store/secretNetworkClient'
@@ -119,6 +127,7 @@ function Wallet() {
 
           {/* Disconnect Button */}
           <Button onClick={disconnectWallet} color="red" size="small" className="w-full">
+            <FontAwesomeIcon icon={faArrowRightFromBracket} className="mr-2" />
             Disconnect Wallet
           </Button>
         </div>

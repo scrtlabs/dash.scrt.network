@@ -1,4 +1,4 @@
-import { faBars } from '@fortawesome/free-solid-svg-icons'
+import { faBars, faXmark } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import Footer from 'components/Footer'
 import { Navigation } from 'components/Navigation'
@@ -55,7 +55,11 @@ export const DefaultLayout = ({ children }: any) => {
               <>
                 {icon}
                 {message}
-                {t.type !== 'loading' && <button onClick={() => toast.dismiss(t.id)}>X</button>}
+                {t.type !== 'loading' && (
+                  <button onClick={() => toast.dismiss(t.id)}>
+                    <FontAwesomeIcon icon={faXmark} />
+                  </button>
+                )}
               </>
             )}
           </ToastBar>

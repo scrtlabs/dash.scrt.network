@@ -45,6 +45,23 @@ function Modal({ size = 'sm', ...props }: Props) {
     }
   }, [props.isOpen])
 
+  useEffect(() => {
+    const handleKeyPress = (event: any) => {
+      // Check for Ctrl + S or Cmd + S
+      if (event.key === 'Escape') {
+        props.onClose()
+      }
+    }
+
+    // Add event listener
+    window.addEventListener('keydown', handleKeyPress)
+
+    // Remove event listener on cleanup
+    return () => {
+      window.removeEventListener('keydown', handleKeyPress)
+    }
+  }, [])
+
   const modalRef = useRef(null)
   useClickOutside(modalRef, () => props.onClose())
 
