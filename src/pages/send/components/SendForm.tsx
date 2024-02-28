@@ -11,7 +11,7 @@ import { faInfoCircle, faSearch } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { SendService } from 'services/send.service'
 import FeeGrant from 'components/FeeGrant/FeeGrant'
-import { allTokens } from 'utils/commons'
+import { allTokens, debugModeOverride } from 'utils/commons'
 import BigNumber from 'bignumber.js'
 import toast from 'react-hot-toast'
 import { useSearchParams } from 'react-router-dom'
@@ -337,12 +337,13 @@ export default function SendForm() {
       </button>
 
       {/* Debug Info */}
-      {debugMode && (
-        <div className="text-sky-500 text-xs p-2 bg-blue-500/20 rounded">
-          <div className="mb-4 font-semibold">Debug Info (Dev Mode)</div>
-          formik.errors: {JSON.stringify(formik.errors)}
-        </div>
-      )}
+      {debugMode ||
+        (debugModeOverride && (
+          <div className="text-sky-500 text-xs p-2 bg-blue-500/20 rounded">
+            <div className="mb-4 font-semibold">Debug Info (Dev Mode)</div>
+            formik.errors: {JSON.stringify(formik.errors)}
+          </div>
+        ))}
     </form>
   )
 }

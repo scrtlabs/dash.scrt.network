@@ -1,7 +1,6 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { faBug, faChevronDown, faGear } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import Tooltip from '@mui/material/Tooltip'
 import Button from 'components/UI/Button/Button'
 import Modal from 'components/UI/Modal/Modal'
 import { useFormik } from 'formik'
@@ -10,6 +9,7 @@ import { NotificationService } from 'services/notification.service'
 import { Theme } from 'types/Theme'
 import { Currency } from 'types/Currency'
 import { useUserPreferencesStore } from 'store/UserPreferences'
+import { debugModeOverride } from 'utils/commons'
 
 function Settings() {
   const { theme, setTheme, debugMode, setDebugMode, currency, setCurrency } = useUserPreferencesStore()
@@ -184,27 +184,26 @@ function Settings() {
             </div>
 
             {/* Debug Info */}
-            {debugMode && (
-              <div className="text-sky-500 text-xs p-2 bg-blue-500/20 rounded">
-                <div className="mb-4 font-semibold">Debug Info</div>
-                <div className="flex flex-col gap-2">
-                  <span> formik.values: {JSON.stringify(formik.values)}</span>
-                  <span>formik.errors: {JSON.stringify(formik.errors)}</span>
+            {debugMode ||
+              (debugModeOverride && (
+                <div className="text-sky-500 text-xs p-2 bg-blue-500/20 rounded">
+                  <div className="mb-4 font-semibold">Debug Info</div>
+                  <div className="flex flex-col gap-2">
+                    <span> formik.values: {JSON.stringify(formik.values)}</span>
+                    <span>formik.errors: {JSON.stringify(formik.errors)}</span>
+                  </div>
                 </div>
-              </div>
-            )}
+              ))}
           </div>
         </form>
       </Modal>
       <div>
-        <Tooltip title={`Settings`} placement="left" arrow>
-          <button
-            onClick={() => setIsModalOpen(true)}
-            className="text-black dark:text-white hover:text-neutral-600 dark:hover:text-neutral-400 transition-colors"
-          >
-            <FontAwesomeIcon icon={faGear} />
-          </button>
-        </Tooltip>
+        <button
+          onClick={() => setIsModalOpen(true)}
+          className="text-black dark:text-white hover:text-neutral-600 dark:hover:text-neutral-400 transition-colors"
+        >
+          <FontAwesomeIcon icon={faGear} />
+        </button>
       </div>
     </>
   )

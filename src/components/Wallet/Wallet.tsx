@@ -12,8 +12,40 @@ import { ManageBalances } from './ManageBalances/ManageBalances'
 import Button from '../UI/Button/Button'
 import BalanceUI from 'components/BalanceUI'
 import { NotificationService } from 'services/notification.service'
+import {
+  autoUpdate,
+  useDismiss,
+  useFloating,
+  useInteractions,
+  useRole,
+  offset,
+  flip,
+  shift,
+  useHover,
+  safePolygon
+} from '@floating-ui/react'
 
 function Wallet() {
+  const [isMenuVisible, setIsMenuVisible] = useState<boolean>(false)
+
+  const { refs, floatingStyles, context } = useFloating({
+    open: isMenuVisible,
+    onOpenChange: setIsMenuVisible,
+    placement: 'bottom-end', // Adjust this based on your desired position
+    middleware: [offset(10), flip(), shift()],
+    whileElementsMounted: autoUpdate
+  })
+
+  const hover = useHover(context, {
+    handleClose: safePolygon({
+      requireIntent: true
+    })
+  })
+  const dismiss = useDismiss(context)
+  const role = useRole(context)
+
+  const { getFloatingProps } = useInteractions([hover, dismiss, role])
+
   const {
     isConnected,
     walletAddress,
@@ -25,8 +57,6 @@ function Wallet() {
     setIsConnectWalletModalOpen
   } = useSecretNetworkClientStore()
 
-  const [isMenuVisible, setIsMenuVisible] = useState<boolean>(false)
-
   const handleManageViewingKeys = () => {
     setIsManageViewingkeysModalOpen(true)
   }
@@ -37,9 +67,6 @@ function Wallet() {
       handleConnectWallet()
     }
   }, [])
-
-  const keplrRef = useRef<any>()
-  useHoverOutside(keplrRef, () => setIsMenuVisible(false))
 
   function CopyableAddress() {
     return (
@@ -80,7 +107,7 @@ function Wallet() {
 
   function ContextMenu() {
     return (
-      <div className="absolute pt-4 right-4 z-40 mt-[2.7rem]">
+      <div className="">
         <div className="bg-white dark:bg-neutral-800 border text-xs border-neutral-200 dark:border-neutral-700 p-4 w-auto rounded-lg flex-row space-y-4">
           {/* Copyable Wallet Address */}
           <CopyableAddress />
@@ -224,13 +251,13 @@ function Wallet() {
       </Modal>
 
       {isConnected ? (
-        <div ref={keplrRef}>
-          {isMenuVisible && <ContextMenu />}
-          <div
-            className="w-full sm:w-auto rounded-lg px-4 py-3 bg-white dark:bg-neutral-700 hover:dark:bg-neutral-600 select-none cursor-pointer transition-colors"
-            onMouseOver={() => setIsMenuVisible(true)}
-            ref={keplrRef}
-          >
+        <div onClick={() => setIsMenuVisible(true)} ref={refs.setReference}>
+          {isMenuVisible && (
+            <div ref={refs.setFloating} style={floatingStyles} {...getFloatingProps()}>
+              <ContextMenu />
+            </div>
+          )}
+          <div className="w-full sm:w-auto rounded-lg px-4 py-3 bg-white dark:bg-neutral-700 hover:dark:bg-neutral-600 select-none cursor-pointer transition-colors">
             <div className="flex items-center font-semibold text-sm">
               <div className="flex items-center">
                 <GreenAnimatedDot />

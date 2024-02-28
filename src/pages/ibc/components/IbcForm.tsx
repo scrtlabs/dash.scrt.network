@@ -19,6 +19,7 @@ import BigNumber from 'bignumber.js'
 import { useSearchParams } from 'react-router-dom'
 import { NotificationService } from 'services/notification.service'
 import { useUserPreferencesStore } from 'store/UserPreferences'
+import { debugModeOverride } from 'utils/commons'
 
 export default function IbcForm() {
   // URL params
@@ -491,12 +492,13 @@ export default function IbcForm() {
       </button>
 
       {/* Debug Info */}
-      {debugMode && (
-        <div className="text-sky-500 text-xs p-2 bg-blue-500/20 rounded">
-          <div className="mb-4 font-semibold">Debug Info</div>
-          formik.errors: {JSON.stringify(formik.errors)}
-        </div>
-      )}
+      {debugMode ||
+        (debugModeOverride && (
+          <div className="text-sky-500 text-xs p-2 bg-blue-500/20 rounded">
+            <div className="mb-4 font-semibold">Debug Info</div>
+            formik.errors: {JSON.stringify(formik.errors)}
+          </div>
+        ))}
     </form>
   )
 }

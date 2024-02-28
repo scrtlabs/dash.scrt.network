@@ -17,6 +17,7 @@ import toast from 'react-hot-toast'
 import { useSearchParams } from 'react-router-dom'
 import { Nullable } from 'types/Nullable'
 import { useUserPreferencesStore } from 'store/UserPreferences'
+import { debugModeOverride } from 'utils/commons'
 
 export default function WrapForm() {
   const { debugMode } = useUserPreferencesStore()
@@ -341,12 +342,13 @@ export default function WrapForm() {
         </button>
 
         {/* Debug Info */}
-        {debugMode && (
-          <div className="text-sky-500 text-xs p-2 bg-blue-500/20 rounded">
-            <div className="mb-4 font-semibold">Debug Info (Dev Mode)</div>
-            formik.errors: {JSON.stringify(formik.errors)}
-          </div>
-        )}
+        {debugMode ||
+          (debugModeOverride && (
+            <div className="text-sky-500 text-xs p-2 bg-blue-500/20 rounded">
+              <div className="mb-4 font-semibold">Debug Info (Dev Mode)</div>
+              formik.errors: {JSON.stringify(formik.errors)}
+            </div>
+          ))}
       </form>
     </div>
   )

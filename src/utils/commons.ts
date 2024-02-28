@@ -289,3 +289,5 @@ export const currencySymbols: { [key in Currency]: string } = {
   CAD: 'C$',
   CHF: 'CHF'
 }
+
+export const debugModeOverride: boolean = import.meta.env.VITE_DEBUG_MODE === 'true'
