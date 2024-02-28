@@ -26,11 +26,11 @@ import {
 } from '@floating-ui/react'
 
 function Wallet() {
-  const [isMenuVisible, setIsMenuVisible] = useState<boolean>(false)
+  const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false)
 
   const { refs, floatingStyles, context } = useFloating({
-    open: isMenuVisible,
-    onOpenChange: setIsMenuVisible,
+    open: isMenuOpen,
+    onOpenChange: setIsMenuOpen,
     placement: 'bottom-end', // Adjust this based on your desired position
     middleware: [offset(10), flip(), shift()],
     whileElementsMounted: autoUpdate
@@ -251,8 +251,8 @@ function Wallet() {
       </Modal>
 
       {isConnected ? (
-        <div onClick={() => setIsMenuVisible(true)} ref={refs.setReference}>
-          {isMenuVisible && (
+        <div onClick={() => setIsMenuOpen(true)} ref={refs.setReference}>
+          {isMenuOpen && (
             <div ref={refs.setFloating} style={floatingStyles} {...getFloatingProps()}>
               <ContextMenu />
             </div>
