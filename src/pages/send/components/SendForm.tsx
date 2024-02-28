@@ -340,7 +340,7 @@ export default function SendForm() {
       {debugMode ||
         (debugModeOverride && (
           <div className="text-sky-500 text-xs p-2 bg-blue-500/20 rounded">
-            <div className="mb-4 font-semibold">Debug Info (Dev Mode)</div>
+            <div className="mb-4 font-semibold">Debug Info</div>
             formik.errors: {JSON.stringify(formik.errors)}
           </div>
         ))}
