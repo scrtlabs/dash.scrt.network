@@ -243,7 +243,8 @@ const getBatchsTokenBalance = async (
     batchQueryResults = await batchQuery({
       contractAddress: batchQueryContractAddress,
       codeHash: batchQueryCodeHash,
-      queries: queries
+      queries: queries,
+      lcdEndpoint: SECRET_LCD
     })
   } catch (error) {
     console.error('Error executing batch query: ', error)
