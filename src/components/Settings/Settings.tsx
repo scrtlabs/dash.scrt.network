@@ -23,11 +23,11 @@ function Settings() {
 
   const themeOptions: ThemeOption[] = [
     {
-      label: 'Dark Mode',
+      label: 'Dark Theme',
       value: 'dark'
     },
     {
-      label: 'Light Mode',
+      label: 'Light Theme',
       value: 'light'
     }
   ]
@@ -177,9 +177,12 @@ function Settings() {
               </span>
             </label>
 
-            <div>
+            <div className="flex justify-end items-center gap-4">
+              <Button onClick={() => setIsModalOpen(false)} className="mt-2 px-6" color="secondary" type="button">
+                Cancel
+              </Button>
               <Button className="mt-2 px-6" color="primary" type="submit">
-                Save Changes
+                Save
               </Button>
             </div>
 

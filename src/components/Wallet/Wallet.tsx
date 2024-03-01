@@ -32,6 +32,8 @@ import {
   useHover,
   safePolygon
 } from '@floating-ui/react'
+import Badge from 'components/UI/Badge/Badge'
+import StatusDot from './StatusDot'
 
 function Wallet() {
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false)
@@ -135,15 +137,6 @@ function Wallet() {
     )
   }
 
-  function GreenAnimatedDot() {
-    return (
-      <span className="flex relative h-2 w-2">
-        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-1/2"></span>
-        <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
-      </span>
-    )
-  }
-
   const [isManageViewingkeysModalOpen, setIsManageViewingkeysModalOpen] = useState<boolean>(false)
 
   function handleConnectWallet() {
@@ -156,6 +149,19 @@ function Wallet() {
     } else {
       setIsGetWalletModalOpen(true)
     }
+  }
+
+  function X() {
+    return (
+      <div className="w-full sm:w-auto rounded-lg px-4 py-3 bg-white dark:bg-neutral-700 hover:dark:bg-neutral-600 select-none cursor-pointer transition-colors">
+        <div className="flex items-center font-semibold text-sm">
+          <div className="flex items-center">
+            <StatusDot status={isConnected ? 'connected' : 'disconnected'} />
+            <FontAwesomeIcon icon={faWallet} className="ml-3" />
+          </div>
+        </div>
+      </div>
+    )
   }
 
   return (
@@ -198,11 +204,11 @@ function Wallet() {
             }}
           >
             <img src="/img/assets/starshell.svg" className="flex-initial w-7 h-7" />
-            <span className="flex-1 font-medium flex items-center">
-              Starshell{' '}
-              <span className="text-xs ml-2 font-semibold py-0.5 px-1.5 rounded bg-gradient-to-r from-cyan-600 to-purple-600">
-                recommended
-              </span>
+            <span className="flex-1 font-medium flex items-center gap-2">
+              Starshell
+              <Badge pill color="green">
+                Recommended
+              </Badge>
             </span>
             <span className="text-white dark:text-white bg-blue-500 dark:bg-blue-500 group-hover:bg-blue-600 dark:group-hover:bg-blue-400 transition-colors px-3 py-1.5 rounded text-xs font-semibold">
               <FontAwesomeIcon icon={faDesktop} className="mr-1" />
@@ -211,7 +217,7 @@ function Wallet() {
             </span>
           </a>
           <a
-            href="https://www.leapwallet.io"
+            href="https://leapwallet.io/download"
             target="_blank"
             className="group p-5 flex items-center gap-2.5 hover:bg-neutral-300 dark:hover:bg-neutral-700 transition-colors"
             onClick={() => {
@@ -227,7 +233,7 @@ function Wallet() {
             </span>
           </a>
           <a
-            href="https://fina.cash/wallet"
+            href="https://fina.cash/wallet#download"
             target="_blank"
             className="group p-5 flex items-center gap-2.5 hover:bg-neutral-300 dark:hover:bg-neutral-700 transition-colors"
             onClick={() => {
@@ -242,7 +248,7 @@ function Wallet() {
             </span>
           </a>
           <a
-            href="https://chrome.google.com/webstore/detail/keplr/dmkamcknogkgcdfhhbddcghachkejeap?hl=en"
+            href="https://www.keplr.app/download"
             target="_blank"
             className="group p-5 flex items-center gap-2.5 hover:bg-neutral-300 dark:hover:bg-neutral-700 transition-colors"
             onClick={() => {
@@ -266,27 +272,13 @@ function Wallet() {
               <ContextMenu />
             </div>
           )}
-          <div className="w-full sm:w-auto rounded-lg px-4 py-3 bg-white dark:bg-neutral-700 hover:dark:bg-neutral-600 select-none cursor-pointer transition-colors">
-            <div className="flex items-center font-semibold text-sm">
-              <div className="flex items-center">
-                <GreenAnimatedDot />
-                <FontAwesomeIcon icon={faWallet} className="ml-3 mr-2" />
-                {`My Wallet`}
-              </div>
-            </div>
+          <div>
+            <X />
           </div>
         </div>
       ) : (
-        <button
-          onClick={() => handleConnectWallet()}
-          className="w-full sm:w-auto rounded-lg px-4 py-3 bg-white dark:bg-neutral-700 hover:dark:bg-neutral-600 select-none cursor-pointer transition-colors"
-        >
-          <div className="flex items-center font-semibold text-sm">
-            <div className="flex items-center">
-              <FontAwesomeIcon icon={faWallet} className="mr-2" />
-              {`Connect Wallet`}
-            </div>
-          </div>
+        <button onClick={() => handleConnectWallet()}>
+          <X />
         </button>
       )}
     </>

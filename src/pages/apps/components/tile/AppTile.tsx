@@ -32,13 +32,14 @@ const AppTile = (props: Props) => {
       <div className="border border-neutral-200 dark:border-neutral-700 bg-white group-hover:bg-white/95 dark:bg-neutral-800 group-hover:dark:bg-neutral-800/95 p-4 flex flex-col h-full rounded-xl overflow-hidden text-center sm:text-left">
         {/* Image */}
         {props.image && (
-          <img
-            src={props.image}
-            alt={`${props.name} logo`}
-            className="w-16 h-16 rounded-xl block mb-4 bg-neutral-100 dark:bg-neutral-900 flex-initial mx-auto sm:mx-0"
-          />
+          <div className="flex-initial">
+            <img
+              src={props.image}
+              alt={`${props.name} logo`}
+              className="w-16 h-16 rounded-xl block mb-4 bg-neutral-100 dark:bg-neutral-900 flex-initial mx-auto sm:mx-0"
+            />
+          </div>
         )}
-
         {/* Name */}
         <div className="text-xl font-semibold flex-initial mb-1">{props.name}</div>
 
@@ -47,7 +48,9 @@ const AppTile = (props: Props) => {
 
         {/* Tags */}
         {props.tags?.length! > 0 && (
-          <div className="space-x-2 mt-4 flex-initial">{props.tags?.map((tag) => <Tag key={tag} name={tag} />)}</div>
+          <div className="flex flex-wrap gap-2 mt-4 flex-initial">
+            {props.tags?.map((tag) => <Tag key={tag} name={tag} />)}
+          </div>
         )}
       </div>
     </a>
