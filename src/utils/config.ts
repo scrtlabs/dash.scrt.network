@@ -350,7 +350,7 @@ export const chains: { [chain_name: string]: Chain } = {
     withdraw_gas: 150_000,
     chain_id: 'Oraichain',
     bech32_prefix: 'orai',
-    lcd: 'http://lcd.orai.io',
+    lcd: 'https://lcd.orai.io',
     chain_image: '/orai.svg',
     explorer_account: 'https://scan.orai.io/account/'
   },
@@ -444,6 +444,19 @@ export const chains: { [chain_name: string]: Chain } = {
     lcd: 'https://phoenix-lcd.terra.dev',
     chain_image: '/luna2.svg',
     explorer_account: 'https://finder.terra.money/mainnet/address/'
+  },
+  'UX Chain': {
+    chain_name: 'UX Chain',
+    deposit_channel_id: 'channel-123',
+    deposit_gas: 200_000,
+    deposit_gas_denom: 'uumee',
+    withdraw_channel_id: 'channel-126',
+    withdraw_gas: 150_000,
+    chain_id: 'umee-1',
+    bech32_prefix: 'umee',
+    lcd: 'https://umee-api.w3coins.io',
+    chain_image: '/umee.svg',
+    explorer_account: 'https://www.mintscan.io/umee/account/'
   }
 }
 
@@ -857,6 +870,18 @@ export const tokens: Token[] = [
           ],
           'uscrt'
         )
+      },
+      {
+        chain_name: 'UX Chain',
+        denom: ibcDenom(
+          [
+            {
+              incomingChannelId: chains['UX Chain'].deposit_channel_id,
+              incomingPortId: 'transfer'
+            }
+          ],
+          'uscrt'
+        )
       }
     ],
     withdrawals: [
@@ -971,6 +996,10 @@ export const tokens: Token[] = [
       },
       {
         chain_name: 'Terra',
+        denom: 'uscrt'
+      },
+      {
+        chain_name: 'UX Chain',
         denom: 'uscrt'
       }
     ]
@@ -2419,6 +2448,59 @@ export const tokens: Token[] = [
     ]
   },
   {
+    name: 'stTIA',
+    description: 'Stride TIA Staking Derivative',
+    address: 'secret1l5d0vncwnlln0tz0m4tp9rgm740xl7th6es0q0',
+    code_hash: '638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e',
+    image: '/sttia.svg',
+    decimals: 6,
+    coingecko_id: 'stride-staked-tia',
+    deposits: [
+      /*  {
+        chain_name: 'Osmosis',
+        denom: ibcDenom(
+          [
+            {
+              incomingChannelId: 'channel-326',
+              incomingPortId: 'transfer'
+            }
+          ],
+          'stuosmo'
+        )
+      }, */
+      {
+        chain_name: 'Stride',
+        denom: 'stutia'
+      }
+    ],
+    withdrawals: [
+      /*  {
+        chain_name: 'Osmosis',
+        denom: ibcDenom(
+          [
+            {
+              incomingChannelId: chains['Stride'].withdraw_channel_id,
+              incomingPortId: 'transfer'
+            }
+          ],
+          'stuosmo'
+        )
+      }, */
+      {
+        chain_name: 'Stride',
+        denom: ibcDenom(
+          [
+            {
+              incomingChannelId: chains['Stride'].withdraw_channel_id,
+              incomingPortId: 'transfer'
+            }
+          ],
+          'stutia'
+        )
+      }
+    ]
+  },
+  {
     name: 'TIA',
     description: 'Celestia Governance Token',
     address: 'secret1s9h6mrp4k9gll4zfv5h78ll68hdq8ml7jrnn20',
@@ -2469,6 +2551,35 @@ export const tokens: Token[] = [
           'utia'
         )
       } */
+    ]
+  },
+  {
+    name: 'UMEE',
+    description: 'UX Chain Governance Token',
+    address: 'secret1f6yg0typy608r567xekwyn3qf0k902llue9w2l',
+    code_hash: '638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e',
+    image: '/umee.svg',
+    decimals: 6,
+    coingecko_id: 'umee',
+    deposits: [
+      {
+        chain_name: 'UX Chain',
+        denom: 'uumee'
+      }
+    ],
+    withdrawals: [
+      {
+        chain_name: 'UX Chain',
+        denom: ibcDenom(
+          [
+            {
+              incomingChannelId: chains['UX Chain'].withdraw_channel_id,
+              incomingPortId: 'transfer'
+            }
+          ],
+          'uumee'
+        )
+      }
     ]
   },
   {
@@ -2983,6 +3094,15 @@ export const snips: Token[] = [
         gas: 300_000
       },
       {
+        chain_name: 'Oraichain',
+        denom: ibcDenom(
+          [{ incomingChannelId: 'channel-222', incomingPortId: 'transfer' }],
+          'cw20:secret153wu605vvp934xhd4k9dtd640zsep5jkesstdm'
+        ),
+        channel_id: 'channel-222',
+        gas: 300_000
+      },
+      {
         chain_name: 'Persistence',
         denom: ibcDenom(
           [{ incomingChannelId: 'channel-159', incomingPortId: 'transfer' }],
@@ -3027,6 +3147,12 @@ export const snips: Token[] = [
         chain_name: 'Migaloo',
         denom: 'secret153wu605vvp934xhd4k9dtd640zsep5jkesstdm',
         channel_id: 'channel-129',
+        gas: 350_000
+      },
+      {
+        chain_name: 'Oraichain',
+        denom: 'secret153wu605vvp934xhd4k9dtd640zsep5jkesstdm',
+        channel_id: 'channel-140',
         gas: 350_000
       },
       {

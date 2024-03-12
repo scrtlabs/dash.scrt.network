@@ -163,7 +163,7 @@ export default function BalanceChart() {
     }
   }
 
-  const centerText: Plugin = {
+  const centerText: Plugin<'doughnut'> = {
     id: 'centerText',
     afterDatasetsDraw(chart: any, args: any, options: any) {
       const {
