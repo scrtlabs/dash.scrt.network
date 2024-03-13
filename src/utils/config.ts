@@ -133,6 +133,19 @@ export const chains: { [chain_name: string]: Chain } = {
     chain_image: '/celestia.svg',
     explorer_account: 'https://www.mintscan.io/celestia/account/'
   },
+  Cheqd: {
+    chain_name: 'Cheqd',
+    deposit_channel_id: 'channel-36',
+    deposit_gas: 200_000,
+    deposit_gas_denom: 'ncheq',
+    withdraw_channel_id: 'channel-141',
+    withdraw_gas: 150_000,
+    chain_id: 'cheqd-mainnet-1',
+    bech32_prefix: 'cheqd',
+    lcd: 'https://lcd-cheqd.whispernode.com:443',
+    chain_image: '/cheq.svg',
+    explorer_account: 'https://ping.pub/cheqd/account/'
+  },
   Chihuahua: {
     chain_name: 'Chihuahua',
     deposit_channel_id: 'channel-16',
@@ -603,6 +616,18 @@ export const tokens: Token[] = [
         )
       },
       {
+        chain_name: 'Cheqd',
+        denom: ibcDenom(
+          [
+            {
+              incomingChannelId: chains['Cheqd'].deposit_channel_id,
+              incomingPortId: 'transfer'
+            }
+          ],
+          'uscrt'
+        )
+      },
+      {
         chain_name: 'Chihuahua',
         denom: ibcDenom(
           [
@@ -910,6 +935,10 @@ export const tokens: Token[] = [
         denom: 'uscrt'
       },
       {
+        chain_name: 'Cheqd',
+        denom: 'uscrt'
+      },
+      {
         chain_name: 'Chihuahua',
         denom: 'uscrt'
       },
@@ -1171,6 +1200,35 @@ export const tokens: Token[] = [
             }
           ],
           'ubld'
+        )
+      }
+    ]
+  },
+  {
+    name: 'CHEQ',
+    description: 'Cheqd Governance Token',
+    address: 'XXXX',
+    code_hash: '638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e',
+    image: '/cheq.svg',
+    decimals: 9,
+    coingecko_id: 'cheqd-network',
+    deposits: [
+      {
+        chain_name: 'Cheqd',
+        denom: 'ncheq'
+      }
+    ],
+    withdrawals: [
+      {
+        chain_name: 'Cheqd',
+        denom: ibcDenom(
+          [
+            {
+              incomingChannelId: chains['Cheqd'].withdraw_channel_id,
+              incomingPortId: 'transfer'
+            }
+          ],
+          'ncheq'
         )
       }
     ]
