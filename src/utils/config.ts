@@ -291,10 +291,10 @@ export const chains: { [chain_name: string]: Chain } = {
   },
   Neutron: {
     chain_name: 'Neutron',
-    deposit_channel_id: 'channel-XX',
+    deposit_channel_id: 'channel-1551',
     deposit_gas: 200_000,
     deposit_gas_denom: 'untrn',
-    withdraw_channel_id: 'channel-XX',
+    withdraw_channel_id: 'channel-144',
     withdraw_gas: 150_000,
     chain_id: 'neutron-1',
     bech32_prefix: 'neutron',
@@ -747,6 +747,19 @@ export const tokens: Token[] = [
         )
       },
       {
+        chain_name: 'Neutron',
+        needsSkip: true,
+        denom: ibcDenom(
+          [
+            {
+              incomingChannelId: chains['Neutron'].deposit_channel_id,
+              incomingPortId: 'Neutron'
+            }
+          ],
+          'uscrt'
+        )
+      },
+      {
         chain_name: 'Noble',
         denom: ibcDenom(
           [
@@ -955,6 +968,10 @@ export const tokens: Token[] = [
       },
       {
         chain_name: 'Kujira',
+        denom: 'uscrt'
+      },
+      {
+        chain_name: 'Neutron',
         denom: 'uscrt'
       },
       {
@@ -1664,6 +1681,35 @@ export const tokens: Token[] = [
             }
           ],
           'factory:kujira1aaudpfr9y23lt9d45hrmskphpdfaq9ajxd3ukh:unstk'
+        )
+      }
+    ]
+  },
+  {
+    name: 'NTRN',
+    description: 'Neutron Governance Token',
+    address: 'secret1k644rvd979wn4erjd5g42uehayjwrq094g5uvj',
+    code_hash: '638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e',
+    image: '/ntrn.svg',
+    decimals: 6,
+    coingecko_id: 'neutron-3',
+    deposits: [
+      {
+        chain_name: 'Neutron',
+        denom: 'untrn'
+      }
+    ],
+    withdrawals: [
+      {
+        chain_name: 'Neutron',
+        denom: ibcDenom(
+          [
+            {
+              incomingChannelId: chains['Neutron'].withdraw_channel_id,
+              incomingPortId: 'transfer'
+            }
+          ],
+          'untrn'
         )
       }
     ]
