@@ -1688,7 +1688,7 @@ export const tokens: Token[] = [
   {
     name: 'NTRN',
     description: 'Neutron Governance Token',
-    address: 'XXX',
+    address: 'secret1k644rvd979wn4erjd5g42uehayjwrq094g5uvj',
     code_hash: '638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e',
     image: '/ntrn.svg',
     decimals: 6,
