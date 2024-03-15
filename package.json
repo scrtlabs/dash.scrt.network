@@ -29,7 +29,7 @@
     "@mui/material": "5.11.4",
     "@shadeprotocol/shadejs": "^1.0.4",
     "@skip-router/core": "^1.0.1",
-    "@swing.xyz/ui": "0.47.12",
+    "@swing.xyz/ui": "^0.50.17",
     "@types/react-copy-to-clipboard": "5.0.4",
     "@types/react-modal": "^3.13.1",
     "@vitejs/plugin-react": "^4.2.0",
