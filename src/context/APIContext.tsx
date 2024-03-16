@@ -56,9 +56,6 @@ const APIContextProvider = ({ children }: any) => {
     const amountInUsd = inputAmount / currencyPricing[coinGeckoCurrencyMap[inputCurrency]]
 
     const convertedAmount = amountInUsd * currencyPricing[coinGeckoCurrencyMap[outputCurrency]]
-    if (convertedAmount === 0) {
-      return null
-    }
     return convertedAmount
   }
 

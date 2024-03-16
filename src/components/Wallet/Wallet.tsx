@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 import CopyToClipboard from 'react-copy-to-clipboard'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
@@ -10,7 +10,6 @@ import {
   faWallet,
   faXmark
 } from '@fortawesome/free-solid-svg-icons'
-import { useHoverOutside } from 'utils/useHoverOutside'
 import { trackMixPanelEvent } from 'utils/commons'
 import { useSecretNetworkClientStore } from 'store/secretNetworkClient'
 import { scrtToken } from 'utils/tokens'
@@ -117,7 +116,7 @@ function Wallet() {
 
   function ContextMenu() {
     return (
-      <div className="bg-white dark:bg-neutral-800 border text-xs border-neutral-200 dark:border-neutral-700 p-4 w-auto rounded-lg flex-row space-y-4">
+      <div className="shadow backdrop-blur-md bg-white/40 dark:bg-neutral-800/40 border text-xs border-neutral-200 dark:border-neutral-700 px-4 py-6 w-auto rounded-2xl flex-row space-y-4">
         {/* Copyable Wallet Address */}
         <CopyableAddress />
 
@@ -267,7 +266,12 @@ function Wallet() {
       {isConnected ? (
         <div onClick={() => setIsMenuOpen(true)} ref={refs.setReference}>
           {isMenuOpen && (
-            <div className="z-40" ref={refs.setFloating} style={floatingStyles} {...getFloatingProps()}>
+            <div
+              className="w-full sm:w-auto px-4 sm:px-0 z-40"
+              ref={refs.setFloating}
+              style={floatingStyles}
+              {...getFloatingProps()}
+            >
               <ContextMenu />
             </div>
           )}
