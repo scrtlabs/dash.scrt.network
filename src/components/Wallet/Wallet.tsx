@@ -117,22 +117,20 @@ function Wallet() {
 
   function ContextMenu() {
     return (
-      <div className="">
-        <div className="bg-white dark:bg-neutral-800 border text-xs border-neutral-200 dark:border-neutral-700 p-4 w-auto rounded-lg flex-row space-y-4">
-          {/* Copyable Wallet Address */}
-          <CopyableAddress />
+      <div className="bg-white dark:bg-neutral-800 border text-xs border-neutral-200 dark:border-neutral-700 p-4 w-auto rounded-lg flex-row space-y-4">
+        {/* Copyable Wallet Address */}
+        <CopyableAddress />
 
-          {/* Balances */}
-          <Balances />
+        {/* Balances */}
+        <Balances />
 
-          <hr className="h-px my-8 bg-neutral-200 border-0 dark:bg-neutral-700" />
+        <hr className="h-px my-8 bg-neutral-200 border-0 dark:bg-neutral-700" />
 
-          {/* Disconnect Button */}
-          <Button onClick={disconnectWallet} color="red" size="small" className="w-full">
-            <FontAwesomeIcon icon={faArrowRightFromBracket} className="mr-2" />
-            Disconnect Wallet
-          </Button>
-        </div>
+        {/* Disconnect Button */}
+        <Button onClick={disconnectWallet} color="red" size="small" className="w-full">
+          <FontAwesomeIcon icon={faArrowRightFromBracket} className="mr-2" />
+          Disconnect Wallet
+        </Button>
       </div>
     )
   }
@@ -157,7 +155,8 @@ function Wallet() {
         <div className="flex items-center font-semibold text-sm">
           <div className="flex items-center">
             <StatusDot status={isConnected ? 'connected' : 'disconnected'} />
-            <FontAwesomeIcon icon={faWallet} className="ml-3" />
+            <FontAwesomeIcon icon={faWallet} className="ml-3 mr-3" />
+            Wallet
           </div>
         </div>
       </div>
@@ -268,7 +267,7 @@ function Wallet() {
       {isConnected ? (
         <div onClick={() => setIsMenuOpen(true)} ref={refs.setReference}>
           {isMenuOpen && (
-            <div ref={refs.setFloating} style={floatingStyles} {...getFloatingProps()}>
+            <div className="z-40" ref={refs.setFloating} style={floatingStyles} {...getFloatingProps()}>
               <ContextMenu />
             </div>
           )}
