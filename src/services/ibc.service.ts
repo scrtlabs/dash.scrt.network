@@ -4,9 +4,11 @@ import BigNumber from 'bignumber.js'
 import { SkipRouter, SKIP_API_URL, Operation } from '@skip-router/core'
 import {
   BroadcastMode,
+  Coin,
   IbcResponse,
   MsgExecuteContract,
   MsgTransfer,
+  ProtoMsg,
   SecretNetworkClient,
   TxResponse,
   fromBase64,
@@ -17,12 +19,12 @@ import { FeeGrantStatus } from 'types/FeeGrantStatus'
 import { IbcMode } from 'types/IbcMode'
 import { sleep, faucetAddress, randomPadding, allTokens, suggestChainToWallet } from 'utils/commons'
 import { Chain, Deposit, Token, Withdraw, chains } from 'utils/config'
-import Long from 'long'
-import { TxRaw } from 'secretjs/dist/protobuf/cosmos/tx/v1beta1/tx'
+import { AuthInfo, TxRaw, TxBody as TxBodyPb } from 'secretjs/dist/protobuf/cosmos/tx/v1beta1/tx'
 import mixpanel from 'mixpanel-browser'
 import { GetBalanceError } from 'store/secretNetworkClient'
-import { AccountData } from 'secretjs/dist/wallet_amino'
 import { NotificationService } from './notification.service'
+import { Any } from 'secretjs/dist/protobuf/google/protobuf/any'
+import { AccountData, Pubkey } from 'secretjs/dist/wallet_amino'
 
 const sdk: AxelarAssetTransfer = new AxelarAssetTransfer({
   environment: Environment.MAINNET
@@ -70,6 +72,107 @@ async function getChainSecretJs(chain: Chain): Promise<SecretNetworkClient> {
     walletAddress: depositFromAccounts[0].address
   })
   return secretNetworkClient
+}
+
+async function encodeTx(txBody: {
+  type_url: string
+  value: {
+    messages: ProtoMsg[]
+    memo: string
+  }
+}): Promise<Uint8Array> {
+  const wrappedMessages = await Promise.all(
+    txBody.value.messages.map(async (message) => {
+      console.log(message)
+      const binaryValue = await message.encode()
+      return Any.fromPartial({
+        type_url: message.type_url,
+        value: binaryValue
+      })
+    })
+  )
+  console.log(wrappedMessages)
+
+  const txBodyEncoded = TxBodyPb.fromPartial({
+    ...txBody.value,
+    messages: wrappedMessages
+  })
+  return TxBodyPb.encode(txBodyEncoded).finish()
+}
+
+async function makeAuthInfoBytes(
+  signers: ReadonlyArray<{
+    readonly pubkey: import('secretjs/dist/protobuf/google/protobuf/any').Any
+    readonly sequence: number
+  }>,
+  feeAmount: readonly Coin[],
+  gasLimit: number,
+  feeGranter?: string,
+  signMode?: import('secretjs/dist/protobuf/cosmos/tx/signing/v1beta1/signing').SignMode
+): Promise<Uint8Array> {
+  if (!signMode) {
+    signMode = (await import('secretjs/dist/protobuf/cosmos/tx/signing/v1beta1/signing')).SignMode.SIGN_MODE_DIRECT
+  }
+
+  const authInfo: AuthInfo = {
+    signer_infos: makeSignerInfos(signers, signMode),
+    fee: {
+      amount: [...feeAmount],
+      gas_limit: String(gasLimit),
+      granter: feeGranter ?? '',
+      payer: ''
+    }
+  }
+
+  const { AuthInfo } = await import('secretjs/dist/protobuf/cosmos/tx/v1beta1/tx')
+  return AuthInfo.encode(AuthInfo.fromPartial(authInfo)).finish()
+}
+
+function makeSignerInfos(
+  signers: ReadonlyArray<{
+    readonly pubkey: import('secretjs/dist/protobuf/google/protobuf/any').Any
+    readonly sequence: number
+  }>,
+  signMode: import('secretjs/dist/protobuf/cosmos/tx/signing/v1beta1/signing').SignMode
+): import('secretjs/dist/protobuf/cosmos/tx/v1beta1/tx').SignerInfo[] {
+  return signers.map(({ pubkey, sequence }): import('secretjs/dist/protobuf/cosmos/tx/v1beta1/tx').SignerInfo => ({
+    public_key: pubkey,
+    mode_info: {
+      single: { mode: signMode }
+    },
+    sequence: String(sequence)
+  }))
+}
+
+async function encodePubkey(pubkey: Pubkey): Promise<import('secretjs/dist/protobuf/google/protobuf/any').Any> {
+  const { Any } = await import('secretjs/dist/protobuf/google/protobuf/any')
+
+  if (isSecp256k1Pubkey(pubkey)) {
+    const { PubKey } = await import('secretjs/dist/protobuf/cosmos/crypto/secp256k1/keys')
+
+    const pubkeyProto = PubKey.fromPartial({
+      key: fromBase64(pubkey.value)
+    })
+    return Any.fromPartial({
+      type_url: '/cosmos.crypto.secp256k1.PubKey',
+      value: Uint8Array.from(PubKey.encode(pubkeyProto).finish())
+    })
+  } else {
+    throw new Error(`Pubkey type ${pubkey.type} not recognized`)
+  }
+}
+
+function isSecp256k1Pubkey(pubkey: Pubkey): boolean {
+  return pubkey.type === 'tendermint/PubKeySecp256k1'
+}
+export function encodeSecp256k1Pubkey(pubkey: Uint8Array): Pubkey {
+  if (pubkey.length !== 33 || (pubkey[0] !== 0x02 && pubkey[0] !== 0x03)) {
+    throw new Error('Public key must be compressed secp256k1, i.e. 33 bytes starting with 0x02 or 0x03')
+  }
+  return {
+    type: 'tendermint/PubKeySecp256k1',
+    value: toBase64(pubkey)
+  }
 }
 
 async function performIbcDeposit(
@@ -324,26 +427,71 @@ async function performIbcDeposit(
         const signer_info = txIbcMsgTransfer.signDirect.authInfo.signerInfos[0]
         signer_info.publicKey!.typeUrl = '/injective.crypto.v1beta1.ethsecp256k1.PubKey'
       }
-
+      const msgContent = {
+        source_port: (txIbcMsgTransfer.eipToSign.message as any).msgs[0].value.source_port,
+        source_channel: (txIbcMsgTransfer.eipToSign.message as any).msgs[0].value.source_channel,
+        token: (txIbcMsgTransfer.eipToSign.message as any).msgs[0].value.token,
+        sender: (txIbcMsgTransfer.eipToSign.message as any).msgs[0].value.sender,
+        receiver: (txIbcMsgTransfer.eipToSign.message as any).msgs[0].value.receiver,
+        timeout_height: (txIbcMsgTransfer.eipToSign.message as any).msgs[0].value.timeout_height,
+        timeout_timestamp: (txIbcMsgTransfer.eipToSign.message as any).msgs[0].value.timeout_timestamp
+          ? `${(txIbcMsgTransfer.eipToSign.message as any).msgs[0].value.timeout_timestamp}000000000` // sec -> ns
+          : '0',
+        memo: (txIbcMsgTransfer.eipToSign.message as any).msgs[0].value.memo || ''
+      }
+      const txBody = {
+        type_url: '/cosmos.tx.v1beta1.TxBody',
+        value: {
+          messages: [
+            {
+              type_url: '/ibc.applications.transfer.v1.MsgTransfer',
+              value: msgContent,
+              encode: async () =>
+                (await import('secretjs/dist/protobuf/ibc/applications/transfer/v1/tx')).MsgTransfer.encode(
+                  msgContent
+                ).finish()
+            }
+          ],
+          memo: ''
+        }
+      }
       // Sign the tx
-      const sig = await window.wallet?.signDirect(
+      console.log(txIbcMsgTransfer)
+      const signed = await window.wallet?.signAmino(
         selectedSource.chain_id,
         sourceChainNetworkClient.address,
-        {
-          bodyBytes: txIbcMsgTransfer.signDirect.body.toBinary(),
-          authInfoBytes: txIbcMsgTransfer.signDirect.authInfo.toBinary(),
-          chainId: selectedSource.chain_id,
-          accountNumber: new Long(Number(accountNumber))
-        },
+        txIbcMsgTransfer.eipToSign.message,
         { isEthereum: true }
       )
-
+      console.log(txBody)
+      let signMode = (await import('secretjs/dist/protobuf/cosmos/tx/signing/v1beta1/signing')).SignMode
+        .SIGN_MODE_LEGACY_AMINO_JSON
       // Encode the Evmos tx to a TxRaw protobuf binary
+      console.log('sdgdhsdfghfjghdfgsfdhfghjfghjgdfgfshgdhfjh')
+      const txBodyBytes = await encodeTx(txBody)
+      console.log('sdgdhsdfghfjghdfgsfdhfghjfghjgdfgfshgddfgsfghgfjgfdhfjh')
+      console.log(signed.signed.fee)
+      const signedGasLimit = Number(signed.signed.fee.gas)
+      const signedSequence = Number(signed.signed.sequence)
+      const pubkey2 = await encodePubkey(encodeSecp256k1Pubkey(pubkey))
+      //pubkey2.type_url = '/injective.crypto.v1beta1.ethsecp256k1.PubKey'
+      pubkey2.type_url = '/ethermint.crypto.v1.ethsecp256k1.PubKey'
+      const signedAuthInfoBytes = await makeAuthInfoBytes(
+        [{ pubkey: pubkey2, sequence: signedSequence }],
+        signed.signed.fee.amount,
+        signedGasLimit,
+        signed.signed.fee.granter,
+        signMode
+      )
+      console.log('sdfsgfdgfdsgfghfhghggdfgfgsfghfdh')
+      console.log(signed.signature.signature)
+      console.log(signed)
       const txRaw = TxRaw.fromPartial({
-        body_bytes: sig!.signed.bodyBytes,
-        auth_info_bytes: sig!.signed.authInfoBytes,
-        signatures: [fromBase64(sig!.signature.signature)]
+        body_bytes: txBodyBytes,
+        auth_info_bytes: signedAuthInfoBytes,
+        signatures: [fromBase64(signed.signature.signature)]
       })
+      console.log('sdfsgfdgdfghdfhgsfghfdh')
       const txBytes = TxRaw.encode(txRaw).finish()
 
       // cosmjs can broadcast to Ethermint but cannot handle the response
