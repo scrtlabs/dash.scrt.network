@@ -1,3 +1,4 @@
+import { Currency } from 'types/Currency'
 import { tokens, snips, ICSTokens } from './config'
 import mixpanel from 'mixpanel-browser'
 
@@ -104,6 +105,15 @@ export const toUsdString = (number: number) => {
   return new Intl.NumberFormat(undefined, {
     style: 'currency',
     currency: 'USD',
+    ...fractionDigits
+  }).format(number)
+}
+
+export const toCurrencyString = (number: number, currency: Currency = 'USD') => {
+  const fractionDigits = getFractionDigits(number)
+  return new Intl.NumberFormat(undefined, {
+    style: 'currency',
+    currency: currency,
     ...fractionDigits
   }).format(number)
 }
@@ -258,3 +268,26 @@ export const appsJsonLdSchema = [
     creator: 'Secret Jupiter, Secret Saturn'
   }
 ]
+
+// maps currency to coingecoCurrency for API use, see /types/Currency.ts
+export const coinGeckoCurrencyMap: { [C in Currency]: string } = {
+  USD: 'usd',
+  EUR: 'eur',
+  JPY: 'jpy',
+  GBP: 'gbp',
+  AUD: 'aud',
+  CAD: 'cad',
+  CHF: 'chf'
+}
+
+export const currencySymbols: { [key in Currency]: string } = {
+  USD: '$',
+  EUR: '€',
+  JPY: '¥',
+  GBP: '£',
+  AUD: 'A$',
+  CAD: 'C$',
+  CHF: 'CHF'
+}
+
+export const debugModeOverride: boolean = import.meta.env.VITE_DEBUG_MODE === 'true'

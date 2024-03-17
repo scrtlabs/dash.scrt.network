@@ -1,7 +1,14 @@
 import { SecretNetworkClient } from 'secretjs'
 import { FeeGrantStatus } from 'types/FeeGrantStatus'
 import { Nullable } from 'types/Nullable'
-import { allTokens, batchQueryCodeHash, batchQueryContractAddress, faucetURL, sleep } from 'utils/commons'
+import {
+  allTokens,
+  batchQueryCodeHash,
+  batchQueryContractAddress,
+  debugModeOverride,
+  faucetURL,
+  sleep
+} from 'utils/commons'
 import { Chain, SECRET_CHAIN_ID, SECRET_LCD, Token } from 'utils/config'
 import { isMobile } from 'react-device-detect'
 import { scrtToken } from 'utils/tokens'
@@ -12,6 +19,7 @@ import { GetBalanceError } from 'store/secretNetworkClient'
 import { IbcService } from './ibc.service'
 import { TokenBalances } from 'store/secretNetworkClient'
 import { BatchQueryParsedResponse, batchQuery } from '@shadeprotocol/shadejs'
+import { useUserPreferencesStore } from 'store/UserPreferences'
 
 const connectKeplr = async (lcd: string, chainID: string) => {
   const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
@@ -94,10 +102,14 @@ const connectWallet = async (
 }
 
 const requestFeeGrantService = async (feeGrantStatus: FeeGrantStatus, walletAddress: String) => {
+  const { debugMode } = useUserPreferencesStore.getState()
+
   let newFeeGrantStatus: FeeGrantStatus = feeGrantStatus
 
   if (feeGrantStatus === 'success') {
-    console.debug('User requested Fee Grant. Fee Grant has already been granted. Therefore doing nothing...')
+    if (debugMode || debugModeOverride) {
+      console.debug('User requested Fee Grant. Fee Grant has already been granted. Therefore doing nothing...')
+    }
   } else {
     try {
       const result = await (await fetch(`${faucetURL}/${walletAddress}`)).json()
@@ -133,6 +145,8 @@ const setWalletViewingKey = async (token: string) => {
 }
 
 const getWalletViewingKey = async (token: string): Promise<Nullable<string>> => {
+  const { debugMode } = useUserPreferencesStore.getState()
+
   if (!window.keplr && !window.leap) {
     console.error('Wallet not present')
     return null
@@ -140,7 +154,9 @@ const getWalletViewingKey = async (token: string): Promise<Nullable<string>> => 
   try {
     return await window.wallet?.getSecret20ViewingKey(SECRET_CHAIN_ID, token)
   } catch (error) {
-    console.debug(error)
+    if (debugMode || debugModeOverride) {
+      console.debug('Error in getWalletViewingKey', error)
+    }
     return null
   }
 }

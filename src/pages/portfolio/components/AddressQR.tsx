@@ -1,6 +1,4 @@
-import { useContext, useEffect, useRef, useState } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { ThemeContext } from 'context/ThemeContext'
 import { trackMixPanelEvent } from 'utils/commons'
 import CopyToClipboard from 'react-copy-to-clipboard'
 import Tooltip from '@mui/material/Tooltip'
@@ -12,9 +10,10 @@ import { faCopy } from '@fortawesome/free-solid-svg-icons'
 import { Nullable } from 'types/Nullable'
 import Button from 'components/UI/Button/Button'
 import { NotificationService } from 'services/notification.service'
+import { useUserPreferencesStore } from 'store/UserPreferences'
 
 export default function AddressQR() {
-  const { theme } = useContext(ThemeContext)
+  const { theme } = useUserPreferencesStore()
 
   const { secretNetworkClient, walletAddress } = useSecretNetworkClientStore()
 

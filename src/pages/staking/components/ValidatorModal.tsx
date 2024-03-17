@@ -1,8 +1,8 @@
-import { faGlobe, faXmark } from '@fortawesome/free-solid-svg-icons'
+import { faGlobe } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useContext, useEffect, useState } from 'react'
 import { APIContext } from 'context/APIContext'
-import { toUsdString, formatNumber } from 'utils/commons'
+import { formatNumber, toCurrencyString } from 'utils/commons'
 import BigNumber from 'bignumber.js'
 import { SECRET_LCD, SECRET_CHAIN_ID } from 'utils/config'
 import CopyToClipboard from 'react-copy-to-clipboard'
@@ -20,6 +20,7 @@ import { scrtToken } from 'utils/tokens'
 import Button from 'components/UI/Button/Button'
 import Modal from 'components/UI/Modal/Modal'
 import { NotificationService } from 'services/notification.service'
+import { useUserPreferencesStore } from 'store/UserPreferences'
 
 interface Props {
   open: boolean
@@ -30,9 +31,9 @@ interface Props {
 
 const ValidatorModal = (props: Props) => {
   const [imgUrl, setImgUrl] = useState<Nullable<string>>(null)
-
-  const { currentPrice, inflation, communityTax, totalSupply, bondedToken, secretFoundationTax } =
+  const { convertCurrency, currentPrice, inflation, communityTax, totalSupply, bondedToken, secretFoundationTax } =
     useContext(APIContext)
+  const { currency } = useUserPreferencesStore()
 
   const { scrtBalance, feeGrantStatus, requestFeeGrant, secretNetworkClient, walletAddress, isConnected } =
     useSecretNetworkClientStore()
@@ -324,12 +325,19 @@ const ValidatorModal = (props: Props) => {
                   <span className="text-neutral-400 text-xs">{` SCRT`}</span>
                 </div>
                 <div className="font-semibold text-neutral-400 mt-0.5 text-sm">
-                  {toUsdString(
-                    new BigNumber(scrtBalance!)
-                      .dividedBy(`1e${scrtToken.decimals}`)
-                      .multipliedBy(Number(currentPrice))
-                      .toNumber()
-                  )}
+                  <div>
+                    {toCurrencyString(
+                      convertCurrency(
+                        'USD',
+                        new BigNumber(scrtBalance!)
+                          .dividedBy(`1e${scrtToken.decimals}`)
+                          .multipliedBy(Number(currentPrice))
+                          .toNumber(),
+                        'EUR'
+                      ),
+                      'EUR'
+                    )}
+                  </div>
                 </div>
               </div>
             )}
@@ -351,7 +359,7 @@ const ValidatorModal = (props: Props) => {
                     <span className="text-neutral-400 text-xs">{` SCRT`}</span>
                   </div>
                   <div className="font-semibold text-neutral-400 mt-0.5 text-sm">
-                    {toUsdString(
+                    {toCurrencyString(
                       new BigNumber(
                         delegatorDelegations?.find(
                           (delegatorDelegation: any) =>
@@ -371,7 +379,7 @@ const ValidatorModal = (props: Props) => {
                     {0}
                     <span className="text-neutral-400 text-xs">{` SCRT`}</span>
                   </div>
-                  <div className="font-semibold text-neutral-400 mt-0.5 text-sm">{toUsdString(0)}</div>
+                  <div className="font-semibold text-neutral-400 mt-0.5 text-sm">{toCurrencyString(0)}</div>
                 </div>
               ))}
 

@@ -45,6 +45,23 @@ function Modal({ size = 'sm', ...props }: Props) {
     }
   }, [props.isOpen])
 
+  useEffect(() => {
+    const handleKeyPress = (event: any) => {
+      // Check for Ctrl + S or Cmd + S
+      if (event.key === 'Escape') {
+        props.onClose()
+      }
+    }
+
+    // Add event listener
+    window.addEventListener('keydown', handleKeyPress)
+
+    // Remove event listener on cleanup
+    return () => {
+      window.removeEventListener('keydown', handleKeyPress)
+    }
+  }, [])
+
   const modalRef = useRef(null)
   useClickOutside(modalRef, () => props.onClose())
 
@@ -64,7 +81,7 @@ function Modal({ size = 'sm', ...props }: Props) {
               <div className={`flex mb-6 ${props.title || props.subTitle ? 'items-center gap-4' : 'justify-end'}`}>
                 {/* Title and Subtitle */}
                 {(props.title || props.subTitle) && (
-                  <div className="flex-1 flex-col">
+                  <div className="text-left flex-1 flex-col">
                     {props.title && <div className="text-xl font-semibold">{props.title}</div>}
                     {props.subTitle && (
                       <div className="mt-2 text-sm text-neutral-500 dark:text-neutral-500 font-semibold">

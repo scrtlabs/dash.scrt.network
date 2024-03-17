@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { Chain, ICSTokens, Token } from 'utils/config'
 import Tooltip from '@mui/material/Tooltip'
 import { faInfoCircle } from '@fortawesome/free-solid-svg-icons'
@@ -8,6 +8,9 @@ import { IbcMode } from 'types/IbcMode'
 import { IbcService } from 'services/ibc.service'
 import { Coin } from 'secretjs'
 import { useTokenPricesStore } from 'store/TokenPrices'
+import { APIContext } from 'context/APIContext'
+import { useUserPreferencesStore } from 'store/UserPreferences'
+import { toCurrencyString } from 'utils/commons'
 
 interface IProps {
   chain: Chain
@@ -18,7 +21,7 @@ interface IProps {
 
 export default function BridgingFees(props: IProps) {
   const [axelarTransferFee, setAxelarTransferFee] = useState<Coin>(undefined)
-  const [usdPriceString, setUsdPriceString] = useState<string>(null)
+  const [priceString, setPriceString] = useState<string>(null)
 
   const { getValuePrice, priceMapping } = useTokenPricesStore()
 
@@ -38,11 +41,24 @@ export default function BridgingFees(props: IProps) {
     }
   }, [props.ibcMode, props.token, props.chain, props.amount])
 
+  const { convertCurrency } = useContext(APIContext)
+  const { currency } = useUserPreferencesStore()
+
   useEffect(() => {
     if (priceMapping !== null && axelarTransferFee !== undefined) {
-      setUsdPriceString(getValuePrice(props.token, BigNumber(axelarTransferFee.amount)))
+      const priceInCurrency = convertCurrency(
+        'USD',
+        getValuePrice(props.token, BigNumber(axelarTransferFee.amount)),
+        currency
+      )
+      console.log(priceInCurrency)
+      if (priceInCurrency !== null) {
+        setPriceString(toCurrencyString(priceInCurrency, currency))
+      } else {
+        setPriceString('')
+      }
     } else {
-      setUsdPriceString('')
+      setPriceString('')
     }
   }, [priceMapping, props.token, axelarTransferFee])
 
@@ -71,7 +87,7 @@ export default function BridgingFees(props: IProps) {
             )} ${props.ibcMode == 'withdrawal' ? 's' : ''}${
               ICSTokens.filter((icstoken: Token) => icstoken.axelar_denom === axelarTransferFee.denom)[0].name
             }
-          ${props.token.coingecko_id && usdPriceString ? ` (${usdPriceString})` : ''}`}
+          ${props.token.coingecko_id && priceString ? ` (${priceString})` : ''}`}
           </div>
         ) : (
           <span className="animate-pulse bg-neutral-300/40 dark:bg-neutral-600/40 rounded w-20 h-5"></span>

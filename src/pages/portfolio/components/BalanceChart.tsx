@@ -1,5 +1,5 @@
 import { useContext, useEffect, useRef, useState } from 'react'
-import { formatNumber } from 'utils/commons'
+import { formatNumber, toCurrencyString } from 'utils/commons'
 
 import {
   Chart as ChartJS,
@@ -16,11 +16,13 @@ import {
   LegendItem
 } from 'chart.js'
 import { Doughnut } from 'react-chartjs-2'
+import { useUserPreferencesStore } from 'store/UserPreferences'
 import { ThemeContext } from 'context/ThemeContext'
 import { TokenBalances, useSecretNetworkClientStore } from 'store/secretNetworkClient'
 import BigNumber from 'bignumber.js'
 import { useTokenPricesStore } from 'store/TokenPrices'
 import { Token } from 'utils/config'
+import { APIContext } from 'context/APIContext'
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, ArcElement, LineElement, Title, ChartTooltip, Legend)
 
@@ -29,8 +31,9 @@ export default function BalanceChart() {
 
   const { balanceMapping } = useSecretNetworkClientStore()
   const { getValuePrice, priceMapping } = useTokenPricesStore()
+  const { convertCurrency } = useContext(APIContext)
 
-  const { theme } = useContext(ThemeContext)
+  const { theme, currency } = useUserPreferencesStore()
 
   const defaultData = {
     labels: [''],
@@ -143,10 +146,18 @@ export default function BalanceChart() {
   const createLabel = (label: string, value: number, token: Token, balance: BigNumber) => {
     const valuePrice = getValuePrice(token, balance)
     if (valuePrice !== null) {
-      return `${BigNumber(balance).dividedBy(`1e${token.decimals}`).toNumber()} ${label} (${getValuePrice(
-        token,
-        balance
-      )})`
+      const priceInCurrency = convertCurrency('USD', valuePrice, currency)
+      console.log(priceInCurrency)
+      console.log(valuePrice)
+      console.log(currency)
+      if (priceInCurrency !== null) {
+        return `${BigNumber(balance).dividedBy(`1e${token.decimals}`).toNumber()} ${label} (${toCurrencyString(
+          priceInCurrency,
+          currency
+        )})`
+      } else {
+        return `${BigNumber(balance).dividedBy(`1e${token.decimals}`).toNumber()} ${label}`
+      }
     } else {
       return `${BigNumber(balance).dividedBy(`1e${token.decimals}`).toNumber()} ${label}`
     }
