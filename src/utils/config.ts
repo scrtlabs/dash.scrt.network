@@ -2395,7 +2395,7 @@ export const tokens: Token[] = [
   {
     name: 'stkDYDX',
     description: 'Persistence dYdX Staking Derivative',
-    address: 'XXX',
+    address: 'secret16dctnuy6lwydw834f4d0t3sw3f6jhav6ryhe4m',
     code_hash: '638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e',
     image: '/stkdydx.svg',
     decimals: 18,
@@ -2718,10 +2718,10 @@ export const tokens: Token[] = [
   {
     name: 'WBTC',
     description: 'Wrapped Bitcoin on Osmosis',
-    address: 'XXX',
+    address: 'secret1v2kgmfwgd2an0l5ddralajg5wfdkemxl2vg4jp',
     code_hash: '638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e',
     image: '/wbtc.svg',
-    decimals: 6,
+    decimals: 8,
     coingecko_id: 'bitcoin',
     deposits: [
       {
