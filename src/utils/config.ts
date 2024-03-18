@@ -2393,6 +2393,35 @@ export const tokens: Token[] = [
     ]
   },
   {
+    name: 'stkDYDX',
+    description: 'Persistence dYdX Staking Derivative',
+    address: 'XXX',
+    code_hash: '638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e',
+    image: '/stkdydx.svg',
+    decimals: 18,
+    coingecko_id: 'pstake-staked-dydx',
+    deposits: [
+      {
+        chain_name: 'Persistence',
+        denom: 'stk/adydx'
+      }
+    ],
+    withdrawals: [
+      {
+        chain_name: 'Persistence',
+        denom: ibcDenom(
+          [
+            {
+              incomingChannelId: chains['Persistence'].withdraw_channel_id,
+              incomingPortId: 'transfer'
+            }
+          ],
+          'stk/adydx'
+        )
+      }
+    ]
+  },
+  {
     name: 'stLUNA',
     description: 'Stride LUNA Staking Derivative',
     address: 'secret1rkgvpck36v2splc203sswdr0fxhyjcng7099a9',
@@ -2682,6 +2711,35 @@ export const tokens: Token[] = [
             }
           ],
           'uumee'
+        )
+      }
+    ]
+  },
+  {
+    name: 'WBTC',
+    description: 'Wrapped Bitcoin on Osmosis',
+    address: 'XXX',
+    code_hash: '638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e',
+    image: '/wbtc.svg',
+    decimals: 6,
+    coingecko_id: 'bitcoin',
+    deposits: [
+      {
+        chain_name: 'Osmosis',
+        denom: 'factory/osmo1z0qrq605sjgcqpylfl4aa6s90x738j7m58wyatt0tdzflg2ha26q67k743/wbtc'
+      }
+    ],
+    withdrawals: [
+      {
+        chain_name: 'Osmosis',
+        denom: ibcDenom(
+          [
+            {
+              incomingChannelId: chains['Osmosis'].withdraw_channel_id,
+              incomingPortId: 'transfer'
+            }
+          ],
+          'factory/osmo1z0qrq605sjgcqpylfl4aa6s90x738j7m58wyatt0tdzflg2ha26q67k743/wbtc'
         )
       }
     ]
