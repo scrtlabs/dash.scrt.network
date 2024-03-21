@@ -1,4 +1,4 @@
-import { useEffect, useState, createContext, useContext } from 'react'
+import { useEffect, useState, useContext } from 'react'
 import { SecretNetworkClient } from 'secretjs'
 import CurrentPrice from './components/CurrentPrice'
 import MiniTile from './components/MiniTile'
@@ -198,11 +198,6 @@ function Dashboard() {
       </Helmet>
       <div className="px-4 mx-auto space-y-4 w-full">
         <div className="grid grid-cols-12 gap-4">
-          {/* WideQuadTile */}
-          {/* <div className='col-span-12'>
-              <WideQuadTile item1_key='Block Height' item1_value={blockHeightFormattedString} item2_key='Block Time' item2_value={blockTimeFormattedString} item3_key='Daily Transactions' item3_value={dailyTransactionsFormattedString} item4_key='Fees Paid' item4_value={feesPaidFormattedString}/>
-            </div> */}
-
           {/* Price */}
           <div className="col-span-12 sm:col-span-6 lg:col-span-12 xl:col-span-6 2xl:col-span-4">
             <CurrentPrice price={currentPrice} />
