@@ -18,6 +18,7 @@ const APIContextProvider = ({ children }: any) => {
   const [sSCRTTokenSupply, setSSCRTTokenSupply] = useState(Number)
   const [stkdSCRTTokenSupply, setStkdSCRTTokenSupply] = useState(Number)
   const [IBCTokenSupply, setIBCTokenSupply] = useState(Number)
+  const [burnedTokenSupply, setBurnedTokenSupply] = useState(Number)
 
   const [inflation, setInflation] = useState(0)
 
@@ -55,6 +56,15 @@ const APIContextProvider = ({ children }: any) => {
         })
         ?.then((res) => {
           setSSCRTTokenSupply(Number(res.balance?.amount) / 1e6)
+        })
+
+      secretjsquery?.query?.bank
+        ?.balance({
+          address: 'secret1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq3x5k6p',
+          denom: 'uscrt'
+        })
+        ?.then((res) => {
+          setBurnedTokenSupply(Number(res.balance?.amount) / 1e6)
         })
 
       secretjsquery?.query?.bank
@@ -235,51 +245,29 @@ const APIContextProvider = ({ children }: any) => {
 
   const providerValue = {
     dappsData,
-    setDappsData,
     dappsDataSorted,
-    setDappsDataSorted,
     tags,
-    setTags,
     coingeckoApiData_Day,
-    setCoinGeckoApiData_Day,
     coingeckoApiData_Month,
-    setCoinGeckoApiData_Month,
     coingeckoApiData_Year,
-    setCoinGeckoApiData_Year,
     defiLamaApiData_Year,
-    setDefiLamaApiData_Year,
     defiLamaApiData_TVL,
-    setDefiLamaApiData_TVL,
     currentPrice,
-    setCurrentPrice,
     externalApiData,
-    setExternalApiData,
     L5AnalyticslApiData,
-    setL5AnalyticslApiData,
     bondedToken,
-    setBondedToken,
     notBondedToken,
-    setNotBondedToken,
     totalSupply,
-    setTotalSupply,
     communityPool,
-    setCommunityPool,
     sSCRTTokenSupply,
-    setSSCRTTokenSupply,
     stkdSCRTTokenSupply,
-    setStkdSCRTTokenSupply,
     IBCTokenSupply,
-    setIBCTokenSupply,
+    burnedTokenSupply,
     inflation,
-    setInflation,
     secretFoundationTax,
-    setSecretFoundationTax,
     communityTax,
-    setCommunityTax,
     volume,
-    setVolume,
-    marketCap,
-    setMarketCap
+    marketCap
   }
 
   return <APIContext.Provider value={providerValue}>{children}</APIContext.Provider>
