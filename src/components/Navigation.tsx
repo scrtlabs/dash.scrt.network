@@ -167,9 +167,9 @@ export function Navigation({
           >
             <FontAwesomeIcon icon={faReact} className="mr-2" />
             <span>Power Tools</span>
-            <span className="ml-2 bg-purple-100 text-purple-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-purple-900 dark:text-purple-300">
+            {/* <span className="ml-2 bg-purple-100 text-purple-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-purple-900 dark:text-purple-300">
               New
-            </span>
+            </span> */}
           </NavLink>
         </li>
         <li>

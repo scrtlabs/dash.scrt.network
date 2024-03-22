@@ -1,9 +1,8 @@
 import { faXmark } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { useState } from 'react'
 import { Theme } from 'types/Theme'
-import '@swing.xyz/ui/theme.css'
 import { Swap } from '@swing.xyz/ui'
+import { useEffect } from 'react'
 
 interface Props {
   open: boolean
@@ -15,6 +14,13 @@ interface Props {
 const SwingModal = (props: Props) => {
   if (!props.open) return null
 
+  useEffect(() => {
+    if (props.theme === 'light') {
+      import('./SwingModal_Light.scss')
+    } else {
+      import('./SwingModal_Dark.scss')
+    }
+  }, [props.theme])
   return (
     <>
       {/* Outer */}

@@ -26,15 +26,24 @@ import Dashboard from 'pages/dashboard/Dashboard'
 import DefaultLayout from 'layouts/DefaultLayout'
 import Powertools from 'pages/powertools/Powertools'
 import { useSecretNetworkClientStore } from 'store/secretNetworkClient'
+import { useUserPreferencesStore } from 'store/UserPreferences'
+import { debugModeOverride } from 'utils/commons'
+
+const { debugMode } = useUserPreferencesStore.getState()
 
 if (import.meta.env.VITE_MIXPANEL_ENABLED === 'true') {
   mixpanel.init(import.meta.env.VITE_MIXPANEL_PROJECT_TOKEN, { debug: true })
   mixpanel.identify('Dashboard-App')
 
   mixpanel.track('Dashboard has been opened', {})
-  console.debug('[Mixpanel] Enabled')
+
+  if (debugMode || debugModeOverride) {
+    console.debug('[Mixpanel] Enabled')
+  }
 } else {
-  console.debug('[Mixpanel] Disabled')
+  if (debugMode || debugModeOverride) {
+    console.debug('[Mixpanel] Disabled')
+  }
 }
 
 export const websiteName = 'Secret Dashboard'

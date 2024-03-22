@@ -33,7 +33,6 @@ export default function ManageAutoRestakeModal(props: Props) {
         )
       )
     })
-    console.log(filteredRestakeChoices)
     if (filteredRestakeChoices.length > 0) {
       changeRestakeForValidators(filteredRestakeChoices)
     }

@@ -1,6 +1,5 @@
-import { createContext, useContext, useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { formatNumber } from 'utils/commons'
-import { ThemeContext } from 'context/ThemeContext'
 import { APIContext } from 'context/APIContext'
 import Tooltip from '@mui/material/Tooltip'
 
@@ -17,13 +16,14 @@ import {
 import { Bar } from 'react-chartjs-2'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faInfoCircle } from '@fortawesome/free-solid-svg-icons'
+import { useUserPreferencesStore } from 'store/UserPreferences'
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, ChartTooltip, Legend, BarController)
 
 export default function UnbondingsChart(props: any) {
   const { L5AnalyticslApiData } = useContext(APIContext)
 
-  const { theme } = useContext(ThemeContext)
+  const { theme } = useUserPreferencesStore()
 
   const [chartData, setChartData] = useState<any>([])
 

@@ -1,5 +1,5 @@
 import { useFormik } from 'formik'
-import { useContext, useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { sendSchema } from 'pages/send/sendSchema'
 import { GetBalanceError, useSecretNetworkClientStore } from 'store/secretNetworkClient'
 import Select, { components } from 'react-select'
@@ -11,14 +11,15 @@ import { faInfoCircle, faSearch } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { SendService } from 'services/send.service'
 import FeeGrant from 'components/FeeGrant/FeeGrant'
-import { allTokens } from 'utils/commons'
+import { allTokens, debugModeOverride } from 'utils/commons'
 import BigNumber from 'bignumber.js'
 import toast from 'react-hot-toast'
 import { useSearchParams } from 'react-router-dom'
 import { Nullable } from 'types/Nullable'
-import { ThemeContext } from 'context/ThemeContext'
+import { useUserPreferencesStore } from 'store/UserPreferences'
 
 export default function SendForm() {
+  const { debugMode } = useUserPreferencesStore()
   // URL params
   const [searchParams, setSearchParams] = useSearchParams()
   const tokenUrlParam = searchParams.get('token')
@@ -27,7 +28,7 @@ export default function SendForm() {
 
   const tokenSelectOptions = SendService.getSupportedTokens()
 
-  const { theme } = useContext(ThemeContext)
+  const { theme } = useUserPreferencesStore()
 
   const isValidTokenParam = () => {
     return !!tokenSelectOptions.find((token: Token) => token.name.toLowerCase() === tokenUrlParam.toLowerCase())
@@ -336,12 +337,13 @@ export default function SendForm() {
       </button>
 
       {/* Debug Info */}
-      {import.meta.env.VITE_DEBUG_MODE === 'true' && (
-        <div className="text-sky-500 text-xs p-2 bg-blue-500/20 rounded">
-          <div className="mb-4 font-semibold">Debug Info (Dev Mode)</div>
-          formik.errors: {JSON.stringify(formik.errors)}
-        </div>
-      )}
+      {debugMode ||
+        (debugModeOverride && (
+          <div className="text-sky-500 text-xs p-2 bg-blue-500/20 rounded">
+            <div className="mb-4 font-semibold">Debug Info</div>
+            formik.errors: {JSON.stringify(formik.errors)}
+          </div>
+        ))}
     </form>
   )
 }
