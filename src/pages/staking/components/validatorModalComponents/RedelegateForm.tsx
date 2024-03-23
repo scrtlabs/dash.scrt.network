@@ -4,7 +4,6 @@ import { APIContext } from 'context/APIContext'
 import { faSearch } from '@fortawesome/free-solid-svg-icons'
 import { faucetAddress, shuffleArray, toCurrencyString } from 'utils/commons'
 import { StakingContext } from 'pages/staking/Staking'
-import FeeGrant from '../../../../components/FeeGrant/FeeGrant'
 import Select, { components } from 'react-select'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useSecretNetworkClientStore } from 'store/secretNetworkClient'
@@ -14,6 +13,9 @@ import Button from 'components/UI/Button/Button'
 import toast from 'react-hot-toast'
 import { Validator } from 'types/Validator'
 import { useUserPreferencesStore } from 'store/UserPreferences'
+import { faInfoCircle } from '@fortawesome/free-solid-svg-icons'
+import Tooltip from '@mui/material/Tooltip'
+import ActionableStatus from 'components/FeeGrant/components/ActionableStatus'
 
 export default function RedelegateForm() {
   const { delegatorDelegations, validators, selectedValidator, setView, reload, setReload } = useContext(StakingContext)
@@ -131,7 +133,7 @@ export default function RedelegateForm() {
 
   return (
     <div className="grid grid-cols-12 gap-4">
-      <div className="col-span-12 bg-gray-200 dark:bg-neutral-700 text-black dark:text-white p-4 rounded-xl">
+      <div className="col-span-12 bg-gray-200 dark:bg-neutral-800 text-black dark:text-white p-4 rounded-xl">
         <div className="font-semibold mb-2 text-center sm:text-left">Amount</div>
 
         <input
@@ -141,7 +143,7 @@ export default function RedelegateForm() {
           min="0"
           step="0.000001"
           className={
-            'remove-arrows block flex-1 min-w-0 w-full bg-neutral-100 dark:bg-neutral-800 text-black dark:text-white px-4 py-4 rounded-lg disabled:placeholder-neutral-300 dark:disabled:placeholder-neutral-700 transition-colors font-medium focus:outline-0 focus:ring-2 ring-sky-500/40'
+            'remove-arrows block flex-1 min-w-0 w-full bg-neutral-100 dark:bg-neutral-900 text-black dark:text-white px-4 py-4 rounded-lg disabled:placeholder-neutral-300 dark:disabled:placeholder-neutral-700 transition-colors font-medium focus:outline-0 focus:ring-2 ring-sky-500/40'
           }
           name="toValue"
           id="toValue"
@@ -149,11 +151,44 @@ export default function RedelegateForm() {
           disabled={!isConnected}
         />
         <div className="mt-2 flex flex-col sm:flex-row gap-2">
-          <div className="flex-1 text-sm text-center sm:text-left">
+          <div className="flex-1 text-center sm:text-left  font-mono text-sm text-neutral-400">
             {amountInDollarString !== '$NaN' ? amountInDollarString : '$ -'}
           </div>
           <div className="text-center sm:text-left flex-initial">
-            <PercentagePicker setAmountByPercentage={setAmountByPercentage} disabled={!secretNetworkClient?.address} />
+            <div className="inline-flex rounded-full text-xs font-extrabold">
+              <button
+                type="button"
+                onClick={() => setAmountByPercentage(25)}
+                className="bg-gray-300 dark:bg-neutral-700 py-1.5 px-2.5 rounded-l-lg enabled:hover:bg-gray-400 enabled:dark:hover:bg-neutral-600 transition"
+                disabled={!secretNetworkClient?.address}
+              >
+                25%
+              </button>
+              <button
+                type="button"
+                onClick={() => setAmountByPercentage(50)}
+                className="bg-gray-300 dark:bg-neutral-700 py-1.5 px-2.5 enabled:hover:bg-gray-400 enabled:dark:hover:bg-neutral-600 transition"
+                disabled={!secretNetworkClient?.address}
+              >
+                50%
+              </button>
+              <button
+                type="button"
+                onClick={() => setAmountByPercentage(75)}
+                className="bg-gray-300 dark:bg-neutral-700 py-1.5 px-2.5 enabled:hover:bg-gray-400 enabled:dark:hover:bg-neutral-600 transition"
+                disabled={!secretNetworkClient?.address}
+              >
+                75%
+              </button>
+              <button
+                type="button"
+                onClick={() => setAmountByPercentage(100)}
+                className="bg-gray-300 dark:bg-neutral-700 py-1.5 px-2.5 rounded-r-lg enabled:hover:bg-gray-400 enabled:dark:hover:bg-neutral-600 transition"
+                disabled={!secretNetworkClient?.address}
+              >
+                100%
+              </button>
+            </div>
           </div>
         </div>
         <div className="mt-4">
@@ -199,16 +234,35 @@ export default function RedelegateForm() {
 
       {/* Fee Grant */}
       <div className="col-span-12">
-        <FeeGrant />
+        {/* <FeeGrant /> */}
+        <div className="bg-gray-200 dark:bg-neutral-800 text-black dark:text-white p-4 rounded-xl select-none flex items-center">
+          <div className="flex-1 flex items-center">
+            <span className="font-semibold text-sm">Fee Grant</span>
+            <div className="flex items-center ml-2">
+              <Tooltip
+                title={`Request Fee Grant so that you don't have to pay gas fees (up to 0.1 SCRT)`}
+                placement="right"
+                arrow
+              >
+                <span className="text-neutral-600 dark:text-neutral-400 hover:text-black dark:hover:text-white transition-colors cursor-pointer">
+                  <FontAwesomeIcon icon={faInfoCircle} />
+                </span>
+              </Tooltip>
+            </div>
+          </div>
+          <div className="flex-initial">
+            <ActionableStatus />
+          </div>
+        </div>
       </div>
 
       {/* Footer */}
       <div className="col-span-12 flex flex-col sm:flex-row-reverse justify-start gap-2">
-        <Button onClick={handleSubmit} color="primary" size="large">
+        <Button onClick={handleSubmit} color="primary" size="default">
           Redelegate
         </Button>
 
-        <Button onClick={() => setView(null)} color="secondary" size="large">
+        <Button onClick={() => setView(null)} color="secondary" size="default">
           Back
         </Button>
       </div>

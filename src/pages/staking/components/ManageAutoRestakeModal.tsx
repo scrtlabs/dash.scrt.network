@@ -103,7 +103,7 @@ export default function ManageAutoRestakeModal(props: Props) {
 
   function CommittedDelegators() {
     return (
-      <div className="my-validators w-full">
+      <div className="w-full">
         {delegatorDelegations.map((delegation: any, i: number) => {
           const validator = validators.find(
             (item: Validator) => item.operator_address == delegation.delegation.validator_address
@@ -137,13 +137,13 @@ export default function ManageAutoRestakeModal(props: Props) {
       <div className="flex flex-col sm:flex-row-reverse justify-start mt-4 gap-2">
         {restakeChoices.length > 0 && (
           <>
-            <Button onClick={() => doRestake()} size="large">
+            <Button onClick={() => doRestake()} size="default">
               Submit Changes
             </Button>
           </>
         )}
 
-        <Button onClick={props.onClose} size="large" color="secondary">
+        <Button onClick={props.onClose} size="default" color="secondary">
           Cancel
         </Button>
       </div>

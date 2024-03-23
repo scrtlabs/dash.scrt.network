@@ -58,7 +58,7 @@ export default function ClaimRewardsModal(props: Props) {
           <div>
             <FeeGrant />
           </div>
-          <Button onClick={handleClaimRewards} color="emerald" size="large">
+          <Button onClick={handleClaimRewards} color="emerald" size="default">
             Claim Rewards
           </Button>
         </div>

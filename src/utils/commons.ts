@@ -291,3 +291,5 @@ export const currencySymbols: { [key in Currency]: string } = {
 }
 
 export const debugModeOverride: boolean = import.meta.env.VITE_DEBUG_MODE === 'true'
+
+export const isMac = /Mac/i.test(navigator.userAgent)

@@ -26,7 +26,7 @@ const ValidatorItem = (props: Props) => {
   const [stakingAPR, setStakingAPR] = useState<any>()
   const votingPowerString = `${formatNumber(props.votingPower / 1e6)}`
 
-  const maxVPThreshold = 0.1
+  const maxVPThreshold: number = 0.1
 
   useEffect(() => {
     if (
@@ -96,11 +96,25 @@ const ValidatorItem = (props: Props) => {
           props.openModal(true)
           props.setSelectedValidator(props.validator)
         }}
-        className="group flex flex-col sm:flex-row items-center text-left even:bg-white odd:bg-neutral-200 dark:even:bg-neutral-800 dark:odd:bg-neutral-700 py-8 sm:py-4 gap-4 pl-4 pr-8  w-full min-w-full "
+        className="first:rounded-t-lg last:rounded-b-lg group flex flex-col sm:flex-row items-center text-left even:bg-gray-100 odd:bg-white dark:even:bg-neutral-900 dark:odd:bg-neutral-800 even:border-x dark:even:border-neutral-800 even:border-white dark:hover:bg-neutral-750 hover:bg-gray-300 transition-colors py-8 sm:py-4 gap-4 pl-4 pr-8  w-full min-w-full "
       >
         {/* Image */}
         <div className="relative">
-          {hasTooMuchVotingPower(props.validator) && (
+          {/* active | inactive */}
+          {props.validator?.status === 'BOND_STATUS_UNBONDED' ? (
+            <div className="absolute -top-1.5 right-0 z-10">
+              <Tooltip title={'Inactive'} placement="right" arrow>
+                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-red-500 dark:bg-red-500"></span>
+              </Tooltip>
+            </div>
+          ) : (
+            <div className="absolute -top-1.5 right-0 z-10">
+              <Tooltip title={'Active'} placement="right" arrow>
+                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500 dark:bg-emerald-500"></span>
+              </Tooltip>
+            </div>
+          )}
+          {hasTooMuchVotingPower(props.validator) ? (
             <Tooltip
               title={'This validator has more than 10% voting power. Avoid this validator to promote decentralization.'}
               placement="right"
@@ -108,75 +122,62 @@ const ValidatorItem = (props: Props) => {
             >
               <div className="absolute w-5 sm:w-2.5 h-5 sm:h-2.5 bg-red-500 rounded-full right-0 top-0 z-10"></div>
             </Tooltip>
-          )}
+          ) : null}
           {imgUrl ? (
-            <>
-              <img src={imgUrl} alt={`validator logo`} className="rounded-full w-20 sm:w-10" />
-            </>
+            <img src={imgUrl} alt={`validator logo`} className="rounded-full w-20 sm:w-10" />
           ) : (
-            <>
-              <div className="relative bg-blue-500 rounded-full sm:w-10 w-20 sm:h-10 h-20">
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 font-semibold">
-                  {/* .charAt(0) or .slice(0,1) won't work here with emojis! */}
-                  {[...props.name][0]?.toUpperCase()}
-                </div>
+            <div className="relative bg-blue-500 rounded-full sm:w-10 w-20 sm:h-10 h-20">
+              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 font-semibold">
+                {/* .charAt(0) or .slice(0,1) won't work here with emojis! */}
+                {[...props.name][0]?.toUpperCase()}
               </div>
-            </>
+            </div>
           )}
         </div>
         {/* Title */}
         <div className="flex-1">
           <span className="font-semibold text-lg sm:text-base">{props.name}</span>
-          {props.website && (
+          {props.website ? (
             <a
               onClick={(e) => e.stopPropagation()}
               href={props.website}
               target="_blank"
-              className="group font-medium text-sm hidden sm:inline-block"
+              className="group/website font-medium text-sm hidden sm:inline-block ml-2"
             >
               <FontAwesomeIcon
                 icon={faGlobe}
                 size="sm"
-                className="ml-3 mr-1 text-neutral-500 dark:group-hover:text-white group-hover:text-black"
+                className="text-neutral-500 dark:group-hover/website:text-white group-hover/website:text-black"
               />
-              <span className="hidden group-hover:inline-block">Website</span>
             </a>
-          )}
+          ) : null}
         </div>
-
-        {props.validator?.status === 'BOND_STATUS_UNBONDED' && (
-          <div className="border border-red-500 bg-transparent text-red-500 text-sm rounded px-4 py-2 cursor-not-allowed flex items-center justify-start">
-            Inactive
-          </div>
-        )}
         <div className="flex flex-col items-center">
-          <div className="description text-xs text-gray-500 mb-2">Voting Power</div>
+          <div className="text-xs text-neutral-500 dark:text-neutral-400 mb-2">Voting Power</div>
 
-          {props.votingPower && (
-            <>
-              <div className="voting-power font-semibold">
-                <span className="">{votingPowerString}</span>
-                <span className="text-neutral-400 text-xs"> SCRT</span>
-              </div>
-            </>
-          )}
-          {!props.votingPower && (
+          {props.votingPower ? (
+            <div className="voting-power font-semibold">
+              <span className="font-medium font-mono">{votingPowerString}</span>
+              <span className="text-neutral-500 dark:text-neutral-400 text-xs"> SCRT</span>
+            </div>
+          ) : (
             <div className="animate-pulse bg-neutral-300/40 dark:bg-neutral-700/40 rounded col-span-2 w-16 h-7 mx-auto"></div>
           )}
         </div>
         <div className="flex flex-col items-center">
-          <div className="description text-xs text-gray-500 mb-2">Commission</div>
+          <div className="text-xs text-neutral-500 dark:text-neutral-400 mb-2">Commission</div>
           {props.commissionPercentage && (
-            <div className="commission font-semibold">{formatNumber(props.commissionPercentage * 100, 2)}%</div>
+            <div className="commission font-medium font-mono">{formatNumber(props.commissionPercentage * 100, 2)}%</div>
           )}
           {!props.commissionPercentage && (
             <div className="animate-pulse bg-neutral-300/40 dark:bg-neutral-700/40 rounded col-span-2 w-16 h-7 mx-auto"></div>
           )}
         </div>
         <div className="flex flex-col items-center">
-          <div className="description text-xs text-gray-500 mb-2">Staking APR</div>
-          {stakingAPR !== undefined && <div className="apr font-semibold">{`${formatNumber(stakingAPR, 2)} %`}</div>}
-          {stakingAPR === undefined && (
+          <div className="text-xs text-neutral-500 dark:text-neutral-400 mb-2">Staking APR</div>
+          {stakingAPR || stakingAPR === 0 ? (
+            <div className="font-medium font-mono">{`${formatNumber(stakingAPR, 2)}%`}</div>
+          ) : (
             <div className="animate-pulse bg-neutral-300/40 dark:bg-neutral-700/40 rounded col-span-2 w-16 h-7 mx-auto"></div>
           )}
         </div>

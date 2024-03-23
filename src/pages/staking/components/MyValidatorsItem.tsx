@@ -82,21 +82,21 @@ const MyValidatorsItem = (props: Props) => {
           props.openModal(true)
           props.setSelectedValidator(props.validator)
         }}
-        className="group flex flex-col sm:flex-row items-center text-left even:bg-white odd:bg-neutral-200 dark:even:bg-neutral-800 dark:odd:bg-neutral-700 py-8 sm:py-4 gap-4 pl-4 pr-8  w-full min-w-full "
+        className="first:rounded-t-lg last:rounded-b-lg group flex flex-col sm:flex-row items-center text-left even:bg-gray-100 odd:bg-white dark:even:bg-neutral-900 dark:odd:bg-neutral-800 even:border-x dark:even:border-neutral-800 even:border-white dark:hover:bg-neutral-750 hover:bg-gray-300 transition-colors py-8 sm:py-4 gap-4 pl-4 pr-8  w-full min-w-full "
       >
         {/* Auto Restake */}
         <div className="auto-restake">
           <Tooltip
-            title={`Auto restake is ${
+            title={`Auto restake ${
               isAboveRestakeThreshold(props.stakedAmount)
                 ? isRestakeEnabled(props.validator)
                   ? 'enabled'
                   : 'disabled'
-                : `unavailable (below threshold of ${BigNumber(restakeThreshold)
+                : `unavailable (${BigNumber(restakeThreshold)
                     .dividedBy(`1e${scrtToken.decimals}`)
-                    .toFormat()} SCRT)`
-            }!`}
-            placement="bottom"
+                    .toFormat()} SCRT threshold)`
+            }`}
+            placement="right"
             arrow
           >
             <span
@@ -132,39 +132,38 @@ const MyValidatorsItem = (props: Props) => {
         {/* Title */}
         <div className="flex-1">
           <span className="font-semibold">{props.name}</span>
-          {props.validator?.description?.website && (
+          {props.validator?.description?.website ? (
             <a
               onClick={(e) => e.stopPropagation()}
               href={props.validator?.description?.website}
               target="_blank"
-              className="group font-medium text-sm"
+              className="group/website font-medium text-sm hidden sm:inline-block ml-2"
             >
               <FontAwesomeIcon
                 icon={faGlobe}
                 size="sm"
-                className="ml-3 mr-1 text-neutral-500 dark:group-hover:text-white group-hover:text-black"
+                className="text-neutral-500 dark:group-hover/website:text-white group-hover/website:text-black"
               />
-              <span className="hidden group-hover:inline-block">Website</span>
             </a>
-          )}
+          ) : null}
         </div>
         {props.validator.status === 'BOND_STATUS_UNBONDED' && (
           <div className="border border-red-500 bg-transparent text-red-500 text-sm rounded px-4 py-2 cursor-not-allowed flex items-center justify-start">
             Inactive
           </div>
         )}
-        <div className="flex flex-col items-right">
-          <div className="description text-xs text-gray-500 mb-2 text-right">Your stake</div>
+        <div className="flex flex-col items-center">
+          <div className="text-xs text-neutral-500 dark:text-neutral-400 mb-2">Your stake</div>
           <div>
             <div>
-              <span className="font-semibold">{stakedAmountString}</span>
+              <span className="font-medium font-mono">{stakedAmountString}</span>
               <span className="text-xs font-semibold text-neutral-400"> SCRT</span>
             </div>
           </div>
         </div>
         <div className="flex flex-col items-center">
-          <div className="description text-xs text-gray-500 mb-2">Commission</div>
-          <div className="commission font-semibold">{formatNumber(props.commissionPercentage * 100, 2)}%</div>
+          <div className="text-xs text-neutral-500 dark:text-neutral-400 mb-2">Commission</div>
+          <div className="font-medium font-mono">{formatNumber(props.commissionPercentage * 100, 2)}%</div>
         </div>
         {/*         <div className="flex items-center font-semibold border-b border-white/0 hover:border-white transition-colors">
           <FontAwesomeIcon icon={faChevronRight} size="sm" className="ml-1" />
