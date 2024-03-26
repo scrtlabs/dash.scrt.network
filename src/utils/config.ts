@@ -246,7 +246,7 @@ export const chains: { [chain_name: string]: Chain } = {
     withdraw_gas: 150_000,
     chain_id: 'gravity-bridge-3',
     bech32_prefix: 'gravity',
-    lcd: 'https://gravitybridge-api.lavenderfive.com/',
+    lcd: 'https://gravity-api.polkachu.com/',
     chain_image: '/grav.svg',
     explorer_account: 'https://www.mintscan.io/gravity-bridge/account/'
   },
@@ -2817,6 +2817,15 @@ export const snips: Token[] = [
     coingecko_id: '',
     deposits: [
       {
+        chain_name: 'Archway',
+        denom: ibcDenom(
+          [{ incomingChannelId: 'channel-39', incomingPortId: 'transfer' }],
+          'cw20:secret1zzuffktc25904mwus8ched6q6p5ewksy80m33h'
+        ),
+        channel_id: 'channel-39',
+        gas: 300_000
+      },
+      {
         chain_name: 'Composable',
         denom: ibcDenom(
           [{ incomingChannelId: 'channel-26', incomingPortId: 'transfer' }],
@@ -2826,12 +2835,12 @@ export const snips: Token[] = [
         gas: 300_000
       },
       {
-        chain_name: 'Archway',
+        chain_name: 'Gravity Bridge',
         denom: ibcDenom(
-          [{ incomingChannelId: 'channel-39', incomingPortId: 'transfer' }],
+          [{ incomingChannelId: 'channel-150', incomingPortId: 'transfer' }],
           'cw20:secret1zzuffktc25904mwus8ched6q6p5ewksy80m33h'
         ),
-        channel_id: 'channel-39',
+        channel_id: 'channel-150',
         gas: 300_000
       },
       {
@@ -2873,6 +2882,12 @@ export const snips: Token[] = [
         chain_name: 'Composable',
         denom: 'secret1zzuffktc25904mwus8ched6q6p5ewksy80m33h',
         channel_id: 'channel-83',
+        gas: 350_000
+      },
+      {
+        chain_name: 'Gravity Bridge',
+        denom: 'secret1zzuffktc25904mwus8ched6q6p5ewksy80m33h',
+        channel_id: 'channel-148',
         gas: 350_000
       },
       {
