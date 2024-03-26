@@ -155,7 +155,7 @@ const ValidatorModal = (props: Props) => {
               </div>
             )}
           </div>
-          <div className="text-neutral-400 font-medium text-sm">
+          <div className="text-neutral-500 dark:text-neutral-400 font-medium text-sm">
             <div className="commission font-semibold">
               Commission {(selectedValidator?.commission?.commission_rates?.rate * 100)?.toFixed(2)}% | APR{' '}
               {formatNumber(realYield, 2)}%
@@ -175,9 +175,9 @@ const ValidatorModal = (props: Props) => {
         <div className="grid grid-cols-12 gap-4">
           {selectedValidator?.description?.details && (
             <div className="col-span-12">
-              <div className="text-sm rounded-xl p-4 text-center sm:text-left bg-gray-200 dark:bg-neutral-800 text-black dark:text-white">
+              <div className="text-sm rounded-xl p-4 text-center sm:text-left bg-gray-100 dark:bg-neutral-800 text-black dark:text-white">
                 <div className="font-bold mb-2">Description</div>
-                <div className="text-sm font-medium font-mono text-neutral-400">
+                <div className="text-sm font-medium font-mono text-neutral-500 dark:text-neutral-400">
                   {selectedValidator?.description?.details}
                 </div>
               </div>
@@ -188,12 +188,12 @@ const ValidatorModal = (props: Props) => {
             <>
               <div className="col-span-12">
                 {/* Properties of the Val */}
-                <div className="p-8 rounded-xl grid grid-cols-12 gap-6 bg-gray-200 dark:bg-neutral-800 text-black dark:text-white">
+                <div className="p-8 rounded-xl grid grid-cols-12 gap-6 bg-gray-100 dark:bg-neutral-800 text-black dark:text-white">
                   {/* First Item */}
                   {selectedValidator?.description?.identity && (
                     <div className="col-span-12 sm:col-span-6 flex flex-col text-neutral-800 dark:text-neutral-300 font-semibold">
                       <div className="font-bold mb-2">Identity</div>
-                      <div className="text-sm font-medium font-mono text-neutral-400">
+                      <div className="text-sm font-medium font-mono text-neutral-500 dark:text-neutral-400">
                         {`${selectedValidator?.description?.identity}  `}
 
                         <CopyToClipboard
@@ -217,7 +217,7 @@ const ValidatorModal = (props: Props) => {
                   {selectedValidator?.description?.security_contact && (
                     <div className="col-span-12 sm:col-span-6 flex flex-col text-neutral-800 dark:text-neutral-300 font-semibold">
                       <div className="font-bold mb-2">Contact</div>
-                      <div className="text-sm font-medium font-mono text-neutral-400">
+                      <div className="text-sm font-medium font-mono text-neutral-500 dark:text-neutral-400">
                         {`${selectedValidator?.description?.security_contact}  `}
 
                         <CopyToClipboard
@@ -242,7 +242,7 @@ const ValidatorModal = (props: Props) => {
                   {/* Third Item */}
                   <div className="col-span-12 sm:col-span-6 flex flex-col text-neutral-800 dark:text-neutral-300 font-semibold">
                     <div className="font-bold mb-2">Staked Tokens</div>
-                    <div className="text-sm font-medium font-mono text-neutral-400">{`${formatNumber(
+                    <div className="text-sm font-medium font-mono text-neutral-500 dark:text-neutral-400">{`${formatNumber(
                       selectedValidator?.tokens / 1e6,
                       2
                     )} SCRT`}</div>
@@ -251,7 +251,7 @@ const ValidatorModal = (props: Props) => {
 
                   <div className="col-span-12 sm:col-span-6 flex flex-col text-neutral-800 dark:text-neutral-300 font-semibold">
                     <div className="font-bold mb-2">Self Delegation</div>
-                    <div className="text-sm font-medium font-mono text-neutral-400">
+                    <div className="text-sm font-medium font-mono text-neutral-500 dark:text-neutral-400">
                       {' '}
                       {validatorSelfDelegation && `${formatNumber(validatorSelfDelegation / 1e6, 2)} SCRT`}{' '}
                       {!validatorSelfDelegation && (
@@ -262,7 +262,7 @@ const ValidatorModal = (props: Props) => {
                   {/* Fifth Item */}
                   <div className="col-span-12 sm:col-span-6 flex flex-col text-neutral-800 dark:text-neutral-300 font-semibold">
                     <div className="font-bold mb-2">Operator Address</div>
-                    <div className="text-sm font-medium font-mono text-neutral-400">
+                    <div className="text-sm font-medium font-mono text-neutral-500 dark:text-neutral-400">
                       {`${
                         selectedValidator?.operator_address.slice(0, 15) +
                         '...' +
@@ -273,7 +273,7 @@ const ValidatorModal = (props: Props) => {
                         onCopy={() => NotificationService.notify('Operator Address copied to Clipboard!', 'success')}
                       >
                         <Tooltip title={'Copy to clipboard'} placement="bottom" arrow>
-                          <button className="text-neutral-500 hover:text-neutral-800 dark:text-neutral-400 dark:hover:text-neutral-300 transition-colors">
+                          <button className="text-neutral-500 dark:text-neutral-400 hover:text-neutral-800 dark:hover:text-neutral-300 transition-colors">
                             <FontAwesomeIcon icon={faCopy} />
                           </button>
                         </Tooltip>
@@ -284,7 +284,7 @@ const ValidatorModal = (props: Props) => {
                   <div className="col-span-12 sm:col-span-6 flex flex-col text-neutral-800 dark:text-neutral-300 font-semibold">
                     <div className="font-bold mb-2">Validator Address</div>
 
-                    <div className="text-sm font-medium font-mono text-neutral-400">
+                    <div className="text-sm font-medium font-mono text-neutral-500 dark:text-neutral-400">
                       <a
                         href={`${chains['Secret Network'].explorer_account}${validatorAddressToSelfDelegatorAddress(
                           selectedValidator?.operator_address
@@ -319,16 +319,16 @@ const ValidatorModal = (props: Props) => {
 
           {/* Available to Stake */}
           {isConnected && (
-            <div className="col-span-12 md:col-span-6 rounded-xl p-6 text-center sm:text-left bg-gray-200 dark:bg-neutral-800 text-black dark:text-white">
+            <div className="col-span-12 md:col-span-6 rounded-xl p-6 text-center sm:text-left bg-gray-100 dark:bg-neutral-800 text-black dark:text-white">
               <div className="flex-1">
                 <div className="font-bold mb-2">Available to Stake</div>
                 <div className="mb-1">
                   <span className="text-base font-medium font-mono">
                     {new BigNumber(scrtBalance!).dividedBy(`1e${scrtToken.decimals}`).toFormat()}
                   </span>
-                  <span className="text-xs font-semibold text-neutral-400"> SCRT</span>
+                  <span className="text-xs font-semibold text-neutral-500 dark:text-neutral-400"> SCRT</span>
                 </div>
-                <div className="text-xs text-neutral-400 font-medium font-mono">
+                <div className="text-xs text-neutral-500 dark:text-neutral-400 font-medium font-mono">
                   {toCurrencyString(
                     convertCurrency(
                       'USD',
@@ -352,7 +352,7 @@ const ValidatorModal = (props: Props) => {
               (delegatorDelegation: any) =>
                 selectedValidator?.operator_address == delegatorDelegation.delegation.validator_address
             ) ? (
-              <div className="col-span-12 md:col-span-6 rounded-xl px-4 py-8 text-center sm:text-left bg-gray-200 dark:bg-neutral-800 text-black dark:text-white">
+              <div className="col-span-12 md:col-span-6 rounded-xl px-4 py-8 text-center sm:text-left bg-gray-100 dark:bg-neutral-800 text-black dark:text-white">
                 <div className="flex-1">
                   <div className="font-bold mb-2">Your Delegation</div>
                   <div className="mb-1">
@@ -362,9 +362,9 @@ const ValidatorModal = (props: Props) => {
                           selectedValidator?.operator_address == delegatorDelegation.delegation.validator_address
                       )?.balance?.amount / 1e6}
                     </span>
-                    <span className="text-xs font-semibold text-neutral-400"> SCRT</span>
+                    <span className="text-xs font-semibold text-neutral-500 dark:text-neutral-400"> SCRT</span>
                   </div>
-                  <div className="text-xs text-neutral-400 font-medium font-mono">
+                  <div className="text-xs text-neutral-500 dark:text-neutral-400 font-medium font-mono">
                     {toCurrencyString(
                       new BigNumber(
                         delegatorDelegations?.find(
@@ -385,9 +385,11 @@ const ValidatorModal = (props: Props) => {
                   <div className="font-bold mb-2">Your Delegation</div>
                   <div className="mb-1">
                     <span className="text-base font-medium font-mono">0</span>
-                    <span className="text-xs font-semibold text-neutral-400"> SCRT</span>
+                    <span className="text-xs font-semibold text-neutral-500 dark:text-neutral-400"> SCRT</span>
                   </div>
-                  <div className="text-xs text-neutral-400 font-medium font-mono">{toCurrencyString(0)}</div>
+                  <div className="text-xs text-neutral-500 dark:text-neutral-400 font-medium font-mono">
+                    {toCurrencyString(0)}
+                  </div>
                 </div>
               </div>
             ))}

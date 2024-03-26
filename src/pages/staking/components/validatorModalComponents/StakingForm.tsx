@@ -100,7 +100,7 @@ export default function StakingForm() {
 
   return (
     <div className="grid grid-cols-12 gap-4">
-      <div className="col-span-12 p-4 rounded-xl bg-gray-200 dark:bg-neutral-800 text-black dark:text-white">
+      <div className="col-span-12 p-4 rounded-xl bg-gray-100 dark:bg-neutral-800 text-black dark:text-white">
         <div className="font-semibold mb-2 text-center sm:text-left">Amount to Stake</div>
 
         <input
@@ -110,7 +110,7 @@ export default function StakingForm() {
           min="0"
           step="0.000001"
           className={
-            'block flex-1 min-w-0 w-full bg-neutral-100 dark:bg-neutral-900 text-black dark:text-white px-4 py-4 rounded-lg disabled:placeholder-neutral-300 dark:disabled:placeholder-neutral-700 transition-colors font-medium focus:outline-0 focus:ring-2 ring-sky-500/40'
+            'block flex-1 min-w-0 w-full bg-white dark:bg-neutral-900 text-black dark:text-white px-4 py-4 rounded-lg disabled:placeholder-neutral-300 dark:disabled:placeholder-neutral-700 transition-colors font-medium focus:outline-0 focus:ring-2 ring-sky-500/40'
           }
           name="toValue"
           id="toValue"
@@ -163,20 +163,20 @@ export default function StakingForm() {
       {/* Fee Grant */}
       <div className="col-span-12">
         {/* <FeeGrant /> */}
-        <div className="bg-gray-200 dark:bg-neutral-800 text-black dark:text-white p-4 rounded-xl select-none flex items-center">
-          <div className="flex-1 flex items-center">
-            <span className="font-semibold text-sm">Fee Grant</span>
-            <div className="flex items-center ml-2">
-              <Tooltip
-                title={`Request Fee Grant so that you don't have to pay gas fees (up to 0.1 SCRT)`}
-                placement="right"
-                arrow
-              >
-                <span className="text-neutral-600 dark:text-neutral-400 hover:text-black dark:hover:text-white transition-colors cursor-pointer">
-                  <FontAwesomeIcon icon={faInfoCircle} />
+        <div className="bg-gray-100 dark:bg-neutral-800 text-black dark:text-white p-4 rounded-xl select-none flex items-center">
+          <div className="flex-1">
+            <Tooltip
+              title={`Request Fee Grant so that you don't have to pay gas fees (up to 0.1 SCRT)`}
+              placement="right"
+              arrow
+            >
+              <span className="group inline-flex gap-2 items-center">
+                <span className="font-semibold text-sm">Fee Grant</span>
+                <span className="text-neutral-500 dark:text-neutral-400 group-hover:text-black dark:group-hover:text-white transition-colors cursor-pointer">
+                  <FontAwesomeIcon icon={faInfoCircle} className="text-sm" />
                 </span>
-              </Tooltip>
-            </div>
+              </span>
+            </Tooltip>
           </div>
           <div className="flex-initial">
             <ActionableStatus />

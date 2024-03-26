@@ -103,7 +103,7 @@ export default function ManageAutoRestakeModal(props: Props) {
 
   function CommittedDelegators() {
     return (
-      <div className="w-full">
+      <>
         {delegatorDelegations.map((delegation: any, i: number) => {
           const validator = validators.find(
             (item: Validator) => item.operator_address == delegation.delegation.validator_address
@@ -118,21 +118,19 @@ export default function ManageAutoRestakeModal(props: Props) {
             />
           )
         })}
-      </div>
+      </>
     )
   }
 
   return (
     <Modal
       title={`Manage Auto Restake`}
-      subTitle={`Automate the process of claim and restake`}
+      subTitle={`Automate the process of claim and restak1e`}
       onClose={props.onClose}
       isOpen={props.open}
     >
-      <div className="flex flex-col">
-        {/* List of user's delegators */}
-        <CommittedDelegators />
-      </div>
+      {/* List of user's delegators */}
+      <CommittedDelegators />
       {/* Footer */}
       <div className="flex flex-col sm:flex-row-reverse justify-start mt-4 gap-2">
         {restakeChoices.length > 0 && (

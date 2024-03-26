@@ -435,13 +435,15 @@ function Staking() {
         {/* All Validators */}
         <div className="max-w-6xl mx-auto mt-8">
           <div className="font-semibold text-xl mb-4 px-4">
-            All Validators
             <Tooltip
               title={'To promote decentralization, all validators are ordered randomly.'}
               placement="right"
               arrow
             >
-              <FontAwesomeIcon icon={faInfoCircle} className="ml-2 text-neutral-400 cursor-pointer" />
+              <span className="inline-flex items-center gap-2">
+                All Validators
+                <FontAwesomeIcon icon={faInfoCircle} className="text-sm text-neutral-400 cursor-pointer" />
+              </span>
             </Tooltip>
           </div>
           <div className="flex flex-col gap-4 sm:flex-row items-center px-4 mb-4">

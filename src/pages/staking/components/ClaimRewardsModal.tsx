@@ -51,7 +51,7 @@ export default function ClaimRewardsModal(props: Props) {
           <div className="my-4 text-lg text-center text-black dark:text-white">
             <div className="font-bold">Claimable Amount</div>
             <div className="mt-2 text-emerald-500 dark:text-emerald-500">
-              <span className="font-semibold">{totalPendingRewards()}</span>
+              <span className="font-medium font-mono">{totalPendingRewards()}</span>
               <span className="text-sm">{` SCRT`}</span>
             </div>
           </div>
