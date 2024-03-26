@@ -1,6 +1,6 @@
-import { useEffect, useState, useContext } from 'react'
+import { useEffect, useState, useContext, useRef } from 'react'
 import { Token } from 'utils/config'
-import { portfolioPageTitle, portfolioPageDescription, portfolioJsonLdSchema, allTokens } from 'utils/commons'
+import { portfolioPageTitle, portfolioPageDescription, portfolioJsonLdSchema, allTokens, isMac } from 'utils/commons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons'
 import { Helmet } from 'react-helmet-async'
@@ -14,6 +14,29 @@ import BalanceChart from './components/BalanceChart'
 export default function Portfolio() {
   //Search Query
   const [searchQuery, setSearchQuery] = useState<string>('')
+  const searchInput = useRef<HTMLInputElement>(null)
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if ((event.metaKey || event.ctrlKey) && event.key === 'k') {
+        event.preventDefault()
+        searchInput.current?.focus()
+      }
+
+      // Check for ESC key to blur the search input
+      if (event.key === 'Escape') {
+        event.preventDefault()
+        if (document.activeElement === searchInput.current) {
+          searchInput.current?.blur()
+        }
+      }
+    }
+
+    document.addEventListener('keydown', handleKeyDown)
+
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown)
+    }
+  }, [])
 
   const { secretNetworkClient } = useSecretNetworkClientStore()
 
@@ -71,19 +94,28 @@ export default function Portfolio() {
         <div className="mb-4 font-bold text-lg">Your Assets</div>
         <div className="flex flex-col gap-4 sm:flex-row items-center mb-4">
           {/* Search */}
-          <div className="flex-1 w-full xs:w-auto">
-            <div className="relative w-full">
-              <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                <FontAwesomeIcon icon={faMagnifyingGlass} className="" />
+          <div className="flex-1 w-full lg:w-auto">
+            <div className="w-full xs:w-auto">
+              <div className="relative sm:w-72">
+                <div className="absolute right-0 pr-3 inset-y-0 pointer-events-none text-sm flex items-center">
+                  <div className="bg-gray-100 dark:bg-neutral-700 px-1 rounded flex items-center gap-0.5">
+                    <kbd>{isMac ? '⌘' : 'CTRL+'}</kbd>
+                    <kbd>K</kbd>
+                  </div>
+                </div>
+                <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                  <FontAwesomeIcon icon={faMagnifyingGlass} className="" />
+                </div>
+                <input
+                  ref={searchInput}
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  type="text"
+                  id="search"
+                  className="block w-full p-2.5 pl-10 text-sm rounded-lg text-neutral-800 dark:text-white bg-white dark:bg-neutral-800 placeholder-neutral-600 dark:placeholder-neutral-400 border border-neutral-300 dark:border-neutral-700 focus:outline-none focus:ring-2 focus:ring-cyan-500 dark:focus:ring-cyan-500"
+                  placeholder="Search"
+                />
               </div>
-              <input
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                type="text"
-                id="search"
-                className="block w-full sm:w-72 p-2.5 pl-10 text-sm rounded-lg text-neutral-800 dark:text-white bg-white dark:bg-neutral-800 placeholder-neutral-600 dark:placeholder-neutral-400 border border-neutral-300 dark:border-neutral-700 focus:outline-none focus:ring-2 focus:ring-cyan-500 dark:focus:ring-cyan-500"
-                placeholder="Search Asset"
-              />
             </div>
           </div>
         </div>

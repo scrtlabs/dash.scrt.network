@@ -103,7 +103,6 @@ function Staking() {
 
   //Search Query
   const [searchQuery, setSearchQuery] = useState<string>('')
-
   const searchInput = useRef<HTMLInputElement>(null)
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -453,7 +452,7 @@ function Staking() {
                 <div className="relative sm:w-72">
                   <div className="absolute right-0 pr-3 inset-y-0 pointer-events-none text-sm flex items-center">
                     <div className="bg-gray-100 dark:bg-neutral-700 px-1 rounded flex items-center gap-0.5">
-                      <kbd>{isMac ? '⌘' : 'CTRL'}</kbd>
+                      <kbd>{isMac ? '⌘' : 'CTRL+'}</kbd>
                       <kbd>K</kbd>
                     </div>
                   </div>

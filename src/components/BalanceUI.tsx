@@ -98,7 +98,7 @@ export default function BalanceUI({
           balance !== ('GenericFetchError' as GetBalanceError) &&
           tokenName && (
             <>
-              <span className="font-medium">{` ${Number(
+              <span className="font-medium font-mono">{` ${Number(
                 BigNumber(balance).dividedBy(`1e${token.decimals}`)
               ).toLocaleString(undefined, {
                 maximumFractionDigits: token.decimals
