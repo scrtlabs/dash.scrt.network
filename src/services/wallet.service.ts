@@ -16,10 +16,10 @@ import { WalletAPIType } from 'types/WalletAPIType'
 import BigNumber from 'bignumber.js'
 import { QueryAllBalancesResponse } from 'secretjs/dist/grpc_gateway/cosmos/bank/v1beta1/query.pb'
 import { IbcService } from './ibc.service'
-import { TokenBalances } from 'store/secretNetworkClient'
 import { BatchQueryParsedResponse, batchQuery } from '@shadeprotocol/shadejs'
 import { useUserPreferencesStore } from 'store/UserPreferences'
 import { GetBalanceError } from 'types/GetBalanceError'
+import { TokenBalances } from 'types/TokenBalances'
 
 const connectKeplr = async (lcd: string, chainID: string) => {
   const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
