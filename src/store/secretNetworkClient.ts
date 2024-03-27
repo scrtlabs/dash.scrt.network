@@ -8,13 +8,12 @@ import { WalletAPIType } from 'types/WalletAPIType'
 import BigNumber from 'bignumber.js'
 import { WalletService } from 'services/wallet.service'
 import { IbcService } from 'services/ibc.service'
+import { GetBalanceError } from 'types/GetBalanceError'
 
 export interface TokenBalances {
   balance: Nullable<BigNumber>
   secretBalance?: Nullable<BigNumber | GetBalanceError>
 }
-
-export type GetBalanceError = 'viewingKeyError' | 'GenericFetchError'
 
 interface SecretNetworkClientState {
   isInitialized: boolean

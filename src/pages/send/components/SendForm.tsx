@@ -1,7 +1,7 @@
 import { useFormik } from 'formik'
 import { useEffect } from 'react'
 import { sendSchema } from 'pages/send/sendSchema'
-import { GetBalanceError, useSecretNetworkClientStore } from 'store/secretNetworkClient'
+import { useSecretNetworkClientStore } from 'store/secretNetworkClient'
 import Select, { components } from 'react-select'
 import { Token, chains } from 'utils/config'
 import BalanceUI from 'components/BalanceUI'
@@ -17,6 +17,7 @@ import toast from 'react-hot-toast'
 import { useSearchParams } from 'react-router-dom'
 import { Nullable } from 'types/Nullable'
 import { useUserPreferencesStore } from 'store/UserPreferences'
+import { GetBalanceError } from 'types/GetBalanceError'
 
 export default function SendForm() {
   const { debugMode } = useUserPreferencesStore()

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import Header from 'components/Header'
 import { ApiStatus } from 'types/ApiStatus'
 import ApiStatusIcon from './components/ApiStatusIcon'

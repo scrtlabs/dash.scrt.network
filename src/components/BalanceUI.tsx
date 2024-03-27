@@ -2,12 +2,13 @@ import BigNumber from 'bignumber.js'
 import { useContext, useEffect, useState } from 'react'
 import { Chain, Token, chains, tokens } from 'utils/config'
 import { useTokenPricesStore } from 'store/TokenPrices'
-import { GetBalanceError, useSecretNetworkClientStore } from 'store/secretNetworkClient'
+import { useSecretNetworkClientStore } from 'store/secretNetworkClient'
 import { faKey } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { toCurrencyString } from 'utils/commons'
 import { APIContext } from 'context/APIContext'
 import { useUserPreferencesStore } from 'store/UserPreferences'
+import { GetBalanceError } from 'types/GetBalanceError'
 
 interface IProps {
   token: Token
