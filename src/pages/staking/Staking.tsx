@@ -7,7 +7,7 @@ import { shuffleArray, stakingPageTitle, stakingPageDescription, stakingJsonLdSc
 import Tooltip from '@mui/material/Tooltip'
 import NoScrtWarning from './components/NoScrtWarning'
 import ValidatorModal from './components/ValidatorModal'
-import { SECRET_LCD, SECRET_CHAIN_ID } from 'utils/config'
+import { SECRET_LCD, SECRET_CHAIN_ID, tokens } from 'utils/config'
 import { SecretNetworkClient } from 'secretjs'
 import Title from '../../components/Title'
 import { useSearchParams } from 'react-router-dom'
@@ -59,7 +59,7 @@ function Staking() {
     document.body.classList.remove('overflow-hidden')
   }
 
-  const { secretNetworkClient, scrtBalance } = useSecretNetworkClientStore()
+  const { secretNetworkClient, scrtBalance, getBalance } = useSecretNetworkClientStore()
 
   const [validators, setValidators] = useState<Nullable<Validator[]>>(null)
   const [activeValidators, setActiveValidators] = useState<Nullable<Validator[]>>(null)
@@ -341,59 +341,60 @@ function Staking() {
         {/* Title */}
         <Title title={'Staking'} className="pb-12" />
         {secretNetworkClient?.address && scrtBalance === '0' && <NoScrtWarning />}
-        {/* Account Info */}
-        <div className="max-w-6xl mx-auto px-4">
-          <div className="grid grid-cols-12">
-            {/* Staking Amount */}
-            <div className="col-span-12 md:col-span-3 lg:col-span-12 xl:col-span-3 py-4">
-              <div className="flex-1">
-                <div className="font-bold mb-2">Staking Amount</div>
-                <div className="mb-1">
-                  <span className="text-base font-medium font-mono">{`${getTotalAmountStaked()} `}</span>
-                  <span className="text-xs font-semibold text-neutral-400"> SCRT</span>
-                </div>
-                <div className="text-xs text-neutral-400 font-medium font-mono">$0.00</div>
-              </div>
-            </div>
-
-            {/* Available Balance */}
-            <div className="col-span-12 md:col-span-3 lg:col-span-12 xl:col-span-3 py-4">
-              <div className="flex-1">
-                <div className="font-bold mb-2">Available Balance</div>
-                <div className="mb-1">
-                  <span className="font-medium font-mono">0.1234</span>
-                  <span className="text-xs font-semibold text-neutral-400"> SCRT</span>
-                </div>
-                <div className="text-xs text-neutral-400 font-medium font-mono">$0.00</div>
-              </div>
-            </div>
-
-            {/* Claimable Rewards */}
-            <div className="col-span-12 md:col-span-6 lg:col-span-12 xl:col-span-6">
-              <div className="flex items-center gap-4 p-4 rounded-xl dark:bg-neutral-800 bg-white">
-                <div className="flex-1">
-                  <div className="font-bold mb-2">Claimable Rewards</div>
-                  <div className="mb-1">
-                    <span className="font-medium font-mono">{totalPendingRewards}</span>
-                    <span className="text-xs font-semibold text-neutral-400"> SCRT</span>
-                  </div>
-                  <div className="text-xs text-neutral-400 font-medium font-mono">$0.00</div>
-                </div>
-                <div>
-                  <Button type="button" onClick={() => setIsClaimRewardsModalOpen(true)} color="emerald">
-                    Claim
-                  </Button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <hr className="h-px my-8 bg-neutral-200 border-0 dark:bg-neutral-700" />
 
         {/* My Validators */}
         {secretNetworkClient?.address && delegatorDelegations && delegatorDelegations?.length != 0 && validators && (
           <>
+            {/* Account Info */}
+            <div className="max-w-6xl mx-auto px-4">
+              <div className="grid grid-cols-12">
+                {/* Staking Amount */}
+                <div className="col-span-12 md:col-span-3 lg:col-span-12 xl:col-span-3 py-4">
+                  <div className="flex-1">
+                    <div className="font-bold mb-2">Staking Amount</div>
+                    <div className="mb-1">
+                      <span className="text-base font-medium font-mono">{`${getTotalAmountStaked()} `}</span>
+                      <span className="text-xs font-semibold text-neutral-400"> SCRT</span>
+                    </div>
+                    <div className="text-xs text-neutral-400 font-medium font-mono">$0.00</div>
+                  </div>
+                </div>
+
+                {/* Available Balance */}
+                <div className="col-span-12 md:col-span-3 lg:col-span-12 xl:col-span-3 py-4">
+                  <div className="flex-1">
+                    <div className="font-bold mb-2">Available Balance</div>
+                    <div className="mb-1">
+                      <span className="font-medium font-mono">{Number(scrtBalance) * 0.000001}</span>
+                      <span className="text-xs font-semibold text-neutral-400"> SCRT</span>
+                    </div>
+                    <div className="text-xs text-neutral-400 font-medium font-mono">$0.00</div>
+                  </div>
+                </div>
+
+                {/* Claimable Rewards */}
+                <div className="col-span-12 md:col-span-6 lg:col-span-12 xl:col-span-6">
+                  <div className="flex items-center gap-4 p-4 rounded-xl dark:bg-neutral-800 bg-white">
+                    <div className="flex-1">
+                      <div className="font-bold mb-2">Claimable Rewards</div>
+                      <div className="mb-1">
+                        <span className="font-medium font-mono">{totalPendingRewards}</span>
+                        <span className="text-xs font-semibold text-neutral-400"> SCRT</span>
+                      </div>
+                      <div className="text-xs text-neutral-400 font-medium font-mono">$0.00</div>
+                    </div>
+                    <div>
+                      <Button type="button" onClick={() => setIsClaimRewardsModalOpen(true)} color="emerald">
+                        Claim
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <hr className="h-px my-8 bg-neutral-200 border-0 dark:bg-neutral-700" />
+
             <div className="max-w-6xl mx-auto">
               <div className="font-semibold text-xl mb-4 px-4">My Validators</div>
             </div>
@@ -426,10 +427,10 @@ function Staking() {
                 </div>
               </div>
             </div>
+
+            <hr className="h-px my-8 bg-neutral-200 border-0 dark:bg-neutral-700" />
           </>
         )}
-
-        <hr className="h-px my-8 bg-neutral-200 border-0 dark:bg-neutral-700" />
 
         {/* All Validators */}
         <div className="max-w-6xl mx-auto mt-8">
