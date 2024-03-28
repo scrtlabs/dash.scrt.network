@@ -336,9 +336,9 @@ const ValidatorModal = (props: Props) => {
                         .dividedBy(`1e${scrtToken.decimals}`)
                         .multipliedBy(Number(currentPrice))
                         .toNumber(),
-                      'EUR'
+                      currency
                     ),
-                    'EUR'
+                    currency
                   )}
                 </div>
               </div>
@@ -346,8 +346,7 @@ const ValidatorModal = (props: Props) => {
           )}
 
           {/* Your Delegation */}
-          {secretNetworkClient &&
-            walletAddress &&
+          {isConnected &&
             (delegatorDelegations?.find(
               (delegatorDelegation: any) =>
                 selectedValidator?.operator_address == delegatorDelegation.delegation.validator_address
@@ -388,7 +387,7 @@ const ValidatorModal = (props: Props) => {
                     <span className="text-xs font-semibold text-neutral-500 dark:text-neutral-400"> SCRT</span>
                   </div>
                   <div className="text-xs text-neutral-500 dark:text-neutral-400 font-medium font-mono">
-                    {toCurrencyString(0)}
+                    {toCurrencyString(0, currency)}
                   </div>
                 </div>
               </div>
