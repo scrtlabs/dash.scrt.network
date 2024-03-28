@@ -1,6 +1,6 @@
 import { useContext } from 'react'
-import { MsgSetAutoRestake, validateAddress } from 'secretjs'
-import { StakingContext, ValidatorRestakeStatus } from 'pages/staking/Staking'
+import { MsgSetAutoRestake } from 'secretjs'
+import { StakingContext } from 'pages/staking/Staking'
 import RestakeValidatorItem from './RestakeValidatorItem'
 import { restakeThreshold } from 'utils/commons'
 import { useSecretNetworkClientStore } from 'store/secretNetworkClient'
@@ -8,6 +8,7 @@ import Modal from 'components/UI/Modal/Modal'
 import Button from 'components/UI/Button/Button'
 import toast from 'react-hot-toast'
 import { Validator } from 'types/Validator'
+import { ValidatorRestakeStatus } from 'types/ValidatorRestakeStatus'
 
 interface Props {
   open: boolean

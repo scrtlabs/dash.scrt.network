@@ -7,7 +7,7 @@ import { shuffleArray, stakingPageTitle, stakingPageDescription, stakingJsonLdSc
 import Tooltip from '@mui/material/Tooltip'
 import NoScrtWarning from './components/NoScrtWarning'
 import ValidatorModal from './components/ValidatorModal'
-import { SECRET_LCD, SECRET_CHAIN_ID, tokens } from 'utils/config'
+import { SECRET_LCD, SECRET_CHAIN_ID } from 'utils/config'
 import { SecretNetworkClient } from 'secretjs'
 import Title from '../../components/Title'
 import { useSearchParams } from 'react-router-dom'
@@ -22,12 +22,7 @@ import ValidatorItem from './components/ValidatorItem'
 import { Validator } from 'types/Validator'
 import Button from 'components/UI/Button/Button'
 import StakingStats from './components/StakingStats/StakingStats'
-
-export interface ValidatorRestakeStatus {
-  validatorAddress: string
-  autoRestake: boolean
-  stakedAmount: string
-}
+import { ValidatorRestakeStatus } from 'types/ValidatorRestakeStatus'
 
 export const StakingContext = createContext(null)
 
@@ -60,7 +55,7 @@ function Staking() {
     document.body.classList.remove('overflow-hidden')
   }
 
-  const { secretNetworkClient, scrtBalance, getBalance } = useSecretNetworkClientStore()
+  const { secretNetworkClient, scrtBalance } = useSecretNetworkClientStore()
 
   const [validators, setValidators] = useState<Nullable<Validator[]>>(null)
   const [activeValidators, setActiveValidators] = useState<Nullable<Validator[]>>(null)

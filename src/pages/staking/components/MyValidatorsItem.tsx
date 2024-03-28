@@ -9,7 +9,7 @@ import { formatNumber } from 'utils/commons'
 import { scrtToken } from 'utils/tokens'
 import { Validator } from 'secretjs/dist/grpc_gateway/cosmos/staking/v1beta1/staking.pb'
 import { Nullable } from 'types/Nullable'
-import { ValidatorRestakeStatus } from '../Staking'
+import { ValidatorRestakeStatus } from 'types/ValidatorRestakeStatus'
 
 interface Props {
   name: string
