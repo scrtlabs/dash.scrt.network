@@ -21,7 +21,7 @@ function StakingAmount(props: Props) {
         <span className="text-xs font-semibold text-neutral-400"> SCRT</span>
       </div>
       <div className="text-xs text-neutral-400 font-medium font-mono">
-        {props.stakedAmount ? (
+        {false ? (
           <>{`$0.00`}</>
         ) : (
           <div className="animate-pulse inline-block">

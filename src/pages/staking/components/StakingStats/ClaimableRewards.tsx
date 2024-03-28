@@ -17,7 +17,15 @@ function ClaimableRewards() {
           <span className="font-medium font-mono">{totalPendingRewards}</span>
           <span className="text-xs font-semibold text-neutral-400"> SCRT</span>
         </div>
-        <div className="text-xs text-neutral-400 font-medium font-mono">$0.00</div>
+        <div className="text-xs text-neutral-400 font-medium font-mono">
+          {false ? (
+            <>{`$0.00`}</>
+          ) : (
+            <div className="animate-pulse inline-block">
+              <div className="h-5 w-12 bg-white dark:bg-neutral-700 rounded-xl"></div>
+            </div>
+          )}
+        </div>
       </div>
       <div>
         <Button type="button" onClick={openClaimRewardsModal} color="emerald">

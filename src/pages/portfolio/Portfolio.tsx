@@ -1,6 +1,6 @@
-import { useEffect, useState, useContext, useRef } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import { Token } from 'utils/config'
-import { portfolioPageTitle, portfolioPageDescription, portfolioJsonLdSchema, allTokens, isMac } from 'utils/commons'
+import { portfolioPageTitle, portfolioPageDescription, portfolioJsonLdSchema, isMac } from 'utils/commons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons'
 import { Helmet } from 'react-helmet-async'
