@@ -21,6 +21,7 @@ import { useSecretNetworkClientStore } from 'store/secretNetworkClient'
 import ValidatorItem from './components/ValidatorItem'
 import { Validator } from 'types/Validator'
 import Button from 'components/UI/Button/Button'
+import StakingStats from './components/StakingStats/StakingStats'
 
 export interface ValidatorRestakeStatus {
   validatorAddress: string
@@ -303,7 +304,10 @@ function Staking() {
     restakeChoices,
     setRestakeChoices,
     restakeEntries,
-    setRestakeEntries
+    setRestakeEntries,
+    totalPendingRewards,
+    getTotalAmountStaked,
+    setIsClaimRewardsModalOpen
   }
 
   return (
@@ -345,53 +349,7 @@ function Staking() {
         {/* My Validators */}
         {secretNetworkClient?.address && delegatorDelegations && delegatorDelegations?.length != 0 && validators && (
           <>
-            {/* Account Info */}
-            <div className="max-w-6xl mx-auto px-4">
-              <div className="grid grid-cols-12">
-                {/* Staking Amount */}
-                <div className="col-span-12 md:col-span-3 lg:col-span-12 xl:col-span-3 py-4">
-                  <div className="flex-1">
-                    <div className="font-bold mb-2">Staking Amount</div>
-                    <div className="mb-1">
-                      <span className="text-base font-medium font-mono">{`${getTotalAmountStaked()} `}</span>
-                      <span className="text-xs font-semibold text-neutral-400"> SCRT</span>
-                    </div>
-                    <div className="text-xs text-neutral-400 font-medium font-mono">$0.00</div>
-                  </div>
-                </div>
-
-                {/* Available Balance */}
-                <div className="col-span-12 md:col-span-3 lg:col-span-12 xl:col-span-3 py-4">
-                  <div className="flex-1">
-                    <div className="font-bold mb-2">Available Balance</div>
-                    <div className="mb-1">
-                      <span className="font-medium font-mono">{Number(scrtBalance) * 0.000001}</span>
-                      <span className="text-xs font-semibold text-neutral-400"> SCRT</span>
-                    </div>
-                    <div className="text-xs text-neutral-400 font-medium font-mono">$0.00</div>
-                  </div>
-                </div>
-
-                {/* Claimable Rewards */}
-                <div className="col-span-12 md:col-span-6 lg:col-span-12 xl:col-span-6">
-                  <div className="flex items-center gap-4 p-4 rounded-xl dark:bg-neutral-800 bg-white">
-                    <div className="flex-1">
-                      <div className="font-bold mb-2">Claimable Rewards</div>
-                      <div className="mb-1">
-                        <span className="font-medium font-mono">{totalPendingRewards}</span>
-                        <span className="text-xs font-semibold text-neutral-400"> SCRT</span>
-                      </div>
-                      <div className="text-xs text-neutral-400 font-medium font-mono">$0.00</div>
-                    </div>
-                    <div>
-                      <Button type="button" onClick={() => setIsClaimRewardsModalOpen(true)} color="emerald">
-                        Claim
-                      </Button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
+            <StakingStats />
 
             <hr className="h-px my-8 bg-neutral-200 border-0 dark:bg-neutral-700" />
 
