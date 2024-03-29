@@ -224,19 +224,6 @@ export const chains: { [chain_name: string]: Chain } = {
     chain_image: '/dymension.png',
     explorer_account: 'https://www.mintscan.io/dymension/account/'
   },
-  /*   Evmos: {
-    chain_name: 'Evmos',
-    deposit_channel_id: 'channel-15',
-    deposit_gas: 350_000,
-    deposit_gas_denom: 'aevmos',
-    withdraw_channel_id: 'channel-18',
-    withdraw_gas: 150_000,
-    chain_id: 'evmos_9001-2',
-    bech32_prefix: 'evmos',
-    lcd: 'https://evmos-api.lavenderfive.com',
-    chain_image: '/evmos.svg',
-    explorer_account: 'https://www.mintscan.io/evmos/account/'
-  }, */
   'Gravity Bridge': {
     chain_name: 'Gravity Bridge',
     deposit_channel_id: 'channel-79',
@@ -699,18 +686,6 @@ export const tokens: Token[] = [
           'uscrt'
         )
       },
-      /*       {
-        chain_name: 'Evmos',
-        denom: ibcDenom(
-          [
-            {
-              incomingChannelId: chains['Evmos'].deposit_channel_id,
-              incomingPortId: 'transfer'
-            }
-          ],
-          'uscrt'
-        )
-      }, */
       {
         chain_name: 'Gravity Bridge',
         denom: ibcDenom(
@@ -975,10 +950,6 @@ export const tokens: Token[] = [
         chain_name: 'Dymension',
         denom: 'uscrt'
       },
-      /*       {
-        chain_name: 'Evmos',
-        denom: 'uscrt'
-      }, */
       {
         chain_name: 'Gravity Bridge',
         denom: 'uscrt'
@@ -1424,35 +1395,6 @@ export const tokens: Token[] = [
       }
     ]
   },
-  /* {
-    name: 'EVMOS',
-    description: 'Evmos Governance Token',
-    address: 'secret1grg9unv2ue8cf98t50ea45prce7gcrj2n232kq',
-    code_hash: '5a085bd8ed89de92b35134ddd12505a602c7759ea25fb5c089ba03c8535b3042',
-    image: '/evmos.svg',
-    decimals: 18,
-    coingecko_id: 'evmos',
-    deposits: [
-      {
-        chain_name: 'Evmos',
-        denom: 'aevmos'
-      }
-    ],
-    withdrawals: [
-      {
-        chain_name: 'Evmos',
-        denom: ibcDenom(
-          [
-            {
-              incomingChannelId: chains['Evmos'].withdraw_channel_id,
-              incomingPortId: 'transfer'
-            }
-          ],
-          'aevmos'
-        )
-      }
-    ]
-  }, */
   {
     name: 'GRAV',
     description: 'Gravity Bridge Governance Token',
@@ -2989,7 +2931,7 @@ export const snips: Token[] = [
     description: 'Amber DAO Token (very rare)',
     is_snip20: true,
     address: 'secret1s09x2xvfd2lp2skgzm29w2xtena7s8fq98v852',
-    code_hash: '5a085bd8ed89de92b35134ddd12505a602c7759ea25fb5c089ba03c8535b3042',
+    code_hash: '9a00ca4ad505e9be7e6e6dddf8d939b7ec7e9ac8e109c8681f10db9cacb36d42',
     image: '/amber.jpg',
     decimals: 6,
     coingecko_id: '',

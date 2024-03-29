@@ -28,7 +28,7 @@
     "@keplr-wallet/cosmos": "^0.12.43",
     "@mui/icons-material": "^5.14.19",
     "@mui/material": "5.11.4",
-    "@shadeprotocol/shadejs": "^1.0.4",
+    "@shadeprotocol/shadejs": "^1.1.6",
     "@skip-router/core": "^1.0.1",
     "@swing.xyz/ui": "^0.50.17",
     "@types/react-copy-to-clipboard": "5.0.4",
