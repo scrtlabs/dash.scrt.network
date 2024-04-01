@@ -96,7 +96,7 @@ const ValidatorItem = (props: Props) => {
           props.openModal(true)
           props.setSelectedValidator(props.validator)
         }}
-        className="first:rounded-t-lg last:rounded-b-lg group flex flex-col sm:flex-row items-center text-left even:bg-gray-100 odd:bg-white dark:even:bg-neutral-900 dark:odd:bg-neutral-800 even:border-x dark:even:border-neutral-800 even:border-white dark:hover:bg-neutral-750 hover:bg-gray-300 transition-colors py-8 sm:py-4 gap-4 pl-4 pr-8  w-full min-w-full "
+        className="last-of-type:even:border-b first:rounded-t-lg last:rounded-b-lg group flex flex-col sm:flex-row items-center text-left even:bg-gray-100 odd:bg-white dark:even:bg-neutral-900 dark:odd:bg-neutral-800 even:border-x dark:even:border-neutral-800 even:border-white dark:hover:bg-neutral-750 hover:bg-gray-300 transition-colors py-8 sm:py-4 gap-4 pl-4 pr-8  w-full min-w-full "
       >
         {/* Image */}
         <div className="relative">
