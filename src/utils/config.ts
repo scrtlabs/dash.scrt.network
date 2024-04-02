@@ -2934,7 +2934,7 @@ export const snips: Token[] = [
     code_hash: '9a00ca4ad505e9be7e6e6dddf8d939b7ec7e9ac8e109c8681f10db9cacb36d42',
     image: '/amber.jpg',
     decimals: 6,
-    coingecko_id: '',
+    coingecko_id: 'amberdao',
     deposits: [
       {
         chain_name: 'Osmosis',
