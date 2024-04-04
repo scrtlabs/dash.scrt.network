@@ -3073,12 +3073,12 @@ export const snips: Token[] = [
         gas: 300_000
       },
       {
-        chain_name: 'Osmosis',
+        chain_name: 'Juno',
         denom: ibcDenom(
-          [{ incomingChannelId: 'channel-476', incomingPortId: 'transfer' }],
+          [{ incomingChannelId: 'channel-163', incomingPortId: 'transfer' }],
           'cw20:secret1s3z9xkpdsrhk86300tqnv6u466jmdmlegew2ve'
         ),
-        channel_id: 'channel-476',
+        channel_id: 'channel-163',
         gas: 300_000
       },
       {
@@ -3091,21 +3091,48 @@ export const snips: Token[] = [
         gas: 300_000
       },
       {
-        chain_name: 'Juno',
-        denom: ibcDenom(
-          [{ incomingChannelId: 'channel-163', incomingPortId: 'transfer' }],
-          'cw20:secret1s3z9xkpdsrhk86300tqnv6u466jmdmlegew2ve'
-        ),
-        channel_id: 'channel-163',
-        gas: 300_000
-      },
-      {
         chain_name: 'Migaloo',
         denom: ibcDenom(
           [{ incomingChannelId: 'channel-103', incomingPortId: 'transfer' }],
           'cw20:secret1s3z9xkpdsrhk86300tqnv6u466jmdmlegew2ve'
         ),
         channel_id: 'channel-103',
+        gas: 300_000
+      },
+      {
+        chain_name: 'Neutron',
+        denom: ibcDenom(
+          [{ incomingChannelId: 'channel-1950', incomingPortId: 'transfer' }],
+          'cw20:secret1s3z9xkpdsrhk86300tqnv6u466jmdmlegew2ve'
+        ),
+        channel_id: 'channel-1950',
+        gas: 300_000
+      },
+      {
+        chain_name: 'Oraichain',
+        denom: ibcDenom(
+          [{ incomingChannelId: 'channel-222', incomingPortId: 'transfer' }],
+          'cw20:secret1s3z9xkpdsrhk86300tqnv6u466jmdmlegew2ve'
+        ),
+        channel_id: 'channel-222',
+        gas: 300_000
+      },
+      {
+        chain_name: 'Osmosis',
+        denom: ibcDenom(
+          [{ incomingChannelId: 'channel-476', incomingPortId: 'transfer' }],
+          'cw20:secret1s3z9xkpdsrhk86300tqnv6u466jmdmlegew2ve'
+        ),
+        channel_id: 'channel-476',
+        gas: 300_000
+      },
+      {
+        chain_name: 'Persistence',
+        denom: ibcDenom(
+          [{ incomingChannelId: 'channel-159', incomingPortId: 'transfer' }],
+          'cw20:secret1s3z9xkpdsrhk86300tqnv6u466jmdmlegew2ve'
+        ),
+        channel_id: 'channel-159',
         gas: 300_000
       }
     ],
@@ -3144,6 +3171,24 @@ export const snips: Token[] = [
         chain_name: 'Migaloo',
         denom: 'secret1s3z9xkpdsrhk86300tqnv6u466jmdmlegew2ve',
         channel_id: 'channel-129',
+        gas: 350_000
+      },
+      {
+        chain_name: 'Neutron',
+        denom: 'secret1s3z9xkpdsrhk86300tqnv6u466jmdmlegew2ve',
+        channel_id: 'channel-151',
+        gas: 350_000
+      },
+      {
+        chain_name: 'Oraichain',
+        denom: 'secret1s3z9xkpdsrhk86300tqnv6u466jmdmlegew2ve',
+        channel_id: 'channel-140',
+        gas: 350_000
+      },
+      {
+        chain_name: 'Persistence',
+        denom: 'secret1s3z9xkpdsrhk86300tqnv6u466jmdmlegew2ve',
+        channel_id: 'channel-132',
         gas: 350_000
       }
     ]
@@ -3308,13 +3353,31 @@ export const snips: Token[] = [
     coingecko_id: '',
     deposits: [
       {
-        chain_name: 'Osmosis',
+        chain_name: 'Archway',
         denom: ibcDenom(
-          [{ incomingChannelId: 'channel-476', incomingPortId: 'transfer' }],
+          [{ incomingChannelId: 'channel-39', incomingPortId: 'transfer' }],
           'cw20:secret197dvnt9yjxwn8sjdlx05f7zuk27lsdxtfnwxse'
         ),
-        channel_id: 'channel-476',
-        gas: 700_000
+        channel_id: 'channel-39',
+        gas: 300_000
+      },
+      {
+        chain_name: 'Composable',
+        denom: ibcDenom(
+          [{ incomingChannelId: 'channel-26', incomingPortId: 'transfer' }],
+          'cw20:secret197dvnt9yjxwn8sjdlx05f7zuk27lsdxtfnwxse'
+        ),
+        channel_id: 'channel-26',
+        gas: 300_000
+      },
+      {
+        chain_name: 'Juno',
+        denom: ibcDenom(
+          [{ incomingChannelId: 'channel-163', incomingPortId: 'transfer' }],
+          'cw20:secret197dvnt9yjxwn8sjdlx05f7zuk27lsdxtfnwxse'
+        ),
+        channel_id: 'channel-163',
+        gas: 300_000
       },
       {
         chain_name: 'Kujira',
@@ -3326,16 +3389,64 @@ export const snips: Token[] = [
         gas: 300_000
       },
       {
-        chain_name: 'Juno',
+        chain_name: 'Migaloo',
         denom: ibcDenom(
-          [{ incomingChannelId: 'channel-163', incomingPortId: 'transfer' }],
+          [{ incomingChannelId: 'channel-103', incomingPortId: 'transfer' }],
           'cw20:secret197dvnt9yjxwn8sjdlx05f7zuk27lsdxtfnwxse'
         ),
-        channel_id: 'channel-163',
+        channel_id: 'channel-103',
+        gas: 300_000
+      },
+      {
+        chain_name: 'Neutron',
+        denom: ibcDenom(
+          [{ incomingChannelId: 'channel-1950', incomingPortId: 'transfer' }],
+          'cw20:secret197dvnt9yjxwn8sjdlx05f7zuk27lsdxtfnwxse'
+        ),
+        channel_id: 'channel-1950',
+        gas: 300_000
+      },
+      {
+        chain_name: 'Oraichain',
+        denom: ibcDenom(
+          [{ incomingChannelId: 'channel-222', incomingPortId: 'transfer' }],
+          'cw20:secret197dvnt9yjxwn8sjdlx05f7zuk27lsdxtfnwxse'
+        ),
+        channel_id: 'channel-222',
+        gas: 300_000
+      },
+      {
+        chain_name: 'Osmosis',
+        denom: ibcDenom(
+          [{ incomingChannelId: 'channel-476', incomingPortId: 'transfer' }],
+          'cw20:secret197dvnt9yjxwn8sjdlx05f7zuk27lsdxtfnwxse'
+        ),
+        channel_id: 'channel-476',
+        gas: 300_000
+      },
+      {
+        chain_name: 'Persistence',
+        denom: ibcDenom(
+          [{ incomingChannelId: 'channel-159', incomingPortId: 'transfer' }],
+          'cw20:secret197dvnt9yjxwn8sjdlx05f7zuk27lsdxtfnwxse'
+        ),
+        channel_id: 'channel-159',
         gas: 300_000
       }
     ],
     withdrawals: [
+      {
+        chain_name: 'Archway',
+        denom: 'secret197dvnt9yjxwn8sjdlx05f7zuk27lsdxtfnwxse',
+        channel_id: 'channel-90',
+        gas: 350_000
+      },
+      {
+        chain_name: 'Composable',
+        denom: 'secret197dvnt9yjxwn8sjdlx05f7zuk27lsdxtfnwxse',
+        channel_id: 'channel-83',
+        gas: 350_000
+      },
       {
         chain_name: 'Osmosis',
         denom: 'secret197dvnt9yjxwn8sjdlx05f7zuk27lsdxtfnwxse',
@@ -3352,6 +3463,30 @@ export const snips: Token[] = [
         chain_name: 'Juno',
         denom: 'secret197dvnt9yjxwn8sjdlx05f7zuk27lsdxtfnwxse',
         channel_id: 'channel-45',
+        gas: 350_000
+      },
+      {
+        chain_name: 'Migaloo',
+        denom: 'secret197dvnt9yjxwn8sjdlx05f7zuk27lsdxtfnwxse',
+        channel_id: 'channel-129',
+        gas: 350_000
+      },
+      {
+        chain_name: 'Neutron',
+        denom: 'secret197dvnt9yjxwn8sjdlx05f7zuk27lsdxtfnwxse',
+        channel_id: 'channel-151',
+        gas: 350_000
+      },
+      {
+        chain_name: 'Oraichain',
+        denom: 'secret197dvnt9yjxwn8sjdlx05f7zuk27lsdxtfnwxse',
+        channel_id: 'channel-140',
+        gas: 350_000
+      },
+      {
+        chain_name: 'Persistence',
+        denom: 'secret197dvnt9yjxwn8sjdlx05f7zuk27lsdxtfnwxse',
+        channel_id: 'channel-132',
         gas: 350_000
       }
     ]
@@ -3426,6 +3561,15 @@ export const snips: Token[] = [
     coingecko_id: 'silk-bcec1136-561c-4706-a42c-8b67d0d7f7d2',
     deposits: [
       {
+        chain_name: 'Archway',
+        denom: ibcDenom(
+          [{ incomingChannelId: 'channel-39', incomingPortId: 'transfer' }],
+          'cw20:secret1fl449muk5yq8dlad7a22nje4p5d2pnsgymhjfd'
+        ),
+        channel_id: 'channel-39',
+        gas: 300_000
+      },
+      {
         chain_name: 'Composable',
         denom: ibcDenom(
           [{ incomingChannelId: 'channel-26', incomingPortId: 'transfer' }],
@@ -3435,13 +3579,13 @@ export const snips: Token[] = [
         gas: 300_000
       },
       {
-        chain_name: 'Osmosis',
+        chain_name: 'Juno',
         denom: ibcDenom(
-          [{ incomingChannelId: 'channel-476', incomingPortId: 'transfer' }],
+          [{ incomingChannelId: 'channel-163', incomingPortId: 'transfer' }],
           'cw20:secret1fl449muk5yq8dlad7a22nje4p5d2pnsgymhjfd'
         ),
-        channel_id: 'channel-476',
-        gas: 700_000
+        channel_id: 'channel-163',
+        gas: 300_000
       },
       {
         chain_name: 'Kujira',
@@ -3453,16 +3597,58 @@ export const snips: Token[] = [
         gas: 300_000
       },
       {
-        chain_name: 'Juno',
+        chain_name: 'Migaloo',
         denom: ibcDenom(
-          [{ incomingChannelId: 'channel-163', incomingPortId: 'transfer' }],
+          [{ incomingChannelId: 'channel-103', incomingPortId: 'transfer' }],
           'cw20:secret1fl449muk5yq8dlad7a22nje4p5d2pnsgymhjfd'
         ),
-        channel_id: 'channel-163',
+        channel_id: 'channel-103',
+        gas: 300_000
+      },
+      {
+        chain_name: 'Neutron',
+        denom: ibcDenom(
+          [{ incomingChannelId: 'channel-1950', incomingPortId: 'transfer' }],
+          'cw20:secret1fl449muk5yq8dlad7a22nje4p5d2pnsgymhjfd'
+        ),
+        channel_id: 'channel-1950',
+        gas: 300_000
+      },
+      {
+        chain_name: 'Oraichain',
+        denom: ibcDenom(
+          [{ incomingChannelId: 'channel-222', incomingPortId: 'transfer' }],
+          'cw20:secret1fl449muk5yq8dlad7a22nje4p5d2pnsgymhjfd'
+        ),
+        channel_id: 'channel-222',
+        gas: 300_000
+      },
+      {
+        chain_name: 'Osmosis',
+        denom: ibcDenom(
+          [{ incomingChannelId: 'channel-476', incomingPortId: 'transfer' }],
+          'cw20:secret1fl449muk5yq8dlad7a22nje4p5d2pnsgymhjfd'
+        ),
+        channel_id: 'channel-476',
+        gas: 300_000
+      },
+      {
+        chain_name: 'Persistence',
+        denom: ibcDenom(
+          [{ incomingChannelId: 'channel-159', incomingPortId: 'transfer' }],
+          'cw20:secret1fl449muk5yq8dlad7a22nje4p5d2pnsgymhjfd'
+        ),
+        channel_id: 'channel-159',
         gas: 300_000
       }
     ],
     withdrawals: [
+      {
+        chain_name: 'Archway',
+        denom: 'secret1fl449muk5yq8dlad7a22nje4p5d2pnsgymhjfd',
+        channel_id: 'channel-90',
+        gas: 350_000
+      },
       {
         chain_name: 'Composable',
         denom: 'secret1fl449muk5yq8dlad7a22nje4p5d2pnsgymhjfd',
@@ -3486,6 +3672,30 @@ export const snips: Token[] = [
         denom: 'secret1fl449muk5yq8dlad7a22nje4p5d2pnsgymhjfd',
         channel_id: 'channel-45',
         gas: 350_000
+      },
+      {
+        chain_name: 'Migaloo',
+        denom: 'secret1fl449muk5yq8dlad7a22nje4p5d2pnsgymhjfd',
+        channel_id: 'channel-129',
+        gas: 350_000
+      },
+      {
+        chain_name: 'Neutron',
+        denom: 'secret1fl449muk5yq8dlad7a22nje4p5d2pnsgymhjfd',
+        channel_id: 'channel-151',
+        gas: 350_000
+      },
+      {
+        chain_name: 'Oraichain',
+        denom: 'secret1fl449muk5yq8dlad7a22nje4p5d2pnsgymhjfd',
+        channel_id: 'channel-140',
+        gas: 350_000
+      },
+      {
+        chain_name: 'Persistence',
+        denom: 'secret1fl449muk5yq8dlad7a22nje4p5d2pnsgymhjfd',
+        channel_id: 'channel-132',
+        gas: 350_000
       }
     ]
   },
@@ -3500,13 +3710,31 @@ export const snips: Token[] = [
     coingecko_id: 'stkd-scrt',
     deposits: [
       {
-        chain_name: 'Osmosis',
+        chain_name: 'Archway',
         denom: ibcDenom(
-          [{ incomingChannelId: 'channel-476', incomingPortId: 'transfer' }],
+          [{ incomingChannelId: 'channel-39', incomingPortId: 'transfer' }],
           'cw20:secret1k6u0cy4feepm6pehnz804zmwakuwdapm69tuc4'
         ),
-        channel_id: 'channel-476',
-        gas: 700_000
+        channel_id: 'channel-39',
+        gas: 300_000
+      },
+      {
+        chain_name: 'Composable',
+        denom: ibcDenom(
+          [{ incomingChannelId: 'channel-26', incomingPortId: 'transfer' }],
+          'cw20:secret1k6u0cy4feepm6pehnz804zmwakuwdapm69tuc4'
+        ),
+        channel_id: 'channel-26',
+        gas: 300_000
+      },
+      {
+        chain_name: 'Juno',
+        denom: ibcDenom(
+          [{ incomingChannelId: 'channel-163', incomingPortId: 'transfer' }],
+          'cw20:secret1k6u0cy4feepm6pehnz804zmwakuwdapm69tuc4'
+        ),
+        channel_id: 'channel-163',
+        gas: 300_000
       },
       {
         chain_name: 'Kujira',
@@ -3518,16 +3746,64 @@ export const snips: Token[] = [
         gas: 300_000
       },
       {
-        chain_name: 'Juno',
+        chain_name: 'Migaloo',
         denom: ibcDenom(
-          [{ incomingChannelId: 'channel-163', incomingPortId: 'transfer' }],
+          [{ incomingChannelId: 'channel-103', incomingPortId: 'transfer' }],
           'cw20:secret1k6u0cy4feepm6pehnz804zmwakuwdapm69tuc4'
         ),
-        channel_id: 'channel-163',
+        channel_id: 'channel-103',
+        gas: 300_000
+      },
+      {
+        chain_name: 'Neutron',
+        denom: ibcDenom(
+          [{ incomingChannelId: 'channel-1950', incomingPortId: 'transfer' }],
+          'cw20:secret1k6u0cy4feepm6pehnz804zmwakuwdapm69tuc4'
+        ),
+        channel_id: 'channel-1950',
+        gas: 300_000
+      },
+      {
+        chain_name: 'Oraichain',
+        denom: ibcDenom(
+          [{ incomingChannelId: 'channel-222', incomingPortId: 'transfer' }],
+          'cw20:secret1k6u0cy4feepm6pehnz804zmwakuwdapm69tuc4'
+        ),
+        channel_id: 'channel-222',
+        gas: 300_000
+      },
+      {
+        chain_name: 'Osmosis',
+        denom: ibcDenom(
+          [{ incomingChannelId: 'channel-476', incomingPortId: 'transfer' }],
+          'cw20:secret1k6u0cy4feepm6pehnz804zmwakuwdapm69tuc4'
+        ),
+        channel_id: 'channel-476',
+        gas: 300_000
+      },
+      {
+        chain_name: 'Persistence',
+        denom: ibcDenom(
+          [{ incomingChannelId: 'channel-159', incomingPortId: 'transfer' }],
+          'cw20:secret1k6u0cy4feepm6pehnz804zmwakuwdapm69tuc4'
+        ),
+        channel_id: 'channel-159',
         gas: 300_000
       }
     ],
     withdrawals: [
+      {
+        chain_name: 'Archway',
+        denom: 'secret1k6u0cy4feepm6pehnz804zmwakuwdapm69tuc4',
+        channel_id: 'channel-90',
+        gas: 350_000
+      },
+      {
+        chain_name: 'Composable',
+        denom: 'secret1k6u0cy4feepm6pehnz804zmwakuwdapm69tuc4',
+        channel_id: 'channel-83',
+        gas: 350_000
+      },
       {
         chain_name: 'Osmosis',
         denom: 'secret1k6u0cy4feepm6pehnz804zmwakuwdapm69tuc4',
@@ -3544,6 +3820,30 @@ export const snips: Token[] = [
         chain_name: 'Juno',
         denom: 'secret1k6u0cy4feepm6pehnz804zmwakuwdapm69tuc4',
         channel_id: 'channel-45',
+        gas: 350_000
+      },
+      {
+        chain_name: 'Migaloo',
+        denom: 'secret1k6u0cy4feepm6pehnz804zmwakuwdapm69tuc4',
+        channel_id: 'channel-129',
+        gas: 350_000
+      },
+      {
+        chain_name: 'Neutron',
+        denom: 'secret1k6u0cy4feepm6pehnz804zmwakuwdapm69tuc4',
+        channel_id: 'channel-151',
+        gas: 350_000
+      },
+      {
+        chain_name: 'Oraichain',
+        denom: 'secret1k6u0cy4feepm6pehnz804zmwakuwdapm69tuc4',
+        channel_id: 'channel-140',
+        gas: 350_000
+      },
+      {
+        chain_name: 'Persistence',
+        denom: 'secret1k6u0cy4feepm6pehnz804zmwakuwdapm69tuc4',
+        channel_id: 'channel-132',
         gas: 350_000
       }
     ]
