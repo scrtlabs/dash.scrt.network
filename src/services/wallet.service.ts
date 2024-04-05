@@ -63,7 +63,7 @@ const connectLeap = async (lcd: string, chainID: string) => {
     // localStorage.setItem("preferedWalletApi", "Fina");
     // window.dispatchEvent(new Event("storage"));
   } else {
-    while (!window.leap || !window.getEnigmaUtils || !window.getOfflineSignerOnlyAmino) {
+    while (!window.leap || !window.leap.getEnigmaUtils || !window.leap.getOfflineSignerOnlyAmino) {
       await sleep(50)
     }
 
