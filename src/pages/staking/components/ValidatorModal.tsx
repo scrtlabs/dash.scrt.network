@@ -327,15 +327,10 @@ const ValidatorModal = (props: Props) => {
                 <div className="font-semibold text-neutral-400 mt-0.5 text-sm">
                   <div>
                     {toCurrencyString(
-                      convertCurrency(
-                        'USD',
-                        new BigNumber(scrtBalance!)
-                          .dividedBy(`1e${scrtToken.decimals}`)
-                          .multipliedBy(Number(currentPrice))
-                          .toNumber(),
-                        'EUR'
-                      ),
-                      'EUR'
+                      new BigNumber(scrtBalance!)
+                        .dividedBy(`1e${scrtToken.decimals}`)
+                        .multipliedBy(Number(currentPrice))
+                        .toNumber()
                     )}
                   </div>
                 </div>
