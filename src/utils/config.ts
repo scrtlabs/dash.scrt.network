@@ -1396,6 +1396,35 @@ export const tokens: Token[] = [
     ]
   },
   {
+    name: 'ECLIP',
+    description: 'Eclipse.fi governance token',
+    address: 'XXX',
+    code_hash: '638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e',
+    image: '/eclip.svg',
+    decimals: 6,
+    coingecko_id: 'eclipse-fi',
+    deposits: [
+      {
+        chain_name: 'Neutron',
+        denom: 'factory/neutron10sr06r3qkhn7xzpw3339wuj77hu06mzna6uht0/eclip'
+      }
+    ],
+    withdrawals: [
+      {
+        chain_name: 'Neutron',
+        denom: ibcDenom(
+          [
+            {
+              incomingChannelId: chains['Neutron'].withdraw_channel_id,
+              incomingPortId: 'transfer'
+            }
+          ],
+          'factory/neutron10sr06r3qkhn7xzpw3339wuj77hu06mzna6uht0/eclip'
+        )
+      }
+    ]
+  },
+  {
     name: 'GRAV',
     description: 'Gravity Bridge Governance Token',
     address: 'secret1dtghxvrx35nznt8es3fwxrv4qh56tvxv22z79d',
