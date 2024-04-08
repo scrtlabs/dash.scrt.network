@@ -330,10 +330,10 @@ export const chains: { [chain_name: string]: Chain } = {
   },
   Nolus: {
     chain_name: 'Nolus',
-    deposit_channel_id: 'channel-146',
+    deposit_channel_id: 'channel-13995',
     deposit_gas: 200_000,
     deposit_gas_denom: 'unls',
-    withdraw_channel_id: 'channel-13995',
+    withdraw_channel_id: 'channel-146',
     //withdraw_channel_id: 'channel-783',
     withdraw_gas: 150_000,
     chain_id: 'pirin-1',
