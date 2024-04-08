@@ -330,10 +330,11 @@ export const chains: { [chain_name: string]: Chain } = {
   },
   Nolus: {
     chain_name: 'Nolus',
-    deposit_channel_id: 'channel-XX',
+    deposit_channel_id: 'channel-146',
     deposit_gas: 200_000,
     deposit_gas_denom: 'unls',
-    withdraw_channel_id: 'channel-783',
+    withdraw_channel_id: 'channel-13995',
+    //withdraw_channel_id: 'channel-783',
     withdraw_gas: 150_000,
     chain_id: 'pirin-1',
     bech32_prefix: 'nolus',
@@ -1710,6 +1711,35 @@ export const tokens: Token[] = [
             }
           ],
           'transfer/channel-2/4'
+        )
+      }
+    ]
+  },
+  {
+    name: 'NLS',
+    description: 'Nolus Governance Token',
+    address: 'XXX',
+    code_hash: '638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e',
+    image: '/nolus.svg',
+    decimals: 6,
+    coingecko_id: 'nolus',
+    deposits: [
+      {
+        chain_name: 'Nolus',
+        denom: 'unls'
+      }
+    ],
+    withdrawals: [
+      {
+        chain_name: 'Nolus',
+        denom: ibcDenom(
+          [
+            {
+              incomingChannelId: chains['Nolus'].withdraw_channel_id,
+              incomingPortId: 'transfer'
+            }
+          ],
+          'unls'
         )
       }
     ]
