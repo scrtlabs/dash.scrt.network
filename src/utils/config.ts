@@ -221,7 +221,7 @@ export const chains: { [chain_name: string]: Chain } = {
     chain_id: 'dymension_1100-1',
     bech32_prefix: 'dym',
     lcd: 'https://dymension-api.lavenderfive.com:443',
-    chain_image: '/dymension.png',
+    chain_image: '/dymension.svg',
     explorer_account: 'https://www.mintscan.io/dymension/account/'
   },
   'Gravity Bridge': {
@@ -393,6 +393,19 @@ export const chains: { [chain_name: string]: Chain } = {
     lcd: 'https://quicksilver-api.lavenderfive.com:443',
     chain_image: '/qck.svg',
     explorer_account: 'https://www.mintscan.io/quicksilver/account/'
+  },
+  Saga: {
+    chain_name: 'Saga',
+    deposit_channel_id: 'channel-17',
+    deposit_gas: 200_000,
+    deposit_gas_denom: 'usaga',
+    withdraw_channel_id: 'channel-152',
+    withdraw_gas: 150_000,
+    chain_id: 'ssc-1',
+    bech32_prefix: 'saga',
+    lcd: 'https://saga-rest.publicnode.com',
+    chain_image: '/saga.svg',
+    explorer_account: 'https://www.mintscan.io/saga/account/'
   },
   Sentinel: {
     chain_name: 'Sentinel',
@@ -838,6 +851,18 @@ export const tokens: Token[] = [
         )
       },
       {
+        chain_name: 'Saga',
+        denom: ibcDenom(
+          [
+            {
+              incomingChannelId: chains['Saga'].deposit_channel_id,
+              incomingPortId: 'transfer'
+            }
+          ],
+          'uscrt'
+        )
+      },
+      {
         chain_name: 'Sentinel',
         denom: ibcDenom(
           [
@@ -998,6 +1023,10 @@ export const tokens: Token[] = [
       },
       {
         chain_name: 'Quicksilver',
+        denom: 'uscrt'
+      },
+      {
+        chain_name: 'Saga',
         denom: 'uscrt'
       },
       {
@@ -1372,7 +1401,7 @@ export const tokens: Token[] = [
     description: 'Dymension governance token',
     address: 'secret1vfe63g7ndhqq9qu8v4n97fj69rcmr5fy0dun75',
     code_hash: '638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e',
-    image: '/dymension.png',
+    image: '/dymension.svg',
     decimals: 18,
     coingecko_id: 'dymension',
     deposits: [
@@ -2172,6 +2201,35 @@ export const tokens: Token[] = [
             }
           ],
           'uusdc'
+        )
+      }
+    ]
+  },
+  {
+    name: 'SAGA',
+    description: 'SAGA Governance Token',
+    address: 'secret19gmvklys9uywk3lf2e94wqwwc97r3jr5rwa2pa',
+    code_hash: '638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e',
+    image: '/saga.svg',
+    decimals: 6,
+    coingecko_id: 'saga-1',
+    deposits: [
+      {
+        chain_name: 'Saga',
+        denom: 'usaga'
+      }
+    ],
+    withdrawals: [
+      {
+        chain_name: 'Saga',
+        denom: ibcDenom(
+          [
+            {
+              incomingChannelId: chains['Saga'].withdraw_channel_id,
+              incomingPortId: 'transfer'
+            }
+          ],
+          'usaga'
         )
       }
     ]
