@@ -396,10 +396,10 @@ export const chains: { [chain_name: string]: Chain } = {
   },
   Saga: {
     chain_name: 'Saga',
-    deposit_channel_id: 'channel-XX',
+    deposit_channel_id: 'channel-17',
     deposit_gas: 200_000,
     deposit_gas_denom: 'usaga',
-    withdraw_channel_id: 'channel-XX',
+    withdraw_channel_id: 'channel-152',
     withdraw_gas: 150_000,
     chain_id: 'ssc-1',
     bech32_prefix: 'saga',
@@ -2201,6 +2201,35 @@ export const tokens: Token[] = [
             }
           ],
           'uusdc'
+        )
+      }
+    ]
+  },
+  {
+    name: 'SAGA',
+    description: 'SAGA Governance Token',
+    address: 'secret19gmvklys9uywk3lf2e94wqwwc97r3jr5rwa2pa',
+    code_hash: '638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e',
+    image: '/saga.svg',
+    decimals: 6,
+    coingecko_id: 'saga-1',
+    deposits: [
+      {
+        chain_name: 'Saga',
+        denom: 'usaga'
+      }
+    ],
+    withdrawals: [
+      {
+        chain_name: 'Saga',
+        denom: ibcDenom(
+          [
+            {
+              incomingChannelId: chains['Saga'].withdraw_channel_id,
+              incomingPortId: 'transfer'
+            }
+          ],
+          'usaga'
         )
       }
     ]
