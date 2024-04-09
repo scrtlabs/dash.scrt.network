@@ -1718,7 +1718,7 @@ export const tokens: Token[] = [
   {
     name: 'NLS',
     description: 'Nolus Governance Token',
-    address: 'XXX',
+    address: 'secret1yafpcu9wpauy5ktymggzk9kmsvmce0hkl9p2h7',
     code_hash: '638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e',
     image: '/nolus.svg',
     decimals: 6,
