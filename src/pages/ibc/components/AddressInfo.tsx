@@ -36,7 +36,7 @@ export default function AddressInfo(props: IProps) {
                 <Tooltip title={'View in Explorer'} placement="top" arrow>
                   <a href={srcChainExplorerUrl} target="_blank">
                     <div className="truncate">
-                      {props.srcAddress.slice(0, 22) + '...' + props.srcAddress.slice(-22)}
+                      {props.srcAddress.slice(0, 21) + '...' + props.srcAddress.slice(-21)}
                     </div>
                   </a>
                 </Tooltip>
@@ -74,7 +74,7 @@ export default function AddressInfo(props: IProps) {
                 <Tooltip title={'View in Explorer'} placement="bottom" arrow>
                   <a href={destChainExplorerUrl} target="_blank">
                     <div className="truncate">
-                      {props.destAddress.slice(0, 22) + '...' + props.destAddress.slice(-22)}
+                      {props.destAddress.slice(0, 21) + '...' + props.destAddress.slice(-21)}
                     </div>
                   </a>
                 </Tooltip>

@@ -1,4 +1,4 @@
-import { useEffect, useState, createContext, useContext } from 'react'
+import { useEffect, useState, useContext } from 'react'
 import { SecretNetworkClient } from 'secretjs'
 import CurrentPrice from './components/CurrentPrice'
 import MiniTile from './components/MiniTile'
@@ -7,11 +7,12 @@ import QuadTile from './components/QuadTile'
 import SocialMedia from './components/SocialMedia'
 import { SECRET_LCD, SECRET_CHAIN_ID } from 'utils/config'
 import StakingChart from './components/StakingChart'
-import { formatNumber } from 'utils/commons'
+import { currencySymbols, formatNumber } from 'utils/commons'
 import { APIContext } from 'context/APIContext'
 import { Helmet } from 'react-helmet-async'
 import { trackMixPanelEvent, dashboardPageTitle, dashboardPageDescription, dashboardJsonLdSchema } from 'utils/commons'
 import UnbondingsChart from './components/UnbondingsChart'
+import { useUserPreferencesStore } from 'store/UserPreferences'
 
 function Dashboard() {
   const {
@@ -134,19 +135,23 @@ function Dashboard() {
   const [marketCapFormattedString, setMarketCapFormattedString] = useState('')
   const [TVLFormattedString, setTVLFormattedString] = useState('')
 
+  const { currency } = useUserPreferencesStore()
+
   useEffect(() => {
     if (volume) {
-      setVolumeFormattedString('$' + formatNumber(parseInt(volume.toFixed(0).toString()), 2))
+      setVolumeFormattedString(currencySymbols[currency] + formatNumber(parseInt(volume.toFixed(0).toString()), 2))
     }
     if (marketCap) {
-      setMarketCapFormattedString('$' + formatNumber(parseInt(marketCap.toFixed(0).toString()), 2))
+      setMarketCapFormattedString(
+        currencySymbols[currency] + formatNumber(parseInt(marketCap.toFixed(0).toString()), 2)
+      )
     }
     if (defiLamaApiData_TVL) {
-      setTVLFormattedString('$' + formatNumber(parseInt(defiLamaApiData_TVL.toFixed(0).toString()), 2))
+      setTVLFormattedString(
+        currencySymbols[currency] + formatNumber(parseInt(defiLamaApiData_TVL.toFixed(0).toString()), 2)
+      )
     }
   }, [volume, marketCap, defiLamaApiData_TVL])
-
-  const [circulatingSupply, setCirculatingSupply] = useState(0)
 
   useEffect(() => {
     if (externalApiData) {
@@ -200,11 +205,6 @@ function Dashboard() {
       </Helmet>
       <div className="px-4 mx-auto space-y-4 w-full">
         <div className="grid grid-cols-12 gap-4">
-          {/* WideQuadTile */}
-          {/* <div className='col-span-12'>
-              <WideQuadTile item1_key='Block Height' item1_value={blockHeightFormattedString} item2_key='Block Time' item2_value={blockTimeFormattedString} item3_key='Daily Transactions' item3_value={dailyTransactionsFormattedString} item4_key='Fees Paid' item4_value={feesPaidFormattedString}/>
-            </div> */}
-
           {/* Price */}
           <div className="col-span-12 sm:col-span-6 lg:col-span-12 xl:col-span-6 2xl:col-span-4">
             <CurrentPrice price={currentPrice} />

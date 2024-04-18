@@ -74,7 +74,6 @@ async function performWrapping(props: TProps): Promise<string> {
           throw new Error(`Wrapping of ${token.name} failed: ${error?.tx?.rawLog}`)
         })
         .then((tx: any) => {
-          console.log('tx', tx)
           if (tx) {
             if (tx.code === 0) {
               return 'Wrapping successful!'
@@ -117,7 +116,6 @@ async function performWrapping(props: TProps): Promise<string> {
           throw new Error(`Unwrapping of ${token.name} failed: ${error?.tx?.rawLog}`)
         })
         .then((tx: any) => {
-          console.log('tx', tx)
           if (tx) {
             if (tx.code === 0) {
               return 'Wrapping successful!'

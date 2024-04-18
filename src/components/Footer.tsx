@@ -1,5 +1,5 @@
 import { faDiscord, faGithub, faInstagram, faTelegram, faTwitter, faYoutube } from '@fortawesome/free-brands-svg-icons'
-import { faComments } from '@fortawesome/free-regular-svg-icons'
+import { faComments } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { trackMixPanelEvent } from 'utils/commons'
 

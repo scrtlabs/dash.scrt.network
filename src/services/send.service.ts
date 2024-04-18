@@ -92,7 +92,6 @@ async function performSending(props: TProps): Promise<string> {
       throw new Error(error)
     })
     .then((tx: any) => {
-      console.log('tx', tx)
       if (tx) {
         if (tx.code === 0) {
           return 'success'

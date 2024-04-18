@@ -1,6 +1,5 @@
 import { createContext, useContext, useEffect, useState } from 'react'
-import { formatNumber } from 'utils/commons'
-import { ThemeContext } from 'context/ThemeContext'
+import { formatNumber, toCurrencyString } from 'utils/commons'
 import { APIContext } from 'context/APIContext'
 
 import {
@@ -16,6 +15,7 @@ import {
 import { Line } from 'react-chartjs-2'
 import TypeSwitch from './components/TypeSwitch'
 import RangeSwitch from './components/RangeSwitch'
+import { useUserPreferencesStore } from 'store/UserPreferences'
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend)
 
@@ -25,10 +25,11 @@ type ChartRange = 'Day' | 'Month' | 'Year'
 export const PriceVolumeHistoryContext = createContext(null)
 
 export default function PriceVolumeTVL(props: any) {
+  const { currency } = useUserPreferencesStore()
   const { coingeckoApiData_Day, coingeckoApiData_Month, coingeckoApiData_Year, defiLamaApiData_Year } =
     useContext(APIContext)
 
-  const { theme } = useContext(ThemeContext)
+  const { theme } = useUserPreferencesStore()
 
   const [chartType, setChartType] = useState<ChartType>('Price')
   const [chartRange, setChartRange] = useState<ChartRange>('Month')
@@ -119,10 +120,7 @@ export default function PriceVolumeTVL(props: any) {
               label += ': '
             }
             if (context.parsed.y !== null) {
-              label += new Intl.NumberFormat(undefined, {
-                style: 'currency',
-                currency: 'USD'
-              }).format(context.parsed.y)
+              label += toCurrencyString(context.parsed.y, currency)
             }
             return label
           }
@@ -150,7 +148,7 @@ export default function PriceVolumeTVL(props: any) {
         ticks: {
           color: theme === 'dark' ? '#fff' : '#000',
           callback: function (value: any, index: any, ticks: any) {
-            return '$' + formatNumber(value, 2)
+            return toCurrencyString(value, currency)
           }
         },
         border: {

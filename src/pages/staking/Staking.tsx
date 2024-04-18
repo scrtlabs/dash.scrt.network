@@ -1,6 +1,6 @@
 import { faInfoCircle, faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import React, { createContext, useEffect, useState } from 'react'
+import { createContext, useEffect, useState } from 'react'
 import { Helmet } from 'react-helmet-async'
 import MyValidatorsItem from './components/MyValidatorsItem'
 import { shuffleArray, stakingPageTitle, stakingPageDescription, stakingJsonLdSchema } from 'utils/commons'
@@ -10,7 +10,6 @@ import NoScrtWarning from './components/NoScrtWarning'
 import ValidatorModal from './components/ValidatorModal'
 import { SECRET_LCD, SECRET_CHAIN_ID } from 'utils/config'
 import { SecretNetworkClient } from 'secretjs'
-import Select from 'react-select'
 import Title from '../../components/Title'
 import { useSearchParams } from 'react-router-dom'
 import { Nullable } from 'types/Nullable'
@@ -102,7 +101,7 @@ export const Staking = () => {
 
   //Auto Restake
   const [restakeChoices, setRestakeChoices] = useState<ValidatorRestakeStatus[]>([])
-  const [restakeEntries, setRestakeEntries] = useState<any>()
+  const [restakeEntries, setRestakeEntries] = useState<ValidatorRestakeStatus[]>([])
 
   //Search Query
   const [searchQuery, setSearchQuery] = useState<string>('')
@@ -185,14 +184,23 @@ export const Staking = () => {
     const fetchDelegatorValidators = async () => {
       if (secretNetworkClient?.address) {
         const { delegation_responses } = await secretNetworkClient.query.staking.delegatorDelegations({
-          delegator_addr: secretNetworkClient?.address
-          // 'pagination.limit': 1000 // TODO: Check if needed
+          delegator_addr: secretNetworkClient?.address,
+          pagination: { limit: '1000' }
         })
         const { validators } = await secretNetworkClient.query.distribution.restakingEntries({
           delegator: secretNetworkClient?.address
-          // 'pagination.limit': 1000 // TODO: Check if needed
         })
-        setRestakeEntries(validators)
+        //Restake Entries are the restake entries from the chain, these stay and will not be changed.
+        setRestakeEntries(
+          delegation_responses.map((validator: any) => ({
+            validatorAddress: validator?.delegation?.validator_address,
+            autoRestake: validators.some((item: any) => {
+              return item === validator?.delegation?.validator_address
+            }),
+            stakedAmount: validator?.balance?.amount
+          }))
+        )
+        //Restake Entries INITALLY are the restake entries from the chain, user changes these.
         setRestakeChoices(
           delegation_responses.map((validator: any) => ({
             validatorAddress: validator?.delegation?.validator_address,
@@ -272,7 +280,9 @@ export const Staking = () => {
     reload,
     setReload,
     restakeChoices,
-    setRestakeChoices
+    setRestakeChoices,
+    restakeEntries,
+    setRestakeEntries
   }
 
   return (
@@ -304,7 +314,12 @@ export const Staking = () => {
 
         <ClaimRewardsModal open={isClaimRewardsModalOpen} onClose={handleClaimRewardsModal} />
 
-        <ValidatorModal open={!!selectedValidator} restakeEntries={restakeEntries} onClose={handleStakingModalClose} />
+        <ValidatorModal
+          open={!!selectedValidator}
+          restakeEntries={restakeEntries}
+          onClose={handleStakingModalClose}
+          onAutoRestake={() => setIsManageAutoRestakeModalOpen(true)}
+        />
 
         {/* Title */}
         <Title title={'Staking'} />
@@ -327,7 +342,6 @@ export const Staking = () => {
                     <span className="text-xs font-semibold text-neutral-500 dark:text-neutral-500"> SCRT</span>
                   </div>
 
-                  {/* flex-initial text-medium disabled:bg-neutral-600 enabled:bg-emerald-600 enabled:hover:bg-emerald-700 disabled:text-neutral-400 enabled:text-white transition-colors font-semibold px-2 py-2 text-sm rounded-md" */}
                   <div className="flex-initial"></div>
                   <Button onClick={() => setIsClaimRewardsModalOpen(true)} color={'emerald'}>
                     Claim Pending Rewards
@@ -462,7 +476,7 @@ export const Staking = () => {
           {validators && (
             <>
               <div className="italic text-center mt-4 px-4 text-sm">
-                all items are ordered randomly to promote decentralization
+                All validators are ordered randomly to promote decentralization
               </div>
             </>
           )}

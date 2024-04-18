@@ -1,10 +1,13 @@
 import BigNumber from 'bignumber.js'
-import { useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { Chain, Token, chains, tokens } from 'utils/config'
 import { useTokenPricesStore } from 'store/TokenPrices'
 import { GetBalanceError, useSecretNetworkClientStore } from 'store/secretNetworkClient'
 import { faKey } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { toCurrencyString } from 'utils/commons'
+import { APIContext } from 'context/APIContext'
+import { useUserPreferencesStore } from 'store/UserPreferences'
 
 interface IProps {
   token: Token
@@ -32,21 +35,18 @@ export default function BalanceUI({
   const { getValuePrice, priceMapping } = useTokenPricesStore()
 
   const [balance, setBalance] = useState<number | string>(null)
-  const [usdPriceString, setUsdPriceString] = useState<string>(null)
+  const [currencyPriceString, setCurrencyPriceString] = useState<string>(null)
   const tokenName = (isSecretToken ? 's' : '') + token.name
 
   useEffect(() => {
     if (chain === chains['Secret Network']) {
       setBalance(null)
       const newBalance = getBalance(token, isSecretToken)
-      console.debug(newBalance)
       if (newBalance !== null && newBalance instanceof BigNumber) {
         setBalance(newBalance.toNumber())
       } else if (newBalance === ('viewingKeyError' as GetBalanceError)) {
-        console.debug('Viewing Key not found.')
         setBalance('viewingKeyError' as GetBalanceError)
       } else if (newBalance === ('GenericFetchError' as GetBalanceError)) {
-        console.debug('Viewing Key not found.')
         setBalance('GenericFetchError' as GetBalanceError)
       } else {
         setBalance(null)
@@ -56,7 +56,6 @@ export default function BalanceUI({
     if (chain !== chains['Secret Network']) {
       setBalance(null)
       const IbcBalance = getIbcBalance(chain, token)
-      console.debug(IbcBalance)
       if (IbcBalance !== null && IbcBalance instanceof BigNumber) {
         setBalance(IbcBalance.toNumber())
       } else {
@@ -66,9 +65,19 @@ export default function BalanceUI({
     }
   }, [balanceMapping, ibcBalanceMapping, token, isSecretToken, chain])
 
+  const { convertCurrency } = useContext(APIContext)
+  const { currency } = useUserPreferencesStore()
+
   useEffect(() => {
     if (priceMapping !== null && balance !== null) {
-      setUsdPriceString(getValuePrice(token, BigNumber(balance)))
+      const valuePrice = getValuePrice(token, BigNumber(balance))
+      if (valuePrice) {
+        const priceInCurrency = convertCurrency('USD', valuePrice, currency)
+        if (priceInCurrency !== null) {
+          setCurrencyPriceString(toCurrencyString(priceInCurrency, currency))
+        }
+      } else {
+      }
     }
   }, [priceMapping, token, balance])
 
@@ -94,7 +103,7 @@ export default function BalanceUI({
               ).toLocaleString(undefined, {
                 maximumFractionDigits: token.decimals
               })} ${isSecretToken && !token.is_snip20 ? 's' : ''}${token.name} ${
-                token.coingecko_id && usdPriceString ? ` (${usdPriceString})` : ''
+                token.coingecko_id && currencyPriceString ? ` (${currencyPriceString})` : ''
               }`}</span>
             </>
           )}

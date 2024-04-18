@@ -1,3 +1,4 @@
+import { Currency } from 'types/Currency'
 import { tokens, snips, ICSTokens } from './config'
 import mixpanel from 'mixpanel-browser'
 
@@ -5,8 +6,6 @@ export const viewingKeyErrorString = '🧐'
 
 export const faucetURL = 'https://faucet.secretsaturn.net/claim'
 export const faucetAddress = 'secret1tq6y8waegggp4fv2fcxk3zmpsmlfadyc7lsd69'
-
-export const dAppsURL = 'https://secretadmin.scrt.network/api/ecosystem-dapps?populate=deep&pagination[pageSize]=1000'
 
 export const batchQueryContractAddress = 'secret17gnlxnwux0szd7qhl90ym8lw22qvedjz4v09dm'
 export const batchQueryCodeHash = '72a09535b77b76862f7b568baf1ddbe158a2e4bbd0f0879c69ada9b398e31c1f'
@@ -110,6 +109,15 @@ export const toUsdString = (number: number) => {
   }).format(number)
 }
 
+export const toCurrencyString = (number: number, currency: Currency = 'USD') => {
+  const fractionDigits = number !== null && number !== undefined ? getFractionDigits(number) : 0
+  return new Intl.NumberFormat(undefined, {
+    style: 'currency',
+    currency: currency,
+    ...fractionDigits
+  }).format(number)
+}
+
 const COUNT_ABBRS = ['', 'K', 'M', 'B', 't', 'q', 's', 'S', 'o', 'n', 'd', 'U', 'D', 'T', 'Qt', 'Qd', 'Sd', 'St']
 
 export function formatNumber(count: number, decimals = 2) {
@@ -130,7 +138,7 @@ export const shuffleArray = (array: any[]) => {
 }
 
 export const sortDAppsArray = (array: any[]) => {
-  const sortedArray = [...array].sort((a, b) => a.attributes.name.localeCompare(b.attributes.name))
+  const sortedArray = [...array].sort((a, b) => a.name.localeCompare(b.name))
   return sortedArray
 }
 
@@ -260,3 +268,26 @@ export const appsJsonLdSchema = [
     creator: 'Secret Jupiter, Secret Saturn'
   }
 ]
+
+// maps currency to coingecoCurrency for API use, see /types/Currency.ts
+export const coinGeckoCurrencyMap: { [C in Currency]: string } = {
+  USD: 'usd',
+  EUR: 'eur',
+  JPY: 'jpy',
+  GBP: 'gbp',
+  AUD: 'aud',
+  CAD: 'cad',
+  CHF: 'chf'
+}
+
+export const currencySymbols: { [key in Currency]: string } = {
+  USD: '$',
+  EUR: '€',
+  JPY: '¥',
+  GBP: '£',
+  AUD: 'A$',
+  CAD: 'C$',
+  CHF: 'CHF'
+}
+
+export const debugModeOverride: boolean = import.meta.env.VITE_DEBUG_MODE === 'true'

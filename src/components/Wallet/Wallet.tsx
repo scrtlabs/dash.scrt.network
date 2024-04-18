@@ -1,8 +1,15 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 import CopyToClipboard from 'react-copy-to-clipboard'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCopy, faDesktop, faMobileScreen, faWallet, faXmark } from '@fortawesome/free-solid-svg-icons'
-import { useHoverOutside } from 'utils/useHoverOutside'
+import {
+  faArrowRightFromBracket,
+  faCopy,
+  faDesktop,
+  faGear,
+  faMobileScreen,
+  faWallet,
+  faXmark
+} from '@fortawesome/free-solid-svg-icons'
 import { trackMixPanelEvent } from 'utils/commons'
 import { useSecretNetworkClientStore } from 'store/secretNetworkClient'
 import { scrtToken } from 'utils/tokens'
@@ -12,8 +19,42 @@ import { ManageBalances } from './ManageBalances/ManageBalances'
 import Button from '../UI/Button/Button'
 import BalanceUI from 'components/BalanceUI'
 import { NotificationService } from 'services/notification.service'
+import {
+  autoUpdate,
+  useDismiss,
+  useFloating,
+  useInteractions,
+  useRole,
+  offset,
+  flip,
+  shift,
+  useHover,
+  safePolygon
+} from '@floating-ui/react'
+import Badge from 'components/UI/Badge/Badge'
+import StatusDot from './StatusDot'
 
 function Wallet() {
+  const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false)
+
+  const { refs, floatingStyles, context } = useFloating({
+    open: isMenuOpen,
+    onOpenChange: setIsMenuOpen,
+    placement: 'bottom-end', // Adjust this based on your desired position
+    middleware: [offset(10), flip(), shift()],
+    whileElementsMounted: autoUpdate
+  })
+
+  const hover = useHover(context, {
+    handleClose: safePolygon({
+      requireIntent: true
+    })
+  })
+  const dismiss = useDismiss(context)
+  const role = useRole(context)
+
+  const { getFloatingProps } = useInteractions([hover, dismiss, role])
+
   const {
     isConnected,
     walletAddress,
@@ -25,8 +66,6 @@ function Wallet() {
     setIsConnectWalletModalOpen
   } = useSecretNetworkClientStore()
 
-  const [isMenuVisible, setIsMenuVisible] = useState<boolean>(false)
-
   const handleManageViewingKeys = () => {
     setIsManageViewingkeysModalOpen(true)
   }
@@ -37,9 +76,6 @@ function Wallet() {
       handleConnectWallet()
     }
   }, [])
-
-  const keplrRef = useRef()
-  useHoverOutside(keplrRef, () => setIsMenuVisible(false))
 
   function CopyableAddress() {
     return (
@@ -80,44 +116,50 @@ function Wallet() {
 
   function ContextMenu() {
     return (
-      <div className="absolute pt-10 right-4 z-40 top-[3.7rem]">
-        <div className="bg-white dark:bg-neutral-800 border text-xs border-neutral-200 dark:border-neutral-700 p-4 w-auto rounded-lg flex-row space-y-4">
-          {/* Copyable Wallet Address */}
-          <CopyableAddress />
+      <div className="shadow backdrop-blur-md bg-white/40 dark:bg-neutral-800/40 border text-xs border-neutral-200 dark:border-neutral-700 px-4 py-6 w-auto rounded-2xl flex-row space-y-4">
+        {/* Copyable Wallet Address */}
+        <CopyableAddress />
 
-          {/* Balances */}
-          <Balances />
+        {/* Balances */}
+        <Balances />
 
-          {/* Disconnect Button */}
-          <Button onClick={disconnectWallet} color="red" size="small" className="w-full">
-            Disconnect Wallet
-          </Button>
-        </div>
+        <hr className="h-px my-8 bg-neutral-200 border-0 dark:bg-neutral-700" />
+
+        {/* Disconnect Button */}
+        <Button onClick={disconnectWallet} color="red" size="small" className="w-full">
+          <FontAwesomeIcon icon={faArrowRightFromBracket} className="mr-2" />
+          Disconnect Wallet
+        </Button>
       </div>
-    )
-  }
-
-  function GreenAnimatedDot() {
-    return (
-      <span className="flex relative h-2 w-2">
-        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-1/2"></span>
-        <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
-      </span>
     )
   }
 
   const [isManageViewingkeysModalOpen, setIsManageViewingkeysModalOpen] = useState<boolean>(false)
 
   function handleConnectWallet() {
-    if (window.keplr && window.leap) {
+    if (window.keplr && window.getEnigmaUtils && window.getOfflineSignerOnlyAmino && window.leap) {
       setIsConnectWalletModalOpen(true)
-    } else if (window.keplr && !window.leap) {
+    } else if (window.keplr && window.getEnigmaUtils && window.getOfflineSignerOnlyAmino && !window.leap) {
       connectWallet('keplr')
-    } else if (!window.keplr && window.leap) {
+    } else if (!(window.keplr && window.getEnigmaUtils && window.getOfflineSignerOnlyAmino) && window.leap) {
       connectWallet('leap')
     } else {
       setIsGetWalletModalOpen(true)
     }
+  }
+
+  function X() {
+    return (
+      <div className="w-full sm:w-auto rounded-lg px-4 py-3 bg-white dark:bg-neutral-700 hover:dark:bg-neutral-600 select-none cursor-pointer transition-colors">
+        <div className="flex items-center font-semibold text-sm">
+          <div className="flex items-center">
+            <StatusDot status={isConnected ? 'connected' : 'disconnected'} />
+            <FontAwesomeIcon icon={faWallet} className="ml-3 mr-3" />
+            Wallet
+          </div>
+        </div>
+      </div>
+    )
   }
 
   return (
@@ -160,11 +202,11 @@ function Wallet() {
             }}
           >
             <img src="/img/assets/starshell.svg" className="flex-initial w-7 h-7" />
-            <span className="flex-1 font-medium flex items-center">
-              Starshell{' '}
-              <span className="text-xs ml-2 font-semibold py-0.5 px-1.5 rounded bg-gradient-to-r from-cyan-600 to-purple-600">
-                recommended
-              </span>
+            <span className="flex-1 font-medium flex items-center gap-2">
+              Starshell
+              <Badge pill color="green">
+                Recommended
+              </Badge>
             </span>
             <span className="text-white dark:text-white bg-blue-500 dark:bg-blue-500 group-hover:bg-blue-600 dark:group-hover:bg-blue-400 transition-colors px-3 py-1.5 rounded text-xs font-semibold">
               <FontAwesomeIcon icon={faDesktop} className="mr-1" />
@@ -173,7 +215,7 @@ function Wallet() {
             </span>
           </a>
           <a
-            href="https://www.leapwallet.io"
+            href="https://leapwallet.io/download"
             target="_blank"
             className="group p-5 flex items-center gap-2.5 hover:bg-neutral-300 dark:hover:bg-neutral-700 transition-colors"
             onClick={() => {
@@ -189,7 +231,7 @@ function Wallet() {
             </span>
           </a>
           <a
-            href="https://fina.cash/wallet"
+            href="https://fina.cash/wallet#download"
             target="_blank"
             className="group p-5 flex items-center gap-2.5 hover:bg-neutral-300 dark:hover:bg-neutral-700 transition-colors"
             onClick={() => {
@@ -204,7 +246,7 @@ function Wallet() {
             </span>
           </a>
           <a
-            href="https://chrome.google.com/webstore/detail/keplr/dmkamcknogkgcdfhhbddcghachkejeap?hl=en"
+            href="https://www.keplr.app/download"
             target="_blank"
             className="group p-5 flex items-center gap-2.5 hover:bg-neutral-300 dark:hover:bg-neutral-700 transition-colors"
             onClick={() => {
@@ -222,33 +264,24 @@ function Wallet() {
       </Modal>
 
       {isConnected ? (
-        <div ref={keplrRef}>
-          {isMenuVisible && <ContextMenu />}
-          <div
-            className="w-full sm:w-auto rounded-lg px-4 py-3 bg-white dark:bg-neutral-700 hover:dark:bg-neutral-600 select-none cursor-pointer transition-colors"
-            onMouseOver={() => setIsMenuVisible(true)}
-            ref={keplrRef}
-          >
-            <div className="flex items-center font-semibold text-sm">
-              <div className="flex items-center">
-                <GreenAnimatedDot />
-                <FontAwesomeIcon icon={faWallet} className="ml-3 mr-2" />
-                {`My Wallet`}
-              </div>
+        <div onClick={() => setIsMenuOpen(true)} ref={refs.setReference}>
+          {isMenuOpen && (
+            <div
+              className="w-full sm:w-auto px-4 sm:px-0 z-40"
+              ref={refs.setFloating}
+              style={floatingStyles}
+              {...getFloatingProps()}
+            >
+              <ContextMenu />
             </div>
+          )}
+          <div>
+            <X />
           </div>
         </div>
       ) : (
-        <button
-          onClick={() => handleConnectWallet()}
-          className="w-full sm:w-auto rounded-lg px-4 py-3 bg-white dark:bg-neutral-700 hover:dark:bg-neutral-600 select-none cursor-pointer transition-colors"
-        >
-          <div className="flex items-center font-semibold text-sm">
-            <div className="flex items-center">
-              <FontAwesomeIcon icon={faWallet} className="mr-2" />
-              {`Connect Wallet`}
-            </div>
-          </div>
+        <button onClick={() => handleConnectWallet()}>
+          <X />
         </button>
       )}
     </>

@@ -14,9 +14,9 @@ import {
   ArcElement
 } from 'chart.js'
 import { Doughnut } from 'react-chartjs-2'
-import { ThemeContext } from 'context/ThemeContext'
 import { trackMixPanelEvent } from 'utils/commons'
 import { Link } from 'react-router-dom'
+import { useUserPreferencesStore } from 'store/UserPreferences'
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, ArcElement, LineElement, Title, ChartTooltip, Legend)
 
@@ -30,12 +30,14 @@ export default function StakingChart() {
     communityPool,
     stkdSCRTTokenSupply,
     sSCRTTokenSupply,
-    IBCTokenSupply
+    IBCTokenSupply,
+    burnedTokenSupply
   } = useContext(APIContext)
 
-  const { theme } = useContext(ThemeContext)
+  const { theme } = useUserPreferencesStore()
 
-  const [otherToken, setOtherToken] = useState(null)
+  const [otherToken, setOtherToken] = useState<number>()
+  const [adjustedTotalSupply, setAdjustedTotalSupply] = useState<number>()
 
   const [data, setData] = useState({
     labels: [''],
@@ -56,38 +58,32 @@ export default function StakingChart() {
       communityPool &&
       sSCRTTokenSupply &&
       stkdSCRTTokenSupply &&
-      IBCTokenSupply
-    ) {
-      setOtherToken(totalSupply - bondedToken - notBondedToken - communityPool - IBCTokenSupply - sSCRTTokenSupply)
-    }
-  }, [bondedToken, notBondedToken, totalSupply, communityPool, sSCRTTokenSupply, stkdSCRTTokenSupply, IBCTokenSupply])
-
-  const createLabel = (label: string, value: number) => {
-    return `${label}: ${formatNumber(value, 2)}`
-  }
-
-  useEffect(() => {
-    if (
-      bondedToken &&
-      notBondedToken &&
-      totalSupply &&
-      communityPool &&
-      sSCRTTokenSupply &&
-      stkdSCRTTokenSupply &&
       IBCTokenSupply &&
-      otherToken
+      burnedTokenSupply
     ) {
+      const otherToken =
+        totalSupply -
+        bondedToken -
+        notBondedToken -
+        communityPool -
+        IBCTokenSupply -
+        sSCRTTokenSupply -
+        burnedTokenSupply
+      setAdjustedTotalSupply(totalSupply - burnedTokenSupply)
+      setOtherToken(otherToken)
+
       const dataValues = [
         { label: 'Staked', value: bondedToken - stkdSCRTTokenSupply },
         { label: 'Liquid', value: otherToken },
         { label: 'sSCRT', value: sSCRTTokenSupply },
         { label: 'stkd-SCRT', value: stkdSCRTTokenSupply },
         { label: 'Staked (not bonded)', value: notBondedToken },
+        { label: 'IBC out', value: IBCTokenSupply },
         { label: 'Community Pool', value: communityPool },
-        { label: 'IBC out', value: IBCTokenSupply }
+        { label: 'Burned', value: burnedTokenSupply }
       ]
 
-      const backgroundColors = ['#06b6d4', '#8b5cf6', '#FF4500', '#008080', '#32CD32', '#ff8800', '#FF1493']
+      const backgroundColors = ['#06b6d4', '#8b5cf6', '#FF4500', '#008080', '#32CD32', '#FF1493', '#ff8800', '#000000']
 
       setData({
         labels: dataValues.map((item) => createLabel(item.label, item.value)),
@@ -108,8 +104,12 @@ export default function StakingChart() {
     sSCRTTokenSupply,
     stkdSCRTTokenSupply,
     IBCTokenSupply,
-    otherToken
+    burnedTokenSupply
   ])
+
+  const createLabel = (label: string, value: number) => {
+    return `${label}: ${formatNumber(value, 2)} SCRT`
+  }
 
   const centerText = {
     id: 'centerText',
@@ -121,13 +121,13 @@ export default function StakingChart() {
 
       ctx.save()
 
-      ctx.font = 'bold 0.9rem sans-serif'
+      ctx.font = 'bold 0.9rem Montserrat'
       ctx.fillStyle = theme === 'dark' ? '#fff' : '#000'
       ctx.textAlign = 'center'
       ctx.fillText(`Total Supply`, width / 2, height / 2.25 + top)
       ctx.restore()
 
-      ctx.font = '400 2rem sans-serif'
+      ctx.font = '400 1.5rem Montserrat'
       ctx.fillStyle = theme === 'dark' ? '#fff' : '#000'
       ctx.textAlign = 'center'
       ctx.fillText(`${formatNumber(totalSupply, 2)}`, width / 2, height / 1.75 + top)
@@ -163,13 +163,7 @@ export default function StakingChart() {
         enabled: true,
         callbacks: {
           label: function (context: any) {
-            let label = context.dataset.label || ''
-            if (label) {
-              label += ': '
-            }
-            if (context.parsed !== null) {
-              label += `${formatNumber(context.parsed, 2)} SCRT`
-            }
+            let label = ''
             return label
           }
         }
@@ -182,16 +176,17 @@ export default function StakingChart() {
       <div>
         {/* Chart */}
         <div className="w-full h-[250px] xl:h-[300px]">
-          {totalSupply != undefined &&
-          bondedToken != undefined &&
-          notBondedToken != undefined &&
-          otherToken != undefined &&
-          sSCRTTokenSupply != undefined &&
-          stkdSCRTTokenSupply != undefined &&
-          otherToken != undefined &&
-          data != undefined &&
-          options != undefined &&
-          centerText != undefined ? (
+          {adjustedTotalSupply !== undefined &&
+          bondedToken !== undefined &&
+          notBondedToken !== undefined &&
+          otherToken !== undefined &&
+          sSCRTTokenSupply !== undefined &&
+          stkdSCRTTokenSupply !== undefined &&
+          communityPool !== undefined &&
+          IBCTokenSupply !== undefined &&
+          burnedTokenSupply !== undefined &&
+          options !== undefined &&
+          centerText !== undefined ? (
             <Doughnut
               id="stakingChartDoughnut"
               data={data}
