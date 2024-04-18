@@ -13,6 +13,7 @@ import {
   toBase64,
   toUtf8
 } from 'secretjs'
+import { Fee, LCDClient, SignerInfo } from '@terra-money/terra.js'
 import { FeeGrantStatus } from 'types/FeeGrantStatus'
 import { IbcMode } from 'types/IbcMode'
 import { sleep, faucetAddress, randomPadding, allTokens, suggestChainToWallet } from 'utils/commons'
@@ -47,7 +48,7 @@ async function getChainSecretJs(chain: Chain): Promise<SecretNetworkClient> {
   try {
     await window.wallet.enable(chain_id)
   } catch {
-    await suggestChainToWallet(window.wallet, chain.chain_id)
+    await suggestChainToWallet(window.wallet, chain_id)
     await window.wallet.enable(chain_id)
   }
 
@@ -101,7 +102,112 @@ async function performIbcDeposit(
     let tx: TxResponse
     if (!['Evmos', 'Injective', 'Dymension'].includes(props.chain.chain_name) && !token.is_ics20) {
       // Regular cosmos chain (not ethermint signing)
-      if (token.name === 'SCRT' || token.is_snip20) {
+      if (token.name === 'ampLUNA') {
+        //@ts-ignore
+        const contractMsg = new (Terra as any).MsgExecuteContract(
+          sourceChainNetworkClient.address,
+          token.deposits
+            .find((deposit: Deposit) => deposit.chain_name === props.chain.chain_name)
+            .denom.substring('cw20:'.length),
+          {
+            send: {
+              amount: amount.toString(),
+              msg: toBase64(
+                toUtf8(
+                  JSON.stringify({
+                    channel: deposit_channel_id,
+                    remote_address: 'secret198lmmh2fpj3weqhjczptkzl9pxygs23yn6dsev',
+                    timeout: 900,
+                    memo: JSON.stringify({
+                      wasm: {
+                        contract: 'secret198lmmh2fpj3weqhjczptkzl9pxygs23yn6dsev',
+                        msg: {
+                          wrap_deposit: {
+                            snip20_address: token.address,
+                            snip20_code_hash: token.code_hash,
+                            recipient_address: props.secretNetworkClient.address
+                          }
+                        }
+                      }
+                    })
+                  })
+                )
+              ),
+              channel: deposit_channel_id,
+              timeout: 900,
+              contract: 'terra1e0mrzy8077druuu42vs0hu7ugguade0cj65dgtauyaw4gsl4kv0qtdf2au', //cw20-ics20 contract on Terra
+              remote_address: 'secret198lmmh2fpj3weqhjczptkzl9pxygs23yn6dsev'
+            }
+          },
+          []
+        )
+
+        //@ts-ignore
+        const terra = new Terra.LCDClient({
+          URL: props.chain.lcd,
+          chainID: props.chain.chain_id,
+          isClassic: false
+        })
+
+        const terraSigner = window.wallet.getOfflineSignerOnlyAmino(props.chain.chain_id)
+        const accounts = await terraSigner.getAccounts()
+
+        // Create the transaction options with the corrected fee structure
+        const txOptions = {
+          msgs: [contractMsg],
+          //@ts-ignore
+          fee: new Terra.Fee(deposit_gas),
+          memo: '' // Add a memo if needed, or keep it as an empty string
+        }
+
+        const { account } = await (
+          await fetch(`${selectedSource.lcd}/cosmos/auth/v1beta1/accounts/${sourceChainNetworkClient.address}`)
+        ).json()
+
+        const txBody = await terra.tx.create(
+          [{ address: accounts[0].address, sequenceNumber: account.sequence }],
+          txOptions
+        )
+
+        const signerInfo = {
+          public_key: { '@type': account.pub_key['@type'], key: account.pub_key.key },
+          mode_info: {
+            single: {
+              //@ts-ignore
+              mode: Terra.SignMode.SIGN_MODE_DIRECT
+            }
+          },
+          sequence: account.sequence
+        }
+        //@ts-ignore
+        txBody.auth_info.signer_infos[0] = Terra.SignerInfo.fromData(signerInfo)
+
+        // Sign the tx
+        const sig = await window.wallet?.signDirect(
+          selectedSource.chain_id,
+          sourceChainNetworkClient.address,
+          {
+            bodyBytes: txBody.body.toBytes(),
+            authInfoBytes: txBody.auth_info.toBytes(),
+            chainId: selectedSource.chain_id,
+            accountNumber: new Long(Number(account.account_number))
+          },
+          { isEthereum: false }
+        )
+
+        // Encode the Terra tx to a TxRaw protobuf binary
+        const txRaw = TxRaw.fromPartial({
+          body_bytes: sig!.signed.bodyBytes,
+          auth_info_bytes: sig!.signed.authInfoBytes,
+          signatures: [fromBase64(sig!.signature.signature)]
+        })
+        const txBytes = TxRaw.encode(txRaw).finish()
+
+        // Broadcast the tx to Terra
+        tx = await sourceChainNetworkClient.tx.broadcastSignedTx(txBytes, {
+          broadcastMode: BroadcastMode.Sync
+        })
+      } else if (token.name === 'SCRT' || token.is_snip20) {
         const routing = useSKIPRouting
           ? await getSkipIBCRouting(
               selectedSource,

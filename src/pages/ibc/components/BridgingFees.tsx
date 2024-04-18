@@ -51,7 +51,6 @@ export default function BridgingFees(props: IProps) {
         getValuePrice(props.token, BigNumber(axelarTransferFee.amount)),
         currency
       )
-      console.log(priceInCurrency)
       if (priceInCurrency !== null) {
         setPriceString(toCurrencyString(priceInCurrency, currency))
       } else {

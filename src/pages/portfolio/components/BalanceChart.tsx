@@ -147,9 +147,6 @@ export default function BalanceChart() {
     const valuePrice = getValuePrice(token, balance)
     if (valuePrice !== null) {
       const priceInCurrency = convertCurrency('USD', valuePrice, currency)
-      console.log(priceInCurrency)
-      console.log(valuePrice)
-      console.log(currency)
       if (priceInCurrency !== null) {
         return `${BigNumber(balance).dividedBy(`1e${token.decimals}`).toNumber()} ${label} (${toCurrencyString(
           priceInCurrency,
