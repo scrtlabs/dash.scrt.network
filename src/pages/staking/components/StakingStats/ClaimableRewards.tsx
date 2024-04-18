@@ -5,7 +5,6 @@ import { StakingContext } from 'pages/staking/Staking'
 import { useContext, useEffect, useState } from 'react'
 import { useTokenPricesStore } from 'store/TokenPrices'
 import { useUserPreferencesStore } from 'store/UserPreferences'
-import { Nullable } from 'types/Nullable'
 import { toCurrencyString } from 'utils/commons'
 import { scrtToken } from 'utils/tokens'
 
@@ -15,7 +14,7 @@ function ClaimableRewards() {
   const { getValuePrice, priceMapping } = useTokenPricesStore()
   const { currency } = useUserPreferencesStore()
 
-  const [claimableRewardsInUsd, setClaimableRewardsInUsd] = useState<string>('')
+  const [claimableRewardsInCurrency, setClaimableRewardsInCurrency] = useState<string>('')
 
   useEffect(() => {
     if (priceMapping !== null && totalPendingRewards !== null) {
@@ -23,7 +22,7 @@ function ClaimableRewards() {
       if (valuePrice) {
         const priceInCurrency = convertCurrency('USD', valuePrice, currency)
         if (priceInCurrency !== null) {
-          setClaimableRewardsInUsd(toCurrencyString(priceInCurrency, currency))
+          setClaimableRewardsInCurrency(toCurrencyString(priceInCurrency, currency))
         }
       } else {
       }
@@ -43,8 +42,8 @@ function ClaimableRewards() {
           <span className="text-xs font-semibold text-neutral-400"> SCRT</span>
         </div>
         <div className="text-xs text-neutral-400 font-medium font-mono">
-          {true ? (
-            <>{claimableRewardsInUsd}</>
+          {claimableRewardsInCurrency ? (
+            <>{claimableRewardsInCurrency}</>
           ) : (
             <div className="animate-pulse inline-block">
               <div className="h-5 w-12 bg-white dark:bg-neutral-700 rounded-xl"></div>
