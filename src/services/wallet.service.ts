@@ -342,7 +342,6 @@ async function fetchIbcChainBalances(
       (deposit: any) => deposit.chain_name === props.chain.chain_name
     )[0]?.denom
 
-    console.log(AmpLUNADenom)
     const url = `${props.chain.lcd}/cosmwasm/wasm/v1/contract/${AmpLUNADenom?.substring(
       'cw20:'.length
     )}/smart/${toBase64(toUtf8(`{"balance":{"address":"${sourceChain.address}"}}`))}`
