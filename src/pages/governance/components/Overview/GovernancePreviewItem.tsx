@@ -24,7 +24,7 @@ function GovernancePreviewItem(props: Props) {
   return (
     <Link
       to={`/governance/id/${props.id}`}
-      className="bg-white group-hover:bg-white/95 dark:bg-neutral-800 group-hover:dark:bg-neutral-800/95 p-4 flex flex-col h-full rounded-xl overflow-hidden"
+      className="bg-white dark:bg-neutral-800 p-4 flex flex-col h-full rounded-xl overflow-hidden dark:hover:bg-neutral-700 hover:bg-neutral-200 transition-colors"
     >
       {/* Status */}
       <div className="mb-2 flex items-center gap-4">
@@ -33,7 +33,7 @@ function GovernancePreviewItem(props: Props) {
       </div>
       {/* Title */}
       {props.title && <div className="font-bold">{`#${props.id}: ${props.title}`}</div>}
-      {/* VotingChart / Bar */}
+      {/* Voting Chart Bar */}
       <div className="mt-auto">
         <VotingChart totalBondedStake={props.totalBondedStake} votes={props.votes} />
       </div>
