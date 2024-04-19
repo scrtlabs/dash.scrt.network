@@ -1,9 +1,28 @@
 const API_BASE_URL = 'https://lcd.mainnet.secretsaturn.net'
 
-const GET_PROPOSALS_API_URL = API_BASE_URL + '/cosmos/gov/v1beta1/proposals?pagination.reverse=true'
-
 async function getProposals() {
+  const GET_PROPOSALS_API_URL = API_BASE_URL + '/cosmos/gov/v1beta1/proposals?pagination.reverse=true'
+
   return fetch(GET_PROPOSALS_API_URL)
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error('Network response was not ok')
+      }
+      return response.json()
+    })
+    .then((data) => {
+      return data
+    })
+    .catch((error) => {
+      console.error('There was a problem with your fetch operation:', error)
+      throw error
+    })
+}
+
+async function getProposal(id: string) {
+  const GET_PROPOSAL_API_URL = API_BASE_URL + `/cosmos/gov/v1beta1/proposals/${id}`
+
+  return fetch(GET_PROPOSAL_API_URL)
     .then((response) => {
       if (!response.ok) {
         throw new Error('Network response was not ok')
@@ -29,5 +48,6 @@ const spamProposalIds: number[] = [
 
 export default {
   getProposals,
+  getProposal,
   spamProposalIds
 }
