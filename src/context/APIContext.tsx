@@ -22,7 +22,8 @@ const APIContextProvider = ({ children }: any) => {
   const [stkdSCRTTokenSupply, setStkdSCRTTokenSupply] = useState(Number)
   const [IBCTokenSupply, setIBCTokenSupply] = useState(Number)
   const [burnedTokenSupply, setBurnedTokenSupply] = useState(Number)
-  const [currencyPricing, setCurrencyPricing] = useState<any>({
+
+  const defaultCurrencyPricing = {
     usd: 1,
     eur: 0.924884,
     jpy: 149.82,
@@ -30,7 +31,8 @@ const APIContextProvider = ({ children }: any) => {
     aud: 1.52,
     cad: 1.35,
     chf: 0.879271
-  })
+  }
+  const [currencyPricing, setCurrencyPricing] = useState<any>(defaultCurrencyPricing)
 
   const [inflation, setInflation] = useState(0)
 
@@ -205,7 +207,9 @@ const APIContextProvider = ({ children }: any) => {
   }
 
   useEffect(() => {
-    fetchCurrencyPricingURL()
+    if (currencyPricing == defaultCurrencyPricing) {
+      fetchCurrencyPricingURL()
+    }
   }, [])
 
   useEffect(() => {
