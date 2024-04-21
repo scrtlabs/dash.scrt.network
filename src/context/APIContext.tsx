@@ -188,7 +188,8 @@ const APIContextProvider = ({ children }: any) => {
   }, [])
 
   const COINGECKO_CURRENCIES_URL =
-    'https://api.coingecko.com/api/v3/simple/price?ids=usd&vs_currencies=eur,jpy,gbp,aud,cad,chf'
+    //'https://api.coingecko.com/api/v3/simple/price?ids=usd&vs_currencies=eur,jpy,gbp,aud,cad,chf'
+    'https://priceapibuffer.secretsaturn.net/getCurrencies'
   const fetchCurrencyPricingURL = () => {
     fetch(COINGECKO_CURRENCIES_URL)
       .then((response) => {

@@ -27,7 +27,8 @@ export const useTokenPricesStore = create<TokenPricesState>()((set, get) => ({
 
     console.log(coinGeckoIdsString)
 
-    fetch(`https://api.coingecko.com/api/v3/simple/price?ids=${coinGeckoIdsString}&vs_currencies=USD`)
+    // fetch(`https://api.coingecko.com/api/v3/simple/price?ids=${coinGeckoIdsString}&vs_currencies=USD`)
+    fetch(`https://priceapibuffer.secretsaturn.net/getPrices`)
       .then((resp) => resp.json())
       .then((result: { [coingecko_id: string]: { usd: number } }) => {
         const formattedPrices = Object.entries(result).map(([coingecko_id, { usd }]) => ({
@@ -35,10 +36,11 @@ export const useTokenPricesStore = create<TokenPricesState>()((set, get) => ({
           priceUsd: usd
         }))
         prices = formattedPrices
-
+        console.log(result)
+        console.log(prices)
         const priceMapping = new Map<Token, number>()
         allTokens.forEach((token: Token) => {
-          priceMapping.set(token, prices.find((price: any) => price.coingecko_id === token.coingecko_id).priceUsd)
+          priceMapping.set(token, prices.find((price: any) => price.coingecko_id === token.coingecko_id)?.priceUsd)
         })
 
         set({
