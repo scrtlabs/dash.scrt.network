@@ -36,8 +36,6 @@ export const useTokenPricesStore = create<TokenPricesState>()((set, get) => ({
           priceUsd: usd
         }))
         prices = formattedPrices
-        console.log(result)
-        console.log(prices)
         const priceMapping = new Map<Token, number>()
         allTokens.forEach((token: Token) => {
           priceMapping.set(token, prices.find((price: any) => price.coingecko_id === token.coingecko_id)?.priceUsd)

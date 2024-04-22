@@ -69,14 +69,13 @@ export default function BalanceUI({
   const { currency } = useUserPreferencesStore()
 
   useEffect(() => {
-    if (priceMapping !== null && balance !== null) {
-      const valuePrice = getValuePrice(token, BigNumber(balance))
+    const valuePrice = getValuePrice(token, BigNumber(balance))
+    if (valuePrice !== null && balance !== null) {
       if (valuePrice) {
         const priceInCurrency = convertCurrency('USD', valuePrice, currency)
         if (priceInCurrency !== null) {
           setCurrencyPriceString(toCurrencyString(priceInCurrency, currency))
         }
-      } else {
       }
     }
   }, [priceMapping, token, balance])
