@@ -290,7 +290,8 @@ const APIContextProvider = ({ children }: any) => {
       })
 
     // Coingecko Market Price, Market Cap & Volume
-    const COINGECKO_API_URL_MARKET_CAP_VOLUME = `https://api.coingecko.com/api/v3/simple/price?ids=secret&vs_currencies=usd,eur,jpy,gbp,aud,cad,chf&include_market_cap=true&include_24hr_vol=true&include_24hr_change=true` // includes all supported currencies
+    //const COINGECKO_API_URL_MARKET_CAP_VOLUME = `https://api.coingecko.com/api/v3/simple/price?ids=secret&vs_currencies=usd,eur,jpy,gbp,aud,cad,chf&include_market_cap=true&include_24hr_vol=true&include_24hr_change=true` // includes all supported currencies
+    const COINGECKO_API_URL_MARKET_CAP_VOLUME = 'https://priceapibuffer.secretsaturn.net/getVolume'
     fetch(COINGECKO_API_URL_MARKET_CAP_VOLUME)
       .then((response) => response.json())
       .then((response) => {
