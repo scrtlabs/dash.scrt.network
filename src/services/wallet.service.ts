@@ -335,8 +335,9 @@ async function fetchIbcChainBalances(
       balance: token ? new BigNumber(balance.amount) : new BigNumber(0)
     })
   })
+
   //exception for AMPLuna
-  if (allTokens.find((token: Token) => token.name === 'ampLUNA')) {
+  if (allTokens.find((token: Token) => token.name === 'ampLUNA') && props.chain.chain_name == 'Terra') {
     const AmpLUNAToken = allTokens.find((token: Token) => token.name === 'ampLUNA')
     const AmpLUNADenom = AmpLUNAToken.deposits.filter(
       (deposit: any) => deposit.chain_name === props.chain.chain_name

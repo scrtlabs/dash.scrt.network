@@ -1,5 +1,3 @@
-import { Tooltip } from '@mui/material'
-import React from 'react'
 import {
   coinFromString,
   coinsFromString,
@@ -81,7 +79,7 @@ export type SupportedMessage =
   | MsgSend
   | MsgSetWithdrawAddress
   | MsgStoreCode
-  | MsgSubmitProposal
+  // | MsgSubmitProposal
   | MsgTransfer
   | MsgUndelegate
   | MsgUnjail
@@ -234,7 +232,7 @@ export const MessageDefinitions: {
       }
     },
     converter: (input: any) => {
-      input.initial_delegation = coinFromString(input.amount)
+      input.initial_delegation = coinFromString(input.initial_delegation)
       return new MsgCreateValidator(input)
     }
   },

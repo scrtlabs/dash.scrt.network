@@ -22,7 +22,8 @@ const APIContextProvider = ({ children }: any) => {
   const [stkdSCRTTokenSupply, setStkdSCRTTokenSupply] = useState(Number)
   const [IBCTokenSupply, setIBCTokenSupply] = useState(Number)
   const [burnedTokenSupply, setBurnedTokenSupply] = useState(Number)
-  const [currencyPricing, setCurrencyPricing] = useState<any>({
+
+  const defaultCurrencyPricing = {
     usd: 1,
     eur: 0.924884,
     jpy: 149.82,
@@ -30,7 +31,8 @@ const APIContextProvider = ({ children }: any) => {
     aud: 1.52,
     cad: 1.35,
     chf: 0.879271
-  })
+  }
+  const [currencyPricing, setCurrencyPricing] = useState<any>(defaultCurrencyPricing)
 
   const [inflation, setInflation] = useState(0)
 
@@ -186,7 +188,8 @@ const APIContextProvider = ({ children }: any) => {
   }, [])
 
   const COINGECKO_CURRENCIES_URL =
-    'https://api.coingecko.com/api/v3/simple/price?ids=usd&vs_currencies=eur,jpy,gbp,aud,cad,chf'
+    //'https://api.coingecko.com/api/v3/simple/price?ids=usd&vs_currencies=eur,jpy,gbp,aud,cad,chf'
+    'https://priceapibuffer.secretsaturn.net/getCurrencies'
   const fetchCurrencyPricingURL = () => {
     fetch(COINGECKO_CURRENCIES_URL)
       .then((response) => {
@@ -205,7 +208,9 @@ const APIContextProvider = ({ children }: any) => {
   }
 
   useEffect(() => {
-    fetchCurrencyPricingURL()
+    if (currencyPricing == defaultCurrencyPricing) {
+      fetchCurrencyPricingURL()
+    }
   }, [])
 
   useEffect(() => {
@@ -285,7 +290,8 @@ const APIContextProvider = ({ children }: any) => {
       })
 
     // Coingecko Market Price, Market Cap & Volume
-    const COINGECKO_API_URL_MARKET_CAP_VOLUME = `https://api.coingecko.com/api/v3/simple/price?ids=secret&vs_currencies=usd,eur,jpy,gbp,aud,cad,chf&include_market_cap=true&include_24hr_vol=true&include_24hr_change=true` // includes all supported currencies
+    //const COINGECKO_API_URL_MARKET_CAP_VOLUME = `https://api.coingecko.com/api/v3/simple/price?ids=secret&vs_currencies=usd,eur,jpy,gbp,aud,cad,chf&include_market_cap=true&include_24hr_vol=true&include_24hr_change=true` // includes all supported currencies
+    const COINGECKO_API_URL_MARKET_CAP_VOLUME = 'https://priceapibuffer.secretsaturn.net/getVolume'
     fetch(COINGECKO_API_URL_MARKET_CAP_VOLUME)
       .then((response) => response.json())
       .then((response) => {
