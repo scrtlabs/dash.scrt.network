@@ -1,6 +1,5 @@
 import { createContext, useEffect, useState } from 'react'
 import { useUserPreferencesStore } from 'store/UserPreferences'
-import { Nullable } from 'types/Nullable'
 import { Theme } from 'types/Theme'
 
 const ThemeContext = createContext(null)

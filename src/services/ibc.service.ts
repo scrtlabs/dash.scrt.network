@@ -13,7 +13,6 @@ import {
   toBase64,
   toUtf8
 } from 'secretjs'
-import { Fee, LCDClient, SignerInfo } from '@terra-money/terra.js'
 import { FeeGrantStatus } from 'types/FeeGrantStatus'
 import { IbcMode } from 'types/IbcMode'
 import { sleep, faucetAddress, randomPadding, allTokens, suggestChainToWallet } from 'utils/commons'
