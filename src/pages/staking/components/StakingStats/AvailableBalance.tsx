@@ -38,7 +38,7 @@ function AvailableBalance() {
             <>{new BigNumber(scrtBalance).dividedBy(`1e${scrtToken.decimals}`).toNumber()}</>
           ) : (
             <div className="animate-pulse inline-block">
-              <div className="h-5 w-24 bg-white dark:bg-neutral-800 rounded-xl"></div>
+              <div className="h-5 w-24 bg-white dark:bg-neutral-700 rounded-xl"></div>
             </div>
           )}
         </span>
@@ -49,7 +49,7 @@ function AvailableBalance() {
           <>{availableBalanceInCurrency}</>
         ) : (
           <div className="animate-pulse inline-block">
-            <div className="h-5 w-12 bg-white dark:bg-neutral-800 rounded-xl"></div>
+            <div className="h-5 w-12 bg-white dark:bg-neutral-700 rounded-xl"></div>
           </div>
         )}
       </div>

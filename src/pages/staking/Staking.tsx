@@ -67,13 +67,11 @@ function Staking() {
   //Rewards for each delegator
   const [delegationTotalRewards, setDelegationTotalRewards] = useState<any>()
 
-  function getTotalPendingRewards() {
-    return BigNumber(delegationTotalRewards?.total[0]?.amount)
-      .dividedBy(`1e${scrtToken.decimals}`)
-      .toFormat(scrtToken.decimals)
-  }
-
-  const totalPendingRewards = getTotalPendingRewards()
+  const totalPendingRewards = delegationTotalRewards?.total[0]?.amount
+    ? BigNumber(delegationTotalRewards?.total[0]?.amount)
+        .dividedBy(`1e${scrtToken.decimals}`)
+        .toFormat(scrtToken.decimals)
+    : null
 
   const getTotalAmountStaked = () => {
     return delegatorDelegations
