@@ -28,7 +28,7 @@ export const allTokens = tokens.concat(snips).concat(ICSTokens)
  * */
 export const randomPadding = (): string => {
   enum length {
-    MAX = 15,
+    MAX = 30,
     MIN = 8
   }
   const paddingLength = Math.floor(Math.random() * (length.MAX - length.MIN + 1)) + length.MIN

@@ -12,7 +12,7 @@ function StakingStats() {
   return (
     <div className="max-w-6xl mx-auto px-4">
       <div className="grid grid-cols-12">
-        {/* Staking Amount */}
+        {/* Total Staked */}
         <div className="col-span-12 md:col-span-3 lg:col-span-12 xl:col-span-3 py-4">
           <StakingAmount stakedAmount={stakedAmount} />
         </div>

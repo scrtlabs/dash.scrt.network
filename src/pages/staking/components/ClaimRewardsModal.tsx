@@ -14,21 +14,12 @@ interface Props {
 }
 
 export default function ClaimRewardsModal(props: Props) {
-  const [generalSuccessMessage, setGeneralSuccessMessage] = useState<String>('')
-  const [generalErrorMessage, setGeneralErrorMessage] = useState<String>('')
-
   const { secretNetworkClient, scrtBalance, feeGrantStatus, requestFeeGrant, isConnected } =
     useSecretNetworkClientStore()
 
-  const { delegatorDelegations, delegationTotalRewards } = useContext(StakingContext)
+  const { delegatorDelegations, totalPendingRewards } = useContext(StakingContext)
 
   if (!props.open) return null
-
-  const totalPendingRewards = () => {
-    return BigNumber(delegationTotalRewards?.total[0]?.amount)
-      .dividedBy(`1e${scrtToken.decimals}`)
-      .toFormat(scrtToken.decimals)
-  }
 
   async function handleClaimRewards() {
     await StakingService.performClaimStakingRewards({
@@ -51,7 +42,7 @@ export default function ClaimRewardsModal(props: Props) {
           <div className="my-4 text-lg text-center text-black dark:text-white">
             <div className="font-bold">Claimable Amount</div>
             <div className="mt-2 text-emerald-500 dark:text-emerald-500">
-              <span className="font-medium font-mono">{totalPendingRewards()}</span>
+              <span className="font-medium font-mono">{totalPendingRewards}</span>
               <span className="text-sm">{` SCRT`}</span>
             </div>
           </div>

@@ -18,13 +18,16 @@ function ClaimableRewards() {
 
   useEffect(() => {
     if (priceMapping !== null && totalPendingRewards !== null) {
-      const valuePrice = getValuePrice(scrtToken, BigNumber(totalPendingRewards))
+      const valuePrice = getValuePrice(
+        scrtToken,
+        BigNumber(totalPendingRewards).multipliedBy(`1e${scrtToken.decimals}`)
+      )
       if (valuePrice) {
         const priceInCurrency = convertCurrency('USD', valuePrice, currency)
         if (priceInCurrency !== null) {
           setClaimableRewardsInCurrency(toCurrencyString(priceInCurrency, currency))
         }
-      } else {
+        setClaimableRewardsInCurrency(toCurrencyString(valuePrice, currency))
       }
     }
   }, [priceMapping, totalPendingRewards])
@@ -38,8 +41,16 @@ function ClaimableRewards() {
       <div className="flex-1">
         <div className="font-bold mb-2">Claimable Rewards</div>
         <div className="mb-1">
-          <span className="font-medium font-mono">{totalPendingRewards}</span>
-          <span className="text-xs font-semibold text-neutral-400"> SCRT</span>
+          {totalPendingRewards !== null ? (
+            <>
+              <span className="font-medium font-mono">{totalPendingRewards}</span>
+              <span className="text-xs font-semibold text-neutral-400"> SCRT</span>
+            </>
+          ) : (
+            <div className="animate-pulse inline-block">
+              <div className="h-5 w-12 bg-white dark:bg-neutral-700 rounded-xl"></div>
+            </div>
+          )}
         </div>
         <div className="text-xs text-neutral-400 font-medium font-mono">
           {claimableRewardsInCurrency ? (

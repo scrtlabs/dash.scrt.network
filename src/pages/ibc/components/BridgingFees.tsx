@@ -46,13 +46,9 @@ export default function BridgingFees(props: IProps) {
 
   useEffect(() => {
     if (priceMapping !== null && axelarTransferFee !== undefined) {
-      const priceInCurrency = convertCurrency(
-        'USD',
-        getValuePrice(props.token, BigNumber(axelarTransferFee.amount)),
-        currency
-      )
-      if (priceInCurrency !== null) {
-        setPriceString(toCurrencyString(priceInCurrency, currency))
+      const valuePrice = getValuePrice(props.token, BigNumber(axelarTransferFee.amount))
+      if (valuePrice !== null) {
+        setPriceString(toCurrencyString(valuePrice, currency))
       } else {
         setPriceString('')
       }

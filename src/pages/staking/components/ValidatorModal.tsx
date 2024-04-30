@@ -328,15 +328,13 @@ const ValidatorModal = (props: Props) => {
                   </span>
                   <span className="text-xs font-semibold text-neutral-500 dark:text-neutral-400"> SCRT</span>
                 </div>
-                <div className="font-semibold text-neutral-400 mt-0.5 text-sm">
-                  <div>
-                    {toCurrencyString(
-                      new BigNumber(scrtBalance!)
-                        .dividedBy(`1e${scrtToken.decimals}`)
-                        .multipliedBy(Number(currentPrice))
-                        .toNumber()
-                    )}
-                  </div>
+                <div className="text-xs text-neutral-500 dark:text-neutral-400 font-medium font-mono">
+                  {toCurrencyString(
+                    new BigNumber(scrtBalance!)
+                      .dividedBy(`1e${scrtToken.decimals}`)
+                      .multipliedBy(Number(currentPrice))
+                      .toNumber()
+                  )}
                 </div>
               </div>
             </div>

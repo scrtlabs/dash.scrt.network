@@ -13,32 +13,29 @@ function AvailableBalance() {
   const { currency } = useUserPreferencesStore()
   const { convertCurrency } = useContext(APIContext)
 
-  const scrtBalanceNumber = Number(scrtBalance) * 0.000001
-
   const { getValuePrice, priceMapping } = useTokenPricesStore()
 
   const [availableBalanceInCurrency, setAvailableBalanceInCurrency] = useState<string>('')
 
   useEffect(() => {
-    if (priceMapping !== null && scrtBalanceNumber !== null) {
-      const valuePrice = getValuePrice(scrtToken, BigNumber(scrtBalanceNumber))
+    if (priceMapping !== null && scrtBalance !== null) {
+      const valuePrice = getValuePrice(scrtToken, BigNumber(scrtBalance))
       if (valuePrice) {
         const priceInCurrency = convertCurrency('USD', valuePrice, currency)
         if (priceInCurrency !== null) {
           setAvailableBalanceInCurrency(toCurrencyString(priceInCurrency, currency))
         }
-      } else {
       }
     }
-  }, [priceMapping, scrtBalanceNumber])
+  }, [priceMapping, scrtBalance])
 
   return (
     <div className="flex-1">
       <div className="font-bold mb-2">Available Balance</div>
       <div className="mb-1">
         <span className="font-medium font-mono">
-          {scrtBalanceNumber ? (
-            <>{scrtBalanceNumber}</>
+          {scrtBalance !== null ? (
+            <>{new BigNumber(scrtBalance).dividedBy(`1e${scrtToken.decimals}`).toNumber()}</>
           ) : (
             <div className="animate-pulse inline-block">
               <div className="h-5 w-24 bg-white dark:bg-neutral-800 rounded-xl"></div>

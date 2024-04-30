@@ -73,10 +73,7 @@ export default function BalanceUI({
     const valuePrice = getValuePrice(token, BigNumber(balance))
     if (valuePrice !== null && balance !== null) {
       if (valuePrice) {
-        const priceInCurrency = convertCurrency('USD', valuePrice, currency)
-        if (priceInCurrency !== null) {
-          setCurrencyPriceString(toCurrencyString(priceInCurrency, currency))
-        }
+        setCurrencyPriceString(toCurrencyString(valuePrice, currency))
       }
     }
   }, [priceMapping, token, balance])
