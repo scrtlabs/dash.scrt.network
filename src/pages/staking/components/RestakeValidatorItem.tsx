@@ -74,7 +74,7 @@ const RestakeValidatorItem = (props: Props) => {
   }
 
   return (
-    <>
+    <div>
       {/* Item */}
 
       {isAboveRestakeThreshold(props.stakedAmount) ? (
@@ -125,7 +125,7 @@ const RestakeValidatorItem = (props: Props) => {
             <div className="description text-xs text-gray-500 mb-2 text-right">Your stake</div>
             <div>
               <div>
-                <span className="font-semibold">{stakedAmountString}</span>
+                <span className="font-medium font-mono">{stakedAmountString}</span>
                 <span className="text-xs font-semibold text-neutral-400"> SCRT</span>
               </div>
             </div>
@@ -140,7 +140,7 @@ const RestakeValidatorItem = (props: Props) => {
           arrow
         >
           <button
-            className={`w-full flex items-center text-left py-8 sm:py-4 gap-4 px-4 bg-gray-500/30 dark:bg-gray-500/30 opacity-60`}
+            className={`first:rounded-t-lg last:rounded-b-lg w-full flex items-center text-left py-8 sm:py-4 gap-4 px-4 even:bg-gray-100 odd:bg-white dark:even:bg-neutral-900 dark:odd:bg-neutral-800 even:border-x dark:even:border-neutral-800 even:border-white dark:hover:bg-neutral-750 hover:bg-gray-300 transition-colors`}
           >
             <span className={`border rounded-full border-gray-400 relative text-gray-200 bg-gray-800`}>
               {/* Adjust width and height for the outer container */}
@@ -187,7 +187,7 @@ const RestakeValidatorItem = (props: Props) => {
           </button>
         </Tooltip>
       )}
-    </>
+    </div>
   )
 }
 

@@ -1,7 +1,7 @@
 import { useFormik } from 'formik'
 import { useEffect } from 'react'
 import { sendSchema } from 'pages/send/sendSchema'
-import { GetBalanceError, useSecretNetworkClientStore } from 'store/secretNetworkClient'
+import { useSecretNetworkClientStore } from 'store/secretNetworkClient'
 import Select, { components } from 'react-select'
 import { Token, chains } from 'utils/config'
 import BalanceUI from 'components/BalanceUI'
@@ -17,6 +17,7 @@ import toast from 'react-hot-toast'
 import { useSearchParams } from 'react-router-dom'
 import { Nullable } from 'types/Nullable'
 import { useUserPreferencesStore } from 'store/UserPreferences'
+import { GetBalanceError } from 'types/GetBalanceError'
 
 export default function SendForm() {
   const { debugMode } = useUserPreferencesStore()
@@ -250,10 +251,12 @@ export default function SendForm() {
         {/* Title Bar */}
         <div className="flex justify-between items-center mb-2">
           <span className="flex-1 font-semibold mb-2 text-center sm:text-left">
-            Recipient
             <Tooltip title={`The wallet address you want to transfer your assets to.`} placement="right" arrow>
-              <span className="ml-2 mt-1 text-neutral-600 dark:text-neutral-400 hover:text-black dark:hover:text-white transition-colors cursor-pointer">
-                <FontAwesomeIcon icon={faInfoCircle} />
+              <span className="group">
+                Recipient
+                <span className="ml-2 mt-1 text-neutral-600 dark:text-neutral-400 group-hover:text-black dark:group-hover:text-white transition-colors cursor-pointer">
+                  <FontAwesomeIcon icon={faInfoCircle} />
+                </span>
               </span>
             </Tooltip>
           </span>
@@ -290,10 +293,12 @@ export default function SendForm() {
         {/* Title Bar */}
         <div className="flex justify-between items-center mb-2">
           <span className="flex-1 font-semibold mb-2 text-center sm:text-left">
-            Memo (optional)
             <Tooltip title={`Add a message to your transaction. Beware: Messages are public!`} placement="right" arrow>
-              <span className="ml-2 mt-1 text-neutral-600 dark:text-neutral-400 hover:text-black dark:hover:text-white transition-colors cursor-pointer">
-                <FontAwesomeIcon icon={faInfoCircle} />
+              <span className="group">
+                Memo (optional)
+                <span className="ml-2 mt-1 text-neutral-600 dark:text-neutral-400 group-hover:text-black dark:group-hover:text-white transition-colors cursor-pointer">
+                  <FontAwesomeIcon icon={faInfoCircle} />
+                </span>
               </span>
             </Tooltip>
           </span>

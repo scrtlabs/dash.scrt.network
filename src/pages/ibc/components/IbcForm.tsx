@@ -1,7 +1,7 @@
 import { useFormik } from 'formik'
 import { ibcSchema } from './ibcSchema'
-import { GetBalanceError, useSecretNetworkClientStore } from 'store/secretNetworkClient'
-import { useContext, useEffect, useState } from 'react'
+import { useSecretNetworkClientStore } from 'store/secretNetworkClient'
+import { useEffect, useState } from 'react'
 import { IbcMode } from 'types/IbcMode'
 import Select, { components } from 'react-select'
 import { Chain, Token, chains } from 'utils/config'
@@ -20,6 +20,7 @@ import { useSearchParams } from 'react-router-dom'
 import { NotificationService } from 'services/notification.service'
 import { useUserPreferencesStore } from 'store/UserPreferences'
 import { debugModeOverride } from 'utils/commons'
+import { GetBalanceError } from 'types/GetBalanceError'
 
 export default function IbcForm() {
   // URL params

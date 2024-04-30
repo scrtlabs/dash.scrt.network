@@ -28,7 +28,7 @@ export const allTokens = tokens.concat(snips).concat(ICSTokens)
  * */
 export const randomPadding = (): string => {
   enum length {
-    MAX = 15,
+    MAX = 30,
     MIN = 8
   }
   const paddingLength = Math.floor(Math.random() * (length.MAX - length.MIN + 1)) + length.MIN
@@ -291,3 +291,5 @@ export const currencySymbols: { [key in Currency]: string } = {
 }
 
 export const debugModeOverride: boolean = import.meta.env.VITE_DEBUG_MODE === 'true'
+
+export const isMac = /Mac/i.test(navigator.userAgent)

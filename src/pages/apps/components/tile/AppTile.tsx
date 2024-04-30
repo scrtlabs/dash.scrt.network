@@ -27,9 +27,9 @@ const AppTile = (props: Props) => {
       href={props.url || '#'}
       target={props.url ? '_blank' : '_self'}
       onClick={handleClick}
-      className="group col-span-12 sm:col-span-6 lg:col-span-6 xl:col-span-4 2xl:col-span-3 hover:bg-gradient-to-r from-cyan-500 to-purple-500 p-0.5 rounded-xl hover:shadow-2xl hover:shadow-cyan-500/40"
+      className="group col-span-12 sm:col-span-6 lg:col-span-6 xl:col-span-4 2xl:col-span-3"
     >
-      <div className="border border-neutral-200 dark:border-neutral-700 bg-white group-hover:bg-white/95 dark:bg-neutral-800 group-hover:dark:bg-neutral-800/95 p-4 flex flex-col h-full rounded-xl overflow-hidden text-center sm:text-left">
+      <div className="bg-white transition-all group-hover:relative bottom-0 group-hover:bottom-1 group-hover:bg-white/95 dark:bg-neutral-800 group-hover:dark:bg-neutral-750 p-4 flex flex-col h-full rounded-xl overflow-hidden text-center sm:text-left">
         {/* Image */}
         {props.image && (
           <div className="flex-initial">

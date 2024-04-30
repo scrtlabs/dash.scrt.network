@@ -21,9 +21,9 @@ import { Chain, Deposit, Token, Withdraw, chains } from 'utils/config'
 import Long from 'long'
 import { TxRaw } from 'secretjs/dist/protobuf/cosmos/tx/v1beta1/tx'
 import mixpanel from 'mixpanel-browser'
-import { GetBalanceError } from 'store/secretNetworkClient'
 import { AccountData } from 'secretjs/dist/wallet_amino'
 import { NotificationService } from './notification.service'
+import { GetBalanceError } from 'types/GetBalanceError'
 
 const sdk: AxelarAssetTransfer = new AxelarAssetTransfer({
   environment: Environment.MAINNET

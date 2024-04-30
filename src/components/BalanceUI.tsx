@@ -2,12 +2,13 @@ import BigNumber from 'bignumber.js'
 import { useContext, useEffect, useState } from 'react'
 import { Chain, Token, chains, tokens } from 'utils/config'
 import { useTokenPricesStore } from 'store/TokenPrices'
-import { GetBalanceError, useSecretNetworkClientStore } from 'store/secretNetworkClient'
+import { useSecretNetworkClientStore } from 'store/secretNetworkClient'
 import { faKey } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { toCurrencyString } from 'utils/commons'
 import { APIContext } from 'context/APIContext'
 import { useUserPreferencesStore } from 'store/UserPreferences'
+import { GetBalanceError } from 'types/GetBalanceError'
 
 interface IProps {
   token: Token
@@ -72,10 +73,7 @@ export default function BalanceUI({
     const valuePrice = getValuePrice(token, BigNumber(balance))
     if (valuePrice !== null && balance !== null) {
       if (valuePrice) {
-        const priceInCurrency = convertCurrency('USD', valuePrice, currency)
-        if (priceInCurrency !== null) {
-          setCurrencyPriceString(toCurrencyString(priceInCurrency, currency))
-        }
+        setCurrencyPriceString(toCurrencyString(valuePrice, currency))
       }
     }
   }, [priceMapping, token, balance])
@@ -97,7 +95,7 @@ export default function BalanceUI({
           balance !== ('GenericFetchError' as GetBalanceError) &&
           tokenName && (
             <>
-              <span className="font-medium">{` ${Number(
+              <span className="font-medium font-mono">{` ${Number(
                 BigNumber(balance).dividedBy(`1e${token.decimals}`)
               ).toLocaleString(undefined, {
                 maximumFractionDigits: token.decimals
