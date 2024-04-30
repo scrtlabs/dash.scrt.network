@@ -110,7 +110,7 @@ export const toUsdString = (number: number) => {
 }
 
 export const toCurrencyString = (number: number, currency: Currency = 'USD') => {
-  const fractionDigits = getFractionDigits(number)
+  const fractionDigits = number !== null && number !== undefined ? getFractionDigits(number) : 0
   return new Intl.NumberFormat(undefined, {
     style: 'currency',
     currency: currency,

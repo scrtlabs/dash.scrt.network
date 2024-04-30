@@ -59,6 +59,9 @@ function Powertools() {
       if (hasEmptyTypeAndContent) {
         throw Error('Messages must not be empty!')
       }
+      if (!secretjs) {
+        throw Error('Secretjs is not initialized')
+      }
       const txMessages = messages.map((message) => {
         return MessageDefinitions[message.type].converter(JSON.parse(message.content), prefix, denom)
       })
@@ -74,9 +77,11 @@ function Powertools() {
         NotificationService.notify('Transaction sent successfully!', 'success', toastId)
       } else {
         NotificationService.notify(`Transaction failed to send with error: ${tx.rawLog}`, 'error', toastId)
+        console.error(`Transaction failed to send with error: ${tx.rawLog}`, 'error', toastId)
       }
     } catch (error: any) {
       NotificationService.notify(`An error occurred: ${error.message}`, 'error', toastId)
+      console.error(error)
     } finally {
     }
   }
