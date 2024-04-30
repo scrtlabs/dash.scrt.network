@@ -15,7 +15,6 @@ export const ConnectWalletModal = (props: IConnectWalletModalProps) => {
 
   const isLeapAPIAvailable = window.leap ? true : false
   const isKeplrAPIAvailable = window.keplr ? true : false
-  console.log(window.keplr)
 
   // connection? => close modal
   useEffect(() => {

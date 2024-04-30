@@ -145,7 +145,6 @@ const ValidatorModal = (props: Props) => {
                   size="sm"
                   className="ml-3 mr-1 text-neutral-500 dark:group-hover:text-white group-hover:text-black"
                 />
-                <span className="text-neutral-500 dark:group-hover:text-white group-hover:text-black">Website</span>
               </a>
             )}
           </div>
@@ -156,9 +155,9 @@ const ValidatorModal = (props: Props) => {
               </div>
             )}
           </div>
-          <div className="text-neutral-400 font-medium text-sm">
+          <div className="text-neutral-500 dark:text-neutral-400 font-medium text-sm">
             <div className="commission font-semibold">
-              Commission {(selectedValidator?.commission?.commission_rates?.rate * 100).toFixed(2)}% | APR{' '}
+              Commission {(selectedValidator?.commission?.commission_rates?.rate * 100)?.toFixed(2)}% | APR{' '}
               {formatNumber(realYield, 2)}%
             </div>
           </div>
@@ -168,137 +167,38 @@ const ValidatorModal = (props: Props) => {
   }
 
   return (
-    <>
-      <Modal title={customTitle()} onClose={props.onClose} isOpen={props.open} size="lg">
-        <div className="max-h-[80vh] overflow-y-auto">
-          {/* Header */}
+    <Modal title={customTitle()} onClose={props.onClose} isOpen={props.open} size="lg">
+      <div className="max-h-[80vh] overflow-y-auto">
+        {/* Header */}
 
-          {/* Body */}
-          <div className="grid grid-cols-12 gap-4">
-            {selectedValidator?.description?.details && (
-              <div className="col-span-12">
-                <div className="text-sm rounded-xl p-4 text-center sm:text-left bg-gray-200 dark:bg-neutral-700 text-black dark:text-white">
-                  <div className="font-semibold text-black dark:text-white mb-1">Description</div>
-                  <div className="italic text-neutral-600 dark:text-neutral-400">
-                    {selectedValidator?.description?.details}
-                  </div>
+        {/* Body */}
+        <div className="grid grid-cols-12 gap-4">
+          {selectedValidator?.description?.details && (
+            <div className="col-span-12">
+              <div className="text-sm rounded-xl p-4 text-center sm:text-left bg-gray-100 dark:bg-neutral-800 text-black dark:text-white">
+                <div className="font-bold mb-2">Description</div>
+                <div className="text-sm font-medium font-mono text-neutral-500 dark:text-neutral-400">
+                  {selectedValidator?.description?.details}
                 </div>
               </div>
-            )}
+            </div>
+          )}
 
-            {view === null && (
-              <>
-                <div className="col-span-12">
-                  {/* Properties of the Val */}
-                  <div className="p-8 rounded-xl grid grid-cols-12 gap-6 bg-gray-200 dark:bg-neutral-700 text-black dark:text-white">
-                    {/* First Item */}
-                    {selectedValidator?.description?.identity && (
-                      <div className="col-span-12 sm:col-span-6 flex flex-col gap-0.5 text-neutral-800 dark:text-neutral-300 font-semibold">
-                        <div className="text-xs">Identity</div>
-                        <div className="text-sm">
-                          {`${selectedValidator?.description?.identity}  `}
+          {view === null && (
+            <>
+              <div className="col-span-12">
+                {/* Properties of the Val */}
+                <div className="p-8 rounded-xl grid grid-cols-12 gap-6 bg-gray-100 dark:bg-neutral-800 text-black dark:text-white">
+                  {/* First Item */}
+                  {selectedValidator?.description?.identity && (
+                    <div className="col-span-12 sm:col-span-6 flex flex-col text-neutral-800 dark:text-neutral-300 font-semibold">
+                      <div className="font-bold mb-2">Identity</div>
+                      <div className="text-sm font-medium font-mono text-neutral-500 dark:text-neutral-400">
+                        {`${selectedValidator?.description?.identity}  `}
 
-                          <CopyToClipboard
-                            text={selectedValidator?.description?.identity}
-                            onCopy={() => NotificationService.notify('Identity copied to Clipboard!', 'success')}
-                          >
-                            <Tooltip title={'Copy to clipboard'} placement="bottom" arrow>
-                              <button
-                                type="button"
-                                className="text-neutral-500 hover:text-neutral-800 dark:text-neutral-400 dark:hover:text-neutral-300 transition-colors"
-                              >
-                                <FontAwesomeIcon icon={faCopy} />
-                              </button>
-                            </Tooltip>
-                          </CopyToClipboard>
-                        </div>
-                      </div>
-                    )}
-
-                    {/* Second Item */}
-                    {selectedValidator?.description?.security_contact && (
-                      <div className="col-span-12 sm:col-span-6 flex flex-col gap-0.5 text-neutral-800 dark:text-neutral-300 font-semibold">
-                        <div className="text-xs">Contact</div>
-                        <div className="text-sm">
-                          {`${selectedValidator?.description?.security_contact}  `}
-
-                          <CopyToClipboard
-                            text={selectedValidator?.description?.security_contact}
-                            onCopy={() => {
-                              NotificationService.notify('Validator security contact copied to clipboard!', 'success')
-                            }}
-                          >
-                            <Tooltip title={'Copy to clipboard'} placement="bottom" arrow>
-                              <button
-                                type="button"
-                                onClick={() => NotificationService.notify('Copied to Clipboard!', 'success')}
-                                className="text-neutral-500 hover:text-neutral-800 dark:text-neutral-400 dark:hover:text-neutral-300 transition-colors"
-                              >
-                                <FontAwesomeIcon icon={faCopy} />
-                              </button>
-                            </Tooltip>
-                          </CopyToClipboard>
-                        </div>
-                      </div>
-                    )}
-                    {/* Third Item */}
-                    <div className="col-span-12 sm:col-span-6 flex flex-col gap-0.5 text-neutral-800 dark:text-neutral-300 font-semibold">
-                      <div className="text-xs">Staked Tokens</div>
-                      <div className="text-sm">{`${formatNumber(selectedValidator?.tokens / 1e6, 2)} SCRT`}</div>
-                    </div>
-                    {/* Fourth Item */}
-
-                    <div className="col-span-12 sm:col-span-6 flex flex-col gap-0.5 text-neutral-800 dark:text-neutral-300 font-semibold">
-                      <div className="text-xs">Self Delegation</div>
-                      <div className="text-sm">
-                        {' '}
-                        {validatorSelfDelegation && `${formatNumber(validatorSelfDelegation / 1e6, 2)} SCRT`}{' '}
-                        {!validatorSelfDelegation && (
-                          <div className="animate-pulse bg-neutral-700/40 rounded col-span-2 w-16 h-8"></div>
-                        )}
-                      </div>
-                    </div>
-                    {/* Fifth Item */}
-                    <div className="col-span-12 sm:col-span-6 flex flex-col gap-0.5 text-neutral-800 dark:text-neutral-300 font-semibold">
-                      <div className="text-xs">Operator Address</div>
-                      <div className="text-sm">
-                        {`${
-                          selectedValidator?.operator_address.slice(0, 15) +
-                          '...' +
-                          selectedValidator?.operator_address.slice(-15)
-                        } `}
                         <CopyToClipboard
-                          text={selectedValidator?.operator_address}
-                          onCopy={() => NotificationService.notify('Operator Address copied to Clipboard!', 'success')}
-                        >
-                          <Tooltip title={'Copy to clipboard'} placement="bottom" arrow>
-                            <button className="text-neutral-500 hover:text-neutral-800 dark:text-neutral-400 dark:hover:text-neutral-300 transition-colors">
-                              <FontAwesomeIcon icon={faCopy} />
-                            </button>
-                          </Tooltip>
-                        </CopyToClipboard>
-                      </div>
-                    </div>
-                    {/* Sixth Item */}
-                    <div className="col-span-12 sm:col-span-6 flex flex-col gap-0.5 text-neutral-800 dark:text-neutral-300 font-semibold">
-                      <div className="text-xs">Validator Address</div>
-
-                      <div className="text-sm">
-                        <a
-                          href={`${chains['Secret Network'].explorer_account}${validatorAddressToSelfDelegatorAddress(
-                            selectedValidator?.operator_address
-                          )}`}
-                          target="_blank"
-                        >
-                          {`${
-                            validatorAddressToSelfDelegatorAddress(selectedValidator?.operator_address).slice(0, 15) +
-                            '...' +
-                            validatorAddressToSelfDelegatorAddress(selectedValidator?.operator_address).slice(-15)
-                          } `}
-                        </a>
-                        <CopyToClipboard
-                          text={validatorAddressToSelfDelegatorAddress(selectedValidator?.operator_address)}
-                          onCopy={() => NotificationService.notify('Validator Address copied to Clipboard!', 'success')}
+                          text={selectedValidator?.description?.identity}
+                          onCopy={() => NotificationService.notify('Identity copied to Clipboard!', 'success')}
                         >
                           <Tooltip title={'Copy to clipboard'} placement="bottom" arrow>
                             <button
@@ -311,49 +211,154 @@ const ValidatorModal = (props: Props) => {
                         </CopyToClipboard>
                       </div>
                     </div>
-                  </div>
-                </div>
-              </>
-            )}
+                  )}
 
-            {/* Available to Stake */}
-            {isConnected && (
-              <div className="col-span-12 md:col-span-6 rounded-xl p-6 text-center sm:text-left bg-gray-200 dark:bg-neutral-700 text-black dark:text-white">
-                <div className="font-semibold text-black dark:text-white mb-2">Available to Stake</div>
-                <div className="font-semibold">
-                  {new BigNumber(scrtBalance!).dividedBy(`1e${scrtToken.decimals}`).toFormat()}
-                  <span className="text-neutral-400 text-xs">{` SCRT`}</span>
-                </div>
-                <div className="font-semibold text-neutral-400 mt-0.5 text-sm">
-                  <div>
-                    {toCurrencyString(
-                      new BigNumber(scrtBalance!)
-                        .dividedBy(`1e${scrtToken.decimals}`)
-                        .multipliedBy(Number(currentPrice))
-                        .toNumber()
-                    )}
+                  {/* Second Item */}
+                  {selectedValidator?.description?.security_contact && (
+                    <div className="col-span-12 sm:col-span-6 flex flex-col text-neutral-800 dark:text-neutral-300 font-semibold">
+                      <div className="font-bold mb-2">Contact</div>
+                      <div className="text-sm font-medium font-mono text-neutral-500 dark:text-neutral-400">
+                        {`${selectedValidator?.description?.security_contact}  `}
+
+                        <CopyToClipboard
+                          text={selectedValidator?.description?.security_contact}
+                          onCopy={() => {
+                            NotificationService.notify('Validator security contact copied to clipboard!', 'success')
+                          }}
+                        >
+                          <Tooltip title={'Copy to clipboard'} placement="bottom" arrow>
+                            <button
+                              type="button"
+                              onClick={() => NotificationService.notify('Copied to Clipboard!', 'success')}
+                              className="text-neutral-500 hover:text-neutral-800 dark:text-neutral-400 dark:hover:text-neutral-300 transition-colors"
+                            >
+                              <FontAwesomeIcon icon={faCopy} />
+                            </button>
+                          </Tooltip>
+                        </CopyToClipboard>
+                      </div>
+                    </div>
+                  )}
+                  {/* Third Item */}
+                  <div className="col-span-12 sm:col-span-6 flex flex-col text-neutral-800 dark:text-neutral-300 font-semibold">
+                    <div className="font-bold mb-2">Staked Tokens</div>
+                    <div className="text-sm font-medium font-mono text-neutral-500 dark:text-neutral-400">{`${formatNumber(
+                      selectedValidator?.tokens / 1e6,
+                      2
+                    )} SCRT`}</div>
+                  </div>
+                  {/* Fourth Item */}
+
+                  <div className="col-span-12 sm:col-span-6 flex flex-col text-neutral-800 dark:text-neutral-300 font-semibold">
+                    <div className="font-bold mb-2">Self Delegation</div>
+                    <div className="text-sm font-medium font-mono text-neutral-500 dark:text-neutral-400">
+                      {' '}
+                      {validatorSelfDelegation && `${formatNumber(validatorSelfDelegation / 1e6, 2)} SCRT`}{' '}
+                      {!validatorSelfDelegation && (
+                        <div className="animate-pulse bg-neutral-700/40 rounded col-span-2 w-16 h-8"></div>
+                      )}
+                    </div>
+                  </div>
+                  {/* Fifth Item */}
+                  <div className="col-span-12 sm:col-span-6 flex flex-col text-neutral-800 dark:text-neutral-300 font-semibold">
+                    <div className="font-bold mb-2">Operator Address</div>
+                    <div className="text-sm font-medium font-mono text-neutral-500 dark:text-neutral-400">
+                      {`${
+                        selectedValidator?.operator_address.slice(0, 15) +
+                        '...' +
+                        selectedValidator?.operator_address.slice(-15)
+                      } `}
+                      <CopyToClipboard
+                        text={selectedValidator?.operator_address}
+                        onCopy={() => NotificationService.notify('Operator Address copied to Clipboard!', 'success')}
+                      >
+                        <Tooltip title={'Copy to clipboard'} placement="bottom" arrow>
+                          <button className="text-neutral-500 dark:text-neutral-400 hover:text-neutral-800 dark:hover:text-neutral-300 transition-colors">
+                            <FontAwesomeIcon icon={faCopy} />
+                          </button>
+                        </Tooltip>
+                      </CopyToClipboard>
+                    </div>
+                  </div>
+                  {/* Sixth Item */}
+                  <div className="col-span-12 sm:col-span-6 flex flex-col text-neutral-800 dark:text-neutral-300 font-semibold">
+                    <div className="font-bold mb-2">Validator Address</div>
+
+                    <div className="text-sm font-medium font-mono text-neutral-500 dark:text-neutral-400">
+                      <a
+                        href={`${chains['Secret Network'].explorer_account}${validatorAddressToSelfDelegatorAddress(
+                          selectedValidator?.operator_address
+                        )}`}
+                        target="_blank"
+                      >
+                        {`${
+                          validatorAddressToSelfDelegatorAddress(selectedValidator?.operator_address).slice(0, 15) +
+                          '...' +
+                          validatorAddressToSelfDelegatorAddress(selectedValidator?.operator_address).slice(-15)
+                        } `}
+                      </a>
+                      <CopyToClipboard
+                        text={validatorAddressToSelfDelegatorAddress(selectedValidator?.operator_address)}
+                        onCopy={() => NotificationService.notify('Validator Address copied to Clipboard!', 'success')}
+                      >
+                        <Tooltip title={'Copy to clipboard'} placement="bottom" arrow>
+                          <button
+                            type="button"
+                            className="text-neutral-500 hover:text-neutral-800 dark:text-neutral-400 dark:hover:text-neutral-300 transition-colors"
+                          >
+                            <FontAwesomeIcon icon={faCopy} />
+                          </button>
+                        </Tooltip>
+                      </CopyToClipboard>
+                    </div>
                   </div>
                 </div>
               </div>
-            )}
+            </>
+          )}
 
-            {/* Your Delegation */}
-            {secretNetworkClient &&
-              walletAddress &&
-              (delegatorDelegations?.find(
-                (delegatorDelegation: any) =>
-                  selectedValidator?.operator_address == delegatorDelegation.delegation.validator_address
-              ) ? (
-                <div className="col-span-12 md:col-span-6 rounded-xl px-4 py-8 text-center sm:text-left bg-gray-200 dark:bg-neutral-700 text-black dark:text-white">
-                  <div className="font-semibold text-black dark:text-white mb-2">Your Delegation</div>
-                  <div className="font-semibold">
-                    {delegatorDelegations?.find(
-                      (delegatorDelegation: any) =>
-                        selectedValidator?.operator_address == delegatorDelegation.delegation.validator_address
-                    )?.balance?.amount / 1e6}
-                    <span className="text-neutral-400 text-xs">{` SCRT`}</span>
+          {/* Available to Stake */}
+          {isConnected && (
+            <div className="col-span-12 md:col-span-6 rounded-xl p-6 text-center sm:text-left bg-gray-100 dark:bg-neutral-800 text-black dark:text-white">
+              <div className="flex-1">
+                <div className="font-bold mb-2">Available to Stake</div>
+                <div className="mb-1">
+                  <span className="text-base font-medium font-mono">
+                    {new BigNumber(scrtBalance!).dividedBy(`1e${scrtToken.decimals}`).toFormat()}
+                  </span>
+                  <span className="text-xs font-semibold text-neutral-500 dark:text-neutral-400"> SCRT</span>
+                </div>
+                <div className="text-xs text-neutral-500 dark:text-neutral-400 font-medium font-mono">
+                  {toCurrencyString(
+                    new BigNumber(scrtBalance!)
+                      .dividedBy(`1e${scrtToken.decimals}`)
+                      .multipliedBy(Number(currentPrice))
+                      .toNumber()
+                  )}
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Your Delegation */}
+          {isConnected &&
+            (delegatorDelegations?.find(
+              (delegatorDelegation: any) =>
+                selectedValidator?.operator_address == delegatorDelegation.delegation.validator_address
+            ) ? (
+              <div className="col-span-12 md:col-span-6 rounded-xl px-4 py-8 text-center sm:text-left bg-gray-100 dark:bg-neutral-800 text-black dark:text-white">
+                <div className="flex-1">
+                  <div className="font-bold mb-2">Your Delegation</div>
+                  <div className="mb-1">
+                    <span className="text-base font-medium font-mono">
+                      {delegatorDelegations?.find(
+                        (delegatorDelegation: any) =>
+                          selectedValidator?.operator_address == delegatorDelegation.delegation.validator_address
+                      )?.balance?.amount / 1e6}
+                    </span>
+                    <span className="text-xs font-semibold text-neutral-500 dark:text-neutral-400"> SCRT</span>
                   </div>
-                  <div className="font-semibold text-neutral-400 mt-0.5 text-sm">
+                  <div className="text-xs text-neutral-500 dark:text-neutral-400 font-medium font-mono">
                     {toCurrencyString(
                       new BigNumber(
                         delegatorDelegations?.find(
@@ -367,55 +372,59 @@ const ValidatorModal = (props: Props) => {
                     )}
                   </div>
                 </div>
-              ) : (
-                <div className="col-span-12 md:col-span-6 rounded-xl px-4 py-8 text-center sm:text-left bg-gray-200 dark:bg-neutral-700 text-black dark:text-white">
-                  <div className="font-semibold mb-2">Your Delegation</div>
-                  <div className="font-semibold">
-                    {0}
-                    <span className="text-neutral-400 text-xs">{` SCRT`}</span>
+              </div>
+            ) : (
+              <div className="col-span-12 md:col-span-6 rounded-xl px-4 py-8 text-center sm:text-left bg-gray-200 dark:bg-neutral-800 text-black dark:text-white">
+                <div className="flex-1">
+                  <div className="font-bold mb-2">Your Delegation</div>
+                  <div className="mb-1">
+                    <span className="text-base font-medium font-mono">0</span>
+                    <span className="text-xs font-semibold text-neutral-500 dark:text-neutral-400"> SCRT</span>
                   </div>
-                  <div className="font-semibold text-neutral-400 mt-0.5 text-sm">{toCurrencyString(0)}</div>
-                </div>
-              ))}
-
-            {view !== null && (
-              <div className="col-span-12">
-                {view === 'delegate' && <StakingForm />}
-                {view === 'undelegate' && <UndelegateForm />}
-                {view === 'redelegate' && <RedelegateForm />}
-              </div>
-            )}
-
-            {view === null && secretNetworkClient?.address && (
-              <div className="col-span-12">
-                {/* Navigation */}
-                <div className="flex flex-col sm:flex-row-reverse justify-start gap-2">
-                  <Button onClick={() => setView('delegate')} size="large">
-                    Delegate
-                  </Button>
-                  {delegatorDelegations?.find(
-                    (delegatorDelegation: any) =>
-                      selectedValidator?.operator_address == delegatorDelegation.delegation.validator_address
-                  ) && (
-                    <>
-                      <Button onClick={() => setView('redelegate')} color="secondary" size="large">
-                        Redelegate
-                      </Button>
-                      <Button onClick={() => setView('undelegate')} color="secondary" size="large">
-                        Undelegate
-                      </Button>
-                      <Button onClick={handleAutoRestake} color="secondary" size="large">
-                        Auto Restake
-                      </Button>
-                    </>
-                  )}
+                  <div className="text-xs text-neutral-500 dark:text-neutral-400 font-medium font-mono">
+                    {toCurrencyString(0, currency)}
+                  </div>
                 </div>
               </div>
-            )}
-          </div>
+            ))}
+
+          {view !== null && (
+            <div className="col-span-12">
+              {view === 'delegate' && <StakingForm />}
+              {view === 'undelegate' && <UndelegateForm />}
+              {view === 'redelegate' && <RedelegateForm />}
+            </div>
+          )}
+
+          {view === null && secretNetworkClient?.address && (
+            <div className="col-span-12">
+              {/* Navigation */}
+              <div className="flex flex-col sm:flex-row-reverse justify-start gap-2">
+                <Button onClick={() => setView('delegate')} size="default">
+                  Delegate
+                </Button>
+                {delegatorDelegations?.find(
+                  (delegatorDelegation: any) =>
+                    selectedValidator?.operator_address == delegatorDelegation.delegation.validator_address
+                ) ? (
+                  <>
+                    <Button onClick={() => setView('redelegate')} color="secondary" size="default">
+                      Redelegate
+                    </Button>
+                    <Button onClick={() => setView('undelegate')} color="secondary" size="default">
+                      Undelegate
+                    </Button>
+                    <Button onClick={handleAutoRestake} color="secondary" size="default">
+                      Auto Restake
+                    </Button>
+                  </>
+                ) : null}
+              </div>
+            </div>
+          )}
         </div>
-      </Modal>
-    </>
+      </div>
+    </Modal>
   )
 }
 

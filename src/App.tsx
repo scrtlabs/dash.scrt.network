@@ -10,7 +10,6 @@ import { HelmetProvider } from 'react-helmet-async'
 import { Ibc } from 'pages/ibc/Ibc'
 import { Wrap } from 'pages/wrap/Wrap'
 import Apps from 'pages/apps/Apps'
-import { Staking } from 'pages/staking/Staking'
 import { Send } from 'pages/send/Send'
 import Portfolio from 'pages/portfolio/Portfolio'
 
@@ -30,6 +29,7 @@ import { useUserPreferencesStore } from 'store/UserPreferences'
 import { debugModeOverride } from 'utils/commons'
 import Governance from 'pages/governance/Governance'
 import GovernanceDetail from 'pages/governance/GovernanceDetail'
+import Staking from 'pages/staking/Staking'
 
 const { debugMode } = useUserPreferencesStore.getState()
 

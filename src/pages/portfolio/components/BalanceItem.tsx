@@ -22,7 +22,7 @@ const BalanceItem = (props: Props) => {
 
   return (
     <>
-      <div className="first-of-type:rounded-t-lg last-of-type:rounded-b-lg group flex flex-col sm:flex-row items-center text-center sm:text-left even:bg-white odd:bg-neutral-200 dark:even:bg-neutral-800 dark:odd:bg-neutral-700 py-8 sm:py-4 gap-4 pl-4 pr-8  w-full min-w-full ">
+      <div className="first-of-type:rounded-t-lg last-of-type:rounded-b-lg group flex flex-col sm:flex-row items-center text-center sm:text-left even:bg-gray-100 odd:bg-white dark:even:bg-neutral-900 dark:odd:bg-neutral-800 even:border-x dark:even:border-neutral-800 even:border-white py-8 sm:py-4 gap-4 pl-4 pr-8  w-full min-w-full ">
         {/* Image */}
         <div className="relative flex items-center">
           {props.token?.image && (
@@ -48,7 +48,7 @@ const BalanceItem = (props: Props) => {
           <div className="flex flex-col items-center">
             <div className="description text-xs text-neutral-500 dark:text-neutral-400 mb-2">Price</div>
             {assetPrice ? (
-              <div className="text-sm font-medium">{assetPrice}</div>
+              <div className="text-sm font-medium font-mono">{assetPrice}</div>
             ) : (
               <span className="animate-pulse bg-neutral-300/40 dark:bg-neutral-600 rounded w-20 h-5 ml-2"></span>
             )}

@@ -259,7 +259,7 @@ export const chains: { [chain_name: string]: Chain } = {
     withdraw_gas: 150_000,
     chain_id: 'jackal-1',
     bech32_prefix: 'jkl',
-    lcd: 'https://api.jackal.nodestake.top',
+    lcd: 'https://jackal-api.lavenderfive.com:443',
     chain_image: '/jkl.svg',
     explorer_account: 'https://explorer.nodestake.top/jackal/account/'
   },

@@ -1,5 +1,5 @@
 import { useContext, useEffect, useRef, useState } from 'react'
-import { formatNumber, toCurrencyString } from 'utils/commons'
+import { toCurrencyString } from 'utils/commons'
 
 import {
   Chart as ChartJS,
@@ -11,18 +11,16 @@ import {
   Tooltip as ChartTooltip,
   Legend,
   ArcElement,
-  Plugin,
-  Chart,
-  LegendItem
+  Plugin
 } from 'chart.js'
 import { Doughnut } from 'react-chartjs-2'
 import { useUserPreferencesStore } from 'store/UserPreferences'
-import { ThemeContext } from 'context/ThemeContext'
-import { TokenBalances, useSecretNetworkClientStore } from 'store/secretNetworkClient'
+import { useSecretNetworkClientStore } from 'store/secretNetworkClient'
 import BigNumber from 'bignumber.js'
 import { useTokenPricesStore } from 'store/TokenPrices'
 import { Token } from 'utils/config'
 import { APIContext } from 'context/APIContext'
+import { TokenBalances } from 'types/TokenBalances'
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, ArcElement, LineElement, Title, ChartTooltip, Legend)
 

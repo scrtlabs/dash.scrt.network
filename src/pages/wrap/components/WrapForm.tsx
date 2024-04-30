@@ -8,7 +8,7 @@ import FeeGrant from 'components/FeeGrant/FeeGrant'
 import PercentagePicker from 'components/PercentagePicker'
 import { WrappingMode, isWrappingMode } from 'types/WrappingMode'
 import { Token, tokens } from 'utils/config'
-import { GetBalanceError, useSecretNetworkClientStore } from 'store/secretNetworkClient'
+import { useSecretNetworkClientStore } from 'store/secretNetworkClient'
 import { wrapSchema } from 'pages/wrap/wrapSchema'
 import Tooltip from '@mui/material/Tooltip'
 import { WrapService } from 'services/wrap.service'
@@ -18,6 +18,7 @@ import { useSearchParams } from 'react-router-dom'
 import { Nullable } from 'types/Nullable'
 import { useUserPreferencesStore } from 'store/UserPreferences'
 import { debugModeOverride } from 'utils/commons'
+import { GetBalanceError } from 'types/GetBalanceError'
 
 export default function WrapForm() {
   const { debugMode } = useUserPreferencesStore()

@@ -1,11 +1,10 @@
 import { faInfoCircle, faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { createContext, useEffect, useState } from 'react'
+import { createContext, useEffect, useRef, useState } from 'react'
 import { Helmet } from 'react-helmet-async'
 import MyValidatorsItem from './components/MyValidatorsItem'
-import { shuffleArray, stakingPageTitle, stakingPageDescription, stakingJsonLdSchema } from 'utils/commons'
+import { shuffleArray, stakingPageTitle, stakingPageDescription, stakingJsonLdSchema, isMac } from 'utils/commons'
 import Tooltip from '@mui/material/Tooltip'
-import './Staking.scss'
 import NoScrtWarning from './components/NoScrtWarning'
 import ValidatorModal from './components/ValidatorModal'
 import { SECRET_LCD, SECRET_CHAIN_ID } from 'utils/config'
@@ -21,18 +20,13 @@ import { scrtToken } from 'utils/tokens'
 import { useSecretNetworkClientStore } from 'store/secretNetworkClient'
 import ValidatorItem from './components/ValidatorItem'
 import { Validator } from 'types/Validator'
-import AllValidators from './AllValidators'
 import Button from 'components/UI/Button/Button'
-
-export interface ValidatorRestakeStatus {
-  validatorAddress: string
-  autoRestake: boolean
-  stakedAmount: string
-}
+import StakingStats from './components/StakingStats/StakingStats'
+import { ValidatorRestakeStatus } from 'types/ValidatorRestakeStatus'
 
 export const StakingContext = createContext(null)
 
-export const Staking = () => {
+function Staking() {
   // URL params
   const [searchParams, setSearchParams] = useSearchParams()
   const validatorUrlParam = searchParams.get('validator') // selected validator
@@ -61,7 +55,7 @@ export const Staking = () => {
     document.body.classList.remove('overflow-hidden')
   }
 
-  const { secretNetworkClient, walletAddress, scrtBalance, isConnected } = useSecretNetworkClientStore()
+  const { secretNetworkClient, scrtBalance } = useSecretNetworkClientStore()
 
   const [validators, setValidators] = useState<Nullable<Validator[]>>(null)
   const [activeValidators, setActiveValidators] = useState<Nullable<Validator[]>>(null)
@@ -73,13 +67,11 @@ export const Staking = () => {
   //Rewards for each delegator
   const [delegationTotalRewards, setDelegationTotalRewards] = useState<any>()
 
-  function getTotalPendingRewards() {
-    return BigNumber(delegationTotalRewards?.total[0]?.amount)
-      .dividedBy(`1e${scrtToken.decimals}`)
-      .toFormat(scrtToken.decimals)
-  }
-
-  const totalPendingRewards = getTotalPendingRewards()
+  const totalPendingRewards = delegationTotalRewards?.total[0]?.amount
+    ? BigNumber(delegationTotalRewards?.total[0]?.amount)
+        .dividedBy(`1e${scrtToken.decimals}`)
+        .toFormat(scrtToken.decimals)
+    : null
 
   const getTotalAmountStaked = () => {
     return delegatorDelegations
@@ -105,6 +97,29 @@ export const Staking = () => {
 
   //Search Query
   const [searchQuery, setSearchQuery] = useState<string>('')
+  const searchInput = useRef<HTMLInputElement>(null)
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if ((event.metaKey || event.ctrlKey) && event.key === 'k') {
+        event.preventDefault()
+        searchInput.current?.focus()
+      }
+
+      // Check for ESC key to blur the search input
+      if (event.key === 'Escape') {
+        event.preventDefault()
+        if (document.activeElement === searchInput.current) {
+          searchInput.current?.blur()
+        }
+      }
+    }
+
+    document.addEventListener('keydown', handleKeyDown)
+
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown)
+    }
+  }, [])
 
   const [isValidatorModalOpen, setIsValidatorModalOpen] = useState<boolean>(false)
 
@@ -282,7 +297,10 @@ export const Staking = () => {
     restakeChoices,
     setRestakeChoices,
     restakeEntries,
-    setRestakeEntries
+    setRestakeEntries,
+    totalPendingRewards,
+    getTotalAmountStaked,
+    setIsClaimRewardsModalOpen
   }
 
   return (
@@ -309,50 +327,33 @@ export const Staking = () => {
 
           <script type="application/ld+json">{JSON.stringify(stakingJsonLdSchema)}</script>
         </Helmet>
-
         <ManageAutoRestakeModal open={isManageAutoRestakeModalOpen} onClose={handleManageAutoRestakeModal} />
-
         <ClaimRewardsModal open={isClaimRewardsModalOpen} onClose={handleClaimRewardsModal} />
-
         <ValidatorModal
           open={!!selectedValidator}
           restakeEntries={restakeEntries}
           onClose={handleStakingModalClose}
           onAutoRestake={() => setIsManageAutoRestakeModalOpen(true)}
         />
-
         {/* Title */}
-        <Title title={'Staking'} />
-
+        <Title title={'Staking'} className="pb-12" />
         {secretNetworkClient?.address && scrtBalance === '0' && <NoScrtWarning />}
 
         {/* My Validators */}
         {secretNetworkClient?.address && delegatorDelegations && delegatorDelegations?.length != 0 && validators && (
           <>
-            <div className="my-validators mb- max-w-6xl mx-auto">
+            <StakingStats />
+
+            <hr className="h-px my-8 bg-neutral-200 border-0 dark:bg-neutral-700" />
+
+            <div className="max-w-6xl mx-auto">
               <div className="font-semibold text-xl mb-4 px-4">My Validators</div>
             </div>
-            <div className="my-validators mb-20 max-w-6xl mx-auto">
-              {/* Claim Rewards */}
-              {delegationTotalRewards && (
-                <div className="px-4 mb-4 flex items-center flex-col sm:flex-row gap-2 sm:gap-4 text-center sm:text-left">
-                  <div className="flex-1">
-                    <span className="font-bold">{`Total Pending Rewards: `}</span>
-                    <span>{totalPendingRewards}</span>
-                    <span className="text-xs font-semibold text-neutral-500 dark:text-neutral-500"> SCRT</span>
-                  </div>
-
-                  <div className="flex-initial"></div>
-                  <Button onClick={() => setIsClaimRewardsModalOpen(true)} color={'emerald'}>
-                    Claim Pending Rewards
-                  </Button>
-                </div>
-              )}
-
-              <div className="my-validators flex flex-col px-4">
+            <div className="max-w-6xl mx-auto">
+              <div className="flex flex-col px-4">
                 {delegatorDelegations?.map((delegation: any, i: number) => {
                   const validator = validators.find(
-                    (item: any) => item.operator_address == delegation.delegation.validator_address
+                    (validator: Validator) => validator.operator_address == delegation.delegation.validator_address
                   )
                   return (
                     <MyValidatorsItem
@@ -372,48 +373,54 @@ export const Staking = () => {
 
               {/* Total Staked | Auto Restake */}
               <div className="px-4 mt-4 flex flex-col sm:flex-row gap-2 sm:gap-4 text-center sm:text-left">
-                <div className="flex-1">
-                  <span className="font-semibold">{`Total Amount Staked: `}</span>
-                  <span>{`${getTotalAmountStaked()} `}</span>
-                  <span className="text-xs font-semibold text-neutral-400">SCRT</span>
-                </div>
                 <div className="flex-initial">
                   <Button onClick={() => setIsManageAutoRestakeModalOpen(true)}>Manage Auto Restake</Button>
                 </div>
               </div>
             </div>
+
+            <hr className="h-px my-8 bg-neutral-200 border-0 dark:bg-neutral-700" />
           </>
         )}
 
         {/* All Validators */}
-
-        <AllValidators />
         <div className="max-w-6xl mx-auto mt-8">
           <div className="font-semibold text-xl mb-4 px-4">
-            All Validators
             <Tooltip
               title={'To promote decentralization, all validators are ordered randomly.'}
               placement="right"
               arrow
             >
-              <FontAwesomeIcon icon={faInfoCircle} className="ml-2 text-neutral-400" />
+              <span className="inline-flex items-center gap-2">
+                All Validators
+                <FontAwesomeIcon icon={faInfoCircle} className="text-sm text-neutral-400 cursor-pointer" />
+              </span>
             </Tooltip>
           </div>
           <div className="flex flex-col gap-4 sm:flex-row items-center px-4 mb-4">
             {/* Search */}
-            <div className="flex-1 w-full xs:w-auto">
-              <div className="relative w-full">
-                <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                  <FontAwesomeIcon icon={faMagnifyingGlass} className="" />
+            <div className="flex-1 w-full lg:w-auto">
+              <div className="w-full xs:w-auto">
+                <div className="relative sm:w-72">
+                  <div className="absolute right-0 pr-3 inset-y-0 pointer-events-none text-sm flex items-center">
+                    <div className="bg-gray-100 dark:bg-neutral-700 px-1 rounded flex items-center gap-0.5">
+                      <kbd>{isMac ? '⌘' : 'CTRL+'}</kbd>
+                      <kbd>K</kbd>
+                    </div>
+                  </div>
+                  <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                    <FontAwesomeIcon icon={faMagnifyingGlass} className="" />
+                  </div>
+                  <input
+                    ref={searchInput}
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    type="text"
+                    id="search"
+                    className="block w-full p-2.5 pl-10 text-sm rounded-lg text-neutral-800 dark:text-white bg-white dark:bg-neutral-800 placeholder-neutral-600 dark:placeholder-neutral-400 border border-neutral-300 dark:border-neutral-700 focus:outline-none focus:ring-2 focus:ring-cyan-500 dark:focus:ring-cyan-500"
+                    placeholder="Search"
+                  />
                 </div>
-                <input
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  type="text"
-                  id="search"
-                  className="block w-full sm:w-72 p-2.5 pl-10 text-sm rounded-lg text-neutral-800 dark:text-white bg-white dark:bg-neutral-800 placeholder-neutral-600 dark:placeholder-neutral-400 border border-neutral-300 dark:border-neutral-700 focus:outline-none focus:ring-2 focus:ring-cyan-500 dark:focus:ring-cyan-500"
-                  placeholder="Search Validator"
-                />
               </div>
             </div>
             <div className="flex-initial items-center rounded-md" role="group">
@@ -421,7 +428,7 @@ export const Staking = () => {
                 disabled={validatorDisplayStatus === 'active'}
                 onClick={() => setValidatorDisplayStatus('active')}
                 type="button"
-                className="disabled:text-white px-3 text-xs font-semibold rounded-l-lg py-2 enabled:bg-gray-300 disabled:bg-emerald-500 dark:disabled:bg-emerald-500 dark:enabled:bg-neutral-700 enabled:hover:bg-gray-400 dark:enabled:hover:bg-neutral-600 transition"
+                className="disabled:text-white px-3 text-xs font-semibold rounded-l-lg py-2 enabled:bg-gray-300 disabled:bg-emerald-500 dark:disabled:bg-emerald-600 dark:enabled:bg-neutral-700 enabled:hover:bg-gray-400 dark:enabled:hover:bg-neutral-750 transition"
               >
                 {`Active Set${activeValidators ? ` (${activeValidators?.length})` : ''}`}
               </button>
@@ -429,14 +436,14 @@ export const Staking = () => {
                 onClick={() => setValidatorDisplayStatus('inactive')}
                 disabled={validatorDisplayStatus === 'inactive'}
                 type="button"
-                className="px-3 text-xs font-semibold rounded-r-lg py-2 disabled:bg-red-500 disabled:text-white enabled:bg-gray-300 dark:enabled:bg-neutral-700 enabled:hover:bg-gray-400 enabled:dark:hover:bg-neutral-600 transition"
+                className="px-3 text-xs font-semibold rounded-r-lg py-2 disabled:bg-red-600 disabled:text-white enabled:bg-gray-300 dark:enabled:bg-neutral-700 enabled:hover:bg-gray-400 dark:enabled:hover:bg-neutral-750 transition"
               >
                 {`Inactive Set${inactiveValidators ? ` (${inactiveValidators?.length})` : ''}`}
               </button>
             </div>
           </div>
 
-          <div className="all-validators flex flex-col px-4">
+          <div className="flex flex-col px-4 ">
             {validatorsBySearch || shuffledActiveValidators || inactiveValidators ? (
               (validatorsBySearch
                 ? validatorsBySearch
@@ -445,6 +452,7 @@ export const Staking = () => {
                 : inactiveValidators
               )?.map((validator: Validator, i: number) => (
                 <ValidatorItem
+                  key={i}
                   position={i}
                   validator={validator}
                   name={validator?.description?.moniker}
@@ -473,15 +481,15 @@ export const Staking = () => {
             )}
           </div>
 
-          {validators && (
-            <>
-              <div className="italic text-center mt-4 px-4 text-sm">
-                All validators are ordered randomly to promote decentralization
-              </div>
-            </>
-          )}
+          {validators ? (
+            <div className="italic text-center mt-4 px-4 text-sm text-neutral-500 dark:text-neutral-500">
+              All validators are ordered randomly to promote decentralization
+            </div>
+          ) : null}
         </div>
       </>
     </StakingContext.Provider>
   )
 }
+
+export default Staking

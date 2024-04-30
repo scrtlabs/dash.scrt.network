@@ -1,6 +1,6 @@
 import { useContext } from 'react'
-import { MsgSetAutoRestake, validateAddress } from 'secretjs'
-import { StakingContext, ValidatorRestakeStatus } from 'pages/staking/Staking'
+import { MsgSetAutoRestake } from 'secretjs'
+import { StakingContext } from 'pages/staking/Staking'
 import RestakeValidatorItem from './RestakeValidatorItem'
 import { restakeThreshold } from 'utils/commons'
 import { useSecretNetworkClientStore } from 'store/secretNetworkClient'
@@ -8,6 +8,7 @@ import Modal from 'components/UI/Modal/Modal'
 import Button from 'components/UI/Button/Button'
 import toast from 'react-hot-toast'
 import { Validator } from 'types/Validator'
+import { ValidatorRestakeStatus } from 'types/ValidatorRestakeStatus'
 
 interface Props {
   open: boolean
@@ -103,7 +104,7 @@ export default function ManageAutoRestakeModal(props: Props) {
 
   function CommittedDelegators() {
     return (
-      <div className="my-validators w-full">
+      <>
         {delegatorDelegations.map((delegation: any, i: number) => {
           const validator = validators.find(
             (item: Validator) => item.operator_address == delegation.delegation.validator_address
@@ -118,32 +119,30 @@ export default function ManageAutoRestakeModal(props: Props) {
             />
           )
         })}
-      </div>
+      </>
     )
   }
 
   return (
     <Modal
       title={`Manage Auto Restake`}
-      subTitle={`Automate the process of claim and restake`}
+      subTitle={`Automate the process of claim and restak1e`}
       onClose={props.onClose}
       isOpen={props.open}
     >
-      <div className="flex flex-col">
-        {/* List of user's delegators */}
-        <CommittedDelegators />
-      </div>
+      {/* List of user's delegators */}
+      <CommittedDelegators />
       {/* Footer */}
       <div className="flex flex-col sm:flex-row-reverse justify-start mt-4 gap-2">
         {restakeChoices.length > 0 && (
           <>
-            <Button onClick={() => doRestake()} size="large">
+            <Button onClick={() => doRestake()} size="default">
               Submit Changes
             </Button>
           </>
         )}
 
-        <Button onClick={props.onClose} size="large" color="secondary">
+        <Button onClick={props.onClose} size="default" color="secondary">
           Cancel
         </Button>
       </div>
