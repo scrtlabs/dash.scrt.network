@@ -27,40 +27,40 @@ export default function AccountsChart(props: any) {
 
   const [chartData, setChartData] = useState<any>([])
 
-  useEffect(() => {
-    if (L5AnalyticsApiData) {
-      console.log(L5AnalyticsApiData)
-      const dataArray = Object.entries(L5AnalyticsApiData['unbonding_by_date']).map(([date, balance]) => [
-        date,
-        balance
-      ])
-      const chartData = {
-        labels: dataArray.map((item) => item.timestamp),
-        datasets: [
-          {
-            label: '# unique wallets',
-            data: dataArray.map((item) => item.wallets),
-            borderColor: 'rgb(105, 57, 208)',
-            yAxisID: 'y',
-            tension: 0.1
-          },
-          {
-            label: '# Unique contracts',
-            data: dataArray.map((item) => item.code_ids),
-            borderColor: 'rgb(249, 201, 31)',
-            yAxisID: 'y1'
-          }
-        ]
-      }
-      setChartData(chartData)
-    }
-  }, [L5AnalyticsApiData])
+  // useEffect(() => {
+  //   if (L5AnalyticsApiData) {
+  //     console.log(L5AnalyticsApiData)
+  //     const dataArray = Object.entries(L5AnalyticsApiData['unbonding_by_date']).map(([date, balance]) => [
+  //       date,
+  //       balance
+  //     ])
+  //     const chartData = {
+  //       labels: dataArray.map((item) => item.timestamp),
+  //       datasets: [
+  //         {
+  //           label: '# unique wallets',
+  //           data: dataArray.map((item) => item.wallets),
+  //           borderColor: 'rgb(105, 57, 208)',
+  //           yAxisID: 'y',
+  //           tension: 0.1
+  //         },
+  //         {
+  //           label: '# Unique contracts',
+  //           data: dataArray.map((item) => item.code_ids),
+  //           borderColor: 'rgb(249, 201, 31)',
+  //           yAxisID: 'y1'
+  //         }
+  //       ]
+  //     }
+  //     setChartData(chartData)
+  //   }
+  // }, [L5AnalyticsApiData])
 
   return (
     <>
       <div>
         <h2 className="text-center text-xl font-semibold pt-2.5 pb-0">
-          SCRT Unbonding
+          Unique Wallets
           <div className="inline-block">
             <Tooltip title={`Shows the unbonded (unstaked) SCRT per day`} placement="right" arrow>
               <span className="text-neutral-600 dark:text-neutral-400 hover:text-black dark:hover:text-white transition-colors cursor-pointer ml-2 text-sm">
