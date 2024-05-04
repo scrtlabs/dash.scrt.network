@@ -81,28 +81,20 @@ const APIContextProvider = ({ children }: any) => {
   const COINGECKO_CURRENCIES_URL =
     //'https://api.coingecko.com/api/v3/simple/price?ids=usd&vs_currencies=eur,jpy,gbp,aud,cad,chf'
     'https://priceapibuffer.secretsaturn.net/getCurrencies'
-  const fetchCurrencyPricingURL = () => {
-    fetch(COINGECKO_CURRENCIES_URL)
-      .then((response) => {
-        if (!response.ok) throw new Error()
-        else return response.json()
-      })
-      .then((jsonData) => {
-        const fullData = { ...jsonData, usd: 1 }
-        setCurrencyPricing(fullData)
-      })
-      .catch((error) => {
-        console.error(error)
 
-        setTimeout(() => fetchCurrencyPricingURL(), 3000)
-      })
-  }
-
-  useEffect(() => {
-    if (currencyPricing == defaultCurrencyPricing) {
-      fetchCurrencyPricingURL()
+  const fetchCurrencyPricingURL = async () => {
+    try {
+      const response = await fetch(COINGECKO_CURRENCIES_URL)
+      if (!response.ok) throw new Error('Network response was not ok.')
+      const jsonData = await response.json()
+      let fullData = jsonData.usd
+      fullData.usd = 1
+      setCurrencyPricing(fullData)
+    } catch (error) {
+      console.error(error)
+      setTimeout(fetchCurrencyPricingURL, 3000)
     }
-  }, [])
+  }
 
   useEffect(() => {
     if (dappsData && dappsDataSorted.length === 0 && dappsData?.length !== 0) {
@@ -325,6 +317,9 @@ const APIContextProvider = ({ children }: any) => {
 
     queryData()
     fetchDappsURL()
+    if (currencyPricing === defaultCurrencyPricing) {
+      fetchCurrencyPricingURL()
+    }
   }, [])
 
   const providerValue = {
