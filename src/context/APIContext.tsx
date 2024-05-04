@@ -22,6 +22,7 @@ const APIContextProvider = ({ children }: any) => {
   const [stkdSCRTTokenSupply, setStkdSCRTTokenSupply] = useState(Number)
   const [IBCTokenSupply, setIBCTokenSupply] = useState(Number)
   const [burnedTokenSupply, setBurnedTokenSupply] = useState(Number)
+  const [binanceTokenSupply, setBinanceTokenSupply] = useState(Number)
 
   const defaultCurrencyPricing = {
     usd: 1,
@@ -254,6 +255,23 @@ const APIContextProvider = ({ children }: any) => {
 
       secretjsquery?.query?.bank
         ?.balance({
+          address: 'secret1p3ucd3ptpw902fluyjzhq3ffgq4ntdda6qy5vv',
+          denom: 'uscrt'
+        })
+        ?.then((res) => {
+          const binanceColdWallet = Number(res.balance?.amount) / 1e6
+          secretjsquery?.query?.bank
+            ?.balance({
+              address: 'secret1an5pyzzpu5ez7ep9m43yzmalymwls39qtk8rjd',
+              denom: 'uscrt'
+            })
+            ?.then((res) => {
+              setBinanceTokenSupply(binanceColdWallet + Number(res.balance?.amount) / 1e6)
+            })
+        })
+
+      secretjsquery?.query?.bank
+        ?.balance({
           address: allTokens.find((token) => token.name === 'stkd-SCRT').address,
           denom: 'uscrt'
         })
@@ -262,7 +280,7 @@ const APIContextProvider = ({ children }: any) => {
           secretjsquery?.query?.staking
             .delegatorDelegations({
               delegator_addr: allTokens.find((token) => token.name === 'stkd-SCRT').address,
-              pagination: { limit: '1000' }
+              pagination: { limit: '100' }
             })
             ?.then((delegatorDelegations) => {
               const totalDelegations = delegatorDelegations.delegation_responses
@@ -342,6 +360,7 @@ const APIContextProvider = ({ children }: any) => {
     stkdSCRTTokenSupply,
     IBCTokenSupply,
     burnedTokenSupply,
+    binanceTokenSupply,
     inflation,
     secretFoundationTax,
     communityTax,
