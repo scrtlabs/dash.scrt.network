@@ -13,6 +13,7 @@ import { Helmet } from 'react-helmet-async'
 import { trackMixPanelEvent, dashboardPageTitle, dashboardPageDescription, dashboardJsonLdSchema } from 'utils/commons'
 import UnbondingsChart from './components/UnbondingsChart'
 import { useUserPreferencesStore } from 'store/UserPreferences'
+import AccountsChart from './components/AccountsChart'
 
 function Dashboard() {
   const {
@@ -27,7 +28,7 @@ function Dashboard() {
     communityTax,
     volume,
     marketCap,
-    L5AnalyticslApiData
+    L5AnalyticsApiData
   } = useContext(APIContext)
 
   useEffect(() => {
@@ -125,10 +126,10 @@ function Dashboard() {
   }, [])
 
   useEffect(() => {
-    if (L5AnalyticslApiData) {
-      setBlockTime(L5AnalyticslApiData['actual_blocktime'].toFixed(2))
+    if (L5AnalyticsApiData) {
+      setBlockTime(L5AnalyticsApiData['actual_blocktime'].toFixed(2))
     }
-  }, [L5AnalyticslApiData])
+  }, [L5AnalyticsApiData])
 
   // volume & market cap
   const [volumeFormattedString, setVolumeFormattedString] = useState('')
@@ -269,17 +270,14 @@ function Dashboard() {
           <div className="col-span-12 rounded-xl bg-white border border-neutral-200 dark:border-neutral-700 dark:bg-neutral-800 p-4">
             <PriceVolumeTVL />
           </div>
-          <div className="col-span-12 rounded-xl bg-white border border-neutral-200 dark:border-neutral-700 dark:bg-neutral-800 p-4">
-            <UnbondingsChart />
-          </div>
-          {/* Item */}
-          {/* <div className='col-span-12 xl:col-span-6 bg-neutral-800 p-4 rounded-xl'>
-              <PriceChart />
-            </div> */}
-          {/* Item */}
-          {/* <div className='col-span-12 xl:col-span-6 bg-neutral-800 p-4 rounded-xl'>
-              <VolumeChart />
-            </div> */}
+          {L5AnalyticsApiData ? (
+            <div className="col-span-12 rounded-xl bg-white border border-neutral-200 dark:border-neutral-700 dark:bg-neutral-800 p-4">
+              <UnbondingsChart />
+            </div>
+          ) : null}
+          {/* <div className="col-span-12 rounded-xl bg-white border border-neutral-200 dark:border-neutral-700 dark:bg-neutral-800 p-4">
+            <AccountsChart />
+          </div> */}
         </div>
       </div>
     </>

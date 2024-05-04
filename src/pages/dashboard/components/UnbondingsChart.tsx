@@ -21,21 +21,21 @@ import { useUserPreferencesStore } from 'store/UserPreferences'
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, ChartTooltip, Legend, BarController)
 
 export default function UnbondingsChart(props: any) {
-  const { L5AnalyticslApiData } = useContext(APIContext)
+  const { L5AnalyticsApiData } = useContext(APIContext)
 
   const { theme } = useUserPreferencesStore()
 
   const [chartData, setChartData] = useState<any>([])
 
   useEffect(() => {
-    if (L5AnalyticslApiData) {
-      const dataArray = Object.entries(L5AnalyticslApiData['unbonding_by_date']).map(([date, balance]) => [
+    if (L5AnalyticsApiData) {
+      const dataArray = Object.entries(L5AnalyticsApiData['unbonding_by_date']).map(([date, balance]) => [
         date,
         balance
       ])
       setChartData(dataArray)
     }
-  }, [L5AnalyticslApiData])
+  }, [L5AnalyticsApiData])
 
   const datasets = [
     {
@@ -143,6 +143,7 @@ export default function UnbondingsChart(props: any) {
       <div className="w-full h-[300px] xl:h-[400px]">
         <Bar data={data as any} options={options as any} />
       </div>
+      <div className="text-center text-sm">Metrics by Lavender.Five Nodes 🐝</div>
     </>
   )
 }
