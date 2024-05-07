@@ -139,9 +139,7 @@ export default function SendForm() {
   }
 
   useEffect(() => {
-    var params = {}
-    params = {
-      ...params,
+    const params = {
       token: formik.values.token.name.toLowerCase(),
       recipient: formik.values.recipient.toLowerCase(),
       memo: formik.values.memo

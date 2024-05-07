@@ -14,7 +14,7 @@ const BalanceItem = (props: Props) => {
 
   const assetPrice = getPrice(allTokens.find((token: Token) => token.name === props.token.name))
 
-  const tokenName = (props.token?.address === 'native' || props.token?.is_snip20 ? '' : 's') + props.token?.name
+  const tokenName = (props.token?.address !== 'native' && props.token?.name === 'SCRT' ? 's' : '') + props.token?.name
 
   const tokenDescription =
     (props.token?.address !== 'native' || props.token?.is_ics20 || props.token?.is_snip20 ? 'Private ' : 'Public ') +

@@ -2182,7 +2182,7 @@ export const tokens: Token[] = [
     ]
   },
   {
-    name: 'USDC (Noble)',
+    name: 'USDC.nbl',
     description: 'Native USDC Stablecoin via Noble',
     address: 'secret1chsejpk9kfj4vt9ec6xvyguw539gsdtr775us2',
     code_hash: '5a085bd8ed89de92b35134ddd12505a602c7759ea25fb5c089ba03c8535b3042',
@@ -4000,7 +4000,7 @@ export const snips: Token[] = [
 
 export const ICSTokens: Token[] = [
   {
-    name: 'aUSDC',
+    name: 'USDC.axl',
     description: 'USDC stablecoin from Axelar',
     is_ics20: true,
     address: 'secret1vkq022x4q8t8kx9de3r84u669l65xnwf2lg3e6',
@@ -4156,8 +4156,8 @@ export const ICSTokens: Token[] = [
     ]
   },
   {
-    name: 'aWETH',
-    description: 'ETH from Axelar',
+    name: 'WETH.axl',
+    description: 'Wrapped ETH from Axelar',
     is_ics20: true,
     address: 'secret139qfh3nmuzfgwsx2npnmnjl4hrvj3xq5rmq8a0',
     code_hash: '638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e',
@@ -4283,7 +4283,7 @@ export const ICSTokens: Token[] = [
     ]
   },
   {
-    name: 'awstETH',
+    name: 'wstETH.axl',
     description: 'wstETH from Axelar',
     is_ics20: true,
     address: 'secret148jzxkagwe0xulf8jt3sw4nuh2shdh788z3gyd',
@@ -4396,7 +4396,7 @@ export const ICSTokens: Token[] = [
     ]
   },
   {
-    name: 'aWBTC',
+    name: 'WBTC.axl',
     description: 'Wrapped Bitcoin from Axelar',
     is_ics20: true,
     address: 'secret1guyayjwg5f84daaxl7w84skd8naxvq8vz9upqx',
@@ -4523,7 +4523,7 @@ export const ICSTokens: Token[] = [
     ]
   },
   {
-    name: 'aWBNB',
+    name: 'WBNB.axl',
     description: 'Wrapped Binance Coin from Axelar',
     is_ics20: true,
     address: 'secret19xsac2kstky8nhgvvz257uszt44g0cu6ycd5e4',
@@ -4622,7 +4622,7 @@ export const ICSTokens: Token[] = [
     ]
   },
   {
-    name: 'aBUSD',
+    name: 'BUSD.axl',
     description: 'Binance USD from Axelar',
     is_ics20: true,
     address: 'secret1t642ayn9rhl5q9vuh4n2jkx0gpa9r6c3sl96te',
@@ -4721,7 +4721,7 @@ export const ICSTokens: Token[] = [
     ]
   },
   {
-    name: 'aDAI',
+    name: 'DAI.axl',
     description: 'DAI from Axelar',
     is_ics20: true,
     address: 'secret1c2prkwd8e6ratk42l4vrnwz34knfju6hmp7mg7',
@@ -4834,7 +4834,7 @@ export const ICSTokens: Token[] = [
     ]
   },
   {
-    name: 'aLINK',
+    name: 'LINK.axl',
     description: 'LINK from Axelar',
     is_ics20: true,
     address: 'secret1walthx26qaas50nwzg2rsqttlkf58q3hvjha5k',
@@ -4947,7 +4947,7 @@ export const ICSTokens: Token[] = [
     ]
   },
   {
-    name: 'aUNI',
+    name: 'UNI.axl',
     description: 'UNI from Axelar',
     is_ics20: true,
     address: 'secret1egqlkasa6xe6efmfp9562sfj07lq44z7jngu5k',
@@ -5046,7 +5046,7 @@ export const ICSTokens: Token[] = [
     ]
   },
   {
-    name: 'aUSDT',
+    name: 'USDT.axl',
     description: 'USDT stablecoin from Axelar',
     is_ics20: true,
     address: 'secret1wk5j2cntwg2fgklf0uta3tlkvt87alfj7kepuw',
@@ -5173,7 +5173,7 @@ export const ICSTokens: Token[] = [
     ]
   },
   {
-    name: 'aFRAX',
+    name: 'FRAX.axl',
     description: 'FRAX from Axelar',
     is_ics20: true,
     address: 'secret16e230j6qm5u5q30pcc6qv726ae30ak6lzq0zvf',
