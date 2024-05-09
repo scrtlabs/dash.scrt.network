@@ -211,7 +211,7 @@ const APIContextProvider = ({ children }: any) => {
       .catch((error: any) => console.error(error))
       .then((response) => {
         setL5AnalyticsApiData(response)
-        setIBCTokenSupply(response.total_ibc_balance_out)
+        //setIBCTokenSupply(response.total_ibc_balance_out)
       })
 
     const queryData = async () => {
@@ -293,37 +293,36 @@ const APIContextProvider = ({ children }: any) => {
             })
         })
 
-      /*  let totalAmount = 0
-  
-        allTokens[0].deposits.forEach((deposit, index) => {
-          const chainName = deposit.chain_name
-          const channelId = chains[chainName].withdraw_channel_id
-          const isLast = index === allTokens[0].deposits.length - 1
-          setTimeout(() => {
-            executeQuery(channelId, isLast)
-          }, index * 100)
-        }) */
+      let totalAmount = 0
 
-      /* const executeQuery = (channelId: any, isLast: any) => {
-          secretjsquery?.query?.ibc_transfer
-            ?.escrowAddress({
-              channel_id: channelId,
-              port_id: 'transfer'
-            })
-            ?.then((escrow) => {
-              secretjsquery?.query?.bank
-                ?.balance({
-                  address: escrow.escrow_address,
-                  denom: 'uscrt'
-                })
-                ?.then((res) => {
-                  totalAmount += Number(res.balance?.amount) / 1e6
-                  if (isLast) {
-                    setIBCTokenSupply(totalAmount)
-                  }
-                })
-            })
-        } */
+      allTokens[0].deposits.forEach((deposit, index) => {
+        const channelId = chains[deposit.chain_name].withdraw_channel_id
+        const isLast = index === allTokens[0].deposits.length - 1
+        setTimeout(() => {
+          executeQuery(channelId, isLast)
+        }, index * 100)
+      })
+
+      const executeQuery = (channelId: any, isLast: any) => {
+        secretjsquery?.query?.ibc_transfer
+          ?.escrowAddress({
+            channel_id: channelId,
+            port_id: 'transfer'
+          })
+          ?.then((escrow) => {
+            secretjsquery?.query?.bank
+              ?.balance({
+                address: escrow.escrow_address,
+                denom: 'uscrt'
+              })
+              ?.then((res) => {
+                totalAmount += Number(res.balance?.amount) / 1e6
+                if (isLast) {
+                  setIBCTokenSupply(totalAmount)
+                }
+              })
+          })
+      }
 
       secretjsquery?.query?.mint?.inflation('')?.then((res) => setInflation((res as any).inflation))
 
