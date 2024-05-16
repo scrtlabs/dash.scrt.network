@@ -137,11 +137,11 @@ function Wallet() {
   const [isManageViewingkeysModalOpen, setIsManageViewingkeysModalOpen] = useState<boolean>(false)
 
   function handleConnectWallet() {
-    if (window.keplr && window.getEnigmaUtils && window.getOfflineSignerOnlyAmino && window.leap) {
+    if (window.keplr && window.getEnigmaUtils && window.getOfflineSignerAuto && window.leap) {
       setIsConnectWalletModalOpen(true)
-    } else if (window.keplr && window.getEnigmaUtils && window.getOfflineSignerOnlyAmino && !window.leap) {
+    } else if (window.keplr && window.getEnigmaUtils && window.getOfflineSignerAuto && !window.leap) {
       connectWallet('keplr')
-    } else if (!(window.keplr && window.getEnigmaUtils && window.getOfflineSignerOnlyAmino) && window.leap) {
+    } else if (!(window.keplr && window.getEnigmaUtils && window.getOfflineSignerAuto) && window.leap) {
       connectWallet('leap')
     } else {
       setIsGetWalletModalOpen(true)

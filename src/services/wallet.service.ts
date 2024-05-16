@@ -24,7 +24,7 @@ import { TokenBalances } from 'types/TokenBalances'
 const connectKeplr = async (lcd: string, chainID: string) => {
   const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
 
-  while (!window.keplr || !window.getEnigmaUtils || !window.getOfflineSignerOnlyAmino) {
+  while (!window.keplr || !window.getEnigmaUtils || !window.getOfflineSignerAuto) {
     await sleep(50)
   }
 
@@ -36,7 +36,7 @@ const connectKeplr = async (lcd: string, chainID: string) => {
     }
   }
 
-  const keplrOfflineSigner = window.getOfflineSignerOnlyAmino(chainID)
+  const keplrOfflineSigner = await window.getOfflineSignerAuto(chainID)
   const accounts = await keplrOfflineSigner.getAccounts()
 
   const walletAddress = accounts[0].address
@@ -63,13 +63,13 @@ const connectLeap = async (lcd: string, chainID: string) => {
     // localStorage.setItem("preferedWalletApi", "Fina");
     // window.dispatchEvent(new Event("storage"));
   } else {
-    while (!window.leap || !window.leap.getEnigmaUtils || !window.leap.getOfflineSignerOnlyAmino) {
+    while (!window.leap || !window.leap.getEnigmaUtils || !window.leap.getOfflineSignerAuto) {
       await sleep(50)
     }
 
     await window.leap.enable(chainID)
 
-    const wallet = window.leap.getOfflineSignerOnlyAmino(chainID)
+    const wallet = await window.leap.getOfflineSignerAuto(chainID)
     const [{ address: walletAddress }] = await wallet.getAccounts()
 
     const secretjs: SecretNetworkClient = new SecretNetworkClient({
