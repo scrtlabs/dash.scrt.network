@@ -109,10 +109,10 @@ export const chains: { [chain_name: string]: Chain } = {
   },
   Carbon: {
     chain_name: 'Carbon',
-    deposit_channel_id: 'channel-XX',
+    deposit_channel_id: 'channel-40',
     deposit_gas: 200_000,
     deposit_gas_denom: 'dswth',
-    withdraw_channel_id: 'channel-XX',
+    withdraw_channel_id: 'channel-157',
     withdraw_gas: 150_000,
     chain_id: 'carbon-1',
     bech32_prefix: 'swth',
@@ -605,6 +605,18 @@ export const tokens: Token[] = [
         )
       },
       {
+        chain_name: 'Carbon',
+        denom: ibcDenom(
+          [
+            {
+              incomingChannelId: chains['Carbon'].deposit_channel_id,
+              incomingPortId: 'transfer'
+            }
+          ],
+          'uscrt'
+        )
+      },
+      {
         chain_name: 'Celestia',
         denom: ibcDenom(
           [
@@ -942,6 +954,10 @@ export const tokens: Token[] = [
       },
       {
         chain_name: 'Axelar',
+        denom: 'uscrt'
+      },
+      {
+        chain_name: 'Carbon',
         denom: 'uscrt'
       },
       {
