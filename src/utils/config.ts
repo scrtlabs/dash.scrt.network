@@ -2742,7 +2742,7 @@ export const tokens: Token[] = [
   {
     name: 'SWTH',
     description: 'Carbon Governance Token',
-    address: 'XX',
+    address: 'secret187ehv3mquvfxwnwaff90c6keq0qf66hljw5xzt',
     code_hash: '638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e',
     image: '/swth.svg',
     decimals: 8,

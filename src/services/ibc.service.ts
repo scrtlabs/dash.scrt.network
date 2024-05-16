@@ -148,7 +148,7 @@ async function performIbcDeposit(
           isClassic: false
         })
 
-        const terraSigner = window.wallet.getOfflineSignerAuto(props.chain.chain_id)
+        const terraSigner = await window.wallet.getOfflineSignerAuto(props.chain.chain_id)
         const accounts = await terraSigner.getAccounts()
 
         // Create the transaction options with the corrected fee structure
@@ -853,7 +853,7 @@ async function getSkipIBCRouting(chain: Chain, IbcMode: IbcMode, token: Token, a
 }
 
 async function getReceiverAddress(chainID: string): Promise<string> {
-  const wallet = window.wallet.getOfflineSigner(chainID)
+  const wallet = await window.wallet.getOfflineSignerAuto(chainID)
   const [{ address: walletAddress }] = await wallet.getAccounts()
   return walletAddress
 }
