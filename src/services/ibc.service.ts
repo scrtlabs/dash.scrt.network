@@ -60,7 +60,7 @@ async function getChainSecretJs(chain: Chain): Promise<SecretNetworkClient> {
     }
   }
 
-  const sourceOfflineSigner = window.wallet.getOfflineSignerAuto(chain_id)
+  const sourceOfflineSigner = await window.wallet.getOfflineSignerAuto(chain_id)
   const depositFromAccounts = await sourceOfflineSigner.getAccounts()
 
   const secretNetworkClient = new SecretNetworkClient({
