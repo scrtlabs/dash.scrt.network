@@ -44,7 +44,7 @@ const connectKeplr = async (lcd: string, chainID: string) => {
   const secretjs: SecretNetworkClient = new SecretNetworkClient({
     url: lcd,
     chainId: chainID,
-    wallet: keplrOfflineSigner,
+    wallet: keplrOfflineSigner as any,
     walletAddress,
     encryptionUtils: window.getEnigmaUtils(chainID)
   })
