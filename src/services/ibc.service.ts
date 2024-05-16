@@ -38,7 +38,7 @@ interface TProps {
 }
 
 async function getChainSecretJs(chain: Chain): Promise<SecretNetworkClient> {
-  while (!window.wallet || !window.wallet.getOfflineSignerOnlyAmino) {
+  while (!window.wallet || !window.wallet.getOfflineSignerAuto) {
     await sleep(100)
   }
 
@@ -60,7 +60,7 @@ async function getChainSecretJs(chain: Chain): Promise<SecretNetworkClient> {
     }
   }
 
-  const sourceOfflineSigner = window.wallet.getOfflineSignerOnlyAmino(chain_id)
+  const sourceOfflineSigner = window.wallet.getOfflineSignerAuto(chain_id)
   const depositFromAccounts = await sourceOfflineSigner.getAccounts()
 
   const secretNetworkClient = new SecretNetworkClient({
@@ -148,7 +148,7 @@ async function performIbcDeposit(
           isClassic: false
         })
 
-        const terraSigner = window.wallet.getOfflineSignerOnlyAmino(props.chain.chain_id)
+        const terraSigner = window.wallet.getOfflineSignerAuto(props.chain.chain_id)
         const accounts = await terraSigner.getAccounts()
 
         // Create the transaction options with the corrected fee structure
@@ -376,7 +376,7 @@ async function performIbcDeposit(
 
       // Get account pubkey
       // Can't get it from the chain because an account without txs won't have its pubkey listed on-chain
-      const evmosProtoSigner = window.getOfflineSigner!(selectedSource.chain_id)
+      const evmosProtoSigner = await window.getOfflineSignerAuto!(selectedSource.chain_id)
       const [{ pubkey }]: readonly AccountData[] = await evmosProtoSigner.getAccounts()
 
       const autoWrapJsonString = JSON.stringify({
@@ -482,7 +482,7 @@ async function performIbcDeposit(
 
       const ibcResp: IbcResponse = await tx.ibcResponses[0]
 
-      if (ibcResp.type === 'ack') {
+      if (ibcResp?.type === 'ack') {
         NotificationService.notify(
           `Received ${props.amount} ${token.name} on Secret Network from ${selectedSource.chain_name}`,
           'success',
@@ -490,8 +490,8 @@ async function performIbcDeposit(
         )
       } else {
         NotificationService.notify(
-          `Timed out while waiting to receive ${props.amount} ${token.name} on Secret Network from ${selectedSource.chain_name}`,
-          'error',
+          `The transfer might take longer on chain. Please be patient while waiting to receive ${props.amount} ${token.name} on Secret Network from ${selectedSource.chain_name}. You can manually check by going to the Portfolio page and check for ${token.name}.`,
+          'success',
           toastId
         )
       }
@@ -853,7 +853,7 @@ async function getSkipIBCRouting(chain: Chain, IbcMode: IbcMode, token: Token, a
 }
 
 async function getReceiverAddress(chainID: string): Promise<string> {
-  const wallet = window.wallet.getOfflineSignerOnlyAmino(chainID)
+  const wallet = window.wallet.getOfflineSigner(chainID)
   const [{ address: walletAddress }] = await wallet.getAccounts()
   return walletAddress
 }
