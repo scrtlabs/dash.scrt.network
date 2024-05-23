@@ -2303,8 +2303,9 @@ export const tokens: Token[] = [
     decimals: 6,
     coingecko_id: 'stride-staked-atom',
     deposits: [
-      /*       {
+      {
         chain_name: 'Osmosis',
+        needsSkip: true,
         denom: ibcDenom(
           [
             {
@@ -2314,15 +2315,16 @@ export const tokens: Token[] = [
           ],
           'stuatom'
         )
-      }, */
+      },
       {
         chain_name: 'Stride',
         denom: 'stuatom'
       }
     ],
     withdrawals: [
-      /* {
+      {
         chain_name: 'Osmosis',
+        needsSkip: true,
         denom: ibcDenom(
           [
             {
@@ -2332,7 +2334,7 @@ export const tokens: Token[] = [
           ],
           'stuatom'
         )
-      }, */
+      },
       {
         chain_name: 'Stride',
         denom: ibcDenom(
@@ -2356,8 +2358,9 @@ export const tokens: Token[] = [
     decimals: 18,
     coingecko_id: 'stride-staked-injective',
     deposits: [
-      /*  {
+      {
         chain_name: 'Osmosis',
+        needsSkip: true,
         denom: ibcDenom(
           [
             {
@@ -2367,15 +2370,16 @@ export const tokens: Token[] = [
           ],
           'stinj'
         )
-      }, */
+      },
       {
         chain_name: 'Stride',
         denom: 'stinj'
       }
     ],
     withdrawals: [
-      /* {
+      {
         chain_name: 'Osmosis',
+        needsSkip: true,
         denom: ibcDenom(
           [
             {
@@ -2385,7 +2389,7 @@ export const tokens: Token[] = [
           ],
           'stinj'
         )
-      }, */
+      },
       {
         chain_name: 'Stride',
         denom: ibcDenom(
@@ -2409,8 +2413,9 @@ export const tokens: Token[] = [
     decimals: 6,
     coingecko_id: 'stride-staked-juno',
     deposits: [
-      /* {
+      {
         chain_name: 'Osmosis',
+        needsSkip: true,
         denom: ibcDenom(
           [
             {
@@ -2420,15 +2425,16 @@ export const tokens: Token[] = [
           ],
           'stujuno'
         )
-      }, */
+      },
       {
         chain_name: 'Stride',
         denom: 'stujuno'
       }
     ],
     withdrawals: [
-      /*  {
+      {
         chain_name: 'Osmosis',
+        needsSkip: true,
         denom: ibcDenom(
           [
             {
@@ -2438,7 +2444,7 @@ export const tokens: Token[] = [
           ],
           'stujuno'
         )
-      }, */
+      },
       {
         chain_name: 'Stride',
         denom: ibcDenom(
@@ -2520,8 +2526,9 @@ export const tokens: Token[] = [
     decimals: 6,
     coingecko_id: 'stride-staked-luna',
     deposits: [
-      /*  {
+      {
         chain_name: 'Osmosis',
+        needsSkip: true,
         denom: ibcDenom(
           [
             {
@@ -2531,15 +2538,16 @@ export const tokens: Token[] = [
           ],
           'stuluna'
         )
-      }, */
+      },
       {
         chain_name: 'Stride',
         denom: 'stuluna'
       }
     ],
     withdrawals: [
-      /*  {
+      {
         chain_name: 'Osmosis',
+        needsSkip: true,
         denom: ibcDenom(
           [
             {
@@ -2549,7 +2557,7 @@ export const tokens: Token[] = [
           ],
           'stuluna'
         )
-      }, */
+      },
       {
         chain_name: 'Stride',
         denom: ibcDenom(
@@ -2573,8 +2581,9 @@ export const tokens: Token[] = [
     decimals: 6,
     coingecko_id: 'stride-staked-osmo',
     deposits: [
-      /*  {
+      {
         chain_name: 'Osmosis',
+        needsSkip: true,
         denom: ibcDenom(
           [
             {
@@ -2584,15 +2593,16 @@ export const tokens: Token[] = [
           ],
           'stuosmo'
         )
-      }, */
+      },
       {
         chain_name: 'Stride',
         denom: 'stuosmo'
       }
     ],
     withdrawals: [
-      /*  {
+      {
         chain_name: 'Osmosis',
+        needsSkip: true,
         denom: ibcDenom(
           [
             {
@@ -2602,7 +2612,7 @@ export const tokens: Token[] = [
           ],
           'stuosmo'
         )
-      }, */
+      },
       {
         chain_name: 'Stride',
         denom: ibcDenom(
@@ -2626,8 +2636,9 @@ export const tokens: Token[] = [
     decimals: 6,
     coingecko_id: 'stride',
     deposits: [
-      /*  {
+      {
         chain_name: 'Osmosis',
+        needsSkip: true,
         denom: ibcDenom(
           [
             {
@@ -2637,15 +2648,16 @@ export const tokens: Token[] = [
           ],
           'ustrd'
         )
-      }, */
+      },
       {
         chain_name: 'Stride',
         denom: 'ustrd'
       }
     ],
     withdrawals: [
-      /*  {
+      {
         chain_name: 'Osmosis',
+        needsSkip: true,
         denom: ibcDenom(
           [
             {
@@ -2655,7 +2667,7 @@ export const tokens: Token[] = [
           ],
           'ustrd'
         )
-      }, */
+      },
       {
         chain_name: 'Stride',
         denom: ibcDenom(
@@ -2679,8 +2691,9 @@ export const tokens: Token[] = [
     decimals: 6,
     coingecko_id: 'stride-staked-tia',
     deposits: [
-      /*  {
+      {
         chain_name: 'Osmosis',
+        needsSkip: true,
         denom: ibcDenom(
           [
             {
@@ -2690,15 +2703,16 @@ export const tokens: Token[] = [
           ],
           'stuosmo'
         )
-      }, */
+      },
       {
         chain_name: 'Stride',
         denom: 'stutia'
       }
     ],
     withdrawals: [
-      /*  {
+      {
         chain_name: 'Osmosis',
+        needsSkip: true,
         denom: ibcDenom(
           [
             {
@@ -2708,7 +2722,7 @@ export const tokens: Token[] = [
           ],
           'stuosmo'
         )
-      }, */
+      },
       {
         chain_name: 'Stride',
         denom: ibcDenom(
@@ -2735,9 +2749,10 @@ export const tokens: Token[] = [
       {
         chain_name: 'Celestia',
         denom: 'utia'
-      }
-      /*  {
+      },
+      {
         chain_name: 'Osmosis',
+        needsSkip: true,
         denom: ibcDenom(
           [
             {
@@ -2747,7 +2762,7 @@ export const tokens: Token[] = [
           ],
           'utia'
         )
-      } */
+      }
     ],
     withdrawals: [
       {
@@ -2761,9 +2776,10 @@ export const tokens: Token[] = [
           ],
           'utia'
         )
-      }
-      /* {
+      },
+      {
         chain_name: 'Osmosis',
+        needsSkip: true,
         denom: ibcDenom(
           [
             {
@@ -2773,7 +2789,7 @@ export const tokens: Token[] = [
           ],
           'utia'
         )
-      } */
+      }
     ]
   },
   {
