@@ -109,10 +109,10 @@ export const chains: { [chain_name: string]: Chain } = {
   },
   Carbon: {
     chain_name: 'Carbon',
-    deposit_channel_id: 'channel-XX',
+    deposit_channel_id: 'channel-40',
     deposit_gas: 200_000,
-    deposit_gas_denom: 'dswth',
-    withdraw_channel_id: 'channel-XX',
+    deposit_gas_denom: 'swth',
+    withdraw_channel_id: 'channel-157',
     withdraw_gas: 150_000,
     chain_id: 'carbon-1',
     bech32_prefix: 'swth',
@@ -605,6 +605,18 @@ export const tokens: Token[] = [
         )
       },
       {
+        chain_name: 'Carbon',
+        denom: ibcDenom(
+          [
+            {
+              incomingChannelId: chains['Carbon'].deposit_channel_id,
+              incomingPortId: 'transfer'
+            }
+          ],
+          'uscrt'
+        )
+      },
+      {
         chain_name: 'Celestia',
         denom: ibcDenom(
           [
@@ -942,6 +954,10 @@ export const tokens: Token[] = [
       },
       {
         chain_name: 'Axelar',
+        denom: 'uscrt'
+      },
+      {
+        chain_name: 'Carbon',
         denom: 'uscrt'
       },
       {
@@ -2733,6 +2749,35 @@ export const tokens: Token[] = [
             }
           ],
           'stutia'
+        )
+      }
+    ]
+  },
+  {
+    name: 'SWTH',
+    description: 'Carbon Governance Token',
+    address: 'secret187ehv3mquvfxwnwaff90c6keq0qf66hljw5xzt',
+    code_hash: '638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e',
+    image: '/swth.svg',
+    decimals: 8,
+    coingecko_id: 'switcheo',
+    deposits: [
+      {
+        chain_name: 'Carbon',
+        denom: 'swth'
+      }
+    ],
+    withdrawals: [
+      {
+        chain_name: 'Carbon',
+        denom: ibcDenom(
+          [
+            {
+              incomingChannelId: chains['Carbon'].withdraw_channel_id,
+              incomingPortId: 'transfer'
+            }
+          ],
+          'swth'
         )
       }
     ]
