@@ -1734,6 +1734,35 @@ export const tokens: Token[] = [
     ]
   },
   {
+    name: 'Kava',
+    description: 'Kava Governance Token',
+    address: 'XX',
+    code_hash: '638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e',
+    image: '/kava.svg',
+    decimals: 6,
+    coingecko_id: 'kava',
+    deposits: [
+      {
+        chain_name: 'Kava',
+        denom: 'ukava'
+      }
+    ],
+    withdrawals: [
+      {
+        chain_name: 'Kava',
+        denom: ibcDenom(
+          [
+            {
+              incomingChannelId: chains['Kava'].withdraw_channel_id,
+              incomingPortId: 'transfer'
+            }
+          ],
+          'ukava'
+        )
+      }
+    ]
+  },
+  {
     name: 'KUJI',
     description: 'Kujira Governance Token',
     address: 'secret13hvh0rn0rcf5zr486yxlrucvwpzwqu2dsz6zu8',
@@ -2231,7 +2260,7 @@ export const tokens: Token[] = [
     description: 'Native USDC Stablecoin via Noble',
     address: 'secret1chsejpk9kfj4vt9ec6xvyguw539gsdtr775us2',
     code_hash: '5a085bd8ed89de92b35134ddd12505a602c7759ea25fb5c089ba03c8535b3042',
-    image: '/ausdc.svg',
+    image: '/usdc.svg',
     decimals: 6,
     coingecko_id: 'usd-coin',
     deposits: [
@@ -2880,6 +2909,35 @@ export const tokens: Token[] = [
     ]
   },
   {
+    name: 'USDT',
+    description: 'Native USDT from Kava',
+    address: 'XX',
+    code_hash: '638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e',
+    image: '/usdt.svg',
+    decimals: 6,
+    coingecko_id: 'usdt',
+    deposits: [
+      {
+        chain_name: 'Kava',
+        denom: 'erc20/tether/usdt'
+      }
+    ],
+    withdrawals: [
+      {
+        chain_name: 'Kava',
+        denom: ibcDenom(
+          [
+            {
+              incomingChannelId: chains['Kava'].withdraw_channel_id,
+              incomingPortId: 'transfer'
+            }
+          ],
+          'erc20/tether/usdt'
+        )
+      }
+    ]
+  },
+  {
     name: 'WBTC',
     description: 'Wrapped Bitcoin on Osmosis',
     address: 'secret1v2kgmfwgd2an0l5ddralajg5wfdkemxl2vg4jp',
@@ -2972,7 +3030,7 @@ export const tokens: Token[] = [
 export const snips: Token[] = [
   {
     name: 'ADM',
-    description: 'Admirari DAO / Secret Admirers Token',
+    description: 'Admirari DAO Token',
     is_snip20: true,
     address: 'secret1zzuffktc25904mwus8ched6q6p5ewksy80m33h',
     code_hash: '6ee652c96cc3b954ea763d55b039a53784a4b15f28ccac14134c8f91e2d4c91c',
@@ -4079,7 +4137,7 @@ export const ICSTokens: Token[] = [
     is_ics20: true,
     address: 'secret1vkq022x4q8t8kx9de3r84u669l65xnwf2lg3e6',
     code_hash: '638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e',
-    image: '/ausdc.svg',
+    image: '/usdc.svg',
     decimals: 6,
     coingecko_id: 'usd-coin',
     axelar_denom: 'uusdc',
@@ -5125,7 +5183,7 @@ export const ICSTokens: Token[] = [
     is_ics20: true,
     address: 'secret1wk5j2cntwg2fgklf0uta3tlkvt87alfj7kepuw',
     code_hash: '638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e',
-    image: '/ausdt.svg',
+    image: '/usdt.svg',
     decimals: 6,
     coingecko_id: 'tether',
     axelar_denom: 'uusdt',
