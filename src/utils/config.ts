@@ -276,6 +276,32 @@ export const chains: { [chain_name: string]: Chain } = {
     chain_image: '/juno.svg',
     explorer_account: 'https://www.mintscan.io/juno/account/'
   },
+  Kava: {
+    chain_name: 'Kava',
+    deposit_channel_id: 'channel-XX',
+    deposit_gas: 200_000,
+    deposit_gas_denom: 'ukava',
+    withdraw_channel_id: 'channel-XX',
+    withdraw_gas: 150_000,
+    chain_id: 'kava_2222-10',
+    bech32_prefix: 'kava',
+    lcd: 'https://kava-rest.publicnode.com',
+    chain_image: '/kava.svg',
+    explorer_account: 'https://www.mintscan.io/kava/account/'
+  },
+  Kujira: {
+    chain_name: 'Kujira',
+    deposit_channel_id: 'channel-10',
+    deposit_gas: 200_000,
+    deposit_gas_denom: 'ukuji',
+    withdraw_channel_id: 'channel-22',
+    withdraw_gas: 150_000,
+    chain_id: 'kaiyo-1',
+    bech32_prefix: 'kujira',
+    lcd: 'https://kujira-api.polkachu.com/',
+    chain_image: '/kuji.svg',
+    explorer_account: 'https://ping.pub/kujira/account/'
+  },
   Migaloo: {
     chain_name: 'Migaloo',
     deposit_channel_id: 'channel-4',
@@ -328,19 +354,6 @@ export const chains: { [chain_name: string]: Chain } = {
     lcd: 'https://nolus-api.lavenderfive.com:443',
     chain_image: '/nolus.svg',
     explorer_account: 'https://ping.pub/nolus/account/'
-  },
-  Kujira: {
-    chain_name: 'Kujira',
-    deposit_channel_id: 'channel-10',
-    deposit_gas: 200_000,
-    deposit_gas_denom: 'ukuji',
-    withdraw_channel_id: 'channel-22',
-    withdraw_gas: 150_000,
-    chain_id: 'kaiyo-1',
-    bech32_prefix: 'kujira',
-    lcd: 'https://kujira-api.polkachu.com/',
-    chain_image: '/kuji.svg',
-    explorer_account: 'https://ping.pub/kujira/account/'
   },
   Oraichain: {
     chain_name: 'Oraichain',
@@ -761,6 +774,18 @@ export const tokens: Token[] = [
         )
       },
       {
+        chain_name: 'Kava',
+        denom: ibcDenom(
+          [
+            {
+              incomingChannelId: chains['Kava'].deposit_channel_id,
+              incomingPortId: 'transfer'
+            }
+          ],
+          'uscrt'
+        )
+      },
+      {
         chain_name: 'Kujira',
         denom: ibcDenom(
           [
@@ -1006,6 +1031,10 @@ export const tokens: Token[] = [
       },
       {
         chain_name: 'Juno',
+        denom: 'uscrt'
+      },
+      {
+        chain_name: 'Kava',
         denom: 'uscrt'
       },
       {
