@@ -1,20 +1,64 @@
 import Title from 'components/Title'
 import GovernancePreviewItem from './components/Overview/GovernancePreviewItem'
 import governanceUtils from 'utils/governanceUtils'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { ProposalStatus } from 'secretjs'
+import { Nullable } from 'types/Nullable'
+import { Proposal } from 'secretjs/dist/protobuf/cosmos/gov/v1beta1/gov'
+import Button from 'components/UI/Button/Button'
 
 function Governance() {
-  const [proposals, setProposals] = useState(null)
+  const [proposals, setProposals] = useState<Nullable<Proposal[]>>(null)
+  const [nextKey, setNextKey] = useState<Nullable<string>>(null) // required by API to fetch next entries
+  const [loading, setLoading] = useState<boolean>(false)
+
+  const proposalsContainerRef = useRef(null)
 
   useEffect(() => {
     const fetchProposals = async () => {
       const fetchedProposals = await governanceUtils.getProposals()
       setProposals(fetchedProposals?.proposals || null)
+      setNextKey(fetchedProposals?.pagination?.next_key || null)
     }
 
     fetchProposals().catch(console.error)
   }, [])
+
+  const loadNextProposals = async () => {
+    if (nextKey && !loading) {
+      setLoading(true)
+      const fetchedProposals = await governanceUtils.getProposals(nextKey)
+      setProposals((prevProposals) => [...(prevProposals || []), ...(fetchedProposals?.proposals || [])])
+      setNextKey(fetchedProposals?.pagination?.next_key || null)
+      setLoading(false)
+    }
+  }
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const [entry] = entries
+        if (entry.isIntersecting && nextKey) {
+          loadNextProposals()
+        }
+      },
+      {
+        root: null,
+        rootMargin: '500px',
+        threshold: 1
+      }
+    )
+
+    if (proposalsContainerRef.current) {
+      observer.observe(proposalsContainerRef.current)
+    }
+
+    return () => {
+      if (proposalsContainerRef.current) {
+        observer.unobserve(proposalsContainerRef.current)
+      }
+    }
+  }, [nextKey])
 
   return (
     <div>
@@ -60,6 +104,7 @@ function Governance() {
             )
           })}
         </div>
+        <div ref={proposalsContainerRef} />
       </div>
     </div>
   )
