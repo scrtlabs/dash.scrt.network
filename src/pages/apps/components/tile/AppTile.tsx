@@ -34,7 +34,7 @@ const AppTile = (props: Props) => {
         {props.image && (
           <div className="flex-initial">
             <img
-              src={props.image}
+              src={`https://raw.githubusercontent.com/SecretFoundation/DappRegistry/main/${props.image}`}
               alt={`${props.name} logo`}
               className="w-16 h-16 rounded-xl block mb-4 bg-neutral-100 dark:bg-neutral-900 flex-initial mx-auto sm:mx-0"
             />
