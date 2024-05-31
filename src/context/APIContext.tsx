@@ -64,7 +64,7 @@ const APIContextProvider = ({ children }: any) => {
   }
 
   const fetchDappsURL = () => {
-    fetch('../../dAppData.json')
+    fetch('https://raw.githubusercontent.com/SecretFoundation/DappRegistry/main/dAppRegistry.json')
       .then((response) => {
         if (!response.ok) throw new Error()
         else return response.json()
