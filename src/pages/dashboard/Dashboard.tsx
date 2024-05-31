@@ -60,15 +60,15 @@ function Dashboard() {
     }
   }, [blockTime])
 
-  // # transactions
-  const [transactions, setTransactions] = useState('')
-  const [transactionsFormattedString, setTransactionsFormattedString] = useState('')
+  // # Unique Wallets
+  const [uniqueWallets, setUniqueWallets] = useState('')
+  const [uniqueWalletsFormattedString, setUniqueWalletsFormattedString] = useState('')
 
   useEffect(() => {
-    if (transactions) {
-      setTransactionsFormattedString(parseInt(transactions).toLocaleString())
+    if (uniqueWallets) {
+      setUniqueWalletsFormattedString(parseInt(uniqueWallets).toLocaleString())
     }
-  }, [transactions])
+  }, [uniqueWallets])
 
   // taxes
   const [taxFormattedString, setTaxFormattedString] = useState('')
@@ -112,22 +112,21 @@ function Dashboard() {
   const [bondedRatioFormattedString, setBondedRatioFormattedString] = useState('')
 
   useEffect(() => {
-    const queryData = async () => {
-      const secretjsquery = new SecretNetworkClient({
-        url: SECRET_LCD,
-        chainId: SECRET_CHAIN_ID
-      })
+    const secretjsquery = new SecretNetworkClient({
+      url: SECRET_LCD,
+      chainId: SECRET_CHAIN_ID
+    })
 
-      secretjsquery?.query?.tendermint.getLatestBlock('')?.then((res1) => {
-        setBlockHeight(res1.block.header.height)
-      })
-    }
-    queryData()
+    secretjsquery?.query?.tendermint.getLatestBlock('')?.then((res1) => {
+      setBlockHeight(res1.block.header.height)
+    })
   }, [])
 
   useEffect(() => {
     if (L5AnalyticsApiData) {
       setBlockTime(L5AnalyticsApiData['actual_blocktime'].toFixed(2))
+      setActiveValidators(L5AnalyticsApiData['total_validators'])
+      setUniqueWallets(L5AnalyticsApiData['unique_wallets'])
     }
   }, [L5AnalyticsApiData])
 
@@ -156,12 +155,6 @@ function Dashboard() {
 
   useEffect(() => {
     if (externalApiData) {
-      const queryData = async () => {
-        setTransactions((externalApiData as any).total_txs_num)
-        setActiveValidators((externalApiData as any).unjailed_validator_num)
-      }
-
-      queryData()
     }
   }, [externalApiData])
 
@@ -231,12 +224,12 @@ function Dashboard() {
             <QuadTile
               item1={{ key: 'Block Height', value: blockHeightFormattedString }}
               item2={{
-                key: 'Block Time (last block)',
+                key: 'Avg. Block Time',
                 value: blockTimeFormattedString
               }}
               item3={{
-                key: '# Transactions (total)',
-                value: transactionsFormattedString
+                key: 'Unique Wallets',
+                value: uniqueWalletsFormattedString
               }}
               item4={{ key: '# Active Validators', value: activeValidatorsFormattedString }}
             />
