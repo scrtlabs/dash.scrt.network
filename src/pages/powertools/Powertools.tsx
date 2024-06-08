@@ -145,10 +145,6 @@ function Powertools() {
 
       const newChainId = block?.header?.chain_id!
 
-      if (newChainId != 'secret-4' && newChainId != 'pulsar-3') {
-        throw Error('Chain-ID must be secret-4 or pulsar-3. You cannot use a different chain than Secret Network.')
-      }
-
       const newBlockHeight = balanceFormat(Number(block?.header?.height))
 
       let newGasPrice: string | undefined
@@ -156,11 +152,8 @@ function Powertools() {
         newGasPrice = minimum_gas_price.replace(/0*([a-z]+)$/, '$1')
       }
 
-      const { walletAddress, secretjs: importedSecretjs } = await WalletService.connectWallet(
-        walletAPIType,
-        apiUrl,
-        newChainId
-      )
+      const { secretjs: importedSecretjs } = await WalletService.connectWallet(walletAPIType, apiUrl, newChainId)
+
       setPrefix(importedSecretjs.address.replace(/^([a-z]+)1.*$/, '$1'))
       setSecretjs(importedSecretjs)
       setChainId(newChainId)
