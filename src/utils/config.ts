@@ -278,10 +278,10 @@ export const chains: { [chain_name: string]: Chain } = {
   },
   Kava: {
     chain_name: 'Kava',
-    deposit_channel_id: 'channel-XX',
+    deposit_channel_id: 'channel-148',
     deposit_gas: 200_000,
     deposit_gas_denom: 'ukava',
-    withdraw_channel_id: 'channel-XX',
+    withdraw_channel_id: 'channel-158',
     withdraw_gas: 150_000,
     chain_id: 'kava_2222-10',
     bech32_prefix: 'kava',
@@ -1734,7 +1734,7 @@ export const tokens: Token[] = [
     ]
   },
   {
-    name: 'Kava',
+    name: 'KAVA',
     description: 'Kava Governance Token',
     address: 'XX',
     code_hash: '638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e',
@@ -2939,7 +2939,7 @@ export const tokens: Token[] = [
   },
   {
     name: 'WBTC',
-    description: 'Wrapped Bitcoin on Osmosis',
+    description: 'Wrapped Bitcoin from Osmosis',
     address: 'secret1v2kgmfwgd2an0l5ddralajg5wfdkemxl2vg4jp',
     code_hash: '638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e',
     image: '/wbtc.svg',
@@ -2991,6 +2991,35 @@ export const tokens: Token[] = [
             }
           ],
           'uwhale'
+        )
+      }
+    ]
+  },
+  {
+    name: 'wstETH',
+    description: 'Wrapped Lido stETH from Neutron',
+    address: 'XX',
+    code_hash: '638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e',
+    image: '/wsteth.svg',
+    decimals: 18,
+    coingecko_id: 'wrapped-steth',
+    deposits: [
+      {
+        chain_name: 'Neutron',
+        denom: 'factory/neutron1ug740qrkquxzrk2hh29qrlx3sktkfml3je7juusc2te7xmvsscns0n2wry/wstETH'
+      }
+    ],
+    withdrawals: [
+      {
+        chain_name: 'Neutron',
+        denom: ibcDenom(
+          [
+            {
+              incomingChannelId: chains['Neutron'].withdraw_channel_id,
+              incomingPortId: 'transfer'
+            }
+          ],
+          'factory/neutron1ug740qrkquxzrk2hh29qrlx3sktkfml3je7juusc2te7xmvsscns0n2wry/wstETH'
         )
       }
     ]
@@ -4422,7 +4451,7 @@ export const ICSTokens: Token[] = [
     code_hash: '638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e',
     image: '/wsteth.svg',
     decimals: 18,
-    coingecko_id: 'wrapped-steth',
+    coingecko_id: 'bridged-wrapped-steth-axelar',
     axelar_denom: 'wsteth-wei',
     deposits: [
       {
