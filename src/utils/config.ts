@@ -1736,7 +1736,7 @@ export const tokens: Token[] = [
   {
     name: 'KAVA',
     description: 'Kava Governance Token',
-    address: 'XX',
+    address: 'secret1xyhphws090fqs33sxkytmagwynz54eqnpdqfrw',
     code_hash: '638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e',
     image: '/kava.svg',
     decimals: 6,
@@ -2911,7 +2911,7 @@ export const tokens: Token[] = [
   {
     name: 'USDT',
     description: 'Native USDT from Kava',
-    address: 'XX',
+    address: 'secret1htd6s29m2j9h45knwkyucz98m306n32hx8dww3',
     code_hash: '638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e',
     image: '/usdt.svg',
     decimals: 6,
@@ -2998,7 +2998,7 @@ export const tokens: Token[] = [
   {
     name: 'wstETH',
     description: 'Wrapped Lido stETH from Neutron',
-    address: 'XX',
+    address: 'secret1xx6m5c7d92h75evkmxqqe2xe5sk5qcqqs9t8ar',
     code_hash: '638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e',
     image: '/wsteth.svg',
     decimals: 18,
