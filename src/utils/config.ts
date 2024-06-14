@@ -1149,7 +1149,7 @@ export const tokens: Token[] = [
               incomingPortId: 'transfer'
             }
           ],
-          'factory/kujira1n3fr5f56r2ce0s37wdvwrk98yhhq3unnxgcqus8nzsfxvllk0yxquurqty/ampKUJI'
+          'factory:kujira1n3fr5f56r2ce0s37wdvwrk98yhhq3unnxgcqus8nzsfxvllk0yxquurqty:ampKUJI'
         )
       }
     ]
@@ -1181,6 +1181,35 @@ export const tokens: Token[] = [
             }
           ],
           'cw20:terra1ecgazyd0waaj3g7l9cmy5gulhxkps2gmxu9ghducvuypjq68mq2s5lvsct'
+        )
+      }
+    ]
+  },
+  {
+    name: 'ampWHALE',
+    description: 'ERIS staked WHALE',
+    address: 'XX',
+    code_hash: '638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e',
+    image: '/ampwhale.svg',
+    decimals: 6,
+    coingecko_id: 'eris-staked-whale',
+    deposits: [
+      {
+        chain_name: 'Migaloo',
+        denom: 'factory/migaloo1436kxs0w2es6xlqpp9rd35e3d0cjnw4sv8j3a7483sgks29jqwgshqdky4/ampWHALE'
+      }
+    ],
+    withdrawals: [
+      {
+        chain_name: 'Migaloo',
+        denom: ibcDenom(
+          [
+            {
+              incomingChannelId: chains['Migaloo'].withdraw_channel_id,
+              incomingPortId: 'transfer'
+            }
+          ],
+          'factory/migaloo1436kxs0w2es6xlqpp9rd35e3d0cjnw4sv8j3a7483sgks29jqwgshqdky4/ampWHALE'
         )
       }
     ]
