@@ -2973,7 +2973,7 @@ export const tokens: Token[] = [
     code_hash: '638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e',
     image: '/usdt.svg',
     decimals: 6,
-    coingecko_id: 'usdt',
+    coingecko_id: 'tether',
     deposits: [
       {
         chain_name: 'Kava',
