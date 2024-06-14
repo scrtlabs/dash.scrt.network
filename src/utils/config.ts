@@ -1126,8 +1126,37 @@ export const tokens: Token[] = [
     ]
   },
   {
+    name: 'ampKUJI',
+    description: 'ERIS staked KUJI',
+    address: 'secret1pf6n6j8xlkxnga5t8w8exdtvcrrjgqms5wdlnj',
+    code_hash: '638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e',
+    image: '/ampkuji.svg',
+    decimals: 6,
+    coingecko_id: 'eris-staked-kuji',
+    deposits: [
+      {
+        chain_name: 'Kujira',
+        denom: 'factory/kujira1n3fr5f56r2ce0s37wdvwrk98yhhq3unnxgcqus8nzsfxvllk0yxquurqty/ampKUJI'
+      }
+    ],
+    withdrawals: [
+      {
+        chain_name: 'Kujira',
+        denom: ibcDenom(
+          [
+            {
+              incomingChannelId: chains['Kujira'].withdraw_channel_id,
+              incomingPortId: 'transfer'
+            }
+          ],
+          'factory:kujira1n3fr5f56r2ce0s37wdvwrk98yhhq3unnxgcqus8nzsfxvllk0yxquurqty:ampKUJI'
+        )
+      }
+    ]
+  },
+  {
     name: 'ampLUNA',
-    description: 'ERIS liquid staked LUNA',
+    description: 'ERIS staked LUNA',
     address: 'secret1cycwquhh63qmc0qgfe76eed6a6yj5x4vzlu3rc',
     code_hash: '638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e',
     image: '/ampluna.svg',
@@ -1152,6 +1181,35 @@ export const tokens: Token[] = [
             }
           ],
           'cw20:terra1ecgazyd0waaj3g7l9cmy5gulhxkps2gmxu9ghducvuypjq68mq2s5lvsct'
+        )
+      }
+    ]
+  },
+  {
+    name: 'ampWHALE',
+    description: 'ERIS staked WHALE',
+    address: 'secret1jsaftfxnwwmjxccvc3zqaqmkcpp8fjnvvltvq6',
+    code_hash: '638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e',
+    image: '/ampwhale.svg',
+    decimals: 6,
+    coingecko_id: 'eris-staked-whale',
+    deposits: [
+      {
+        chain_name: 'Migaloo',
+        denom: 'factory/migaloo1436kxs0w2es6xlqpp9rd35e3d0cjnw4sv8j3a7483sgks29jqwgshqdky4/ampWHALE'
+      }
+    ],
+    withdrawals: [
+      {
+        chain_name: 'Migaloo',
+        denom: ibcDenom(
+          [
+            {
+              incomingChannelId: chains['Migaloo'].withdraw_channel_id,
+              incomingPortId: 'transfer'
+            }
+          ],
+          'factory/migaloo1436kxs0w2es6xlqpp9rd35e3d0cjnw4sv8j3a7483sgks29jqwgshqdky4/ampWHALE'
         )
       }
     ]
@@ -2088,7 +2146,7 @@ export const tokens: Token[] = [
     code_hash: '638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e',
     image: '/page.png',
     decimals: 8,
-    coingecko_id: '',
+    coingecko_id: 'page',
     deposits: [
       {
         chain_name: 'Gravity Bridge',
@@ -2175,7 +2233,7 @@ export const tokens: Token[] = [
     code_hash: '638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e',
     image: '/qatom.svg',
     decimals: 6,
-    coingecko_id: '',
+    coingecko_id: 'qatom',
     deposits: [
       {
         chain_name: 'Quicksilver',
