@@ -1128,7 +1128,7 @@ export const tokens: Token[] = [
   {
     name: 'ampKUJI',
     description: 'ERIS staked KUJI',
-    address: 'XX',
+    address: 'secret1pf6n6j8xlkxnga5t8w8exdtvcrrjgqms5wdlnj',
     code_hash: '638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e',
     image: '/ampkuji.svg',
     decimals: 6,
@@ -1188,7 +1188,7 @@ export const tokens: Token[] = [
   {
     name: 'ampWHALE',
     description: 'ERIS staked WHALE',
-    address: 'XX',
+    address: 'secret1jsaftfxnwwmjxccvc3zqaqmkcpp8fjnvvltvq6',
     code_hash: '638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e',
     image: '/ampwhale.svg',
     decimals: 6,
