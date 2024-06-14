@@ -1126,8 +1126,37 @@ export const tokens: Token[] = [
     ]
   },
   {
+    name: 'ampKUJI',
+    description: 'ERIS staked KUJI',
+    address: 'XX',
+    code_hash: '638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e',
+    image: '/ampkuji.svg',
+    decimals: 6,
+    coingecko_id: 'eris-staked-kuji',
+    deposits: [
+      {
+        chain_name: 'Kujira',
+        denom: 'factory/kujira1n3fr5f56r2ce0s37wdvwrk98yhhq3unnxgcqus8nzsfxvllk0yxquurqty/ampKUJI'
+      }
+    ],
+    withdrawals: [
+      {
+        chain_name: 'Kujira',
+        denom: ibcDenom(
+          [
+            {
+              incomingChannelId: chains['Kujira'].withdraw_channel_id,
+              incomingPortId: 'transfer'
+            }
+          ],
+          'factory/kujira1n3fr5f56r2ce0s37wdvwrk98yhhq3unnxgcqus8nzsfxvllk0yxquurqty/ampKUJI'
+        )
+      }
+    ]
+  },
+  {
     name: 'ampLUNA',
-    description: 'ERIS liquid staked LUNA',
+    description: 'ERIS staked LUNA',
     address: 'secret1cycwquhh63qmc0qgfe76eed6a6yj5x4vzlu3rc',
     code_hash: '638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e',
     image: '/ampluna.svg',
