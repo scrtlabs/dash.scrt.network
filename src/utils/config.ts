@@ -617,7 +617,7 @@ export const tokens: Token[] = [
           'uscrt'
         )
       },
-      {
+      /*       {
         chain_name: 'Carbon',
         denom: ibcDenom(
           [
@@ -628,7 +628,7 @@ export const tokens: Token[] = [
           ],
           'uscrt'
         )
-      },
+      }, */
       {
         chain_name: 'Celestia',
         denom: ibcDenom(
@@ -981,10 +981,10 @@ export const tokens: Token[] = [
         chain_name: 'Axelar',
         denom: 'uscrt'
       },
-      {
+      /*       {
         chain_name: 'Carbon',
         denom: 'uscrt'
-      },
+      }, */
       {
         chain_name: 'Celestia',
         denom: 'uscrt'
@@ -2855,7 +2855,7 @@ export const tokens: Token[] = [
       }
     ]
   },
-  {
+  /*  {
     name: 'SWTH',
     description: 'Carbon Governance Token',
     address: 'secret187ehv3mquvfxwnwaff90c6keq0qf66hljw5xzt',
@@ -2883,7 +2883,7 @@ export const tokens: Token[] = [
         )
       }
     ]
-  },
+  }, */
   {
     name: 'TIA',
     description: 'Celestia Governance Token',
