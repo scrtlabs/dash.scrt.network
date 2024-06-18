@@ -109,10 +109,10 @@ export const chains: { [chain_name: string]: Chain } = {
   },
   Carbon: {
     chain_name: 'Carbon',
-    deposit_channel_id: 'channel-40',
+    deposit_channel_id: 'channel-44',
     deposit_gas: 200_000,
     deposit_gas_denom: 'swth',
-    withdraw_channel_id: 'channel-157',
+    withdraw_channel_id: 'channel-159',
     withdraw_gas: 150_000,
     chain_id: 'carbon-1',
     bech32_prefix: 'swth',
@@ -617,7 +617,7 @@ export const tokens: Token[] = [
           'uscrt'
         )
       },
-      /*       {
+      {
         chain_name: 'Carbon',
         denom: ibcDenom(
           [
@@ -628,7 +628,7 @@ export const tokens: Token[] = [
           ],
           'uscrt'
         )
-      }, */
+      },
       {
         chain_name: 'Celestia',
         denom: ibcDenom(
@@ -981,10 +981,10 @@ export const tokens: Token[] = [
         chain_name: 'Axelar',
         denom: 'uscrt'
       },
-      /*       {
+      {
         chain_name: 'Carbon',
         denom: 'uscrt'
-      }, */
+      },
       {
         chain_name: 'Celestia',
         denom: 'uscrt'
@@ -2855,10 +2855,10 @@ export const tokens: Token[] = [
       }
     ]
   },
-  /*  {
+  {
     name: 'SWTH',
     description: 'Carbon Governance Token',
-    address: 'secret187ehv3mquvfxwnwaff90c6keq0qf66hljw5xzt',
+    address: 'secret1mcd6ny9a037g0qf79mkks2tsm0kecw4pll22v7',
     code_hash: '638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e',
     image: '/swth.svg',
     decimals: 8,
@@ -2883,7 +2883,7 @@ export const tokens: Token[] = [
         )
       }
     ]
-  }, */
+  },
   {
     name: 'TIA',
     description: 'Celestia Governance Token',
