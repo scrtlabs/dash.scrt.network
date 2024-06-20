@@ -258,7 +258,10 @@ const APIContextProvider = ({ children }: any) => {
         'secret1an5pyzzpu5ez7ep9m43yzmalymwls39qtk8rjd', //Binance Hot Wallet
         'secret1nm0rrq86ucezaf8uj35pq9fpwr5r82cl94vhug', //Kraken
         'secret1nl7z7ha5kec4camsqm4yel0tsyz8zgmjqg6myp', //Kucoin
-        'secret155e8c284v6w725llkwwma36vzly4ujsc2syfcy' //MEXC
+        'secret155e8c284v6w725llkwwma36vzly4ujsc2syfcy', //MEXC
+        'secret1uxun0ttetqcvckdxfxgj5xmsqljqzxpd9h35zf', //LBank
+        'secret15catgqhve7ul7vrej5mqdlv8dx4r5hcw0ywzfq', //BitMart
+        'secret1tsz8v9k75jeqtl4exnf0qye5nme840h5n0pldk' //ByBit
       ]
 
       const getBalance = (address: string) => {
