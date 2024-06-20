@@ -32,7 +32,7 @@ export default function StakingChart() {
     sSCRTTokenSupply,
     IBCTokenSupply,
     burnedTokenSupply,
-    binanceTokenSupply
+    exchangesTokenSupply
   } = useContext(APIContext)
 
   const { theme } = useUserPreferencesStore()
@@ -61,7 +61,7 @@ export default function StakingChart() {
       stkdSCRTTokenSupply &&
       IBCTokenSupply &&
       burnedTokenSupply &&
-      binanceTokenSupply
+      exchangesTokenSupply
     ) {
       const otherToken =
         totalSupply -
@@ -76,8 +76,8 @@ export default function StakingChart() {
 
       const dataValues = [
         { label: 'Staked', value: bondedToken - stkdSCRTTokenSupply },
-        { label: 'Liquid', value: otherToken - binanceTokenSupply },
-        { label: 'Binance', value: binanceTokenSupply },
+        { label: 'Liquid', value: otherToken - exchangesTokenSupply },
+        { label: 'Exchanges', value: exchangesTokenSupply },
         { label: 'sSCRT', value: sSCRTTokenSupply },
         { label: 'stkd-SCRT', value: stkdSCRTTokenSupply },
         { label: 'Staked (not bonded)', value: notBondedToken },
@@ -118,7 +118,7 @@ export default function StakingChart() {
     stkdSCRTTokenSupply,
     IBCTokenSupply,
     burnedTokenSupply,
-    binanceTokenSupply
+    exchangesTokenSupply
   ])
 
   const createLabel = (label: string, value: number) => {
