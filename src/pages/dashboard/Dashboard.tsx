@@ -3,6 +3,7 @@ import { SecretNetworkClient } from 'secretjs'
 import CurrentPrice from './components/CurrentPrice'
 import MiniTile from './components/MiniTile'
 import PriceVolumeTVL from './components/PriceVolTVLChart/PriceVolumeTVL'
+import HexTile from './components/HexTile'
 import QuadTile from './components/QuadTile'
 import SocialMedia from './components/SocialMedia'
 import { SECRET_LCD, SECRET_CHAIN_ID } from 'utils/config'
@@ -243,17 +244,31 @@ function Dashboard() {
 
           {/* Block Info */}
           <div className="col-span-12 md:col-span-12 lg:col-span-12 xl:col-span-12 2xl:col-span-4">
-            <QuadTile
+            <HexTile
               item1={{
                 key: 'APR/Staking Yield',
                 value: growthRateFormattedString
               }}
-              item2={{ key: 'Inflation', value: inflationFormattedString }}
+              item2={{
+                key: 'Inflation',
+                value: inflationFormattedString
+              }}
               item3={{
-                key: 'Community Tax/Secret Foundation Tax',
+                key: 'Community Tax',
                 value: taxFormattedString
               }}
-              item4={{ key: 'Bonded Ratio', value: bondedRatioFormattedString }}
+              item4={{
+                key: 'SNF Tax',
+                value: taxFormattedString
+              }}
+              item5={{
+                key: 'Bonded Ratio',
+                value: bondedRatioFormattedString
+              }}
+              item6={{
+                key: 'Liquid Supply Bonding Rate',
+                value: bondedRatioFormattedString
+              }}
             />
           </div>
         </div>
