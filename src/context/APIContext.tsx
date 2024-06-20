@@ -261,7 +261,7 @@ const APIContextProvider = ({ children }: any) => {
         'secret155e8c284v6w725llkwwma36vzly4ujsc2syfcy' //MEXC
       ]
 
-      const getBalance = (address: any) => {
+      const getBalance = (address: string) => {
         return secretjsquery?.query?.bank?.balance({ address, denom: 'uscrt' }).then((res) => {
           return Number(res.balance?.amount) / 1e6
         })
