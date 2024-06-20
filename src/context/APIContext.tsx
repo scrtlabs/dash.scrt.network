@@ -253,22 +253,24 @@ const APIContextProvider = ({ children }: any) => {
           setBurnedTokenSupply(Number(res.balance?.amount) / 1e6)
         })
 
-      secretjsquery?.query?.bank
-        ?.balance({
-          address: 'secret1p3ucd3ptpw902fluyjzhq3ffgq4ntdda6qy5vv',
-          denom: 'uscrt'
+      const exchangeAddresses = [
+        'secret1p3ucd3ptpw902fluyjzhq3ffgq4ntdda6qy5vv', //Binance Cold Wallet
+        'secret1an5pyzzpu5ez7ep9m43yzmalymwls39qtk8rjd', //Binance Hot Wallet
+        'secret1nm0rrq86ucezaf8uj35pq9fpwr5r82cl94vhug', //Kraken
+        'secret1nl7z7ha5kec4camsqm4yel0tsyz8zgmjqg6myp', //Kucoin
+        'secret155e8c284v6w725llkwwma36vzly4ujsc2syfcy' //MEXC
+      ]
+
+      const getBalance = (address: any) => {
+        return secretjsquery?.query?.bank?.balance({ address, denom: 'uscrt' }).then((res) => {
+          return Number(res.balance?.amount) / 1e6
         })
-        ?.then((res) => {
-          const binanceColdWallet = Number(res.balance?.amount) / 1e6
-          secretjsquery?.query?.bank
-            ?.balance({
-              address: 'secret1an5pyzzpu5ez7ep9m43yzmalymwls39qtk8rjd',
-              denom: 'uscrt'
-            })
-            ?.then((res) => {
-              setExchangesTokenSupply(binanceColdWallet + Number(res.balance?.amount) / 1e6)
-            })
-        })
+      }
+
+      Promise.all(exchangeAddresses.map(getBalance)).then((balances) => {
+        const totalBalance = balances.reduce((acc, balance) => acc + balance, 0)
+        setExchangesTokenSupply(totalBalance)
+      })
 
       secretjsquery?.query?.bank
         ?.balance({
