@@ -22,7 +22,7 @@ const APIContextProvider = ({ children }: any) => {
   const [stkdSCRTTokenSupply, setStkdSCRTTokenSupply] = useState(Number)
   const [IBCTokenSupply, setIBCTokenSupply] = useState(Number)
   const [burnedTokenSupply, setBurnedTokenSupply] = useState(Number)
-  const [binanceTokenSupply, setBinanceTokenSupply] = useState(Number)
+  const [exchangesTokenSupply, setExchangesTokenSupply] = useState(Number)
 
   const defaultCurrencyPricing = {
     usd: 1,
@@ -64,7 +64,7 @@ const APIContextProvider = ({ children }: any) => {
   }
 
   const fetchDappsURL = () => {
-    fetch('../../dAppData.json')
+    fetch('https://raw.githubusercontent.com/SecretFoundation/DappRegistry/main/dAppRegistry.json')
       .then((response) => {
         if (!response.ok) throw new Error()
         else return response.json()
@@ -211,7 +211,7 @@ const APIContextProvider = ({ children }: any) => {
       .catch((error: any) => console.error(error))
       .then((response) => {
         setL5AnalyticsApiData(response)
-        //setIBCTokenSupply(response.total_ibc_balance_out)
+        setIBCTokenSupply(response.total_ibc_balance_out)
       })
 
     const queryData = async () => {
@@ -253,22 +253,27 @@ const APIContextProvider = ({ children }: any) => {
           setBurnedTokenSupply(Number(res.balance?.amount) / 1e6)
         })
 
-      secretjsquery?.query?.bank
-        ?.balance({
-          address: 'secret1p3ucd3ptpw902fluyjzhq3ffgq4ntdda6qy5vv',
-          denom: 'uscrt'
+      const exchangeAddresses = [
+        'secret1p3ucd3ptpw902fluyjzhq3ffgq4ntdda6qy5vv', //Binance Cold Wallet
+        'secret1an5pyzzpu5ez7ep9m43yzmalymwls39qtk8rjd', //Binance Hot Wallet
+        'secret1nm0rrq86ucezaf8uj35pq9fpwr5r82cl94vhug', //Kraken
+        'secret1nl7z7ha5kec4camsqm4yel0tsyz8zgmjqg6myp', //Kucoin
+        'secret155e8c284v6w725llkwwma36vzly4ujsc2syfcy', //MEXC
+        'secret1uxun0ttetqcvckdxfxgj5xmsqljqzxpd9h35zf', //LBank
+        'secret15catgqhve7ul7vrej5mqdlv8dx4r5hcw0ywzfq', //BitMart
+        'secret1tsz8v9k75jeqtl4exnf0qye5nme840h5n0pldk' //ByBit
+      ]
+
+      const getBalance = (address: string) => {
+        return secretjsquery?.query?.bank?.balance({ address, denom: 'uscrt' }).then((res) => {
+          return Number(res.balance?.amount) / 1e6
         })
-        ?.then((res) => {
-          const binanceColdWallet = Number(res.balance?.amount) / 1e6
-          secretjsquery?.query?.bank
-            ?.balance({
-              address: 'secret1an5pyzzpu5ez7ep9m43yzmalymwls39qtk8rjd',
-              denom: 'uscrt'
-            })
-            ?.then((res) => {
-              setBinanceTokenSupply(binanceColdWallet + Number(res.balance?.amount) / 1e6)
-            })
-        })
+      }
+
+      Promise.all(exchangeAddresses.map(getBalance)).then((balances) => {
+        const totalBalance = balances.reduce((acc, balance) => acc + balance, 0)
+        setExchangesTokenSupply(totalBalance)
+      })
 
       secretjsquery?.query?.bank
         ?.balance({
@@ -295,34 +300,34 @@ const APIContextProvider = ({ children }: any) => {
 
       let totalAmount = 0
 
-      allTokens[0].deposits.forEach((deposit, index) => {
-        const channelId = chains[deposit.chain_name].withdraw_channel_id
-        const isLast = index === allTokens[0].deposits.length - 1
-        setTimeout(() => {
-          executeQuery(channelId, isLast)
-        }, index * 100)
-      })
+      // allTokens[0].deposits.forEach((deposit, index) => {
+      //   const channelId = chains[deposit.chain_name].withdraw_channel_id
+      //   const isLast = index === allTokens[0].deposits.length - 1
+      //   setTimeout(() => {
+      //     executeQuery(channelId, isLast)
+      //   }, index * 100)
+      // })
 
-      const executeQuery = (channelId: any, isLast: any) => {
-        secretjsquery?.query?.ibc_transfer
-          ?.escrowAddress({
-            channel_id: channelId,
-            port_id: 'transfer'
-          })
-          ?.then((escrow) => {
-            secretjsquery?.query?.bank
-              ?.balance({
-                address: escrow.escrow_address,
-                denom: 'uscrt'
-              })
-              ?.then((res) => {
-                totalAmount += Number(res.balance?.amount) / 1e6
-                if (isLast) {
-                  setIBCTokenSupply(totalAmount)
-                }
-              })
-          })
-      }
+      // const executeQuery = (channelId: any, isLast: any) => {
+      //   secretjsquery?.query?.ibc_transfer
+      //     ?.escrowAddress({
+      //       channel_id: channelId,
+      //       port_id: 'transfer'
+      //     })
+      //     ?.then((escrow) => {
+      //       secretjsquery?.query?.bank
+      //         ?.balance({
+      //           address: escrow.escrow_address,
+      //           denom: 'uscrt'
+      //         })
+      //         ?.then((res) => {
+      //           totalAmount += Number(res.balance?.amount) / 1e6
+      //           if (isLast) {
+      //             setIBCTokenSupply(totalAmount)
+      //           }
+      //         })
+      //     })
+      // }
 
       secretjsquery?.query?.mint?.inflation('')?.then((res) => setInflation((res as any).inflation))
 
@@ -359,7 +364,7 @@ const APIContextProvider = ({ children }: any) => {
     stkdSCRTTokenSupply,
     IBCTokenSupply,
     burnedTokenSupply,
-    binanceTokenSupply,
+    exchangesTokenSupply,
     inflation,
     secretFoundationTax,
     communityTax,

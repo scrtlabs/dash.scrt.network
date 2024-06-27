@@ -109,10 +109,10 @@ export const chains: { [chain_name: string]: Chain } = {
   },
   Carbon: {
     chain_name: 'Carbon',
-    deposit_channel_id: 'channel-XX',
+    deposit_channel_id: 'channel-44',
     deposit_gas: 200_000,
-    deposit_gas_denom: 'dswth',
-    withdraw_channel_id: 'channel-XX',
+    deposit_gas_denom: 'swth',
+    withdraw_channel_id: 'channel-159',
     withdraw_gas: 150_000,
     chain_id: 'carbon-1',
     bech32_prefix: 'swth',
@@ -276,6 +276,32 @@ export const chains: { [chain_name: string]: Chain } = {
     chain_image: '/juno.svg',
     explorer_account: 'https://www.mintscan.io/juno/account/'
   },
+  Kava: {
+    chain_name: 'Kava',
+    deposit_channel_id: 'channel-148',
+    deposit_gas: 200_000,
+    deposit_gas_denom: 'ukava',
+    withdraw_channel_id: 'channel-158',
+    withdraw_gas: 150_000,
+    chain_id: 'kava_2222-10',
+    bech32_prefix: 'kava',
+    lcd: 'https://kava-rest.publicnode.com',
+    chain_image: '/kava.svg',
+    explorer_account: 'https://www.mintscan.io/kava/account/'
+  },
+  Kujira: {
+    chain_name: 'Kujira',
+    deposit_channel_id: 'channel-10',
+    deposit_gas: 200_000,
+    deposit_gas_denom: 'ukuji',
+    withdraw_channel_id: 'channel-22',
+    withdraw_gas: 150_000,
+    chain_id: 'kaiyo-1',
+    bech32_prefix: 'kujira',
+    lcd: 'https://kujira-api.polkachu.com/',
+    chain_image: '/kuji.svg',
+    explorer_account: 'https://ping.pub/kujira/account/'
+  },
   Migaloo: {
     chain_name: 'Migaloo',
     deposit_channel_id: 'channel-4',
@@ -328,19 +354,6 @@ export const chains: { [chain_name: string]: Chain } = {
     lcd: 'https://nolus-api.lavenderfive.com:443',
     chain_image: '/nolus.svg',
     explorer_account: 'https://ping.pub/nolus/account/'
-  },
-  Kujira: {
-    chain_name: 'Kujira',
-    deposit_channel_id: 'channel-10',
-    deposit_gas: 200_000,
-    deposit_gas_denom: 'ukuji',
-    withdraw_channel_id: 'channel-22',
-    withdraw_gas: 150_000,
-    chain_id: 'kaiyo-1',
-    bech32_prefix: 'kujira',
-    lcd: 'https://kujira-api.polkachu.com/',
-    chain_image: '/kuji.svg',
-    explorer_account: 'https://ping.pub/kujira/account/'
   },
   Oraichain: {
     chain_name: 'Oraichain',
@@ -605,6 +618,18 @@ export const tokens: Token[] = [
         )
       },
       {
+        chain_name: 'Carbon',
+        denom: ibcDenom(
+          [
+            {
+              incomingChannelId: chains['Carbon'].deposit_channel_id,
+              incomingPortId: 'transfer'
+            }
+          ],
+          'uscrt'
+        )
+      },
+      {
         chain_name: 'Celestia',
         denom: ibcDenom(
           [
@@ -742,6 +767,18 @@ export const tokens: Token[] = [
           [
             {
               incomingChannelId: chains['Juno'].deposit_channel_id,
+              incomingPortId: 'transfer'
+            }
+          ],
+          'uscrt'
+        )
+      },
+      {
+        chain_name: 'Kava',
+        denom: ibcDenom(
+          [
+            {
+              incomingChannelId: chains['Kava'].deposit_channel_id,
               incomingPortId: 'transfer'
             }
           ],
@@ -945,6 +982,10 @@ export const tokens: Token[] = [
         denom: 'uscrt'
       },
       {
+        chain_name: 'Carbon',
+        denom: 'uscrt'
+      },
+      {
         chain_name: 'Celestia',
         denom: 'uscrt'
       },
@@ -990,6 +1031,10 @@ export const tokens: Token[] = [
       },
       {
         chain_name: 'Juno',
+        denom: 'uscrt'
+      },
+      {
+        chain_name: 'Kava',
         denom: 'uscrt'
       },
       {
@@ -1081,8 +1126,37 @@ export const tokens: Token[] = [
     ]
   },
   {
+    name: 'ampKUJI',
+    description: 'ERIS staked KUJI',
+    address: 'secret1pf6n6j8xlkxnga5t8w8exdtvcrrjgqms5wdlnj',
+    code_hash: '638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e',
+    image: '/ampkuji.svg',
+    decimals: 6,
+    coingecko_id: 'eris-staked-kuji',
+    deposits: [
+      {
+        chain_name: 'Kujira',
+        denom: 'factory/kujira1n3fr5f56r2ce0s37wdvwrk98yhhq3unnxgcqus8nzsfxvllk0yxquurqty/ampKUJI'
+      }
+    ],
+    withdrawals: [
+      {
+        chain_name: 'Kujira',
+        denom: ibcDenom(
+          [
+            {
+              incomingChannelId: chains['Kujira'].withdraw_channel_id,
+              incomingPortId: 'transfer'
+            }
+          ],
+          'factory:kujira1n3fr5f56r2ce0s37wdvwrk98yhhq3unnxgcqus8nzsfxvllk0yxquurqty:ampKUJI'
+        )
+      }
+    ]
+  },
+  {
     name: 'ampLUNA',
-    description: 'ERIS liquid staked LUNA',
+    description: 'ERIS staked LUNA',
     address: 'secret1cycwquhh63qmc0qgfe76eed6a6yj5x4vzlu3rc',
     code_hash: '638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e',
     image: '/ampluna.svg',
@@ -1107,6 +1181,35 @@ export const tokens: Token[] = [
             }
           ],
           'cw20:terra1ecgazyd0waaj3g7l9cmy5gulhxkps2gmxu9ghducvuypjq68mq2s5lvsct'
+        )
+      }
+    ]
+  },
+  {
+    name: 'ampWHALE',
+    description: 'ERIS staked WHALE',
+    address: 'secret1jsaftfxnwwmjxccvc3zqaqmkcpp8fjnvvltvq6',
+    code_hash: '638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e',
+    image: '/ampwhale.svg',
+    decimals: 6,
+    coingecko_id: 'eris-amplified-whale',
+    deposits: [
+      {
+        chain_name: 'Migaloo',
+        denom: 'factory/migaloo1436kxs0w2es6xlqpp9rd35e3d0cjnw4sv8j3a7483sgks29jqwgshqdky4/ampWHALE'
+      }
+    ],
+    withdrawals: [
+      {
+        chain_name: 'Migaloo',
+        denom: ibcDenom(
+          [
+            {
+              incomingChannelId: chains['Migaloo'].withdraw_channel_id,
+              incomingPortId: 'transfer'
+            }
+          ],
+          'factory/migaloo1436kxs0w2es6xlqpp9rd35e3d0cjnw4sv8j3a7483sgks29jqwgshqdky4/ampWHALE'
         )
       }
     ]
@@ -1689,6 +1792,35 @@ export const tokens: Token[] = [
     ]
   },
   {
+    name: 'KAVA',
+    description: 'Kava Governance Token',
+    address: 'secret1xyhphws090fqs33sxkytmagwynz54eqnpdqfrw',
+    code_hash: '638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e',
+    image: '/kava.svg',
+    decimals: 6,
+    coingecko_id: 'kava',
+    deposits: [
+      {
+        chain_name: 'Kava',
+        denom: 'ukava'
+      }
+    ],
+    withdrawals: [
+      {
+        chain_name: 'Kava',
+        denom: ibcDenom(
+          [
+            {
+              incomingChannelId: chains['Kava'].withdraw_channel_id,
+              incomingPortId: 'transfer'
+            }
+          ],
+          'ukava'
+        )
+      }
+    ]
+  },
+  {
     name: 'KUJI',
     description: 'Kujira Governance Token',
     address: 'secret13hvh0rn0rcf5zr486yxlrucvwpzwqu2dsz6zu8',
@@ -2014,7 +2146,7 @@ export const tokens: Token[] = [
     code_hash: '638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e',
     image: '/page.png',
     decimals: 8,
-    coingecko_id: '',
+    coingecko_id: 'page',
     deposits: [
       {
         chain_name: 'Gravity Bridge',
@@ -2101,7 +2233,7 @@ export const tokens: Token[] = [
     code_hash: '638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e',
     image: '/qatom.svg',
     decimals: 6,
-    coingecko_id: '',
+    coingecko_id: 'qatom',
     deposits: [
       {
         chain_name: 'Quicksilver',
@@ -2186,7 +2318,7 @@ export const tokens: Token[] = [
     description: 'Native USDC Stablecoin via Noble',
     address: 'secret1chsejpk9kfj4vt9ec6xvyguw539gsdtr775us2',
     code_hash: '5a085bd8ed89de92b35134ddd12505a602c7759ea25fb5c089ba03c8535b3042',
-    image: '/ausdc.svg',
+    image: '/usdc.svg',
     decimals: 6,
     coingecko_id: 'usd-coin',
     deposits: [
@@ -2724,6 +2856,35 @@ export const tokens: Token[] = [
     ]
   },
   {
+    name: 'SWTH',
+    description: 'Carbon Governance Token',
+    address: 'secret1mcd6ny9a037g0qf79mkks2tsm0kecw4pll22v7',
+    code_hash: '638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e',
+    image: '/swth.svg',
+    decimals: 8,
+    coingecko_id: 'switcheo',
+    deposits: [
+      {
+        chain_name: 'Carbon',
+        denom: 'swth'
+      }
+    ],
+    withdrawals: [
+      {
+        chain_name: 'Carbon',
+        denom: ibcDenom(
+          [
+            {
+              incomingChannelId: chains['Carbon'].withdraw_channel_id,
+              incomingPortId: 'transfer'
+            }
+          ],
+          'swth'
+        )
+      }
+    ]
+  },
+  {
     name: 'TIA',
     description: 'Celestia Governance Token',
     address: 'secret1s9h6mrp4k9gll4zfv5h78ll68hdq8ml7jrnn20',
@@ -2806,8 +2967,37 @@ export const tokens: Token[] = [
     ]
   },
   {
+    name: 'USDT',
+    description: 'Native USDT from Kava',
+    address: 'secret1htd6s29m2j9h45knwkyucz98m306n32hx8dww3',
+    code_hash: '638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e',
+    image: '/usdt.svg',
+    decimals: 6,
+    coingecko_id: 'tether',
+    deposits: [
+      {
+        chain_name: 'Kava',
+        denom: 'erc20/tether/usdt'
+      }
+    ],
+    withdrawals: [
+      {
+        chain_name: 'Kava',
+        denom: ibcDenom(
+          [
+            {
+              incomingChannelId: chains['Kava'].withdraw_channel_id,
+              incomingPortId: 'transfer'
+            }
+          ],
+          'erc20/tether/usdt'
+        )
+      }
+    ]
+  },
+  {
     name: 'WBTC',
-    description: 'Wrapped Bitcoin on Osmosis',
+    description: 'Wrapped Bitcoin from Osmosis',
     address: 'secret1v2kgmfwgd2an0l5ddralajg5wfdkemxl2vg4jp',
     code_hash: '638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e',
     image: '/wbtc.svg',
@@ -2864,6 +3054,35 @@ export const tokens: Token[] = [
     ]
   },
   {
+    name: 'wstETH',
+    description: 'Wrapped Lido stETH from Neutron',
+    address: 'secret1xx6m5c7d92h75evkmxqqe2xe5sk5qcqqs9t8ar',
+    code_hash: '638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e',
+    image: '/wsteth.svg',
+    decimals: 18,
+    coingecko_id: 'wrapped-steth',
+    deposits: [
+      {
+        chain_name: 'Neutron',
+        denom: 'factory/neutron1ug740qrkquxzrk2hh29qrlx3sktkfml3je7juusc2te7xmvsscns0n2wry/wstETH'
+      }
+    ],
+    withdrawals: [
+      {
+        chain_name: 'Neutron',
+        denom: ibcDenom(
+          [
+            {
+              incomingChannelId: chains['Neutron'].withdraw_channel_id,
+              incomingPortId: 'transfer'
+            }
+          ],
+          'factory/neutron1ug740qrkquxzrk2hh29qrlx3sktkfml3je7juusc2te7xmvsscns0n2wry/wstETH'
+        )
+      }
+    ]
+  },
+  {
     name: 'XPRT',
     description: 'Persistence Governance Token',
     address: 'secret1gnrrqjj5e2pwn4g262xjyypptu0ge3z3tps3nn',
@@ -2898,7 +3117,7 @@ export const tokens: Token[] = [
 export const snips: Token[] = [
   {
     name: 'ADM',
-    description: 'Admirari DAO / Secret Admirers Token',
+    description: 'Admirari DAO Token',
     is_snip20: true,
     address: 'secret1zzuffktc25904mwus8ched6q6p5ewksy80m33h',
     code_hash: '6ee652c96cc3b954ea763d55b039a53784a4b15f28ccac14134c8f91e2d4c91c',
@@ -4005,7 +4224,7 @@ export const ICSTokens: Token[] = [
     is_ics20: true,
     address: 'secret1vkq022x4q8t8kx9de3r84u669l65xnwf2lg3e6',
     code_hash: '638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e',
-    image: '/ausdc.svg',
+    image: '/usdc.svg',
     decimals: 6,
     coingecko_id: 'usd-coin',
     axelar_denom: 'uusdc',
@@ -4290,7 +4509,7 @@ export const ICSTokens: Token[] = [
     code_hash: '638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e',
     image: '/wsteth.svg',
     decimals: 18,
-    coingecko_id: 'wrapped-steth',
+    coingecko_id: 'bridged-wrapped-steth-axelar',
     axelar_denom: 'wsteth-wei',
     deposits: [
       {
@@ -5051,7 +5270,7 @@ export const ICSTokens: Token[] = [
     is_ics20: true,
     address: 'secret1wk5j2cntwg2fgklf0uta3tlkvt87alfj7kepuw',
     code_hash: '638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e',
-    image: '/ausdt.svg',
+    image: '/usdt.svg',
     decimals: 6,
     coingecko_id: 'tether',
     axelar_denom: 'uusdt',
