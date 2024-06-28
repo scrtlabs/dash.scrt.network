@@ -17,8 +17,9 @@ const BalanceItem = (props: Props) => {
   const tokenName = (props.token?.address !== 'native' && props.token?.name === 'SCRT' ? 's' : '') + props.token?.name
 
   const tokenDescription =
-    (props.token?.address !== 'native' || props.token?.is_ics20 || props.token?.is_snip20 ? 'Private ' : 'Public ') +
-    props.token?.description
+    (props.token?.address !== 'native' || props.token?.is_axelar_asset || props.token?.is_snip20
+      ? 'Private '
+      : 'Public ') + props.token?.description
 
   return (
     <>

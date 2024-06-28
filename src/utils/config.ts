@@ -495,7 +495,7 @@ export type Token = {
   /** a snip20 token that's originated from Secret Network */
   is_snip20?: boolean
   /** a ICS20 token that's originated from Secret Network */
-  is_ics20?: boolean
+  is_axelar_asset?: boolean
   /** secret contract address of the token */
   axelar_denom?: string
   /** denom name of ICS20 token in axelar */
@@ -2314,7 +2314,7 @@ export const tokens: Token[] = [
     ]
   },
   {
-    name: 'USDC.nbl',
+    name: 'USDC',
     description: 'Native USDC Stablecoin via Noble',
     address: 'secret1chsejpk9kfj4vt9ec6xvyguw539gsdtr775us2',
     code_hash: '5a085bd8ed89de92b35134ddd12505a602c7759ea25fb5c089ba03c8535b3042',
@@ -4221,7 +4221,7 @@ export const ICSTokens: Token[] = [
   {
     name: 'USDC.axl',
     description: 'USDC stablecoin from Axelar',
-    is_ics20: true,
+    is_axelar_asset: true,
     address: 'secret1vkq022x4q8t8kx9de3r84u669l65xnwf2lg3e6',
     code_hash: '638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e',
     image: '/usdc.svg',
@@ -4348,7 +4348,7 @@ export const ICSTokens: Token[] = [
   {
     name: 'AXL',
     description: 'Axelar Governance Token',
-    is_ics20: true,
+    is_axelar_asset: true,
     address: 'secret1vcau4rkn7mvfwl8hf0dqa9p0jr59983e3qqe3z',
     code_hash: '638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e',
     image: '/axl.svg',
@@ -4375,9 +4375,9 @@ export const ICSTokens: Token[] = [
     ]
   },
   {
-    name: 'WETH.axl',
+    name: 'WETH',
     description: 'Wrapped ETH from Axelar',
-    is_ics20: true,
+    is_axelar_asset: true,
     address: 'secret139qfh3nmuzfgwsx2npnmnjl4hrvj3xq5rmq8a0',
     code_hash: '638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e',
     image: '/weth.svg',
@@ -4502,9 +4502,9 @@ export const ICSTokens: Token[] = [
     ]
   },
   {
-    name: 'wstETH',
+    name: 'wstETH.axl',
     description: 'wstETH from Axelar',
-    is_ics20: true,
+    is_axelar_asset: true,
     address: 'secret148jzxkagwe0xulf8jt3sw4nuh2shdh788z3gyd',
     code_hash: '638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e',
     image: '/wsteth.svg',
@@ -4617,7 +4617,7 @@ export const ICSTokens: Token[] = [
   {
     name: 'WBTC',
     description: 'Wrapped Bitcoin from Axelar',
-    is_ics20: true,
+    is_axelar_asset: true,
     address: 'secret1guyayjwg5f84daaxl7w84skd8naxvq8vz9upqx',
     code_hash: '638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e',
     image: '/wbtc.svg',
@@ -4744,7 +4744,7 @@ export const ICSTokens: Token[] = [
   {
     name: 'WBNB',
     description: 'Wrapped Binance Coin from Axelar',
-    is_ics20: true,
+    is_axelar_asset: true,
     address: 'secret19xsac2kstky8nhgvvz257uszt44g0cu6ycd5e4',
     code_hash: '638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e',
     image: '/wbnb.svg',
@@ -4843,7 +4843,7 @@ export const ICSTokens: Token[] = [
   {
     name: 'BUSD',
     description: 'Binance USD from Axelar',
-    is_ics20: true,
+    is_axelar_asset: true,
     address: 'secret1t642ayn9rhl5q9vuh4n2jkx0gpa9r6c3sl96te',
     code_hash: '638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e',
     image: '/abusd.svg',
@@ -4942,7 +4942,7 @@ export const ICSTokens: Token[] = [
   {
     name: 'DAI',
     description: 'DAI from Axelar',
-    is_ics20: true,
+    is_axelar_asset: true,
     address: 'secret1c2prkwd8e6ratk42l4vrnwz34knfju6hmp7mg7',
     code_hash: '638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e',
     image: '/adai.svg',
@@ -5055,7 +5055,7 @@ export const ICSTokens: Token[] = [
   {
     name: 'LINK',
     description: 'LINK from Axelar',
-    is_ics20: true,
+    is_axelar_asset: true,
     address: 'secret1walthx26qaas50nwzg2rsqttlkf58q3hvjha5k',
     code_hash: '638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e',
     image: '/alink.svg',
@@ -5166,9 +5166,9 @@ export const ICSTokens: Token[] = [
     ]
   },
   {
-    name: 'UNI.axl',
+    name: 'UNI',
     description: 'UNI from Axelar',
-    is_ics20: true,
+    is_axelar_asset: true,
     address: 'secret1egqlkasa6xe6efmfp9562sfj07lq44z7jngu5k',
     code_hash: '638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e',
     image: '/auni.svg',
@@ -5265,9 +5265,9 @@ export const ICSTokens: Token[] = [
     ]
   },
   {
-    name: 'USDT',
+    name: 'USDT.axl',
     description: 'USDT stablecoin from Axelar',
-    is_ics20: true,
+    is_axelar_asset: true,
     address: 'secret1wk5j2cntwg2fgklf0uta3tlkvt87alfj7kepuw',
     code_hash: '638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e',
     image: '/usdt.svg',
@@ -5394,7 +5394,7 @@ export const ICSTokens: Token[] = [
   {
     name: 'FRAX',
     description: 'FRAX from Axelar',
-    is_ics20: true,
+    is_axelar_asset: true,
     address: 'secret16e230j6qm5u5q30pcc6qv726ae30ak6lzq0zvf',
     code_hash: '638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e',
     image: '/afrax.svg',

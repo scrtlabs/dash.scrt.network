@@ -99,7 +99,7 @@ async function performIbcDeposit(
 
   try {
     let tx: TxResponse
-    if (!['Evmos', 'Injective', 'Dymension'].includes(props.chain.chain_name) && !token.is_ics20) {
+    if (!['Evmos', 'Injective', 'Dymension'].includes(props.chain.chain_name) && !token.is_axelar_asset) {
       // Regular cosmos chain (not ethermint signing)
       if (token.name === 'ampLUNA') {
         //@ts-ignore
@@ -308,7 +308,7 @@ async function performIbcDeposit(
           }
         )
       }
-    } else if (token.is_ics20) {
+    } else if (token.is_axelar_asset) {
       const fromChain: string = deposit.axelar_chain_name,
         toChain = 'secret-snip',
         destinationAddress = props.secretNetworkClient.address,
@@ -591,7 +591,7 @@ async function performIbcWithdrawal(
           broadcastMode: BroadcastMode.Sync
         }
       )
-    } else if (token.is_ics20) {
+    } else if (token.is_axelar_asset) {
       const fromChain = 'secret-snip',
         toChain = withdrawalChain.axelar_chain_name,
         destinationAddress = sourceChainNetworkClient.address,
