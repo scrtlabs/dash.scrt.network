@@ -75,7 +75,7 @@ export default function BridgingFees(props: IProps) {
             </span>
           </Tooltip>
         </div>
-        {props.token.is_ics20 && axelarTransferFee !== undefined ? (
+        {props.token.is_axelar_asset && axelarTransferFee !== undefined ? (
           <div>
             {` ${Number(BigNumber(axelarTransferFee.amount).dividedBy(`1e${props.token.decimals}`)).toLocaleString(
               undefined,

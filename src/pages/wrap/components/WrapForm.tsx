@@ -139,7 +139,8 @@ export default function WrapForm() {
     const tokenName = option.data.name.toLowerCase()
     return (
       tokenName?.toLowerCase().includes(inputValue?.toLowerCase()) ||
-      ('s' + tokenName)?.toLowerCase().includes(inputValue?.toLowerCase())
+      ('s' + tokenName)?.toLowerCase().includes(inputValue?.toLowerCase()) ||
+      ('secret' + tokenName)?.toLowerCase().includes(inputValue?.toLowerCase())
     )
   }
 
@@ -210,7 +211,7 @@ export default function WrapForm() {
                     className="w-6 h-6 mr-2 rounded-full"
                   />
                   <span className="font-semibold text-sm">
-                    {formik.values.wrappingMode === 'unwrap' && 's'}
+                    {formik.values.wrappingMode === 'unwrap' && 'Secret '}
                     {token.name}
                   </span>
                 </div>
@@ -287,7 +288,7 @@ export default function WrapForm() {
               components={{ Control: CustomControl }}
               filterOption={customTokenFilterOption}
               styles={customTokenSelectStyle}
-              formatOptionLabel={(token) => (
+              formatOptionLabel={(token: Token) => (
                 <div className="flex items-center">
                   <img
                     src={`/img/assets/${token.image}`}
@@ -295,7 +296,7 @@ export default function WrapForm() {
                     className="w-6 h-6 mr-2 rounded-full"
                   />
                   <span className="font-semibold text-sm">
-                    {formik.values.wrappingMode === 'wrap' && 's'}
+                    {formik.values.wrappingMode === 'wrap' && 'Secret '}
                     {token.name}
                   </span>
                 </div>
