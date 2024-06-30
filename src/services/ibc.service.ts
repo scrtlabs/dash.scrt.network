@@ -937,6 +937,23 @@ function getSupportedIbcTokensByChain(chain: Chain) {
   return supportedTokens
 }
 
+/**
+ * Get the chain name that supports the specified IBC token.
+ * @param tokenName - The name of the token to check.
+ * @returns The name of the supported chain, or undefined if no chain supports the token.
+ */
+function getSupportedChainByIbcTokenName(tokenName: string): string | undefined {
+  const token = allTokens.find((token) => token.name.toLowerCase() === tokenName.toLowerCase())
+
+  if (!token) return undefined
+
+  const supportedDeposit = token.deposits.find((deposit) =>
+    allTokens.some((t) => t.deposits.some((d) => d.chain_name === deposit.chain_name))
+  )
+
+  return supportedDeposit?.chain_name
+}
+
 async function performIbcTransfer(props: TProps): Promise<string> {
   const sourceChainNetworkClient = await IbcService.getChainSecretJs(props.chain)
   if (props.ibcMode === 'withdrawal') {
@@ -949,6 +966,7 @@ async function performIbcTransfer(props: TProps): Promise<string> {
 export const IbcService = {
   getSupportedChains,
   getSupportedIbcTokensByChain,
+  getSupportedChainByIbcTokenName,
   performIbcTransfer,
   composePMFMemo,
   getSkipIBCRouting,

@@ -70,8 +70,8 @@ const BalanceItem = (props: Props) => {
           </div>
         )}
 
-        {/* Balance */}
-        <div className="flex-initial min-w-[11rem] flex flex-col items-center">
+        {/* Send */}
+        <div className="flex-initial min-w-[2rem] flex flex-col items-center">
           <div className="description text-xs text-neutral-500 dark:text-neutral-400 mb-2">Send</div>
           <div className="text-xs">
             <a
@@ -79,6 +79,18 @@ const BalanceItem = (props: Props) => {
               className="bg-gray-500 dark:bg-gray-600 hover:bg-gray-600 dark:hover:bg-gray-700 text-white ring-gray-500/40 dark:ring-gray-600/40 py-1.5 px-2 text-xs focus:outline-none focus-visible:ring-4 text-center font-bold rounded transition-colors"
             >
               Send
+            </a>
+          </div>
+        </div>
+        {/* IBC */}
+        <div className="flex-initial min-w-[2rem] flex flex-col items-center">
+          <div className="description text-xs text-neutral-500 dark:text-neutral-400 mb-2">IBC</div>
+          <div className="text-xs">
+            <a
+              href={`/ibc?token=` + props.token.name.toLowerCase()}
+              className="bg-gray-500 dark:bg-gray-600 hover:bg-gray-600 dark:hover:bg-gray-700 text-white ring-gray-500/40 dark:ring-gray-600/40 py-1.5 px-2 text-xs focus:outline-none focus-visible:ring-4 text-center font-bold rounded transition-colors"
+            >
+              IBC
             </a>
           </div>
         </div>

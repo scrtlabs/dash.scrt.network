@@ -4,7 +4,6 @@ import { Chain, Deposit, Token, chains, tokens } from 'utils/config'
 import { IbcMode } from 'types/IbcMode'
 import { useSearchParams } from 'react-router-dom'
 import { ibcJsonLdSchema, ibcPageDescription, ibcPageTitle } from 'utils/commons'
-import { useSecretNetworkClientStore } from 'store/secretNetworkClient'
 import Title from 'components/Title'
 import IbcForm from './components/IbcForm'
 import { IbcService } from 'services/ibc.service'
@@ -14,13 +13,11 @@ export function Ibc() {
 
   const [ibcMode, setIbcMode] = useState<IbcMode>('deposit')
 
-  const { isConnected } = useSecretNetworkClientStore()
-
   const [selectedSource, setSelectedSource] = useState(
     selectedToken.deposits.find((deposit: Deposit) => deposit.chain_name.toLowerCase() === 'osmosis')
   )
 
-  const [searchParams] = useSearchParams()
+  const [searchParams, setSearchParams] = useSearchParams()
   const modeUrlParam = searchParams.get('mode')
   const chainUrlParam = searchParams.get('chain')
   const tokenUrlParam = searchParams.get('token')
@@ -57,6 +54,18 @@ export function Ibc() {
             (token: Token) => token.name.toLowerCase() === tokenUrlParam.toLowerCase()
           )
         )
+      }
+    } else {
+      if (tokenUrlParam) {
+        const chain_name = IbcService.getSupportedChainByIbcTokenName(tokenUrlParam)
+        if (chain_name) {
+          const params = {
+            chain: chain_name,
+            mode: 'withdrawal',
+            token: tokenUrlParam
+          }
+          setSearchParams(params)
+        }
       }
     }
   }, [chainUrlParam, tokenUrlParam, modeUrlParam])
