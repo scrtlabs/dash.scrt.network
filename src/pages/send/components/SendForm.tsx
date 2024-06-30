@@ -87,7 +87,7 @@ export default function SendForm() {
         })
         toast.promise(res, {
           loading: `Waiting to send ${formik.values.amount} ${
-            formik.values.token.name == 'SCRT' && formik.values.token.address !== 'native' && <form action=""></form>
+            formik.values.token.name == 'SCRT' && formik.values.token.address !== 'native' ? 's' : ''
           }${formik.values.token.name}...`,
           success: 'Sending successful!',
           error: 'Sending unsuccessful!'

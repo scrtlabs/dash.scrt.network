@@ -105,7 +105,10 @@ export default function BalanceUI({
                 BigNumber(balance).dividedBy(`1e${token.decimals}`)
               ).toLocaleString(undefined, {
                 maximumFractionDigits: token.decimals
-              })} ${token.name} ${token.coingecko_id && currencyPriceString ? ` (${currencyPriceString})` : ''}`}</span>
+              })} 
+              ${token.name == 'SCRT' && isSecretToken ? 's' : ''}${token.name} ${
+                token.coingecko_id && currencyPriceString ? ` (${currencyPriceString})` : ''
+              }`}</span>
             </>
           )}
 
