@@ -86,30 +86,24 @@ export default function BalanceChart() {
         async function getAverageColor(imgSrc: string): Promise<string> {
           return new Promise((resolve, reject) => {
             const img = new Image()
+            img.crossOrigin = 'Anonymous'
             img.onload = () => {
               const canvas = document.createElement('canvas')
-              const ctx = canvas.getContext('2d')!
-              canvas.width = 2
-              canvas.height = 2
-              ctx.drawImage(img, 0, 0, canvas.width, canvas.height)
-              const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height)
-              const data = imageData.data
-              const pixelCount = data.length / 4
-              let r = 0,
-                g = 0,
-                b = 0
-
-              for (let i = 0; i < data.length; i += 4) {
-                r += data[i]
-                g += data[i + 1]
-                b += data[i + 2]
+              const ctx = canvas.getContext('2d')
+              if (!ctx) {
+                reject(new Error('Unable to get canvas context'))
+                return
               }
+              ctx.drawImage(img, 0, 0, 2, 2)
+              const { data } = ctx.getImageData(0, 0, 2, 2)
 
               resolve(
-                `rgb(${Math.floor(r / pixelCount)}, ${Math.floor(g / pixelCount)}, ${Math.floor(b / pixelCount)})`
+                `rgb(${Math.floor((data[0] + data[4] + data[8] + data[12]) / 4)}, ${Math.floor(
+                  (data[1] + data[5] + data[9] + data[13]) / 4
+                )}, ${Math.floor((data[2] + data[6] + data[10] + data[14]) / 4)})`
               )
             }
-            img.onerror = reject
+            img.onerror = (error) => reject(error)
             img.src = imgSrc
           })
         }
