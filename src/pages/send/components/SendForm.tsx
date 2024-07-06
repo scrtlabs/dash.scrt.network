@@ -87,7 +87,7 @@ export default function SendForm() {
         })
         toast.promise(res, {
           loading: `Waiting to send ${formik.values.amount} ${
-            formik.values.token.address === 'native' || formik.values.token.is_snip20 ? '' : 's'
+            formik.values.token.name == 'SCRT' && formik.values.token.address !== 'native' ? 's' : ''
           }${formik.values.token.name}...`,
           success: 'Sending successful!',
           error: 'Sending unsuccessful!'
@@ -131,7 +131,7 @@ export default function SendForm() {
       <div className="flex items-center">
         <img src={`/img/assets/${token.image}`} alt={`${token.name} logo`} className="w-6 h-6 mr-2 rounded-full" />
         <span className="font-semibold text-sm">
-          {token.address === 'native' || token.is_snip20 ? null : 's'}
+          {token.name == 'SCRT' && token.address !== 'native' ? 's' : null}
           {token.name}
         </span>
       </div>
@@ -139,9 +139,7 @@ export default function SendForm() {
   }
 
   useEffect(() => {
-    var params = {}
-    params = {
-      ...params,
+    const params = {
       token: formik.values.token.name.toLowerCase(),
       recipient: formik.values.recipient.toLowerCase(),
       memo: formik.values.memo

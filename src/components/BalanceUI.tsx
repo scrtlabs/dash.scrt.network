@@ -37,7 +37,6 @@ export default function BalanceUI({
 
   const [balance, setBalance] = useState<number | string>(null)
   const [currencyPriceString, setCurrencyPriceString] = useState<string>(null)
-  const tokenName = (isSecretToken ? 's' : '') + token.name
 
   useEffect(() => {
     if (chain === chains['Secret Network']) {
@@ -100,13 +99,14 @@ export default function BalanceUI({
         {balance !== null &&
           balance !== ('viewingKeyError' as GetBalanceError) &&
           balance !== ('GenericFetchError' as GetBalanceError) &&
-          tokenName && (
+          token.name && (
             <>
               <span className="font-medium font-mono">{` ${Number(
                 BigNumber(balance).dividedBy(`1e${token.decimals}`)
               ).toLocaleString(undefined, {
                 maximumFractionDigits: token.decimals
-              })} ${isSecretToken && !token.is_snip20 ? 's' : ''}${token.name} ${
+              })} 
+              ${token.name == 'SCRT' && isSecretToken ? 's' : ''}${token.name} ${
                 token.coingecko_id && currencyPriceString ? ` (${currencyPriceString})` : ''
               }`}</span>
             </>

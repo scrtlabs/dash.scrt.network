@@ -23,19 +23,8 @@ interface IPropsToken extends IBaseProps {
   token: Token
 }
 
-interface IPropsTokenName extends IBaseProps {
-  tokenName: string
-}
-
-type TProps = IPropsToken | IPropsTokenName
-
-async function performSending(props: TProps): Promise<string> {
-  let token: Nullable<Token>
-  if ('tokenName' in props) {
-    token = tokens.find((token) => token.name === props.tokenName)
-  } else {
-    token = props.token
-  }
+async function performSending(props: IPropsToken): Promise<string> {
+  let token = props.token
 
   if (!token) {
     console.error('token', token)

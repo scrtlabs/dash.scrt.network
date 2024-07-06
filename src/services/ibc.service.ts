@@ -99,7 +99,7 @@ async function performIbcDeposit(
 
   try {
     let tx: TxResponse
-    if (!['Evmos', 'Injective', 'Dymension'].includes(props.chain.chain_name) && !token.is_ics20) {
+    if (!['Evmos', 'Injective', 'Dymension'].includes(props.chain.chain_name) && !token.is_axelar_asset) {
       // Regular cosmos chain (not ethermint signing)
       if (token.name === 'ampLUNA') {
         //@ts-ignore
@@ -308,7 +308,7 @@ async function performIbcDeposit(
           }
         )
       }
-    } else if (token.is_ics20) {
+    } else if (token.is_axelar_asset) {
       const fromChain: string = deposit.axelar_chain_name,
         toChain = 'secret-snip',
         destinationAddress = props.secretNetworkClient.address,
@@ -591,7 +591,7 @@ async function performIbcWithdrawal(
           broadcastMode: BroadcastMode.Sync
         }
       )
-    } else if (token.is_ics20) {
+    } else if (token.is_axelar_asset) {
       const fromChain = 'secret-snip',
         toChain = withdrawalChain.axelar_chain_name,
         destinationAddress = sourceChainNetworkClient.address,
@@ -937,6 +937,23 @@ function getSupportedIbcTokensByChain(chain: Chain) {
   return supportedTokens
 }
 
+/**
+ * Get the chain name that supports the specified IBC token.
+ * @param tokenName - The name of the token to check.
+ * @returns The name of the supported chain, or undefined if no chain supports the token.
+ */
+function getSupportedChainByIbcTokenName(tokenName: string): string | undefined {
+  const token = allTokens.find((token) => token.name.toLowerCase() === tokenName.toLowerCase())
+
+  if (!token) return undefined
+
+  const supportedDeposit = token.deposits.find((deposit) =>
+    allTokens.some((t) => t.deposits.some((d) => d.chain_name === deposit.chain_name))
+  )
+
+  return supportedDeposit?.chain_name
+}
+
 async function performIbcTransfer(props: TProps): Promise<string> {
   const sourceChainNetworkClient = await IbcService.getChainSecretJs(props.chain)
   if (props.ibcMode === 'withdrawal') {
@@ -949,6 +966,7 @@ async function performIbcTransfer(props: TProps): Promise<string> {
 export const IbcService = {
   getSupportedChains,
   getSupportedIbcTokensByChain,
+  getSupportedChainByIbcTokenName,
   performIbcTransfer,
   composePMFMemo,
   getSkipIBCRouting,
