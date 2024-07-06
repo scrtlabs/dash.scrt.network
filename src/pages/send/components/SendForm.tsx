@@ -235,7 +235,7 @@ export default function SendForm() {
             <BalanceUI
               token={allTokens.find((token: Token) => token.name === formik.values.token.name)}
               chain={chains['Secret Network']}
-              isSecretToken={formik.values.token.name == 'SCRT' && formik.values.token.address !== 'native'}
+              isSecretToken={formik.values.token.address !== 'native'}
             />
           </div>
           <div className="sm:flex-initial text-xs">
