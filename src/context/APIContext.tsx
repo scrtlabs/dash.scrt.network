@@ -254,23 +254,6 @@ const APIContextProvider = ({ children }: any) => {
 
     secretjsquery?.query?.bank
       ?.balance({
-        address: 'secret1p3ucd3ptpw902fluyjzhq3ffgq4ntdda6qy5vv',
-        denom: 'uscrt'
-      })
-      ?.then((res) => {
-        const binanceColdWallet = Number(res.balance?.amount) / 1e6
-        secretjsquery?.query?.bank
-          ?.balance({
-            address: 'secret1an5pyzzpu5ez7ep9m43yzmalymwls39qtk8rjd',
-            denom: 'uscrt'
-          })
-          ?.then((res) => {
-            setBinanceTokenSupply(binanceColdWallet + Number(res.balance?.amount) / 1e6)
-          })
-      })
-
-    secretjsquery?.query?.bank
-      ?.balance({
         address: allTokens.find((token) => token.name === 'stkd-SCRT').address,
         denom: 'uscrt'
       })
