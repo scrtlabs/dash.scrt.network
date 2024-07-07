@@ -2323,6 +2323,49 @@ export const tokens: Token[] = [
     coingecko_id: 'usd-coin',
     deposits: [
       {
+        chain_name: 'Archway',
+        needsSkip: true,
+        denom: ibcDenom(
+          [
+            {
+              incomingChannelId: 'channel-29',
+              incomingPortId: 'transfer'
+            }
+          ],
+          'uusdc'
+        )
+      },
+      /*   {
+        chain_name: 'Kujira',
+        needsSkip: true,
+        denom: ibcDenom(
+          [
+            {
+              incomingChannelId: 'channel-62',
+              incomingPortId: 'Kujira'
+            }
+          ],
+          'uusdc'
+        )
+      }, */
+      {
+        chain_name: 'Neutron',
+        needsSkip: true,
+        denom: ibcDenom(
+          [
+            {
+              incomingChannelId: 'channel-30',
+              incomingPortId: 'transfer'
+            }
+          ],
+          'uusdc'
+        )
+      },
+      {
+        chain_name: 'Noble',
+        denom: 'uusdc'
+      },
+      {
         chain_name: 'Osmosis',
         needsSkip: true,
         denom: ibcDenom(
@@ -2334,15 +2377,37 @@ export const tokens: Token[] = [
           ],
           'uusdc'
         )
-      },
-      {
-        chain_name: 'Noble',
-        denom: 'uusdc'
       }
     ],
     withdrawals: [
       {
-        chain_name: 'Osmosis',
+        chain_name: 'Archway',
+        needsSkip: true,
+        denom: ibcDenom(
+          [
+            {
+              incomingChannelId: chains['Noble'].withdraw_channel_id,
+              incomingPortId: 'transfer'
+            }
+          ],
+          'uusdc'
+        )
+      },
+      /*   {
+        chain_name: 'Kujira',
+        needsSkip: true,
+        denom: ibcDenom(
+          [
+            {
+              incomingChannelId: chains['Noble'].withdraw_channel_id,
+              incomingPortId: 'transfer'
+            }
+          ],
+          'uusdc'
+        )
+      }, */
+      {
+        chain_name: 'Neutron',
         needsSkip: true,
         denom: ibcDenom(
           [
@@ -2356,6 +2421,19 @@ export const tokens: Token[] = [
       },
       {
         chain_name: 'Noble',
+        denom: ibcDenom(
+          [
+            {
+              incomingChannelId: chains['Noble'].withdraw_channel_id,
+              incomingPortId: 'transfer'
+            }
+          ],
+          'uusdc'
+        )
+      },
+      {
+        chain_name: 'Osmosis',
+        needsSkip: true,
         denom: ibcDenom(
           [
             {
