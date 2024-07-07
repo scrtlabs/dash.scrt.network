@@ -214,130 +214,150 @@ const APIContextProvider = ({ children }: any) => {
         setIBCTokenSupply(response.total_ibc_balance_out)
       })
 
-    const queryData = async () => {
-      const secretjsquery = new SecretNetworkClient({
-        url: SECRET_LCD,
-        chainId: SECRET_CHAIN_ID
+    const secretjsquery = new SecretNetworkClient({
+      url: SECRET_LCD,
+      chainId: SECRET_CHAIN_ID
+    })
+
+    secretjsquery?.query?.bank
+      ?.supplyOf({ denom: 'uscrt' })
+      ?.then((res) => setTotalSupply((res.amount.amount as any) / 1e6))
+
+    secretjsquery?.query?.staking?.pool('')?.then((res) => {
+      setBondedToken(parseInt(res.pool.bonded_tokens) / 1e6)
+      setNotBondedToken(parseInt(res.pool.not_bonded_tokens) / 1e6)
+    })
+
+    secretjsquery?.query?.distribution
+      ?.communityPool('')
+      ?.then((res) =>
+        setCommunityPool(Math.floor(Number(res.pool.find((entry) => entry.denom === 'uscrt').amount) / 1e6))
+      )
+
+    secretjsquery?.query?.bank
+      ?.balance({
+        address: allTokens.find((token) => token.name === 'SCRT').address,
+        denom: 'uscrt'
+      })
+      ?.then((res) => {
+        setSSCRTTokenSupply(Number(res.balance?.amount) / 1e6)
       })
 
-      secretjsquery?.query?.bank
-        ?.supplyOf({ denom: 'uscrt' })
-        ?.then((res) => setTotalSupply((res.amount.amount as any) / 1e6))
-
-      secretjsquery?.query?.staking?.pool('')?.then((res) => {
-        setBondedToken(parseInt(res.pool.bonded_tokens) / 1e6)
-        setNotBondedToken(parseInt(res.pool.not_bonded_tokens) / 1e6)
+    secretjsquery?.query?.bank
+      ?.balance({
+        address: 'secret1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq3x5k6p',
+        denom: 'uscrt'
+      })
+      ?.then((res) => {
+        setBurnedTokenSupply(Number(res.balance?.amount) / 1e6)
       })
 
-      secretjsquery?.query?.distribution
-        ?.communityPool('')
-        ?.then((res) =>
-          setCommunityPool(Math.floor(Number(res.pool.find((entry) => entry.denom === 'uscrt').amount) / 1e6))
-        )
-
-      secretjsquery?.query?.bank
-        ?.balance({
-          address: allTokens.find((token) => token.name === 'SCRT').address,
-          denom: 'uscrt'
-        })
-        ?.then((res) => {
-          setSSCRTTokenSupply(Number(res.balance?.amount) / 1e6)
-        })
-
-      secretjsquery?.query?.bank
-        ?.balance({
-          address: 'secret1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq3x5k6p',
-          denom: 'uscrt'
-        })
-        ?.then((res) => {
-          setBurnedTokenSupply(Number(res.balance?.amount) / 1e6)
-        })
-
-      const exchangeAddresses = [
-        'secret1p3ucd3ptpw902fluyjzhq3ffgq4ntdda6qy5vv', //Binance Cold Wallet
-        'secret1an5pyzzpu5ez7ep9m43yzmalymwls39qtk8rjd', //Binance Hot Wallet
-        'secret1nm0rrq86ucezaf8uj35pq9fpwr5r82cl94vhug', //Kraken
-        'secret1nl7z7ha5kec4camsqm4yel0tsyz8zgmjqg6myp', //Kucoin
-        'secret155e8c284v6w725llkwwma36vzly4ujsc2syfcy', //MEXC
-        'secret1uxun0ttetqcvckdxfxgj5xmsqljqzxpd9h35zf', //LBank
-        'secret15catgqhve7ul7vrej5mqdlv8dx4r5hcw0ywzfq', //BitMart
-        'secret1tsz8v9k75jeqtl4exnf0qye5nme840h5n0pldk' //ByBit
-      ]
-
-      const getBalance = (address: string) => {
-        return secretjsquery?.query?.bank?.balance({ address, denom: 'uscrt' }).then((res) => {
-          return Number(res.balance?.amount) / 1e6
-        })
-      }
-
-      Promise.all(exchangeAddresses.map(getBalance)).then((balances) => {
-        const totalBalance = balances.reduce((acc, balance) => acc + balance, 0)
-        setExchangesTokenSupply(totalBalance)
+    secretjsquery?.query?.bank
+      ?.balance({
+        address: allTokens.find((token) => token.name === 'stkd-SCRT').address,
+        denom: 'uscrt'
+      })
+      ?.then((res) => {
+        setStkdSCRTTokenSupply(Number(res.balance?.amount) / 1e6)
+        secretjsquery?.query?.staking
+          .delegatorDelegations({
+            delegator_addr: allTokens.find((token) => token.name === 'stkd-SCRT').address,
+            pagination: { limit: '100' }
+          })
+          ?.then((delegatorDelegations) => {
+            const totalDelegations = delegatorDelegations.delegation_responses
+              ?.reduce((sum: any, delegation: any) => {
+                const amount = new BigNumber(delegation?.balance?.amount || 0)
+                return sum.plus(amount)
+              }, new BigNumber(0))
+              .dividedBy(`1e6`)
+            setStkdSCRTTokenSupply(Number(res.balance?.amount) / 1e6 + Number(totalDelegations))
+          })
       })
 
-      secretjsquery?.query?.bank
-        ?.balance({
-          address: allTokens.find((token) => token.name === 'stkd-SCRT').address,
-          denom: 'uscrt'
-        })
-        ?.then((res) => {
-          setStkdSCRTTokenSupply(Number(res.balance?.amount) / 1e6)
-          secretjsquery?.query?.staking
-            .delegatorDelegations({
-              delegator_addr: allTokens.find((token) => token.name === 'stkd-SCRT').address,
-              pagination: { limit: '100' }
-            })
-            ?.then((delegatorDelegations) => {
-              const totalDelegations = delegatorDelegations.delegation_responses
-                ?.reduce((sum: any, delegation: any) => {
-                  const amount = new BigNumber(delegation?.balance?.amount || 0)
-                  return sum.plus(amount)
-                }, new BigNumber(0))
-                .dividedBy(`1e6`)
-              setStkdSCRTTokenSupply(Number(res.balance?.amount) / 1e6 + Number(totalDelegations))
-            })
-        })
+    const exchangeAddresses = [
+      'secret1p3ucd3ptpw902fluyjzhq3ffgq4ntdda6qy5vv', //Binance Cold Wallet
+      'secret1an5pyzzpu5ez7ep9m43yzmalymwls39qtk8rjd', //Binance Hot Wallet
+      'secret1nm0rrq86ucezaf8uj35pq9fpwr5r82cl94vhug', //Kraken
+      'secret1nl7z7ha5kec4camsqm4yel0tsyz8zgmjqg6myp', //Kucoin
+      'secret155e8c284v6w725llkwwma36vzly4ujsc2syfcy', //MEXC
+      'secret1uxun0ttetqcvckdxfxgj5xmsqljqzxpd9h35zf', //LBank
+      'secret15catgqhve7ul7vrej5mqdlv8dx4r5hcw0ywzfq', //BitMart
+      'secret1tsz8v9k75jeqtl4exnf0qye5nme840h5n0pldk' //ByBit
+    ]
 
-      let totalAmount = 0
-
-      // allTokens[0].deposits.forEach((deposit, index) => {
-      //   const channelId = chains[deposit.chain_name].withdraw_channel_id
-      //   const isLast = index === allTokens[0].deposits.length - 1
-      //   setTimeout(() => {
-      //     executeQuery(channelId, isLast)
-      //   }, index * 100)
-      // })
-
-      // const executeQuery = (channelId: any, isLast: any) => {
-      //   secretjsquery?.query?.ibc_transfer
-      //     ?.escrowAddress({
-      //       channel_id: channelId,
-      //       port_id: 'transfer'
-      //     })
-      //     ?.then((escrow) => {
-      //       secretjsquery?.query?.bank
-      //         ?.balance({
-      //           address: escrow.escrow_address,
-      //           denom: 'uscrt'
-      //         })
-      //         ?.then((res) => {
-      //           totalAmount += Number(res.balance?.amount) / 1e6
-      //           if (isLast) {
-      //             setIBCTokenSupply(totalAmount)
-      //           }
-      //         })
-      //     })
-      // }
-
-      secretjsquery?.query?.mint?.inflation('')?.then((res) => setInflation((res as any).inflation))
-
-      secretjsquery?.query?.distribution.params('')?.then((res) => {
-        setSecretFoundationTax(res?.params.secret_foundation_tax)
-        setCommunityTax(res?.params.community_tax)
+    const getBalance = (address: string) => {
+      return secretjsquery?.query?.bank?.balance({ address, denom: 'uscrt' }).then((res) => {
+        return Number(res.balance?.amount) / 1e6
       })
     }
 
-    queryData()
+    Promise.all(exchangeAddresses.map(getBalance)).then((balances) => {
+      const totalBalance = balances.reduce((acc, balance) => acc + balance, 0)
+      setExchangesTokenSupply(totalBalance)
+    })
+
+    secretjsquery?.query?.bank
+      ?.balance({
+        address: allTokens.find((token) => token.name === 'stkd-SCRT').address,
+        denom: 'uscrt'
+      })
+      ?.then((res) => {
+        setStkdSCRTTokenSupply(Number(res.balance?.amount) / 1e6)
+        secretjsquery?.query?.staking
+          .delegatorDelegations({
+            delegator_addr: allTokens.find((token) => token.name === 'stkd-SCRT').address,
+            pagination: { limit: '100' }
+          })
+          ?.then((delegatorDelegations) => {
+            const totalDelegations = delegatorDelegations.delegation_responses
+              ?.reduce((sum: any, delegation: any) => {
+                const amount = new BigNumber(delegation?.balance?.amount || 0)
+                return sum.plus(amount)
+              }, new BigNumber(0))
+              .dividedBy(`1e6`)
+            setStkdSCRTTokenSupply(Number(res.balance?.amount) / 1e6 + Number(totalDelegations))
+          })
+      })
+
+    //let totalAmount = 0
+
+    // allTokens[0].deposits.forEach((deposit, index) => {
+    //   const channelId = chains[deposit.chain_name].withdraw_channel_id
+    //   const isLast = index === allTokens[0].deposits.length - 1
+    //   setTimeout(() => {
+    //     executeQuery(channelId, isLast)
+    //   }, index * 100)
+    // })
+
+    // const executeQuery = (channelId: any, isLast: any) => {
+    //   secretjsquery?.query?.ibc_transfer
+    //     ?.escrowAddress({
+    //       channel_id: channelId,
+    //       port_id: 'transfer'
+    //     })
+    //     ?.then((escrow) => {
+    //       secretjsquery?.query?.bank
+    //         ?.balance({
+    //           address: escrow.escrow_address,
+    //           denom: 'uscrt'
+    //         })
+    //         ?.then((res) => {
+    //           totalAmount += Number(res.balance?.amount) / 1e6
+    //           if (isLast) {
+    //             setIBCTokenSupply(totalAmount)
+    //           }
+    //         })
+    //     })
+    // }
+
+    secretjsquery?.query?.mint?.inflation('')?.then((res) => setInflation((res as any).inflation))
+
+    secretjsquery?.query?.distribution.params('')?.then((res) => {
+      setSecretFoundationTax(res?.params.secret_foundation_tax)
+      setCommunityTax(res?.params.community_tax)
+    })
+
     fetchDappsURL()
     if (currencyPricing === defaultCurrencyPricing) {
       fetchCurrencyPricingURL()
