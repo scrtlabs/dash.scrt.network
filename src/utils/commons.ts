@@ -2,15 +2,11 @@ import { Currency } from 'types/Currency'
 import { tokens, snips, ICSTokens } from './config'
 import mixpanel from 'mixpanel-browser'
 
-export const viewingKeyErrorString = '🧐'
-
 export const faucetURL = 'https://faucet.secretsaturn.net/claim'
 export const faucetAddress = 'secret1tq6y8waegggp4fv2fcxk3zmpsmlfadyc7lsd69'
 
 export const batchQueryContractAddress = 'secret17gnlxnwux0szd7qhl90ym8lw22qvedjz4v09dm'
 export const batchQueryCodeHash = '72a09535b77b76862f7b568baf1ddbe158a2e4bbd0f0879c69ada9b398e31c1f'
-
-export const gasPriceUscrt = 0.25
 
 export const restakeThreshold = 10_000_000
 
@@ -141,6 +137,59 @@ export const sortDAppsArray = (array: any[]) => {
   const sortedArray = [...array].sort((a, b) => a.name.localeCompare(b.name))
   return sortedArray
 }
+
+let cachedBackgroundColors = new Map()
+
+async function getAverageColor(imgSrc: any) {
+  return new Promise((resolve, reject) => {
+    const img = new Image()
+    img.crossOrigin = 'Anonymous'
+    img.onload = () => {
+      const canvas = document.createElement('canvas')
+      const ctx = canvas.getContext('2d')
+      if (!ctx) {
+        reject(new Error('Unable to get canvas context'))
+        return
+      }
+      ctx.drawImage(img, 0, 0, 2, 2)
+      const { data } = ctx.getImageData(0, 0, 2, 2)
+
+      resolve(
+        `rgb(${Math.floor((data[0] + data[4] + data[8] + data[12]) / 4)}, ${Math.floor(
+          (data[1] + data[5] + data[9] + data[13]) / 4
+        )}, ${Math.floor((data[2] + data[6] + data[10] + data[14]) / 4)})`
+      )
+    }
+    img.onerror = (error) => reject(error)
+    img.src = imgSrc
+  })
+}
+
+export async function getBackgroundColors() {
+  if (cachedBackgroundColors.size != 0) {
+    return cachedBackgroundColors
+  }
+
+  ;(
+    await Promise.all(
+      allTokens.map(async (item: any) => {
+        const imgSrc = `/img/assets${item.image}`
+        const averageColor = await getAverageColor(imgSrc)
+        return { ...item, averageColor }
+      })
+    )
+  ).forEach((item) => {
+    const imgSrc = `/img/assets${item.image}`
+    cachedBackgroundColors.set(imgSrc, item.averageColor)
+  })
+
+  return cachedBackgroundColors
+}
+
+document.addEventListener('DOMContentLoaded', async () => {
+  const backgroundColors = await getBackgroundColors()
+  console.log('Background Colors:', backgroundColors)
+})
 
 /**
  * SEO

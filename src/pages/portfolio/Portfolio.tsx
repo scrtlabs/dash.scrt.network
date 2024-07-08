@@ -1,6 +1,6 @@
-import { useEffect, useState, useRef } from 'react'
+import { useEffect, useState, useRef, useContext } from 'react'
 import { Token } from 'utils/config'
-import { portfolioPageTitle, portfolioPageDescription, portfolioJsonLdSchema, isMac } from 'utils/commons'
+import { portfolioPageTitle, portfolioPageDescription, portfolioJsonLdSchema, isMac, allTokens } from 'utils/commons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons'
 import { Helmet } from 'react-helmet-async'
@@ -10,11 +10,14 @@ import AddressQR from './components/AddressQR'
 import { SendService } from 'services/send.service'
 import { useSecretNetworkClientStore } from 'store/secretNetworkClient'
 import BalanceChart from './components/BalanceChart'
+import { useTokenPricesStore } from 'store/TokenPrices'
+import BigNumber from 'bignumber.js'
 
 export default function Portfolio() {
   //Search Query
   const [searchQuery, setSearchQuery] = useState<string>('')
   const searchInput = useRef<HTMLInputElement>(null)
+
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       if ((event.metaKey || event.ctrlKey) && event.key === 'k') {
@@ -38,16 +41,49 @@ export default function Portfolio() {
     }
   }, [])
 
-  const { secretNetworkClient } = useSecretNetworkClientStore()
+  const { secretNetworkClient, getBalance } = useSecretNetworkClientStore()
+
+  const { balanceMapping } = useSecretNetworkClientStore()
+  const { priceMapping, getValuePrice } = useTokenPricesStore()
 
   const tokens: Token[] = SendService.getSupportedTokens()
 
-  const displayedAssets = tokens.filter(
-    (token: Token) =>
-      token.name?.toLowerCase().includes(searchQuery?.toLowerCase()) ||
-      ('s' + token.name)?.toLowerCase().includes(searchQuery?.toLowerCase()) ||
-      token.description?.toLowerCase().includes(searchQuery?.toLowerCase())
-  )
+  const [orderedTokens, setOrderedTokens] = useState<any>(undefined)
+  const [displayedAssets, setDisplayedAssets] = useState<any>(undefined)
+
+  useEffect(() => {
+    if (balanceMapping !== null && priceMapping !== null) {
+      setOrderedTokens(
+        tokens
+          .map((token: Token) => {
+            const balance = getBalance(token, true)
+            const value = getValuePrice(token, BigNumber(balance))
+            return { ...token, value: value }
+          })
+          .sort((a, b) => {
+            // Handle NaN, null, or undefined values by treating them as the lowest possible value
+            if (a.value == null || isNaN(a.value)) return 1
+            if (b.value == null || isNaN(b.value)) return -2
+
+            // Standard comparison for non-NaN and non-null values
+            return b.value - a.value
+          })
+      )
+    }
+  }, [balanceMapping, priceMapping])
+
+  useEffect(() => {
+    if (orderedTokens !== undefined) {
+      setDisplayedAssets(
+        orderedTokens.filter(
+          (token: Token) =>
+            token.name?.toLowerCase().includes(searchQuery?.toLowerCase()) ||
+            ('s' + token.name)?.toLowerCase().includes(searchQuery?.toLowerCase()) ||
+            token.description?.toLowerCase().includes(searchQuery?.toLowerCase())
+        )
+      )
+    }
+  }, [searchQuery, orderedTokens])
 
   return (
     <>
@@ -121,8 +157,8 @@ export default function Portfolio() {
         </div>
 
         <div className="balance-item flex flex-col">
-          {tokens
-            ? displayedAssets.map((token: Token, i: number) => <BalanceItem token={token} key={i} />)
+          {orderedTokens
+            ? displayedAssets?.map((token: Token, i: number) => <BalanceItem token={token} key={i} />)
             : [...Array(10)].map((_, index) => <BalanceItem key={index} />)}
         </div>
       </div>
