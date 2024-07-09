@@ -1,5 +1,5 @@
 import { useContext, useEffect, useRef, useState } from 'react'
-import { toCurrencyString } from 'utils/commons'
+import { getBackgroundColors, toCurrencyString } from 'utils/commons'
 
 import {
   Chart as ChartJS,
@@ -44,6 +44,8 @@ export default function BalanceChart() {
     ]
   }
   const [data, setData] = useState(defaultData)
+
+  const [totalValue, setTotalValue] = useState<any>()
   const prevBalanceMappingRef = useRef<Map<Token, TokenBalances> | undefined>()
   const prevPriceMappingRef = useRef<Map<Token, number> | undefined>()
 
@@ -56,13 +58,11 @@ export default function BalanceChart() {
       const dataValues = []
 
       for (let [token, balance] of balanceMapping) {
+        const tokenPrice = priceMapping.get(token) || 1
+
         if (balance.secretBalance !== null && balance.secretBalance instanceof BigNumber) {
-          let tokenPrice = priceMapping.get(token)
-          if (tokenPrice === undefined) {
-            tokenPrice = 1
-          }
           dataValues.push({
-            label: `s${token.name}`,
+            label: token.name === 'SCRT' ? `s${token.name}` : `${token.name}`,
             value: BigNumber(balance.secretBalance)
               .dividedBy(`1e${token.decimals}`)
               .multipliedBy(tokenPrice)
@@ -72,10 +72,6 @@ export default function BalanceChart() {
           })
         }
         if (balance.balance && token.name === 'SCRT') {
-          let tokenPrice = priceMapping.get(token)
-          if (tokenPrice === undefined) {
-            tokenPrice = 1
-          }
           dataValues.push({
             label: `${token.name}`,
             value: BigNumber(balance.balance).dividedBy(`1e${token.decimals}`).multipliedBy(tokenPrice).toNumber(),
@@ -83,46 +79,26 @@ export default function BalanceChart() {
             token: token
           })
         }
-        async function getAverageColor(imgSrc: string): Promise<string> {
-          return new Promise((resolve, reject) => {
-            const img = new Image()
-            img.crossOrigin = 'Anonymous'
-            img.onload = () => {
-              const canvas = document.createElement('canvas')
-              const ctx = canvas.getContext('2d')
-              if (!ctx) {
-                reject(new Error('Unable to get canvas context'))
-                return
-              }
-              ctx.drawImage(img, 0, 0, 2, 2)
-              const { data } = ctx.getImageData(0, 0, 2, 2)
 
-              resolve(
-                `rgb(${Math.floor((data[0] + data[4] + data[8] + data[12]) / 4)}, ${Math.floor(
-                  (data[1] + data[5] + data[9] + data[13]) / 4
-                )}, ${Math.floor((data[2] + data[6] + data[10] + data[14]) / 4)})`
-              )
-            }
-            img.onerror = (error) => reject(error)
-            img.src = imgSrc
-          })
-        }
+        // Calculate the total value
+        setTotalValue(dataValues.reduce((acc, curr) => acc + curr.value, 0))
 
         async function setDatasetColors(dataValues: any[]) {
-          const backgroundColors = await Promise.all(
-            dataValues.map(async (item) => {
-              const imgSrc = `/img/assets/${item.token.image}`
-              const averageColor = await getAverageColor(imgSrc)
-              return averageColor
-            })
-          )
+          const backgroundColorsMap = await getBackgroundColors()
+
+          const sortedBackgroundColors = dataValues.map((item) => {
+            const imgSrc = `/img/assets${item.token.image}`
+            const averageColor = backgroundColorsMap.get(imgSrc)
+            return averageColor
+          })
+
           const data = {
             labels: dataValues.map((item) => createLabel(item.label, item.value, item.token, item.balance)),
             datasets: [
               {
                 data: dataValues.map((item) => item.value),
-                backgroundColor: backgroundColors,
-                hoverBackgroundColor: backgroundColors
+                backgroundColor: sortedBackgroundColors,
+                hoverBackgroundColor: sortedBackgroundColors
               }
             ]
           }
@@ -165,13 +141,17 @@ export default function BalanceChart() {
       ctx.font = '300 1rem Montserrat'
       ctx.fillStyle = theme === 'dark' ? '#fff' : '#000'
       ctx.textAlign = 'center'
-      ctx.fillText(`Your`, width / 2, height / 2.25 + top)
+      ctx.fillText(`Your Portfolio`, width / 2, height / 2.25 + top)
       ctx.restore()
 
       ctx.font = 'bold 1.25rem Montserrat'
       ctx.fillStyle = theme === 'dark' ? '#fff' : '#000'
       ctx.textAlign = 'center'
-      ctx.fillText(`Portfolio`, width / 2, height / 1.65 + top)
+      ctx.fillText(
+        totalValue ? `${toCurrencyString(convertCurrency('USD', totalValue, currency), currency)}` : ``,
+        width / 2,
+        height / 1.65 + top
+      )
       ctx.restore()
     }
   }
@@ -205,7 +185,7 @@ export default function BalanceChart() {
     <div>
       {/* Chart */}
       <div className="w-full h-[200px]">
-        {data !== defaultData && centerText !== undefined ? (
+        {data !== defaultData ? (
           <>
             <Doughnut
               id="BalanceChartDoughnut"
