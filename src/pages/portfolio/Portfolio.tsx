@@ -157,9 +157,9 @@ export default function Portfolio() {
         </div>
 
         <div className="balance-item flex flex-col">
-          {orderedTokens
+          {displayedAssets
             ? displayedAssets?.map((token: Token, i: number) => <BalanceItem token={token} key={i} />)
-            : [...Array(10)].map((_, index) => <BalanceItem key={index} />)}
+            : tokens?.map((token: Token, i: number) => <BalanceItem token={token} key={i} />)}
         </div>
       </div>
     </>

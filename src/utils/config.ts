@@ -4709,7 +4709,7 @@ export const ICSTokens: Token[] = [
     ]
   },
   {
-    name: 'WBTC',
+    name: 'WBTC.axl',
     description: 'Wrapped Bitcoin from Axelar',
     is_axelar_asset: true,
     address: 'secret1guyayjwg5f84daaxl7w84skd8naxvq8vz9upqx',

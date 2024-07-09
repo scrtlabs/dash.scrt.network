@@ -44,6 +44,8 @@ export default function BalanceChart() {
     ]
   }
   const [data, setData] = useState(defaultData)
+
+  const [totalValue, setTotalValue] = useState<any>()
   const prevBalanceMappingRef = useRef<Map<Token, TokenBalances> | undefined>()
   const prevPriceMappingRef = useRef<Map<Token, number> | undefined>()
 
@@ -60,7 +62,7 @@ export default function BalanceChart() {
 
         if (balance.secretBalance !== null && balance.secretBalance instanceof BigNumber) {
           dataValues.push({
-            label: `s${token.name}`,
+            label: token.name === 'SCRT' ? `s${token.name}` : `${token.name}`,
             value: BigNumber(balance.secretBalance)
               .dividedBy(`1e${token.decimals}`)
               .multipliedBy(tokenPrice)
@@ -77,6 +79,9 @@ export default function BalanceChart() {
             token: token
           })
         }
+
+        // Calculate the total value
+        setTotalValue(dataValues.reduce((acc, curr) => acc + curr.value, 0))
 
         async function setDatasetColors(dataValues: any[]) {
           const backgroundColorsMap = await getBackgroundColors()
@@ -136,13 +141,17 @@ export default function BalanceChart() {
       ctx.font = '300 1rem Montserrat'
       ctx.fillStyle = theme === 'dark' ? '#fff' : '#000'
       ctx.textAlign = 'center'
-      ctx.fillText(`Your`, width / 2, height / 2.25 + top)
+      ctx.fillText(`Your Portfolio`, width / 2, height / 2.25 + top)
       ctx.restore()
 
       ctx.font = 'bold 1.25rem Montserrat'
       ctx.fillStyle = theme === 'dark' ? '#fff' : '#000'
       ctx.textAlign = 'center'
-      ctx.fillText(`Portfolio`, width / 2, height / 1.65 + top)
+      ctx.fillText(
+        totalValue ? `${toCurrencyString(convertCurrency('USD', totalValue, currency), currency)}` : ``,
+        width / 2,
+        height / 1.65 + top
+      )
       ctx.restore()
     }
   }
@@ -176,7 +185,7 @@ export default function BalanceChart() {
     <div>
       {/* Chart */}
       <div className="w-full h-[200px]">
-        {data !== defaultData && centerText !== undefined ? (
+        {data !== defaultData ? (
           <>
             <Doughnut
               id="BalanceChartDoughnut"
