@@ -103,8 +103,7 @@ const connectWallet = async (
 }
 
 const requestFeeGrantService = async (feeGrantStatus: FeeGrantStatus, walletAddress: String) => {
-  const { debugMode } = useUserPreferencesStore()
-
+  const { debugMode } = useUserPreferencesStore.getState()
   let newFeeGrantStatus: FeeGrantStatus = feeGrantStatus
 
   if (feeGrantStatus === 'success') {
