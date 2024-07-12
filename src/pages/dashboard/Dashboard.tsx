@@ -268,7 +268,7 @@ function Dashboard() {
                 value: growthRateFormattedString
               }}
               item2={{
-                key: 'Inflation',
+                key: 'Inflation (annual)',
                 value: inflationFormattedString
               }}
               item3={{
