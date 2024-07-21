@@ -109,10 +109,10 @@ export const chains: { [chain_name: string]: Chain } = {
   },
   Carbon: {
     chain_name: 'Carbon',
-    deposit_channel_id: 'channel-44',
+    deposit_channel_id: 'channel-45',
     deposit_gas: 200_000,
     deposit_gas_denom: 'swth',
-    withdraw_channel_id: 'channel-159',
+    withdraw_channel_id: 'channel-160',
     withdraw_gas: 150_000,
     chain_id: 'carbon-1',
     bech32_prefix: 'swth',
@@ -2950,7 +2950,7 @@ export const tokens: Token[] = [
   {
     name: 'SWTH',
     description: 'Carbon Governance Token',
-    address: 'secret1mcd6ny9a037g0qf79mkks2tsm0kecw4pll22v7',
+    address: 'secret1gech42jfcdke92tf9ltscpq7x0al8j7gkce030',
     code_hash: '638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e',
     image: '/swth.svg',
     decimals: 8,
