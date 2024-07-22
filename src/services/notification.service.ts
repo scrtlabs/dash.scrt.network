@@ -9,13 +9,25 @@ function notify(notification: string, type: NotificationType, toastId: string = 
         duration: Infinity,
         onClick: () => {
           toast.dismiss()
-        }
+        },
+        style: {
+          maxWidth: '90vw',
+          whiteSpace: 'pre-wrap',
+          wordBreak: 'break-word'
+        },
+        position: 'bottom-right'
       }
     : {
         duration: Infinity,
         onClick: () => {
           toast.dismiss()
-        }
+        },
+        style: {
+          maxWidth: '90vw',
+          whiteSpace: 'pre-wrap',
+          wordBreak: 'break-word'
+        },
+        position: 'bottom-right'
       }
 
   switch (type) {

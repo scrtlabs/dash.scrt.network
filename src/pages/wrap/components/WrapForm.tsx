@@ -19,6 +19,7 @@ import { Nullable } from 'types/Nullable'
 import { useUserPreferencesStore } from 'store/UserPreferences'
 import { debugModeOverride } from 'utils/commons'
 import { GetBalanceError } from 'types/GetBalanceError'
+import { NotificationService } from 'services/notification.service'
 
 export default function WrapForm() {
   const { debugMode } = useUserPreferencesStore()
@@ -36,22 +37,48 @@ export default function WrapForm() {
     validateOnBlur: false,
     validateOnChange: true,
     onSubmit: async (values) => {
+      const toastId = NotificationService.notify(
+        `Waiting to ${formik.values.wrappingMode === 'wrap' ? 'wrap' : 'unwrap'} ${formik.values.amount} ${
+          formik.values.token.name
+        }...`,
+        'loading'
+      )
+
       try {
         const res = WrapService.performWrapping({
           ...values,
           secretNetworkClient,
           feeGrantStatus
         })
-        toast.promise(res, {
-          loading: `Waiting to ${formik.values.wrappingMode === 'wrap' ? 'wrap' : 'unwrap'} ${formik.values.amount} ${
-            formik.values.token.name
-          }...`,
-          success: `${formik.values.wrappingMode === 'wrap' ? 'Wrapping' : 'Unwrapping'} successful!`,
-          error: `${formik.values.wrappingMode === 'wrap' ? 'Wrapping' : 'Unwrapping'} unsuccessful!`
-        })
+        res
+          .then(() => {
+            NotificationService.notify(
+              `${formik.values.wrappingMode === 'wrap' ? 'Wrapping' : 'Unwrapping'} of ${formik.values.amount} ${
+                formik.values.token.name
+              } successful`,
+              'success',
+              toastId
+            )
+          })
+          .catch((error) => {
+            console.error(error)
+            NotificationService.notify(
+              `${formik.values.wrappingMode === 'wrap' ? 'Wrapping' : 'Unwrapping'} of ${formik.values.amount} ${
+                formik.values.token.name
+              } unsuccessful: ${error}`,
+              'error',
+              toastId
+            )
+          })
       } catch (error: any) {
         console.error(error)
-        toast.error(`${formik.values.wrappingMode === 'wrap' ? 'Wrapping' : 'Unwrapping'} unsuccessful!`)
+        NotificationService.notify(
+          `${formik.values.wrappingMode === 'wrap' ? 'Wrapping' : 'Unwrapping'} of ${formik.values.amount} ${
+            formik.values.token.name
+          } unsuccessful: ${error}`,
+          'error',
+          toastId
+        )
       }
     }
   })

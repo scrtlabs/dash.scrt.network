@@ -11,7 +11,7 @@ export const ibcSchema = yup.object().shape({
   token: yup.mixed().required('Token is required'),
   chain: yup
     .mixed()
-    .required('Please select a chain!')
+    .required('Please select a chain')
     .test('isValidChain', 'Please select a valid chain', (chainValue: any) =>
       Object.values(chains).some((chain) => chain.chain_name === chainValue.chain_name)
     ),

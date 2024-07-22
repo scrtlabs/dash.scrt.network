@@ -82,7 +82,7 @@ function Wallet() {
       <CopyToClipboard
         text={walletAddress as string}
         onCopy={() => {
-          NotificationService.notify('Address copied to clipboard!', 'success')
+          NotificationService.notify('Address copied to clipboard', 'success')
         }}
       >
         <Button size="small" color="secondary" className="flex gap-2 items-center group">
@@ -183,7 +183,7 @@ function Wallet() {
 
       <Modal
         title={'Get Wallet'}
-        subTitle={'Install a wallet to interact with the applications!'}
+        subTitle={'Install a wallet to interact with the applications'}
         isOpen={isGetWalletModalOpen}
         onClose={() => {
           trackMixPanelEvent('Closed Get Wallet Modal')

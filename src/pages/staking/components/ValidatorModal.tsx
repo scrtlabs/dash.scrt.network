@@ -198,7 +198,7 @@ const ValidatorModal = (props: Props) => {
 
                         <CopyToClipboard
                           text={selectedValidator?.description?.identity}
-                          onCopy={() => NotificationService.notify('Identity copied to Clipboard!', 'success')}
+                          onCopy={() => NotificationService.notify('Identity copied to Clipboard', 'success')}
                         >
                           <Tooltip title={'Copy to clipboard'} placement="bottom" arrow>
                             <button
@@ -223,13 +223,13 @@ const ValidatorModal = (props: Props) => {
                         <CopyToClipboard
                           text={selectedValidator?.description?.security_contact}
                           onCopy={() => {
-                            NotificationService.notify('Validator security contact copied to clipboard!', 'success')
+                            NotificationService.notify('Validator security contact copied to clipboard', 'success')
                           }}
                         >
                           <Tooltip title={'Copy to clipboard'} placement="bottom" arrow>
                             <button
                               type="button"
-                              onClick={() => NotificationService.notify('Copied to Clipboard!', 'success')}
+                              onClick={() => NotificationService.notify('Copied to Clipboard', 'success')}
                               className="text-neutral-500 hover:text-neutral-800 dark:text-neutral-400 dark:hover:text-neutral-300 transition-colors"
                             >
                               <FontAwesomeIcon icon={faCopy} />
@@ -270,7 +270,7 @@ const ValidatorModal = (props: Props) => {
                       } `}
                       <CopyToClipboard
                         text={selectedValidator?.operator_address}
-                        onCopy={() => NotificationService.notify('Operator Address copied to Clipboard!', 'success')}
+                        onCopy={() => NotificationService.notify('Operator Address copied to Clipboard', 'success')}
                       >
                         <Tooltip title={'Copy to clipboard'} placement="bottom" arrow>
                           <button className="text-neutral-500 dark:text-neutral-400 hover:text-neutral-800 dark:hover:text-neutral-300 transition-colors">
@@ -299,7 +299,7 @@ const ValidatorModal = (props: Props) => {
                       </a>
                       <CopyToClipboard
                         text={validatorAddressToSelfDelegatorAddress(selectedValidator?.operator_address)}
-                        onCopy={() => NotificationService.notify('Validator Address copied to Clipboard!', 'success')}
+                        onCopy={() => NotificationService.notify('Validator Address copied to Clipboard', 'success')}
                       >
                         <Tooltip title={'Copy to clipboard'} placement="bottom" arrow>
                           <button

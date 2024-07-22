@@ -33,7 +33,7 @@ async function performWrapping(props: TProps): Promise<string> {
 
   if (!token) {
     console.error('token', token)
-    throw new Error('Token not found!')
+    throw new Error('Token not found')
   }
 
   const baseAmount = props.amount
@@ -41,7 +41,7 @@ async function performWrapping(props: TProps): Promise<string> {
 
   if (amount === 'NaN') {
     console.error('NaN amount', baseAmount)
-    throw new Error('Amount is not a valid number!')
+    throw new Error('Amount is not a valid number')
   }
 
   try {
@@ -71,12 +71,12 @@ async function performWrapping(props: TProps): Promise<string> {
         )
         .catch((error: any) => {
           console.error(error)
-          throw new Error(`Wrapping of ${token.name} failed: ${error?.tx?.rawLog}`)
+          throw new Error(error?.tx?.rawLog ? `${error?.tx?.rawLog}` : error)
         })
         .then((tx: any) => {
           if (tx) {
             if (tx.code === 0) {
-              return 'Wrapping successful!'
+              return 'Wrapping successful'
             } else {
               console.error(tx.rawLog)
               throw new Error(tx.rawLog)
@@ -113,12 +113,12 @@ async function performWrapping(props: TProps): Promise<string> {
         )
         .catch((error: any) => {
           console.error(error)
-          throw new Error(`Unwrapping of ${token.name} failed: ${error?.tx?.rawLog}`)
+          throw new Error(error?.tx?.rawLog ? `${error?.tx?.rawLog}` : error)
         })
         .then((tx: any) => {
           if (tx) {
             if (tx.code === 0) {
-              return 'Wrapping successful!'
+              return 'Wrapping successful'
             } else {
               console.error(tx.rawLog)
               throw new Error(tx.rawLog)
