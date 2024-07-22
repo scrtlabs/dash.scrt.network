@@ -3,32 +3,19 @@ import { NotificationType } from 'types/NotificationType'
 
 function notify(notification: string, type: NotificationType, toastId: string = null) {
   // Define an options object for toast, if toastId is provided
-  const options = toastId
-    ? {
-        id: toastId,
-        duration: Infinity,
-        onClick: () => {
-          toast.dismiss()
-        },
-        style: {
-          maxWidth: '90vw',
-          whiteSpace: 'pre-wrap',
-          wordBreak: 'break-word'
-        },
-        position: 'bottom-right'
-      }
-    : {
-        duration: Infinity,
-        onClick: () => {
-          toast.dismiss()
-        },
-        style: {
-          maxWidth: '90vw',
-          whiteSpace: 'pre-wrap',
-          wordBreak: 'break-word'
-        },
-        position: 'bottom-right'
-      }
+  const options = {
+    id: toastId || undefined,
+    duration: Infinity,
+    onClick: () => {
+      toast.dismiss()
+    },
+    style: {
+      maxWidth: '35vw',
+      whiteSpace: 'pre-wrap' as any,
+      wordBreak: 'break-word' as any
+    },
+    position: 'bottom-right' as any
+  }
 
   switch (type) {
     case 'error':

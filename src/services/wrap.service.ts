@@ -128,7 +128,7 @@ async function performWrapping(props: TProps): Promise<string> {
     }
   } catch (error: any) {
     console.error(error)
-    throw new Error(error)
+    throw error
   }
   return
 }

@@ -78,7 +78,7 @@ async function performSending(props: IPropsToken): Promise<string> {
     )
     .catch((error: any) => {
       console.error(error)
-      throw new Error(error)
+      throw error
     })
     .then((tx: any) => {
       if (tx) {

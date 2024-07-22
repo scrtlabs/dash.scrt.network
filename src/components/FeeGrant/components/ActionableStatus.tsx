@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import Button from 'components/UI/Button/Button'
 import { useSecretNetworkClientStore } from 'store/secretNetworkClient'
 import toast from 'react-hot-toast'
+import { NotificationService } from 'services/notification.service'
 
 export default function ActionableStatus() {
   const { feeGrantStatus, requestFeeGrant, isConnected } = useSecretNetworkClientStore()
@@ -12,12 +13,22 @@ export default function ActionableStatus() {
 
   async function handleRequestFeeGrant() {
     setIsLoading(true)
-    const res = requestFeeGrant()
-    toast.promise(res, {
-      loading: `Requesting Fee Grant`,
-      success: `Request for Fee Grant successful!`,
-      error: `Request for Fee Grant failed!`
-    })
+    const toastId = NotificationService.notify(`Requesting Fee Grant...`, 'loading')
+
+    try {
+      const res = requestFeeGrant()
+
+      res
+        .then(() => {
+          NotificationService.notify(`Request for Fee Grant successful`, 'success', toastId)
+        })
+        .catch((error) => {
+          NotificationService.notify(`Request for Fee Grant failed: ${error}`, 'error', toastId)
+        })
+    } catch (error: any) {
+      console.error(error)
+      NotificationService.notify(`Request for Fee Grant failed: ${error}`, 'error', toastId)
+    }
     setIsLoading(false)
   }
 

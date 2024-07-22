@@ -98,12 +98,12 @@ export default function SendForm() {
           .then(() => {
             NotificationService.notify('Sending successful', 'success', toastId)
           })
-          .catch(() => {
-            NotificationService.notify('Sending unsuccessful', 'error', toastId)
+          .catch((error) => {
+            NotificationService.notify(`Sending unsuccessful: ${error}`, 'error', toastId)
           })
       } catch (error: any) {
         console.error(error)
-        toast.error(`Sending unsuccessful`)
+        NotificationService.notify(`Sending unsuccessful ${error}`, 'error', toastId)
       }
     }
   })
