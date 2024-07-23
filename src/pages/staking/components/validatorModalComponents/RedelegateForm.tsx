@@ -15,6 +15,7 @@ import { useUserPreferencesStore } from 'store/UserPreferences'
 import { faInfoCircle } from '@fortawesome/free-solid-svg-icons'
 import Tooltip from '@mui/material/Tooltip'
 import ActionableStatus from 'components/FeeGrant/components/ActionableStatus'
+import { NotificationService } from 'services/notification.service'
 
 export default function RedelegateForm() {
   const { delegatorDelegations, validators, selectedValidator, setView, reload, setReload } = useContext(StakingContext)
@@ -46,8 +47,9 @@ export default function RedelegateForm() {
       if (!isConnected) return
 
       try {
-        const toastId = toast.loading(
-          `Redelegating ${amountString} SCRT from ${selectedValidator?.description?.moniker} to ${redelegateValidator?.description?.moniker}`
+        const toastId = NotificationService.notify(
+          `Redelegating ${amountString} SCRT from ${selectedValidator?.description?.moniker} to ${redelegateValidator?.description?.moniker}`,
+          'loading'
         )
         await secretNetworkClient.tx.staking
           .beginRedelegate(
@@ -73,19 +75,20 @@ export default function RedelegateForm() {
             console.error(error)
             toast.dismiss(toastId)
             if (error?.tx?.rawLog) {
-              toast.error(`Redelegating failed: ${error.tx.rawLog}`)
+              NotificationService.notify(`Redelegating failed: ${error.tx.rawLog}`, 'error')
             } else {
-              toast.error(`Redelegating failed: ${error.message}`)
+              NotificationService.notify(`Redelegating failed: ${error.message}`, 'error')
             }
           })
           .then((tx: any) => {
             if (tx) {
               if (tx.code === 0) {
-                toast.success(
-                  `Successfully redelegated ${amountString} SCRT from ${selectedValidator?.description?.moniker} to ${redelegateValidator?.description?.moniker}`
+                NotificationService.notify(
+                  `Successfully redelegated ${amountString} SCRT from ${selectedValidator?.description?.moniker} to ${redelegateValidator?.description?.moniker}`,
+                  'success'
                 )
               } else {
-                toast.error(`Redelegating failed: ${tx.rawLog}`)
+                NotificationService.notify(`Redelegating failed: ${tx.rawLog}`, 'error')
               }
             }
           })

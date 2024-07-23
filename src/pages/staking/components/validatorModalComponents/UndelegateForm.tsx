@@ -11,6 +11,7 @@ import { faInfoCircle } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import Tooltip from '@mui/material/Tooltip'
 import ActionableStatus from 'components/FeeGrant/components/ActionableStatus'
+import { NotificationService } from 'services/notification.service'
 
 export default function UndelegateForm() {
   const { delegatorDelegations, selectedValidator, setView } = useContext(StakingContext)
@@ -36,8 +37,9 @@ export default function UndelegateForm() {
       if (!isConnected) return
 
       try {
-        const toastId = toast.loading(
-          `Unstaking ${amountString} SCRT from validator: ${selectedValidator?.description?.moniker}`
+        const toastId = NotificationService.notify(
+          `Unstaking ${amountString} SCRT from validator: ${selectedValidator?.description?.moniker}`,
+          'loading'
         )
         await secretNetworkClient.tx.staking
           .undelegate(
@@ -61,26 +63,27 @@ export default function UndelegateForm() {
           .catch((e: any) => {
             console.error(e)
             if (e?.tx?.rawLog) {
-              toast.error(`Undelegation failed: ${e.tx.rawLog}`)
+              NotificationService.notify(`Undelegation failed: ${e.tx.rawLog}`, 'error')
             } else {
-              toast.error(`Undelegation failed: ${e.message}`)
+              NotificationService.notify(`Undelegation failed: ${e.message}`, 'error')
             }
           })
           .then((tx: any) => {
             toast.dismiss(toastId)
             if (tx) {
               if (tx.code === 0) {
-                toast.success(
-                  `Undelegated ${amountString} SCRT successfully from validator: ${selectedValidator?.description?.moniker}`
+                NotificationService.notify(
+                  `Undelegated ${amountString} SCRT successfully from validator: ${selectedValidator?.description?.moniker}`,
+                  'success'
                 )
               } else {
-                toast.error(`Undelegation failed: ${tx.rawLog}`)
+                NotificationService.notify(`Undelegation failed: ${tx.rawLog}`, 'error')
               }
             }
           })
       } catch (e: any) {
         console.error(e)
-        toast.error('An unexpected error occurred')
+        NotificationService.notify('An unexpected error occurred', 'error')
       }
     }
     submit()
