@@ -66,7 +66,7 @@ export default function BridgingFees(props: IProps) {
         <div className="flex items-center">
           <span className="font-semibold text-sm">Bridging Fees</span>
           <Tooltip
-            title={`Make sure to always transfer a higher amount than the transfer fees!`}
+            title={`Make sure to always transfer a higher amount than the transfer fees`}
             placement="right"
             arrow
           >

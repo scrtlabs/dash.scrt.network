@@ -745,10 +745,10 @@ async function performIbcWithdrawal(
         )
       } else {
         console.error(
-          `Timed out while waiting to receive ${props.amount} ${token.name} on ${selectedDest.chain_name} from Secret Network!`
+          `Timed out while waiting to receive ${props.amount} ${token.name} on ${selectedDest.chain_name} from Secret Network`
         )
         NotificationService.notify(
-          `Timed out while waiting to receive ${props.amount} ${token.name} on ${selectedDest.chain_name} from Secret Network!`,
+          `Timed out while waiting to receive ${props.amount} ${token.name} on ${selectedDest.chain_name} from Secret Network`,
           'error',
           toastId
         )

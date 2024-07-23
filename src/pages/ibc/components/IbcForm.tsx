@@ -94,7 +94,7 @@ export default function IbcForm() {
         })
       } catch (error: any) {
         console.error(error)
-        NotificationService.notify(`Transfer unsuccessful!`, 'error')
+        NotificationService.notify(`Transfer unsuccessful`, 'error')
       }
     }
   })

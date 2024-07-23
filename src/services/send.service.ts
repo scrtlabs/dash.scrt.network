@@ -28,7 +28,7 @@ async function performSending(props: IPropsToken): Promise<string> {
 
   if (!token) {
     console.error('token', token)
-    throw new Error('Token not found!')
+    throw new Error('Token not found')
   }
 
   const baseAmount = props.amount
@@ -36,7 +36,7 @@ async function performSending(props: IPropsToken): Promise<string> {
 
   if (amount === 'NaN') {
     console.error('NaN amount', baseAmount)
-    throw new Error('Amount is not a valid number!')
+    throw new Error('Amount is not a valid number')
   }
 
   await props.secretNetworkClient.tx
@@ -78,7 +78,7 @@ async function performSending(props: IPropsToken): Promise<string> {
     )
     .catch((error: any) => {
       console.error(error)
-      throw new Error(error)
+      throw error
     })
     .then((tx: any) => {
       if (tx) {

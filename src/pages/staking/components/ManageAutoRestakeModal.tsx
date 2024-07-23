@@ -9,6 +9,7 @@ import Button from 'components/UI/Button/Button'
 import toast from 'react-hot-toast'
 import { Validator } from 'types/Validator'
 import { ValidatorRestakeStatus } from 'types/ValidatorRestakeStatus'
+import { NotificationService } from 'services/notification.service'
 
 interface Props {
   open: boolean
@@ -49,7 +50,7 @@ export default function ManageAutoRestakeModal(props: Props) {
     })
 
     try {
-      const toastId = toast.loading(
+      const toastId = NotificationService.notify(
         `Setting Auto Restaking for validators: ${validatorObjects
           .map((validator: Validator) => {
             const matchedStatus = validatorRestakeStatuses.find(
@@ -57,7 +58,8 @@ export default function ManageAutoRestakeModal(props: Props) {
             )
             return `${matchedStatus?.autoRestake ? 'Enabling for' : 'Disabling for'} ${validator?.description?.moniker}`
           })
-          .join(', ')}`
+          .join(', ')}`,
+        'loading'
       )
       const txs: MsgSetAutoRestake[] = validatorRestakeStatuses.map((status: ValidatorRestakeStatus) => {
         return new MsgSetAutoRestake({
@@ -77,23 +79,24 @@ export default function ManageAutoRestakeModal(props: Props) {
           console.error(error)
           toast.dismiss(toastId)
           if (error?.tx?.rawLog) {
-            toast.error(`Setting Auto Restaking failed: ${error.tx.rawLog}`)
+            NotificationService.notify(`Setting Auto Restaking failed: ${error.tx.rawLog}`, 'error')
           } else {
-            toast.error(`Setting Auto Restaking failed: ${error.message}`)
+            NotificationService.notify(`Setting Auto Restaking failed: ${error.message}`, 'error')
           }
         })
         .then((tx: any) => {
           if (tx) {
             if (tx.code === 0) {
-              toast.success(
+              NotificationService.notify(
                 `Set Auto Restaking successfully for validators ${validatorObjects
                   .map((validator: Validator) => {
                     return validator?.description?.moniker
                   })
-                  .join(', ')}`
+                  .join(', ')}`,
+                'success'
               )
             } else {
-              toast.error(`Setting Auto Restaking failed: ${tx.rawLog}`)
+              NotificationService.notify(`Setting Auto Restaking failed: ${tx.rawLog}`, 'error')
             }
           }
         })

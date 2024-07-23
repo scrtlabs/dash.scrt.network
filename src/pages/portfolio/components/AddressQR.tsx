@@ -48,7 +48,7 @@ export default function AddressQR() {
                 <CopyToClipboard
                   text={walletAddress}
                   onCopy={() => {
-                    NotificationService.notify('Address copied to clipboard!', 'success')
+                    NotificationService.notify('Address copied to clipboard', 'success')
                   }}
                 >
                   <Tooltip

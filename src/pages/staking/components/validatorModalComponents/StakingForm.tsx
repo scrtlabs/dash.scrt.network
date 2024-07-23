@@ -11,6 +11,7 @@ import { faInfoCircle } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import Tooltip from '@mui/material/Tooltip'
 import ActionableStatus from 'components/FeeGrant/components/ActionableStatus'
+import { NotificationService } from 'services/notification.service'
 
 export default function StakingForm() {
   const { selectedValidator, setView } = useContext(StakingContext)
@@ -36,8 +37,9 @@ export default function StakingForm() {
       if (!isConnected) return
 
       try {
-        const toastId = toast.loading(
-          `Staking ${amountString} SCRT with validator: ${selectedValidator?.description?.moniker}`
+        const toastId = NotificationService.notify(
+          `Staking ${amountString} SCRT with validator: ${selectedValidator?.description?.moniker}`,
+          'loading'
         )
         await secretNetworkClient.tx.staking
           .delegate(
@@ -62,19 +64,20 @@ export default function StakingForm() {
             console.error(error)
             toast.dismiss(toastId)
             if (error?.tx?.rawLog) {
-              toast.error(`Staking failed: ${error.tx.rawLog}`)
+              NotificationService.notify(`Staking failed: ${error.tx.rawLog}`, 'error')
             } else {
-              toast.error(`Staking failed: ${error.message}`)
+              NotificationService.notify(`Staking failed: ${error.message}`, 'error')
             }
           })
           .then((tx: any) => {
             if (tx) {
               if (tx.code === 0) {
-                toast.success(
-                  `Staking ${amountString} SCRT successfully with validator: ${selectedValidator?.description?.moniker}`
+                NotificationService.notify(
+                  `Staking ${amountString} SCRT successfully with validator: ${selectedValidator?.description?.moniker}`,
+                  'success'
                 )
               } else {
-                toast.error(`Staking failed: ${tx.rawLog}`)
+                NotificationService.notify(`Staking failed: ${tx.rawLog}`, 'error')
               }
             }
           })

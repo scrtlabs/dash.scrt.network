@@ -95,7 +95,7 @@ function Apps() {
         <script type="application/ld+json">{JSON.stringify(appsJsonLdSchema)}</script>
       </Helmet>
       <div className="max-w-screen-2xl mx-auto px-6 pt-6 sm:pt-0">
-        <Header title="Apps" description="A curation of applications running on Secret Network Mainnet!" />
+        <Header title="Apps" description="A curation of applications running on Secret Network Mainnet" />
 
         {/* Search */}
         <div className="relative w-full sm:w-96 mx-auto mb-4">

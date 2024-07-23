@@ -57,7 +57,7 @@ function Powertools() {
         (message) => message && message.type === '' && message.content === ''
       )
       if (hasEmptyTypeAndContent) {
-        throw Error('Messages must not be empty!')
+        throw Error('Messages must not be empty')
       }
       if (!secretjs) {
         throw Error('Secretjs is not initialized')
@@ -74,7 +74,7 @@ function Powertools() {
       })
 
       if (tx.code === 0) {
-        NotificationService.notify('Transaction sent successfully!', 'success', toastId)
+        NotificationService.notify('Transaction sent successfully', 'success', toastId)
       } else {
         NotificationService.notify(`Transaction failed to send with error: ${tx.rawLog}`, 'error', toastId)
         console.error(`Transaction failed to send with error: ${tx.rawLog}`, 'error', toastId)
@@ -198,7 +198,7 @@ function Powertools() {
           <CopyToClipboard
             text={JSON.stringify(messages)}
             onCopy={() => {
-              NotificationService.notify('Message copied to clipboard!', 'success')
+              NotificationService.notify('Message copied to clipboard', 'success')
             }}
           >
             <Button type="button">Copy to Clipboard</Button>
