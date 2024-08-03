@@ -163,53 +163,6 @@ const isViewingKeyAvailable = async (token: Token) => {
   return key ? true : false
 }
 
-const getsScrtTokenBalance = async (
-  isConnected: boolean,
-  secretNetworkClient: any,
-  walletAddress: string
-): Promise<Nullable<string>> => {
-  if (!isConnected) {
-    return null
-  }
-
-  let sScrtBalance: string | GetBalanceError
-
-  const key = await getWalletViewingKey(scrtToken.address)
-  if (!key) {
-    sScrtBalance = 'viewingKeyError' as GetBalanceError
-    return null
-  }
-
-  interface IResult {
-    viewing_key_error: any
-    balance: {
-      amount: string
-    }
-  }
-
-  try {
-    const result: IResult = await secretNetworkClient?.query?.compute?.queryContract({
-      contract_address: scrtToken.address,
-      code_hash: scrtToken.code_hash,
-      query: {
-        balance: { address: walletAddress, key }
-      }
-    })
-
-    if (result.viewing_key_error) {
-      console.error(result.viewing_key_error.msg)
-      sScrtBalance = 'viewingKeyError' as GetBalanceError
-    } else {
-      sScrtBalance = result.balance.amount
-    }
-  } catch (error) {
-    console.error(`Error getting balance for s${scrtToken.name}: `, error)
-    sScrtBalance = 'viewingKeyError' as GetBalanceError
-  }
-
-  return sScrtBalance
-}
-
 const getBatchsTokenBalance = async (
   secretNetworkClient: any,
   walletAddress: string,
@@ -282,20 +235,6 @@ const getBatchsTokenBalance = async (
   })
 
   return balances
-}
-
-const getScrtTokenBalance = async (secretNetworkClient: any, walletAddress: string) => {
-  try {
-    const response = await secretNetworkClient.query.bank.balance({
-      address: walletAddress,
-      denom: 'uscrt'
-    })
-
-    return response.balance.amount
-  } catch (error) {
-    console.error(`Error getting balance for SCRT: `, error)
-    return null
-  }
 }
 
 interface IGetIBCBalancesForTokensProps {
@@ -452,8 +391,6 @@ export const WalletService = {
   setWalletViewingKey,
   getWalletViewingKey,
   isViewingKeyAvailable,
-  getsScrtTokenBalance,
-  getScrtTokenBalance,
   getBalancesForTokens,
   fetchIbcChainBalances
 }

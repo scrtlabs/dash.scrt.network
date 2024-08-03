@@ -25,10 +25,6 @@ export interface SecretNetworkClientState {
   disconnectWallet: () => void
   feeGrantStatus: FeeGrantStatus
   requestFeeGrant: () => Promise<void>
-  scrtBalance: Nullable<string>
-  sScrtBalance: Nullable<string>
-  setsScrtBalance: () => void
-  setScrtBalance: () => void
   isTokenBalanceLoading: boolean
   setViewingKey: (token: Token) => void
   getBalance: (token: Token, secretToken?: boolean) => Nullable<BigNumber | GetBalanceError>
@@ -66,7 +62,7 @@ export const useSecretNetworkClientStore = create<SecretNetworkClientState>()((s
   walletAPIType: null,
   setWalletAPIType: (walletAPIType: WalletAPIType) => set({ walletAPIType }),
   connectWallet: async (walletAPIType?: WalletAPIType) => {
-    const { setScrtBalance, setsScrtBalance, setBalanceMapping, startBalanceRefresh, startIBCBalanceRefresh } = get()
+    const { setBalanceMapping, startBalanceRefresh, startIBCBalanceRefresh } = get()
     const { walletAddress, secretjs: secretNetworkClient } = await WalletService.connectWallet(walletAPIType)
     set({
       walletAPIType,
@@ -75,8 +71,6 @@ export const useSecretNetworkClientStore = create<SecretNetworkClientState>()((s
       isConnected: !!(walletAddress && secretNetworkClient)
     })
     localStorage.setItem('autoConnect', walletAPIType)
-    setScrtBalance()
-    setsScrtBalance()
     setBalanceMapping()
     startBalanceRefresh()
     startIBCBalanceRefresh()
@@ -98,18 +92,6 @@ export const useSecretNetworkClientStore = create<SecretNetworkClientState>()((s
     const { feeGrantStatus, walletAddress } = get()
     const result = await WalletService.requestFeeGrantService(feeGrantStatus, walletAddress)
     set({ feeGrantStatus: result })
-  },
-  scrtBalance: null,
-  sScrtBalance: null,
-  setsScrtBalance: async () => {
-    const { isConnected, walletAddress, secretNetworkClient: secretNetworkClient } = get()
-    const sScrtBalance = await WalletService.getsScrtTokenBalance(isConnected, secretNetworkClient, walletAddress)
-    set({ sScrtBalance })
-  },
-  setScrtBalance: async () => {
-    const { walletAddress, secretNetworkClient: secretNetworkClient } = get()
-    const scrtBalance = await WalletService.getScrtTokenBalance(secretNetworkClient, walletAddress)
-    set({ scrtBalance })
   },
   isTokenBalanceLoading: false,
   setViewingKey: async (token: Token) => {
