@@ -15,7 +15,7 @@ import { NotificationService } from 'services/notification.service'
 
 export default function UndelegateForm() {
   const { delegatorDelegations, selectedValidator, setView } = useContext(StakingContext)
-  const { secretNetworkClient, walletAddress, scrtBalance, feeGrantStatus, isConnected } = useSecretNetworkClientStore()
+  const { secretNetworkClient, walletAddress, feeGrantStatus, isConnected } = useSecretNetworkClientStore()
   const { currentPrice } = useContext(APIContext)
 
   const [amountString, setAmountString] = useState<string>('0')

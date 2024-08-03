@@ -16,7 +16,11 @@ export function Wrap() {
   const [selectedToken, setSelectedToken] = useState<Token>(secretToken)
   const [wrappingMode, setWrappingMode] = useState<WrappingMode>('wrap')
 
-  const { scrtBalance } = useSecretNetworkClientStore()
+  const { getBalance } = useSecretNetworkClientStore()
+  const scrtBalance = getBalance(
+    tokens.find((token) => token.name === 'SCRT'),
+    false
+  )
 
   useEffect(() => {
     if (import.meta.env.VITE_MIXPANEL_ENABLED === 'true') {

@@ -4,7 +4,7 @@ import { useContext, useEffect, useState } from 'react'
 import { APIContext } from 'context/APIContext'
 import { formatNumber, toCurrencyString } from 'utils/commons'
 import BigNumber from 'bignumber.js'
-import { SECRET_LCD, SECRET_CHAIN_ID } from 'utils/config'
+import { SECRET_LCD, SECRET_CHAIN_ID, tokens } from 'utils/config'
 import CopyToClipboard from 'react-copy-to-clipboard'
 import { faCopy } from '@fortawesome/free-solid-svg-icons'
 import Tooltip from '@mui/material/Tooltip'
@@ -31,12 +31,16 @@ interface Props {
 
 const ValidatorModal = (props: Props) => {
   const [imgUrl, setImgUrl] = useState<Nullable<string>>(null)
-  const { convertCurrency, currentPrice, inflation, communityTax, totalSupply, bondedToken, secretFoundationTax } =
+  const { currentPrice, inflation, communityTax, totalSupply, bondedToken, secretFoundationTax } =
     useContext(APIContext)
   const { currency } = useUserPreferencesStore()
 
-  const { scrtBalance, feeGrantStatus, requestFeeGrant, secretNetworkClient, walletAddress, isConnected } =
-    useSecretNetworkClientStore()
+  const { secretNetworkClient, isConnected, getBalance } = useSecretNetworkClientStore()
+
+  const scrtBalance = getBalance(
+    tokens.find((token) => token.name === 'SCRT'),
+    false
+  )
 
   const [realYield, setRealYield] = useState<Nullable<number>>(null)
 

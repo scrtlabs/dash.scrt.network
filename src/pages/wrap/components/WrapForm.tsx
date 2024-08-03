@@ -23,7 +23,11 @@ import { NotificationService } from 'services/notification.service'
 
 export default function WrapForm() {
   const { debugMode } = useUserPreferencesStore()
-  const { secretNetworkClient, feeGrantStatus, isConnected, scrtBalance, getBalance } = useSecretNetworkClientStore()
+  const { secretNetworkClient, feeGrantStatus, isConnected, getBalance } = useSecretNetworkClientStore()
+  const scrtBalance = getBalance(
+    tokens.find((token) => token.name === 'SCRT'),
+    false
+  )
 
   const { theme } = useUserPreferencesStore()
 

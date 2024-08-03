@@ -12,10 +12,15 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import Tooltip from '@mui/material/Tooltip'
 import ActionableStatus from 'components/FeeGrant/components/ActionableStatus'
 import { NotificationService } from 'services/notification.service'
+import { tokens } from 'utils/config'
 
 export default function StakingForm() {
   const { selectedValidator, setView } = useContext(StakingContext)
-  const { secretNetworkClient, walletAddress, scrtBalance, feeGrantStatus, isConnected } = useSecretNetworkClientStore()
+  const { secretNetworkClient, walletAddress, feeGrantStatus, isConnected, getBalance } = useSecretNetworkClientStore()
+  const scrtBalance = getBalance(
+    tokens.find((token) => token.name === 'SCRT'),
+    false
+  )
   const { currentPrice } = useContext(APIContext)
 
   const [amountString, setAmountString] = useState<string>('0')

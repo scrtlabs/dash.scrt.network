@@ -79,9 +79,7 @@ export const useSecretNetworkClientStore = create<SecretNetworkClientState>()((s
     set({
       walletAddress: null,
       secretNetworkClient: null,
-      isConnected: false,
-      scrtBalance: null,
-      sScrtBalance: null
+      isConnected: false
     })
     const { stopBalanceRefresh } = get()
     stopBalanceRefresh()

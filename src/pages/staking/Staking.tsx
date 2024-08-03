@@ -7,7 +7,7 @@ import { shuffleArray, stakingPageTitle, stakingPageDescription, stakingJsonLdSc
 import Tooltip from '@mui/material/Tooltip'
 import NoScrtWarning from './components/NoScrtWarning'
 import ValidatorModal from './components/ValidatorModal'
-import { SECRET_LCD, SECRET_CHAIN_ID } from 'utils/config'
+import { SECRET_LCD, SECRET_CHAIN_ID, tokens } from 'utils/config'
 import { SecretNetworkClient } from 'secretjs'
 import Title from '../../components/Title'
 import { useSearchParams } from 'react-router-dom'
@@ -55,7 +55,12 @@ function Staking() {
     document.body.classList.remove('overflow-hidden')
   }
 
-  const { secretNetworkClient, scrtBalance } = useSecretNetworkClientStore()
+  const { secretNetworkClient, getBalance } = useSecretNetworkClientStore()
+
+  const scrtBalance = getBalance(
+    tokens.find((token) => token.name === 'SCRT'),
+    false
+  )
 
   const [validators, setValidators] = useState<Nullable<Validator[]>>(null)
   const [activeValidators, setActiveValidators] = useState<Nullable<Validator[]>>(null)
@@ -337,7 +342,7 @@ function Staking() {
         />
         {/* Title */}
         <Title title={'Staking'} className="pb-12" />
-        {secretNetworkClient?.address && scrtBalance === '0' && <NoScrtWarning />}
+        {secretNetworkClient?.address && Number(scrtBalance) === 0 && scrtBalance !== null && <NoScrtWarning />}
 
         {/* My Validators */}
         {secretNetworkClient?.address && delegatorDelegations && delegatorDelegations?.length != 0 && validators && (
