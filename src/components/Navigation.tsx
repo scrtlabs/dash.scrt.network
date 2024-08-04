@@ -13,6 +13,7 @@ import {
   faCreditCard,
   faPaperPlane,
   faPieChart,
+  faCheckToSlot,
   faSeedling
 } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -142,6 +143,19 @@ export function Navigation({
           >
             <FontAwesomeIcon icon={faCoins} className="mr-2" />
             <span>Staking</span>
+          </NavLink>
+        </li>
+        <li>
+          <NavLink
+            to="/governance"
+            className={({ isActive }) =>
+              isActive
+                ? 'isActiveNavLink dark:bg-neutral-800 text-black dark:text-white block w-full px-5 py-3 rounded-lg transition-colors font-semibold cursor-default'
+                : 'isInactiveNavLink text-black dark:text-white dark:hover:bg-neutral-800 block w-full px-5 py-3 rounded-lg transition-colors font-normal'
+            }
+          >
+            <FontAwesomeIcon icon={faCheckToSlot} className="mr-2" />
+            <span>Governance</span>
           </NavLink>
         </li>
         <li>
