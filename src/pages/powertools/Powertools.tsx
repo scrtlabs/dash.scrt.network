@@ -57,7 +57,7 @@ function Powertools() {
         (message) => message && message.type === '' && message.content === ''
       )
       if (hasEmptyTypeAndContent) {
-        throw Error('Messages must not be empty!')
+        throw Error('Messages must not be empty')
       }
       if (!secretjs) {
         throw Error('Secretjs is not initialized')
@@ -74,7 +74,7 @@ function Powertools() {
       })
 
       if (tx.code === 0) {
-        NotificationService.notify('Transaction sent successfully!', 'success', toastId)
+        NotificationService.notify('Transaction sent successfully', 'success', toastId)
       } else {
         NotificationService.notify(`Transaction failed to send with error: ${tx.rawLog}`, 'error', toastId)
         console.error(`Transaction failed to send with error: ${tx.rawLog}`, 'error', toastId)
@@ -145,10 +145,6 @@ function Powertools() {
 
       const newChainId = block?.header?.chain_id!
 
-      if (newChainId != 'secret-4' && newChainId != 'pulsar-3') {
-        throw Error('Chain-ID must be secret-4 or pulsar-3. You cannot use a different chain than Secret Network.')
-      }
-
       const newBlockHeight = balanceFormat(Number(block?.header?.height))
 
       let newGasPrice: string | undefined
@@ -156,11 +152,8 @@ function Powertools() {
         newGasPrice = minimum_gas_price.replace(/0*([a-z]+)$/, '$1')
       }
 
-      const { walletAddress, secretjs: importedSecretjs } = await WalletService.connectWallet(
-        walletAPIType,
-        apiUrl,
-        newChainId
-      )
+      const { secretjs: importedSecretjs } = await WalletService.connectWallet(walletAPIType, apiUrl, newChainId)
+
       setPrefix(importedSecretjs.address.replace(/^([a-z]+)1.*$/, '$1'))
       setSecretjs(importedSecretjs)
       setChainId(newChainId)
@@ -205,7 +198,7 @@ function Powertools() {
           <CopyToClipboard
             text={JSON.stringify(messages)}
             onCopy={() => {
-              NotificationService.notify('Message copied to clipboard!', 'success')
+              NotificationService.notify('Message copied to clipboard', 'success')
             }}
           >
             <Button type="button">Copy to Clipboard</Button>

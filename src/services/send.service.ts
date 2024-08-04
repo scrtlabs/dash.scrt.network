@@ -23,23 +23,12 @@ interface IPropsToken extends IBaseProps {
   token: Token
 }
 
-interface IPropsTokenName extends IBaseProps {
-  tokenName: string
-}
-
-type TProps = IPropsToken | IPropsTokenName
-
-async function performSending(props: TProps): Promise<string> {
-  let token: Nullable<Token>
-  if ('tokenName' in props) {
-    token = tokens.find((token) => token.name === props.tokenName)
-  } else {
-    token = props.token
-  }
+async function performSending(props: IPropsToken): Promise<string> {
+  let token = props.token
 
   if (!token) {
     console.error('token', token)
-    throw new Error('Token not found!')
+    throw new Error('Token not found')
   }
 
   const baseAmount = props.amount
@@ -47,7 +36,7 @@ async function performSending(props: TProps): Promise<string> {
 
   if (amount === 'NaN') {
     console.error('NaN amount', baseAmount)
-    throw new Error('Amount is not a valid number!')
+    throw new Error('Amount is not a valid number')
   }
 
   await props.secretNetworkClient.tx
@@ -89,7 +78,7 @@ async function performSending(props: TProps): Promise<string> {
     )
     .catch((error: any) => {
       console.error(error)
-      throw new Error(error)
+      throw error
     })
     .then((tx: any) => {
       if (tx) {

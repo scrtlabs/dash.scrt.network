@@ -109,10 +109,10 @@ export const chains: { [chain_name: string]: Chain } = {
   },
   Carbon: {
     chain_name: 'Carbon',
-    deposit_channel_id: 'channel-XX',
+    deposit_channel_id: 'channel-45',
     deposit_gas: 200_000,
-    deposit_gas_denom: 'dswth',
-    withdraw_channel_id: 'channel-XX',
+    deposit_gas_denom: 'swth',
+    withdraw_channel_id: 'channel-160',
     withdraw_gas: 150_000,
     chain_id: 'carbon-1',
     bech32_prefix: 'swth',
@@ -276,6 +276,32 @@ export const chains: { [chain_name: string]: Chain } = {
     chain_image: '/juno.svg',
     explorer_account: 'https://www.mintscan.io/juno/account/'
   },
+  Kava: {
+    chain_name: 'Kava',
+    deposit_channel_id: 'channel-148',
+    deposit_gas: 200_000,
+    deposit_gas_denom: 'ukava',
+    withdraw_channel_id: 'channel-158',
+    withdraw_gas: 150_000,
+    chain_id: 'kava_2222-10',
+    bech32_prefix: 'kava',
+    lcd: 'https://kava-rest.publicnode.com',
+    chain_image: '/kava.svg',
+    explorer_account: 'https://www.mintscan.io/kava/account/'
+  },
+  Kujira: {
+    chain_name: 'Kujira',
+    deposit_channel_id: 'channel-10',
+    deposit_gas: 200_000,
+    deposit_gas_denom: 'ukuji',
+    withdraw_channel_id: 'channel-22',
+    withdraw_gas: 150_000,
+    chain_id: 'kaiyo-1',
+    bech32_prefix: 'kujira',
+    lcd: 'https://kujira-api.polkachu.com/',
+    chain_image: '/kuji.svg',
+    explorer_account: 'https://ping.pub/kujira/account/'
+  },
   Migaloo: {
     chain_name: 'Migaloo',
     deposit_channel_id: 'channel-4',
@@ -328,19 +354,6 @@ export const chains: { [chain_name: string]: Chain } = {
     lcd: 'https://nolus-api.lavenderfive.com:443',
     chain_image: '/nolus.svg',
     explorer_account: 'https://ping.pub/nolus/account/'
-  },
-  Kujira: {
-    chain_name: 'Kujira',
-    deposit_channel_id: 'channel-10',
-    deposit_gas: 200_000,
-    deposit_gas_denom: 'ukuji',
-    withdraw_channel_id: 'channel-22',
-    withdraw_gas: 150_000,
-    chain_id: 'kaiyo-1',
-    bech32_prefix: 'kujira',
-    lcd: 'https://kujira-api.polkachu.com/',
-    chain_image: '/kuji.svg',
-    explorer_account: 'https://ping.pub/kujira/account/'
   },
   Oraichain: {
     chain_name: 'Oraichain',
@@ -482,7 +495,7 @@ export type Token = {
   /** a snip20 token that's originated from Secret Network */
   is_snip20?: boolean
   /** a ICS20 token that's originated from Secret Network */
-  is_ics20?: boolean
+  is_axelar_asset?: boolean
   /** secret contract address of the token */
   axelar_denom?: string
   /** denom name of ICS20 token in axelar */
@@ -598,6 +611,18 @@ export const tokens: Token[] = [
           [
             {
               incomingChannelId: chains['Axelar'].deposit_channel_id,
+              incomingPortId: 'transfer'
+            }
+          ],
+          'uscrt'
+        )
+      },
+      {
+        chain_name: 'Carbon',
+        denom: ibcDenom(
+          [
+            {
+              incomingChannelId: chains['Carbon'].deposit_channel_id,
               incomingPortId: 'transfer'
             }
           ],
@@ -742,6 +767,18 @@ export const tokens: Token[] = [
           [
             {
               incomingChannelId: chains['Juno'].deposit_channel_id,
+              incomingPortId: 'transfer'
+            }
+          ],
+          'uscrt'
+        )
+      },
+      {
+        chain_name: 'Kava',
+        denom: ibcDenom(
+          [
+            {
+              incomingChannelId: chains['Kava'].deposit_channel_id,
               incomingPortId: 'transfer'
             }
           ],
@@ -945,6 +982,10 @@ export const tokens: Token[] = [
         denom: 'uscrt'
       },
       {
+        chain_name: 'Carbon',
+        denom: 'uscrt'
+      },
+      {
         chain_name: 'Celestia',
         denom: 'uscrt'
       },
@@ -990,6 +1031,10 @@ export const tokens: Token[] = [
       },
       {
         chain_name: 'Juno',
+        denom: 'uscrt'
+      },
+      {
+        chain_name: 'Kava',
         denom: 'uscrt'
       },
       {
@@ -1081,8 +1126,37 @@ export const tokens: Token[] = [
     ]
   },
   {
+    name: 'ampKUJI',
+    description: 'ERIS staked KUJI',
+    address: 'secret1pf6n6j8xlkxnga5t8w8exdtvcrrjgqms5wdlnj',
+    code_hash: '638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e',
+    image: '/ampkuji.svg',
+    decimals: 6,
+    coingecko_id: 'eris-staked-kuji',
+    deposits: [
+      {
+        chain_name: 'Kujira',
+        denom: 'factory/kujira1n3fr5f56r2ce0s37wdvwrk98yhhq3unnxgcqus8nzsfxvllk0yxquurqty/ampKUJI'
+      }
+    ],
+    withdrawals: [
+      {
+        chain_name: 'Kujira',
+        denom: ibcDenom(
+          [
+            {
+              incomingChannelId: chains['Kujira'].withdraw_channel_id,
+              incomingPortId: 'transfer'
+            }
+          ],
+          'factory:kujira1n3fr5f56r2ce0s37wdvwrk98yhhq3unnxgcqus8nzsfxvllk0yxquurqty:ampKUJI'
+        )
+      }
+    ]
+  },
+  {
     name: 'ampLUNA',
-    description: 'ERIS liquid staked LUNA',
+    description: 'ERIS staked LUNA',
     address: 'secret1cycwquhh63qmc0qgfe76eed6a6yj5x4vzlu3rc',
     code_hash: '638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e',
     image: '/ampluna.svg',
@@ -1107,6 +1181,35 @@ export const tokens: Token[] = [
             }
           ],
           'cw20:terra1ecgazyd0waaj3g7l9cmy5gulhxkps2gmxu9ghducvuypjq68mq2s5lvsct'
+        )
+      }
+    ]
+  },
+  {
+    name: 'ampWHALE',
+    description: 'ERIS staked WHALE',
+    address: 'secret1jsaftfxnwwmjxccvc3zqaqmkcpp8fjnvvltvq6',
+    code_hash: '638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e',
+    image: '/ampwhale.svg',
+    decimals: 6,
+    coingecko_id: 'eris-amplified-whale',
+    deposits: [
+      {
+        chain_name: 'Migaloo',
+        denom: 'factory/migaloo1436kxs0w2es6xlqpp9rd35e3d0cjnw4sv8j3a7483sgks29jqwgshqdky4/ampWHALE'
+      }
+    ],
+    withdrawals: [
+      {
+        chain_name: 'Migaloo',
+        denom: ibcDenom(
+          [
+            {
+              incomingChannelId: chains['Migaloo'].withdraw_channel_id,
+              incomingPortId: 'transfer'
+            }
+          ],
+          'factory/migaloo1436kxs0w2es6xlqpp9rd35e3d0cjnw4sv8j3a7483sgks29jqwgshqdky4/ampWHALE'
         )
       }
     ]
@@ -1689,6 +1792,35 @@ export const tokens: Token[] = [
     ]
   },
   {
+    name: 'KAVA',
+    description: 'Kava Governance Token',
+    address: 'secret1xyhphws090fqs33sxkytmagwynz54eqnpdqfrw',
+    code_hash: '638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e',
+    image: '/kava.svg',
+    decimals: 6,
+    coingecko_id: 'kava',
+    deposits: [
+      {
+        chain_name: 'Kava',
+        denom: 'ukava'
+      }
+    ],
+    withdrawals: [
+      {
+        chain_name: 'Kava',
+        denom: ibcDenom(
+          [
+            {
+              incomingChannelId: chains['Kava'].withdraw_channel_id,
+              incomingPortId: 'transfer'
+            }
+          ],
+          'ukava'
+        )
+      }
+    ]
+  },
+  {
     name: 'KUJI',
     description: 'Kujira Governance Token',
     address: 'secret13hvh0rn0rcf5zr486yxlrucvwpzwqu2dsz6zu8',
@@ -2014,7 +2146,7 @@ export const tokens: Token[] = [
     code_hash: '638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e',
     image: '/page.png',
     decimals: 8,
-    coingecko_id: '',
+    coingecko_id: 'page',
     deposits: [
       {
         chain_name: 'Gravity Bridge',
@@ -2101,7 +2233,7 @@ export const tokens: Token[] = [
     code_hash: '638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e',
     image: '/qatom.svg',
     decimals: 6,
-    coingecko_id: '',
+    coingecko_id: 'qatom',
     deposits: [
       {
         chain_name: 'Quicksilver',
@@ -2182,14 +2314,57 @@ export const tokens: Token[] = [
     ]
   },
   {
-    name: 'USDC (Noble)',
+    name: 'USDC',
     description: 'Native USDC Stablecoin via Noble',
     address: 'secret1chsejpk9kfj4vt9ec6xvyguw539gsdtr775us2',
     code_hash: '5a085bd8ed89de92b35134ddd12505a602c7759ea25fb5c089ba03c8535b3042',
-    image: '/ausdc.svg',
+    image: '/usdc.svg',
     decimals: 6,
     coingecko_id: 'usd-coin',
     deposits: [
+      {
+        chain_name: 'Archway',
+        needsSkip: true,
+        denom: ibcDenom(
+          [
+            {
+              incomingChannelId: 'channel-29',
+              incomingPortId: 'transfer'
+            }
+          ],
+          'uusdc'
+        )
+      },
+      /*   {
+        chain_name: 'Kujira',
+        needsSkip: true,
+        denom: ibcDenom(
+          [
+            {
+              incomingChannelId: 'channel-62',
+              incomingPortId: 'Kujira'
+            }
+          ],
+          'uusdc'
+        )
+      }, */
+      {
+        chain_name: 'Neutron',
+        needsSkip: true,
+        denom: ibcDenom(
+          [
+            {
+              incomingChannelId: 'channel-30',
+              incomingPortId: 'transfer'
+            }
+          ],
+          'uusdc'
+        )
+      },
+      {
+        chain_name: 'Noble',
+        denom: 'uusdc'
+      },
       {
         chain_name: 'Osmosis',
         needsSkip: true,
@@ -2202,15 +2377,37 @@ export const tokens: Token[] = [
           ],
           'uusdc'
         )
-      },
-      {
-        chain_name: 'Noble',
-        denom: 'uusdc'
       }
     ],
     withdrawals: [
       {
-        chain_name: 'Osmosis',
+        chain_name: 'Archway',
+        needsSkip: true,
+        denom: ibcDenom(
+          [
+            {
+              incomingChannelId: chains['Noble'].withdraw_channel_id,
+              incomingPortId: 'transfer'
+            }
+          ],
+          'uusdc'
+        )
+      },
+      /*   {
+        chain_name: 'Kujira',
+        needsSkip: true,
+        denom: ibcDenom(
+          [
+            {
+              incomingChannelId: chains['Noble'].withdraw_channel_id,
+              incomingPortId: 'transfer'
+            }
+          ],
+          'uusdc'
+        )
+      }, */
+      {
+        chain_name: 'Neutron',
         needsSkip: true,
         denom: ibcDenom(
           [
@@ -2224,6 +2421,19 @@ export const tokens: Token[] = [
       },
       {
         chain_name: 'Noble',
+        denom: ibcDenom(
+          [
+            {
+              incomingChannelId: chains['Noble'].withdraw_channel_id,
+              incomingPortId: 'transfer'
+            }
+          ],
+          'uusdc'
+        )
+      },
+      {
+        chain_name: 'Osmosis',
+        needsSkip: true,
         denom: ibcDenom(
           [
             {
@@ -2303,8 +2513,9 @@ export const tokens: Token[] = [
     decimals: 6,
     coingecko_id: 'stride-staked-atom',
     deposits: [
-      /*       {
+      {
         chain_name: 'Osmosis',
+        needsSkip: true,
         denom: ibcDenom(
           [
             {
@@ -2314,15 +2525,16 @@ export const tokens: Token[] = [
           ],
           'stuatom'
         )
-      }, */
+      },
       {
         chain_name: 'Stride',
         denom: 'stuatom'
       }
     ],
     withdrawals: [
-      /* {
+      {
         chain_name: 'Osmosis',
+        needsSkip: true,
         denom: ibcDenom(
           [
             {
@@ -2332,7 +2544,7 @@ export const tokens: Token[] = [
           ],
           'stuatom'
         )
-      }, */
+      },
       {
         chain_name: 'Stride',
         denom: ibcDenom(
@@ -2356,8 +2568,9 @@ export const tokens: Token[] = [
     decimals: 18,
     coingecko_id: 'stride-staked-injective',
     deposits: [
-      /*  {
+      {
         chain_name: 'Osmosis',
+        needsSkip: true,
         denom: ibcDenom(
           [
             {
@@ -2367,15 +2580,16 @@ export const tokens: Token[] = [
           ],
           'stinj'
         )
-      }, */
+      },
       {
         chain_name: 'Stride',
         denom: 'stinj'
       }
     ],
     withdrawals: [
-      /* {
+      {
         chain_name: 'Osmosis',
+        needsSkip: true,
         denom: ibcDenom(
           [
             {
@@ -2385,7 +2599,7 @@ export const tokens: Token[] = [
           ],
           'stinj'
         )
-      }, */
+      },
       {
         chain_name: 'Stride',
         denom: ibcDenom(
@@ -2409,8 +2623,9 @@ export const tokens: Token[] = [
     decimals: 6,
     coingecko_id: 'stride-staked-juno',
     deposits: [
-      /* {
+      {
         chain_name: 'Osmosis',
+        needsSkip: true,
         denom: ibcDenom(
           [
             {
@@ -2420,15 +2635,16 @@ export const tokens: Token[] = [
           ],
           'stujuno'
         )
-      }, */
+      },
       {
         chain_name: 'Stride',
         denom: 'stujuno'
       }
     ],
     withdrawals: [
-      /*  {
+      {
         chain_name: 'Osmosis',
+        needsSkip: true,
         denom: ibcDenom(
           [
             {
@@ -2438,7 +2654,7 @@ export const tokens: Token[] = [
           ],
           'stujuno'
         )
-      }, */
+      },
       {
         chain_name: 'Stride',
         denom: ibcDenom(
@@ -2520,8 +2736,9 @@ export const tokens: Token[] = [
     decimals: 6,
     coingecko_id: 'stride-staked-luna',
     deposits: [
-      /*  {
+      {
         chain_name: 'Osmosis',
+        needsSkip: true,
         denom: ibcDenom(
           [
             {
@@ -2531,15 +2748,16 @@ export const tokens: Token[] = [
           ],
           'stuluna'
         )
-      }, */
+      },
       {
         chain_name: 'Stride',
         denom: 'stuluna'
       }
     ],
     withdrawals: [
-      /*  {
+      {
         chain_name: 'Osmosis',
+        needsSkip: true,
         denom: ibcDenom(
           [
             {
@@ -2549,7 +2767,7 @@ export const tokens: Token[] = [
           ],
           'stuluna'
         )
-      }, */
+      },
       {
         chain_name: 'Stride',
         denom: ibcDenom(
@@ -2573,8 +2791,9 @@ export const tokens: Token[] = [
     decimals: 6,
     coingecko_id: 'stride-staked-osmo',
     deposits: [
-      /*  {
+      {
         chain_name: 'Osmosis',
+        needsSkip: true,
         denom: ibcDenom(
           [
             {
@@ -2584,15 +2803,16 @@ export const tokens: Token[] = [
           ],
           'stuosmo'
         )
-      }, */
+      },
       {
         chain_name: 'Stride',
         denom: 'stuosmo'
       }
     ],
     withdrawals: [
-      /*  {
+      {
         chain_name: 'Osmosis',
+        needsSkip: true,
         denom: ibcDenom(
           [
             {
@@ -2602,7 +2822,7 @@ export const tokens: Token[] = [
           ],
           'stuosmo'
         )
-      }, */
+      },
       {
         chain_name: 'Stride',
         denom: ibcDenom(
@@ -2626,8 +2846,9 @@ export const tokens: Token[] = [
     decimals: 6,
     coingecko_id: 'stride',
     deposits: [
-      /*  {
+      {
         chain_name: 'Osmosis',
+        needsSkip: true,
         denom: ibcDenom(
           [
             {
@@ -2637,15 +2858,16 @@ export const tokens: Token[] = [
           ],
           'ustrd'
         )
-      }, */
+      },
       {
         chain_name: 'Stride',
         denom: 'ustrd'
       }
     ],
     withdrawals: [
-      /*  {
+      {
         chain_name: 'Osmosis',
+        needsSkip: true,
         denom: ibcDenom(
           [
             {
@@ -2655,7 +2877,7 @@ export const tokens: Token[] = [
           ],
           'ustrd'
         )
-      }, */
+      },
       {
         chain_name: 'Stride',
         denom: ibcDenom(
@@ -2679,8 +2901,9 @@ export const tokens: Token[] = [
     decimals: 6,
     coingecko_id: 'stride-staked-tia',
     deposits: [
-      /*  {
+      {
         chain_name: 'Osmosis',
+        needsSkip: true,
         denom: ibcDenom(
           [
             {
@@ -2690,15 +2913,16 @@ export const tokens: Token[] = [
           ],
           'stuosmo'
         )
-      }, */
+      },
       {
         chain_name: 'Stride',
         denom: 'stutia'
       }
     ],
     withdrawals: [
-      /*  {
+      {
         chain_name: 'Osmosis',
+        needsSkip: true,
         denom: ibcDenom(
           [
             {
@@ -2708,7 +2932,7 @@ export const tokens: Token[] = [
           ],
           'stuosmo'
         )
-      }, */
+      },
       {
         chain_name: 'Stride',
         denom: ibcDenom(
@@ -2719,6 +2943,35 @@ export const tokens: Token[] = [
             }
           ],
           'stutia'
+        )
+      }
+    ]
+  },
+  {
+    name: 'SWTH',
+    description: 'Carbon Governance Token',
+    address: 'secret1gech42jfcdke92tf9ltscpq7x0al8j7gkce030',
+    code_hash: '638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e',
+    image: '/swth.svg',
+    decimals: 8,
+    coingecko_id: 'switcheo',
+    deposits: [
+      {
+        chain_name: 'Carbon',
+        denom: 'swth'
+      }
+    ],
+    withdrawals: [
+      {
+        chain_name: 'Carbon',
+        denom: ibcDenom(
+          [
+            {
+              incomingChannelId: chains['Carbon'].withdraw_channel_id,
+              incomingPortId: 'transfer'
+            }
+          ],
+          'swth'
         )
       }
     ]
@@ -2735,9 +2988,10 @@ export const tokens: Token[] = [
       {
         chain_name: 'Celestia',
         denom: 'utia'
-      }
-      /*  {
+      },
+      {
         chain_name: 'Osmosis',
+        needsSkip: true,
         denom: ibcDenom(
           [
             {
@@ -2747,7 +3001,7 @@ export const tokens: Token[] = [
           ],
           'utia'
         )
-      } */
+      }
     ],
     withdrawals: [
       {
@@ -2761,9 +3015,10 @@ export const tokens: Token[] = [
           ],
           'utia'
         )
-      }
-      /* {
+      },
+      {
         chain_name: 'Osmosis',
+        needsSkip: true,
         denom: ibcDenom(
           [
             {
@@ -2773,7 +3028,7 @@ export const tokens: Token[] = [
           ],
           'utia'
         )
-      } */
+      }
     ]
   },
   {
@@ -2806,8 +3061,37 @@ export const tokens: Token[] = [
     ]
   },
   {
+    name: 'USDT',
+    description: 'Native USDT from Kava',
+    address: 'secret1htd6s29m2j9h45knwkyucz98m306n32hx8dww3',
+    code_hash: '638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e',
+    image: '/usdt.svg',
+    decimals: 6,
+    coingecko_id: 'tether',
+    deposits: [
+      {
+        chain_name: 'Kava',
+        denom: 'erc20/tether/usdt'
+      }
+    ],
+    withdrawals: [
+      {
+        chain_name: 'Kava',
+        denom: ibcDenom(
+          [
+            {
+              incomingChannelId: chains['Kava'].withdraw_channel_id,
+              incomingPortId: 'transfer'
+            }
+          ],
+          'erc20/tether/usdt'
+        )
+      }
+    ]
+  },
+  {
     name: 'WBTC',
-    description: 'Wrapped Bitcoin on Osmosis',
+    description: 'Wrapped Bitcoin from Osmosis',
     address: 'secret1v2kgmfwgd2an0l5ddralajg5wfdkemxl2vg4jp',
     code_hash: '638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e',
     image: '/wbtc.svg',
@@ -2864,6 +3148,35 @@ export const tokens: Token[] = [
     ]
   },
   {
+    name: 'wstETH',
+    description: 'Wrapped Lido stETH from Neutron',
+    address: 'secret1xx6m5c7d92h75evkmxqqe2xe5sk5qcqqs9t8ar',
+    code_hash: '638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e',
+    image: '/wsteth.svg',
+    decimals: 18,
+    coingecko_id: 'wrapped-steth',
+    deposits: [
+      {
+        chain_name: 'Neutron',
+        denom: 'factory/neutron1ug740qrkquxzrk2hh29qrlx3sktkfml3je7juusc2te7xmvsscns0n2wry/wstETH'
+      }
+    ],
+    withdrawals: [
+      {
+        chain_name: 'Neutron',
+        denom: ibcDenom(
+          [
+            {
+              incomingChannelId: chains['Neutron'].withdraw_channel_id,
+              incomingPortId: 'transfer'
+            }
+          ],
+          'factory/neutron1ug740qrkquxzrk2hh29qrlx3sktkfml3je7juusc2te7xmvsscns0n2wry/wstETH'
+        )
+      }
+    ]
+  },
+  {
     name: 'XPRT',
     description: 'Persistence Governance Token',
     address: 'secret1gnrrqjj5e2pwn4g262xjyypptu0ge3z3tps3nn',
@@ -2898,7 +3211,7 @@ export const tokens: Token[] = [
 export const snips: Token[] = [
   {
     name: 'ADM',
-    description: 'Admirari DAO / Secret Admirers Token',
+    description: 'Admirari DAO Token',
     is_snip20: true,
     address: 'secret1zzuffktc25904mwus8ched6q6p5ewksy80m33h',
     code_hash: '6ee652c96cc3b954ea763d55b039a53784a4b15f28ccac14134c8f91e2d4c91c',
@@ -4000,12 +4313,12 @@ export const snips: Token[] = [
 
 export const ICSTokens: Token[] = [
   {
-    name: 'aUSDC',
+    name: 'USDC.axl',
     description: 'USDC stablecoin from Axelar',
-    is_ics20: true,
+    is_axelar_asset: true,
     address: 'secret1vkq022x4q8t8kx9de3r84u669l65xnwf2lg3e6',
     code_hash: '638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e',
-    image: '/ausdc.svg',
+    image: '/usdc.svg',
     decimals: 6,
     coingecko_id: 'usd-coin',
     axelar_denom: 'uusdc',
@@ -4129,7 +4442,7 @@ export const ICSTokens: Token[] = [
   {
     name: 'AXL',
     description: 'Axelar Governance Token',
-    is_ics20: true,
+    is_axelar_asset: true,
     address: 'secret1vcau4rkn7mvfwl8hf0dqa9p0jr59983e3qqe3z',
     code_hash: '638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e',
     image: '/axl.svg',
@@ -4156,9 +4469,9 @@ export const ICSTokens: Token[] = [
     ]
   },
   {
-    name: 'aWETH',
-    description: 'ETH from Axelar',
-    is_ics20: true,
+    name: 'WETH',
+    description: 'Wrapped ETH from Axelar',
+    is_axelar_asset: true,
     address: 'secret139qfh3nmuzfgwsx2npnmnjl4hrvj3xq5rmq8a0',
     code_hash: '638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e',
     image: '/weth.svg',
@@ -4283,14 +4596,14 @@ export const ICSTokens: Token[] = [
     ]
   },
   {
-    name: 'awstETH',
+    name: 'wstETH.axl',
     description: 'wstETH from Axelar',
-    is_ics20: true,
+    is_axelar_asset: true,
     address: 'secret148jzxkagwe0xulf8jt3sw4nuh2shdh788z3gyd',
     code_hash: '638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e',
     image: '/wsteth.svg',
     decimals: 18,
-    coingecko_id: 'wrapped-steth',
+    coingecko_id: 'bridged-wrapped-steth-axelar',
     axelar_denom: 'wsteth-wei',
     deposits: [
       {
@@ -4396,9 +4709,9 @@ export const ICSTokens: Token[] = [
     ]
   },
   {
-    name: 'aWBTC',
+    name: 'WBTC.axl',
     description: 'Wrapped Bitcoin from Axelar',
-    is_ics20: true,
+    is_axelar_asset: true,
     address: 'secret1guyayjwg5f84daaxl7w84skd8naxvq8vz9upqx',
     code_hash: '638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e',
     image: '/wbtc.svg',
@@ -4523,9 +4836,9 @@ export const ICSTokens: Token[] = [
     ]
   },
   {
-    name: 'aWBNB',
+    name: 'WBNB',
     description: 'Wrapped Binance Coin from Axelar',
-    is_ics20: true,
+    is_axelar_asset: true,
     address: 'secret19xsac2kstky8nhgvvz257uszt44g0cu6ycd5e4',
     code_hash: '638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e',
     image: '/wbnb.svg',
@@ -4622,9 +4935,9 @@ export const ICSTokens: Token[] = [
     ]
   },
   {
-    name: 'aBUSD',
+    name: 'BUSD',
     description: 'Binance USD from Axelar',
-    is_ics20: true,
+    is_axelar_asset: true,
     address: 'secret1t642ayn9rhl5q9vuh4n2jkx0gpa9r6c3sl96te',
     code_hash: '638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e',
     image: '/abusd.svg',
@@ -4721,9 +5034,9 @@ export const ICSTokens: Token[] = [
     ]
   },
   {
-    name: 'aDAI',
+    name: 'DAI',
     description: 'DAI from Axelar',
-    is_ics20: true,
+    is_axelar_asset: true,
     address: 'secret1c2prkwd8e6ratk42l4vrnwz34knfju6hmp7mg7',
     code_hash: '638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e',
     image: '/adai.svg',
@@ -4834,9 +5147,9 @@ export const ICSTokens: Token[] = [
     ]
   },
   {
-    name: 'aLINK',
+    name: 'LINK',
     description: 'LINK from Axelar',
-    is_ics20: true,
+    is_axelar_asset: true,
     address: 'secret1walthx26qaas50nwzg2rsqttlkf58q3hvjha5k',
     code_hash: '638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e',
     image: '/alink.svg',
@@ -4947,9 +5260,9 @@ export const ICSTokens: Token[] = [
     ]
   },
   {
-    name: 'aUNI',
+    name: 'UNI',
     description: 'UNI from Axelar',
-    is_ics20: true,
+    is_axelar_asset: true,
     address: 'secret1egqlkasa6xe6efmfp9562sfj07lq44z7jngu5k',
     code_hash: '638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e',
     image: '/auni.svg',
@@ -5046,12 +5359,12 @@ export const ICSTokens: Token[] = [
     ]
   },
   {
-    name: 'aUSDT',
+    name: 'USDT.axl',
     description: 'USDT stablecoin from Axelar',
-    is_ics20: true,
+    is_axelar_asset: true,
     address: 'secret1wk5j2cntwg2fgklf0uta3tlkvt87alfj7kepuw',
     code_hash: '638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e',
-    image: '/ausdt.svg',
+    image: '/usdt.svg',
     decimals: 6,
     coingecko_id: 'tether',
     axelar_denom: 'uusdt',
@@ -5173,9 +5486,9 @@ export const ICSTokens: Token[] = [
     ]
   },
   {
-    name: 'aFRAX',
+    name: 'FRAX',
     description: 'FRAX from Axelar',
-    is_ics20: true,
+    is_axelar_asset: true,
     address: 'secret16e230j6qm5u5q30pcc6qv726ae30ak6lzq0zvf',
     code_hash: '638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e',
     image: '/afrax.svg',

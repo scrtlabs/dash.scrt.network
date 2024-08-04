@@ -13,7 +13,8 @@ import {
   faCreditCard,
   faPaperPlane,
   faPieChart,
-  faCheckToSlot
+  faCheckToSlot,
+  faSeedling
 } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import React, { useState } from 'react'
@@ -181,9 +182,6 @@ export function Navigation({
           >
             <FontAwesomeIcon icon={faReact} className="mr-2" />
             <span>Power Tools</span>
-            {/* <span className="ml-2 bg-purple-100 text-purple-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-purple-900 dark:text-purple-300">
-              New
-            </span> */}
           </NavLink>
         </li>
         <li>
@@ -276,24 +274,23 @@ export function Navigation({
                 <FontAwesomeIcon icon={faArrowUpRightFromSquare} className="text-xs ml-2" size={'xs'} />
               </a>
             </li>
-            {/*  <li>
+            <li>
               <a
-                href="https://secretanalytics.xyz"
+                href="https://tokengarden.secretsaturn.net"
                 target="_blank"
                 className="cursor-pointer dark:hover:text-white w-full lg:mx-8 rounded-xl transition-colors text-neutral-600 dark:text-neutral-300 hover:text-black block lg:flex lg:items-center"
                 onClick={() => {
-                  trackMixPanelEvent('Clicked external Analytics')
+                  trackMixPanelEvent('Clicked external Token Garden')
                 }}
               >
-                <FontAwesomeIcon icon={faChartLine} className="mr-2" />
-                <span>Stats</span>
-                <FontAwesomeIcon
-                  icon={faArrowUpRightFromSquare}
-                  className="text-xs ml-2"
-                  size={'xs'}
-                />
+                <FontAwesomeIcon icon={faSeedling} className="mr-2" />
+                <span>Token Garden</span>
+                <span className="ml-2 bg-purple-100 text-purple-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-purple-900 dark:text-purple-300">
+                  New
+                </span>
+                <FontAwesomeIcon icon={faArrowUpRightFromSquare} className="text-xs ml-2" size={'xs'} />
               </a>
-            </li> */}
+            </li>
             <li>
               <a
                 href="https://www.mintscan.io/secret"

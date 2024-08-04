@@ -5,10 +5,17 @@ import { useTokenPricesStore } from 'store/TokenPrices'
 import { useUserPreferencesStore } from 'store/UserPreferences'
 import { useSecretNetworkClientStore } from 'store/secretNetworkClient'
 import { toCurrencyString } from 'utils/commons'
+import { tokens } from 'utils/config'
 import { scrtToken } from 'utils/tokens'
 
 function AvailableBalance() {
-  const { scrtBalance } = useSecretNetworkClientStore()
+  const { getBalance } = useSecretNetworkClientStore()
+
+  const scrtBalance = getBalance(
+    tokens.find((token) => token.name === 'SCRT'),
+    false
+  )
+  console.log(scrtBalance)
 
   const { currency } = useUserPreferencesStore()
   const { convertCurrency } = useContext(APIContext)

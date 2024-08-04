@@ -31,7 +31,8 @@ export default function StakingChart() {
     stkdSCRTTokenSupply,
     sSCRTTokenSupply,
     IBCTokenSupply,
-    burnedTokenSupply
+    burnedTokenSupply,
+    exchangesTokenSupply
   } = useContext(APIContext)
 
   const { theme } = useUserPreferencesStore()
@@ -59,7 +60,8 @@ export default function StakingChart() {
       sSCRTTokenSupply &&
       stkdSCRTTokenSupply &&
       IBCTokenSupply &&
-      burnedTokenSupply
+      burnedTokenSupply &&
+      exchangesTokenSupply
     ) {
       const otherToken =
         totalSupply -
@@ -74,7 +76,8 @@ export default function StakingChart() {
 
       const dataValues = [
         { label: 'Staked', value: bondedToken - stkdSCRTTokenSupply },
-        { label: 'Liquid', value: otherToken },
+        { label: 'Liquid', value: otherToken - exchangesTokenSupply },
+        { label: 'Exchanges', value: exchangesTokenSupply },
         { label: 'sSCRT', value: sSCRTTokenSupply },
         { label: 'stkd-SCRT', value: stkdSCRTTokenSupply },
         { label: 'Staked (not bonded)', value: notBondedToken },
@@ -83,7 +86,17 @@ export default function StakingChart() {
         { label: 'Burned', value: burnedTokenSupply }
       ]
 
-      const backgroundColors = ['#06b6d4', '#8b5cf6', '#FF4500', '#008080', '#32CD32', '#FF1493', '#ff8800', '#000000']
+      const backgroundColors = [
+        '#06b6d4',
+        '#8b5cf6',
+        '#ADD8E6',
+        '#FF4500',
+        '#008080',
+        '#32CD32',
+        '#FF1493',
+        '#ff8800',
+        '#000000'
+      ]
 
       setData({
         labels: dataValues.map((item) => createLabel(item.label, item.value)),
@@ -104,11 +117,12 @@ export default function StakingChart() {
     sSCRTTokenSupply,
     stkdSCRTTokenSupply,
     IBCTokenSupply,
-    burnedTokenSupply
+    burnedTokenSupply,
+    exchangesTokenSupply
   ])
 
   const createLabel = (label: string, value: number) => {
-    return `${label}: ${formatNumber(value, 2)} SCRT`
+    return `${label}: ${formatNumber(value, 2)}`
   }
 
   const centerText = {
@@ -124,7 +138,7 @@ export default function StakingChart() {
       ctx.font = 'bold 0.9rem Montserrat'
       ctx.fillStyle = theme === 'dark' ? '#fff' : '#000'
       ctx.textAlign = 'center'
-      ctx.fillText(`Total Supply`, width / 2, height / 2.25 + top)
+      ctx.fillText(`SCRT Total Supply`, width / 2, height / 2.25 + top)
       ctx.restore()
 
       ctx.font = '400 1.5rem Montserrat'

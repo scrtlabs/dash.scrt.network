@@ -3,6 +3,7 @@ import { SecretNetworkClient } from 'secretjs'
 import CurrentPrice from './components/CurrentPrice'
 import MiniTile from './components/MiniTile'
 import PriceVolumeTVL from './components/PriceVolTVLChart/PriceVolumeTVL'
+import HexTile from './components/HexTile'
 import QuadTile from './components/QuadTile'
 import SocialMedia from './components/SocialMedia'
 import { SECRET_LCD, SECRET_CHAIN_ID } from 'utils/config'
@@ -13,21 +14,22 @@ import { Helmet } from 'react-helmet-async'
 import { trackMixPanelEvent, dashboardPageTitle, dashboardPageDescription, dashboardJsonLdSchema } from 'utils/commons'
 import UnbondingsChart from './components/UnbondingsChart'
 import { useUserPreferencesStore } from 'store/UserPreferences'
+import AccountsChart from './components/AccountsChart'
 
 function Dashboard() {
   const {
     defiLamaApiData_TVL,
     currentPrice,
-    externalApiData,
     bondedToken,
     notBondedToken,
     totalSupply,
+    exchangesTokenSupply,
     inflation,
     secretFoundationTax,
     communityTax,
     volume,
     marketCap,
-    L5AnalyticslApiData
+    L5AnalyticsApiData
   } = useContext(APIContext)
 
   useEffect(() => {
@@ -59,28 +61,24 @@ function Dashboard() {
     }
   }, [blockTime])
 
-  // # transactions
-  const [transactions, setTransactions] = useState('')
-  const [transactionsFormattedString, setTransactionsFormattedString] = useState('')
+  // # Unique Wallets
+  const [uniqueWallets, setUniqueWallets] = useState('')
+  const [uniqueWalletsFormattedString, setUniqueWalletsFormattedString] = useState('')
 
   useEffect(() => {
-    if (transactions) {
-      setTransactionsFormattedString(parseInt(transactions).toLocaleString())
+    if (uniqueWallets) {
+      setUniqueWalletsFormattedString(parseInt(uniqueWallets).toLocaleString())
     }
-  }, [transactions])
+  }, [uniqueWallets])
 
   // taxes
-  const [taxFormattedString, setTaxFormattedString] = useState('')
+  const [communityTaxFormattedString, setCommunityTaxFormattedString] = useState('')
+  const [SNFTaxFormattedString, setSNFTaxFormattedString] = useState('')
 
   useEffect(() => {
     if (communityTax && secretFoundationTax) {
-      setTaxFormattedString(
-        (parseFloat(communityTax) * 100).toLocaleString() +
-          '%' +
-          ' / ' +
-          (parseFloat(secretFoundationTax) * 100).toLocaleString() +
-          '%'
-      )
+      setCommunityTaxFormattedString((parseFloat(communityTax) * 100).toLocaleString() + '%')
+      setSNFTaxFormattedString((parseFloat(secretFoundationTax) * 100).toLocaleString() + '%')
     }
   }, [communityTax, secretFoundationTax])
 
@@ -107,28 +105,19 @@ function Dashboard() {
   const [growthRateFormattedString, setGrowthRateFormattedString] = useState('')
 
   //Bonded Ratio
-  const [bondedRatio, setBondedRatio] = useState(0)
-  const [bondedRatioFormattedString, setBondedRatioFormattedString] = useState('')
+  const [bondedRateFormattedString, setBondedRateFormattedString] = useState('')
+  const [LSBRFormattedString, setLSBRFormattedString] = useState('')
 
   useEffect(() => {
-    const queryData = async () => {
-      const secretjsquery = new SecretNetworkClient({
-        url: SECRET_LCD,
-        chainId: SECRET_CHAIN_ID
-      })
+    const secretjsquery = new SecretNetworkClient({
+      url: SECRET_LCD,
+      chainId: SECRET_CHAIN_ID
+    })
 
-      secretjsquery?.query?.tendermint.getLatestBlock('')?.then((res1) => {
-        setBlockHeight(res1.block.header.height)
-      })
-    }
-    queryData()
+    secretjsquery?.query?.tendermint.getLatestBlock('')?.then((res1) => {
+      setBlockHeight(res1.block.header.height)
+    })
   }, [])
-
-  useEffect(() => {
-    if (L5AnalyticslApiData) {
-      setBlockTime(L5AnalyticslApiData['actual_blocktime'].toFixed(2))
-    }
-  }, [L5AnalyticslApiData])
 
   // volume & market cap
   const [volumeFormattedString, setVolumeFormattedString] = useState('')
@@ -138,47 +127,71 @@ function Dashboard() {
   const { currency } = useUserPreferencesStore()
 
   useEffect(() => {
+    if (L5AnalyticsApiData) {
+      setBlockTime(L5AnalyticsApiData['actual_blocktime'].toFixed(2))
+      setActiveValidators(L5AnalyticsApiData['total_validators'])
+      setUniqueWallets(L5AnalyticsApiData['unique_wallets'])
+    }
+  }, [L5AnalyticsApiData])
+
+  useEffect(() => {
     if (volume) {
       setVolumeFormattedString(currencySymbols[currency] + formatNumber(parseInt(volume.toFixed(0).toString()), 2))
     }
+  }, [volume])
+
+  useEffect(() => {
     if (marketCap) {
       setMarketCapFormattedString(
         currencySymbols[currency] + formatNumber(parseInt(marketCap.toFixed(0).toString()), 2)
       )
     }
+  }, [marketCap])
+
+  useEffect(() => {
     if (defiLamaApiData_TVL) {
       setTVLFormattedString(
         currencySymbols[currency] + formatNumber(parseInt(defiLamaApiData_TVL.toFixed(0).toString()), 2)
       )
     }
-  }, [volume, marketCap, defiLamaApiData_TVL])
+  }, [defiLamaApiData_TVL])
 
   useEffect(() => {
-    if (externalApiData) {
-      const queryData = async () => {
-        setTransactions((externalApiData as any).total_txs_num)
-        setActiveValidators((externalApiData as any).unjailed_validator_num)
-      }
-
-      queryData()
+    if (defiLamaApiData_TVL) {
+      setTVLFormattedString(
+        currencySymbols[currency] + formatNumber(parseInt(defiLamaApiData_TVL.toFixed(0).toString()), 2)
+      )
     }
-  }, [externalApiData])
+  }, [defiLamaApiData_TVL])
 
   useEffect(() => {
     if (inflation && secretFoundationTax && communityTax && bondedToken && notBondedToken && totalSupply) {
       // staking ratio missing
       const I = inflation // inflation
       const F = parseFloat(secretFoundationTax) // foundation tax
-      const C = 0.0 // validator commision rate; median is 5%
+      const C = 0.05 // validator commision rate; median is 5%
       const T = parseFloat(communityTax) // community tax
-      const R = bondedToken / totalSupply // bonded ratio
-      setBondedRatio(R * 100)
+      const R = bondedToken / totalSupply // bonded rate
+      const bondedRate = R * 100
       const APR = (I / R) * 100
       const realYield = (I / R) * (1 - F - T) * (1 - C) * 100
       setGrowthRateFormattedString(formatNumber(APR, 2) + '%' + ' / ' + formatNumber(realYield, 2) + '%')
-      setBondedRatioFormattedString(formatNumber(bondedRatio, 2) + '%')
+      setBondedRateFormattedString(formatNumber(bondedRate, 2) + '%')
     }
-  }, [inflation, secretFoundationTax, communityTax, bondedToken, notBondedToken, bondedRatio, totalSupply])
+    if (
+      inflation &&
+      secretFoundationTax &&
+      communityTax &&
+      bondedToken &&
+      notBondedToken &&
+      totalSupply &&
+      exchangesTokenSupply
+    ) {
+      const R = bondedToken / (totalSupply - exchangesTokenSupply) // bonded rate
+      const bondedRate = R * 100
+      setLSBRFormattedString(formatNumber(bondedRate, 2) + '%')
+    }
+  }, [inflation, secretFoundationTax, communityTax, bondedToken, notBondedToken, totalSupply, exchangesTokenSupply])
 
   return (
     <>
@@ -230,12 +243,12 @@ function Dashboard() {
             <QuadTile
               item1={{ key: 'Block Height', value: blockHeightFormattedString }}
               item2={{
-                key: 'Block Time (last block)',
+                key: 'Avg. Block Time',
                 value: blockTimeFormattedString
               }}
               item3={{
-                key: '# Transactions (total)',
-                value: transactionsFormattedString
+                key: 'Unique Wallets',
+                value: uniqueWalletsFormattedString
               }}
               item4={{ key: '# Active Validators', value: activeValidatorsFormattedString }}
             />
@@ -249,17 +262,31 @@ function Dashboard() {
 
           {/* Block Info */}
           <div className="col-span-12 md:col-span-12 lg:col-span-12 xl:col-span-12 2xl:col-span-4">
-            <QuadTile
+            <HexTile
               item1={{
                 key: 'APR/Staking Yield',
                 value: growthRateFormattedString
               }}
-              item2={{ key: 'Inflation', value: inflationFormattedString }}
-              item3={{
-                key: 'Community Tax/Secret Foundation Tax',
-                value: taxFormattedString
+              item2={{
+                key: 'Inflation (annual)',
+                value: inflationFormattedString
               }}
-              item4={{ key: 'Bonded Ratio', value: bondedRatioFormattedString }}
+              item3={{
+                key: 'Community Tax',
+                value: communityTaxFormattedString
+              }}
+              item4={{
+                key: 'SNF Tax',
+                value: SNFTaxFormattedString
+              }}
+              item5={{
+                key: 'Bonded Rate',
+                value: bondedRateFormattedString
+              }}
+              item6={{
+                key: 'Liquid Supply Bonding Rate',
+                value: LSBRFormattedString
+              }}
             />
           </div>
         </div>
@@ -269,17 +296,14 @@ function Dashboard() {
           <div className="col-span-12 rounded-xl bg-white border border-neutral-200 dark:border-neutral-700 dark:bg-neutral-800 p-4">
             <PriceVolumeTVL />
           </div>
-          <div className="col-span-12 rounded-xl bg-white border border-neutral-200 dark:border-neutral-700 dark:bg-neutral-800 p-4">
-            <UnbondingsChart />
-          </div>
-          {/* Item */}
-          {/* <div className='col-span-12 xl:col-span-6 bg-neutral-800 p-4 rounded-xl'>
-              <PriceChart />
-            </div> */}
-          {/* Item */}
-          {/* <div className='col-span-12 xl:col-span-6 bg-neutral-800 p-4 rounded-xl'>
-              <VolumeChart />
-            </div> */}
+          {L5AnalyticsApiData ? (
+            <div className="col-span-12 rounded-xl bg-white border border-neutral-200 dark:border-neutral-700 dark:bg-neutral-800 p-4">
+              <UnbondingsChart />
+            </div>
+          ) : null}
+          {/* <div className="col-span-12 rounded-xl bg-white border border-neutral-200 dark:border-neutral-700 dark:bg-neutral-800 p-4">
+            <AccountsChart />
+          </div> */}
         </div>
       </div>
     </>

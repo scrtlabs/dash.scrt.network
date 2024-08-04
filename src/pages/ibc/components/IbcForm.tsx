@@ -94,7 +94,7 @@ export default function IbcForm() {
         })
       } catch (error: any) {
         console.error(error)
-        NotificationService.notify(`Transfer unsuccessful!`, 'error')
+        NotificationService.notify(`Transfer unsuccessful`, 'error')
       }
     }
   })
@@ -429,10 +429,7 @@ export default function IbcForm() {
                   alt={`${token.name} asset logo`}
                   className="w-6 h-6 mr-2 rounded-full"
                 />
-                <span className="font-semibold text-sm">
-                  {!(token.is_snip20 || token.name === 'SCRT') && formik.values.ibcMode == 'withdrawal' ? 's' : null}
-                  {token.name}
-                </span>
+                <span className="font-semibold text-sm">{token.name}</span>
               </div>
             )}
             className="react-select-wrap-container"
@@ -472,7 +469,7 @@ export default function IbcForm() {
       {/* Fee Grant */}
       {formik.values.ibcMode === 'withdrawal' && <FeeGrant />}
 
-      {formik.values.token.is_ics20 && formik.values.chain.chain_name != 'Axelar' && (
+      {formik.values.token.is_axelar_asset && formik.values.chain.chain_name != 'Axelar' && (
         <BridgingFees
           chain={formik.values.chain}
           token={formik.values.token}

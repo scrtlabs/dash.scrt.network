@@ -16,7 +16,11 @@ export function Wrap() {
   const [selectedToken, setSelectedToken] = useState<Token>(secretToken)
   const [wrappingMode, setWrappingMode] = useState<WrappingMode>('wrap')
 
-  const { scrtBalance } = useSecretNetworkClientStore()
+  const { getBalance } = useSecretNetworkClientStore()
+  const scrtBalance = getBalance(
+    tokens.find((token) => token.name === 'SCRT'),
+    false
+  )
 
   useEffect(() => {
     if (import.meta.env.VITE_MIXPANEL_ENABLED === 'true') {
@@ -51,8 +55,8 @@ export function Wrap() {
 
   const infoMsg =
     wrappingMode === 'wrap'
-      ? `Converting publicly visible ${selectedToken.name} into its privacy-preserving equivalent s${selectedToken.name}. These tokens are not publicly visible and require a viewing key!`
-      : `Converting privacy-preserving s${selectedToken.name} into its publicly visible equivalent ${selectedToken.name}!`
+      ? `Converting publicly visible ${selectedToken.name} into its privacy-preserving equivalent s${selectedToken.name}. These tokens are not publicly visible and require a viewing key`
+      : `Converting privacy-preserving s${selectedToken.name} into its publicly visible equivalent ${selectedToken.name}`
 
   const [isFeeGrantInfoModalOpen, setIsFeeGrantInfoModalOpen] = useState(false)
 

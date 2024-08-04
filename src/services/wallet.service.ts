@@ -20,6 +20,7 @@ import { BatchQueryParsedResponse, batchQuery } from '@shadeprotocol/shadejs'
 import { useUserPreferencesStore } from 'store/UserPreferences'
 import { GetBalanceError } from 'types/GetBalanceError'
 import { TokenBalances } from 'types/TokenBalances'
+import { NotificationService } from './notification.service'
 
 const connectKeplr = async (lcd: string, chainID: string) => {
   const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
@@ -103,34 +104,30 @@ const connectWallet = async (
 
 const requestFeeGrantService = async (feeGrantStatus: FeeGrantStatus, walletAddress: String) => {
   const { debugMode } = useUserPreferencesStore.getState()
-
   let newFeeGrantStatus: FeeGrantStatus = feeGrantStatus
 
   if (feeGrantStatus === 'success') {
     if (debugMode || debugModeOverride) {
-      console.debug('User requested Fee Grant. Fee Grant has already been granted. Therefore doing nothing...')
+      console.log('User requested Fee Grant. Fee Grant has already been granted. Therefore doing nothing...')
     }
   } else {
     try {
       const result = await (await fetch(`${faucetURL}/${walletAddress}`)).json()
       if (result?.feegrant) {
         newFeeGrantStatus = 'success'
-        // toast.success(
-        //   `Successfully sent new fee grant (0.1 SCRT) to address ${secretAddress}`
-        // );
+        NotificationService.notify(`Successfully sent new fee grant (0.05 SCRT) to address ${walletAddress}`, 'success')
       } else {
         console.error(result?.error)
         newFeeGrantStatus = 'fail'
-        // toast.error(
-        //   `Fee Grant for address ${secretAddress} failed with status code: ${result.status}`
-        // );
+        NotificationService.notify(
+          `Fee Grant for address ${walletAddress} failed with status code: ${result.status}`,
+          'error'
+        )
       }
     } catch (error) {
       console.error(error)
       newFeeGrantStatus = 'fail'
-      // toast.error(
-      //   `Fee Grant for address ${secretAddress} failed with error: ${error}`
-      // );
+      NotificationService.notify(`Fee Grant for address ${walletAddress} failed with error: ${error}`, 'error')
     }
   }
   return newFeeGrantStatus
@@ -166,57 +163,11 @@ const isViewingKeyAvailable = async (token: Token) => {
   return key ? true : false
 }
 
-const getsScrtTokenBalance = async (
-  isConnected: boolean,
-  secretNetworkClient: any,
-  walletAddress: string
-): Promise<Nullable<string>> => {
-  if (!isConnected) {
-    return null
-  }
-
-  let sScrtBalance: string | GetBalanceError
-
-  const key = await getWalletViewingKey(scrtToken.address)
-  if (!key) {
-    sScrtBalance = 'viewingKeyError' as GetBalanceError
-    return null
-  }
-
-  interface IResult {
-    viewing_key_error: any
-    balance: {
-      amount: string
-    }
-  }
-
-  try {
-    const result: IResult = await secretNetworkClient?.query?.compute?.queryContract({
-      contract_address: scrtToken.address,
-      code_hash: scrtToken.code_hash,
-      query: {
-        balance: { address: walletAddress, key }
-      }
-    })
-
-    if (result.viewing_key_error) {
-      console.error(result.viewing_key_error.msg)
-      sScrtBalance = 'viewingKeyError' as GetBalanceError
-    } else {
-      sScrtBalance = result.balance.amount
-    }
-  } catch (error) {
-    console.error(`Error getting balance for s${scrtToken.name}: `, error)
-    sScrtBalance = 'viewingKeyError' as GetBalanceError
-  }
-
-  return sScrtBalance
-}
-
 const getBatchsTokenBalance = async (
   secretNetworkClient: any,
   walletAddress: string,
-  tokens: Token[]
+  tokens: Token[],
+  debugMode: boolean = false
 ): Promise<Nullable<Map<Token, string>>> => {
   if (!secretNetworkClient) {
     return null
@@ -236,7 +187,10 @@ const getBatchsTokenBalance = async (
       balances.set(token, 'viewingKeyError')
       continue
     }
-    console.log(`Found viewing key: ${key} for token ${token.name}`)
+
+    if (debugMode || debugModeOverride) {
+      console.log(`Found viewing key: ${key} for token ${token.name}`)
+    }
     viewingKeys.set(token, key)
     validTokens.push(token)
   }
@@ -281,20 +235,6 @@ const getBatchsTokenBalance = async (
   })
 
   return balances
-}
-
-const getScrtTokenBalance = async (secretNetworkClient: any, walletAddress: string) => {
-  try {
-    const response = await secretNetworkClient.query.bank.balance({
-      address: walletAddress,
-      denom: 'uscrt'
-    })
-
-    return response.balance.amount
-  } catch (error) {
-    console.error(`Error getting balance for SCRT: `, error)
-    return null
-  }
 }
 
 interface IGetIBCBalancesForTokensProps {
@@ -399,7 +339,7 @@ async function getBalancesForTokens(props: IGetBalancesForTokensProps): Promise<
       }
     })
 
-    const secretBalances = await getBatchsTokenBalance(props.secretNetworkClient, props.walletAddress, allTokens)
+    const secretBalances = await getBatchsTokenBalance(props.secretNetworkClient, props.walletAddress, allTokens, true)
 
     for (const token of allTokens) {
       const secretBalance = secretBalances.get(token)
@@ -451,8 +391,6 @@ export const WalletService = {
   setWalletViewingKey,
   getWalletViewingKey,
   isViewingKeyAvailable,
-  getsScrtTokenBalance,
-  getScrtTokenBalance,
   getBalancesForTokens,
   fetchIbcChainBalances
 }

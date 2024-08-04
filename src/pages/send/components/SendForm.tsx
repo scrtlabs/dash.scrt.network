@@ -18,6 +18,7 @@ import { useSearchParams } from 'react-router-dom'
 import { Nullable } from 'types/Nullable'
 import { useUserPreferencesStore } from 'store/UserPreferences'
 import { GetBalanceError } from 'types/GetBalanceError'
+import { NotificationService } from 'services/notification.service'
 
 export default function SendForm() {
   const { debugMode } = useUserPreferencesStore()
@@ -79,22 +80,30 @@ export default function SendForm() {
     validateOnBlur: false,
     validateOnChange: true,
     onSubmit: async (values) => {
+      const toastId = NotificationService.notify(
+        `Waiting to send ${formik.values.amount} ${
+          formik.values.token.name == 'SCRT' && formik.values.token.address !== 'native' ? 's' : ''
+        }${formik.values.token.name}...`,
+        'loading'
+      )
+
       try {
         const res = SendService.performSending({
           ...values,
           secretNetworkClient,
           feeGrantStatus
         })
-        toast.promise(res, {
-          loading: `Waiting to send ${formik.values.amount} ${
-            formik.values.token.address === 'native' || formik.values.token.is_snip20 ? '' : 's'
-          }${formik.values.token.name}...`,
-          success: 'Sending successful!',
-          error: 'Sending unsuccessful!'
-        })
+
+        res
+          .then(() => {
+            NotificationService.notify('Sending successful', 'success', toastId)
+          })
+          .catch((error) => {
+            NotificationService.notify(`Sending unsuccessful: ${error}`, 'error', toastId)
+          })
       } catch (error: any) {
         console.error(error)
-        toast.error(`Sending unsuccessful!`)
+        NotificationService.notify(`Sending unsuccessful ${error}`, 'error', toastId)
       }
     }
   })
@@ -131,7 +140,7 @@ export default function SendForm() {
       <div className="flex items-center">
         <img src={`/img/assets/${token.image}`} alt={`${token.name} logo`} className="w-6 h-6 mr-2 rounded-full" />
         <span className="font-semibold text-sm">
-          {token.address === 'native' || token.is_snip20 ? null : 's'}
+          {token.name == 'SCRT' && token.address !== 'native' ? 's' : null}
           {token.name}
         </span>
       </div>
@@ -139,9 +148,7 @@ export default function SendForm() {
   }
 
   useEffect(() => {
-    var params = {}
-    params = {
-      ...params,
+    const params = {
       token: formik.values.token.name.toLowerCase(),
       recipient: formik.values.recipient.toLowerCase(),
       memo: formik.values.memo
@@ -293,7 +300,7 @@ export default function SendForm() {
         {/* Title Bar */}
         <div className="flex justify-between items-center mb-2">
           <span className="flex-1 font-semibold mb-2 text-center sm:text-left">
-            <Tooltip title={`Add a message to your transaction. Beware: Messages are public!`} placement="right" arrow>
+            <Tooltip title={`Add a message to your transaction. Beware: Messages are public`} placement="right" arrow>
               <span className="group">
                 Memo (optional)
                 <span className="ml-2 mt-1 text-neutral-600 dark:text-neutral-400 group-hover:text-black dark:group-hover:text-white transition-colors cursor-pointer">

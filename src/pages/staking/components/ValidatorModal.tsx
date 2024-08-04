@@ -4,7 +4,7 @@ import { useContext, useEffect, useState } from 'react'
 import { APIContext } from 'context/APIContext'
 import { formatNumber, toCurrencyString } from 'utils/commons'
 import BigNumber from 'bignumber.js'
-import { SECRET_LCD, SECRET_CHAIN_ID } from 'utils/config'
+import { SECRET_LCD, SECRET_CHAIN_ID, tokens } from 'utils/config'
 import CopyToClipboard from 'react-copy-to-clipboard'
 import { faCopy } from '@fortawesome/free-solid-svg-icons'
 import Tooltip from '@mui/material/Tooltip'
@@ -31,12 +31,16 @@ interface Props {
 
 const ValidatorModal = (props: Props) => {
   const [imgUrl, setImgUrl] = useState<Nullable<string>>(null)
-  const { convertCurrency, currentPrice, inflation, communityTax, totalSupply, bondedToken, secretFoundationTax } =
+  const { currentPrice, inflation, communityTax, totalSupply, bondedToken, secretFoundationTax } =
     useContext(APIContext)
   const { currency } = useUserPreferencesStore()
 
-  const { scrtBalance, feeGrantStatus, requestFeeGrant, secretNetworkClient, walletAddress, isConnected } =
-    useSecretNetworkClientStore()
+  const { secretNetworkClient, isConnected, getBalance } = useSecretNetworkClientStore()
+
+  const scrtBalance = getBalance(
+    tokens.find((token) => token.name === 'SCRT'),
+    false
+  )
 
   const [realYield, setRealYield] = useState<Nullable<number>>(null)
 
@@ -198,7 +202,7 @@ const ValidatorModal = (props: Props) => {
 
                         <CopyToClipboard
                           text={selectedValidator?.description?.identity}
-                          onCopy={() => NotificationService.notify('Identity copied to Clipboard!', 'success')}
+                          onCopy={() => NotificationService.notify('Identity copied to Clipboard', 'success')}
                         >
                           <Tooltip title={'Copy to clipboard'} placement="bottom" arrow>
                             <button
@@ -223,13 +227,13 @@ const ValidatorModal = (props: Props) => {
                         <CopyToClipboard
                           text={selectedValidator?.description?.security_contact}
                           onCopy={() => {
-                            NotificationService.notify('Validator security contact copied to clipboard!', 'success')
+                            NotificationService.notify('Validator security contact copied to clipboard', 'success')
                           }}
                         >
                           <Tooltip title={'Copy to clipboard'} placement="bottom" arrow>
                             <button
                               type="button"
-                              onClick={() => NotificationService.notify('Copied to Clipboard!', 'success')}
+                              onClick={() => NotificationService.notify('Copied to Clipboard', 'success')}
                               className="text-neutral-500 hover:text-neutral-800 dark:text-neutral-400 dark:hover:text-neutral-300 transition-colors"
                             >
                               <FontAwesomeIcon icon={faCopy} />
@@ -270,7 +274,7 @@ const ValidatorModal = (props: Props) => {
                       } `}
                       <CopyToClipboard
                         text={selectedValidator?.operator_address}
-                        onCopy={() => NotificationService.notify('Operator Address copied to Clipboard!', 'success')}
+                        onCopy={() => NotificationService.notify('Operator Address copied to Clipboard', 'success')}
                       >
                         <Tooltip title={'Copy to clipboard'} placement="bottom" arrow>
                           <button className="text-neutral-500 dark:text-neutral-400 hover:text-neutral-800 dark:hover:text-neutral-300 transition-colors">
@@ -299,7 +303,7 @@ const ValidatorModal = (props: Props) => {
                       </a>
                       <CopyToClipboard
                         text={validatorAddressToSelfDelegatorAddress(selectedValidator?.operator_address)}
-                        onCopy={() => NotificationService.notify('Validator Address copied to Clipboard!', 'success')}
+                        onCopy={() => NotificationService.notify('Validator Address copied to Clipboard', 'success')}
                       >
                         <Tooltip title={'Copy to clipboard'} placement="bottom" arrow>
                           <button

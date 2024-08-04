@@ -13,7 +13,6 @@ import {
   toBase64,
   toUtf8
 } from 'secretjs'
-import { Fee, LCDClient, SignerInfo } from '@terra-money/terra.js'
 import { FeeGrantStatus } from 'types/FeeGrantStatus'
 import { IbcMode } from 'types/IbcMode'
 import { sleep, faucetAddress, randomPadding, allTokens, suggestChainToWallet } from 'utils/commons'
@@ -39,7 +38,7 @@ interface TProps {
 }
 
 async function getChainSecretJs(chain: Chain): Promise<SecretNetworkClient> {
-  while (!window.wallet || !window.wallet.getOfflineSignerOnlyAmino) {
+  while (!window.wallet || !window.wallet.getOfflineSignerAuto) {
     await sleep(100)
   }
 
@@ -61,7 +60,7 @@ async function getChainSecretJs(chain: Chain): Promise<SecretNetworkClient> {
     }
   }
 
-  const sourceOfflineSigner = window.wallet.getOfflineSignerOnlyAmino(chain_id)
+  const sourceOfflineSigner = await window.wallet.getOfflineSignerAuto(chain_id)
   const depositFromAccounts = await sourceOfflineSigner.getAccounts()
 
   const secretNetworkClient = new SecretNetworkClient({
@@ -100,7 +99,7 @@ async function performIbcDeposit(
 
   try {
     let tx: TxResponse
-    if (!['Evmos', 'Injective', 'Dymension'].includes(props.chain.chain_name) && !token.is_ics20) {
+    if (!['Evmos', 'Injective', 'Dymension'].includes(props.chain.chain_name) && !token.is_axelar_asset) {
       // Regular cosmos chain (not ethermint signing)
       if (token.name === 'ampLUNA') {
         //@ts-ignore
@@ -149,7 +148,7 @@ async function performIbcDeposit(
           isClassic: false
         })
 
-        const terraSigner = window.wallet.getOfflineSignerOnlyAmino(props.chain.chain_id)
+        const terraSigner = await window.wallet.getOfflineSignerAuto(props.chain.chain_id)
         const accounts = await terraSigner.getAccounts()
 
         // Create the transaction options with the corrected fee structure
@@ -309,7 +308,7 @@ async function performIbcDeposit(
           }
         )
       }
-    } else if (token.is_ics20) {
+    } else if (token.is_axelar_asset) {
       const fromChain: string = deposit.axelar_chain_name,
         toChain = 'secret-snip',
         destinationAddress = props.secretNetworkClient.address,
@@ -377,7 +376,7 @@ async function performIbcDeposit(
 
       // Get account pubkey
       // Can't get it from the chain because an account without txs won't have its pubkey listed on-chain
-      const evmosProtoSigner = window.getOfflineSigner!(selectedSource.chain_id)
+      const evmosProtoSigner = await window.getOfflineSignerAuto!(selectedSource.chain_id)
       const [{ pubkey }]: readonly AccountData[] = await evmosProtoSigner.getAccounts()
 
       const autoWrapJsonString = JSON.stringify({
@@ -483,7 +482,7 @@ async function performIbcDeposit(
 
       const ibcResp: IbcResponse = await tx.ibcResponses[0]
 
-      if (ibcResp.type === 'ack') {
+      if (ibcResp?.type === 'ack') {
         NotificationService.notify(
           `Received ${props.amount} ${token.name} on Secret Network from ${selectedSource.chain_name}`,
           'success',
@@ -491,8 +490,8 @@ async function performIbcDeposit(
         )
       } else {
         NotificationService.notify(
-          `Timed out while waiting to receive ${props.amount} ${token.name} on Secret Network from ${selectedSource.chain_name}`,
-          'error',
+          `The transfer might take longer on chain. Please be patient while waiting to receive ${props.amount} ${token.name} on Secret Network from ${selectedSource.chain_name}. You can manually check by going to the Portfolio page and check for ${token.name}.`,
+          'success',
           toastId
         )
       }
@@ -592,7 +591,7 @@ async function performIbcWithdrawal(
           broadcastMode: BroadcastMode.Sync
         }
       )
-    } else if (token.is_ics20) {
+    } else if (token.is_axelar_asset) {
       const fromChain = 'secret-snip',
         toChain = withdrawalChain.axelar_chain_name,
         destinationAddress = sourceChainNetworkClient.address,
@@ -746,10 +745,10 @@ async function performIbcWithdrawal(
         )
       } else {
         console.error(
-          `Timed out while waiting to receive ${props.amount} ${token.name} on ${selectedDest.chain_name} from Secret Network!`
+          `Timed out while waiting to receive ${props.amount} ${token.name} on ${selectedDest.chain_name} from Secret Network`
         )
         NotificationService.notify(
-          `Timed out while waiting to receive ${props.amount} ${token.name} on ${selectedDest.chain_name} from Secret Network!`,
+          `Timed out while waiting to receive ${props.amount} ${token.name} on ${selectedDest.chain_name} from Secret Network`,
           'error',
           toastId
         )
@@ -854,7 +853,7 @@ async function getSkipIBCRouting(chain: Chain, IbcMode: IbcMode, token: Token, a
 }
 
 async function getReceiverAddress(chainID: string): Promise<string> {
-  const wallet = window.wallet.getOfflineSignerOnlyAmino(chainID)
+  const wallet = await window.wallet.getOfflineSignerAuto(chainID)
   const [{ address: walletAddress }] = await wallet.getAccounts()
   return walletAddress
 }
@@ -938,6 +937,23 @@ function getSupportedIbcTokensByChain(chain: Chain) {
   return supportedTokens
 }
 
+/**
+ * Get the chain name that supports the specified IBC token.
+ * @param tokenName - The name of the token to check.
+ * @returns The name of the supported chain, or undefined if no chain supports the token.
+ */
+function getSupportedChainByIbcTokenName(tokenName: string): string | undefined {
+  const token = allTokens.find((token) => token.name.toLowerCase() === tokenName.toLowerCase())
+
+  if (!token) return undefined
+
+  const supportedDeposit = token.deposits.find((deposit) =>
+    allTokens.some((t) => t.deposits.some((d) => d.chain_name === deposit.chain_name))
+  )
+
+  return supportedDeposit?.chain_name
+}
+
 async function performIbcTransfer(props: TProps): Promise<string> {
   const sourceChainNetworkClient = await IbcService.getChainSecretJs(props.chain)
   if (props.ibcMode === 'withdrawal') {
@@ -950,6 +966,7 @@ async function performIbcTransfer(props: TProps): Promise<string> {
 export const IbcService = {
   getSupportedChains,
   getSupportedIbcTokensByChain,
+  getSupportedChainByIbcTokenName,
   performIbcTransfer,
   composePMFMemo,
   getSkipIBCRouting,

@@ -35,23 +35,48 @@ export default function PriceVolumeTVL(props: any) {
   const [chartRange, setChartRange] = useState<ChartRange>('Month')
   const [chartData, setChartData] = useState<any>([])
 
-  let apiDataMapping = new Map<ChartRange, Object>([
-    ['Day', coingeckoApiData_Day],
-    ['Month', coingeckoApiData_Month],
-    ['Year', coingeckoApiData_Year]
-  ])
-
   useEffect(() => {
-    if (!coingeckoApiData_Day || !coingeckoApiData_Month || !coingeckoApiData_Year || !defiLamaApiData_Year) {
-      return
+    // Handle Price data
+
+    let chartTypeTmp = chartType
+
+    if (chartTypeTmp === 'Price') {
+      const apiDataMapping = new Map([
+        ['Day', coingeckoApiData_Day],
+        ['Month', coingeckoApiData_Month],
+        ['Year', coingeckoApiData_Year]
+      ])
+
+      const selectedData = apiDataMapping.get(chartRange)
+      if (selectedData) {
+        setChartData(selectedData.prices)
+      } else {
+        chartTypeTmp = 'TVL'
+        setChartType(chartTypeTmp)
+      }
     }
-    if (chartType === 'Price') {
-      setChartData((apiDataMapping.get(chartRange) as any).prices)
-    } else if (chartType === 'Volume') {
-      setChartData((apiDataMapping.get(chartRange) as any).total_volumes)
-    } else if (chartType === 'TVL') {
+
+    // Handle Volume data
+    if (chartTypeTmp === 'Volume') {
+      const apiDataMapping = new Map([
+        ['Day', coingeckoApiData_Day],
+        ['Month', coingeckoApiData_Month],
+        ['Year', coingeckoApiData_Year]
+      ])
+
+      const selectedData = apiDataMapping.get(chartRange)
+      if (selectedData) {
+        setChartData(selectedData.total_volumes)
+      } else {
+        chartTypeTmp = 'TVL'
+        setChartType(chartTypeTmp)
+      }
+    }
+
+    // Handle TVL data
+    if (chartTypeTmp === 'TVL' && defiLamaApiData_Year) {
       setChartData(defiLamaApiData_Year)
-      setChartRange('Year')
+      setChartRange('Year') // consider if this needs to be set here, or could be set elsewhere
     }
   }, [chartType, chartRange, coingeckoApiData_Day, coingeckoApiData_Month, coingeckoApiData_Year, defiLamaApiData_Year])
 
@@ -85,20 +110,6 @@ export default function PriceVolumeTVL(props: any) {
         pointHitRadius: '5'
       }
     ]
-  }
-
-  const glowPlugin = {
-    id: 'glow',
-    beforeDatasetsDraw: (chart: any, args: any, options: any) => {
-      const ctx = chart.ctx
-      ctx.save()
-      ;(ctx.shadowColor = 'rgba(0, 123, 255, 1)'), (ctx.shadowBlur = 2)
-      ctx.shadowOffsetX = 0
-      ctx.shadowOffsetY = 0
-    },
-    afterDatasetsDraw: (chart: any) => {
-      chart.ctx.restore()
-    }
   }
 
   const options = {

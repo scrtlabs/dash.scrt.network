@@ -1,9 +1,8 @@
 import { faArrowUpRightFromSquare, faShuffle } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { Link } from 'react-router-dom'
 import { Helmet } from 'react-helmet-async'
-import { formatNumber, pageTitle, trackMixPanelEvent } from 'utils/commons'
-import { useState, createContext, useContext, useEffect } from 'react'
+import { pageTitle, trackMixPanelEvent } from 'utils/commons'
+import { useState, useEffect } from 'react'
 import queryString from 'query-string'
 import Select from 'react-select'
 import mixpanel from 'mixpanel-browser'
@@ -12,7 +11,7 @@ import { useSecretNetworkClientStore } from 'store/secretNetworkClient'
 import Title from 'components/Title'
 
 function GetSCRT() {
-  const { secretNetworkClient, walletAddress } = useSecretNetworkClientStore()
+  const { secretNetworkClient } = useSecretNetworkClientStore()
 
   const [loading, setLoading] = useState(false)
 

@@ -48,7 +48,10 @@ export default function BridgingFees(props: IProps) {
     if (priceMapping !== null && axelarTransferFee !== undefined) {
       const valuePrice = getValuePrice(props.token, BigNumber(axelarTransferFee.amount))
       if (valuePrice !== null) {
-        setPriceString(toCurrencyString(valuePrice, currency))
+        const priceInCurrency = convertCurrency('USD', valuePrice, currency)
+        if (priceInCurrency !== null) {
+          setPriceString(toCurrencyString(priceInCurrency, currency))
+        }
       } else {
         setPriceString('')
       }
@@ -63,7 +66,7 @@ export default function BridgingFees(props: IProps) {
         <div className="flex items-center">
           <span className="font-semibold text-sm">Bridging Fees</span>
           <Tooltip
-            title={`Make sure to always transfer a higher amount than the transfer fees!`}
+            title={`Make sure to always transfer a higher amount than the transfer fees`}
             placement="right"
             arrow
           >
@@ -72,7 +75,7 @@ export default function BridgingFees(props: IProps) {
             </span>
           </Tooltip>
         </div>
-        {props.token.is_ics20 && axelarTransferFee !== undefined ? (
+        {props.token.is_axelar_asset && axelarTransferFee !== undefined ? (
           <div>
             {` ${Number(BigNumber(axelarTransferFee.amount).dividedBy(`1e${props.token.decimals}`)).toLocaleString(
               undefined,

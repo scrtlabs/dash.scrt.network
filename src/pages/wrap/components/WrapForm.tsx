@@ -19,10 +19,15 @@ import { Nullable } from 'types/Nullable'
 import { useUserPreferencesStore } from 'store/UserPreferences'
 import { debugModeOverride } from 'utils/commons'
 import { GetBalanceError } from 'types/GetBalanceError'
+import { NotificationService } from 'services/notification.service'
 
 export default function WrapForm() {
   const { debugMode } = useUserPreferencesStore()
-  const { secretNetworkClient, feeGrantStatus, isConnected, scrtBalance, getBalance } = useSecretNetworkClientStore()
+  const { secretNetworkClient, feeGrantStatus, isConnected, getBalance } = useSecretNetworkClientStore()
+  const scrtBalance = getBalance(
+    tokens.find((token) => token.name === 'SCRT'),
+    false
+  )
 
   const { theme } = useUserPreferencesStore()
 
@@ -36,22 +41,48 @@ export default function WrapForm() {
     validateOnBlur: false,
     validateOnChange: true,
     onSubmit: async (values) => {
+      const toastId = NotificationService.notify(
+        `Waiting to ${formik.values.wrappingMode === 'wrap' ? 'wrap' : 'unwrap'} ${formik.values.amount} ${
+          formik.values.token.name
+        }...`,
+        'loading'
+      )
+
       try {
         const res = WrapService.performWrapping({
           ...values,
           secretNetworkClient,
           feeGrantStatus
         })
-        toast.promise(res, {
-          loading: `Waiting to ${formik.values.wrappingMode === 'wrap' ? 'wrap' : 'unwrap'} ${formik.values.amount} ${
-            formik.values.token.name
-          }...`,
-          success: `${formik.values.wrappingMode === 'wrap' ? 'Wrapping' : 'Unwrapping'} successful!`,
-          error: `${formik.values.wrappingMode === 'wrap' ? 'Wrapping' : 'Unwrapping'} unsuccessful!`
-        })
+        res
+          .then(() => {
+            NotificationService.notify(
+              `${formik.values.wrappingMode === 'wrap' ? 'Wrapping' : 'Unwrapping'} of ${formik.values.amount} ${
+                formik.values.token.name
+              } successful`,
+              'success',
+              toastId
+            )
+          })
+          .catch((error) => {
+            console.error(error)
+            NotificationService.notify(
+              `${formik.values.wrappingMode === 'wrap' ? 'Wrapping' : 'Unwrapping'} of ${formik.values.amount} ${
+                formik.values.token.name
+              } unsuccessful: ${error}`,
+              'error',
+              toastId
+            )
+          })
       } catch (error: any) {
         console.error(error)
-        toast.error(`${formik.values.wrappingMode === 'wrap' ? 'Wrapping' : 'Unwrapping'} unsuccessful!`)
+        NotificationService.notify(
+          `${formik.values.wrappingMode === 'wrap' ? 'Wrapping' : 'Unwrapping'} of ${formik.values.amount} ${
+            formik.values.token.name
+          } unsuccessful: ${error}`,
+          'error',
+          toastId
+        )
       }
     }
   })
@@ -139,7 +170,8 @@ export default function WrapForm() {
     const tokenName = option.data.name.toLowerCase()
     return (
       tokenName?.toLowerCase().includes(inputValue?.toLowerCase()) ||
-      ('s' + tokenName)?.toLowerCase().includes(inputValue?.toLowerCase())
+      ('s' + tokenName)?.toLowerCase().includes(inputValue?.toLowerCase()) ||
+      ('secret' + tokenName)?.toLowerCase().includes(inputValue?.toLowerCase())
     )
   }
 
@@ -210,7 +242,7 @@ export default function WrapForm() {
                     className="w-6 h-6 mr-2 rounded-full"
                   />
                   <span className="font-semibold text-sm">
-                    {formik.values.wrappingMode === 'unwrap' && 's'}
+                    {formik.values.wrappingMode === 'unwrap' && 'Secret '}
                     {token.name}
                   </span>
                 </div>
@@ -287,7 +319,7 @@ export default function WrapForm() {
               components={{ Control: CustomControl }}
               filterOption={customTokenFilterOption}
               styles={customTokenSelectStyle}
-              formatOptionLabel={(token) => (
+              formatOptionLabel={(token: Token) => (
                 <div className="flex items-center">
                   <img
                     src={`/img/assets/${token.image}`}
@@ -295,7 +327,7 @@ export default function WrapForm() {
                     className="w-6 h-6 mr-2 rounded-full"
                   />
                   <span className="font-semibold text-sm">
-                    {formik.values.wrappingMode === 'wrap' && 's'}
+                    {formik.values.wrappingMode === 'wrap' && 'Secret '}
                     {token.name}
                   </span>
                 </div>

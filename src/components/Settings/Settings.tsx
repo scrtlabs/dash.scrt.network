@@ -4,7 +4,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import Button from 'components/UI/Button/Button'
 import Modal from 'components/UI/Modal/Modal'
 import { useFormik } from 'formik'
-// import { settingsSchema } from './settingsSchema'
 import { NotificationService } from 'services/notification.service'
 import { Theme } from 'types/Theme'
 import { Currency } from 'types/Currency'
@@ -84,14 +83,19 @@ function Settings() {
     validateOnChange: true,
     onSubmit: async (values) => {
       try {
-        setTheme(values.theme as Theme)
-        setCurrency(values.currency as Currency)
-        setDebugMode(values.debugMode)
-        setIsModalOpen(false)
-        window.location.reload()
+        if (values.theme !== theme || values.debugMode !== debugMode) {
+          setTheme(values.theme as Theme)
+          setDebugMode(values.debugMode)
+          setIsModalOpen(false)
+        }
+
+        if (values.currency !== currency) {
+          setCurrency(values.currency as Currency)
+          window.location.reload()
+        }
       } catch (error: any) {
         console.error('error after submitting settings:', error)
-        NotificationService.notify(`An error occured while saving user settings!`, 'error')
+        NotificationService.notify(`An error occured while saving user settings`, 'error')
       }
     }
   })

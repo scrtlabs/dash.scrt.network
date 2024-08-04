@@ -25,10 +25,6 @@ export interface SecretNetworkClientState {
   disconnectWallet: () => void
   feeGrantStatus: FeeGrantStatus
   requestFeeGrant: () => Promise<void>
-  scrtBalance: Nullable<string>
-  sScrtBalance: Nullable<string>
-  setsScrtBalance: () => void
-  setScrtBalance: () => void
   isTokenBalanceLoading: boolean
   setViewingKey: (token: Token) => void
   getBalance: (token: Token, secretToken?: boolean) => Nullable<BigNumber | GetBalanceError>
@@ -37,6 +33,9 @@ export interface SecretNetworkClientState {
   ibcBalanceMapping: Map<Chain, Map<Token, TokenBalances>>
   setIbcBalanceMapping: (chain: Chain) => void
   getIbcBalance: (chain: Chain, token: Token) => Nullable<BigNumber | GetBalanceError>
+  IBCBalanceRefreshIntervalId: any
+  startIBCBalanceRefresh: () => void
+  stopIBCBalanceRefresh: () => void
   balanceRefreshIntervalId: any
   startBalanceRefresh: () => void
   stopBalanceRefresh: () => void
@@ -63,7 +62,7 @@ export const useSecretNetworkClientStore = create<SecretNetworkClientState>()((s
   walletAPIType: null,
   setWalletAPIType: (walletAPIType: WalletAPIType) => set({ walletAPIType }),
   connectWallet: async (walletAPIType?: WalletAPIType) => {
-    const { setScrtBalance, setsScrtBalance, setBalanceMapping, startBalanceRefresh } = get()
+    const { setBalanceMapping, startBalanceRefresh, startIBCBalanceRefresh } = get()
     const { walletAddress, secretjs: secretNetworkClient } = await WalletService.connectWallet(walletAPIType)
     set({
       walletAPIType,
@@ -72,18 +71,15 @@ export const useSecretNetworkClientStore = create<SecretNetworkClientState>()((s
       isConnected: !!(walletAddress && secretNetworkClient)
     })
     localStorage.setItem('autoConnect', walletAPIType)
-    setScrtBalance()
-    setsScrtBalance()
     setBalanceMapping()
     startBalanceRefresh()
+    startIBCBalanceRefresh()
   },
   disconnectWallet: () => {
     set({
       walletAddress: null,
       secretNetworkClient: null,
-      isConnected: false,
-      scrtBalance: null,
-      sScrtBalance: null
+      isConnected: false
     })
     const { stopBalanceRefresh } = get()
     stopBalanceRefresh()
@@ -94,18 +90,6 @@ export const useSecretNetworkClientStore = create<SecretNetworkClientState>()((s
     const { feeGrantStatus, walletAddress } = get()
     const result = await WalletService.requestFeeGrantService(feeGrantStatus, walletAddress)
     set({ feeGrantStatus: result })
-  },
-  scrtBalance: null,
-  sScrtBalance: null,
-  setsScrtBalance: async () => {
-    const { isConnected, walletAddress, secretNetworkClient: secretNetworkClient } = get()
-    const sScrtBalance = await WalletService.getsScrtTokenBalance(isConnected, secretNetworkClient, walletAddress)
-    set({ sScrtBalance })
-  },
-  setScrtBalance: async () => {
-    const { walletAddress, secretNetworkClient: secretNetworkClient } = get()
-    const scrtBalance = await WalletService.getScrtTokenBalance(secretNetworkClient, walletAddress)
-    set({ scrtBalance })
   },
   isTokenBalanceLoading: false,
   setViewingKey: async (token: Token) => {
@@ -165,6 +149,24 @@ export const useSecretNetworkClientStore = create<SecretNetworkClientState>()((s
       }
     }
     return null
+  },
+  IBCBalanceRefreshIntervalId: null,
+  startIBCBalanceRefresh: (intervalMs = 15000) => {
+    const intervalId = setInterval(() => {
+      if (get().ibcBalanceMapping !== null) {
+        for (const chain of get().ibcBalanceMapping.keys()) {
+          get().setIbcBalanceMapping(chain)
+        }
+      }
+    }, intervalMs)
+    set({ IBCBalanceRefreshIntervalId: intervalId })
+  },
+  stopIBCBalanceRefresh: () => {
+    const { balanceRefreshIntervalId } = get()
+    if (balanceRefreshIntervalId) {
+      clearInterval(balanceRefreshIntervalId)
+      set({ IBCBalanceRefreshIntervalId: null })
+    }
   },
   balanceRefreshIntervalId: null,
   startBalanceRefresh: (intervalMs = 15000) => {
