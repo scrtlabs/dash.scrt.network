@@ -44,7 +44,9 @@ export default function AccountsChart(props: any) {
         }
       })
 
-      const stackedData = Array.from(timestampMap.entries()).map(([timestamp, entries]) => {
+      const sortedEntries = Array.from(timestampMap.entries()).sort(([a], [b]) => a - b)
+
+      const stackedData = sortedEntries.map(([timestamp, entries]) => {
         const isNewEntry = entries.find((entry) => entry.is_new)
         const notNewEntry = entries.find((entry) => !entry.is_new)
         return {
@@ -53,7 +55,6 @@ export default function AccountsChart(props: any) {
           old_wallets: notNewEntry ? notNewEntry.num_wallets : 0
         }
       })
-      console.log(stackedData)
 
       const labels = stackedData.map((date: any) => {
         const dateObj = new Date(date.timestamp)
@@ -69,18 +70,20 @@ export default function AccountsChart(props: any) {
           labels: labels,
           datasets: [
             {
-              label: 'New Wallets',
-              data: stackedData.map((item) => item.new_wallets),
-              borderColor: 'rgb(105, 57, 208)',
-              backgroundColor: 'rgba(105, 57, 208, 0.5)',
+              label: 'Existing Wallets',
+              data: stackedData.map((item) => item.old_wallets),
+              backgroundColor: 'rgba(0, 123, 255, 1)',
+              borderColor: 'rgba(0, 123, 255, 1)',
+              borderWidth: 1,
               yAxisID: 'y',
               stack: 'wallets'
             },
             {
-              label: 'Old Wallets',
-              data: stackedData.map((item) => item.old_wallets),
-              borderColor: 'rgb(249, 201, 31)',
-              backgroundColor: 'rgba(249, 201, 31, 0.5)',
+              label: 'New Wallets',
+              data: stackedData.map((item) => item.new_wallets),
+              backgroundColor: 'rgba(105, 57, 208, 0.5)',
+              borderColor: 'rgba(105, 57, 208, 1)',
+              borderWidth: 1,
               yAxisID: 'y',
               stack: 'wallets'
             }
@@ -139,15 +142,7 @@ export default function AccountsChart(props: any) {
       },
       tooltip: {
         xAlign: true,
-        color: 'rgba(0, 123, 255, 1)',
-        callbacks: {
-          label: function (context: any) {
-            if (context.parsed.y !== null) {
-              return `${formatNumber(context.parsed.y)} SCRT`
-            }
-            return ''
-          }
-        }
+        color: 'rgba(0, 123, 255, 1)'
       }
     }
   }
@@ -156,9 +151,9 @@ export default function AccountsChart(props: any) {
     <>
       <div>
         <h2 className="text-center text-xl font-semibold pt-2.5 pb-0">
-          Unique Wallets
+          Daily interacting Wallets
           <div className="inline-block">
-            <Tooltip title={`Shows the unbonded (unstaked) SCRT per day`} placement="right" arrow>
+            <Tooltip title={`Number of unique wallets that interacted with the chain daily`} placement="right" arrow>
               <span className="text-neutral-600 dark:text-neutral-400 hover:text-black dark:hover:text-white transition-colors cursor-pointer ml-2 text-sm">
                 <FontAwesomeIcon icon={faInfoCircle} />
               </span>
