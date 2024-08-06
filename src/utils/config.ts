@@ -1126,6 +1126,35 @@ export const tokens: Token[] = [
     ]
   },
   {
+    name: 'ampBTC',
+    description: 'ERIS staked BTC',
+    address: 'secret1vgl6qx8sv5wknh7v4wfwanks504udm3lk5qawj',
+    code_hash: '638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e',
+    image: '/ampwhale.svg',
+    decimals: 6,
+    coingecko_id: '',
+    deposits: [
+      {
+        chain_name: 'Migaloo',
+        denom: 'factory/migaloo1pll95yfcnxd5pkkrcsad63l929m4ehk4c46fpqqp3c2d488ca0csc220d0/ampBTC'
+      }
+    ],
+    withdrawals: [
+      {
+        chain_name: 'Migaloo',
+        denom: ibcDenom(
+          [
+            {
+              incomingChannelId: chains['Migaloo'].withdraw_channel_id,
+              incomingPortId: 'transfer'
+            }
+          ],
+          'factory/migaloo1pll95yfcnxd5pkkrcsad63l929m4ehk4c46fpqqp3c2d488ca0csc220d0/ampBTC'
+        )
+      }
+    ]
+  },
+  {
     name: 'ampKUJI',
     description: 'ERIS staked KUJI',
     address: 'secret1pf6n6j8xlkxnga5t8w8exdtvcrrjgqms5wdlnj',
