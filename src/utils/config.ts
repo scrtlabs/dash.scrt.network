@@ -1359,7 +1359,7 @@ export const tokens: Token[] = [
   {
     name: 'bINJ',
     description: 'Backbone staked INJ',
-    address: 'XXX',
+    address: 'secret17xw4pelwmmhftscrdfntudyv77rkdxvaaelzvs',
     code_hash: '638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e',
     image: '/binj.png',
     decimals: 18,
