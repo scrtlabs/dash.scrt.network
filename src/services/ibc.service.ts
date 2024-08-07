@@ -101,7 +101,7 @@ async function performIbcDeposit(
     let tx: TxResponse
     if (!['Evmos', 'Injective', 'Dymension'].includes(props.chain.chain_name) && !token.is_axelar_asset) {
       // Regular cosmos chain (not ethermint signing)
-      if (token.name === 'ampLUNA') {
+      if (token.name === 'ampLUNA' || token.name === 'bLUNA') {
         //@ts-ignore
         const contractMsg = new (Terra as any).MsgExecuteContract(
           sourceChainNetworkClient.address,

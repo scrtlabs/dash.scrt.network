@@ -1444,6 +1444,37 @@ export const tokens: Token[] = [
     ]
   },
   {
+    name: 'bLUNA',
+    description: 'Backbone staked LUNA',
+    address: 'XX',
+    code_hash: '638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e',
+    image: '/bluna.png',
+    decimals: 6,
+    coingecko_id: '',
+    deposits: [
+      {
+        chain_name: 'Terra',
+        channel_id: 'channel-382',
+        denom: 'cw20:terra17aj4ty4sz4yhgm08na8drc0v03v2jwr3waxcqrwhajj729zhl7zqnpc0ml'
+      }
+    ],
+    withdrawals: [
+      {
+        chain_name: 'Terra',
+        channel_id: 'channel-127',
+        denom: ibcDenom(
+          [
+            {
+              incomingChannelId: 'channel-127',
+              incomingPortId: 'transfer'
+            }
+          ],
+          'cw20:terra17aj4ty4sz4yhgm08na8drc0v03v2jwr3waxcqrwhajj729zhl7zqnpc0ml'
+        )
+      }
+    ]
+  },
+  {
     name: 'CHEQ',
     description: 'Cheqd Governance Token',
     address: 'secret1lfqlcnpveh6at723h5k2nu4jjqeuz0ukpxxdtt',
