@@ -1357,6 +1357,35 @@ export const tokens: Token[] = [
     ]
   },
   {
+    name: 'bKUJI',
+    description: 'Backbone staked KUJI',
+    address: 'XX',
+    code_hash: '638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e',
+    image: '/bkuji.png',
+    decimals: 6,
+    coingecko_id: 'backbone-staked-kujira',
+    deposits: [
+      {
+        chain_name: 'Kujira',
+        denom: 'factory/kujira15e8q5wzlk5k38gjxlhse3vu6vqnafysncx2ltexd6y9gx50vuj2qpt7dgv/boneKuji'
+      }
+    ],
+    withdrawals: [
+      {
+        chain_name: 'Kujira',
+        denom: ibcDenom(
+          [
+            {
+              incomingChannelId: chains['Kujira'].withdraw_channel_id,
+              incomingPortId: 'transfer'
+            }
+          ],
+          'factory:kujira15e8q5wzlk5k38gjxlhse3vu6vqnafysncx2ltexd6y9gx50vuj2qpt7dgv:boneKuji'
+        )
+      }
+    ]
+  },
+  {
     name: 'BLD',
     description: 'Agoric Governance Token',
     address: 'secret1uxvpq889uxjcpj656yjjexsqa3zqm6ntkyjsjq',
