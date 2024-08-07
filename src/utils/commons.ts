@@ -188,7 +188,6 @@ export async function getBackgroundColors() {
 
 document.addEventListener('DOMContentLoaded', async () => {
   const backgroundColors = await getBackgroundColors()
-  console.log('Background Colors:', backgroundColors)
 })
 
 /**

@@ -468,7 +468,7 @@ export const chains: { [chain_name: string]: Chain } = {
     withdraw_gas: 150_000,
     chain_id: 'phoenix-1',
     bech32_prefix: 'terra',
-    lcd: 'https://phoenix-lcd.terra.dev',
+    lcd: 'https://terra-rest.publicnode.com',
     chain_image: '/luna2.svg',
     explorer_account: 'https://finder.terra.money/mainnet/address/'
   },
@@ -1357,6 +1357,64 @@ export const tokens: Token[] = [
     ]
   },
   {
+    name: 'bINJ',
+    description: 'Backbone staked INJ',
+    address: 'secret17xw4pelwmmhftscrdfntudyv77rkdxvaaelzvs',
+    code_hash: '638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e',
+    image: '/binj.png',
+    decimals: 18,
+    coingecko_id: '',
+    deposits: [
+      {
+        chain_name: 'Injective',
+        denom: 'factory/inj1dxp690rd86xltejgfq2fa7f2nxtgmm5cer3hvu/bINJ'
+      }
+    ],
+    withdrawals: [
+      {
+        chain_name: 'Injective',
+        denom: ibcDenom(
+          [
+            {
+              incomingChannelId: chains['Injective'].withdraw_channel_id,
+              incomingPortId: 'transfer'
+            }
+          ],
+          'factory/inj1dxp690rd86xltejgfq2fa7f2nxtgmm5cer3hvu/bINJ'
+        )
+      }
+    ]
+  },
+  {
+    name: 'bKUJI',
+    description: 'Backbone staked KUJI',
+    address: 'secret1ve536yukullq5rm67gdpssm23wynfv9gcqh6xn',
+    code_hash: '638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e',
+    image: '/bkuji.png',
+    decimals: 6,
+    coingecko_id: '',
+    deposits: [
+      {
+        chain_name: 'Kujira',
+        denom: 'factory/kujira15e8q5wzlk5k38gjxlhse3vu6vqnafysncx2ltexd6y9gx50vuj2qpt7dgv/boneKuji'
+      }
+    ],
+    withdrawals: [
+      {
+        chain_name: 'Kujira',
+        denom: ibcDenom(
+          [
+            {
+              incomingChannelId: chains['Kujira'].withdraw_channel_id,
+              incomingPortId: 'transfer'
+            }
+          ],
+          'factory:kujira15e8q5wzlk5k38gjxlhse3vu6vqnafysncx2ltexd6y9gx50vuj2qpt7dgv:boneKuji'
+        )
+      }
+    ]
+  },
+  {
     name: 'BLD',
     description: 'Agoric Governance Token',
     address: 'secret1uxvpq889uxjcpj656yjjexsqa3zqm6ntkyjsjq',
@@ -1381,6 +1439,37 @@ export const tokens: Token[] = [
             }
           ],
           'ubld'
+        )
+      }
+    ]
+  },
+  {
+    name: 'bLUNA',
+    description: 'Backbone staked LUNA',
+    address: 'secret1wzqxaa6g6xa27vrwgygex8xurxdjzjtwzlgwy3',
+    code_hash: '638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e',
+    image: '/bluna.png',
+    decimals: 6,
+    coingecko_id: '',
+    deposits: [
+      {
+        chain_name: 'Terra',
+        channel_id: 'channel-382',
+        denom: 'cw20:terra17aj4ty4sz4yhgm08na8drc0v03v2jwr3waxcqrwhajj729zhl7zqnpc0ml'
+      }
+    ],
+    withdrawals: [
+      {
+        chain_name: 'Terra',
+        channel_id: 'channel-127',
+        denom: ibcDenom(
+          [
+            {
+              incomingChannelId: 'channel-127',
+              incomingPortId: 'transfer'
+            }
+          ],
+          'cw20:terra17aj4ty4sz4yhgm08na8drc0v03v2jwr3waxcqrwhajj729zhl7zqnpc0ml'
         )
       }
     ]
@@ -2344,7 +2433,7 @@ export const tokens: Token[] = [
   },
   {
     name: 'USDC',
-    description: 'Native USDC Stablecoin via Noble',
+    description: 'Native USDC Stablecoin from Noble',
     address: 'secret1chsejpk9kfj4vt9ec6xvyguw539gsdtr775us2',
     code_hash: '5a085bd8ed89de92b35134ddd12505a602c7759ea25fb5c089ba03c8535b3042',
     image: '/usdc.svg',
@@ -2734,7 +2823,7 @@ export const tokens: Token[] = [
     code_hash: '638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e',
     image: '/stkdydx.svg',
     decimals: 18,
-    coingecko_id: 'pstake-staked-dydx',
+    coingecko_id: '',
     deposits: [
       {
         chain_name: 'Persistence',
