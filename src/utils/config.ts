@@ -1357,6 +1357,35 @@ export const tokens: Token[] = [
     ]
   },
   {
+    name: 'bINJ',
+    description: 'Backbone staked INJ',
+    address: 'XXX',
+    code_hash: '638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e',
+    image: '/binj.png',
+    decimals: 18,
+    coingecko_id: '',
+    deposits: [
+      {
+        chain_name: 'Injective',
+        denom: 'factory/inj1dxp690rd86xltejgfq2fa7f2nxtgmm5cer3hvu/bINJ'
+      }
+    ],
+    withdrawals: [
+      {
+        chain_name: 'Injective',
+        denom: ibcDenom(
+          [
+            {
+              incomingChannelId: chains['Injective'].withdraw_channel_id,
+              incomingPortId: 'transfer'
+            }
+          ],
+          'factory/inj1dxp690rd86xltejgfq2fa7f2nxtgmm5cer3hvu/bINJ'
+        )
+      }
+    ]
+  },
+  {
     name: 'bKUJI',
     description: 'Backbone staked KUJI',
     address: 'secret1ve536yukullq5rm67gdpssm23wynfv9gcqh6xn',
@@ -2373,7 +2402,7 @@ export const tokens: Token[] = [
   },
   {
     name: 'USDC',
-    description: 'Native USDC Stablecoin via Noble',
+    description: 'Native USDC Stablecoin from Noble',
     address: 'secret1chsejpk9kfj4vt9ec6xvyguw539gsdtr775us2',
     code_hash: '5a085bd8ed89de92b35134ddd12505a602c7759ea25fb5c089ba03c8535b3042',
     image: '/usdc.svg',
@@ -2763,7 +2792,7 @@ export const tokens: Token[] = [
     code_hash: '638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e',
     image: '/stkdydx.svg',
     decimals: 18,
-    coingecko_id: 'pstake-staked-dydx',
+    coingecko_id: '',
     deposits: [
       {
         chain_name: 'Persistence',
