@@ -29,7 +29,8 @@ function Dashboard() {
     communityTax,
     volume,
     marketCap,
-    L5AnalyticsApiData
+    L5AnalyticsApiData,
+    externalApiData
   } = useContext(APIContext)
 
   useEffect(() => {
@@ -301,9 +302,11 @@ function Dashboard() {
               <UnbondingsChart />
             </div>
           ) : null}
-          {/* <div className="col-span-12 rounded-xl bg-white border border-neutral-200 dark:border-neutral-700 dark:bg-neutral-800 p-4">
-            <AccountsChart />
-          </div> */}
+          {externalApiData ? (
+            <div className="col-span-12 rounded-xl bg-white border border-neutral-200 dark:border-neutral-700 dark:bg-neutral-800 p-4">
+              <AccountsChart />
+            </div>
+          ) : null}
         </div>
       </div>
     </>
