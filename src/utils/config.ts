@@ -1359,11 +1359,11 @@ export const tokens: Token[] = [
   {
     name: 'bKUJI',
     description: 'Backbone staked KUJI',
-    address: 'XX',
+    address: 'secret1ve536yukullq5rm67gdpssm23wynfv9gcqh6xn',
     code_hash: '638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e',
     image: '/bkuji.png',
     decimals: 6,
-    coingecko_id: 'backbone-staked-kujira',
+    coingecko_id: '',
     deposits: [
       {
         chain_name: 'Kujira',
