@@ -408,7 +408,7 @@ async function performIbcDeposit(
           fee: {
             gas: deposit_gas.toString(),
             amount: '0', // filled in by Keplr
-            denom: 'aevmos' // filled in by Keplr
+            denom: 'inj' // filled in by Keplr
           },
           memo: ''
         },
@@ -417,8 +417,9 @@ async function performIbcDeposit(
           sourceChannel: deposit_channel_id,
           amount: amount,
           denom: token.deposits.filter((deposit: Deposit) => deposit.chain_name === props.chain.chain_name)[0].denom,
-          receiver: 'secret198lmmh2fpj3weqhjczptkzl9pxygs23yn6dsev',
-          memo: autoWrapJsonString,
+          receiver:
+            token.name == 'SCRT' ? props.secretNetworkClient.address : 'secret198lmmh2fpj3weqhjczptkzl9pxygs23yn6dsev',
+          memo: token.name == 'SCRT' ? ' ' : autoWrapJsonString, //keep this empty " " there or signing might not work
           revisionNumber: 0,
           revisionHeight: 0,
           timeoutTimestamp: `${Math.floor(Date.now() / 1000) + 10 * 60}000000000` // 10 minute timeout (ns)
