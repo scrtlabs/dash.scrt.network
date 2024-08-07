@@ -1128,10 +1128,10 @@ export const tokens: Token[] = [
   {
     name: 'ampBTC',
     description: 'ERIS staked BTC',
-    address: 'secret1vgl6qx8sv5wknh7v4wfwanks504udm3lk5qawj',
+    address: 'secret10fnn57cdxqksgqprtvp27d3ykkgyffv9n0gnal',
     code_hash: '638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e',
     image: '/ampwhale.svg',
-    decimals: 6,
+    decimals: 8,
     coingecko_id: '',
     deposits: [
       {
