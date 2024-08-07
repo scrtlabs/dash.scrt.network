@@ -468,7 +468,7 @@ export const chains: { [chain_name: string]: Chain } = {
     withdraw_gas: 150_000,
     chain_id: 'phoenix-1',
     bech32_prefix: 'terra',
-    lcd: 'https://phoenix-lcd.terra.dev',
+    lcd: 'https://terra-rest.publicnode.com',
     chain_image: '/luna2.svg',
     explorer_account: 'https://finder.terra.money/mainnet/address/'
   },
@@ -1446,7 +1446,7 @@ export const tokens: Token[] = [
   {
     name: 'bLUNA',
     description: 'Backbone staked LUNA',
-    address: 'XX',
+    address: 'secret1wzqxaa6g6xa27vrwgygex8xurxdjzjtwzlgwy3',
     code_hash: '638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e',
     image: '/bluna.png',
     decimals: 6,
