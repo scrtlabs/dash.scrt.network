@@ -38,7 +38,7 @@ export const chains: { [chain_name: string]: Chain } = {
     withdraw_gas: 0,
     chain_id: 'secret-4',
     bech32_prefix: 'secret',
-    lcd: "https://rpc.ankr.com/http/scrt",
+    lcd: 'https://lcd.mainnet.secretsaturn.net',
     chain_image: 'img/assets/scrt.svg',
     explorer_account: 'https://www.mintscan.io/secret/account/'
   },
