@@ -5,7 +5,7 @@ function notify(notification: string, type: NotificationType, toastId: string = 
   // Define an options object for toast, if toastId is provided
   const options = {
     id: toastId || undefined,
-    duration: Infinity,
+    duration: type === 'success' ? 10000 : Infinity,
     onClick: () => {
       toast.dismiss()
     },
