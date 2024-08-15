@@ -195,7 +195,7 @@ const APIContextProvider = ({ children }: any) => {
         setVolume(response.secret[coinGeckoCurrencyMap[currency] + '_24h_vol']) // e.g. response.secret.usd_24h_vol
       })
 
-    const API_DATA_SECRET = `https://cors-anywhere.herokuapp.com/http://34.45.254.169:5000/source/wallets/data.json`
+    const API_DATA_SECRET = `https://dashboardstats.secretsaturn.net/source/wallets/data.json`
     fetch(API_DATA_SECRET)
       .catch((error: any) => console.error(error))
       .then((response) => (response as any).json())
