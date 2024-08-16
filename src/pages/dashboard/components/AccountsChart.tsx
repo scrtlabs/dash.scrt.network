@@ -20,49 +20,140 @@ import { useUserPreferencesStore } from 'store/UserPreferences'
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, ChartTooltip, Legend, BarController)
 
+type WalletData = {
+  block_timestamp: number
+  is_new: boolean
+  num_wallets: number
+}
+
 export default function AccountsChart(props: any) {
-  const { L5AnalyticsApiData } = useContext(APIContext)
-
+  const { externalApiData } = useContext(APIContext)
   const { theme } = useUserPreferencesStore()
-
   const [chartData, setChartData] = useState<any>([])
 
-  // useEffect(() => {
-  //   if (L5AnalyticsApiData) {
-  //     console.log(L5AnalyticsApiData)
-  //     const dataArray = Object.entries(L5AnalyticsApiData['unbonding_by_date']).map(([date, balance]) => [
-  //       date,
-  //       balance
-  //     ])
-  //     const chartData = {
-  //       labels: dataArray.map((item) => item.timestamp),
-  //       datasets: [
-  //         {
-  //           label: '# unique wallets',
-  //           data: dataArray.map((item) => item.wallets),
-  //           borderColor: 'rgb(105, 57, 208)',
-  //           yAxisID: 'y',
-  //           tension: 0.1
-  //         },
-  //         {
-  //           label: '# Unique contracts',
-  //           data: dataArray.map((item) => item.code_ids),
-  //           borderColor: 'rgb(249, 201, 31)',
-  //           yAxisID: 'y1'
-  //         }
-  //       ]
-  //     }
-  //     setChartData(chartData)
-  //   }
-  // }, [L5AnalyticsApiData])
+  useEffect(() => {
+    if (externalApiData) {
+      // Create a map with block_timestamp as keys and the corresponding data as values
+      const timestampMap = new Map<number, WalletData[]>()
+
+      externalApiData.forEach((entry: WalletData) => {
+        if (timestampMap.has(entry.block_timestamp)) {
+          timestampMap.get(entry.block_timestamp)?.push(entry)
+        } else {
+          timestampMap.set(entry.block_timestamp, [entry])
+        }
+      })
+
+      const sortedEntries = Array.from(timestampMap.entries()).sort(([a], [b]) => a - b)
+
+      const stackedData = sortedEntries.map(([timestamp, entries]) => {
+        const isNewEntry = entries.find((entry) => entry.is_new)
+        const notNewEntry = entries.find((entry) => !entry.is_new)
+        return {
+          timestamp,
+          new_wallets: isNewEntry ? isNewEntry.num_wallets : 0,
+          old_wallets: notNewEntry ? notNewEntry.num_wallets : 0
+        }
+      })
+
+      const labels = stackedData.map((date: any) => {
+        const dateObj = new Date(date.timestamp)
+        return dateObj.toLocaleDateString(undefined, {
+          year: '2-digit',
+          month: '2-digit',
+          day: '2-digit'
+        })
+      })
+
+      if (stackedData && stackedData.length > 0) {
+        const chartData = {
+          labels: labels,
+          datasets: [
+            {
+              label: 'Existing Wallets',
+              data: stackedData.map((item) => item.old_wallets),
+              backgroundColor: 'rgba(0, 123, 255, 1)',
+              borderColor: 'rgba(0, 123, 255, 1)',
+              borderWidth: 1,
+              yAxisID: 'y',
+              stack: 'wallets'
+            },
+            {
+              label: 'New Wallets',
+              data: stackedData.map((item) => item.new_wallets),
+              backgroundColor: 'rgba(105, 57, 208, 0.5)',
+              borderColor: 'rgba(105, 57, 208, 1)',
+              borderWidth: 1,
+              yAxisID: 'y',
+              stack: 'wallets'
+            }
+          ]
+        }
+        setChartData(chartData)
+      }
+    }
+  }, [externalApiData])
+
+  const options = {
+    responsive: true,
+    animation: true,
+    maintainAspectRatio: false,
+    scales: {
+      x: {
+        ticks: {
+          color: theme === 'dark' ? '#fff' : '#000'
+        },
+        grid: {
+          color: theme === 'dark' ? '#fff' : '#000',
+          alpha: 0.5,
+          display: false,
+          drawOnChartArea: true,
+          drawTicks: true,
+          tickLength: 0
+        },
+        border: {
+          color: theme === 'dark' ? '#fff' : '#000'
+        }
+      },
+      y: {
+        beginAtZero: true,
+        stacked: true,
+        ticks: {
+          color: theme === 'dark' ? '#fff' : '#000',
+          callback: function (value: any, index: any, ticks: any) {
+            return formatNumber(value, 2)
+          }
+        },
+        border: {
+          color: theme === 'dark' ? '#fff' : '#000'
+        },
+        grid: {
+          color: theme === 'dark' ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0, 0, 0, 0.2)',
+          display: true,
+          drawOnChartArea: true,
+          drawTicks: true,
+          tickLength: 0
+        }
+      }
+    },
+    plugins: {
+      legend: {
+        display: false
+      },
+      tooltip: {
+        xAlign: true,
+        color: 'rgba(0, 123, 255, 1)'
+      }
+    }
+  }
 
   return (
     <>
       <div>
         <h2 className="text-center text-xl font-semibold pt-2.5 pb-0">
-          Unique Wallets
+          Daily interacting Wallets
           <div className="inline-block">
-            <Tooltip title={`Shows the unbonded (unstaked) SCRT per day`} placement="right" arrow>
+            <Tooltip title={`Number of unique wallets that interacted with the chain daily`} placement="right" arrow>
               <span className="text-neutral-600 dark:text-neutral-400 hover:text-black dark:hover:text-white transition-colors cursor-pointer ml-2 text-sm">
                 <FontAwesomeIcon icon={faInfoCircle} />
               </span>
@@ -71,57 +162,8 @@ export default function AccountsChart(props: any) {
         </h2>
       </div>
       <div className="w-full h-[300px] xl:h-[400px]">
-        {/* {chartData ? <Line
-        data={chartData}
-        options={{
-          responsive: true,
-          plugins: {
-            legend: {
-              position: 'top',
-              display: true
-            }
-          },
-          scales: {
-            x : {
-              display: true,
-              type: 'time',
-              ticks: {
-                major: {
-                  enabled: true, // <-- This is the key line
-                },
-                maxRotation: 45,
-                minRotation: 45,
-                maxTicksLimit: 12,
-                color: 'black',
-              },
-              time: {
-                parser: 'YYYY-MM-DD HH:mm:ss',
-                unit: 'day',
-                displayFormats: {
-                   'day': 'MMM DD'
-                  }
-              }
-            },
-            y: {
-              type: 'linear',
-              display: true,
-              position: 'left',
-            },
-            y1: {
-              type: 'linear',
-              display: true,
-              position: 'right',
-      
-              // grid line settings
-              grid: {
-                drawOnChartArea: false, // only want the grid lines for one axis to show up
-              },
-            },
-          } 
-        }}
-      /> : null} */}
+        {chartData.length != 0 && externalApiData ? <Bar data={chartData as any} options={options as any} /> : null}
       </div>
-      <div className="text-center text-sm">Metrics by Lavender.Five Nodes 🐝</div>
     </>
   )
 }
