@@ -1564,7 +1564,7 @@ export const tokens: Token[] = [
   {
     name: 'dATOM',
     description: 'Drop ATOM',
-    address: 'XX',
+    address: 'secret1x3cxgrwymk7yyelf2782r8ay020xyl96zq3rhh',
     code_hash: '638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e',
     image: '/datom.svg',
     decimals: 6,
