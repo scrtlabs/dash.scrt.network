@@ -1562,6 +1562,35 @@ export const tokens: Token[] = [
     ]
   },
   {
+    name: 'dATOM',
+    description: 'Drop ATOM',
+    address: 'secret1x3cxgrwymk7yyelf2782r8ay020xyl96zq3rhh',
+    code_hash: '638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e',
+    image: '/datom.svg',
+    decimals: 6,
+    coingecko_id: 'cosmos',
+    deposits: [
+      {
+        chain_name: 'Neutron',
+        denom: 'factory/neutron1k6hr0f83e7un2wjf29cspk7j69jrnskk65k3ek2nj9dztrlzpj6q00rtsa/udatom'
+      }
+    ],
+    withdrawals: [
+      {
+        chain_name: 'Neutron',
+        denom: ibcDenom(
+          [
+            {
+              incomingChannelId: chains['Neutron'].withdraw_channel_id,
+              incomingPortId: 'transfer'
+            }
+          ],
+          'factory/neutron1k6hr0f83e7un2wjf29cspk7j69jrnskk65k3ek2nj9dztrlzpj6q00rtsa/udatom'
+        )
+      }
+    ]
+  },
+  {
     name: 'DOT',
     description: 'Polkadot Governance Token',
     address: 'secret1h5d3555tz37crrgl5rppu2np2fhaugq3q8yvv9',
