@@ -1,7 +1,7 @@
 import { useEffect, useContext } from 'react'
 import { APIContext } from 'context/APIContext'
 import { Helmet } from 'react-helmet-async'
-import { trackMixPanelEvent, dashboardPageTitle, dashboardPageDescription, dashboardJsonLdSchema } from 'utils/commons'
+import { trackMixPanelEvent, analyticsPageTitle, analyticsPageDescription, analyticsJsonLdSchema } from 'utils/commons'
 import UnbondingsChart from './components/UnbondingsChart'
 import AccountsChart from './components/AccountsChart'
 
@@ -15,25 +15,25 @@ function Analytics() {
   return (
     <>
       <Helmet>
-        <title>{dashboardPageTitle}</title>
+        <title>{analyticsPageTitle}</title>
 
         <meta charSet="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-        <meta name="title" content={dashboardPageTitle} />
-        <meta name="application-name" content={dashboardPageTitle} />
-        <meta name="description" content={dashboardPageDescription} />
+        <meta name="title" content={analyticsPageTitle} />
+        <meta name="application-name" content={analyticsPageTitle} />
+        <meta name="description" content={analyticsPageDescription} />
         <meta name="robots" content="index,follow" />
 
-        <meta property="og:title" content={dashboardPageTitle} />
-        <meta property="og:description" content={dashboardPageDescription} />
+        <meta property="og:title" content={analyticsPageTitle} />
+        <meta property="og:description" content={analyticsPageDescription} />
         {/* <meta property='og:image' content='Image URL Here'/> */}
 
-        <meta name="twitter:title" content={dashboardPageTitle} />
-        <meta name="twitter:description" content={dashboardPageDescription} />
+        <meta name="twitter:title" content={analyticsPageTitle} />
+        <meta name="twitter:description" content={analyticsPageDescription} />
         {/* <meta name='twitter:image' content='Image URL Here'/> */}
 
-        <script type="application/ld+json">{JSON.stringify(dashboardJsonLdSchema)}</script>
+        <script type="application/ld+json">{JSON.stringify(analyticsJsonLdSchema)}</script>
       </Helmet>
       <div className="px-4 mx-auto space-y-4 w-full">
         <div className="grid grid-cols-12 gap-4">

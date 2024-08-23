@@ -213,6 +213,21 @@ export const dashboardJsonLdSchema = [
   }
 ]
 
+// Analytics
+export const analyticsPageTitle = `${pageTitle} | Analytics`
+export const analyticsPageDescription = `Various Analytics for the Secret Network`
+export const analyticsJsonLdSchema = [
+  {
+    '@context': 'http://schema.org',
+    '@type': 'WebPage',
+    url: 'https://dash.scrt.network/analytics',
+    name: `${pageTitle} | Analytics`,
+    alternateName: `${alternatePageTitle} | Analytics`,
+    description: analyticsPageDescription,
+    creator: 'Secret Jupiter, Secret Saturn'
+  }
+]
+
 // IBC
 export const ibcPageTitle = `${pageTitle} | IBC Transfer`
 export const ibcPageDescription = `Deposit your assets, such as SCRT, via IBC transfer to and from Secret Network`
