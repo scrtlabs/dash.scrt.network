@@ -5,7 +5,6 @@ import MiniTile from './components/MiniTile'
 import PriceVolumeTVL from './components/PriceVolTVLChart/PriceVolumeTVL'
 import HexTile from './components/HexTile'
 import QuadTile from './components/QuadTile'
-import SocialMedia from './components/SocialMedia'
 import { SECRET_LCD, SECRET_CHAIN_ID } from 'utils/config'
 import StakingChart from './components/StakingChart'
 import { currencySymbols, formatNumber } from 'utils/commons'
@@ -16,7 +15,7 @@ import UnbondingsChart from './components/UnbondingsChart'
 import { useUserPreferencesStore } from 'store/UserPreferences'
 import AccountsChart from './components/AccountsChart'
 
-function Dashboard() {
+function Analytics() {
   const {
     defiLamaApiData_TVL,
     currentPrice,
@@ -234,11 +233,6 @@ function Dashboard() {
             <MiniTile name="Market Cap/TVL" value={`${marketCapFormattedString} / ${TVLFormattedString}`} />
           </div>
 
-          {/* Social Media */}
-          <div className="col-span-12 sm:col-span-6 lg:col-span-12 xl:col-span-6 2xl:col-span-4">
-            <SocialMedia />
-          </div>
-
           {/* Block Info */}
           <div className="col-span-12 md:col-span-6 lg:col-span-12 xl:col-span-6 2xl:col-span-4">
             <QuadTile
@@ -254,52 +248,25 @@ function Dashboard() {
               item4={{ key: '# Active Validators', value: activeValidatorsFormattedString }}
             />
           </div>
-
-          <div className="col-span-12 md:col-span-6 lg:col-span-12 xl:col-span-6 2xl:col-span-4">
-            <div className="rounded-xl bg-white border border-neutral-200 dark:border-neutral-700 dark:bg-neutral-800 px-6 py-8">
-              <StakingChart />
-            </div>
-          </div>
-
-          {/* Block Info */}
-          <div className="col-span-12 md:col-span-12 lg:col-span-12 xl:col-span-12 2xl:col-span-4">
-            <HexTile
-              item1={{
-                key: 'APR/Staking Yield',
-                value: growthRateFormattedString
-              }}
-              item2={{
-                key: 'Inflation (annual)',
-                value: inflationFormattedString
-              }}
-              item3={{
-                key: 'Community Tax',
-                value: communityTaxFormattedString
-              }}
-              item4={{
-                key: 'SNF Tax',
-                value: SNFTaxFormattedString
-              }}
-              item5={{
-                key: 'Bonded Rate',
-                value: bondedRateFormattedString
-              }}
-              item6={{
-                key: 'Liquid Supply Bonding Rate',
-                value: LSBRFormattedString
-              }}
-            />
-          </div>
         </div>
-
         <div className="grid grid-cols-12 gap-4">
           {/* Item */}
           <div className="col-span-12 rounded-xl bg-white border border-neutral-200 dark:border-neutral-700 dark:bg-neutral-800 p-4">
             <PriceVolumeTVL />
           </div>
+          {L5AnalyticsApiData ? (
+            <div className="col-span-12 rounded-xl bg-white border border-neutral-200 dark:border-neutral-700 dark:bg-neutral-800 p-4">
+              <UnbondingsChart />
+            </div>
+          ) : null}
+          {externalApiData ? (
+            <div className="col-span-12 rounded-xl bg-white border border-neutral-200 dark:border-neutral-700 dark:bg-neutral-800 p-4">
+              <AccountsChart />
+            </div>
+          ) : null}
         </div>
       </div>
     </>
   )
 }
-export default Dashboard
+export default Analytics

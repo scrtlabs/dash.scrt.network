@@ -13,7 +13,9 @@ import {
   faCreditCard,
   faPaperPlane,
   faPieChart,
-  faSeedling
+  faSeedling,
+  faArrowTrendUp,
+  faHouse
 } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import React, { useState } from 'react'
@@ -66,8 +68,21 @@ export function Navigation({
                 : 'isInactiveNavLink text-black dark:text-white dark:hover:bg-neutral-800 block w-full px-5 py-3 rounded-lg transition-colors font-normal'
             }
           >
-            <FontAwesomeIcon icon={faChartLine} className="mr-2" />
+            <FontAwesomeIcon icon={faHouse} className="mr-2" />
             Dashboard
+          </NavLink>
+        </li>
+        <li>
+          <NavLink
+            to="/analytics"
+            className={({ isActive }) =>
+              isActive
+                ? 'isActiveNavLink dark:bg-neutral-800 text-black dark:text-white block w-full px-5 py-3 rounded-lg transition-colors font-semibold cursor-default'
+                : 'isInactiveNavLink text-black dark:text-white dark:hover:bg-neutral-800 block w-full px-5 py-3 rounded-lg transition-colors font-normal'
+            }
+          >
+            <FontAwesomeIcon icon={faChartLine} className="mr-2" />
+            Analytics
           </NavLink>
         </li>
         <li>
