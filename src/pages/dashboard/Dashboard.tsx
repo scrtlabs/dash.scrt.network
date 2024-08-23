@@ -12,9 +12,7 @@ import { currencySymbols, formatNumber } from 'utils/commons'
 import { APIContext } from 'context/APIContext'
 import { Helmet } from 'react-helmet-async'
 import { trackMixPanelEvent, dashboardPageTitle, dashboardPageDescription, dashboardJsonLdSchema } from 'utils/commons'
-import UnbondingsChart from './components/UnbondingsChart'
 import { useUserPreferencesStore } from 'store/UserPreferences'
-import AccountsChart from './components/AccountsChart'
 
 function Dashboard() {
   const {
