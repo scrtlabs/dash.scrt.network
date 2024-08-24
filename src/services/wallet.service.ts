@@ -276,22 +276,29 @@ async function fetchIbcChainBalances(
     })
   })
 
-  //exception for AMPLuna
-  if (allTokens.find((token: Token) => token.name === 'ampLUNA') && props.chain.chain_name == 'Terra') {
-    const AmpLUNAToken = allTokens.find((token: Token) => token.name === 'ampLUNA')
-    const AmpLUNADenom = AmpLUNAToken.deposits.filter(
-      (deposit: any) => deposit.chain_name === props.chain.chain_name
-    )[0]?.denom
+  //exception for Terra CW20 Tokens
+  const tokensToCheck = ['ampLUNA', 'bLUNA']
 
-    const url = `${props.chain.lcd}/cosmwasm/wasm/v1/contract/${AmpLUNADenom?.substring(
-      'cw20:'.length
-    )}/smart/${toBase64(toUtf8(`{"balance":{"address":"${sourceChain.address}"}}`))}`
-    const { data } = await (await fetch(url)).json()
-    const balance = data?.balance || 0
-    newBalanceMapping.set(AmpLUNAToken, {
-      balance: new BigNumber(balance)
-    })
-  }
+  tokensToCheck.forEach(async (tokenName) => {
+    const token = allTokens.find((token: Token) => token.name === tokenName)
+
+    if (token && props.chain.chain_name === 'Terra') {
+      const tokenDeposits = token.deposits.filter((deposit: any) => deposit.chain_name === props.chain.chain_name)
+      const denom = tokenDeposits[0]?.denom
+
+      if (denom) {
+        const url = `${props.chain.lcd}/cosmwasm/wasm/v1/contract/${denom.substring('cw20:'.length)}/smart/${toBase64(
+          toUtf8(`{"balance":{"address":"${sourceChain.address}"}}`)
+        )}`
+        const { data } = await (await fetch(url)).json()
+        const balance = data?.balance || 0
+
+        newBalanceMapping.set(token, {
+          balance: new BigNumber(balance)
+        })
+      }
+    }
+  })
 
   for (const token of props.tokens) {
     const currentEntry = newBalanceMapping.get(token)

@@ -188,7 +188,6 @@ export async function getBackgroundColors() {
 
 document.addEventListener('DOMContentLoaded', async () => {
   const backgroundColors = await getBackgroundColors()
-  console.log('Background Colors:', backgroundColors)
 })
 
 /**
@@ -210,7 +209,22 @@ export const dashboardJsonLdSchema = [
     name: dashboardPageTitle,
     alternateName: dashboardAlternatePageTitle,
     description: dashboardPageDescription,
-    creator: 'Secret Jupiter, Secret Saturn'
+    creator: 'Secret Saturn, Secret Jupiter'
+  }
+]
+
+// Analytics
+export const analyticsPageTitle = `${pageTitle} | Analytics`
+export const analyticsPageDescription = `Various Analytics for the Secret Network`
+export const analyticsJsonLdSchema = [
+  {
+    '@context': 'http://schema.org',
+    '@type': 'WebPage',
+    url: 'https://dash.scrt.network/analytics',
+    name: `${pageTitle} | Analytics`,
+    alternateName: `${alternatePageTitle} | Analytics`,
+    description: analyticsPageDescription,
+    creator: 'Secret Saturn, Secret Jupiter'
   }
 ]
 
@@ -225,7 +239,7 @@ export const ibcJsonLdSchema = [
     name: `${pageTitle} | IBC Transfer`,
     alternateName: `${alternatePageTitle} | IBC Transfer`,
     description: ibcPageDescription,
-    creator: 'Secret Jupiter, Secret Saturn'
+    creator: 'Secret Saturn, Secret Jupiter'
   }
 ]
 
@@ -240,7 +254,7 @@ export const wrapJsonLdSchema = [
     name: `${pageTitle} | Wrap`,
     alternateName: `${alternatePageTitle} | Wrap`,
     description: wrapPageDescription,
-    creator: 'Secret Jupiter, Secret Saturn'
+    creator: 'Secret Saturn, Secret Jupiter'
   }
 ]
 
@@ -255,7 +269,7 @@ export const bridgeJsonLdSchema = [
     name: `${pageTitle} | Bridge`,
     alternateName: `${pageTitle} | Wrap`,
     description: bridgePageDescription,
-    creator: 'Secret Jupiter, Secret Saturn'
+    creator: 'Secret Saturn, Secret Jupiter'
   }
 ]
 
@@ -269,7 +283,7 @@ export const stakingJsonLdSchema = [
     url: 'https://dash.scrt.network/staking',
     name: stakingPageTitle,
     description: stakingPageDescription,
-    creator: 'Secret Jupiter, Secret Saturn'
+    creator: 'Secret Saturn, Secret Jupiter'
   }
 ]
 
@@ -284,7 +298,22 @@ export const portfolioJsonLdSchema = [
     name: `${pageTitle} | Portfolio`,
     alternateName: `${alternatePageTitle} | Portfolio`,
     description: portfolioPageDescription,
-    creator: 'Secret Jupiter, Secret Saturn'
+    creator: 'Secret Saturn, Secret Jupiter'
+  }
+]
+
+// Powertools
+export const powertoolsPageTitle = `${pageTitle} | Powertools`
+export const powertoolsPageDescription = `Send complex transactions like a pro`
+export const powertoolsJsonLdSchema = [
+  {
+    '@context': 'http://schema.org',
+    '@type': 'WebPage',
+    url: 'https://dash.scrt.network/powertools',
+    name: `${pageTitle} | Powertools`,
+    alternateName: `${alternatePageTitle} | Powertools`,
+    description: powertoolsPageDescription,
+    creator: 'Secret Saturn, Secret Jupiter'
   }
 ]
 
@@ -299,7 +328,7 @@ export const sendJsonLdSchema = [
     name: `${pageTitle} | Send`,
     alternateName: `${alternatePageTitle} | Send`,
     description: sendPageDescription,
-    creator: 'Secret Jupiter, Secret Saturn'
+    creator: 'Secret Saturn, Secret Jupiter'
   }
 ]
 
@@ -314,7 +343,7 @@ export const appsJsonLdSchema = [
     name: `${pageTitle} | Apps`,
     alternateName: `${alternatePageTitle} | Apps`,
     description: appsPageDescription,
-    creator: 'Secret Jupiter, Secret Saturn'
+    creator: 'Secret Saturn, Secret Jupiter'
   }
 ]
 

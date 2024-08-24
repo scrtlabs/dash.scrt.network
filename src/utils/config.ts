@@ -38,7 +38,7 @@ export const chains: { [chain_name: string]: Chain } = {
     withdraw_gas: 0,
     chain_id: 'secret-4',
     bech32_prefix: 'secret',
-    lcd: 'https://lcd.mainnet.secretsaturn.net',
+    lcd: 'https://rpc.ankr.com/http/scrt_cosmos',
     chain_image: 'img/assets/scrt.svg',
     explorer_account: 'https://www.mintscan.io/secret/account/'
   },
@@ -468,7 +468,7 @@ export const chains: { [chain_name: string]: Chain } = {
     withdraw_gas: 150_000,
     chain_id: 'phoenix-1',
     bech32_prefix: 'terra',
-    lcd: 'https://phoenix-lcd.terra.dev',
+    lcd: 'https://terra-rest.publicnode.com',
     chain_image: '/luna2.svg',
     explorer_account: 'https://finder.terra.money/mainnet/address/'
   },
@@ -1126,6 +1126,35 @@ export const tokens: Token[] = [
     ]
   },
   {
+    name: 'ampBTC',
+    description: 'ERIS staked BTC',
+    address: 'secret10fnn57cdxqksgqprtvp27d3ykkgyffv9n0gnal',
+    code_hash: '638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e',
+    image: '/ampwhale.svg',
+    decimals: 8,
+    coingecko_id: '',
+    deposits: [
+      {
+        chain_name: 'Migaloo',
+        denom: 'factory/migaloo1pll95yfcnxd5pkkrcsad63l929m4ehk4c46fpqqp3c2d488ca0csc220d0/ampBTC'
+      }
+    ],
+    withdrawals: [
+      {
+        chain_name: 'Migaloo',
+        denom: ibcDenom(
+          [
+            {
+              incomingChannelId: chains['Migaloo'].withdraw_channel_id,
+              incomingPortId: 'transfer'
+            }
+          ],
+          'factory/migaloo1pll95yfcnxd5pkkrcsad63l929m4ehk4c46fpqqp3c2d488ca0csc220d0/ampBTC'
+        )
+      }
+    ]
+  },
+  {
     name: 'ampKUJI',
     description: 'ERIS staked KUJI',
     address: 'secret1pf6n6j8xlkxnga5t8w8exdtvcrrjgqms5wdlnj',
@@ -1328,6 +1357,64 @@ export const tokens: Token[] = [
     ]
   },
   {
+    name: 'bINJ',
+    description: 'Backbone staked INJ',
+    address: 'secret17xw4pelwmmhftscrdfntudyv77rkdxvaaelzvs',
+    code_hash: '638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e',
+    image: '/binj.png',
+    decimals: 18,
+    coingecko_id: '',
+    deposits: [
+      {
+        chain_name: 'Injective',
+        denom: 'factory/inj1dxp690rd86xltejgfq2fa7f2nxtgmm5cer3hvu/bINJ'
+      }
+    ],
+    withdrawals: [
+      {
+        chain_name: 'Injective',
+        denom: ibcDenom(
+          [
+            {
+              incomingChannelId: chains['Injective'].withdraw_channel_id,
+              incomingPortId: 'transfer'
+            }
+          ],
+          'factory/inj1dxp690rd86xltejgfq2fa7f2nxtgmm5cer3hvu/bINJ'
+        )
+      }
+    ]
+  },
+  {
+    name: 'bKUJI',
+    description: 'Backbone staked KUJI',
+    address: 'secret1ve536yukullq5rm67gdpssm23wynfv9gcqh6xn',
+    code_hash: '638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e',
+    image: '/bkuji.png',
+    decimals: 6,
+    coingecko_id: '',
+    deposits: [
+      {
+        chain_name: 'Kujira',
+        denom: 'factory/kujira15e8q5wzlk5k38gjxlhse3vu6vqnafysncx2ltexd6y9gx50vuj2qpt7dgv/boneKuji'
+      }
+    ],
+    withdrawals: [
+      {
+        chain_name: 'Kujira',
+        denom: ibcDenom(
+          [
+            {
+              incomingChannelId: chains['Kujira'].withdraw_channel_id,
+              incomingPortId: 'transfer'
+            }
+          ],
+          'factory:kujira15e8q5wzlk5k38gjxlhse3vu6vqnafysncx2ltexd6y9gx50vuj2qpt7dgv:boneKuji'
+        )
+      }
+    ]
+  },
+  {
     name: 'BLD',
     description: 'Agoric Governance Token',
     address: 'secret1uxvpq889uxjcpj656yjjexsqa3zqm6ntkyjsjq',
@@ -1352,6 +1439,37 @@ export const tokens: Token[] = [
             }
           ],
           'ubld'
+        )
+      }
+    ]
+  },
+  {
+    name: 'bLUNA',
+    description: 'Backbone staked LUNA',
+    address: 'secret1wzqxaa6g6xa27vrwgygex8xurxdjzjtwzlgwy3',
+    code_hash: '638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e',
+    image: '/bluna.png',
+    decimals: 6,
+    coingecko_id: '',
+    deposits: [
+      {
+        chain_name: 'Terra',
+        channel_id: 'channel-382',
+        denom: 'cw20:terra17aj4ty4sz4yhgm08na8drc0v03v2jwr3waxcqrwhajj729zhl7zqnpc0ml'
+      }
+    ],
+    withdrawals: [
+      {
+        chain_name: 'Terra',
+        channel_id: 'channel-127',
+        denom: ibcDenom(
+          [
+            {
+              incomingChannelId: 'channel-127',
+              incomingPortId: 'transfer'
+            }
+          ],
+          'cw20:terra17aj4ty4sz4yhgm08na8drc0v03v2jwr3waxcqrwhajj729zhl7zqnpc0ml'
         )
       }
     ]
@@ -1439,6 +1557,35 @@ export const tokens: Token[] = [
             }
           ],
           'ucmst'
+        )
+      }
+    ]
+  },
+  {
+    name: 'dATOM',
+    description: 'Drop ATOM',
+    address: 'secret1x3cxgrwymk7yyelf2782r8ay020xyl96zq3rhh',
+    code_hash: '638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e',
+    image: '/datom.svg',
+    decimals: 6,
+    coingecko_id: 'cosmos',
+    deposits: [
+      {
+        chain_name: 'Neutron',
+        denom: 'factory/neutron1k6hr0f83e7un2wjf29cspk7j69jrnskk65k3ek2nj9dztrlzpj6q00rtsa/udatom'
+      }
+    ],
+    withdrawals: [
+      {
+        chain_name: 'Neutron',
+        denom: ibcDenom(
+          [
+            {
+              incomingChannelId: chains['Neutron'].withdraw_channel_id,
+              incomingPortId: 'transfer'
+            }
+          ],
+          'factory/neutron1k6hr0f83e7un2wjf29cspk7j69jrnskk65k3ek2nj9dztrlzpj6q00rtsa/udatom'
         )
       }
     ]
@@ -2315,7 +2462,7 @@ export const tokens: Token[] = [
   },
   {
     name: 'USDC',
-    description: 'Native USDC Stablecoin via Noble',
+    description: 'Native USDC Stablecoin from Noble',
     address: 'secret1chsejpk9kfj4vt9ec6xvyguw539gsdtr775us2',
     code_hash: '5a085bd8ed89de92b35134ddd12505a602c7759ea25fb5c089ba03c8535b3042',
     image: '/usdc.svg',
@@ -2705,7 +2852,7 @@ export const tokens: Token[] = [
     code_hash: '638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e',
     image: '/stkdydx.svg',
     decimals: 18,
-    coingecko_id: 'pstake-staked-dydx',
+    coingecko_id: '',
     deposits: [
       {
         chain_name: 'Persistence',

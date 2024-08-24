@@ -45,7 +45,7 @@ export default function AddressInfo(props: IProps) {
           )}
         </div>
         <div className="flex-initial ml-4">
-          <CopyToClipboard text={props.destAddress}>
+          <CopyToClipboard text={props.srcAddress}>
             <Tooltip title="Copy to Clipboard" placement="top" disableHoverListener={!isConnected || dataMissing} arrow>
               <span>
                 <button

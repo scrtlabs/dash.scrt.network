@@ -30,6 +30,7 @@ import { debugModeOverride } from 'utils/commons'
 import Governance from 'pages/governance/Governance'
 import GovernanceDetail from 'pages/governance/GovernanceDetail'
 import Staking from 'pages/staking/Staking'
+import Analytics from 'pages/analytics/Analytics'
 
 const { debugMode } = useUserPreferencesStore.getState()
 
@@ -112,6 +113,7 @@ export default function App() {
     <>
       <Routes>
         <Route path="/" element={<Dashboard />} />
+        <Route path="/analytics" element={<Analytics />} />
         <Route path="/ibc" element={<Ibc />} />
         <Route path="/wrap" element={<Wrap />} />
         <Route path="/bridge" element={<Bridge />} />
