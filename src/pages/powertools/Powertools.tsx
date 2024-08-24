@@ -16,6 +16,8 @@ import { useSearchParams } from 'react-router-dom'
 import { NotificationService } from 'services/notification.service'
 import Modal from 'components/UI/Modal/Modal'
 import CopyToClipboard from 'react-copy-to-clipboard'
+import { Helmet } from 'react-helmet-async'
+import { powertoolsJsonLdSchema, powertoolsPageDescription, powertoolsPageTitle } from 'utils/commons'
 
 export type TMessage = {
   type: string
@@ -183,6 +185,27 @@ function Powertools() {
 
   return (
     <>
+      <Helmet>
+        <title>{powertoolsPageTitle}</title>
+
+        <meta charSet="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+        <meta name="title" content={powertoolsPageTitle} />
+        <meta name="application-name" content={powertoolsPageTitle} />
+        <meta name="description" content={powertoolsPageDescription} />
+        <meta name="robots" content="index,follow" />
+
+        <meta property="og:title" content={powertoolsPageTitle} />
+        <meta property="og:description" content={powertoolsPageDescription} />
+        {/* <meta property='og:image' content='Image URL Here'/> */}
+
+        <meta name="twitter:title" content={powertoolsPageTitle} />
+        <meta name="twitter:description" content={powertoolsPageDescription} />
+        {/* <meta name='twitter:image' content='Image URL Here'/> */}
+
+        <script type="application/ld+json">{JSON.stringify(powertoolsJsonLdSchema)}</script>
+      </Helmet>
       <Modal
         title={'Power Tools – Full Message'}
         isOpen={isViewMessageModalOpen}

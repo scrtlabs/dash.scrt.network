@@ -302,6 +302,21 @@ export const portfolioJsonLdSchema = [
   }
 ]
 
+// Powertools
+export const powertoolsPageTitle = `${pageTitle} | Powertools`
+export const powertoolsPageDescription = `Send complex transactions like a pro`
+export const powertoolsJsonLdSchema = [
+  {
+    '@context': 'http://schema.org',
+    '@type': 'WebPage',
+    url: 'https://dash.scrt.network/powertools',
+    name: `${pageTitle} | Powertools`,
+    alternateName: `${alternatePageTitle} | Powertools`,
+    description: powertoolsPageDescription,
+    creator: 'Secret Jupiter, Secret Saturn'
+  }
+]
+
 // Send
 export const sendPageTitle = `${pageTitle} | Send`
 export const sendPageDescription = `Send public (SCRT) or privacy preserving tokens`
