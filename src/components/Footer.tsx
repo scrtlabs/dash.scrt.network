@@ -20,19 +20,19 @@ const Footer = () => {
         <div className="col-span-12 text-xs font-medium text-neutral-600 dark:text-neutral-400">
           {'Developed by '}
           <a
-            href="https://x.com/secretjupiter_"
-            target="_blank"
-            className="transition-colors hover:text-black dark:hover:text-white"
-          >
-            Secret Jupiter
-          </a>
-          {', '}
-          <a
             href="https://x.com/Secret_Saturn_"
             target="_blank"
             className="transition-colors hover:text-black dark:hover:text-white"
           >
             Secret Saturn
+          </a>
+          {', '}
+          <a
+            href="https://x.com/secretjupiter_"
+            target="_blank"
+            className="transition-colors hover:text-black dark:hover:text-white"
+          >
+            Secret Jupiter
           </a>
         </div>
         <div className="col-span-12 space-x-4 text-xl text-center">

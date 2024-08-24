@@ -42,6 +42,6 @@ The App runs on port 3000. For further information check the `Dockerfile` and th
 
 ## License
 
-Developed by [Secret Jupiter](https://x.com/secretjupiter_) and [Secret Saturn](https://x.com/Secret_Saturn_)
+Developed by [Secret Saturn](https://x.com/Secret_Saturn_) and [Secret Jupiter](https://x.com/secretjupiter_)
 
 Licensed under the [MIT license](https://github.com/scrtlabs/dash.scrt.network/blob/master/LICENSE.md)
