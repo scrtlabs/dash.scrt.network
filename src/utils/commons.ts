@@ -209,7 +209,7 @@ export const dashboardJsonLdSchema = [
     name: dashboardPageTitle,
     alternateName: dashboardAlternatePageTitle,
     description: dashboardPageDescription,
-    creator: 'Secret Jupiter, Secret Saturn'
+    creator: 'Secret Saturn, Secret Jupiter'
   }
 ]
 
@@ -224,7 +224,7 @@ export const analyticsJsonLdSchema = [
     name: `${pageTitle} | Analytics`,
     alternateName: `${alternatePageTitle} | Analytics`,
     description: analyticsPageDescription,
-    creator: 'Secret Jupiter, Secret Saturn'
+    creator: 'Secret Saturn, Secret Jupiter'
   }
 ]
 
@@ -239,7 +239,7 @@ export const ibcJsonLdSchema = [
     name: `${pageTitle} | IBC Transfer`,
     alternateName: `${alternatePageTitle} | IBC Transfer`,
     description: ibcPageDescription,
-    creator: 'Secret Jupiter, Secret Saturn'
+    creator: 'Secret Saturn, Secret Jupiter'
   }
 ]
 
@@ -254,7 +254,7 @@ export const wrapJsonLdSchema = [
     name: `${pageTitle} | Wrap`,
     alternateName: `${alternatePageTitle} | Wrap`,
     description: wrapPageDescription,
-    creator: 'Secret Jupiter, Secret Saturn'
+    creator: 'Secret Saturn, Secret Jupiter'
   }
 ]
 
@@ -269,7 +269,7 @@ export const bridgeJsonLdSchema = [
     name: `${pageTitle} | Bridge`,
     alternateName: `${pageTitle} | Wrap`,
     description: bridgePageDescription,
-    creator: 'Secret Jupiter, Secret Saturn'
+    creator: 'Secret Saturn, Secret Jupiter'
   }
 ]
 
@@ -283,7 +283,7 @@ export const stakingJsonLdSchema = [
     url: 'https://dash.scrt.network/staking',
     name: stakingPageTitle,
     description: stakingPageDescription,
-    creator: 'Secret Jupiter, Secret Saturn'
+    creator: 'Secret Saturn, Secret Jupiter'
   }
 ]
 
@@ -298,7 +298,7 @@ export const portfolioJsonLdSchema = [
     name: `${pageTitle} | Portfolio`,
     alternateName: `${alternatePageTitle} | Portfolio`,
     description: portfolioPageDescription,
-    creator: 'Secret Jupiter, Secret Saturn'
+    creator: 'Secret Saturn, Secret Jupiter'
   }
 ]
 
@@ -313,7 +313,7 @@ export const powertoolsJsonLdSchema = [
     name: `${pageTitle} | Powertools`,
     alternateName: `${alternatePageTitle} | Powertools`,
     description: powertoolsPageDescription,
-    creator: 'Secret Jupiter, Secret Saturn'
+    creator: 'Secret Saturn, Secret Jupiter'
   }
 ]
 
@@ -328,7 +328,7 @@ export const sendJsonLdSchema = [
     name: `${pageTitle} | Send`,
     alternateName: `${alternatePageTitle} | Send`,
     description: sendPageDescription,
-    creator: 'Secret Jupiter, Secret Saturn'
+    creator: 'Secret Saturn, Secret Jupiter'
   }
 ]
 
@@ -343,7 +343,7 @@ export const appsJsonLdSchema = [
     name: `${pageTitle} | Apps`,
     alternateName: `${alternatePageTitle} | Apps`,
     description: appsPageDescription,
-    creator: 'Secret Jupiter, Secret Saturn'
+    creator: 'Secret Saturn, Secret Jupiter'
   }
 ]
 
