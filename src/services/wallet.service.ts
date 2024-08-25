@@ -11,7 +11,6 @@ import {
 } from 'utils/commons'
 import { Chain, SECRET_CHAIN_ID, SECRET_LCD, Token } from 'utils/config'
 import { isMobile } from 'react-device-detect'
-import { scrtToken } from 'utils/tokens'
 import { WalletAPIType } from 'types/WalletAPIType'
 import BigNumber from 'bignumber.js'
 import { QueryAllBalancesResponse } from 'secretjs/dist/grpc_gateway/cosmos/bank/v1beta1/query.pb'
@@ -214,7 +213,8 @@ const getBatchsTokenBalance = async (
       contractAddress: batchQueryContractAddress,
       codeHash: batchQueryCodeHash,
       queries: queries,
-      lcdEndpoint: SECRET_LCD
+      lcdEndpoint: SECRET_LCD,
+      batchSize: 12
     })
   } catch (error) {
     console.error('Error executing batch query: ', error)
