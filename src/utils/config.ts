@@ -3124,6 +3124,35 @@ export const tokens: Token[] = [
     ]
   },
   {
+    name: 'SYN',
+    description: 'Galactic Syndicate Governance Token',
+    address: 'secret1hjcv25hpgqtpwn90tz7pttr9fyz7l9pngzz8rl',
+    code_hash: '638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e',
+    image: '/syn.png',
+    decimals: 6,
+    coingecko_id: '',
+    deposits: [
+      {
+        chain_name: 'Injective',
+        denom: 'factory/inj1a6xdezq7a94qwamec6n6cnup02nvewvjtz6h6e/SYN'
+      }
+    ],
+    withdrawals: [
+      {
+        chain_name: 'Injective',
+        denom: ibcDenom(
+          [
+            {
+              incomingChannelId: chains['Injective'].withdraw_channel_id,
+              incomingPortId: 'transfer'
+            }
+          ],
+          'factory/inj1a6xdezq7a94qwamec6n6cnup02nvewvjtz6h6e/SYN'
+        )
+      }
+    ]
+  },
+  {
     name: 'TIA',
     description: 'Celestia Governance Token',
     address: 'secret1s9h6mrp4k9gll4zfv5h78ll68hdq8ml7jrnn20',
