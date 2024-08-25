@@ -138,20 +138,24 @@ export default function BalanceChart() {
 
       ctx.save()
 
-      ctx.font = '300 1rem Montserrat'
-      ctx.fillStyle = theme === 'dark' ? '#fff' : '#000'
-      ctx.textAlign = 'center'
-      ctx.fillText(`Your Portfolio`, width / 2, height / 2.25 + top)
-      ctx.restore()
+      if (priceMapping !== null && balanceMapping !== null) {
+        ctx.font = '300 1rem Montserrat'
+        ctx.fillStyle = theme === 'dark' ? '#fff' : '#000'
+        ctx.textAlign = 'center'
+        ctx.fillText(`Your Portfolio`, width / 2, height / 2.25 + top)
+        ctx.restore()
+      }
 
-      ctx.font = 'bold 1.25rem Montserrat'
-      ctx.fillStyle = theme === 'dark' ? '#fff' : '#000'
-      ctx.textAlign = 'center'
-      ctx.fillText(
-        totalValue ? `${toCurrencyString(convertCurrency('USD', totalValue, currency), currency)}` : ``,
-        width / 2,
-        height / 1.65 + top
-      )
+      if (priceMapping !== null) {
+        ctx.font = 'bold 1.25rem Montserrat'
+        ctx.fillStyle = theme === 'dark' ? '#fff' : '#000'
+        ctx.textAlign = 'center'
+        ctx.fillText(
+          totalValue ? `${toCurrencyString(convertCurrency('USD', totalValue, currency), currency)}` : ``,
+          width / 2,
+          height / 1.65 + top
+        )
+      }
       ctx.restore()
     }
   }
@@ -185,17 +189,15 @@ export default function BalanceChart() {
     <div>
       {/* Chart */}
       <div className="w-full h-[200px]">
-        {data !== defaultData ? (
-          <>
-            <Doughnut
-              id="BalanceChartDoughnut"
-              data={data}
-              plugins={[centerText]}
-              options={options as any}
-              ref={chartRef}
-              redraw
-            />
-          </>
+        {priceMapping !== null && balanceMapping !== null ? (
+          <Doughnut
+            id="BalanceChartDoughnut"
+            data={data}
+            plugins={[centerText]}
+            options={options as any}
+            ref={chartRef}
+            redraw
+          />
         ) : (
           <div className="animate-pulse bg-neutral-300 dark:bg-neutral-800 rounded col-span-2 w-full h-[200px] mx-auto"></div>
         )}
