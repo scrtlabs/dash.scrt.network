@@ -2,7 +2,7 @@ import BigNumber from 'bignumber.js'
 import { BroadcastMode, MsgExecuteContract, MsgSend, SecretNetworkClient } from 'secretjs'
 import { FeeGrantStatus } from 'types/FeeGrantStatus'
 import { Nullable } from 'types/Nullable'
-import { allTokens, faucetAddress, randomPadding } from 'utils/commons'
+import { allTokens, faucetAddress, queryTxResult, randomPadding } from 'utils/commons'
 import { Token, tokens } from 'utils/config'
 
 function getSupportedTokens() {
@@ -23,6 +23,7 @@ interface IPropsToken extends IBaseProps {
   token: Token
 }
 
+// Main function to perform the sending
 async function performSending(props: IPropsToken): Promise<string> {
   let token = props.token
 
@@ -39,8 +40,9 @@ async function performSending(props: IPropsToken): Promise<string> {
     throw new Error('Amount is not a valid number')
   }
 
-  await props.secretNetworkClient.tx
-    .broadcast(
+  try {
+    // Broadcast the transaction
+    const broadcastResult = await props.secretNetworkClient.tx.broadcast(
       [
         token.address === 'native'
           ? new MsgSend({
@@ -52,7 +54,7 @@ async function performSending(props: IPropsToken): Promise<string> {
                   denom: 'uscrt'
                 }
               ]
-            } as any)
+            })
           : new MsgExecuteContract({
               sender: props.secretNetworkClient?.address,
               contract_address: token.address,
@@ -65,7 +67,7 @@ async function performSending(props: IPropsToken): Promise<string> {
                   padding: randomPadding()
                 }
               }
-            } as any)
+            })
       ],
       {
         gasLimit: 150_000,
@@ -73,24 +75,20 @@ async function performSending(props: IPropsToken): Promise<string> {
         feeDenom: 'uscrt',
         feeGranter: props.feeGrantStatus === 'success' ? faucetAddress : '',
         broadcastMode: BroadcastMode.Sync,
-        memo: props.memo
+        memo: props.memo,
+        waitForCommit: false
       }
     )
-    .catch((error: any) => {
-      console.error(error)
-      throw error
-    })
-    .then((tx: any) => {
-      if (tx) {
-        if (tx.code === 0) {
-          return 'success'
-        } else {
-          console.error(tx.rawLog)
-          throw new Error(tx.rawLog)
-        }
-      }
-    })
-  return
+
+    // Poll the LCD for the transaction result every 10 seconds, 10 retries
+    await queryTxResult(props.secretNetworkClient, broadcastResult.transactionHash, 10000, 10)
+
+    // Return success if everything went fine
+    return 'success'
+  } catch (error) {
+    console.error(error)
+    throw error
+  }
 }
 
 export const SendService = {

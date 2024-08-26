@@ -3,7 +3,7 @@ import { BroadcastMode, MsgExecuteContract, SecretNetworkClient } from 'secretjs
 import { FeeGrantStatus } from 'types/FeeGrantStatus'
 import { Nullable } from 'types/Nullable'
 import { WrappingMode } from 'types/WrappingMode'
-import { faucetAddress, randomPadding } from 'utils/commons'
+import { faucetAddress, queryTxResult, randomPadding } from 'utils/commons'
 import { Token, tokens } from 'utils/config'
 
 interface IBaseProps {
@@ -45,11 +45,11 @@ async function performWrapping(props: TProps): Promise<string> {
   }
 
   try {
-    if (props.wrappingMode === 'wrap') {
-      await props.secretNetworkClient.tx
-        .broadcast(
-          [
-            new MsgExecuteContract({
+    // Broadcast the transaction
+    const broadcastResult = await props.secretNetworkClient.tx.broadcast(
+      [
+        props.wrappingMode === 'wrap'
+          ? new MsgExecuteContract({
               sender: props.secretNetworkClient.address,
               contract_address: token.address,
               code_hash: token.code_hash,
@@ -59,37 +59,8 @@ async function performWrapping(props: TProps): Promise<string> {
                   padding: randomPadding()
                 }
               }
-            } as any)
-          ],
-          {
-            gasLimit: 150_000,
-            gasPriceInFeeDenom: 0.25,
-            feeDenom: 'uscrt',
-            feeGranter: props.feeGrantStatus === 'success' ? faucetAddress : '',
-            broadcastMode: BroadcastMode.Sync
-          }
-        )
-        .catch((error: any) => {
-          console.error(error)
-          throw new Error(error?.tx?.rawLog ? `${error?.tx?.rawLog}` : error)
-        })
-        .then((tx: any) => {
-          if (tx) {
-            if (tx.code === 0) {
-              return 'Wrapping successful'
-            } else {
-              console.error(tx.rawLog)
-              throw new Error(tx.rawLog)
-            }
-          }
-        })
-    }
-
-    if (props.wrappingMode === 'unwrap') {
-      await props.secretNetworkClient.tx
-        .broadcast(
-          [
-            new MsgExecuteContract({
+            })
+          : new MsgExecuteContract({
               sender: props.secretNetworkClient.address,
               contract_address: token.address,
               code_hash: token.code_hash,
@@ -101,32 +72,24 @@ async function performWrapping(props: TProps): Promise<string> {
                   padding: randomPadding()
                 }
               }
-            } as any)
-          ],
-          {
-            gasLimit: 150_000,
-            gasPriceInFeeDenom: 0.25,
-            feeDenom: 'uscrt',
-            feeGranter: props.feeGrantStatus === 'success' ? faucetAddress : '',
-            broadcastMode: BroadcastMode.Sync
-          }
-        )
-        .catch((error: any) => {
-          console.error(error)
-          throw new Error(error?.tx?.rawLog ? `${error?.tx?.rawLog}` : error)
-        })
-        .then((tx: any) => {
-          if (tx) {
-            if (tx.code === 0) {
-              return 'Wrapping successful'
-            } else {
-              console.error(tx.rawLog)
-              throw new Error(tx.rawLog)
-            }
-          }
-        })
-    }
-  } catch (error: any) {
+            })
+      ],
+      {
+        gasLimit: 150_000,
+        gasPriceInFeeDenom: 0.25,
+        feeDenom: 'uscrt',
+        feeGranter: props.feeGrantStatus === 'success' ? faucetAddress : '',
+        broadcastMode: BroadcastMode.Sync,
+        waitForCommit: false
+      }
+    )
+
+    // Poll the LCD for the transaction result every 10 seconds, 10 retries
+    await queryTxResult(props.secretNetworkClient, broadcastResult.transactionHash, 10000, 10)
+
+    // Return success if everything went fine
+    return 'success'
+  } catch (error) {
     console.error(error)
     throw error
   }
