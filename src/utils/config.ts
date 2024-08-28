@@ -355,6 +355,19 @@ export const chains: { [chain_name: string]: Chain } = {
     chain_image: '/nolus.svg',
     explorer_account: 'https://ping.pub/nolus/account/'
   },
+  Omniflix: {
+    chain_name: 'Omniflix',
+    deposit_channel_id: 'channel-46',
+    deposit_gas: 500_000,
+    deposit_gas_denom: 'uflix',
+    withdraw_channel_id: 'channel-162',
+    withdraw_gas: 150_000,
+    chain_id: 'omniflixhub-1',
+    bech32_prefix: 'omniflix',
+    lcd: 'https://omniflix-rest.kingnodes.com',
+    chain_image: '/flix.svg',
+    explorer_account: 'https://www.mintscan.io/omniflix/address/'
+  },
   Oraichain: {
     chain_name: 'Oraichain',
     deposit_channel_id: 'channel-217',
@@ -840,6 +853,18 @@ export const tokens: Token[] = [
         )
       },
       {
+        chain_name: 'Omniflix',
+        denom: ibcDenom(
+          [
+            {
+              incomingChannelId: chains['Omniflix'].deposit_channel_id,
+              incomingPortId: 'transfer'
+            }
+          ],
+          'uscrt'
+        )
+      },
+      {
         chain_name: 'Oraichain',
         denom: ibcDenom(
           [
@@ -1052,6 +1077,10 @@ export const tokens: Token[] = [
       {
         chain_name: 'Nolus',
         needsSkip: true,
+        denom: 'uscrt'
+      },
+      {
+        chain_name: 'Omniflix',
         denom: 'uscrt'
       },
       {
