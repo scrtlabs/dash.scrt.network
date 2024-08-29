@@ -1765,6 +1765,35 @@ export const tokens: Token[] = [
     ]
   },
   {
+    name: 'FLIX',
+    description: 'Omniflix governance token',
+    address: 'secret1agpgsn50xjdggzdzd6kl4jz5ueywtkuhnyyhx5',
+    code_hash: '638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e',
+    image: '/flix.svg',
+    decimals: 6,
+    coingecko_id: 'omniflix-network',
+    deposits: [
+      {
+        chain_name: 'Omniflix',
+        denom: 'uflix'
+      }
+    ],
+    withdrawals: [
+      {
+        chain_name: 'Omniflix',
+        denom: ibcDenom(
+          [
+            {
+              incomingChannelId: chains['Omniflix'].withdraw_channel_id,
+              incomingPortId: 'transfer'
+            }
+          ],
+          'uflix'
+        )
+      }
+    ]
+  },
+  {
     name: 'GRAV',
     description: 'Gravity Bridge Governance Token',
     address: 'secret1dtghxvrx35nznt8es3fwxrv4qh56tvxv22z79d',
