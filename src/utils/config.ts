@@ -355,6 +355,19 @@ export const chains: { [chain_name: string]: Chain } = {
     chain_image: '/nolus.svg',
     explorer_account: 'https://ping.pub/nolus/account/'
   },
+  Omniflix: {
+    chain_name: 'Omniflix',
+    deposit_channel_id: 'channel-46',
+    deposit_gas: 500_000,
+    deposit_gas_denom: 'uflix',
+    withdraw_channel_id: 'channel-162',
+    withdraw_gas: 150_000,
+    chain_id: 'omniflixhub-1',
+    bech32_prefix: 'omniflix',
+    lcd: 'https://omniflix-rest.kingnodes.com',
+    chain_image: '/flix.svg',
+    explorer_account: 'https://www.mintscan.io/omniflix/address/'
+  },
   Oraichain: {
     chain_name: 'Oraichain',
     deposit_channel_id: 'channel-217',
@@ -840,6 +853,18 @@ export const tokens: Token[] = [
         )
       },
       {
+        chain_name: 'Omniflix',
+        denom: ibcDenom(
+          [
+            {
+              incomingChannelId: chains['Omniflix'].deposit_channel_id,
+              incomingPortId: 'transfer'
+            }
+          ],
+          'uscrt'
+        )
+      },
+      {
         chain_name: 'Oraichain',
         denom: ibcDenom(
           [
@@ -1052,6 +1077,10 @@ export const tokens: Token[] = [
       {
         chain_name: 'Nolus',
         needsSkip: true,
+        denom: 'uscrt'
+      },
+      {
+        chain_name: 'Omniflix',
         denom: 'uscrt'
       },
       {
@@ -1731,6 +1760,35 @@ export const tokens: Token[] = [
             }
           ],
           'factory/neutron10sr06r3qkhn7xzpw3339wuj77hu06mzna6uht0/eclip'
+        )
+      }
+    ]
+  },
+  {
+    name: 'FLIX',
+    description: 'Omniflix governance token',
+    address: 'secret1agpgsn50xjdggzdzd6kl4jz5ueywtkuhnyyhx5',
+    code_hash: '638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e',
+    image: '/flix.svg',
+    decimals: 6,
+    coingecko_id: 'omniflix-network',
+    deposits: [
+      {
+        chain_name: 'Omniflix',
+        denom: 'uflix'
+      }
+    ],
+    withdrawals: [
+      {
+        chain_name: 'Omniflix',
+        denom: ibcDenom(
+          [
+            {
+              incomingChannelId: chains['Omniflix'].withdraw_channel_id,
+              incomingPortId: 'transfer'
+            }
+          ],
+          'uflix'
         )
       }
     ]
