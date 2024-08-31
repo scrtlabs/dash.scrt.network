@@ -2,7 +2,6 @@ import { useContext, useEffect, useState } from 'react'
 import { formatNumber } from 'utils/commons'
 import { APIContext } from 'context/APIContext'
 import Tooltip from '@mui/material/Tooltip'
-
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -55,8 +54,7 @@ export default function AccountsChart() {
       })
 
       const labels = stackedData.map((date: any) => {
-        const dateObj = new Date(date.timestamp)
-        return dateObj.toLocaleDateString(undefined, {
+        return new Date(date.timestamp).toLocaleDateString(undefined, {
           year: '2-digit',
           month: '2-digit',
           day: '2-digit'

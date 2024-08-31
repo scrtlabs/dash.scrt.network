@@ -47,8 +47,7 @@ export default function UnbondingsChart() {
   const totalUnbonding = datasets[0].data.reduce((sum: number, balance: number) => sum + balance, 0)
 
   const labels = chartData.map(([date]: any) => {
-    const dateObj = new Date(date)
-    return dateObj.toLocaleDateString(undefined, {
+    return new Date(date).toLocaleDateString(undefined, {
       year: '2-digit',
       month: '2-digit',
       day: '2-digit'

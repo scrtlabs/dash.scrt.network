@@ -50,11 +50,10 @@ export default function ValidatorsChart() {
       const sortedDates = Object.keys(dateMap).sort((a, b) => new Date(a).getTime() - new Date(b).getTime())
 
       const datasets = sortedMonikers.map((moniker) => {
-        const randomColor = getRandomColor()
         return {
           label: moniker,
           data: sortedDates.map((date) => dateMap[date][moniker] || 0),
-          backgroundColor: randomColor,
+          backgroundColor: getColorFromMoniker(moniker),
           borderWidth: 0,
           yAxisID: 'y',
           stack: 'validators'
@@ -62,8 +61,7 @@ export default function ValidatorsChart() {
       })
 
       const labels = sortedDates.map((date) => {
-        const dateObj = new Date(date)
-        return dateObj.toLocaleDateString(undefined, {
+        return new Date(date).toLocaleDateString(undefined, {
           year: '2-digit',
           month: '2-digit',
           day: '2-digit'
@@ -140,13 +138,13 @@ export default function ValidatorsChart() {
     }
   }
 
-  // Function to generate random colors for each dataset
-  function getRandomColor() {
-    const letters = '0123456789ABCDEF'
-    let color = '#'
-    for (let i = 0; i < 6; i++) {
-      color += letters[Math.floor(Math.random() * 16)]
+  // Function to generate a deterministic color based on the moniker name
+  function getColorFromMoniker(moniker: string) {
+    let hash = 0
+    for (let i = 0; i < moniker.length; i++) {
+      hash = moniker.charCodeAt(i) + ((hash << 5) - hash)
     }
+    const color = `#${(hash & 0x00ffffff).toString(16).padStart(6, '0').slice(-6)}`
     return color
   }
 
