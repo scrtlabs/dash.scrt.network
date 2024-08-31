@@ -121,7 +121,9 @@ const APIContextProvider = ({ children }: any) => {
     useState<Nullable<{ date: string; totalLiquidity: number }[]>>(null)
   const [defiLamaApiData_TVL, setDefiLamaApiData_TVL] = useState<any>(null)
   const [currentPrice, setCurrentPrice] = useState(Number)
-  const [externalApiData, setExternalApiData] = useState()
+  const [analyticsData1, setAnalyticsData1] = useState()
+  const [analyticsData2, setAnalyticsData2] = useState()
+  const [analyticsData3, setAnalyticsData3] = useState()
   const [L5AnalyticsApiData, setL5AnalyticsApiData] = useState()
   const [volume, setVolume] = useState(Number)
   const [marketCap, setMarketCap] = useState(Number)
@@ -195,13 +197,31 @@ const APIContextProvider = ({ children }: any) => {
         setVolume(response.secret[coinGeckoCurrencyMap[currency] + '_24h_vol']) // e.g. response.secret.usd_24h_vol
       })
 
-    const API_DATA_SECRET = `https://dashboardstats.secretsaturn.net/source/wallets/data.json`
-    fetch(API_DATA_SECRET)
+    const API_DATA_SECRET_1 = `https://dashboardstats.secretsaturn.net/source/wallets/data.json`
+    fetch(API_DATA_SECRET_1)
       .catch((error: any) => console.error(error))
       .then((response) => (response as any).json())
       .catch((error: any) => console.error(error))
       .then((response) => {
-        setExternalApiData(response)
+        setAnalyticsData1(response)
+      })
+
+    const API_DATA_SECRET_2 = `https://dashboardstats.secretsaturn.net/source/validator_bonding/data.json`
+    fetch(API_DATA_SECRET_2)
+      .catch((error: any) => console.error(error))
+      .then((response) => (response as any).json())
+      .catch((error: any) => console.error(error))
+      .then((response) => {
+        setAnalyticsData2(response)
+      })
+
+    const API_DATA_SECRET_3 = `https://dashboardstats.secretsaturn.net/source/daily_network_stats/data.json`
+    fetch(API_DATA_SECRET_3)
+      .catch((error: any) => console.error(error))
+      .then((response) => (response as any).json())
+      .catch((error: any) => console.error(error))
+      .then((response) => {
+        setAnalyticsData2(response)
       })
 
     const LAVENDERFIVE_API_URL_SECRET_STATUS = `https://api.lavenderfive.com/networks/secretnetwork`
@@ -374,7 +394,9 @@ const APIContextProvider = ({ children }: any) => {
     defiLamaApiData_Year,
     defiLamaApiData_TVL,
     currentPrice,
-    externalApiData,
+    analyticsData1,
+    analyticsData2,
+    analyticsData3,
     L5AnalyticsApiData,
     bondedToken,
     notBondedToken,

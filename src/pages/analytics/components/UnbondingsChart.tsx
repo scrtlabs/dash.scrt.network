@@ -2,7 +2,6 @@ import { useContext, useEffect, useState } from 'react'
 import { formatNumber } from 'utils/commons'
 import { APIContext } from 'context/APIContext'
 import Tooltip from '@mui/material/Tooltip'
-
 import {
   Chart as ChartJS,
   CategoryScale,

@@ -4,9 +4,10 @@ import { Helmet } from 'react-helmet-async'
 import { trackMixPanelEvent, analyticsPageTitle, analyticsPageDescription, analyticsJsonLdSchema } from 'utils/commons'
 import UnbondingsChart from './components/UnbondingsChart'
 import AccountsChart from './components/AccountsChart'
+import ValidatorsChart from './components/ValidatorsChart'
 
 function Analytics() {
-  const { L5AnalyticsApiData, externalApiData } = useContext(APIContext)
+  const { L5AnalyticsApiData, analyticsData1, analyticsData2, analyticsData3 } = useContext(APIContext)
 
   useEffect(() => {
     trackMixPanelEvent('Open Analytics Tab')
@@ -43,9 +44,14 @@ function Analytics() {
               <UnbondingsChart />
             </div>
           ) : null}
-          {externalApiData ? (
+          {analyticsData1 ? (
             <div className="col-span-12 rounded-xl bg-white border border-neutral-200 dark:border-neutral-700 dark:bg-neutral-800 p-4">
               <AccountsChart />
+            </div>
+          ) : null}
+          {analyticsData2 ? (
+            <div className="col-span-12 rounded-xl bg-white border border-neutral-200 dark:border-neutral-700 dark:bg-neutral-800 p-4">
+              <ValidatorsChart />
             </div>
           ) : null}
         </div>

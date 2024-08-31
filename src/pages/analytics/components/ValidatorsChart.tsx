@@ -2,7 +2,6 @@ import { useContext, useEffect, useState } from 'react'
 import { formatNumber } from 'utils/commons'
 import { APIContext } from 'context/APIContext'
 import Tooltip from '@mui/material/Tooltip'
-
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -20,44 +19,52 @@ import { useUserPreferencesStore } from 'store/UserPreferences'
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, ChartTooltip, Legend, BarController)
 
-type WalletData = {
-  block_timestamp: number
-  is_new: boolean
-  num_wallets: number
+type ValidatorData = {
+  bonded_tokens: number
+  date: string
+  moniker: string
 }
 
-export default function AccountsChart(props: any) {
-  const { analyticsData1 } = useContext(APIContext)
+export default function ValidatorsChart(props: any) {
+  const { analyticsData2 } = useContext(APIContext) // Assume analyticsData2 contains the new data
   const { theme } = useUserPreferencesStore()
   const [chartData, setChartData] = useState<any>([])
 
   useEffect(() => {
-    if (analyticsData1) {
-      // Create a map with block_timestamp as keys and the corresponding data as values
-      const timestampMap = new Map<number, WalletData[]>()
+    if (analyticsData2) {
+      const dateMap: Record<string, Record<string, number>> = {}
+      const monikerTotals: Record<string, number> = {}
+      const monikerSet = new Set<string>()
 
-      analyticsData1.forEach((entry: WalletData) => {
-        if (timestampMap.has(entry.block_timestamp)) {
-          timestampMap.get(entry.block_timestamp)?.push(entry)
-        } else {
-          timestampMap.set(entry.block_timestamp, [entry])
+      analyticsData2.forEach((entry: ValidatorData) => {
+        monikerSet.add(entry.moniker)
+
+        if (!dateMap[entry.date]) {
+          dateMap[entry.date] = {}
         }
+        dateMap[entry.date][entry.moniker] = (dateMap[entry.date][entry.moniker] || 0) + entry.bonded_tokens
+
+        monikerTotals[entry.moniker] = (monikerTotals[entry.moniker] || 0) + entry.bonded_tokens
       })
 
-      const sortedEntries = Array.from(timestampMap.entries()).sort(([a], [b]) => a - b)
+      const sortedMonikers = Array.from(monikerSet).sort((a, b) => monikerTotals[b] - monikerTotals[a])
 
-      const stackedData = sortedEntries.map(([timestamp, entries]) => {
-        const isNewEntry = entries.find((entry) => entry.is_new)
-        const notNewEntry = entries.find((entry) => !entry.is_new)
+      const sortedDates = Object.keys(dateMap).sort((a, b) => new Date(a).getTime() - new Date(b).getTime())
+
+      const datasets = sortedMonikers.map((moniker) => {
+        const randomColor = getRandomColor()
         return {
-          timestamp,
-          new_wallets: isNewEntry ? isNewEntry.num_wallets : 0,
-          old_wallets: notNewEntry ? notNewEntry.num_wallets : 0
+          label: moniker,
+          data: sortedDates.map((date) => dateMap[date][moniker] || 0),
+          backgroundColor: randomColor,
+          borderWidth: 0,
+          yAxisID: 'y',
+          stack: 'validators'
         }
       })
 
-      const labels = stackedData.map((date: any) => {
-        const dateObj = new Date(date.timestamp)
+      const labels = sortedDates.map((date) => {
+        const dateObj = new Date(date)
         return dateObj.toLocaleDateString(undefined, {
           year: '2-digit',
           month: '2-digit',
@@ -65,34 +72,14 @@ export default function AccountsChart(props: any) {
         })
       })
 
-      if (stackedData && stackedData.length > 0) {
-        const chartData = {
-          labels: labels,
-          datasets: [
-            {
-              label: 'Existing Wallets',
-              data: stackedData.map((item) => item.old_wallets),
-              backgroundColor: 'rgba(0, 123, 255, 1)',
-              borderColor: 'rgba(0, 123, 255, 1)',
-              borderWidth: 1,
-              yAxisID: 'y',
-              stack: 'wallets'
-            },
-            {
-              label: 'New Wallets',
-              data: stackedData.map((item) => item.new_wallets),
-              backgroundColor: 'rgba(105, 57, 208, 0.5)',
-              borderColor: 'rgba(105, 57, 208, 1)',
-              borderWidth: 1,
-              yAxisID: 'y',
-              stack: 'wallets'
-            }
-          ]
-        }
-        setChartData(chartData)
+      if (datasets.length > 0) {
+        setChartData({
+          labels,
+          datasets
+        })
       }
     }
-  }, [analyticsData1])
+  }, [analyticsData2])
 
   const options = {
     responsive: true,
@@ -147,13 +134,23 @@ export default function AccountsChart(props: any) {
     }
   }
 
+  // Function to generate random colors for each dataset
+  function getRandomColor() {
+    const letters = '0123456789ABCDEF'
+    let color = '#'
+    for (let i = 0; i < 6; i++) {
+      color += letters[Math.floor(Math.random() * 16)]
+    }
+    return color
+  }
+
   return (
     <>
       <div>
         <h2 className="text-center text-xl font-semibold pt-2.5 pb-0">
-          Daily interacting Wallets
+          Bonded Tokens by Validator
           <div className="inline-block">
-            <Tooltip title={`Number of unique wallets that interacted with the chain daily`} placement="right" arrow>
+            <Tooltip title={`Number of bonded tokens by validator over time`} placement="right" arrow>
               <span className="text-neutral-600 dark:text-neutral-400 hover:text-black dark:hover:text-white transition-colors cursor-pointer ml-2 text-sm">
                 <FontAwesomeIcon icon={faInfoCircle} />
               </span>
@@ -162,7 +159,7 @@ export default function AccountsChart(props: any) {
         </h2>
       </div>
       <div className="w-full h-[300px] xl:h-[400px]">
-        {chartData.length != 0 && analyticsData1 ? <Bar data={chartData as any} options={options as any} /> : null}
+        {chartData.length !== 0 && analyticsData2 ? <Bar data={chartData as any} options={options as any} /> : null}
       </div>
     </>
   )
