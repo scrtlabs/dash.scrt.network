@@ -5,6 +5,8 @@ import { trackMixPanelEvent, analyticsPageTitle, analyticsPageDescription, analy
 import UnbondingsChart from './components/UnbondingsChart'
 import AccountsChart from './components/AccountsChart'
 import ValidatorsChart from './components/ValidatorsChart'
+import ContractsChart from './components/ContractsChart'
+import TransactionsChart from './components/TransactionsChart'
 
 function Analytics() {
   const { L5AnalyticsApiData, analyticsData1, analyticsData2, analyticsData3 } = useContext(APIContext)
@@ -39,11 +41,6 @@ function Analytics() {
       <div className="px-4 mx-auto space-y-4 w-full">
         <div className="grid grid-cols-12 gap-4">
           {/* Item */}
-          {L5AnalyticsApiData ? (
-            <div className="col-span-12 rounded-xl bg-white border border-neutral-200 dark:border-neutral-700 dark:bg-neutral-800 p-4">
-              <UnbondingsChart />
-            </div>
-          ) : null}
           {analyticsData1 ? (
             <div className="col-span-12 rounded-xl bg-white border border-neutral-200 dark:border-neutral-700 dark:bg-neutral-800 p-4">
               <AccountsChart />
@@ -52,6 +49,21 @@ function Analytics() {
           {analyticsData2 ? (
             <div className="col-span-12 rounded-xl bg-white border border-neutral-200 dark:border-neutral-700 dark:bg-neutral-800 p-4">
               <ValidatorsChart />
+            </div>
+          ) : null}
+          {analyticsData3 ? (
+            <>
+              <div className="col-span-12 rounded-xl bg-white border border-neutral-200 dark:border-neutral-700 dark:bg-neutral-800 p-4">
+                <ContractsChart />
+              </div>
+              <div className="col-span-12 rounded-xl bg-white border border-neutral-200 dark:border-neutral-700 dark:bg-neutral-800 p-4">
+                <TransactionsChart />
+              </div>
+            </>
+          ) : null}
+          {L5AnalyticsApiData ? (
+            <div className="col-span-12 rounded-xl bg-white border border-neutral-200 dark:border-neutral-700 dark:bg-neutral-800 p-4">
+              <UnbondingsChart />
             </div>
           ) : null}
         </div>

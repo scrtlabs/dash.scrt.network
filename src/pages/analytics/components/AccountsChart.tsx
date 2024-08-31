@@ -8,9 +8,7 @@ import {
   CategoryScale,
   LinearScale,
   BarElement,
-  Title,
   Tooltip as ChartTooltip,
-  Legend,
   BarController
 } from 'chart.js'
 import { Bar } from 'react-chartjs-2'
@@ -18,15 +16,15 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faInfoCircle } from '@fortawesome/free-solid-svg-icons'
 import { useUserPreferencesStore } from 'store/UserPreferences'
 
-ChartJS.register(CategoryScale, LinearScale, BarElement, Title, ChartTooltip, Legend, BarController)
+ChartJS.register(CategoryScale, LinearScale, BarElement, ChartTooltip, BarController)
 
-type WalletData = {
+type Data = {
   block_timestamp: number
   is_new: boolean
   num_wallets: number
 }
 
-export default function AccountsChart(props: any) {
+export default function AccountsChart() {
   const { analyticsData1 } = useContext(APIContext)
   const { theme } = useUserPreferencesStore()
   const [chartData, setChartData] = useState<any>([])
@@ -34,9 +32,9 @@ export default function AccountsChart(props: any) {
   useEffect(() => {
     if (analyticsData1) {
       // Create a map with block_timestamp as keys and the corresponding data as values
-      const timestampMap = new Map<number, WalletData[]>()
+      const timestampMap = new Map<number, Data[]>()
 
-      analyticsData1.forEach((entry: WalletData) => {
+      analyticsData1.forEach((entry: Data) => {
         if (timestampMap.has(entry.block_timestamp)) {
           timestampMap.get(entry.block_timestamp)?.push(entry)
         } else {
@@ -120,7 +118,7 @@ export default function AccountsChart(props: any) {
         stacked: true,
         ticks: {
           color: theme === 'dark' ? '#fff' : '#000',
-          callback: function (value: any, index: any, ticks: any) {
+          callback: function (value: any) {
             return formatNumber(value, 2)
           }
         },
@@ -141,8 +139,8 @@ export default function AccountsChart(props: any) {
         display: false
       },
       tooltip: {
-        xAlign: true,
-        color: 'rgba(0, 123, 255, 1)'
+        xAlign: 'center',
+        color: theme === 'dark' ? '#fff' : '#000'
       }
     }
   }

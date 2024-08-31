@@ -221,7 +221,7 @@ const APIContextProvider = ({ children }: any) => {
       .then((response) => (response as any).json())
       .catch((error: any) => console.error(error))
       .then((response) => {
-        setAnalyticsData2(response)
+        setAnalyticsData3(response)
       })
 
     const LAVENDERFIVE_API_URL_SECRET_STATUS = `https://api.lavenderfive.com/networks/secretnetwork`
