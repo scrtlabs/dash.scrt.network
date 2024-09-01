@@ -252,38 +252,14 @@ const APIContextProvider = ({ children }: any) => {
         setBurnedTokenSupply(Number(res.balance?.amount) / 1e6)
       })
 
-    secretjsquery?.query?.bank
-      ?.balance({
-        address: allTokens.find((token) => token.name === 'stkd-SCRT').address,
-        denom: 'uscrt'
-      })
-      ?.then((res) => {
-        setStkdSCRTTokenSupply(Number(res.balance?.amount) / 1e6)
-        secretjsquery?.query?.staking
-          .delegatorDelegations({
-            delegator_addr: allTokens.find((token) => token.name === 'stkd-SCRT').address,
-            pagination: { limit: '100' }
-          })
-          ?.then((delegatorDelegations) => {
-            const totalDelegations = delegatorDelegations.delegation_responses
-              ?.reduce((sum: any, delegation: any) => {
-                const amount = new BigNumber(delegation?.balance?.amount || 0)
-                return sum.plus(amount)
-              }, new BigNumber(0))
-              .dividedBy(`1e6`)
-            setStkdSCRTTokenSupply(Number(res.balance?.amount) / 1e6 + Number(totalDelegations))
-          })
-      })
-
     const exchangeAddresses = [
       'secret1p3ucd3ptpw902fluyjzhq3ffgq4ntdda6qy5vv', //Binance Cold Wallet
       'secret1an5pyzzpu5ez7ep9m43yzmalymwls39qtk8rjd', //Binance Hot Wallet
       'secret1nm0rrq86ucezaf8uj35pq9fpwr5r82cl94vhug', //Kraken
-      'secret1nl7z7ha5kec4camsqm4yel0tsyz8zgmjqg6myp', //Kucoin
+      'secret12ppfz8wssn0dtpjscys978m88a6z5llp5j5f99', //Kucoin
       'secret155e8c284v6w725llkwwma36vzly4ujsc2syfcy', //MEXC
-      'secret1uxun0ttetqcvckdxfxgj5xmsqljqzxpd9h35zf', //LBank
       'secret15catgqhve7ul7vrej5mqdlv8dx4r5hcw0ywzfq', //BitMart
-      'secret1tsz8v9k75jeqtl4exnf0qye5nme840h5n0pldk' //ByBit
+      'secret1k3pjdxavzkc4ztxmy4y44z8g8qggpp9ut84yag' //ByBit
     ]
 
     const getBalance = (address: string) => {
@@ -303,11 +279,10 @@ const APIContextProvider = ({ children }: any) => {
         denom: 'uscrt'
       })
       ?.then((res) => {
-        setStkdSCRTTokenSupply(Number(res.balance?.amount) / 1e6)
         secretjsquery?.query?.staking
           .delegatorDelegations({
             delegator_addr: allTokens.find((token) => token.name === 'stkd-SCRT').address,
-            pagination: { limit: '100' }
+            pagination: { limit: '20' }
           })
           ?.then((delegatorDelegations) => {
             const totalDelegations = delegatorDelegations.delegation_responses
