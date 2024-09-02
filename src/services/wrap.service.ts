@@ -96,13 +96,14 @@ async function performWrapping(props: TProps): Promise<string> {
     .then((tx: any) => {
       if (tx) {
         if (tx.code === 0) {
-          return props.wrappingMode === 'wrap' ? 'Wrapping successful' : 'Unwrapping successful'
+          return 'success'
         } else {
           console.error(tx.rawLog)
           throw new Error(tx.rawLog)
         }
       }
     })
+  return
 }
 
 export const WrapService = {

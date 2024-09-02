@@ -95,6 +95,7 @@ async function performSending(props: IPropsToken): Promise<string> {
         }
       }
     })
+  return
 }
 
 export const SendService = {
