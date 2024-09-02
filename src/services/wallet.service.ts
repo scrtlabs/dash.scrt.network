@@ -214,7 +214,7 @@ const getBatchsTokenBalance = async (
       codeHash: batchQueryCodeHash,
       queries: queries,
       lcdEndpoint: SECRET_LCD,
-      batchSize: 30
+      batchSize: 12
     })
   } catch (error) {
     console.error('Error executing batch query: ', error)
