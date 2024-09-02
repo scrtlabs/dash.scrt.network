@@ -214,7 +214,7 @@ const getBatchsTokenBalance = async (
       codeHash: batchQueryCodeHash,
       queries: queries,
       lcdEndpoint: SECRET_LCD,
-      batchSize: 12
+      batchSize: 30
     })
   } catch (error) {
     console.error('Error executing batch query: ', error)
@@ -254,7 +254,7 @@ async function fetchIbcChainBalances(
 
   const { balances }: QueryAllBalancesResponse = await sourceChain.query.bank.allBalances({
     address: sourceChain.address,
-    pagination: { limit: '1000' }
+    pagination: { limit: '100' }
   })
 
   let newBalanceMapping = new Map<Token, TokenBalances>()
@@ -319,9 +319,10 @@ async function getBalancesForTokens(props: IGetBalancesForTokensProps): Promise<
   }
 
   try {
+    console.log('try')
     const { balances }: QueryAllBalancesResponse = await props.secretNetworkClient.query.bank.allBalances({
       address: props.secretNetworkClient.address,
-      pagination: { limit: '1000' }
+      pagination: { limit: '100' }
     })
 
     let newBalanceMapping = new Map<Token, TokenBalances>()

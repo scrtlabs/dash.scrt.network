@@ -17,47 +17,62 @@ import { useUserPreferencesStore } from 'store/UserPreferences'
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, ChartTooltip, BarController)
 
-export default function UnbondingsChart() {
-  const { L5AnalyticsApiData } = useContext(APIContext)
+type Data = {
+  bonded_tokens: number
+  date: string
+  moniker: string
+}
 
+export default function ValidatorsChart() {
+  const { analyticsData2 } = useContext(APIContext)
   const { theme } = useUserPreferencesStore()
-
   const [chartData, setChartData] = useState<any>([])
 
   useEffect(() => {
-    if (L5AnalyticsApiData) {
-      const dataArray = Object.entries(L5AnalyticsApiData['unbonding_by_date']).map(([date, balance]) => [
-        date,
-        balance
-      ])
-      setChartData(dataArray)
+    if (analyticsData2) {
+      const dateMap: Record<string, Record<string, number>> = {}
+      const monikerSet = new Set<string>()
+
+      analyticsData2.forEach((entry: Data) => {
+        monikerSet.add(entry.moniker)
+        dateMap[entry.date] ||= {}
+        dateMap[entry.date][entry.moniker] = entry.bonded_tokens
+      })
+
+      // Sort dates in descending order (latest first)
+      const sortedDates = Object.keys(dateMap).sort((a, b) => new Date(a).getTime() - new Date(b).getTime())
+
+      // Sort monikers based on bonded_tokens in the latest date
+      const latestDate = sortedDates[sortedDates.length - 1]
+      const sortedMonikers = Array.from(monikerSet).sort((a, b) => {
+        return (dateMap[latestDate]?.[b] || 0) - (dateMap[latestDate]?.[a] || 0)
+      })
+
+      const datasets = sortedMonikers.map((moniker) => ({
+        label: moniker,
+        data: sortedDates.map((date) => dateMap[date][moniker] || 0),
+        backgroundColor: getColorFromMoniker(moniker),
+        borderWidth: 0,
+        yAxisID: 'y',
+        stack: 'validators'
+      }))
+
+      const labels = sortedDates.map((date) =>
+        new Date(date).toLocaleDateString(undefined, {
+          year: '2-digit',
+          month: '2-digit',
+          day: '2-digit'
+        })
+      )
+
+      if (datasets.length > 0) {
+        setChartData({
+          labels,
+          datasets
+        })
+      }
     }
-  }, [L5AnalyticsApiData])
-
-  const datasets = [
-    {
-      label: 'SCRT',
-      data: chartData.map(([_, balances]: any) => balances),
-      backgroundColor: 'rgba(0, 123, 255, 1)',
-      borderColor: 'rgba(0, 123, 255, 1)',
-      borderWidth: 1
-    }
-  ]
-
-  const totalUnbonding = datasets[0].data.reduce((sum: number, balance: number) => sum + balance, 0)
-
-  const labels = chartData.map(([date]: any) => {
-    return new Date(date).toLocaleDateString(undefined, {
-      year: '2-digit',
-      month: '2-digit',
-      day: '2-digit'
-    })
-  })
-
-  const data = {
-    labels: labels,
-    datasets: datasets
-  }
+  }, [analyticsData2])
 
   const options = {
     responsive: true,
@@ -82,6 +97,7 @@ export default function UnbondingsChart() {
       },
       y: {
         beginAtZero: true,
+        stacked: true,
         ticks: {
           color: theme === 'dark' ? '#fff' : '#000',
           callback: function (value: any) {
@@ -110,7 +126,7 @@ export default function UnbondingsChart() {
         callbacks: {
           label: function (context: any) {
             if (context.parsed.y !== null) {
-              return `${formatNumber(context.parsed.y)} SCRT`
+              return `${context.dataset.label}: ${formatNumber(context.parsed.y)} SCRT`
             }
             return ''
           }
@@ -119,13 +135,23 @@ export default function UnbondingsChart() {
     }
   }
 
+  // Function to generate a deterministic color based on the moniker name
+  function getColorFromMoniker(moniker: string) {
+    let hash = 0
+    for (let i = 0; i < moniker.length; i++) {
+      hash = moniker.charCodeAt(i) + ((hash << 5) - hash)
+    }
+    const color = `#${(hash & 0x00ffffff).toString(16).padStart(6, '0').slice(-6)}`
+    return color
+  }
+
   return (
     <>
       <div>
         <h2 className="text-center text-xl font-semibold pt-2.5 pb-0">
-          SCRT Unbonding
+          Bonded Tokens by Validator
           <div className="inline-block">
-            <Tooltip title={`Shows the unbonded (unstaked) SCRT per day`} placement="right" arrow>
+            <Tooltip title={`Number of bonded tokens by validator over time`} placement="right" arrow>
               <span className="text-neutral-600 dark:text-neutral-400 hover:text-black dark:hover:text-white transition-colors cursor-pointer ml-2 text-sm">
                 <FontAwesomeIcon icon={faInfoCircle} />
               </span>
@@ -133,13 +159,9 @@ export default function UnbondingsChart() {
           </div>
         </h2>
       </div>
-      {totalUnbonding ? (
-        <h3 className="text-center text-lg pt-0 pb-2.5">Total: {Math.round(totalUnbonding).toLocaleString()} SCRT</h3>
-      ) : null}
       <div className="w-full h-[300px] xl:h-[400px]">
-        <Bar data={data as any} options={options as any} />
+        {chartData.length !== 0 && analyticsData2 ? <Bar data={chartData as any} options={options as any} /> : null}
       </div>
-      <div className="text-center text-sm">Metrics by Lavender.Five Nodes 🐝</div>
     </>
   )
 }
