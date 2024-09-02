@@ -49,6 +49,7 @@ export default function TransactionsChart() {
             label: 'Daily Transactions',
             data: analyticsData3.map((item: Data) => item.num_transactions),
             borderColor: 'rgba(0, 123, 255, 1)',
+            borderWidth: 2,
             backgroundColor: 'rgba(0, 123, 255, 0.5)',
             fill: false,
             tension: 0.1,
@@ -57,8 +58,9 @@ export default function TransactionsChart() {
           {
             label: 'Filled Blocks Daily',
             data: analyticsData3.map((item: Data) => item.num_nonempty_blocks),
-            borderColor: 'rgba(105, 57, 208, 1)',
-            backgroundColor: 'rgba(105, 57, 208, 0.5)',
+            borderColor: 'rgba(150, 75, 200, 1)',
+            borderWidth: 2,
+            backgroundColor: 'rgba(150, 75, 200, 0.5)',
             fill: false,
             tension: 0.1,
             yAxisID: 'y'

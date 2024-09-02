@@ -69,17 +69,15 @@ export default function AccountsChart() {
               label: 'Existing Wallets',
               data: stackedData.map((item) => item.old_wallets),
               backgroundColor: 'rgba(0, 123, 255, 1)',
-              borderColor: 'rgba(0, 123, 255, 1)',
-              borderWidth: 1,
+              borderWidth: 0,
               yAxisID: 'y',
               stack: 'wallets'
             },
             {
               label: 'New Wallets',
               data: stackedData.map((item) => item.new_wallets),
-              backgroundColor: 'rgba(105, 57, 208, 0.5)',
-              borderColor: 'rgba(105, 57, 208, 1)',
-              borderWidth: 1,
+              backgroundColor: 'rgba(150, 75, 200, 1)',
+              borderWidth: 0,
               yAxisID: 'y',
               stack: 'wallets'
             }
@@ -134,7 +132,7 @@ export default function AccountsChart() {
     },
     plugins: {
       legend: {
-        display: false
+        display: true
       },
       tooltip: {
         xAlign: 'center',
