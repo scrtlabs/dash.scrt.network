@@ -127,7 +127,7 @@ export default function ContractsChart() {
     <>
       <div>
         <h2 className="text-center text-xl font-semibold pt-2.5 pb-0">
-          # Contracts over time
+          Contract usage
           <div className="inline-block">
             <Tooltip title={`Number of contracts used over time`} placement="right" arrow>
               <span className="text-neutral-600 dark:text-neutral-400 hover:text-black dark:hover:text-white transition-colors cursor-pointer ml-2 text-sm">
