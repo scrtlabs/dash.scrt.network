@@ -45,16 +45,16 @@ export default function ContractsChart() {
       const lineData = {
         labels: labels,
         datasets: [
-          {
-            label: 'Contracts Created',
-            data: analyticsData3.map((item: Data) => item.num_contracts_created),
-            borderColor: 'rgba(0, 123, 255, 1)',
-            borderWidth: 2,
-            backgroundColor: 'rgba(0, 123, 255, 0.5)',
-            fill: false,
-            tension: 0.1,
-            yAxisID: 'y'
-          },
+          // {
+          //   label: 'Contracts Created',
+          //   data: analyticsData3.map((item: Data) => item.num_contracts_created),
+          //   borderColor: 'rgba(0, 123, 255, 1)',
+          //   borderWidth: 2,
+          //   backgroundColor: 'rgba(0, 123, 255, 0.5)',
+          //   fill: false,
+          //   tension: 0.1,
+          //   yAxisID: 'y'
+          // },
           {
             label: 'Contracts Used',
             data: analyticsData3.map((item: Data) => item.num_contracts_used),
@@ -129,7 +129,7 @@ export default function ContractsChart() {
         <h2 className="text-center text-xl font-semibold pt-2.5 pb-0">
           # Contracts over time
           <div className="inline-block">
-            <Tooltip title={`Number of contracts created and used over time`} placement="right" arrow>
+            <Tooltip title={`Number of contracts used over time`} placement="right" arrow>
               <span className="text-neutral-600 dark:text-neutral-400 hover:text-black dark:hover:text-white transition-colors cursor-pointer ml-2 text-sm">
                 <FontAwesomeIcon icon={faInfoCircle} />
               </span>

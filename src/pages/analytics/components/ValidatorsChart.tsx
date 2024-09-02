@@ -31,42 +31,39 @@ export default function ValidatorsChart() {
   useEffect(() => {
     if (analyticsData2) {
       const dateMap: Record<string, Record<string, number>> = {}
-      const monikerTotals: Record<string, number> = {}
       const monikerSet = new Set<string>()
 
       analyticsData2.forEach((entry: Data) => {
         monikerSet.add(entry.moniker)
-
-        if (!dateMap[entry.date]) {
-          dateMap[entry.date] = {}
-        }
-        dateMap[entry.date][entry.moniker] = (dateMap[entry.date][entry.moniker] || 0) + entry.bonded_tokens
-
-        monikerTotals[entry.moniker] = (monikerTotals[entry.moniker] || 0) + entry.bonded_tokens
+        dateMap[entry.date] ||= {}
+        dateMap[entry.date][entry.moniker] = entry.bonded_tokens
       })
 
-      const sortedMonikers = Array.from(monikerSet).sort((a, b) => monikerTotals[b] - monikerTotals[a])
-
+      // Sort dates in descending order (latest first)
       const sortedDates = Object.keys(dateMap).sort((a, b) => new Date(a).getTime() - new Date(b).getTime())
 
-      const datasets = sortedMonikers.map((moniker) => {
-        return {
-          label: moniker,
-          data: sortedDates.map((date) => dateMap[date][moniker] || 0),
-          backgroundColor: getColorFromMoniker(moniker),
-          borderWidth: 0,
-          yAxisID: 'y',
-          stack: 'validators'
-        }
+      // Sort monikers based on bonded_tokens in the latest date
+      const latestDate = sortedDates[sortedDates.length - 1]
+      const sortedMonikers = Array.from(monikerSet).sort((a, b) => {
+        return (dateMap[latestDate]?.[b] || 0) - (dateMap[latestDate]?.[a] || 0)
       })
 
-      const labels = sortedDates.map((date) => {
-        return new Date(date).toLocaleDateString(undefined, {
+      const datasets = sortedMonikers.map((moniker) => ({
+        label: moniker,
+        data: sortedDates.map((date) => dateMap[date][moniker] || 0),
+        backgroundColor: getColorFromMoniker(moniker),
+        borderWidth: 0,
+        yAxisID: 'y',
+        stack: 'validators'
+      }))
+
+      const labels = sortedDates.map((date) =>
+        new Date(date).toLocaleDateString(undefined, {
           year: '2-digit',
           month: '2-digit',
           day: '2-digit'
         })
-      })
+      )
 
       if (datasets.length > 0) {
         setChartData({

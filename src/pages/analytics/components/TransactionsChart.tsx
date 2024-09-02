@@ -68,7 +68,6 @@ export default function TransactionsChart() {
         ]
       }
       setChartData(lineData)
-      console.log(lineData)
     }
   }, [analyticsData3])
 
