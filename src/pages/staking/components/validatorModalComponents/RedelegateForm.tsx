@@ -2,7 +2,7 @@ import BigNumber from 'bignumber.js'
 import { useContext, useEffect, useState } from 'react'
 import { APIContext } from 'context/APIContext'
 import { faSearch } from '@fortawesome/free-solid-svg-icons'
-import { faucetAddress, shuffleArray, toCurrencyString } from 'utils/commons'
+import { faucetAddress, queryTxResult, shuffleArray, toCurrencyString } from 'utils/commons'
 import { StakingContext } from 'pages/staking/Staking'
 import Select, { components } from 'react-select'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -51,26 +51,25 @@ export default function RedelegateForm() {
           `Redelegating ${amountString} SCRT from ${selectedValidator?.description?.moniker} to ${redelegateValidator?.description?.moniker}`,
           'loading'
         )
-        await secretNetworkClient.tx.staking
-          .beginRedelegate(
-            {
-              delegator_address: walletAddress,
-              validator_src_address: selectedValidator?.operator_address,
-              validator_dst_address: redelegateValidator?.operator_address,
-              amount: {
-                amount: BigNumber(amountString)
-                  .multipliedBy(`1e${scrtToken.decimals}`)
-                  .toFixed(0, BigNumber.ROUND_DOWN),
-                denom: 'uscrt'
-              }
-            },
-            {
-              gasLimit: 100_000,
-              gasPriceInFeeDenom: 0.25,
-              feeDenom: 'uscrt',
-              feeGranter: feeGrantStatus === 'success' ? faucetAddress : ''
+        const broadcastResult = await secretNetworkClient.tx.staking.beginRedelegate(
+          {
+            delegator_address: walletAddress,
+            validator_src_address: selectedValidator?.operator_address,
+            validator_dst_address: redelegateValidator?.operator_address,
+            amount: {
+              amount: BigNumber(amountString).multipliedBy(`1e${scrtToken.decimals}`).toFixed(0, BigNumber.ROUND_DOWN),
+              denom: 'uscrt'
             }
-          )
+          },
+          {
+            gasLimit: 100_000,
+            gasPriceInFeeDenom: 0.25,
+            feeDenom: 'uscrt',
+            feeGranter: feeGrantStatus === 'success' ? faucetAddress : ''
+          }
+        )
+
+        await queryTxResult(secretNetworkClient, broadcastResult.transactionHash, 6000, 10)
           .catch((error: any) => {
             console.error(error)
             toast.dismiss(toastId)

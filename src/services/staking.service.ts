@@ -1,6 +1,6 @@
 import { MsgWithdrawDelegationReward, SecretNetworkClient } from 'secretjs'
 import { FeeGrantStatus } from 'types/FeeGrantStatus'
-import { faucetAddress } from 'utils/commons'
+import { faucetAddress, queryTxResult } from 'utils/commons'
 import { NotificationService } from './notification.service'
 
 interface Props {
@@ -30,13 +30,16 @@ const performClaimStakingRewards = async (props: Props) => {
       })
     })
 
-    await props.secretNetworkClient.tx
-      .broadcast(txs, {
-        gasLimit: 100_000 * txs.length,
-        gasPriceInFeeDenom: 0.25,
-        feeDenom: 'uscrt',
-        feeGranter: props.feeGrantStatus === 'success' ? faucetAddress : ''
-      })
+    const broadcastResult = await props.secretNetworkClient.tx.broadcast(txs, {
+      gasLimit: 100_000 * txs.length,
+      gasPriceInFeeDenom: 0.25,
+      feeDenom: 'uscrt',
+      feeGranter: props.feeGrantStatus === 'success' ? faucetAddress : '',
+      waitForCommit: false
+    })
+
+    // Poll the LCD for the transaction result every 10 seconds, 10 retries
+    await queryTxResult(props.secretNetworkClient, broadcastResult.transactionHash, 6000, 10)
       .catch((error: any) => {
         console.error(error)
         if (error?.tx?.rawLog) {

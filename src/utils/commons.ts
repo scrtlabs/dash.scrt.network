@@ -1,6 +1,7 @@
 import { Currency } from 'types/Currency'
 import { tokens, snips, ICSTokens } from './config'
 import mixpanel from 'mixpanel-browser'
+import { SecretNetworkClient } from 'secretjs'
 
 export const faucetURL = 'https://faucet.secretsaturn.net/claim'
 export const faucetAddress = 'secret1tq6y8waegggp4fv2fcxk3zmpsmlfadyc7lsd69'
@@ -38,7 +39,7 @@ export const randomPadding = (): string => {
 
 // Polling function to query the LCD for the transaction result
 export async function queryTxResult(
-  secretNetworkClient: any,
+  secretNetworkClient: SecretNetworkClient,
   txHash: string,
   intervalMs: number = 10000,
   maxRetries: number = 30
@@ -58,7 +59,7 @@ export async function queryTxResult(
             resolve(result)
           } else {
             // Transaction failed
-            console.log(result)
+            console.error(result)
             reject(new Error(`${result.rawLog}`))
           }
         }
