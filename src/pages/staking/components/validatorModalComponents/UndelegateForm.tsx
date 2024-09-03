@@ -1,7 +1,7 @@
 import BigNumber from 'bignumber.js'
 import { useContext, useEffect, useState } from 'react'
 import { APIContext } from 'context/APIContext'
-import { faucetAddress, toCurrencyString } from 'utils/commons'
+import { faucetAddress, queryTxResult, toCurrencyString } from 'utils/commons'
 import { StakingContext } from 'pages/staking/Staking'
 import { useSecretNetworkClientStore } from 'store/secretNetworkClient'
 import { scrtToken } from 'utils/tokens'
@@ -41,25 +41,24 @@ export default function UndelegateForm() {
           `Unstaking ${amountString} SCRT from validator: ${selectedValidator?.description?.moniker}`,
           'loading'
         )
-        await secretNetworkClient.tx.staking
-          .undelegate(
-            {
-              delegator_address: walletAddress,
-              validator_address: selectedValidator?.operator_address,
-              amount: {
-                amount: BigNumber(amountString)
-                  .multipliedBy(`1e${scrtToken.decimals}`)
-                  .toFixed(0, BigNumber.ROUND_DOWN),
-                denom: 'uscrt'
-              }
-            },
-            {
-              gasLimit: 100_000,
-              gasPriceInFeeDenom: 0.25,
-              feeDenom: 'uscrt',
-              feeGranter: feeGrantStatus === 'success' ? faucetAddress : ''
+        const broadcastResult = await secretNetworkClient.tx.staking.undelegate(
+          {
+            delegator_address: walletAddress,
+            validator_address: selectedValidator?.operator_address,
+            amount: {
+              amount: BigNumber(amountString).multipliedBy(`1e${scrtToken.decimals}`).toFixed(0, BigNumber.ROUND_DOWN),
+              denom: 'uscrt'
             }
-          )
+          },
+          {
+            gasLimit: 100_000,
+            gasPriceInFeeDenom: 0.25,
+            feeDenom: 'uscrt',
+            feeGranter: feeGrantStatus === 'success' ? faucetAddress : '',
+            waitForCommit: false
+          }
+        )
+        await queryTxResult(secretNetworkClient, broadcastResult.transactionHash, 6000, 10)
           .catch((e: any) => {
             console.error(e)
             if (e?.tx?.rawLog) {

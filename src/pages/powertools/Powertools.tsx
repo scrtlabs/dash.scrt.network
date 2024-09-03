@@ -17,7 +17,7 @@ import { NotificationService } from 'services/notification.service'
 import Modal from 'components/UI/Modal/Modal'
 import CopyToClipboard from 'react-copy-to-clipboard'
 import { Helmet } from 'react-helmet-async'
-import { powertoolsJsonLdSchema, powertoolsPageDescription, powertoolsPageTitle } from 'utils/commons'
+import { powertoolsJsonLdSchema, powertoolsPageDescription, powertoolsPageTitle, queryTxResult } from 'utils/commons'
 
 export type TMessage = {
   type: string
@@ -67,13 +67,16 @@ function Powertools() {
       const txMessages = messages.map((message) => {
         return MessageDefinitions[message.type].converter(JSON.parse(message.content), prefix, denom)
       })
-      const tx = await secretjs.tx.broadcast(txMessages, {
+      let tx = await secretjs.tx.broadcast(txMessages, {
         gasLimit: 300_000,
         broadcastCheckIntervalMs: 10000,
         gasPriceInFeeDenom: 0.1,
         feeDenom: 'uscrt',
-        broadcastMode: BroadcastMode.Sync
+        broadcastMode: BroadcastMode.Sync,
+        waitForCommit: false
       })
+
+      tx = await queryTxResult(secretjs, tx.transactionHash, 5000, 10)
 
       if (tx.code === 0) {
         NotificationService.notify('Transaction sent successfully', 'success', toastId)

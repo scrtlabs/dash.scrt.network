@@ -1,6 +1,7 @@
 import { Currency } from 'types/Currency'
 import { tokens, snips, ICSTokens } from './config'
 import mixpanel from 'mixpanel-browser'
+import { SecretNetworkClient } from 'secretjs'
 
 export const faucetURL = 'https://faucet.secretsaturn.net/claim'
 export const faucetAddress = 'secret1tq6y8waegggp4fv2fcxk3zmpsmlfadyc7lsd69'
@@ -34,6 +35,45 @@ export const randomPadding = (): string => {
     result += characters.charAt(Math.floor(Math.random() * characters.length))
   }
   return result
+}
+
+// Polling function to query the LCD for the transaction result
+export async function queryTxResult(
+  secretNetworkClient: SecretNetworkClient,
+  txHash: string,
+  intervalMs: number = 10000,
+  maxRetries: number = 30
+): Promise<any> {
+  let retries = 0
+
+  return new Promise((resolve, reject) => {
+    const intervalId = setInterval(async () => {
+      try {
+        const result = await secretNetworkClient.query.getTx(txHash)
+        // If the transaction is found, resolve the promise
+        if (result) {
+          clearInterval(intervalId)
+
+          if (result.code === 0) {
+            // Successful transaction
+            resolve(result)
+          } else {
+            // Transaction failed
+            console.error(result)
+            reject(new Error(`${result.rawLog}`))
+          }
+        }
+      } catch (error) {
+        console.error(`Error querying transaction: ${error}`)
+      }
+
+      // Stop polling after max retries
+      if (++retries > maxRetries) {
+        clearInterval(intervalId)
+        reject(new Error(`Transaction not found after ${maxRetries * (intervalMs / 1000)} seconds`))
+      }
+    }, intervalMs)
+  })
 }
 
 export function trackMixPanelEvent(event: string) {

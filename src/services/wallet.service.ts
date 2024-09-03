@@ -319,10 +319,9 @@ async function getBalancesForTokens(props: IGetBalancesForTokensProps): Promise<
   }
 
   try {
-    console.log('try')
     const { balances }: QueryAllBalancesResponse = await props.secretNetworkClient.query.bank.allBalances({
       address: props.secretNetworkClient.address,
-      pagination: { limit: '100' }
+      pagination: { limit: '300' }
     })
 
     let newBalanceMapping = new Map<Token, TokenBalances>()

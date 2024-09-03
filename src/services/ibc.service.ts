@@ -15,7 +15,7 @@ import {
 } from 'secretjs'
 import { FeeGrantStatus } from 'types/FeeGrantStatus'
 import { IbcMode } from 'types/IbcMode'
-import { sleep, faucetAddress, randomPadding, allTokens, suggestChainToWallet } from 'utils/commons'
+import { sleep, faucetAddress, randomPadding, allTokens, suggestChainToWallet, queryTxResult } from 'utils/commons'
 import { Chain, Deposit, Token, Withdraw, chains } from 'utils/config'
 import Long from 'long'
 import { TxRaw } from 'secretjs/dist/protobuf/cosmos/tx/v1beta1/tx'
@@ -241,11 +241,10 @@ async function performIbcDeposit(
             gasLimit: deposit_gas,
             feeDenom: deposit_gas_denom,
             ibcTxsOptions: {
-              resolveResponses: true,
-              resolveResponsesCheckIntervalMs: 1000,
-              resolveResponsesTimeoutMs: 12 * 60 * 1000
+              resolveResponses: false
             },
-            broadcastMode: BroadcastMode.Sync
+            broadcastMode: BroadcastMode.Sync,
+            waitForCommit: false
           }
         )
       } else {
@@ -300,11 +299,10 @@ async function performIbcDeposit(
             gasLimit: deposit_gas,
             feeDenom: deposit_gas_denom,
             ibcTxsOptions: {
-              resolveResponses: true,
-              resolveResponsesCheckIntervalMs: 1000,
-              resolveResponsesTimeoutMs: 12 * 60 * 1000
+              resolveResponses: false
             },
-            broadcastMode: BroadcastMode.Sync
+            broadcastMode: BroadcastMode.Sync,
+            waitForCommit: false
           }
         )
       }
@@ -352,11 +350,10 @@ async function performIbcDeposit(
           gasLimit: deposit_gas,
           feeDenom: deposit_gas_denom,
           ibcTxsOptions: {
-            resolveResponses: true,
-            resolveResponsesCheckIntervalMs: 1000,
-            resolveResponsesTimeoutMs: 10.25 * 60 * 1000
+            resolveResponses: false
           },
-          broadcastMode: BroadcastMode.Sync
+          broadcastMode: BroadcastMode.Sync,
+          waitForCommit: false
         }
       )
     } else {
@@ -457,13 +454,14 @@ async function performIbcDeposit(
       // Broadcast the tx to Evmos
       tx = await sourceChainNetworkClient.tx.broadcastSignedTx(txBytes, {
         ibcTxsOptions: {
-          resolveResponses: true,
-          resolveResponsesCheckIntervalMs: 1000,
-          resolveResponsesTimeoutMs: 10.25 * 60 * 1000
+          resolveResponses: false
         },
-        broadcastMode: BroadcastMode.Sync
+        broadcastMode: BroadcastMode.Sync,
+        waitForCommit: false
       })
     }
+
+    tx = await queryTxResult(sourceChainNetworkClient, tx.transactionHash, 5000, 10)
 
     if (tx.code !== 0) {
       console.error(
@@ -476,26 +474,10 @@ async function performIbcDeposit(
       )
     } else {
       NotificationService.notify(
-        `Receiving ${props.amount} ${token.name} on Secret Network from ${props.chain.chain_name}`,
-        'loading',
+        `Send ${props.amount} ${token.name} from ${selectedSource.chain_name} from Secret Network`,
+        'success',
         toastId
       )
-
-      const ibcResp: IbcResponse = await tx.ibcResponses[0]
-
-      if (ibcResp?.type === 'ack') {
-        NotificationService.notify(
-          `Received ${props.amount} ${token.name} on Secret Network from ${selectedSource.chain_name}`,
-          'success',
-          toastId
-        )
-      } else {
-        NotificationService.notify(
-          `The transfer might take longer on chain. Please be patient while waiting to receive ${props.amount} ${token.name} on Secret Network from ${selectedSource.chain_name}. You can manually check by going to the Portfolio page and check for ${token.name}.`,
-          'success',
-          toastId
-        )
-      }
     }
   } catch (e: any) {
     if (import.meta.env.VITE_MIXPANEL_ENABLED === 'true') {
@@ -585,11 +567,10 @@ async function performIbcWithdrawal(
           feeDenom: 'uscrt',
           feeGranter: props.feeGrantStatus === 'success' ? faucetAddress : '',
           ibcTxsOptions: {
-            resolveResponses: true,
-            resolveResponsesCheckIntervalMs: 1000,
-            resolveResponsesTimeoutMs: 12 * 60 * 1000
+            resolveResponses: false
           },
-          broadcastMode: BroadcastMode.Sync
+          broadcastMode: BroadcastMode.Sync,
+          waitForCommit: false
         }
       )
     } else if (token.is_axelar_asset) {
@@ -650,11 +631,10 @@ async function performIbcWithdrawal(
           feeDenom: 'uscrt',
           feeGranter: props.feeGrantStatus === 'success' ? faucetAddress : '',
           ibcTxsOptions: {
-            resolveResponses: true,
-            resolveResponsesCheckIntervalMs: 1000,
-            resolveResponsesTimeoutMs: 12 * 60 * 1000
+            resolveResponses: false
           },
-          broadcastMode: BroadcastMode.Sync
+          broadcastMode: BroadcastMode.Sync,
+          waitForCommit: false
         }
       )
     } else {
@@ -711,14 +691,15 @@ async function performIbcWithdrawal(
           feeDenom: 'uscrt',
           feeGranter: props.feeGrantStatus === 'success' ? faucetAddress : '',
           ibcTxsOptions: {
-            resolveResponses: true,
-            resolveResponsesCheckIntervalMs: 1000,
-            resolveResponsesTimeoutMs: 12 * 60 * 1000
+            resolveResponses: false
           },
-          broadcastMode: BroadcastMode.Sync
+          broadcastMode: BroadcastMode.Sync,
+          waitForCommit: false
         }
       )
     }
+
+    tx = await queryTxResult(props.secretNetworkClient, tx.transactionHash, 5000, 10)
 
     if (tx.code !== 0) {
       console.error(
@@ -730,30 +711,7 @@ async function performIbcWithdrawal(
         toastId
       )
     } else {
-      NotificationService.notify(
-        `Receiving ${props.amount} ${token.name} on ${selectedDest.chain_name}`,
-        'loading',
-        toastId
-      )
-
-      const ibcResp = await tx.ibcResponses[0]
-
-      if (ibcResp.type === 'ack') {
-        NotificationService.notify(
-          `Received ${props.amount} ${token.name} on ${selectedDest.chain_name}`,
-          'success',
-          toastId
-        )
-      } else {
-        console.error(
-          `Timed out while waiting to receive ${props.amount} ${token.name} on ${selectedDest.chain_name} from Secret Network`
-        )
-        NotificationService.notify(
-          `Timed out while waiting to receive ${props.amount} ${token.name} on ${selectedDest.chain_name} from Secret Network`,
-          'error',
-          toastId
-        )
-      }
+      NotificationService.notify(`Sent ${props.amount} ${token.name} to ${selectedDest.chain_name}`, 'success', toastId)
     }
   } catch (error: any) {
     console.error(
