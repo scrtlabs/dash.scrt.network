@@ -2,38 +2,47 @@ import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import governanceUtils from 'utils/governanceUtils'
 import StatusBadge from './components/Overview/StatusBadge'
-import { Proposal } from 'secretjs/dist/protobuf/cosmos/gov/v1beta1/gov'
 import { Nullable } from 'types/Nullable'
-import { ProposalStatus } from 'secretjs'
+import ReactMarkdown from 'react-markdown'
+import remarkGfm from 'remark-gfm'
+import { formatNumber } from 'utils/commons'
+import { Tooltip } from '@mui/material'
 
 function GovernanceDetail() {
   const navigate = useNavigate()
   let { id } = useParams()
 
-  // effectively blocks viewing spam proposals
+  // Redirect if the proposal is spam
   if (governanceUtils.spamProposalIds.includes(Number(id))) {
     navigate('/governance')
   }
 
   const [proposal, setProposal] = useState<Nullable<any>>(null)
+  const [tally, setTally] = useState<Nullable<any>>(null)
+  const [loading, setLoading] = useState<boolean>(true)
 
   useEffect(() => {
-    const fetchProposal = async () => {
+    const fetchProposalDetails = async () => {
       try {
-        const fetchedProposal = await governanceUtils.getProposal(id)
+        const [fetchedProposal, fetchedTally] = await Promise.all([
+          governanceUtils.getProposal(id!),
+          governanceUtils.getProposalTally(id!)
+        ])
+
         setProposal(fetchedProposal?.proposal || null)
+        setTally(fetchedTally || null)
+        setLoading(false)
       } catch (error: any) {
         console.error(error)
         navigate('/governance')
       }
     }
-    fetchProposal().catch(console.error)
-  }, [])
+    fetchProposalDetails().catch(console.error)
+  }, [id, navigate])
 
   function convertUTCToLocalTime(utcDateString: string) {
     const date = new Date(utcDateString)
 
-    // Define options for date and time separately
     const dateOptions: Intl.DateTimeFormatOptions = {
       day: '2-digit',
       month: 'short',
@@ -46,11 +55,9 @@ function GovernanceDetail() {
       hour12: false
     }
 
-    // Get formatted date and time strings
     const localDateString = date.toLocaleDateString(undefined, dateOptions)
     const localTimeString = date.toLocaleTimeString(undefined, timeOptions)
 
-    // Combine date and time with a comma separator
     return `${localDateString} - ${localTimeString}`
   }
 
@@ -64,15 +71,42 @@ function GovernanceDetail() {
     }
   }, [proposal])
 
+  // Define the type for vote options
+  type VoteOption = 'yes' | 'abstain' | 'no' | 'no_with_veto'
+
+  // Calculate total votes from tally data
+  const totalVotes = tally
+    ? ['yes', 'abstain', 'no', 'no_with_veto'].reduce((sum, key) => sum + Number(tally[key as VoteOption]), 0)
+    : 0
+
+  // Define colors with VoteOption keys
+  const colors: Record<VoteOption, string> = {
+    yes: 'bg-green-500',
+    abstain: 'bg-yellow-500',
+    no: 'bg-red-500',
+    no_with_veto: 'bg-purple-500'
+  }
+
+  // Define vote types array with VoteOption type
+  const voteTypes: VoteOption[] = ['yes', 'abstain', 'no', 'no_with_veto']
+
   return (
     <div>
-      {proposal && (
+      {loading ? (
+        <div className="flex justify-center items-center h-64">
+          <p className="text-gray-500">Loading proposal details...</p>
+        </div>
+      ) : proposal ? (
         <>
+          {/* Status Badge */}
           <StatusBadge proposalStatus={governanceUtils.getProposalStatus(proposal.status as unknown as string)} />
+
+          {/* Proposal Title */}
           {proposal?.proposal_id && proposal?.content?.title && (
-            <h1 className="text-xl font-bold">{`#${proposal?.proposal_id} ${proposal?.content?.title}`}</h1>
+            <h1 className="text-xl font-bold">{`#${proposal.proposal_id} ${proposal.content.title}`}</h1>
           )}
 
+          {/* Proposal Header */}
           <div className="bg-white dark:bg-neutral-800 p-4 flex flex-col h-full rounded-xl overflow-hidden">
             <div className="grid grid-cols-2 gap-4">
               <div className="col-auto">
@@ -86,10 +120,58 @@ function GovernanceDetail() {
             </div>
           </div>
 
-          <div className="bg-blue-900 text-blue-200 p-8 mt-8 border border-blue-500 rounded">
-            {JSON.stringify(proposal)}
+          {/* Proposal Description */}
+          <div className="bg-white dark:bg-neutral-800 p-4 flex flex-col h-full rounded-xl overflow-hidden mt-6">
+            <h2 className="text-xl font-semibold mb-4">Description</h2>
+            <div className="prose max-w-none">
+              <ReactMarkdown remarkPlugins={[remarkGfm]}>{proposal.content.description}</ReactMarkdown>
+            </div>
           </div>
+
+          {/* Voting Results */}
+          {tally && (
+            <div className="bg-white dark:bg-neutral-800 p-4 flex flex-col h-full rounded-xl overflow-hidden mt-6">
+              <h2 className="text-xl font-semibold mb-4">Voting Results</h2>
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                {voteTypes.map((voteType) => (
+                  <div key={voteType} className="text-center">
+                    <div className="font-bold capitalize">{voteType.replace('_', ' ')}</div>
+                    <div>{formatNumber(Number(tally[voteType]) / 1e6, 2)} SCRT</div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Voting Chart */}
+              <div className="mt-6">
+                <h3 className="text-lg font-semibold mb-2">Vote Distribution</h3>
+                <div className="w-full h-6 flex rounded overflow-hidden">
+                  {voteTypes.map((voteType) => {
+                    const voteCount = Number(tally[voteType])
+                    const percentage = totalVotes ? (voteCount / totalVotes) * 100 : 0
+
+                    return (
+                      <Tooltip
+                        key={voteType}
+                        title={`${formatNumber(voteCount / 1e6, 2)} SCRT (${percentage.toFixed(2)}%)`}
+                        placement="bottom"
+                        arrow
+                      >
+                        <div style={{ width: `${percentage}%` }} className={`${colors[voteType]} h-full`}></div>
+                      </Tooltip>
+                    )
+                  })}
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Optional: Display Proposal JSON 
+                    <div className="bg-blue-900 text-blue-200 p-8 mt-8 border border-blue-500 rounded">
+                    {JSON.stringify(proposal)}
+                  </div>*/}
         </>
+      ) : (
+        <div className="text-center text-gray-500">Proposal not found.</div>
       )}
     </div>
   )

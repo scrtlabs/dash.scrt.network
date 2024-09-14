@@ -1,13 +1,13 @@
-import StatusBadge from './StatusBadge'
-import ReviewCount from './ReviewCount'
-import VotingChart from './VotingChart'
 import { ProposalStatus } from 'secretjs'
 import { Link } from 'react-router-dom'
+import StatusBadge from './StatusBadge'
+import VotingChart from './VotingChart'
+import ReviewCount from './ReviewCount' // Uncomment if you have this component
 
 type Props = {
   id: string
   title?: string
-  // reviewsCount?: number
+  reviewsCount?: number
   votes?: {
     yes: number
     abstain: number
@@ -29,7 +29,7 @@ function GovernancePreviewItem(props: Props) {
       {/* Status */}
       <div className="mb-2 flex items-center gap-4">
         <StatusBadge proposalStatus={props.proposalStatus} />
-        {/* <ReviewCount count={props.reviewsCount} /> */}
+        {<ReviewCount count={props.reviewsCount} />}
       </div>
       {/* Title */}
       {props.title && <div className="font-bold">{`#${props.id}: ${props.title}`}</div>}
