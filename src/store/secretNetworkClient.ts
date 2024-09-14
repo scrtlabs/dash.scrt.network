@@ -151,7 +151,7 @@ export const useSecretNetworkClientStore = create<SecretNetworkClientState>()((s
     return null
   },
   IBCBalanceRefreshIntervalId: null,
-  startIBCBalanceRefresh: (intervalMs = 15000) => {
+  startIBCBalanceRefresh: (intervalMs = 30000) => {
     const intervalId = setInterval(() => {
       if (get().ibcBalanceMapping !== null) {
         for (const chain of get().ibcBalanceMapping.keys()) {
@@ -169,7 +169,7 @@ export const useSecretNetworkClientStore = create<SecretNetworkClientState>()((s
     }
   },
   balanceRefreshIntervalId: null,
-  startBalanceRefresh: (intervalMs = 15000) => {
+  startBalanceRefresh: (intervalMs = 30000) => {
     const intervalId = setInterval(() => {
       get().setBalanceMapping()
     }, intervalMs)

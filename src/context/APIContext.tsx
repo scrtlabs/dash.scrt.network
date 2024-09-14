@@ -121,7 +121,9 @@ const APIContextProvider = ({ children }: any) => {
     useState<Nullable<{ date: string; totalLiquidity: number }[]>>(null)
   const [defiLamaApiData_TVL, setDefiLamaApiData_TVL] = useState<any>(null)
   const [currentPrice, setCurrentPrice] = useState(Number)
-  const [externalApiData, setExternalApiData] = useState()
+  const [analyticsData1, setAnalyticsData1] = useState()
+  const [analyticsData2, setAnalyticsData2] = useState()
+  const [analyticsData3, setAnalyticsData3] = useState()
   const [L5AnalyticsApiData, setL5AnalyticsApiData] = useState()
   const [volume, setVolume] = useState(Number)
   const [marketCap, setMarketCap] = useState(Number)
@@ -195,14 +197,31 @@ const APIContextProvider = ({ children }: any) => {
         setVolume(response.secret[coinGeckoCurrencyMap[currency] + '_24h_vol']) // e.g. response.secret.usd_24h_vol
       })
 
-    const API_DATA_SECRET = `https://dashboardstats.secretsaturn.net/source/wallets/data.json`
-    fetch(API_DATA_SECRET)
+    const API_DATA_SECRET_1 = `https://dashboardstats.secretsaturn.net/source/wallets/data.json`
+    fetch(API_DATA_SECRET_1)
       .catch((error: any) => console.error(error))
       .then((response) => (response as any).json())
       .catch((error: any) => console.error(error))
       .then((response) => {
-        setExternalApiData(response)
-        console.log(response)
+        setAnalyticsData1(response)
+      })
+
+    const API_DATA_SECRET_2 = `https://dashboardstats.secretsaturn.net/source/validator_bonding/data.json`
+    fetch(API_DATA_SECRET_2)
+      .catch((error: any) => console.error(error))
+      .then((response) => (response as any).json())
+      .catch((error: any) => console.error(error))
+      .then((response) => {
+        setAnalyticsData2(response)
+      })
+
+    const API_DATA_SECRET_3 = `https://dashboardstats.secretsaturn.net/source/daily_network_stats/data.json`
+    fetch(API_DATA_SECRET_3)
+      .catch((error: any) => console.error(error))
+      .then((response) => (response as any).json())
+      .catch((error: any) => console.error(error))
+      .then((response) => {
+        setAnalyticsData3(response)
       })
 
     const LAVENDERFIVE_API_URL_SECRET_STATUS = `https://api.lavenderfive.com/networks/secretnetwork`
@@ -253,38 +272,14 @@ const APIContextProvider = ({ children }: any) => {
         setBurnedTokenSupply(Number(res.balance?.amount) / 1e6)
       })
 
-    secretjsquery?.query?.bank
-      ?.balance({
-        address: allTokens.find((token) => token.name === 'stkd-SCRT').address,
-        denom: 'uscrt'
-      })
-      ?.then((res) => {
-        setStkdSCRTTokenSupply(Number(res.balance?.amount) / 1e6)
-        secretjsquery?.query?.staking
-          .delegatorDelegations({
-            delegator_addr: allTokens.find((token) => token.name === 'stkd-SCRT').address,
-            pagination: { limit: '100' }
-          })
-          ?.then((delegatorDelegations) => {
-            const totalDelegations = delegatorDelegations.delegation_responses
-              ?.reduce((sum: any, delegation: any) => {
-                const amount = new BigNumber(delegation?.balance?.amount || 0)
-                return sum.plus(amount)
-              }, new BigNumber(0))
-              .dividedBy(`1e6`)
-            setStkdSCRTTokenSupply(Number(res.balance?.amount) / 1e6 + Number(totalDelegations))
-          })
-      })
-
     const exchangeAddresses = [
       'secret1p3ucd3ptpw902fluyjzhq3ffgq4ntdda6qy5vv', //Binance Cold Wallet
       'secret1an5pyzzpu5ez7ep9m43yzmalymwls39qtk8rjd', //Binance Hot Wallet
       'secret1nm0rrq86ucezaf8uj35pq9fpwr5r82cl94vhug', //Kraken
-      'secret1nl7z7ha5kec4camsqm4yel0tsyz8zgmjqg6myp', //Kucoin
+      'secret12ppfz8wssn0dtpjscys978m88a6z5llp5j5f99', //Kucoin
       'secret155e8c284v6w725llkwwma36vzly4ujsc2syfcy', //MEXC
-      'secret1uxun0ttetqcvckdxfxgj5xmsqljqzxpd9h35zf', //LBank
       'secret15catgqhve7ul7vrej5mqdlv8dx4r5hcw0ywzfq', //BitMart
-      'secret1tsz8v9k75jeqtl4exnf0qye5nme840h5n0pldk' //ByBit
+      'secret1k3pjdxavzkc4ztxmy4y44z8g8qggpp9ut84yag' //ByBit
     ]
 
     const getBalance = (address: string) => {
@@ -304,11 +299,10 @@ const APIContextProvider = ({ children }: any) => {
         denom: 'uscrt'
       })
       ?.then((res) => {
-        setStkdSCRTTokenSupply(Number(res.balance?.amount) / 1e6)
         secretjsquery?.query?.staking
           .delegatorDelegations({
             delegator_addr: allTokens.find((token) => token.name === 'stkd-SCRT').address,
-            pagination: { limit: '100' }
+            pagination: { limit: '20' }
           })
           ?.then((delegatorDelegations) => {
             const totalDelegations = delegatorDelegations.delegation_responses
@@ -375,7 +369,9 @@ const APIContextProvider = ({ children }: any) => {
     defiLamaApiData_Year,
     defiLamaApiData_TVL,
     currentPrice,
-    externalApiData,
+    analyticsData1,
+    analyticsData2,
+    analyticsData3,
     L5AnalyticsApiData,
     bondedToken,
     notBondedToken,

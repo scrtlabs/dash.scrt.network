@@ -6,58 +6,70 @@ import {
   Chart as ChartJS,
   CategoryScale,
   LinearScale,
-  BarElement,
+  PointElement,
+  LineElement,
   Tooltip as ChartTooltip,
-  BarController
+  LineController
 } from 'chart.js'
-import { Bar } from 'react-chartjs-2'
+import { Line } from 'react-chartjs-2'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faInfoCircle } from '@fortawesome/free-solid-svg-icons'
 import { useUserPreferencesStore } from 'store/UserPreferences'
 
-ChartJS.register(CategoryScale, LinearScale, BarElement, ChartTooltip, BarController)
+ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, ChartTooltip, LineController)
 
-export default function UnbondingsChart() {
-  const { L5AnalyticsApiData } = useContext(APIContext)
+type Data = {
+  Date: string
+  num_contracts_created: number
+  num_contracts_used: number
+  num_nonempty_blocks: number
+  num_transactions: number
+  num_wallets: number
+}
 
+export default function ContractsChart() {
+  const { analyticsData3 } = useContext(APIContext)
   const { theme } = useUserPreferencesStore()
-
   const [chartData, setChartData] = useState<any>([])
 
   useEffect(() => {
-    if (L5AnalyticsApiData) {
-      const dataArray = Object.entries(L5AnalyticsApiData['unbonding_by_date']).map(([date, balance]) => [
-        date,
-        balance
-      ])
-      setChartData(dataArray)
+    if (analyticsData3) {
+      const labels = analyticsData3.map((entry: Data) =>
+        new Date(entry.Date).toLocaleDateString(undefined, {
+          year: '2-digit',
+          month: '2-digit',
+          day: '2-digit'
+        })
+      )
+
+      const lineData = {
+        labels: labels,
+        datasets: [
+          // {
+          //   label: 'Contracts Created',
+          //   data: analyticsData3.map((item: Data) => item.num_contracts_created),
+          //   borderColor: 'rgba(0, 123, 255, 1)',
+          //   borderWidth: 2,
+          //   backgroundColor: 'rgba(0, 123, 255, 0.5)',
+          //   fill: false,
+          //   tension: 0.1,
+          //   yAxisID: 'y'
+          // },
+          {
+            label: 'Contracts Used',
+            data: analyticsData3.map((item: Data) => item.num_contracts_used),
+            borderColor: 'rgba(150, 75, 200, 1)',
+            borderWidth: 2,
+            backgroundColor: 'rgba(150, 75, 200, 0.5)',
+            fill: false,
+            tension: 0.1,
+            yAxisID: 'y'
+          }
+        ]
+      }
+      setChartData(lineData)
     }
-  }, [L5AnalyticsApiData])
-
-  const datasets = [
-    {
-      label: 'SCRT',
-      data: chartData.map(([_, balances]: any) => balances),
-      backgroundColor: 'rgba(0, 123, 255, 1)',
-      borderColor: 'rgba(0, 123, 255, 1)',
-      borderWidth: 1
-    }
-  ]
-
-  const totalUnbonding = datasets[0].data.reduce((sum: number, balance: number) => sum + balance, 0)
-
-  const labels = chartData.map(([date]: any) => {
-    return new Date(date).toLocaleDateString(undefined, {
-      year: '2-digit',
-      month: '2-digit',
-      day: '2-digit'
-    })
-  })
-
-  const data = {
-    labels: labels,
-    datasets: datasets
-  }
+  }, [analyticsData3])
 
   const options = {
     responsive: true,
@@ -102,19 +114,11 @@ export default function UnbondingsChart() {
     },
     plugins: {
       legend: {
-        display: false
+        display: true
       },
       tooltip: {
         xAlign: 'center',
-        color: theme === 'dark' ? '#fff' : '#000',
-        callbacks: {
-          label: function (context: any) {
-            if (context.parsed.y !== null) {
-              return `${formatNumber(context.parsed.y)} SCRT`
-            }
-            return ''
-          }
-        }
+        color: theme === 'dark' ? '#fff' : '#000'
       }
     }
   }
@@ -123,9 +127,9 @@ export default function UnbondingsChart() {
     <>
       <div>
         <h2 className="text-center text-xl font-semibold pt-2.5 pb-0">
-          SCRT Unbonding
+          Contract usage
           <div className="inline-block">
-            <Tooltip title={`Shows the unbonded (unstaked) SCRT per day`} placement="right" arrow>
+            <Tooltip title={`Number of contracts used over time`} placement="right" arrow>
               <span className="text-neutral-600 dark:text-neutral-400 hover:text-black dark:hover:text-white transition-colors cursor-pointer ml-2 text-sm">
                 <FontAwesomeIcon icon={faInfoCircle} />
               </span>
@@ -133,13 +137,9 @@ export default function UnbondingsChart() {
           </div>
         </h2>
       </div>
-      {totalUnbonding ? (
-        <h3 className="text-center text-lg pt-0 pb-2.5">Total: {Math.round(totalUnbonding).toLocaleString()} SCRT</h3>
-      ) : null}
       <div className="w-full h-[300px] xl:h-[400px]">
-        <Bar data={data as any} options={options as any} />
+        {chartData.length != 0 ? <Line data={chartData as any} options={options as any} /> : null}
       </div>
-      <div className="text-center text-sm">Metrics by Lavender.Five Nodes 🐝</div>
     </>
   )
 }

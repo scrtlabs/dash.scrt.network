@@ -15,7 +15,6 @@ function AvailableBalance() {
     tokens.find((token) => token.name === 'SCRT'),
     false
   )
-  console.log(scrtBalance)
 
   const { currency } = useUserPreferencesStore()
   const { convertCurrency } = useContext(APIContext)

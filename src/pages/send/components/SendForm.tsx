@@ -96,14 +96,22 @@ export default function SendForm() {
 
         res
           .then(() => {
-            NotificationService.notify('Sending successful', 'success', toastId)
+            NotificationService.notify(
+              `Sending of ${formik.values.amount} ${formik.values.token.name} successful`,
+              'success',
+              toastId
+            )
           })
           .catch((error) => {
-            NotificationService.notify(`Sending unsuccessful: ${error}`, 'error', toastId)
+            NotificationService.notify(
+              `Sending of ${formik.values.amount} ${formik.values.token.name} unsuccessful: ${error}`,
+              'error',
+              toastId
+            )
           })
       } catch (error: any) {
         console.error(error)
-        NotificationService.notify(`Sending unsuccessful ${error}`, 'error', toastId)
+        NotificationService.notify(`Sending unsuccessful: ${error}`, 'error', toastId)
       }
     }
   })
