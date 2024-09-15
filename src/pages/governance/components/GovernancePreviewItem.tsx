@@ -29,11 +29,14 @@ function GovernancePreviewItem(props: Props) {
       className="bg-white dark:bg-neutral-800 p-4 flex flex-col h-full rounded-xl overflow-hidden dark:hover:bg-neutral-700 hover:bg-neutral-200 transition-colors"
     >
       {/* Status */}
-      <div className="mb-2 flex items-center">
-        <StatusBadge proposalStatus={props.proposalStatus} />
+      <div className="mb-2 flex items-center justify-between">
+        <div className="flex items-center">
+          <StatusBadge proposalStatus={props.proposalStatus} />
+          <ReviewCount count={props.reviewsCount} />
+        </div>
         {props.isExpedited ? <ExpeditedBadge /> : null}
-        {<ReviewCount count={props.reviewsCount} />}
       </div>
+
       {/* Title */}
       {props.title && <div className="font-bold">{`#${props.id}: ${props.title}`}</div>}
       {/* Voting Chart Bar */}
