@@ -1,5 +1,5 @@
 import Title from 'components/Title'
-import GovernancePreviewItem from './components/Overview/GovernancePreviewItem'
+import GovernancePreviewItem from './components/GovernancePreviewItem'
 import governanceUtils from 'utils/governanceUtils'
 import { useEffect, useRef, useState } from 'react'
 import { ProposalStatus } from 'secretjs'
@@ -97,8 +97,9 @@ function Governance() {
                   title={title}
                   totalBondedStake={totalBondedStake}
                   votes={votes}
-                  // reviewsCount={5}
+                  //reviewsCount={reviewsCount}
                   proposalStatus={proposalStatus}
+                  isExpedited={proposal.is_expedited}
                 />
               </div>
             )

@@ -1,12 +1,11 @@
 import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import governanceUtils from 'utils/governanceUtils'
-import StatusBadge from './components/Overview/StatusBadge'
+import StatusBadge from './components/StatusBadge'
 import { Nullable } from 'types/Nullable'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import { formatNumber } from 'utils/commons'
-import { Tooltip } from '@mui/material'
 
 function GovernanceDetail() {
   const navigate = useNavigate()
@@ -71,24 +70,21 @@ function GovernanceDetail() {
     }
   }, [proposal])
 
-  // Define the type for vote options
-  type VoteOption = 'yes' | 'abstain' | 'no' | 'no_with_veto'
-
   // Calculate total votes from tally data
   const totalVotes = tally
-    ? ['yes', 'abstain', 'no', 'no_with_veto'].reduce((sum, key) => sum + Number(tally[key as VoteOption]), 0)
+    ? ['yes', 'abstain', 'no', 'no_with_veto'].reduce((sum, key) => sum + Number(tally[key]), 0)
     : 0
 
-  // Define colors with VoteOption keys
-  const colors: Record<VoteOption, string> = {
-    yes: 'bg-green-500',
-    abstain: 'bg-yellow-500',
-    no: 'bg-red-500',
-    no_with_veto: 'bg-purple-500'
+  // Define colors
+  const colors: Record<string, string> = {
+    yes: 'bg-emerald-600 dark:bg-emerald-500 w-[45%]',
+    abstain: 'bg-gray-200 dark:bg-gray-700',
+    no: 'bg-rose-600 dark:bg-rose-500',
+    no_with_veto: 'bg-pink-600 dark:bg-pink-500'
   }
 
-  // Define vote types array with VoteOption type
-  const voteTypes: VoteOption[] = ['yes', 'abstain', 'no', 'no_with_veto']
+  // Define vote types array
+  const voteTypes: string[] = ['yes', 'no', 'no_with_veto', 'abstain']
 
   return (
     <div>
@@ -107,7 +103,7 @@ function GovernanceDetail() {
           )}
 
           {/* Proposal Header */}
-          <div className="bg-white dark:bg-neutral-800 p-4 flex flex-col h-full rounded-xl overflow-hidden">
+          <div className="bg-white dark:bg-neutral-800 p-4 flex flex-col h-full rounded-xl overflow-hidden mt-4">
             <div className="grid grid-cols-2 gap-4">
               <div className="col-auto">
                 <div className="font-bold">Voting Start</div>
@@ -132,43 +128,31 @@ function GovernanceDetail() {
           {tally && (
             <div className="bg-white dark:bg-neutral-800 p-4 flex flex-col h-full rounded-xl overflow-hidden mt-6">
               <h2 className="text-xl font-semibold mb-4">Voting Results</h2>
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                {voteTypes.map((voteType) => (
-                  <div key={voteType} className="text-center">
-                    <div className="font-bold capitalize">{voteType.replace('_', ' ')}</div>
-                    <div>{formatNumber(Number(tally[voteType]) / 1e6, 2)} SCRT</div>
-                  </div>
-                ))}
-              </div>
+              <div className="flex flex-col gap-4">
+                {voteTypes.map((voteType) => {
+                  const voteCount = Number(tally[voteType])
+                  const percentage = totalVotes ? (voteCount / totalVotes) * 100 : 0
+                  const label = voteType.replace(/_/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase())
+                  const displayValue = `${formatNumber(voteCount / 1e6, 2)} SCRT (${percentage.toFixed(2)}%)`
 
-              {/* Voting Chart */}
-              <div className="mt-6">
-                <h3 className="text-lg font-semibold mb-2">Vote Distribution</h3>
-                <div className="w-full h-6 flex rounded overflow-hidden">
-                  {voteTypes.map((voteType) => {
-                    const voteCount = Number(tally[voteType])
-                    const percentage = totalVotes ? (voteCount / totalVotes) * 100 : 0
-
-                    return (
-                      <Tooltip
-                        key={voteType}
-                        title={`${formatNumber(voteCount / 1e6, 2)} SCRT (${percentage.toFixed(2)}%)`}
-                        placement="bottom"
-                        arrow
-                      >
-                        <div style={{ width: `${percentage}%` }} className={`${colors[voteType]} h-full`}></div>
-                      </Tooltip>
-                    )
-                  })}
-                </div>
+                  return (
+                    <div key={voteType}>
+                      <div className="flex justify-between mb-1">
+                        <span className="text-base font-medium">{label}</span>
+                        <span className="text-sm font-medium">{displayValue}</span>
+                      </div>
+                      <div className="w-full bg-gray-200 rounded-full h-2.5">
+                        <div
+                          className={`${colors[voteType]} h-2.5 rounded-full`}
+                          style={{ width: `${percentage}%` }}
+                        ></div>
+                      </div>
+                    </div>
+                  )
+                })}
               </div>
             </div>
           )}
-
-          {/* Optional: Display Proposal JSON 
-                    <div className="bg-blue-900 text-blue-200 p-8 mt-8 border border-blue-500 rounded">
-                    {JSON.stringify(proposal)}
-                  </div>*/}
         </>
       ) : (
         <div className="text-center text-gray-500">Proposal not found.</div>

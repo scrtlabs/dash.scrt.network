@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import StatusBadge from './StatusBadge'
 import VotingChart from './VotingChart'
 import ReviewCount from './ReviewCount' // Uncomment if you have this component
+import ExpeditedBadge from './ExpeditedBadge'
 
 type Props = {
   id: string
@@ -18,6 +19,7 @@ type Props = {
   status?: ProposalStatus
   endingTime?: Date
   proposalStatus: ProposalStatus
+  isExpedited: boolean
 }
 
 function GovernancePreviewItem(props: Props) {
@@ -27,8 +29,9 @@ function GovernancePreviewItem(props: Props) {
       className="bg-white dark:bg-neutral-800 p-4 flex flex-col h-full rounded-xl overflow-hidden dark:hover:bg-neutral-700 hover:bg-neutral-200 transition-colors"
     >
       {/* Status */}
-      <div className="mb-2 flex items-center gap-4">
+      <div className="mb-2 flex items-center">
         <StatusBadge proposalStatus={props.proposalStatus} />
+        {props.isExpedited ? <ExpeditedBadge /> : null}
         {<ReviewCount count={props.reviewsCount} />}
       </div>
       {/* Title */}
