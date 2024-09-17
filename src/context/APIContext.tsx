@@ -234,8 +234,10 @@ const APIContextProvider = ({ children }: any) => {
         setIBCTokenSupply(response.total_ibc_balance_out)
       })
 
+    const SECRET_LIGHT_API_QUERY = 'https://lcd.mainnet.secretsaturn.net'
+
     const secretjsquery = new SecretNetworkClient({
-      url: SECRET_LCD,
+      url: SECRET_LIGHT_API_QUERY,
       chainId: SECRET_CHAIN_ID
     })
 
