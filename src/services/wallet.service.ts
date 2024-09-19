@@ -31,8 +31,9 @@ const connectKeplr = async (lcd: string, chainID: string) => {
   await window.keplr.enable(chainID)
   window.keplr.defaultOptions = {
     sign: {
-      preferNoSetFee: false,
-      disableBalanceCheck: true
+      preferNoSetFee: true,
+      disableBalanceCheck: true,
+      preferNoSetMemo: false
     }
   }
 

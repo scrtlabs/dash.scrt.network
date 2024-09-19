@@ -70,7 +70,7 @@ function Powertools() {
       let tx = await secretjs.tx.broadcast(txMessages, {
         gasLimit: 300_000,
         broadcastCheckIntervalMs: 10000,
-        gasPriceInFeeDenom: 0.1,
+        gasPriceInFeeDenom: 0.25,
         feeDenom: 'uscrt',
         broadcastMode: BroadcastMode.Sync,
         waitForCommit: false
