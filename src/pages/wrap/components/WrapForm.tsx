@@ -145,17 +145,19 @@ export default function WrapForm() {
 
   function setAmountByPercentage(percentage: number) {
     const balance = getBalance(formik.values.token, formik.values.wrappingMode === 'unwrap')
+
     if (
       (balance !== ('viewingKeyError' as GetBalanceError) || balance !== ('GenericFetchError' as GetBalanceError)) &&
       balance !== null
     ) {
-      formik.setFieldValue(
-        'amount',
-        Number((balance as BigNumber).dividedBy(`1e${formik.values.token.decimals}`).times(percentage / 100)).toFixed(
-          formik.values.token.decimals
-        )
-      )
+      const scaledAmount = (balance as BigNumber)
+        .times(percentage / 100)
+        .dividedBy(`1e${formik.values.token.decimals}`)
+        .decimalPlaces(formik.values.token.decimals, BigNumber.ROUND_DOWN)
+
+      formik.setFieldValue('amount', scaledAmount.toFixed(formik.values.token.decimals))
     }
+
     formik.setFieldTouched('amount', true)
   }
 
