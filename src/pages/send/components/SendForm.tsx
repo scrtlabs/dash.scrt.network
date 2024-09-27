@@ -128,6 +128,7 @@ export default function SendForm() {
     ) {
       const scaledAmount = (balance as BigNumber)
         .times(percentage / 100)
+        .minus(1)
         .dividedBy(`1e${formik.values.token.decimals}`)
         .decimalPlaces(formik.values.token.decimals, BigNumber.ROUND_DOWN)
 
