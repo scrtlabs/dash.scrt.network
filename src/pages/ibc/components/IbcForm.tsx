@@ -121,7 +121,7 @@ export default function IbcForm() {
       ) {
         const scaledAmount = (balance as BigNumber)
           .times(percentage / 100)
-          .minus(1)
+          .minus((balance as BigNumber).times(percentage / 100).gt(1) ? 1 : 0)
           .dividedBy(`1e${formik.values.token.decimals}`)
           .decimalPlaces(formik.values.token.decimals, BigNumber.ROUND_DOWN)
 
