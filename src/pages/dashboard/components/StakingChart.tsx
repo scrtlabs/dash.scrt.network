@@ -60,8 +60,8 @@ export default function StakingChart() {
       sSCRTTokenSupply &&
       stkdSCRTTokenSupply &&
       IBCTokenSupply &&
-      burnedTokenSupply &&
-      exchangesTokenSupply
+      exchangesTokenSupply &&
+      burnedTokenSupply
     ) {
       const otherToken =
         totalSupply -
@@ -70,13 +70,15 @@ export default function StakingChart() {
         communityPool -
         IBCTokenSupply -
         sSCRTTokenSupply -
-        burnedTokenSupply
+        burnedTokenSupply -
+        exchangesTokenSupply
+
       setAdjustedTotalSupply(totalSupply - burnedTokenSupply)
       setOtherToken(otherToken)
 
       const dataValues = [
         { label: 'Staked', value: bondedToken - stkdSCRTTokenSupply },
-        { label: 'Liquid', value: otherToken - exchangesTokenSupply },
+        { label: 'Liquid', value: otherToken },
         { label: 'Exchanges', value: exchangesTokenSupply },
         { label: 'sSCRT', value: sSCRTTokenSupply },
         { label: 'stkd-SCRT', value: stkdSCRTTokenSupply },
@@ -199,6 +201,7 @@ export default function StakingChart() {
           communityPool !== undefined &&
           IBCTokenSupply !== undefined &&
           burnedTokenSupply !== undefined &&
+          exchangesTokenSupply !== undefined &&
           options !== undefined &&
           centerText !== undefined ? (
             <Doughnut
