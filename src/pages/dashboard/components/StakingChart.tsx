@@ -52,6 +52,17 @@ export default function StakingChart() {
   })
 
   useEffect(() => {
+    console.log(
+      bondedToken,
+      notBondedToken,
+      totalSupply,
+      communityPool,
+      sSCRTTokenSupply,
+      stkdSCRTTokenSupply,
+      IBCTokenSupply,
+      exchangesTokenSupply,
+      burnedTokenSupply
+    )
     if (
       bondedToken &&
       notBondedToken &&
@@ -59,7 +70,7 @@ export default function StakingChart() {
       communityPool &&
       sSCRTTokenSupply &&
       stkdSCRTTokenSupply &&
-      IBCTokenSupply &&
+      IBCTokenSupply !== null &&
       exchangesTokenSupply &&
       burnedTokenSupply
     ) {

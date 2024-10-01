@@ -1,13 +1,11 @@
-import { a } from '@skip-router/core/dist/shared-3RetyKaV'
 import BigNumber from 'bignumber.js'
 import { createContext, useEffect, useState } from 'react'
 import { SecretNetworkClient } from 'secretjs'
-import { Any } from 'secretjs/dist/protobuf/google/protobuf/any'
 import { useUserPreferencesStore } from 'store/UserPreferences'
 import { Currency } from 'types/Currency'
 import { Nullable } from 'types/Nullable'
 import { allTokens, coinGeckoCurrencyMap, sortDAppsArray } from 'utils/commons'
-import { SECRET_LCD, SECRET_CHAIN_ID, chains } from 'utils/config'
+import { SECRET_LCD, SECRET_CHAIN_ID } from 'utils/config'
 
 const APIContext = createContext(null)
 
@@ -233,6 +231,7 @@ const APIContextProvider = ({ children }: any) => {
       .catch((error: any) => console.error(error))
       .then((response) => {
         setL5AnalyticsApiData(response)
+        setIBCTokenSupply(0)
         if (response.total_ibc_balance_out != null) {
           setIBCTokenSupply(response.total_ibc_balance_out)
         }
