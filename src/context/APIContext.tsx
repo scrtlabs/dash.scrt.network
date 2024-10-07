@@ -5,7 +5,7 @@ import { useUserPreferencesStore } from 'store/UserPreferences'
 import { Currency } from 'types/Currency'
 import { Nullable } from 'types/Nullable'
 import { allTokens, coinGeckoCurrencyMap, sortDAppsArray } from 'utils/commons'
-import { SECRET_LCD, SECRET_CHAIN_ID, chains } from 'utils/config'
+import { SECRET_LCD, SECRET_CHAIN_ID } from 'utils/config'
 
 const APIContext = createContext(null)
 
@@ -231,7 +231,10 @@ const APIContextProvider = ({ children }: any) => {
       .catch((error: any) => console.error(error))
       .then((response) => {
         setL5AnalyticsApiData(response)
-        setIBCTokenSupply(response.total_ibc_balance_out)
+        setIBCTokenSupply(0)
+        if (response.total_ibc_balance_out != null) {
+          setIBCTokenSupply(response.total_ibc_balance_out)
+        }
       })
 
     const secretjsquery = new SecretNetworkClient({
@@ -263,56 +266,60 @@ const APIContextProvider = ({ children }: any) => {
         setSSCRTTokenSupply(Number(res.balance?.amount) / 1e6)
       })
 
-    secretjsquery?.query?.bank
+    // Hardcoded value that is not expected to change much over time, saving and LCD query.
+    /* secretjsquery?.query?.bank
       ?.balance({
         address: 'secret1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq3x5k6p',
         denom: 'uscrt'
       })
       ?.then((res) => {
         setBurnedTokenSupply(Number(res.balance?.amount) / 1e6)
-      })
+      }) */
+
+    setBurnedTokenSupply(Number(1045669000000) / 1e6)
 
     const exchangeAddresses = [
-      'secret1p3ucd3ptpw902fluyjzhq3ffgq4ntdda6qy5vv', //Binance Cold Wallet
-      'secret1an5pyzzpu5ez7ep9m43yzmalymwls39qtk8rjd', //Binance Hot Wallet
-      'secret1nm0rrq86ucezaf8uj35pq9fpwr5r82cl94vhug', //Kraken
-      'secret12ppfz8wssn0dtpjscys978m88a6z5llp5j5f99', //Kucoin
-      'secret155e8c284v6w725llkwwma36vzly4ujsc2syfcy', //MEXC
-      'secret15catgqhve7ul7vrej5mqdlv8dx4r5hcw0ywzfq', //BitMart
-      'secret1k3pjdxavzkc4ztxmy4y44z8g8qggpp9ut84yag' //ByBit
+      'secret1p3ucd3ptpw902fluyjzhq3ffgq4ntdda6qy5vv', // Binance Cold Wallet
+      'secret1an5pyzzpu5ez7ep9m43yzmalymwls39qtk8rjd', // Binance Hot Wallet
+      'secret1nm0rrq86ucezaf8uj35pq9fpwr5r82cl94vhug', // Kraken
+      'secret1uer4mwcq2vlt8l23ncwyjj70mug5pzx8gackej', // Kucoin
+      'secret155e8c284v6w725llkwwma36vzly4ujsc2syfcy', // MEXC
+      'secret1k3pjdxavzkc4ztxmy4y44z8g8qggpp9ut84yag' // ByBit
     ]
 
-    const getBalance = (address: string) => {
-      return secretjsquery?.query?.bank?.balance({ address, denom: 'uscrt' }).then((res) => {
-        return Number(res.balance?.amount) / 1e6
-      })
+    const getBalance = async (address: string) => {
+      const res = await secretjsquery?.query?.bank?.balance({ address, denom: 'uscrt' })
+      return Number(res.balance?.amount) / 1e6
     }
 
-    Promise.all(exchangeAddresses.map(getBalance)).then((balances) => {
+    const delay = (ms: any) => new Promise((resolve) => setTimeout(resolve, ms))
+
+    ;(async () => {
+      const balances = []
+      for (const address of exchangeAddresses) {
+        const balance = await getBalance(address)
+        balances.push(balance)
+        await delay(250) // Delay of 250 milliseconds between each query
+      }
       const totalBalance = balances.reduce((acc, balance) => acc + balance, 0)
       setExchangesTokenSupply(totalBalance)
-    })
+    })()
 
-    secretjsquery?.query?.bank
-      ?.balance({
-        address: allTokens.find((token) => token.name === 'stkd-SCRT').address,
-        denom: 'uscrt'
+    setExchangesTokenSupply(Number(0))
+
+    secretjsquery?.query?.staking
+      .delegatorDelegations({
+        delegator_addr: allTokens.find((token) => token.name === 'stkd-SCRT').address,
+        pagination: { limit: '20' }
       })
-      ?.then((res) => {
-        secretjsquery?.query?.staking
-          .delegatorDelegations({
-            delegator_addr: allTokens.find((token) => token.name === 'stkd-SCRT').address,
-            pagination: { limit: '20' }
-          })
-          ?.then((delegatorDelegations) => {
-            const totalDelegations = delegatorDelegations.delegation_responses
-              ?.reduce((sum: any, delegation: any) => {
-                const amount = new BigNumber(delegation?.balance?.amount || 0)
-                return sum.plus(amount)
-              }, new BigNumber(0))
-              .dividedBy(`1e6`)
-            setStkdSCRTTokenSupply(Number(res.balance?.amount) / 1e6 + Number(totalDelegations))
-          })
+      ?.then((delegatorDelegations) => {
+        const totalDelegations = delegatorDelegations.delegation_responses
+          ?.reduce((sum: any, delegation: any) => {
+            const amount = new BigNumber(delegation?.balance?.amount || 0)
+            return sum.plus(amount)
+          }, new BigNumber(0))
+          .dividedBy(`1e6`)
+        setStkdSCRTTokenSupply(Number(totalDelegations))
       })
 
     //let totalAmount = 0
@@ -346,12 +353,18 @@ const APIContextProvider = ({ children }: any) => {
     //     })
     // }
 
-    secretjsquery?.query?.mint?.inflation('')?.then((res) => setInflation((res as any).inflation))
+    // Hardcoded value that is not expected to change much over time, saving and LCD query.
 
-    secretjsquery?.query?.distribution.params('')?.then((res) => {
+    //secretjsquery?.query?.mint?.inflation('')?.then((res) => setInflation((res as any).inflation))
+    setInflation(0.09)
+
+    // Hardcoded value that is not expected to change much over time, saving and LCD query.
+    /*secretjsquery?.query?.distribution.params('')?.then((res) => {
       setSecretFoundationTax(res?.params.secret_foundation_tax)
       setCommunityTax(res?.params.community_tax)
-    })
+    })*/
+    setSecretFoundationTax('0.000000000000000000')
+    setCommunityTax('0.020000000000000000')
 
     fetchDappsURL()
     if (currencyPricing === defaultCurrencyPricing) {

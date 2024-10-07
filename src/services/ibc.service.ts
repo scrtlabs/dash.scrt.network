@@ -563,7 +563,7 @@ async function performIbcWithdrawal(
         {
           broadcastCheckIntervalMs: 1000,
           gasLimit: withdraw_gas,
-          gasPriceInFeeDenom: 0.1,
+          gasPriceInFeeDenom: 0.25,
           feeDenom: 'uscrt',
           feeGranter: props.feeGrantStatus === 'success' ? faucetAddress : '',
           ibcTxsOptions: {
@@ -627,7 +627,7 @@ async function performIbcWithdrawal(
         {
           broadcastCheckIntervalMs: 1000,
           gasLimit: withdraw_gas,
-          gasPriceInFeeDenom: 0.1,
+          gasPriceInFeeDenom: 0.25,
           feeDenom: 'uscrt',
           feeGranter: props.feeGrantStatus === 'success' ? faucetAddress : '',
           ibcTxsOptions: {
@@ -687,7 +687,7 @@ async function performIbcWithdrawal(
         {
           broadcastCheckIntervalMs: 1000,
           gasLimit: withdraw_gas,
-          gasPriceInFeeDenom: 0.1,
+          gasPriceInFeeDenom: 0.25,
           feeDenom: 'uscrt',
           feeGranter: props.feeGrantStatus === 'success' ? faucetAddress : '',
           ibcTxsOptions: {

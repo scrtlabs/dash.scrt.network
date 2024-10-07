@@ -52,6 +52,17 @@ export default function StakingChart() {
   })
 
   useEffect(() => {
+    console.log(
+      bondedToken,
+      notBondedToken,
+      totalSupply,
+      communityPool,
+      sSCRTTokenSupply,
+      stkdSCRTTokenSupply,
+      IBCTokenSupply,
+      exchangesTokenSupply,
+      burnedTokenSupply
+    )
     if (
       bondedToken &&
       notBondedToken &&
@@ -59,9 +70,9 @@ export default function StakingChart() {
       communityPool &&
       sSCRTTokenSupply &&
       stkdSCRTTokenSupply &&
-      IBCTokenSupply &&
-      burnedTokenSupply &&
-      exchangesTokenSupply
+      IBCTokenSupply !== null &&
+      exchangesTokenSupply &&
+      burnedTokenSupply
     ) {
       const otherToken =
         totalSupply -
@@ -70,13 +81,15 @@ export default function StakingChart() {
         communityPool -
         IBCTokenSupply -
         sSCRTTokenSupply -
-        burnedTokenSupply
+        burnedTokenSupply -
+        exchangesTokenSupply
+
       setAdjustedTotalSupply(totalSupply - burnedTokenSupply)
       setOtherToken(otherToken)
 
       const dataValues = [
         { label: 'Staked', value: bondedToken - stkdSCRTTokenSupply },
-        { label: 'Liquid', value: otherToken - exchangesTokenSupply },
+        { label: 'Liquid', value: otherToken },
         { label: 'Exchanges', value: exchangesTokenSupply },
         { label: 'sSCRT', value: sSCRTTokenSupply },
         { label: 'stkd-SCRT', value: stkdSCRTTokenSupply },
@@ -199,6 +212,7 @@ export default function StakingChart() {
           communityPool !== undefined &&
           IBCTokenSupply !== undefined &&
           burnedTokenSupply !== undefined &&
+          exchangesTokenSupply !== undefined &&
           options !== undefined &&
           centerText !== undefined ? (
             <Doughnut
