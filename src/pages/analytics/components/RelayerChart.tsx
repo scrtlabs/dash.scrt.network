@@ -130,7 +130,7 @@ export default function RelayerChartWithSlider() {
     const numMarks = Math.min(10, dates.length) // Limit to 10 marks max
     const marks = []
 
-    const formatDate = (date) =>
+    const formatDate = (date: string) =>
       new Date(date).toLocaleDateString(undefined, {
         month: 'short',
         day: 'numeric'
@@ -237,7 +237,7 @@ export default function RelayerChartWithSlider() {
   }
 
   return (
-    <div className="mb-8">
+    <>
       <div>
         <h2 className="text-center text-xl font-semibold pt-2.5 pb-0">
           IBC Transactions by Chain and Relayer
@@ -253,24 +253,44 @@ export default function RelayerChartWithSlider() {
         </h2>
       </div>
       <div className="w-full h-[300px] xl:h-[400px]">
-        {chartData ? <Bar data={chartData} options={options} /> : null}
+        {chartData ? <Bar data={chartData} options={options as any} /> : null}
       </div>
-      <div className="mt-4">
-        <Slider
-          value={selectedDateIndex}
-          min={0}
-          max={dates.length - 1}
-          onChange={handleSliderChange}
-          marks={getSliderMarks()}
-          valueLabelDisplay="auto"
-          valueLabelFormat={(value) =>
-            new Date(dates[value]).toLocaleDateString(undefined, {
-              month: 'short',
-              day: 'numeric'
-            })
-          }
-        />
+      <div className="mt-0">
+        <div className="w-3/4 mx-auto mb-(-1)">
+          <Slider
+            value={selectedDateIndex}
+            min={0}
+            max={dates.length - 1}
+            onChange={handleSliderChange}
+            marks={getSliderMarks()}
+            valueLabelDisplay="auto"
+            valueLabelFormat={(value) =>
+              new Date(dates[value]).toLocaleDateString(undefined, {
+                month: 'short',
+                day: 'numeric'
+              })
+            }
+            sx={{
+              color: theme === 'dark' ? '#fff' : '#000', // Set the slider color based on the theme
+              '& .MuiSlider-thumb': {
+                backgroundColor: theme === 'dark' ? '#fff' : '#000' // Thumb color
+              },
+              '& .MuiSlider-track': {
+                backgroundColor: theme === 'dark' ? '#fff' : '#000' // Track color
+              },
+              '& .MuiSlider-rail': {
+                backgroundColor: theme === 'dark' ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0, 0, 0, 0.2)' // Rail color (unfilled part of the slider)
+              },
+              '& .MuiSlider-mark': {
+                backgroundColor: theme === 'dark' ? '#fff' : '#000' // Marks color
+              },
+              '& .MuiSlider-markLabel': {
+                color: theme === 'dark' ? '#fff' : '#000' // Mark labels color
+              }
+            }}
+          />
+        </div>
       </div>
-    </div>
+    </>
   )
 }
