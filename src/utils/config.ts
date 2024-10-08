@@ -180,7 +180,7 @@ export const chains: { [chain_name: string]: Chain } = {
     withdraw_channel_id: 'channel-80',
     withdraw_gas: 150_000,
     chain_id: 'centauri-1',
-    bech32_prefix: 'centauri',
+    bech32_prefix: 'pica',
     lcd: 'https://composable-api.lavenderfive.com',
     chain_image: '/composable.svg',
     explorer_account: 'https://explorer.nodestake.top/composable/account/'
