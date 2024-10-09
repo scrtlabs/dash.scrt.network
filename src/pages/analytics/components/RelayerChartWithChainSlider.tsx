@@ -224,7 +224,7 @@ export default function RelayerChartWithChainSlider() {
             value={selectedChainIndex}
             min={0}
             max={chainLabels.length - 1}
-            onChange={handleSliderChange}
+            onChange={handleSliderChange as any}
             marks={getSliderMarks()}
             valueLabelDisplay="auto"
             valueLabelFormat={(value) => chainLabels[value]}
