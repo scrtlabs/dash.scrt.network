@@ -7,7 +7,9 @@ import AccountsChart from './components/AccountsChart'
 import ValidatorsChart from './components/ValidatorsChart'
 import ContractsChart from './components/ContractsChart'
 import TransactionsChart from './components/TransactionsChart'
-import RelayerChart from './components/RelayerChart'
+import RelayerChartWithDateSlider from './components/RelayerChartWithDateSlider'
+import RelayerChartWithChainSlider from './components/RelayerChartWithChainSlider'
+import RelayerChartWithProviderSlider from './components/RelayerChartWithProviderSlider'
 
 function Analytics() {
   const { L5AnalyticsApiData, analyticsData1, analyticsData2, analyticsData3, analyticsData4 } = useContext(APIContext)
@@ -65,7 +67,9 @@ function Analytics() {
           {analyticsData4 ? (
             <>
               <div className="col-span-12 rounded-xl bg-white border border-neutral-200 dark:border-neutral-700 dark:bg-neutral-800 p-4">
-                <RelayerChart />
+                <RelayerChartWithDateSlider />
+                <RelayerChartWithChainSlider />
+                <RelayerChartWithProviderSlider />
               </div>
             </>
           ) : null}

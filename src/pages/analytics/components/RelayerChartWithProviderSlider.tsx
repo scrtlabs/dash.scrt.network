@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { formatNumber } from 'utils/commons'
 import Tooltip from '@mui/material/Tooltip'
 import Slider from '@mui/material/Slider'
@@ -27,34 +27,34 @@ type Entry = {
   Transactions: number
 }
 
-export default function RelayerChartWithSlider() {
+export default function RelayerChartWithProviderSlider() {
   const { theme } = useUserPreferencesStore()
   const { analyticsData4 } = useContext(APIContext)
   const [chartData, setChartData] = useState<any>(null)
-  const [dates, setDates] = useState<string[]>([])
-  const [selectedDateIndex, setSelectedDateIndex] = useState<number>(0)
+  const [relayers, setRelayers] = useState<string[]>([])
+  const [selectedRelayerIndex, setSelectedRelayerIndex] = useState<number>(0)
 
   useEffect(() => {
-    // Process data grouped by date
-    const dateMap: Record<string, Entry[]> = {}
+    // Process data grouped by relayer
+    const relayerMap: Record<string, Entry[]> = {}
 
     analyticsData4.forEach((entry: Entry) => {
-      const date = new Date(entry.Date).toISOString().split('T')[0]
-      dateMap[date] ||= []
-      dateMap[date].push(entry)
+      const relayer = entry.Relayer || 'Other'
+      relayerMap[relayer] ||= []
+      relayerMap[relayer].push(entry)
     })
 
-    const sortedDates = Object.keys(dateMap).sort((a, b) => new Date(a).getTime() - new Date(b).getTime())
-    setDates(sortedDates)
+    const sortedRelayers = Object.keys(relayerMap).sort((a, b) => a.localeCompare(b))
+    setRelayers(sortedRelayers)
 
-    // Initialize chart data with the first date's data
-    if (sortedDates.length > 0) {
-      const initialDate = sortedDates[0]
-      updateChartDataForDate(initialDate, dateMap[initialDate])
+    // Initialize chart data with the first relayer's data
+    if (sortedRelayers.length > 0) {
+      const initialRelayer = sortedRelayers[0]
+      updateChartDataForRelayer(initialRelayer, relayerMap[initialRelayer])
     }
   }, [analyticsData4])
 
-  const updateChartDataForDate = (date: string, entries: Entry[]) => {
+  const updateChartDataForRelayer = (relayer: string, entries: Entry[]) => {
     // Cache the mapping from bech32 prefixes to chain names
     const bech32PrefixToChainName: Map<string, string> = new Map()
     for (const chainInfo of Object.values(chains)) {
@@ -63,25 +63,28 @@ export default function RelayerChartWithSlider() {
 
     // Initialize data structures
     const dataMatrix: Map<string, Map<string, number>> = new Map()
+    const datesSet: Set<string> = new Set()
     const chainsSet: Set<string> = new Set()
-    const relayersSet: Set<string> = new Set()
 
-    // Build dataMatrix and collect unique chains and relayers
+    // Build dataMatrix and collect unique dates and chains
     for (const entry of entries) {
+      const date = new Date(entry.Date).toISOString().split('T')[0]
       const chainBech32Prefix = entry.IBC_Counterpart
-      const relayer = entry.Relayer || 'Other'
 
+      datesSet.add(date)
       chainsSet.add(chainBech32Prefix)
-      relayersSet.add(relayer)
 
-      if (!dataMatrix.has(relayer)) {
-        dataMatrix.set(relayer, new Map())
+      if (!dataMatrix.has(chainBech32Prefix)) {
+        dataMatrix.set(chainBech32Prefix, new Map())
       }
-      const chainMap = dataMatrix.get(relayer)!
-      chainMap.set(chainBech32Prefix, (chainMap.get(chainBech32Prefix) || 0) + entry.Transactions)
+      const dateMap = dataMatrix.get(chainBech32Prefix)!
+      dateMap.set(date, (dateMap.get(date) || 0) + entry.Transactions)
     }
 
-    // Prepare an array of { prefix, label } pairs
+    // Sort dates
+    const sortedDates = Array.from(datesSet).sort((a, b) => new Date(a).getTime() - new Date(b).getTime())
+
+    // Prepare an array of { prefix, label } pairs for chains
     const prefixLabelPairs = Array.from(chainsSet).map((prefix) => ({
       prefix,
       label: bech32PrefixToChainName.get(prefix) || prefix
@@ -92,72 +95,64 @@ export default function RelayerChartWithSlider() {
 
     // Extract the sorted bech32Prefixes and labels
     const sortedBech32Prefixes = prefixLabelPairs.map((pair) => pair.prefix)
-    const labels = prefixLabelPairs.map((pair) => pair.label)
+    const chainLabels = prefixLabelPairs.map((pair) => pair.label)
 
-    // Create datasets for each relayer
-    const datasets = Array.from(relayersSet).map((relayer) => {
-      const chainMap = dataMatrix.get(relayer)!
-      const data = sortedBech32Prefixes.map((prefix) => chainMap.get(prefix) || 0)
+    // Create datasets for each chain
+    const datasets = sortedBech32Prefixes.map((chainPrefix, index) => {
+      const dateMap = dataMatrix.get(chainPrefix)!
+      const data = sortedDates.map((date) => dateMap.get(date) || 0)
       return {
-        label: relayer,
+        label: chainLabels[index],
         data,
-        backgroundColor: getColorFromRelayer(relayer)
+        backgroundColor: getColorFromChain(chainLabels[index])
       }
     })
 
     // Set chart data with prepared labels and datasets
     setChartData({
-      labels,
+      labels: sortedDates,
       datasets
     })
   }
 
   const handleSliderChange = (event: Event, newValue: number | number[]) => {
     const index = newValue as number
-    setSelectedDateIndex(index)
+    setSelectedRelayerIndex(index)
 
-    const selectedDate = dates[index]
-    const dateEntries = analyticsData4.filter(
-      (entry: Entry) => new Date(entry.Date).toISOString().split('T')[0] === selectedDate
-    )
+    const selectedRelayer = relayers[index]
+    const relayerEntries = analyticsData4.filter((entry: Entry) => (entry.Relayer || 'Other') === selectedRelayer)
 
-    updateChartDataForDate(selectedDate, dateEntries)
+    updateChartDataForRelayer(selectedRelayer, relayerEntries)
   }
 
   const getSliderMarks = () => {
-    if (dates.length === 0) return []
+    if (relayers.length === 0) return []
 
-    const numMarks = Math.min(10, dates.length) // Limit to 10 marks max
+    const numMarks = Math.min(10, relayers.length) // Limit to 10 marks max
     const marks = []
 
-    const formatDate = (date: string) =>
-      new Date(date).toLocaleDateString(undefined, {
-        month: 'short',
-        day: 'numeric'
-      })
-
-    // Always include the first date
+    // Always include the first relayer
     marks.push({
       value: 0,
-      label: formatDate(dates[0])
+      label: relayers[0]
     })
 
-    if (dates.length > 1) {
-      const interval = (dates.length - 1) / (numMarks - 1)
+    if (relayers.length > 1) {
+      const interval = (relayers.length - 1) / (numMarks - 1)
 
       // Add intermediate marks only if necessary
       for (let i = 1; i < numMarks - 1; i++) {
         const index = Math.round(i * interval)
         marks.push({
           value: index,
-          label: formatDate(dates[index])
+          label: relayers[index]
         })
       }
 
-      // Always include the last date
+      // Always include the last relayer
       marks.push({
-        value: dates.length - 1,
-        label: formatDate(dates[dates.length - 1])
+        value: relayers.length - 1,
+        label: relayers[relayers.length - 1]
       })
     }
 
@@ -172,7 +167,13 @@ export default function RelayerChartWithSlider() {
       x: {
         stacked: true,
         ticks: {
-          color: theme === 'dark' ? '#fff' : '#000'
+          color: theme === 'dark' ? '#fff' : '#000',
+          callback: function (value: any, index: number) {
+            return new Date(chartData.labels[index]).toLocaleDateString(undefined, {
+              month: 'short',
+              day: 'numeric'
+            })
+          }
         },
         grid: {
           color: theme === 'dark' ? '#fff' : '#000',
@@ -226,11 +227,11 @@ export default function RelayerChartWithSlider() {
     }
   }
 
-  function getColorFromRelayer(relayer: string) {
-    // Generate a unique color based on the relayer name
+  function getColorFromChain(chain: string) {
+    // Generate a unique color based on the chain name
     let hash = 0
-    for (let i = 0; i < relayer.length; i++) {
-      hash = relayer.charCodeAt(i) + ((hash << 5) - hash)
+    for (let i = 0; i < chain.length; i++) {
+      hash = chain.charCodeAt(i) + ((hash << 5) - hash)
     }
     const color = `#${(hash & 0x00ffffff).toString(16).padStart(6, '0').slice(-6)}`
     return color
@@ -240,9 +241,9 @@ export default function RelayerChartWithSlider() {
     <>
       <div>
         <h2 className="text-center text-xl font-semibold pt-2.5 pb-0">
-          IBC Transactions by Chain and Relayer
+          IBC Transactions by Date and Chain (Per Relayer)
           <Tooltip
-            title="Use the slider to select a date and view transactions by chain and relayer."
+            title="Use the slider to select a relayer and view transactions by date and chain."
             placement="right"
             arrow
           >
@@ -258,18 +259,13 @@ export default function RelayerChartWithSlider() {
       <div className="mt-0">
         <div className="w-3/4 mx-auto mb-(-1)">
           <Slider
-            value={selectedDateIndex}
+            value={selectedRelayerIndex}
             min={0}
-            max={dates.length - 1}
+            max={relayers.length - 1}
             onChange={handleSliderChange}
             marks={getSliderMarks()}
             valueLabelDisplay="auto"
-            valueLabelFormat={(value) =>
-              new Date(dates[value]).toLocaleDateString(undefined, {
-                month: 'short',
-                day: 'numeric'
-              })
-            }
+            valueLabelFormat={(value) => relayers[value]}
             sx={{
               color: theme === 'dark' ? '#fff' : '#000', // Set the slider color based on the theme
               '& .MuiSlider-thumb': {
@@ -279,7 +275,7 @@ export default function RelayerChartWithSlider() {
                 backgroundColor: theme === 'dark' ? '#fff' : '#000' // Track color
               },
               '& .MuiSlider-rail': {
-                backgroundColor: theme === 'dark' ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0, 0, 0, 0.2)' // Rail color (unfilled part of the slider)
+                backgroundColor: theme === 'dark' ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0, 0, 0, 0.2)' // Rail color
               },
               '& .MuiSlider-mark': {
                 backgroundColor: theme === 'dark' ? '#fff' : '#000' // Marks color
