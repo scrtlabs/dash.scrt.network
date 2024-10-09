@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from 'react'
-import { formatNumber } from 'utils/commons'
+import { bech32PrefixToChainName, formatNumber } from 'utils/commons'
 import Tooltip from '@mui/material/Tooltip'
 import Slider from '@mui/material/Slider'
 import {
@@ -55,12 +55,6 @@ export default function RelayerChartWithProviderSlider() {
   }, [analyticsData4])
 
   const updateChartDataForRelayer = (relayer: string, entries: Entry[]) => {
-    // Cache the mapping from bech32 prefixes to chain names
-    const bech32PrefixToChainName: Map<string, string> = new Map()
-    for (const chainInfo of Object.values(chains)) {
-      bech32PrefixToChainName.set(chainInfo.bech32_prefix, chainInfo.chain_name)
-    }
-
     // Initialize data structures
     const dataMatrix: Map<string, Map<string, number>> = new Map()
     const datesSet: Set<string> = new Set()
@@ -134,7 +128,7 @@ export default function RelayerChartWithProviderSlider() {
     // Always include the first relayer
     marks.push({
       value: 0,
-      label: relayers[0]
+      label: relayers[0].substring(0, 20)
     })
 
     if (relayers.length > 1) {
@@ -145,14 +139,14 @@ export default function RelayerChartWithProviderSlider() {
         const index = Math.round(i * interval)
         marks.push({
           value: index,
-          label: relayers[index]
+          label: relayers[index].substring(0, 20)
         })
       }
 
       // Always include the last relayer
       marks.push({
         value: relayers.length - 1,
-        label: relayers[relayers.length - 1]
+        label: relayers[relayers.length - 1].substring(0, 20)
       })
     }
 
@@ -170,8 +164,9 @@ export default function RelayerChartWithProviderSlider() {
           color: theme === 'dark' ? '#fff' : '#000',
           callback: function (value: any, index: number) {
             return new Date(chartData.labels[index]).toLocaleDateString(undefined, {
-              month: 'short',
-              day: 'numeric'
+              year: '2-digit',
+              month: '2-digit',
+              day: '2-digit'
             })
           }
         },
@@ -281,7 +276,7 @@ export default function RelayerChartWithProviderSlider() {
                 backgroundColor: theme === 'dark' ? '#fff' : '#000' // Marks color
               },
               '& .MuiSlider-markLabel': {
-                color: theme === 'dark' ? '#fff' : '#000' // Mark labels color
+                color: theme === 'dark' ? '#fff' : '#000'
               }
             }}
           />

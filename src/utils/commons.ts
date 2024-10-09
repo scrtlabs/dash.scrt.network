@@ -1,5 +1,5 @@
 import { Currency } from 'types/Currency'
-import { tokens, snips, ICSTokens } from './config'
+import { tokens, snips, ICSTokens, chains } from './config'
 import mixpanel from 'mixpanel-browser'
 import { SecretNetworkClient } from 'secretjs'
 
@@ -19,6 +19,12 @@ export const randomDelay = (min: number, max: number) => {
 }
 
 export const allTokens = tokens.concat(snips).concat(ICSTokens)
+
+// Cache the mapping from bech32 prefixes to chain names
+export const bech32PrefixToChainName: Map<string, string> = new Map()
+for (const chainInfo of Object.values(chains)) {
+  bech32PrefixToChainName.set(chainInfo.bech32_prefix, chainInfo.chain_name)
+}
 
 /**
  * Generates random string of characters, used to add entropy to TX data

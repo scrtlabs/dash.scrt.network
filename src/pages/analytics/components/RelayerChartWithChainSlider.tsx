@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from 'react'
-import { formatNumber } from 'utils/commons'
+import { bech32PrefixToChainName, formatNumber } from 'utils/commons'
 import Tooltip from '@mui/material/Tooltip'
 import Slider from '@mui/material/Slider'
 import {
@@ -16,7 +16,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faInfoCircle } from '@fortawesome/free-solid-svg-icons'
 import { useUserPreferencesStore } from 'store/UserPreferences'
 import { APIContext } from 'context/APIContext'
-import { chains } from 'utils/config'
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, ChartTooltip, Legend, BarController)
 
@@ -33,33 +32,7 @@ export default function RelayerChartWithChainSlider() {
   const [chartData, setChartData] = useState<any>(null)
   const [chainLabels, setChainLabels] = useState<string[]>([])
   const [selectedChainIndex, setSelectedChainIndex] = useState<number>(0)
-
-  useEffect(() => {
-    // Cache the mapping from bech32 prefixes to chain names
-    const bech32PrefixToChainName: Map<string, string> = new Map()
-    for (const chainInfo of Object.values(chains)) {
-      bech32PrefixToChainName.set(chainInfo.bech32_prefix, chainInfo.chain_name)
-    }
-
-    // Process data grouped by chain
-    const chainMap: Record<string, Entry[]> = {}
-
-    analyticsData4.forEach((entry: Entry) => {
-      const chainBech32Prefix = entry.IBC_Counterpart
-      const chainName = bech32PrefixToChainName.get(chainBech32Prefix) || chainBech32Prefix
-      chainMap[chainName] ||= []
-      chainMap[chainName].push(entry)
-    })
-
-    const sortedChains = Object.keys(chainMap).sort((a, b) => a.localeCompare(b))
-    setChainLabels(sortedChains)
-
-    // Initialize chart data with the first chain's data
-    if (sortedChains.length > 0) {
-      const initialChain = sortedChains[0]
-      updateChartDataForChain(initialChain, chainMap[initialChain])
-    }
-  }, [analyticsData4])
+  const [chainMap, setChainMap] = useState<Record<string, Entry[]>>({})
 
   const updateChartDataForChain = (chainName: string, entries: Entry[]) => {
     // Initialize data structures
@@ -106,52 +79,45 @@ export default function RelayerChartWithChainSlider() {
     })
   }
 
-  const handleSliderChange = (event: Event, newValue: number | number[]) => {
+  useEffect(() => {
+    // Process data grouped by chain
+    const chainMap: Record<string, Entry[]> = {}
+
+    analyticsData4
+      .filter((entry: Entry) => entry.IBC_Counterpart !== null)
+      .forEach((entry: Entry) => {
+        const chainBech32Prefix = entry.IBC_Counterpart
+        const chainName = bech32PrefixToChainName.get(chainBech32Prefix) || chainBech32Prefix
+        chainMap[chainName] ||= []
+        chainMap[chainName].push(entry)
+      })
+
+    const sortedChains = Object.keys(chainMap).sort((a, b) => a.localeCompare(b))
+    setChainLabels(sortedChains)
+    setChainMap(chainMap)
+
+    // Initialize chart data with the first chain's data
+    if (sortedChains.length > 0) {
+      const initialChain = sortedChains[0]
+      updateChartDataForChain(initialChain, chainMap[initialChain])
+    }
+  }, [analyticsData4])
+
+  const handleSliderChange = (event: React.SyntheticEvent, newValue: number | number[]) => {
     const index = newValue as number
     setSelectedChainIndex(index)
 
     const selectedChain = chainLabels[index]
-    const chainEntries = analyticsData4.filter((entry: Entry) => {
-      const chainBech32Prefix = entry.IBC_Counterpart
-      const chainName = chains[chainBech32Prefix]?.chain_name || chainBech32Prefix
-      return chainName === selectedChain
-    })
+    const chainEntries = chainMap[selectedChain] || []
 
     updateChartDataForChain(selectedChain, chainEntries)
   }
 
   const getSliderMarks = () => {
-    if (chainLabels.length === 0) return []
-
-    const numMarks = Math.min(10, chainLabels.length) // Limit to 10 marks max
-    const marks = []
-
-    // Always include the first chain
-    marks.push({
-      value: 0,
-      label: chainLabels[0]
-    })
-
-    if (chainLabels.length > 1) {
-      const interval = (chainLabels.length - 1) / (numMarks - 1)
-
-      // Add intermediate marks only if necessary
-      for (let i = 1; i < numMarks - 1; i++) {
-        const index = Math.round(i * interval)
-        marks.push({
-          value: index,
-          label: chainLabels[index]
-        })
-      }
-
-      // Always include the last chain
-      marks.push({
-        value: chainLabels.length - 1,
-        label: chainLabels[chainLabels.length - 1]
-      })
-    }
-
-    return marks
+    return chainLabels.map((label, index) => ({
+      value: index,
+      label: label
+    }))
   }
 
   const options = {
@@ -165,8 +131,9 @@ export default function RelayerChartWithChainSlider() {
           color: theme === 'dark' ? '#fff' : '#000',
           callback: function (value: any, index: number) {
             return new Date(chartData.labels[index]).toLocaleDateString(undefined, {
-              month: 'short',
-              day: 'numeric'
+              year: '2-digit',
+              month: '2-digit',
+              day: '2-digit'
             })
           }
         },

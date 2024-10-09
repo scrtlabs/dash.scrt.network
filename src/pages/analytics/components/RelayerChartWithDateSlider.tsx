@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from 'react'
-import { formatNumber } from 'utils/commons'
+import { bech32PrefixToChainName, formatNumber } from 'utils/commons'
 import Tooltip from '@mui/material/Tooltip'
 import Slider from '@mui/material/Slider'
 import {
@@ -55,12 +55,6 @@ export default function RelayerChartWithDateSlider() {
   }, [analyticsData4])
 
   const updateChartDataForDate = (date: string, entries: Entry[]) => {
-    // Cache the mapping from bech32 prefixes to chain names
-    const bech32PrefixToChainName: Map<string, string> = new Map()
-    for (const chainInfo of Object.values(chains)) {
-      bech32PrefixToChainName.set(chainInfo.bech32_prefix, chainInfo.chain_name)
-    }
-
     // Initialize data structures
     const dataMatrix: Map<string, Map<string, number>> = new Map()
     const chainsSet: Set<string> = new Set()
