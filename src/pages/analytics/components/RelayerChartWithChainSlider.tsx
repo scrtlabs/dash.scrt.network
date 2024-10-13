@@ -33,6 +33,7 @@ export default function RelayerChartWithChainSlider() {
   const [chainLabels, setChainLabels] = useState<string[]>([])
   const [selectedChainIndex, setSelectedChainIndex] = useState<number>(0)
   const [chainMap, setChainMap] = useState<Record<string, Entry[]>>({})
+  const [marks, setMarks] = useState<{ value: number; label: string }[]>([])
 
   const updateChartDataForChain = (chainName: string, entries: Entry[]) => {
     // Initialize data structures
@@ -84,7 +85,7 @@ export default function RelayerChartWithChainSlider() {
     const chainMap: Record<string, Entry[]> = {}
 
     analyticsData4
-      .filter((entry: Entry) => entry.IBC_Counterpart !== null)
+      .filter((entry: Entry) => entry.IBC_Counterpart !== null && entry.IBC_Counterpart !== 'secret')
       .forEach((entry: Entry) => {
         const chainBech32Prefix = entry.IBC_Counterpart
         const chainName = bech32PrefixToChainName.get(chainBech32Prefix) || chainBech32Prefix
@@ -96,6 +97,18 @@ export default function RelayerChartWithChainSlider() {
     setChainLabels(sortedChains)
     setChainMap(chainMap)
 
+    // Generate marks for the slider
+    const marks: { value: number; label: string }[] = []
+    const lettersSeen = new Set<string>()
+    sortedChains.forEach((chainName, index) => {
+      const letter = chainName.charAt(0).toUpperCase()
+      if (!lettersSeen.has(letter)) {
+        marks.push({ value: index, label: letter })
+        lettersSeen.add(letter)
+      }
+    })
+    setMarks(marks)
+
     // Initialize chart data with the first chain's data
     if (sortedChains.length > 0) {
       const initialChain = sortedChains[0]
@@ -103,7 +116,7 @@ export default function RelayerChartWithChainSlider() {
     }
   }, [analyticsData4])
 
-  const handleSliderChange = (event: React.SyntheticEvent, newValue: number | number[]) => {
+  const handleSliderChange = (event: Event, newValue: number | number[]) => {
     const index = newValue as number
     setSelectedChainIndex(index)
 
@@ -111,13 +124,6 @@ export default function RelayerChartWithChainSlider() {
     const chainEntries = chainMap[selectedChain] || []
 
     updateChartDataForChain(selectedChain, chainEntries)
-  }
-
-  const getSliderMarks = () => {
-    return chainLabels.map((label, index) => ({
-      value: index,
-      label: label
-    }))
   }
 
   const options = {
@@ -203,7 +209,7 @@ export default function RelayerChartWithChainSlider() {
     <>
       <div>
         <h2 className="text-center text-xl font-semibold pt-2.5 pb-0">
-          IBC Transactions by Date and Relayer (Per Chain)
+          {`IBC Transactions by Date and Relayer for ${chainLabels[selectedChainIndex]}`}
           <Tooltip
             title="Use the slider to select a chain and view transactions by date and relayer."
             placement="right"
@@ -219,13 +225,15 @@ export default function RelayerChartWithChainSlider() {
         {chartData ? <Bar data={chartData} options={options as any} /> : null}
       </div>
       <div className="mt-0">
+        {/* Remove the separate selected chain name display */}
         <div className="w-3/4 mx-auto mb-(-1)">
           <Slider
             value={selectedChainIndex}
             min={0}
             max={chainLabels.length - 1}
-            onChange={handleSliderChange as any}
-            marks={getSliderMarks()}
+            onChange={handleSliderChange}
+            marks={marks}
+            step={1}
             valueLabelDisplay="auto"
             valueLabelFormat={(value) => chainLabels[value]}
             sx={{

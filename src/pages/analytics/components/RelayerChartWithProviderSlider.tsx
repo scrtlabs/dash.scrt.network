@@ -33,19 +33,34 @@ export default function RelayerChartWithProviderSlider() {
   const [chartData, setChartData] = useState<any>(null)
   const [relayers, setRelayers] = useState<string[]>([])
   const [selectedRelayerIndex, setSelectedRelayerIndex] = useState<number>(0)
+  const [marks, setMarks] = useState<{ value: number; label: string }[]>([])
 
   useEffect(() => {
     // Process data grouped by relayer
     const relayerMap: Record<string, Entry[]> = {}
 
-    analyticsData4.forEach((entry: Entry) => {
-      const relayer = entry.Relayer || 'Other'
-      relayerMap[relayer] ||= []
-      relayerMap[relayer].push(entry)
-    })
+    analyticsData4
+      .filter((entry: Entry) => entry.IBC_Counterpart !== null && entry.IBC_Counterpart !== 'secret')
+      .forEach((entry: Entry) => {
+        const relayer = entry.Relayer || 'Other'
+        relayerMap[relayer] ||= []
+        relayerMap[relayer].push(entry)
+      })
 
     const sortedRelayers = Object.keys(relayerMap).sort((a, b) => a.localeCompare(b))
     setRelayers(sortedRelayers)
+
+    // Generate marks for the slider
+    const marks: { value: number; label: string }[] = []
+    const lettersSeen = new Set<string>()
+    sortedRelayers.forEach((relayerName, index) => {
+      const letter = relayerName.charAt(0).toUpperCase()
+      if (!lettersSeen.has(letter)) {
+        marks.push({ value: index, label: letter })
+        lettersSeen.add(letter)
+      }
+    })
+    setMarks(marks)
 
     // Initialize chart data with the first relayer's data
     if (sortedRelayers.length > 0) {
@@ -117,40 +132,6 @@ export default function RelayerChartWithProviderSlider() {
     const relayerEntries = analyticsData4.filter((entry: Entry) => (entry.Relayer || 'Other') === selectedRelayer)
 
     updateChartDataForRelayer(selectedRelayer, relayerEntries)
-  }
-
-  const getSliderMarks = () => {
-    if (relayers.length === 0) return []
-
-    const numMarks = Math.min(10, relayers.length) // Limit to 10 marks max
-    const marks = []
-
-    // Always include the first relayer
-    marks.push({
-      value: 0,
-      label: relayers[0].substring(0, 20)
-    })
-
-    if (relayers.length > 1) {
-      const interval = (relayers.length - 1) / (numMarks - 1)
-
-      // Add intermediate marks only if necessary
-      for (let i = 1; i < numMarks - 1; i++) {
-        const index = Math.round(i * interval)
-        marks.push({
-          value: index,
-          label: relayers[index].substring(0, 20)
-        })
-      }
-
-      // Always include the last relayer
-      marks.push({
-        value: relayers.length - 1,
-        label: relayers[relayers.length - 1].substring(0, 20)
-      })
-    }
-
-    return marks
   }
 
   const options = {
@@ -258,7 +239,8 @@ export default function RelayerChartWithProviderSlider() {
             min={0}
             max={relayers.length - 1}
             onChange={handleSliderChange}
-            marks={getSliderMarks()}
+            marks={marks}
+            step={1}
             valueLabelDisplay="auto"
             valueLabelFormat={(value) => relayers[value]}
             sx={{
