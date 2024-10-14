@@ -49,10 +49,11 @@ export default function RelayerChartWithDateSlider() {
     const sortedDates = Object.keys(dateMap).sort((a, b) => new Date(a).getTime() - new Date(b).getTime())
     setDates(sortedDates)
 
-    // Initialize chart data with the first date's data
     if (sortedDates.length > 0) {
-      const initialDate = sortedDates[0]
-      updateChartDataForDate(initialDate, dateMap[initialDate])
+      const latestIndex = sortedDates.length - 1
+      const latestDate = sortedDates[latestIndex]
+      setSelectedDateIndex(latestIndex) // Set to the latest date index
+      updateChartDataForDate(latestDate, dateMap[latestDate])
     }
   }, [analyticsData4])
 

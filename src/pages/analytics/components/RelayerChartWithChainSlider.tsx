@@ -109,9 +109,16 @@ export default function RelayerChartWithChainSlider() {
     })
     setMarks(marks)
 
-    // Initialize chart data with the first chain's data
+    // Find the index of "osmosis"
+    const osmosisIndex = sortedChains.findIndex((chainName) => chainName.toLowerCase() === 'osmosis')
+
+    // Determine the default index
+    const defaultIndex = osmosisIndex !== -1 ? osmosisIndex : 0
+    setSelectedChainIndex(defaultIndex)
+
+    // Initialize chart data with the default chain's data
     if (sortedChains.length > 0) {
-      const initialChain = sortedChains[0]
+      const initialChain = sortedChains[defaultIndex]
       updateChartDataForChain(initialChain, chainMap[initialChain])
     }
   }, [analyticsData4])
@@ -226,7 +233,8 @@ export default function RelayerChartWithChainSlider() {
       </div>
       <div className="mt-0">
         {/* Remove the separate selected chain name display */}
-        <div className="w-3/4 mx-auto mb-(-1)">
+        <div className="mx-auto flex items-center space-x-4">
+          <span className="text-sm text-neutral-600 dark:text-neutral-400">Chain:</span>
           <Slider
             value={selectedChainIndex}
             min={0}

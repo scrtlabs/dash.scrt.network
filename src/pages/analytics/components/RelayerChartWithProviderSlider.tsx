@@ -50,6 +50,22 @@ export default function RelayerChartWithProviderSlider() {
     const sortedRelayers = Object.keys(relayerMap).sort((a, b) => a.localeCompare(b))
     setRelayers(sortedRelayers)
 
+    // Calculate total transactions per relayer
+    const relayerTotals: Record<string, number> = {}
+    Object.entries(relayerMap).forEach(([relayer, entries]) => {
+      relayerTotals[relayer] = entries.reduce((sum, entry) => sum + entry.Transactions, 0)
+    })
+
+    // Find the relayer with the highest total transactions
+    const maxTotal = Math.max(...Object.values(relayerTotals))
+    const topRelayers = Object.keys(relayerTotals).filter((relayer) => relayerTotals[relayer] === maxTotal)
+    // If multiple relayers have the same max total, choose the first one alphabetically
+    const defaultRelayer = topRelayers.sort((a, b) => a.localeCompare(b))[0]
+
+    // Find the index of the default relayer
+    const defaultIndex = sortedRelayers.indexOf(defaultRelayer)
+    setSelectedRelayerIndex(defaultIndex >= 0 ? defaultIndex : 0)
+
     // Generate marks for the slider
     const marks: { value: number; label: string }[] = []
     const lettersSeen = new Set<string>()
@@ -62,10 +78,9 @@ export default function RelayerChartWithProviderSlider() {
     })
     setMarks(marks)
 
-    // Initialize chart data with the first relayer's data
-    if (sortedRelayers.length > 0) {
-      const initialRelayer = sortedRelayers[0]
-      updateChartDataForRelayer(initialRelayer, relayerMap[initialRelayer])
+    // Initialize chart data with the default relayer's data
+    if (defaultRelayer) {
+      updateChartDataForRelayer(defaultRelayer, relayerMap[defaultRelayer])
     }
   }, [analyticsData4])
 
@@ -233,7 +248,8 @@ export default function RelayerChartWithProviderSlider() {
         {chartData ? <Bar data={chartData} options={options as any} /> : null}
       </div>
       <div className="mt-0">
-        <div className="w-3/4 mx-auto mb-(-1)">
+        <div className="mx-auto flex items-center space-x-4">
+          <span className="text-sm text-neutral-600 dark:text-neutral-400">Relayer:</span>
           <Slider
             value={selectedRelayerIndex}
             min={0}
