@@ -23,7 +23,7 @@ const BalanceItem = (props: Props) => {
 
   return (
     <>
-      <div className="first-of-type:rounded-t-lg last-of-type:rounded-b-lg group flex flex-row items-center text-left even:bg-gray-100 odd:bg-white dark:even:bg-neutral-900 dark:odd:bg-neutral-800 even:border-x dark:even:border-neutral-800 last-of-type:border-y even:border-white py-8 sm:py-4 gap-4 pl-4 pr-8 w-full">
+      <div className="first-of-type:rounded-t-lg last-of-type:rounded-b-lg group flex flex-row items-center text-left even:bg-gray-100 odd:bg-white dark:even:bg-neutral-900 dark:odd:bg-neutral-800 even:border-x odd:border-x dark:even:border-neutral-800 dark:odd:border-neutral-800 last-of-type:even:border-b-2 last-of-type:odd:border-b-2 last-of-type:even:border-t-2 last-of-type:odd:border-t-2 even:border-white odd:border-white py-8 sm:py-4 gap-4 pl-4 pr-8 w-full">
         {/* Token Image and Name */}
         <div className="flex items-center w-1/4">
           <img

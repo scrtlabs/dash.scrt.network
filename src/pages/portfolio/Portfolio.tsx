@@ -48,32 +48,24 @@ export default function Portfolio() {
 
   const tokens: Token[] = SendService.getSupportedTokens()
 
-  const [orderedTokens, setOrderedTokens] = useState<any>(undefined)
   const [displayedAssets, setDisplayedAssets] = useState<any>(undefined)
 
   useEffect(() => {
     if (balanceMapping !== null && priceMapping !== null) {
-      setOrderedTokens(
-        tokens
-          .map((token: Token) => {
-            const balance = getBalance(token, true)
-            const value = getValuePrice(token, BigNumber(balance))
-            return { ...token, value: value }
-          })
-          .sort((a, b) => {
-            // Handle NaN, null, or undefined values by treating them as the lowest possible value
-            if (a.value == null || isNaN(a.value)) return 1
-            if (b.value == null || isNaN(b.value)) return -2
+      const orderedTokens = tokens
+        .map((token: Token) => {
+          const balance = getBalance(token, true)
+          const value = getValuePrice(token, BigNumber(balance))
+          return { ...token, value: value }
+        })
+        .sort((a, b) => {
+          // Handle NaN, null, or undefined values by treating them as the lowest possible value
+          if (a.value == null || isNaN(a.value)) return 1
+          if (b.value == null || isNaN(b.value)) return -2
 
-            // Standard comparison for non-NaN and non-null values
-            return b.value - a.value
-          })
-      )
-    }
-  }, [balanceMapping, priceMapping])
-
-  useEffect(() => {
-    if (orderedTokens !== undefined) {
+          // Standard comparison for non-NaN and non-null values
+          return b.value - a.value
+        })
       setDisplayedAssets(
         orderedTokens.filter(
           (token: Token) =>
@@ -82,8 +74,17 @@ export default function Portfolio() {
             token.description?.toLowerCase().includes(searchQuery?.toLowerCase())
         )
       )
+    } else {
+      setDisplayedAssets(
+        tokens.filter(
+          (token: Token) =>
+            token.name?.toLowerCase().includes(searchQuery?.toLowerCase()) ||
+            ('s' + token.name)?.toLowerCase().includes(searchQuery?.toLowerCase()) ||
+            token.description?.toLowerCase().includes(searchQuery?.toLowerCase())
+        )
+      )
     }
-  }, [searchQuery, orderedTokens])
+  }, [searchQuery, balanceMapping, priceMapping])
 
   return (
     <>
