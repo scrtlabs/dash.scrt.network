@@ -124,6 +124,7 @@ const APIContextProvider = ({ children }: any) => {
   const [analyticsData1, setAnalyticsData1] = useState()
   const [analyticsData2, setAnalyticsData2] = useState()
   const [analyticsData3, setAnalyticsData3] = useState()
+  const [analyticsData4, setAnalyticsData4] = useState()
   const [L5AnalyticsApiData, setL5AnalyticsApiData] = useState()
   const [volume, setVolume] = useState(Number)
   const [marketCap, setMarketCap] = useState(Number)
@@ -222,6 +223,15 @@ const APIContextProvider = ({ children }: any) => {
       .catch((error: any) => console.error(error))
       .then((response) => {
         setAnalyticsData3(response)
+      })
+
+    const API_DATA_SECRET_4 = `https://dashboardstats.secretsaturn.net/source/relayer_stats/data.json`
+    fetch(API_DATA_SECRET_4)
+      .catch((error: any) => console.error(error))
+      .then((response) => (response as any).json())
+      .catch((error: any) => console.error(error))
+      .then((response) => {
+        setAnalyticsData4(response)
       })
 
     const LAVENDERFIVE_API_URL_SECRET_STATUS = `https://api.lavenderfive.com/networks/secretnetwork`
@@ -385,6 +395,7 @@ const APIContextProvider = ({ children }: any) => {
     analyticsData1,
     analyticsData2,
     analyticsData3,
+    analyticsData4,
     L5AnalyticsApiData,
     bondedToken,
     notBondedToken,

@@ -23,9 +23,8 @@ export const useTokenPricesStore = create<TokenPricesState>()((set, get) => ({
   init: () => {
     let prices: CoinPrice[]
 
-    let coinGeckoIdsString: string = allTokens.map((token) => token.coingecko_id).join(',')
-
-    console.log(coinGeckoIdsString)
+    /*let coinGeckoIdsString: string = allTokens.map((token) => token.coingecko_id).join(',')
+    console.log(coinGeckoIdsString)*/
 
     // fetch(`https://api.coingecko.com/api/v3/simple/price?ids=${coinGeckoIdsString}&vs_currencies=USD`)
     fetch(`https://priceapibuffer.secretsaturn.net/getPrices`)

@@ -7,9 +7,12 @@ import AccountsChart from './components/AccountsChart'
 import ValidatorsChart from './components/ValidatorsChart'
 import ContractsChart from './components/ContractsChart'
 import TransactionsChart from './components/TransactionsChart'
+import RelayerChartWithDateSlider from './components/RelayerChartWithDateSlider'
+import RelayerChartWithChainSlider from './components/RelayerChartWithChainSlider'
+import RelayerChartWithProviderSlider from './components/RelayerChartWithProviderSlider'
 
 function Analytics() {
-  const { L5AnalyticsApiData, analyticsData1, analyticsData2, analyticsData3 } = useContext(APIContext)
+  const { L5AnalyticsApiData, analyticsData1, analyticsData2, analyticsData3, analyticsData4 } = useContext(APIContext)
 
   useEffect(() => {
     trackMixPanelEvent('Open Analytics Tab')
@@ -61,6 +64,24 @@ function Analytics() {
               </div>
             </>
           ) : null}
+          {analyticsData4 ? (
+            <>
+              <div className="col-span-12 rounded-xl bg-white border border-neutral-200 dark:border-neutral-700 dark:bg-neutral-800">
+                <div className="flex flex-col">
+                  <div className="border-b border-neutral-200 dark:border-neutral-700 p-4">
+                    <RelayerChartWithDateSlider />
+                  </div>
+                  <div className="border-b border-neutral-200 dark:border-neutral-700 p-4">
+                    <RelayerChartWithChainSlider />
+                  </div>
+                  <div className="p-4">
+                    <RelayerChartWithProviderSlider />
+                  </div>
+                </div>
+              </div>
+            </>
+          ) : null}
+
           {L5AnalyticsApiData ? (
             <div className="col-span-12 rounded-xl bg-white border border-neutral-200 dark:border-neutral-700 dark:bg-neutral-800 p-4">
               <UnbondingsChart />
