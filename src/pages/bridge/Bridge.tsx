@@ -7,7 +7,7 @@ import mixpanel from 'mixpanel-browser'
 import { useEffect, useState, useContext } from 'react'
 import { trackMixPanelEvent } from 'utils/commons'
 import SquidModal from './SquidModal'
-import HoudiniModal from './HoudiniModal'
+import SilentModal from './SilentModal'
 import { useSecretNetworkClientStore } from 'store/secretNetworkClient'
 import Title from 'components/Title'
 import { useUserPreferencesStore } from 'store/UserPreferences'
@@ -21,7 +21,7 @@ function Bridge() {
   const { theme } = useUserPreferencesStore()
   const [isSquidModalOpen, setIsSquidModalOpen] = useState(false)
   const [isSwingModalOpen, setIsSwingModalOpen] = useState(false)
-  const [isHoudiniModalOpen, setIsHoudiniModalOpen] = useState(false)
+  const [isSilentModalOpen, setIsSilentModalOpen] = useState(false)
 
   const { walletAddress } = useSecretNetworkClientStore()
 
@@ -122,22 +122,22 @@ function Bridge() {
           secretAddress={''}
         />
         <p>
-          Or anonymously bridge your assets into SCRT using Houdini Swap.
+          Or anonymously bridge your assets into SCRT using Silent Swap.
           <a
             target="_blank"
             className="text-white block my-6 p-3 w-full text-center font-semibold bg-cyan-600 dark:bg-cyan-600 rounded-lg text-sm hover:bg-cyan-500 dark:hover:bg-cyan-500 focus:bg-cyan-600 dark:focus:bg-cyan-600 transition-colors"
             onClick={() => {
-              trackMixPanelEvent('Clicked Houdini Swap Modal (from Bridge page)')
-              setIsHoudiniModalOpen(true)
+              trackMixPanelEvent('Clicked Silent Swap Modal (from Bridge page)')
+              setIsSilentModalOpen(true)
             }}
           >
-            Use Houdini Swap
+            Use Silent Swap
           </a>
         </p>
-        <HoudiniModal
-          open={isHoudiniModalOpen}
+        <SilentModal
+          open={isSilentModalOpen}
           onClose={() => {
-            setIsHoudiniModalOpen(false)
+            setIsSilentModalOpen(false)
             document.body.classList.remove('overflow-hidden')
           }}
           theme={theme}

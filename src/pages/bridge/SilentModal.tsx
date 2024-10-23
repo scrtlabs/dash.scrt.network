@@ -10,7 +10,7 @@ interface Props {
   secretAddress: string
 }
 
-const HoudiniModal = (props: Props) => {
+const SilentModal = (props: Props) => {
   const [loading, setLoading] = useState(true)
 
   if (!props.open) return null
@@ -44,7 +44,7 @@ const HoudiniModal = (props: Props) => {
               ) : null}
 
               <iframe
-                src={`https://houdiniswap.com/?widgetMode=true&theme=${
+                src={`https://Silentswap.com/?widgetMode=true&theme=${
                   props.theme === 'light' ? 'light' : 'dark'
                 }&tokenIn=ETH&tokenOut=SCRT&amount=1&anonymous=true&partnerId=64f58fc75abdd6a4df170fda${
                   props.secretAddress ? `&receiveAddress=${props.secretAddress}` : ``
@@ -62,4 +62,4 @@ const HoudiniModal = (props: Props) => {
   )
 }
 
-export default HoudiniModal
+export default SilentModal
