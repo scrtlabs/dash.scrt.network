@@ -56,11 +56,11 @@ function Bridge() {
         {/* SilentSwap Section */}
         <div className="py-4">
           <p>
-            SilentSwap is the official DEX aggregator for the Secret Network, offering a faster, cheaper, and more
-            convenient way to bridge your assets securely. By leveraging Secret Network's confidential computing layer,
-            SilentSwap ensures optimized encrypted swapping, making it a noncustodial and trustless solution within the
-            ecosystem. Integrated with Shade Protocol, SilentSwap enhances the benefits for all Secret Network
-            applications and services, providing compliant encrypted trading for a seamless user experience.
+            SilentSwap is the official privacy cross-chain aggregator for Secret Network. It offers a fast, cheap, and
+            convenient way to privately and securely swap your assets by leveraging Secret Network's confidential
+            computing layer. SilentSwap obfuscates the trace between sender and receiver in an entirely noncustodial,
+            trustless, and permisionless manner. It is fully compliant and allows users to trade or transfer in private,
+            all abstracted in a seamless user experience.
           </p>
           <a
             href="https://app.silentswap.com"
@@ -71,6 +71,30 @@ function Bridge() {
             Go to Silent Swap
             <FontAwesomeIcon icon={faArrowUpRightFromSquare} className="ml-2" />
           </a>
+        </div>
+
+        {/* Protip Section */}
+        <div className="py-4">
+          <p>
+            <span className="select-none">
+              <span className="inline-block bg-emerald-500 dark:bg-emerald-800 text-white text-xs py-0.5 px-1.5 rounded uppercase font-semibold">
+                Protip
+              </span>{' '}
+              –{' '}
+            </span>
+            If you want to bridge Axelar Assets (such as USDC, USDT) from other Cosmos based chains (Osmosis, Kujira) to
+            Secret, please use the IBC tab:
+            <Link
+              to={'/ibc'}
+              className="text-white block mt-6 p-3 w-full text-center font-semibold bg-cyan-600 dark:bg-cyan-600 rounded-lg text-sm hover:bg-cyan-500 dark:hover:bg-cyan-500 focus:bg-cyan-600 dark:focus:bg-cyan-600 transition-colors"
+              onClick={() => {
+                trackMixPanelEvent('Clicked IBC transfer link (from Bridge page)')
+              }}
+            >
+              <FontAwesomeIcon icon={faShuffle} className="mr-2" />
+              Go to IBC Transfers
+            </Link>
+          </p>
         </div>
 
         {/* Secret Tunnel Section */}
@@ -133,30 +157,6 @@ function Bridge() {
           >
             Use Swing Swap
           </a>
-        </div>
-
-        {/* Protip Section */}
-        <div className="py-4">
-          <p>
-            <span className="select-none">
-              <span className="inline-block bg-emerald-500 dark:bg-emerald-800 text-white text-xs py-0.5 px-1.5 rounded uppercase font-semibold">
-                Protip
-              </span>{' '}
-              –{' '}
-            </span>
-            If you want to bridge Axelar Assets (such as USDC, USDT) from other Cosmos based chains (Osmosis, Kujira) to
-            Secret, please use the IBC tab:
-            <Link
-              to={'/ibc'}
-              className="text-white block mt-6 p-3 w-full text-center font-semibold bg-cyan-600 dark:bg-cyan-600 rounded-lg text-sm hover:bg-cyan-500 dark:hover:bg-cyan-500 focus:bg-cyan-600 dark:focus:bg-cyan-600 transition-colors"
-              onClick={() => {
-                trackMixPanelEvent('Clicked IBC transfer link (from Bridge page)')
-              }}
-            >
-              <FontAwesomeIcon icon={faShuffle} className="mr-2" />
-              Go to IBC Transfers
-            </Link>
-          </p>
         </div>
       </div>
 
