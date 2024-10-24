@@ -27,6 +27,8 @@ import Powertools from 'pages/powertools/Powertools'
 import { useSecretNetworkClientStore } from 'store/secretNetworkClient'
 import { useUserPreferencesStore } from 'store/UserPreferences'
 import { debugModeOverride } from 'utils/commons'
+import Governance from 'pages/governance/Governance'
+import GovernanceDetail from 'pages/governance/GovernanceDetail'
 import Staking from 'pages/staking/Staking'
 import Analytics from 'pages/analytics/Analytics'
 
@@ -117,6 +119,8 @@ export default function App() {
         <Route path="/bridge" element={<Bridge />} />
         <Route path="/get-scrt" element={<GetSCRT />} />
         <Route path="/staking" element={<Staking />} />
+        <Route path="/governance" element={<Governance />} />
+        <Route path="/governance/id/:id" element={<GovernanceDetail />} />
         <Route path="/portfolio" element={<Portfolio />} />
         <Route path="/send" element={<Send />} />
         <Route path="/apps" element={<Apps />} />
