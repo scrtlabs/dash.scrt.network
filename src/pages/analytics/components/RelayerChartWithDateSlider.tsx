@@ -16,7 +16,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faInfoCircle } from '@fortawesome/free-solid-svg-icons'
 import { useUserPreferencesStore } from 'store/UserPreferences'
 import { APIContext } from 'context/APIContext'
-import { chains } from 'utils/config'
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, ChartTooltip, Legend, BarController)
 
