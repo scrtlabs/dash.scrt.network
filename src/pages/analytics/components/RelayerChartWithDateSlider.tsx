@@ -229,7 +229,7 @@ export default function RelayerChartWithDateSlider() {
     for (let i = 0; i < relayer.length; i++) {
       hash = relayer.charCodeAt(i) + ((hash << 5) - hash)
     }
-    const color = `#${(hash & 0x00ffffff).toString(16).padStart(6, '0').slice(-6)}`
+    const color = `#${('000000' + (hash & 0xffffff).toString(16)).slice(-6)}`
     return color
   }
 

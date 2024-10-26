@@ -32,58 +32,36 @@ export default function RelayerChartTotal() {
   const chartData = useMemo(() => {
     if (!analyticsData4) return null
 
-    // Initialize data structures
-    const dataMatrix: Map<string, Map<string, number>> = new Map()
-    const datesSet: Set<string> = new Set()
-    const comboSet: Set<string> = new Set()
+    const datesSet = new Set<string>()
+    const dataMatrix: Record<string, Record<string, number>> = {}
 
-    // Build dataMatrix and collect unique dates and combinations
     for (const entry of analyticsData4) {
+      // Extract the date in 'YYYY-MM-DD' format without creating a Date object
       const date = new Date(entry.Date).toISOString().split('T')[0]
-      const chainBech32Prefix = entry.IBC_Counterpart
-      const relayer = entry.Relayer || 'Other'
-
       datesSet.add(date)
 
-      const comboKey = `${chainBech32Prefix}-${relayer}`
-      comboSet.add(comboKey)
+      const relayer = entry.Relayer || 'Other'
+      const chainLabel = bech32PrefixToChainName.get(entry.IBC_Counterpart) || entry.IBC_Counterpart
+      const label = `${chainLabel} - ${relayer}`
 
-      if (!dataMatrix.has(comboKey)) {
-        dataMatrix.set(comboKey, new Map())
+      // Initialize the data structure if it doesn't exist
+      if (!dataMatrix[label]) {
+        dataMatrix[label] = {}
       }
-      const dateMap = dataMatrix.get(comboKey)!
-      dateMap.set(date, (dateMap.get(date) || 0) + entry.Transactions)
+
+      // Aggregate transactions
+      dataMatrix[label][date] = (dataMatrix[label][date] || 0) + entry.Transactions
     }
 
-    // Sort dates
-    const sortedDates = Array.from(datesSet).sort((a, b) => new Date(a).getTime() - new Date(b).getTime())
+    // Sort dates lexicographically
+    const sortedDates = Array.from(datesSet).sort()
 
-    // Prepare an array of { comboKey, label } pairs
-    const comboLabelPairs = Array.from(comboSet).map((comboKey) => {
-      const [chainPrefix, ...relayerParts] = comboKey.split('-')
-      const relayer = relayerParts.join('-')
-      const chainLabel = bech32PrefixToChainName.get(chainPrefix) || chainPrefix
-      const label = `${chainLabel} - ${relayer}`
-      return { comboKey, label }
-    })
-
-    // Sort combos by label alphabetically
-    comboLabelPairs.sort((a, b) => a.label.localeCompare(b.label))
-
-    // Extract the sorted combos and labels
-    const sortedComboKeys = comboLabelPairs.map((pair) => pair.comboKey)
-    const comboLabels = comboLabelPairs.map((pair) => pair.label)
-
-    // Create datasets for each combo
-    const datasets = sortedComboKeys.map((comboKey, index) => {
-      const dateMap = dataMatrix.get(comboKey)!
-      const data = sortedDates.map((date) => dateMap.get(date) || 0)
-      return {
-        label: comboLabels[index],
-        data,
-        backgroundColor: getColorFromCombo(comboLabels[index])
-      }
-    })
+    // Create datasets
+    const datasets = Object.keys(dataMatrix).map((label) => ({
+      label,
+      data: sortedDates.map((date) => dataMatrix[label][date] || 0),
+      backgroundColor: getColorFromCombo(label)
+    }))
 
     // Return chart data with prepared labels and datasets
     return {
@@ -105,7 +83,7 @@ export default function RelayerChartTotal() {
           ticks: {
             color: theme === 'dark' ? '#fff' : '#000',
             callback: function (value: any, index: number) {
-              return new Date(chartData.labels[index]).toLocaleDateString(undefined, {
+              return new Date((chartData as any).labels[index]).toLocaleDateString(undefined, {
                 year: '2-digit',
                 month: '2-digit',
                 day: '2-digit'
@@ -171,7 +149,7 @@ export default function RelayerChartTotal() {
     for (let i = 0; i < combo.length; i++) {
       hash = combo.charCodeAt(i) + ((hash << 5) - hash)
     }
-    const color = `#${(hash & 0x00ffffff).toString(16).padStart(6, '0').slice(-6)}`
+    const color = `#${('000000' + (hash & 0xffffff).toString(16)).slice(-6)}`
     return color
   }
 
