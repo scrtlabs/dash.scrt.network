@@ -33,37 +33,54 @@ export default function RelayerChartTotal() {
     if (!analyticsData4) return null
 
     const datesSet = new Set<string>()
-    const dataMatrix: Record<string, Record<string, number>> = {}
+    const dataMatrix: Record<string, number[]> = {}
 
-    for (const entry of analyticsData4) {
-      // Extract the date in 'YYYY-MM-DD' format without creating a Date object
+    const filteredData = analyticsData4.filter(
+      (entry: Entry) => entry.IBC_Counterpart !== null && entry.IBC_Counterpart !== 'secret'
+    )
+
+    // Collect and sort dates
+    for (const entry of filteredData) {
       const date = new Date(entry.Date).toISOString().split('T')[0]
       datesSet.add(date)
-
-      const relayer = entry.Relayer || 'Other'
-      const chainLabel = bech32PrefixToChainName.get(entry.IBC_Counterpart) || entry.IBC_Counterpart
-      const label = `${chainLabel} - ${relayer}`
-
-      // Initialize the data structure if it doesn't exist
-      if (!dataMatrix[label]) {
-        dataMatrix[label] = {}
-      }
-
-      // Aggregate transactions
-      dataMatrix[label][date] = (dataMatrix[label][date] || 0) + entry.Transactions
     }
-
-    // Sort dates lexicographically
     const sortedDates = Array.from(datesSet).sort()
 
-    // Create datasets
+    // Create a date-to-index map
+    const dateIndexMap = sortedDates.reduce(
+      (acc, date, index) => {
+        acc[date] = index
+        return acc
+      },
+      {} as Record<string, number>
+    )
+
+    // Process entries and populate dataMatrix
+    for (const entry of filteredData) {
+      const date = new Date(entry.Date).toISOString().split('T')[0]
+      const dateIndex = dateIndexMap[date]
+
+      const label = `${bech32PrefixToChainName.get(entry.IBC_Counterpart) || entry.IBC_Counterpart} - ${
+        entry.Relayer || 'Other'
+      }`
+
+      // Initialize dataMatrix[label] if it doesn't exist
+      if (!dataMatrix[label]) {
+        dataMatrix[label] = new Array(sortedDates.length).fill(0)
+      }
+
+      // Update the corresponding value
+      dataMatrix[label][dateIndex] += entry.Transactions
+    }
+
+    // Create datasets without nested mapping
     const datasets = Object.keys(dataMatrix).map((label) => ({
       label,
-      data: sortedDates.map((date) => dataMatrix[label][date] || 0),
+      data: dataMatrix[label],
       backgroundColor: getColorFromCombo(label)
     }))
 
-    // Return chart data with prepared labels and datasets
+    // Return the final chart data
     return {
       labels: sortedDates,
       datasets
@@ -157,9 +174,9 @@ export default function RelayerChartTotal() {
     <>
       <div>
         <h2 className="text-center text-xl font-semibold pt-2.5 pb-0">
-          IBC Transactions by Date, Chain, and Relayer
+          IBC Transactions
           <Tooltip
-            title="The chart shows the stacked transactions per date for each combination of IBC Counterpart and Relayer."
+            title="Chart shows the IBC transactions per date for each combination of chain and relayer."
             placement="right"
             arrow
           >

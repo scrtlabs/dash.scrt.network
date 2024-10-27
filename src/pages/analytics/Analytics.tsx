@@ -69,7 +69,9 @@ function Analytics() {
             <>
               <div className="col-span-12 rounded-xl bg-white border border-neutral-200 dark:border-neutral-700 dark:bg-neutral-800">
                 <div className="flex flex-col">
-                  <div className="border-b border-neutral-200 dark:border-neutral-700 p-4">{<RelayerChartTotal />}</div>
+                  <div className="border-b border-neutral-200 dark:border-neutral-700 p-4">
+                    <RelayerChartTotal />
+                  </div>
                   <div className="border-b border-neutral-200 dark:border-neutral-700 p-4">
                     <RelayerChartWithDateSlider />
                   </div>

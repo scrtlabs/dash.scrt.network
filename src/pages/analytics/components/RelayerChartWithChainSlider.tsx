@@ -218,7 +218,7 @@ export default function RelayerChartWithChainSlider() {
         <h2 className="text-center text-xl font-semibold pt-2.5 pb-0">
           {`IBC Transactions by Date and Relayer for ${chainLabels[selectedChainIndex]}`}
           <Tooltip
-            title="Use the slider to select a chain and view transactions by date and relayer."
+            title="Use the slider to select a chain, the chart then shows the IBC transactions per date for each relayer."
             placement="right"
             arrow
           >
