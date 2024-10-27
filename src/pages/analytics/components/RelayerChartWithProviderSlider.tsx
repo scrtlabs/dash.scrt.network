@@ -16,7 +16,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faInfoCircle } from '@fortawesome/free-solid-svg-icons'
 import { useUserPreferencesStore } from 'store/UserPreferences'
 import { APIContext } from 'context/APIContext'
-import { chains } from 'utils/config'
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, ChartTooltip, Legend, BarController)
 
@@ -224,7 +223,7 @@ export default function RelayerChartWithProviderSlider() {
     for (let i = 0; i < chain.length; i++) {
       hash = chain.charCodeAt(i) + ((hash << 5) - hash)
     }
-    const color = `#${(hash & 0x00ffffff).toString(16).padStart(6, '0').slice(-6)}`
+    const color = `#${('000000' + (hash & 0xffffff).toString(16)).slice(-6)}`
     return color
   }
 

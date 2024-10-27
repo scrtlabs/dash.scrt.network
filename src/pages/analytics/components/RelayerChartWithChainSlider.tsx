@@ -208,7 +208,7 @@ export default function RelayerChartWithChainSlider() {
     for (let i = 0; i < relayer.length; i++) {
       hash = relayer.charCodeAt(i) + ((hash << 5) - hash)
     }
-    const color = `#${(hash & 0x00ffffff).toString(16).padStart(6, '0').slice(-6)}`
+    const color = `#${('000000' + (hash & 0xffffff).toString(16)).slice(-6)}`
     return color
   }
 
@@ -218,7 +218,7 @@ export default function RelayerChartWithChainSlider() {
         <h2 className="text-center text-xl font-semibold pt-2.5 pb-0">
           {`IBC Transactions by Date and Relayer for ${chainLabels[selectedChainIndex]}`}
           <Tooltip
-            title="Use the slider to select a chain and view transactions by date and relayer."
+            title="Use the slider to select a chain, the chart then shows the IBC transactions per date for each relayer."
             placement="right"
             arrow
           >
