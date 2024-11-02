@@ -373,7 +373,7 @@ const APIContextProvider = ({ children }: any) => {
       setSecretFoundationTax(res?.params.secret_foundation_tax)
       setCommunityTax(res?.params.community_tax)
     })*/
-    setSecretFoundationTax('0.000000000000000000')
+    setSecretFoundationTax('0.120000000000000000')
     setCommunityTax('0.020000000000000000')
 
     fetchDappsURL()
