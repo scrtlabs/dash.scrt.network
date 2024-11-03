@@ -172,7 +172,7 @@ const ValidatorModal = (props: Props) => {
 
   return (
     <Modal title={customTitle()} onClose={props.onClose} isOpen={props.open} size="lg">
-      <div className="max-h-[80vh] overflow-y-auto">
+      <div className="overflow-y-auto">
         {/* Header */}
 
         {/* Body */}
@@ -327,19 +327,29 @@ const ValidatorModal = (props: Props) => {
               <div className="flex-1">
                 <div className="font-bold mb-2">Available to Stake</div>
                 <div className="mb-1">
-                  <span className="text-base font-medium font-mono">
-                    {new BigNumber(scrtBalance!).dividedBy(`1e${scrtToken.decimals}`).toFormat()}
-                  </span>
-                  <span className="text-xs font-semibold text-neutral-500 dark:text-neutral-400"> SCRT</span>
-                </div>
-                <div className="text-xs text-neutral-500 dark:text-neutral-400 font-medium font-mono">
-                  {toCurrencyString(
-                    new BigNumber(scrtBalance!)
-                      .dividedBy(`1e${scrtToken.decimals}`)
-                      .multipliedBy(Number(currentPrice))
-                      .toNumber()
+                  {scrtBalance === null ? (
+                    <div className="animate-pulse bg-neutral-300/40 dark:bg-neutral-700/40 rounded w-20 h-5"></div>
+                  ) : (
+                    <>
+                      <span className="text-base font-medium font-mono">
+                        {new BigNumber(scrtBalance!).dividedBy(`1e${scrtToken.decimals}`).toFormat()}
+                      </span>{' '}
+                      <span className="text-xs font-semibold text-neutral-500 dark:text-neutral-400"> SCRT</span>{' '}
+                    </>
                   )}
                 </div>
+                {scrtBalance === null ? (
+                  <div className="animate-pulse bg-neutral-300/40 dark:bg-neutral-700/40 rounded w-20 h-5"></div>
+                ) : (
+                  <div className="text-xs text-neutral-500 dark:text-neutral-400 font-medium font-mono">
+                    {toCurrencyString(
+                      new BigNumber(scrtBalance!)
+                        .dividedBy(`1e${scrtToken.decimals}`)
+                        .multipliedBy(Number(currentPrice))
+                        .toNumber()
+                    )}
+                  </div>
+                )}
               </div>
             </div>
           )}

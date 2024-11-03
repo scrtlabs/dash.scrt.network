@@ -221,11 +221,12 @@ export default function RedelegateForm() {
               )
             }}
             styles={{
-              input: (base) => ({
-                ...base,
-                color: theme === 'light' ? 'black' : 'white',
-                fontWeight: 'bold'
-              })
+              input: (base) => {
+                return {
+                  color: theme === 'light' ? 'black' : 'white',
+                  fontWeight: 'bold'
+                }
+              }
             }}
             className="react-select-container"
             classNamePrefix="react-select-inset"
