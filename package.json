@@ -57,7 +57,7 @@
   },
   "devDependencies": {
     "@keplr-wallet/types": "^0.12.43",
-    "@types/mixpanel-browser": "^2.38.1",
+    "@types/mixpanel-browser": "^2.50.2",
     "@types/react": "^18.0.26",
     "@types/react-dom": "^18.3.1",
     "husky": "^8.0.3",
