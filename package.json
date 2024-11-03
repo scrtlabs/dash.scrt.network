@@ -13,6 +13,7 @@
     "@axelar-network/axelarjs-sdk": "^0.13.6",
     "@babel/core": "^7.23.3",
     "@bufbuild/protobuf": "^1.7.2",
+    "@cosmjs/stargate": "^0.32.4",
     "@evmos/transactions": "^0.3.2",
     "@floating-ui/react": "^0.26.9",
     "@fortawesome/free-brands-svg-icons": "^6.2.1",

@@ -4,11 +4,9 @@ import BigNumber from 'bignumber.js'
 import { SkipRouter, SKIP_API_URL, Operation } from '@skip-router/core'
 import {
   BroadcastMode,
-  IbcResponse,
   MsgExecuteContract,
   MsgTransfer,
   SecretNetworkClient,
-  TxResponse,
   fromBase64,
   toBase64,
   toUtf8
@@ -23,6 +21,7 @@ import mixpanel from 'mixpanel-browser'
 import { AccountData } from 'secretjs/dist/wallet_amino'
 import { NotificationService } from './notification.service'
 import { GetBalanceError } from 'types/GetBalanceError'
+import { GasPrice, MsgTransferEncodeObject, SigningStargateClient } from '@cosmjs/stargate'
 
 const sdk: AxelarAssetTransfer = new AxelarAssetTransfer({
   environment: Environment.MAINNET
@@ -77,6 +76,8 @@ async function performIbcDeposit(
   token: Token,
   sourceChainNetworkClient: SecretNetworkClient
 ): Promise<string> {
+  let tx
+
   const selectedSource = props.chain
 
   const toastId = NotificationService.notify(
@@ -98,7 +99,6 @@ async function performIbcDeposit(
     .toFixed(0, BigNumber.ROUND_DOWN)
 
   try {
-    let tx: TxResponse
     if (!['Evmos', 'Injective', 'Dymension'].includes(props.chain.chain_name) && !token.is_axelar_asset) {
       // Regular cosmos chain (not ethermint signing)
       if (token.name === 'ampLUNA' || token.name === 'bLUNA') {
@@ -223,29 +223,42 @@ async function performIbcDeposit(
           ? await composePMFMemo(routing.operations, props.secretNetworkClient.address)
           : null
 
-        tx = await sourceChainNetworkClient.tx.ibc.transfer(
+        const client = await SigningStargateClient.connectWithSigner(
+          props.chain.rpc,
+          (sourceChainNetworkClient as any).wallet,
           {
-            sender: sourceChainNetworkClient.address,
-            receiver: receiver,
-            source_channel: useSKIPRouting ? (routing.operations[0] as any).transfer.channel : deposit_channel_id,
-            source_port: useSKIPRouting ? (routing.operations[0] as any).transfer.port : 'transfer',
-            token: {
-              amount: amount,
-              denom: token.deposits.filter((deposit: Deposit) => deposit.chain_name === props.chain.chain_name)[0].denom
-            },
-            memo: useSKIPRouting ? forwardingMemo : ' ',
-            timeout_timestamp: String(Math.floor(Date.now() / 1000) + 10 * 60) // 10 minute timeout
-          },
-          {
-            broadcastCheckIntervalMs: 1000,
-            gasLimit: deposit_gas,
-            feeDenom: deposit_gas_denom,
-            ibcTxsOptions: {
-              resolveResponses: false
-            },
-            broadcastMode: BroadcastMode.Sync,
-            waitForCommit: false
+            gasPrice: GasPrice.fromString('1' + deposit_gas_denom)
           }
+        )
+
+        tx = await client.signAndBroadcast(
+          sourceChainNetworkClient.address,
+          [
+            {
+              value: {
+                sender: sourceChainNetworkClient.address,
+                // HACK: because of typescript issues with MsgTransferEncodeObject
+                // expecting bigint in Timestamp
+                timeoutTimestamp: (
+                  BigInt(Math.floor(Date.now() / 1000) + 10 * 60) * BigInt(10 ** 9)
+                ).toString() as unknown as bigint,
+                memo: useSKIPRouting ? forwardingMemo : ' ',
+                // make sure to send undefined or ' ' as otherwise secret nodes
+                // will reject tx due to IBC hook logic of removing signer when memo is present
+                // additionally make sure to send '' instead of undefined, if we use stargate
+                token: {
+                  amount,
+                  denom: token.deposits.filter((deposit: Deposit) => deposit.chain_name === props.chain.chain_name)[0]
+                    .denom
+                },
+                sourcePort: useSKIPRouting ? (routing.operations[0] as any).transfer.port : 'transfer',
+                sourceChannel: useSKIPRouting ? (routing.operations[0] as any).transfer.channel : deposit_channel_id,
+                receiver: receiver
+              },
+              typeUrl: '/ibc.applications.transfer.v1.MsgTransfer'
+            } as MsgTransferEncodeObject
+          ],
+          'auto'
         )
       } else {
         const routing = useSKIPRouting
@@ -281,29 +294,42 @@ async function performIbcDeposit(
             )
           : null
 
-        tx = await sourceChainNetworkClient.tx.ibc.transfer(
+        const client = await SigningStargateClient.connectWithSigner(
+          props.chain.rpc,
+          (sourceChainNetworkClient as any).wallet,
           {
-            sender: sourceChainNetworkClient.address,
-            receiver: receiver,
-            source_channel: useSKIPRouting ? (routing.operations[0] as any).transfer.channel : deposit_channel_id,
-            source_port: useSKIPRouting ? (routing.operations[0] as any).transfer.port : 'transfer',
-            token: {
-              amount: amount,
-              denom: token.deposits.filter((deposit: Deposit) => deposit.chain_name === props.chain.chain_name)[0].denom
-            },
-            timeout_timestamp: (Math.floor(Date.now() / 1000) + 10 * 60).toString(), // 10 minute timeout
-            memo: useSKIPRouting ? forwardingMemo : autoWrapJsonString
-          },
-          {
-            broadcastCheckIntervalMs: 1000,
-            gasLimit: deposit_gas,
-            feeDenom: deposit_gas_denom,
-            ibcTxsOptions: {
-              resolveResponses: false
-            },
-            broadcastMode: BroadcastMode.Sync,
-            waitForCommit: false
+            gasPrice: GasPrice.fromString('1' + deposit_gas_denom)
           }
+        )
+
+        tx = await client.signAndBroadcast(
+          sourceChainNetworkClient.address,
+          [
+            {
+              value: {
+                sender: sourceChainNetworkClient.address,
+                // HACK: because of typescript issues with MsgTransferEncodeObject
+                // expecting bigint in Timestamp
+                timeoutTimestamp: (
+                  BigInt(Math.floor(Date.now() / 1000) + 10 * 60) * BigInt(10 ** 9)
+                ).toString() as unknown as bigint,
+                memo: useSKIPRouting ? forwardingMemo : autoWrapJsonString,
+                // make sure to send undefined or ' ' as otherwise secret nodes
+                // will reject tx due to IBC hook logic of removing signer when memo is present
+                // additionally make sure to send '' instead of undefined, if we use stargate
+                token: {
+                  amount,
+                  denom: token.deposits.filter((deposit: Deposit) => deposit.chain_name === props.chain.chain_name)[0]
+                    .denom
+                },
+                sourcePort: useSKIPRouting ? (routing.operations[0] as any).transfer.port : 'transfer',
+                sourceChannel: useSKIPRouting ? (routing.operations[0] as any).transfer.channel : deposit_channel_id,
+                receiver: receiver
+              },
+              typeUrl: '/ibc.applications.transfer.v1.MsgTransfer'
+            } as MsgTransferEncodeObject
+          ],
+          'auto'
         )
       }
     } else if (token.is_axelar_asset) {
@@ -333,28 +359,41 @@ async function performIbcDeposit(
         'loading',
         toastId
       )
-      tx = await sourceChainNetworkClient.tx.ibc.transfer(
+
+      const client = await SigningStargateClient.connectWithSigner(
+        props.chain.rpc,
+        (sourceChainNetworkClient as any).wallet,
         {
-          sender: sourceChainNetworkClient.address,
-          receiver: depositAddress,
-          source_channel: deposit_channel_id,
-          source_port: 'transfer',
-          token: {
-            amount: amount,
-            denom: deposit.denom
-          },
-          timeout_timestamp: (Math.floor(Date.now() / 1000) + 10 * 60).toString() // 10 minute timeout
-        },
-        {
-          broadcastCheckIntervalMs: 1000,
-          gasLimit: deposit_gas,
-          feeDenom: deposit_gas_denom,
-          ibcTxsOptions: {
-            resolveResponses: false
-          },
-          broadcastMode: BroadcastMode.Sync,
-          waitForCommit: false
+          gasPrice: GasPrice.fromString('1' + deposit_gas_denom)
         }
+      )
+
+      tx = await client.signAndBroadcast(
+        sourceChainNetworkClient.address,
+        [
+          {
+            value: {
+              sender: sourceChainNetworkClient.address,
+              // HACK: because of typescript issues with MsgTransferEncodeObject
+              // expecting bigint in Timestamp
+              timeoutTimestamp: (
+                BigInt(Math.floor(Date.now() / 1000) + 10 * 60) * BigInt(10 ** 9)
+              ).toString() as unknown as bigint,
+              // make sure to send undefined or ' ' as otherwise secret nodes
+              // will reject tx due to IBC hook logic of removing signer when memo is present
+              // additionally make sure to send '' instead of undefined, if we use stargate
+              token: {
+                amount,
+                denom: deposit.denom
+              },
+              sourcePort: 'transfer',
+              sourceChannel: deposit_channel_id,
+              receiver: depositAddress
+            },
+            typeUrl: '/ibc.applications.transfer.v1.MsgTransfer'
+          } as MsgTransferEncodeObject
+        ],
+        'auto'
       )
     } else {
       // Handle IBC transfers from Ethermint chains like Evmos & Injective
@@ -512,6 +551,8 @@ async function performIbcWithdrawal(
   token: Token,
   sourceChainNetworkClient: SecretNetworkClient
 ): Promise<string> {
+  let tx
+
   const selectedDest: Chain = chains[props.chain.chain_name]
 
   const amount: string = new BigNumber(props.amount)
@@ -535,8 +576,6 @@ async function performIbcWithdrawal(
   )
 
   try {
-    let tx: TxResponse
-
     if (token.is_snip20) {
       tx = await props.secretNetworkClient.tx.compute.executeContract(
         {

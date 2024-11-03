@@ -22,6 +22,8 @@ export type Chain = {
   chain_id: string
   /** lcd url of the chain */
   lcd: string
+  /** rpc url of the chain */
+  rpc: string
   /** explorer link for accounts */
   explorer_account: string
   /** explorer link for txs */
@@ -39,6 +41,7 @@ export const chains: { [chain_name: string]: Chain } = {
     chain_id: 'secret-4',
     bech32_prefix: 'secret',
     lcd: 'https://rpc.ankr.com/http/scrt_cosmos',
+    rpc: 'https://rpc.ankr.com/scrt',
     chain_image: 'img/assets/scrt.svg',
     explorer_account: 'https://www.mintscan.io/secret/account/'
   },
@@ -52,6 +55,7 @@ export const chains: { [chain_name: string]: Chain } = {
     chain_id: 'agoric-3',
     bech32_prefix: 'agoric',
     lcd: 'https://main.api.agoric.net',
+    rpc: 'https://main.rpc.agoric.net',
     chain_image: '/bld.svg',
     explorer_account: 'https://agoric.explorers.guru/account/'
   },
@@ -65,6 +69,7 @@ export const chains: { [chain_name: string]: Chain } = {
     chain_id: 'akashnet-2',
     bech32_prefix: 'akash',
     lcd: 'https://akash-api.lavenderfive.com',
+    rpc: 'https://akash-rpc.lavenderfive.com',
     chain_image: '/akt.svg',
     explorer_account: 'https://www.mintscan.io/akash/account/'
   },
@@ -78,6 +83,7 @@ export const chains: { [chain_name: string]: Chain } = {
     chain_id: 'andromeda-1',
     bech32_prefix: 'andr',
     lcd: 'https://andro.api.m.stavr.tech',
+    rpc: 'https://andro.rpc.m.stavr.tech',
     chain_image: '/andr.png',
     explorer_account: 'https://explorer.stavr.tech/Andromeda-Mainnet/account/'
   },
@@ -91,6 +97,7 @@ export const chains: { [chain_name: string]: Chain } = {
     chain_id: 'archway-1',
     bech32_prefix: 'archway',
     lcd: 'https://archway-api.lavenderfive.com:443',
+    rpc: 'https://archway-rpc.lavenderfive.com:443',
     chain_image: '/archway.svg',
     explorer_account: 'https://www.mintscan.io/archway/account/'
   },
@@ -104,6 +111,7 @@ export const chains: { [chain_name: string]: Chain } = {
     chain_id: 'axelar-dojo-1',
     bech32_prefix: 'axelar',
     lcd: 'https://lcd-axelar.imperator.co:443',
+    rpc: 'https://rpc-axelar.imperator.co:443',
     chain_image: '/axl.svg',
     explorer_account: 'https://axelarscan.io/account/'
   },
@@ -117,6 +125,7 @@ export const chains: { [chain_name: string]: Chain } = {
     chain_id: 'carbon-1',
     bech32_prefix: 'swth',
     lcd: 'https://carbon-api.lavenderfive.com:443',
+    rpc: 'https://carbon-rpc.lavenderfive.com:443',
     chain_image: '/swth.svg',
     explorer_account: 'https://ping.pub/carbon/account/'
   },
@@ -130,6 +139,7 @@ export const chains: { [chain_name: string]: Chain } = {
     chain_id: 'celestia',
     bech32_prefix: 'celestia',
     lcd: 'https://celestia-api.lavenderfive.com:443',
+    rpc: 'https://celestia-rpc.lavenderfive.com:443',
     chain_image: '/celestia.svg',
     explorer_account: 'https://www.mintscan.io/celestia/account/'
   },
@@ -142,7 +152,8 @@ export const chains: { [chain_name: string]: Chain } = {
     withdraw_gas: 150_000,
     chain_id: 'cheqd-mainnet-1',
     bech32_prefix: 'cheqd',
-    lcd: 'https://lcd-cheqd.whispernode.com:443',
+    lcd: 'https://rest.lavenderfive.com:443/cheqd',
+    rpc: 'https://rpc.lavenderfive.com:443/cheqd',
     chain_image: '/cheq.svg',
     explorer_account: 'https://ping.pub/cheqd/account/'
   },
@@ -156,6 +167,7 @@ export const chains: { [chain_name: string]: Chain } = {
     chain_id: 'chihuahua-1',
     bech32_prefix: 'chihuahua',
     lcd: 'https://chihuahua-api.lavenderfive.com',
+    rpc: 'https://chihuahua-rpc.lavenderfive.com',
     chain_image: '/huahua.svg',
     explorer_account: 'https://ping.pub/chihuahua/account/'
   },
@@ -168,7 +180,8 @@ export const chains: { [chain_name: string]: Chain } = {
     withdraw_gas: 150_000,
     chain_id: 'comdex-1',
     bech32_prefix: 'comdex',
-    lcd: 'https://comdex-api.lavenderfive.com/',
+    lcd: 'https://comdex-api.lavenderfive.com',
+    rpc: 'https://comdex-rpc.lavenderfive.com',
     chain_image: '/cmdx.svg',
     explorer_account: 'https://www.mintscan.io/comdex/account/'
   },
@@ -182,6 +195,7 @@ export const chains: { [chain_name: string]: Chain } = {
     chain_id: 'centauri-1',
     bech32_prefix: 'pica',
     lcd: 'https://composable-api.lavenderfive.com',
+    rpc: 'https://composable-rpc.lavenderfive.com',
     chain_image: '/composable.svg',
     explorer_account: 'https://explorer.nodestake.top/composable/account/'
   },
@@ -195,6 +209,7 @@ export const chains: { [chain_name: string]: Chain } = {
     chain_id: 'cosmoshub-4',
     bech32_prefix: 'cosmos',
     lcd: 'https://cosmoshub-api.lavenderfive.com:443',
+    rpc: 'https://cosmoshub-rpc.lavenderfive.com:443',
     chain_image: '/atom.svg',
     explorer_account: 'https://www.mintscan.io/cosmos/account/'
   },
@@ -208,6 +223,7 @@ export const chains: { [chain_name: string]: Chain } = {
     chain_id: 'dydx-mainnet-1',
     bech32_prefix: 'dydx',
     lcd: 'https://dydx-api.lavenderfive.com:443',
+    rpc: 'https://dydx-rpc.lavenderfive.com:443',
     chain_image: '/dydx.svg',
     explorer_account: 'https://www.mintscan.io/dydx/account/'
   },
@@ -221,6 +237,7 @@ export const chains: { [chain_name: string]: Chain } = {
     chain_id: 'dymension_1100-1',
     bech32_prefix: 'dym',
     lcd: 'https://dymension-api.lavenderfive.com:443',
+    rpc: 'https://dymension-rpc.lavenderfive.com:443',
     chain_image: '/dymension.svg',
     explorer_account: 'https://www.mintscan.io/dymension/account/'
   },
@@ -233,7 +250,8 @@ export const chains: { [chain_name: string]: Chain } = {
     withdraw_gas: 150_000,
     chain_id: 'gravity-bridge-3',
     bech32_prefix: 'gravity',
-    lcd: 'https://gravity-api.polkachu.com/',
+    lcd: 'https://gravity-api.polkachu.com',
+    rpc: 'https://gravity-rpc.polkachu.com',
     chain_image: '/grav.svg',
     explorer_account: 'https://www.mintscan.io/gravity-bridge/account/'
   },
@@ -247,6 +265,7 @@ export const chains: { [chain_name: string]: Chain } = {
     chain_id: 'injective-1',
     bech32_prefix: 'inj',
     lcd: 'https://injective-api.lavenderfive.com',
+    rpc: 'https://injective-rpc.lavenderfive.com',
     chain_image: '/inj.svg',
     explorer_account: 'https://www.mintscan.io/injective/account/'
   },
@@ -260,6 +279,7 @@ export const chains: { [chain_name: string]: Chain } = {
     chain_id: 'jackal-1',
     bech32_prefix: 'jkl',
     lcd: 'https://jackal-api.lavenderfive.com:443',
+    rpc: 'https://jackal-rpc.lavenderfive.com:443',
     chain_image: '/jkl.svg',
     explorer_account: 'https://explorer.nodestake.top/jackal/account/'
   },
@@ -273,6 +293,7 @@ export const chains: { [chain_name: string]: Chain } = {
     chain_id: 'juno-1',
     bech32_prefix: 'juno',
     lcd: 'https://juno-api.lavenderfive.com:443',
+    rpc: 'https://juno-rpc.lavenderfive.com:443',
     chain_image: '/juno.svg',
     explorer_account: 'https://www.mintscan.io/juno/account/'
   },
@@ -286,6 +307,7 @@ export const chains: { [chain_name: string]: Chain } = {
     chain_id: 'kava_2222-10',
     bech32_prefix: 'kava',
     lcd: 'https://kava-rest.publicnode.com',
+    rpc: 'https://kava-rpc.publicnode.com',
     chain_image: '/kava.svg',
     explorer_account: 'https://www.mintscan.io/kava/account/'
   },
@@ -298,7 +320,8 @@ export const chains: { [chain_name: string]: Chain } = {
     withdraw_gas: 150_000,
     chain_id: 'kaiyo-1',
     bech32_prefix: 'kujira',
-    lcd: 'https://kujira-api.polkachu.com/',
+    lcd: 'https://kujira-api.polkachu.com',
+    rpc: 'https://kujira-rpc.polkachu.com',
     chain_image: '/kuji.svg',
     explorer_account: 'https://ping.pub/kujira/account/'
   },
@@ -311,7 +334,8 @@ export const chains: { [chain_name: string]: Chain } = {
     withdraw_gas: 150_000,
     chain_id: 'migaloo-1',
     bech32_prefix: 'migaloo',
-    lcd: 'https://migaloo-api.cosmosrescue.com',
+    lcd: 'https://migaloo-api.polkachu.com:443',
+    rpc: 'https://migaloo-rpc.polkachu.com:443',
     chain_image: '/migaloo.svg',
     explorer_account: 'https://migaloo.explorers.guru/account/'
   },
@@ -325,6 +349,7 @@ export const chains: { [chain_name: string]: Chain } = {
     chain_id: 'neutron-1',
     bech32_prefix: 'neutron',
     lcd: 'https://rest-kralum.neutron-1.neutron.org',
+    rpc: 'https://rpc-kralum.neutron-1.neutron.org',
     chain_image: '/ntrn.svg',
     explorer_account: 'https://www.mintscan.io/neutron/account/'
   },
@@ -338,6 +363,7 @@ export const chains: { [chain_name: string]: Chain } = {
     chain_id: 'noble-1',
     bech32_prefix: 'noble',
     lcd: 'https://noble-api.polkachu.com',
+    rpc: 'https://noble-rpc.polkachu.com',
     chain_image: '/noble.svg',
     explorer_account: 'https://www.mintscan.io/noble/account/'
   },
@@ -352,6 +378,7 @@ export const chains: { [chain_name: string]: Chain } = {
     chain_id: 'pirin-1',
     bech32_prefix: 'nolus',
     lcd: 'https://nolus-api.lavenderfive.com:443',
+    rpc: 'https://nolus-rpc.lavenderfive.com:443',
     chain_image: '/nolus.svg',
     explorer_account: 'https://ping.pub/nolus/account/'
   },
@@ -364,7 +391,8 @@ export const chains: { [chain_name: string]: Chain } = {
     withdraw_gas: 150_000,
     chain_id: 'omniflixhub-1',
     bech32_prefix: 'omniflix',
-    lcd: 'https://omniflix-rest.kingnodes.com',
+    lcd: 'https://lcd.omniflix.bronbro.io',
+    rpc: 'https://rpc.omniflix.bronbro.io:443',
     chain_image: '/flix.svg',
     explorer_account: 'https://www.mintscan.io/omniflix/address/'
   },
@@ -378,6 +406,7 @@ export const chains: { [chain_name: string]: Chain } = {
     chain_id: 'Oraichain',
     bech32_prefix: 'orai',
     lcd: 'https://lcd.orai.io',
+    rpc: 'https://rpc.orai.io',
     chain_image: '/orai.svg',
     explorer_account: 'https://scan.orai.io/account/'
   },
@@ -391,6 +420,7 @@ export const chains: { [chain_name: string]: Chain } = {
     chain_id: 'osmosis-1',
     bech32_prefix: 'osmo',
     lcd: 'https://osmosis-rest.publicnode.com',
+    rpc: 'https://osmosis-rpc.publicnode.com',
     chain_image: '/osmo.svg',
     explorer_account: 'https://www.mintscan.io/osmosis/account/'
   },
@@ -404,6 +434,7 @@ export const chains: { [chain_name: string]: Chain } = {
     chain_id: 'core-1',
     bech32_prefix: 'persistence',
     lcd: 'https://persistence-rest.publicnode.com',
+    rpc: 'https://persistence-rpc.publicnode.com',
     chain_image: '/xprt.svg',
     explorer_account: 'https://www.mintscan.io/persistence/account/'
   },
@@ -417,6 +448,7 @@ export const chains: { [chain_name: string]: Chain } = {
     chain_id: 'quicksilver-2',
     bech32_prefix: 'quick',
     lcd: 'https://quicksilver-api.lavenderfive.com:443',
+    rpc: 'https://quicksilver-rpc.lavenderfive.com:443',
     chain_image: '/qck.svg',
     explorer_account: 'https://www.mintscan.io/quicksilver/account/'
   },
@@ -430,6 +462,7 @@ export const chains: { [chain_name: string]: Chain } = {
     chain_id: 'ssc-1',
     bech32_prefix: 'saga',
     lcd: 'https://saga-rest.publicnode.com',
+    rpc: 'https://saga-rpc.publicnode.com',
     chain_image: '/saga.svg',
     explorer_account: 'https://www.mintscan.io/saga/account/'
   },
@@ -443,6 +476,7 @@ export const chains: { [chain_name: string]: Chain } = {
     chain_id: 'sentinelhub-2',
     bech32_prefix: 'sent',
     lcd: 'https://lcd-sentinel.whispernode.com:443',
+    rpc: 'https://rpc-sentinel.whispernode.com:443',
     chain_image: '/dvpn.svg',
     explorer_account: 'https://www.mintscan.io/sentinel/account/'
   },
@@ -456,6 +490,7 @@ export const chains: { [chain_name: string]: Chain } = {
     chain_id: 'stargaze-1',
     bech32_prefix: 'stars',
     lcd: 'https://rest.stargaze-apis.com',
+    rpc: 'https://rpc.stargaze-apis.com',
     chain_image: '/stars.svg',
     explorer_account: 'https://www.mintscan.io/stargaze/account/'
   },
@@ -469,6 +504,7 @@ export const chains: { [chain_name: string]: Chain } = {
     chain_id: 'stride-1',
     bech32_prefix: 'stride',
     lcd: 'https://stride-api.lavenderfive.com',
+    rpc: 'https://stride-rpc.lavenderfive.com',
     chain_image: '/stride.svg',
     explorer_account: 'https://www.mintscan.io/stride/account/'
   },
@@ -482,6 +518,7 @@ export const chains: { [chain_name: string]: Chain } = {
     chain_id: 'phoenix-1',
     bech32_prefix: 'terra',
     lcd: 'https://terra-rest.publicnode.com',
+    rpc: 'https://terra-rpc.publicnode.com',
     chain_image: '/luna2.svg',
     explorer_account: 'https://finder.terra.money/mainnet/address/'
   },
@@ -495,6 +532,7 @@ export const chains: { [chain_name: string]: Chain } = {
     chain_id: 'umee-1',
     bech32_prefix: 'umee',
     lcd: 'https://umee-api.w3coins.io',
+    rpc: 'https://umee-rpc.w3coins.io',
     chain_image: '/umee.svg',
     explorer_account: 'https://www.mintscan.io/umee/account/'
   }
