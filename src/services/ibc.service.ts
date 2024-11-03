@@ -1,7 +1,7 @@
 import { AxelarAssetTransfer, AxelarQueryAPI, CHAINS, Environment } from '@axelar-network/axelarjs-sdk'
 import { createTxIBCMsgTransfer } from '@evmos/transactions'
 import BigNumber from 'bignumber.js'
-import { SkipRouter, SKIP_API_URL, Operation } from '@skip-router/core'
+import { SkipClient, SKIP_API_URL, Operation } from '@skip-go/client'
 import {
   BroadcastMode,
   MsgExecuteContract,
@@ -819,7 +819,7 @@ async function fetchSourceBalance(address: string, chain: Chain, token: Token): 
 }
 
 async function getSkipIBCRouting(chain: Chain, IbcMode: IbcMode, token: Token, amount: BigNumber) {
-  const client = new SkipRouter({
+  const client = new SkipClient({
     apiURL: SKIP_API_URL
   })
 
