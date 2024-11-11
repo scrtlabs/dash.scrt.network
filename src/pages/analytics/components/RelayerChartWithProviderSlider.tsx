@@ -102,30 +102,18 @@ export default function RelayerChartWithProviderSlider() {
       dateMap.set(date, (dateMap.get(date) || 0) + entry.Transactions)
     }
 
-    // Sort dates
+    // Sort dates and chains
     const sortedDates = Array.from(datesSet).sort((a, b) => new Date(a).getTime() - new Date(b).getTime())
-
-    // Prepare an array of { prefix, label } pairs for chains
-    const prefixLabelPairs = Array.from(chainsSet).map((prefix) => ({
-      prefix,
-      label: prefix
-    }))
-
-    // Sort prefixLabelPairs by label alphabetically
-    prefixLabelPairs.sort((a, b) => a.label.localeCompare(b.label))
-
-    // Extract the sorted bech32Prefixes and labels
-    const sortedBech32Prefixes = prefixLabelPairs.map((pair) => pair.prefix)
-    const chainLabels = prefixLabelPairs.map((pair) => pair.label)
+    const sortedChains = Array.from(chainsSet).sort((a, b) => a.localeCompare(b))
 
     // Create datasets for each chain
-    const datasets = sortedBech32Prefixes.map((chainPrefix, index) => {
+    const datasets = sortedChains.map((chainPrefix) => {
       const dateMap = dataMatrix.get(chainPrefix)!
       const data = sortedDates.map((date) => dateMap.get(date) || 0)
       return {
-        label: chainLabels[index],
+        label: chainPrefix,
         data,
-        backgroundColor: getColorFromChain(chainLabels[index])
+        backgroundColor: getColorFromChain(chainPrefix)
       }
     })
 
