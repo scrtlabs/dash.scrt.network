@@ -11,9 +11,11 @@ import RelayerChartWithDateSlider from './components/RelayerChartWithDateSlider'
 import RelayerChartWithChainSlider from './components/RelayerChartWithChainSlider'
 import RelayerChartWithProviderSlider from './components/RelayerChartWithProviderSlider'
 import RelayerChartTotal from './components/RelayerChartTotal'
+import WeeklyContractsChart from './components/WeeklyContractsChart'
 
 function Analytics() {
-  const { L5AnalyticsApiData, analyticsData1, analyticsData2, analyticsData3, analyticsData4 } = useContext(APIContext)
+  const { L5AnalyticsApiData, analyticsData1, analyticsData2, analyticsData3, analyticsData4, analyticsData5 } =
+    useContext(APIContext)
 
   useEffect(() => {
     trackMixPanelEvent('Open Analytics Tab')
@@ -62,6 +64,13 @@ function Analytics() {
               </div>
               <div className="col-span-12 rounded-xl bg-white border border-neutral-200 dark:border-neutral-700 dark:bg-neutral-800 p-4">
                 <TransactionsChart />
+              </div>
+            </>
+          ) : null}
+          {analyticsData5 ? (
+            <>
+              <div className="col-span-12 rounded-xl bg-white border border-neutral-200 dark:border-neutral-700 dark:bg-neutral-800 p-4">
+                <WeeklyContractsChart />
               </div>
             </>
           ) : null}
