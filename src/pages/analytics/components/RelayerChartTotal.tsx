@@ -1,5 +1,5 @@
 import { useContext, useMemo } from 'react'
-import { bech32PrefixToChainName, formatNumber } from 'utils/commons'
+import { formatNumber } from 'utils/commons'
 import Tooltip from '@mui/material/Tooltip'
 import {
   Chart as ChartJS,
@@ -18,13 +18,6 @@ import { APIContext } from 'context/APIContext'
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, ChartTooltip, Legend, BarController)
 
-type Entry = {
-  Date: string
-  IBC_Counterpart: string
-  Relayer: string
-  Transactions: number
-}
-
 export default function RelayerChartTotal() {
   const { theme } = useUserPreferencesStore()
   const { analyticsData4 } = useContext(APIContext)
@@ -35,12 +28,8 @@ export default function RelayerChartTotal() {
     const datesSet = new Set<string>()
     const dataMatrix: Record<string, number[]> = {}
 
-    const filteredData = analyticsData4.filter(
-      (entry: Entry) => entry.IBC_Counterpart !== null && entry.IBC_Counterpart !== 'secret'
-    )
-
     // Collect and sort dates
-    for (const entry of filteredData) {
+    for (const entry of analyticsData4) {
       const date = new Date(entry.Date).toISOString().split('T')[0]
       datesSet.add(date)
     }
@@ -56,13 +45,11 @@ export default function RelayerChartTotal() {
     )
 
     // Process entries and populate dataMatrix
-    for (const entry of filteredData) {
+    for (const entry of analyticsData4) {
       const date = new Date(entry.Date).toISOString().split('T')[0]
       const dateIndex = dateIndexMap[date]
 
-      const label = `${bech32PrefixToChainName.get(entry.IBC_Counterpart) || entry.IBC_Counterpart} - ${
-        entry.Relayer || 'Other'
-      }`
+      const label = `${entry.IBC_Counterpart} - ${entry.Relayer || 'Other'}`
 
       // Initialize dataMatrix[label] if it doesn't exist
       if (!dataMatrix[label]) {

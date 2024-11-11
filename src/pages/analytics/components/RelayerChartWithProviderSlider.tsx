@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from 'react'
-import { bech32PrefixToChainName, formatNumber } from 'utils/commons'
+import { formatNumber } from 'utils/commons'
 import Tooltip from '@mui/material/Tooltip'
 import Slider from '@mui/material/Slider'
 import {
@@ -38,15 +38,13 @@ export default function RelayerChartWithProviderSlider() {
     // Process data grouped by relayer
     const relayerMap: Record<string, Entry[]> = {}
 
-    analyticsData4
-      .filter((entry: Entry) => entry.IBC_Counterpart !== null && entry.IBC_Counterpart !== 'secret')
-      .forEach((entry: Entry) => {
-        const relayer = entry.Relayer || 'Other'
-        relayerMap[relayer] ||= []
-        relayerMap[relayer].push(entry)
-      })
+    analyticsData4.forEach((entry: Entry) => {
+      const relayer = entry.Relayer || 'Other'
+      relayerMap[relayer] ||= []
+      relayerMap[relayer].push(entry)
+    })
 
-    const sortedRelayers = Object.keys(relayerMap).sort((a, b) => a.localeCompare(b))
+    const sortedRelayers = Object.keys(relayerMap).sort()
     setRelayers(sortedRelayers)
 
     // Calculate total transactions per relayer
@@ -59,7 +57,7 @@ export default function RelayerChartWithProviderSlider() {
     const maxTotal = Math.max(...Object.values(relayerTotals))
     const topRelayers = Object.keys(relayerTotals).filter((relayer) => relayerTotals[relayer] === maxTotal)
     // If multiple relayers have the same max total, choose the first one alphabetically
-    const defaultRelayer = topRelayers.sort((a, b) => a.localeCompare(b))[0]
+    const defaultRelayer = topRelayers.sort()[0]
 
     // Find the index of the default relayer
     const defaultIndex = sortedRelayers.indexOf(defaultRelayer)
@@ -110,7 +108,7 @@ export default function RelayerChartWithProviderSlider() {
     // Prepare an array of { prefix, label } pairs for chains
     const prefixLabelPairs = Array.from(chainsSet).map((prefix) => ({
       prefix,
-      label: bech32PrefixToChainName.get(prefix) || prefix
+      label: prefix
     }))
 
     // Sort prefixLabelPairs by label alphabetically

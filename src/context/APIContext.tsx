@@ -4,7 +4,7 @@ import { SecretNetworkClient } from 'secretjs'
 import { useUserPreferencesStore } from 'store/UserPreferences'
 import { Currency } from 'types/Currency'
 import { Nullable } from 'types/Nullable'
-import { allTokens, coinGeckoCurrencyMap, sortDAppsArray } from 'utils/commons'
+import { allTokens, bech32PrefixToChainName, coinGeckoCurrencyMap, sortDAppsArray } from 'utils/commons'
 import { SECRET_LCD, SECRET_CHAIN_ID } from 'utils/config'
 
 const APIContext = createContext(null)
@@ -231,7 +231,16 @@ const APIContextProvider = ({ children }: any) => {
       .then((response) => (response as any).json())
       .catch((error: any) => console.error(error))
       .then((response) => {
-        setAnalyticsData4(response)
+        const filteredData = response
+          .filter((entry: any) => entry.IBC_Counterpart !== null && entry.IBC_Counterpart !== 'secret')
+          .map((entry: any) => {
+            const chainName = bech32PrefixToChainName.get(entry.IBC_Counterpart) || entry.IBC_Counterpart
+            return {
+              ...entry,
+              IBC_Counterpart: chainName
+            }
+          })
+        setAnalyticsData4(filteredData)
       })
 
     const LAVENDERFIVE_API_URL_SECRET_STATUS = `https://api.lavenderfive.com/networks/secretnetwork`

@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from 'react'
-import { bech32PrefixToChainName, formatNumber } from 'utils/commons'
+import { formatNumber } from 'utils/commons'
 import Tooltip from '@mui/material/Tooltip'
 import Slider from '@mui/material/Slider'
 import {
@@ -37,13 +37,11 @@ export default function RelayerChartWithDateSlider() {
     // Process data grouped by date
     const dateMap: Record<string, Entry[]> = {}
 
-    analyticsData4
-      .filter((entry: Entry) => entry.IBC_Counterpart !== null && entry.IBC_Counterpart !== 'secret')
-      .forEach((entry: Entry) => {
-        const date = new Date(entry.Date).toISOString().split('T')[0]
-        dateMap[date] ||= []
-        dateMap[date].push(entry)
-      })
+    analyticsData4.forEach((entry: Entry) => {
+      const date = new Date(entry.Date).toISOString().split('T')[0]
+      dateMap[date] ||= []
+      dateMap[date].push(entry)
+    })
 
     const sortedDates = Object.keys(dateMap).sort((a, b) => new Date(a).getTime() - new Date(b).getTime())
     setDates(sortedDates)
@@ -80,7 +78,7 @@ export default function RelayerChartWithDateSlider() {
     // Prepare an array of { prefix, label } pairs
     const prefixLabelPairs = Array.from(chainsSet).map((prefix) => ({
       prefix,
-      label: bech32PrefixToChainName.get(prefix) || prefix
+      label: prefix
     }))
 
     // Sort prefixLabelPairs by label alphabetically
