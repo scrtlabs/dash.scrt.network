@@ -131,7 +131,7 @@ export default function WeeklyContractsChart() {
     return color
   }
 
-  const options: ChartOptions<'bar'> = {
+  const options = {
     responsive: true,
     animation: true,
     maintainAspectRatio: false,
@@ -153,7 +153,7 @@ export default function WeeklyContractsChart() {
         stacked: true,
         ticks: {
           color: theme === 'dark' ? '#fff' : '#000',
-          callback: (value: number | string) => formatNumber(value, 2)
+          callback: (value: number) => formatNumber(value, 2)
         },
         grid: {
           color: theme === 'dark' ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0, 0, 0, 0.2)',
@@ -191,7 +191,7 @@ export default function WeeklyContractsChart() {
       </div>
       <div className="w-full h-[400px]">
         {chartData && chartData.datasets && chartData.datasets.length > 0 ? (
-          <Bar data={chartData} options={options} />
+          <Bar data={chartData} options={options as any} />
         ) : null}
       </div>
     </>
