@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from 'react'
-import { bech32PrefixToChainName, formatNumber } from 'utils/commons'
+import { formatNumber } from 'utils/commons'
 import Tooltip from '@mui/material/Tooltip'
 import Slider from '@mui/material/Slider'
 import {
@@ -37,13 +37,11 @@ export default function RelayerChartWithDateSlider() {
     // Process data grouped by date
     const dateMap: Record<string, Entry[]> = {}
 
-    analyticsData4
-      .filter((entry: Entry) => entry.IBC_Counterpart !== null && entry.IBC_Counterpart !== 'secret')
-      .forEach((entry: Entry) => {
-        const date = new Date(entry.Date).toISOString().split('T')[0]
-        dateMap[date] ||= []
-        dateMap[date].push(entry)
-      })
+    analyticsData4.forEach((entry: Entry) => {
+      const date = new Date(entry.Date).toISOString().split('T')[0]
+      dateMap[date] ||= []
+      dateMap[date].push(entry)
+    })
 
     const sortedDates = Object.keys(dateMap).sort((a, b) => new Date(a).getTime() - new Date(b).getTime())
     setDates(sortedDates)
@@ -77,23 +75,13 @@ export default function RelayerChartWithDateSlider() {
       chainMap.set(chainBech32Prefix, (chainMap.get(chainBech32Prefix) || 0) + entry.Transactions)
     }
 
-    // Prepare an array of { prefix, label } pairs
-    const prefixLabelPairs = Array.from(chainsSet).map((prefix) => ({
-      prefix,
-      label: bech32PrefixToChainName.get(prefix) || prefix
-    }))
-
-    // Sort prefixLabelPairs by label alphabetically
-    prefixLabelPairs.sort((a, b) => a.label.localeCompare(b.label))
-
-    // Extract the sorted bech32Prefixes and labels
-    const sortedBech32Prefixes = prefixLabelPairs.map((pair) => pair.prefix)
-    const labels = prefixLabelPairs.map((pair) => pair.label)
+    // Sort the prefixes alphabetically and use them as labels
+    const labels = Array.from(chainsSet).sort()
 
     // Create datasets for each relayer
     const datasets = Array.from(relayersSet).map((relayer) => {
       const chainMap = dataMatrix.get(relayer)!
-      const data = sortedBech32Prefixes.map((prefix) => chainMap.get(prefix) || 0)
+      const data = labels.map((prefix) => chainMap.get(prefix) || 0)
       return {
         label: relayer,
         data,

@@ -22,6 +22,7 @@ export const allTokens = tokens.concat(snips).concat(ICSTokens)
 
 // Cache the mapping from bech32 prefixes to chain names
 export const bech32PrefixToChainName: Map<string, string> = new Map()
+
 for (const chainInfo of Object.values(chains)) {
   bech32PrefixToChainName.set(chainInfo.bech32_prefix, chainInfo.chain_name)
 }

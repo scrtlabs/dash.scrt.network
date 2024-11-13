@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from 'react'
-import { bech32PrefixToChainName, formatNumber } from 'utils/commons'
+import { formatNumber } from 'utils/commons'
 import Tooltip from '@mui/material/Tooltip'
 import Slider from '@mui/material/Slider'
 import {
@@ -57,10 +57,10 @@ export default function RelayerChartWithChainSlider() {
     }
 
     // Sort dates
-    const sortedDates = Array.from(datesSet).sort((a, b) => new Date(a).getTime() - new Date(b).getTime())
+    const sortedDates = Array.from(datesSet).sort()
 
     // Sort relayers
-    const sortedRelayers = Array.from(relayersSet).sort((a, b) => a.localeCompare(b))
+    const sortedRelayers = Array.from(relayersSet).sort()
 
     // Create datasets for each relayer
     const datasets = sortedRelayers.map((relayer) => {
@@ -84,16 +84,12 @@ export default function RelayerChartWithChainSlider() {
     // Process data grouped by chain
     const chainMap: Record<string, Entry[]> = {}
 
-    analyticsData4
-      .filter((entry: Entry) => entry.IBC_Counterpart !== null && entry.IBC_Counterpart !== 'secret')
-      .forEach((entry: Entry) => {
-        const chainBech32Prefix = entry.IBC_Counterpart
-        const chainName = bech32PrefixToChainName.get(chainBech32Prefix) || chainBech32Prefix
-        chainMap[chainName] ||= []
-        chainMap[chainName].push(entry)
-      })
+    analyticsData4.forEach((entry: Entry) => {
+      chainMap[entry.IBC_Counterpart] ||= []
+      chainMap[entry.IBC_Counterpart].push(entry)
+    })
 
-    const sortedChains = Object.keys(chainMap).sort((a, b) => a.localeCompare(b))
+    const sortedChains = Object.keys(chainMap).sort()
     setChainLabels(sortedChains)
     setChainMap(chainMap)
 

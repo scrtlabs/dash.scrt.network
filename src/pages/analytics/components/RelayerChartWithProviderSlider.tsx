@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from 'react'
-import { bech32PrefixToChainName, formatNumber } from 'utils/commons'
+import { formatNumber } from 'utils/commons'
 import Tooltip from '@mui/material/Tooltip'
 import Slider from '@mui/material/Slider'
 import {
@@ -38,15 +38,13 @@ export default function RelayerChartWithProviderSlider() {
     // Process data grouped by relayer
     const relayerMap: Record<string, Entry[]> = {}
 
-    analyticsData4
-      .filter((entry: Entry) => entry.IBC_Counterpart !== null && entry.IBC_Counterpart !== 'secret')
-      .forEach((entry: Entry) => {
-        const relayer = entry.Relayer || 'Other'
-        relayerMap[relayer] ||= []
-        relayerMap[relayer].push(entry)
-      })
+    analyticsData4.forEach((entry: Entry) => {
+      const relayer = entry.Relayer || 'Other'
+      relayerMap[relayer] ||= []
+      relayerMap[relayer].push(entry)
+    })
 
-    const sortedRelayers = Object.keys(relayerMap).sort((a, b) => a.localeCompare(b))
+    const sortedRelayers = Object.keys(relayerMap).sort()
     setRelayers(sortedRelayers)
 
     // Calculate total transactions per relayer
@@ -59,7 +57,7 @@ export default function RelayerChartWithProviderSlider() {
     const maxTotal = Math.max(...Object.values(relayerTotals))
     const topRelayers = Object.keys(relayerTotals).filter((relayer) => relayerTotals[relayer] === maxTotal)
     // If multiple relayers have the same max total, choose the first one alphabetically
-    const defaultRelayer = topRelayers.sort((a, b) => a.localeCompare(b))[0]
+    const defaultRelayer = topRelayers.sort()[0]
 
     // Find the index of the default relayer
     const defaultIndex = sortedRelayers.indexOf(defaultRelayer)
@@ -104,30 +102,18 @@ export default function RelayerChartWithProviderSlider() {
       dateMap.set(date, (dateMap.get(date) || 0) + entry.Transactions)
     }
 
-    // Sort dates
+    // Sort dates and chains
     const sortedDates = Array.from(datesSet).sort((a, b) => new Date(a).getTime() - new Date(b).getTime())
-
-    // Prepare an array of { prefix, label } pairs for chains
-    const prefixLabelPairs = Array.from(chainsSet).map((prefix) => ({
-      prefix,
-      label: bech32PrefixToChainName.get(prefix) || prefix
-    }))
-
-    // Sort prefixLabelPairs by label alphabetically
-    prefixLabelPairs.sort((a, b) => a.label.localeCompare(b.label))
-
-    // Extract the sorted bech32Prefixes and labels
-    const sortedBech32Prefixes = prefixLabelPairs.map((pair) => pair.prefix)
-    const chainLabels = prefixLabelPairs.map((pair) => pair.label)
+    const sortedChains = Array.from(chainsSet).sort((a, b) => a.localeCompare(b))
 
     // Create datasets for each chain
-    const datasets = sortedBech32Prefixes.map((chainPrefix, index) => {
+    const datasets = sortedChains.map((chainPrefix) => {
       const dateMap = dataMatrix.get(chainPrefix)!
       const data = sortedDates.map((date) => dateMap.get(date) || 0)
       return {
-        label: chainLabels[index],
+        label: chainPrefix,
         data,
-        backgroundColor: getColorFromChain(chainLabels[index])
+        backgroundColor: getColorFromChain(chainPrefix)
       }
     })
 
