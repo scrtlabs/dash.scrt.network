@@ -3482,13 +3482,12 @@ export const tokens: Token[] = [
 // These are snip 20 tokens that are IBC compatible (no need to wrap them manually)
 export const snips: Token[] = [
   {
-    name: 'ATOM/DATOMLP',
-    description:
-      'SHADESWAP Liquidity Provider (LP) token for secret19e75l25r6sa6nhdf4lggjmgpw0vmpfvsw5cnpe-secret1x3cxgrwymk7yyelf2782r8ay020xyl96zq3rhh',
+    name: 'ATOM/DATOM LP',
+    description: 'ShadeSwap LP token for ATOM-DATOM',
     is_snip20: true,
     address: 'secret1gddp7wlpkups509u76dca550xuxk6ckjru5x54',
     code_hash: 'b0c2048d28a0ca0b92274549b336703622ecb24a8c21f417e70c03aa620fcd7b',
-    image: '/shd.svg',
+    image: '/atom_datom_lp.svg',
     decimals: 6,
     coingecko_id: '',
     deposits: [
