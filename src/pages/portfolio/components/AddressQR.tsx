@@ -77,7 +77,7 @@ export default function AddressQR() {
             <div className="flex-1 flex flex-row gap-4 items-center justify-center xl:justify-center">
               <Link
                 to="/send"
-                className="px-4 py-2.5 inline-block bg-cyan-500 dark:bg-cyan-500/20 text-white dark:text-cyan-200 hover:text-cyan-100 hover:bg-cyan-400 dark:hover:bg-cyan-500/50 text-center transition-colors rounded-xl font-semibold text-sm"
+                className="px-4 py-2.5 inline-block bg-cyan-500 dark:bg-cyan-500/20 text-white dark:text-cyan-200 hover:text-cyan-100 hover:bg-cyan-400 dark:hover:bg-cyan-500/50 text-center transition-colors rounded-xl font-semibold text-xs"
                 onClick={() => {
                   trackMixPanelEvent('Clicked Send SCRT')
                 }}
@@ -86,12 +86,21 @@ export default function AddressQR() {
               </Link>
               <Link
                 to="/get-scrt"
-                className="px-4 py-2.5 inline-block bg-cyan-500 dark:bg-cyan-500/20 text-white dark:text-cyan-200 hover:text-cyan-100 hover:bg-cyan-400 dark:hover:bg-cyan-500/50 text-center transition-colors rounded-xl font-semibold text-sm"
+                className="px-4 py-2.5 inline-block bg-cyan-500 dark:bg-cyan-500/20 text-white dark:text-cyan-200 hover:text-cyan-100 hover:bg-cyan-400 dark:hover:bg-cyan-500/50 text-center transition-colors rounded-xl font-semibold text-xs"
                 onClick={() => {
                   trackMixPanelEvent('Clicked Get SCRT')
                 }}
               >
                 Get SCRT
+              </Link>
+              <Link
+                to="/bridge"
+                className="px-4 py-2.5 inline-block bg-cyan-500 dark:bg-cyan-500/20 text-white dark:text-cyan-200 hover:text-cyan-100 hover:bg-cyan-400 dark:hover:bg-cyan-500/50 text-center transition-colors rounded-xl font-semibold text-xs"
+                onClick={() => {
+                  trackMixPanelEvent('Clicked bridge')
+                }}
+              >
+                Bridge
               </Link>
             </div>
           </div>
