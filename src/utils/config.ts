@@ -382,6 +382,20 @@ export const chains: { [chain_name: string]: Chain } = {
     chain_image: '/nolus.svg',
     explorer_account: 'https://ping.pub/nolus/account/'
   },
+  Nym: {
+    chain_name: 'Nym',
+    deposit_channel_id: 'channel-12',
+    deposit_gas: 200_000,
+    deposit_gas_denom: 'unym',
+    withdraw_channel_id: 'channel-174',
+    withdraw_gas: 150_000,
+    chain_id: 'nyx',
+    bech32_prefix: 'n',
+    lcd: 'https://api.nymtech.net',
+    rpc: 'https://rpc.nymtech.net/',
+    chain_image: '/nyx.png',
+    explorer_account: 'https://www.mintscan.io/nyx/account/'
+  },
   Omniflix: {
     chain_name: 'Omniflix',
     deposit_channel_id: 'channel-46',
@@ -884,6 +898,18 @@ export const tokens: Token[] = [
             },
             {
               incomingChannelId: chains['Osmosis'].deposit_channel_id,
+              incomingPortId: 'transfer'
+            }
+          ],
+          'uscrt'
+        )
+      },
+      {
+        chain_name: 'Nym',
+        denom: ibcDenom(
+          [
+            {
+              incomingChannelId: chains['Nym'].deposit_channel_id,
               incomingPortId: 'transfer'
             }
           ],
@@ -2204,6 +2230,35 @@ export const tokens: Token[] = [
             }
           ],
           'untrn'
+        )
+      }
+    ]
+  },
+  {
+    name: 'NYM',
+    description: 'Nym Governance Token',
+    address: 'XX',
+    code_hash: '638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e',
+    image: '/nyx.png',
+    decimals: 6,
+    coingecko_id: 'nym',
+    deposits: [
+      {
+        chain_name: 'Nym',
+        denom: 'unym'
+      }
+    ],
+    withdrawals: [
+      {
+        chain_name: 'Nym',
+        denom: ibcDenom(
+          [
+            {
+              incomingChannelId: chains['Nym'].withdraw_channel_id,
+              incomingPortId: 'transfer'
+            }
+          ],
+          'unym'
         )
       }
     ]
