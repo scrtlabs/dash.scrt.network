@@ -312,9 +312,9 @@ export function Navigation({
               >
                 <FontAwesomeIcon icon={faSeedling} className="mr-2" />
                 <span>Token Garden</span>
-                <span className="ml-2 bg-purple-100 text-purple-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-purple-900 dark:text-purple-300">
+                {/*span className="ml-2 bg-purple-100 text-purple-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-purple-900 dark:text-purple-300">
                   New
-                </span>
+                </span>*/}
                 <FontAwesomeIcon icon={faArrowUpRightFromSquare} className="text-xs ml-2" size={'xs'} />
               </a>
             </li>
