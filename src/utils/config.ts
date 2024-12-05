@@ -2237,7 +2237,7 @@ export const tokens: Token[] = [
   {
     name: 'NYM',
     description: 'Nym Governance Token',
-    address: 'XX',
+    address: 'secret19gk280z6j9ywt3ln6fmfwfa36dkqeukcwqdw2k',
     code_hash: '638a3e1d50175fbcb8373cf801565283e3eb23d88a9b7b7f99fcc5eb1e6b561e',
     image: '/nyx.png',
     decimals: 6,
