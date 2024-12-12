@@ -3765,7 +3765,7 @@ export const snips: Token[] = [
     is_snip20: true,
     address: 'secret1kmjr03phgn4v4u0altvvuc53lfmy033wmvddy5',
     code_hash: 'b0c2048d28a0ca0b92274549b336703622ecb24a8c21f417e70c03aa620fcd7b',
-    image: '/atom_datom_lp.svg',
+    image: '/atom_statom_lp.svg',
     decimals: 6,
     coingecko_id: '',
     deposits: [
