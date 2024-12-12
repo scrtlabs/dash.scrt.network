@@ -2,12 +2,10 @@ import { faArrowUpRightFromSquare, faShuffle } from '@fortawesome/free-solid-svg
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Link } from 'react-router-dom'
 import { Helmet } from 'react-helmet-async'
-import { bridgeJsonLdSchema, bridgePageDescription, bridgePageTitle, formatNumber, pageTitle } from 'utils/commons'
-import mixpanel from 'mixpanel-browser'
+import { bridgeJsonLdSchema, bridgePageDescription, bridgePageTitle } from 'utils/commons'
 import { useEffect, useState } from 'react'
 import { trackMixPanelEvent } from 'utils/commons'
 import SquidModal from './SquidModal'
-import { useSecretNetworkClientStore } from 'store/secretNetworkClient'
 import Title from 'components/Title'
 import { useUserPreferencesStore } from 'store/UserPreferences'
 import SwingModal from './SwingModal'
@@ -21,8 +19,6 @@ function Bridge() {
   const [isSquidModalOpen, setIsSquidModalOpen] = useState(false)
   const [isSwingModalOpen, setIsSwingModalOpen] = useState(false)
   const [isSilentModalOpen, setIsSilentModalOpen] = useState(false)
-
-  const { walletAddress } = useSecretNetworkClientStore()
 
   return (
     <>
@@ -53,50 +49,6 @@ function Bridge() {
       </div>
 
       <div className="max-w-2xl mx-auto px-6 text-neutral-600 dark:text-neutral-400 leading-7 text-justify divide-y divide-gray-300 dark:divide-gray-600">
-        {/* SilentSwap Section */}
-        <div className="py-4">
-          <p>
-            SilentSwap is the official privacy cross-chain aggregator for Secret Network. It offers a fast, cheap, and
-            convenient way to privately and securely swap your assets by leveraging Secret Network's confidential
-            computing layer. SilentSwap obfuscates the trace between sender and receiver in an entirely noncustodial,
-            trustless, and permisionless manner. It is fully compliant and allows users to trade or transfer in private,
-            all abstracted in a seamless user experience.
-          </p>
-          <a
-            href="https://app.silentswap.com"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-white block mt-6 p-3 w-full text-center font-semibold bg-cyan-600 dark:bg-cyan-600 rounded-lg text-sm hover:bg-cyan-500 dark:hover:bg-cyan-500 focus:bg-cyan-600 dark:focus:bg-cyan-600 transition-colors"
-          >
-            Go to Silent Swap
-            <FontAwesomeIcon icon={faArrowUpRightFromSquare} className="ml-2" />
-          </a>
-        </div>
-
-        {/* Protip Section */}
-        <div className="py-4">
-          <p>
-            <span className="select-none">
-              <span className="inline-block bg-emerald-500 dark:bg-emerald-800 text-white text-xs py-0.5 px-1.5 rounded uppercase font-semibold">
-                Protip
-              </span>{' '}
-              –{' '}
-            </span>
-            If you want to bridge Axelar Assets (such as USDC, USDT) from other Cosmos based chains (Osmosis, Kujira) to
-            Secret, please use the IBC tab:
-            <Link
-              to={'/ibc'}
-              className="text-white block mt-6 p-3 w-full text-center font-semibold bg-cyan-600 dark:bg-cyan-600 rounded-lg text-sm hover:bg-cyan-500 dark:hover:bg-cyan-500 focus:bg-cyan-600 dark:focus:bg-cyan-600 transition-colors"
-              onClick={() => {
-                trackMixPanelEvent('Clicked IBC transfer link (from Bridge page)')
-              }}
-            >
-              <FontAwesomeIcon icon={faShuffle} className="mr-2" />
-              Go to IBC Transfers
-            </Link>
-          </p>
-        </div>
-
         {/* Secret Tunnel Section */}
         <div className="py-4">
           <p>
@@ -129,6 +81,30 @@ function Bridge() {
           </a>
         </div>
 
+        {/* Protip Section */}
+        <div className="py-4">
+          <p>
+            <span className="select-none">
+              <span className="inline-block bg-emerald-500 dark:bg-emerald-800 text-white text-xs py-0.5 px-1.5 rounded uppercase font-semibold">
+                Protip
+              </span>{' '}
+              –{' '}
+            </span>
+            If you want to bridge Axelar Assets (such as USDC, USDT) from other Cosmos based chains (Osmosis, Kujira) to
+            Secret, please use the IBC tab:
+            <Link
+              to={'/ibc'}
+              className="text-white block mt-6 p-3 w-full text-center font-semibold bg-cyan-600 dark:bg-cyan-600 rounded-lg text-sm hover:bg-cyan-500 dark:hover:bg-cyan-500 focus:bg-cyan-600 dark:focus:bg-cyan-600 transition-colors"
+              onClick={() => {
+                trackMixPanelEvent('Clicked IBC transfer link (from Bridge page)')
+              }}
+            >
+              <FontAwesomeIcon icon={faShuffle} className="mr-2" />
+              Go to IBC Transfers
+            </Link>
+          </p>
+        </div>
+
         {/* Squid Router Section */}
         <div className="py-4">
           <p>Alternatively, use Squid Router to bridge your assets into Secret Network.</p>
@@ -156,6 +132,26 @@ function Bridge() {
             }}
           >
             Use Swing Swap
+          </a>
+        </div>
+
+        {/* SilentSwap Section */}
+        <div className="py-4">
+          <p>
+            SilentSwap is the official privacy cross-chain aggregator for Secret Network. It offers a fast, cheap, and
+            convenient way to privately and securely swap your assets by leveraging Secret Network's confidential
+            computing layer. SilentSwap obfuscates the trace between sender and receiver in an entirely noncustodial,
+            trustless, and permisionless manner. It is fully compliant and allows users to trade or transfer in private,
+            all abstracted in a seamless user experience.
+          </p>
+          <a
+            href="https://app.silentswap.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-white block mt-6 p-3 w-full text-center font-semibold bg-cyan-600 dark:bg-cyan-600 rounded-lg text-sm hover:bg-cyan-500 dark:hover:bg-cyan-500 focus:bg-cyan-600 dark:focus:bg-cyan-600 transition-colors"
+          >
+            Go to Silent Swap
+            <FontAwesomeIcon icon={faArrowUpRightFromSquare} className="ml-2" />
           </a>
         </div>
       </div>
