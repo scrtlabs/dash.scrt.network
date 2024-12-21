@@ -141,7 +141,7 @@ function Bridge() {
             SilentSwap is the official privacy cross-chain aggregator for Secret Network. It offers a fast, cheap, and
             convenient way to privately and securely swap your assets by leveraging Secret Network's confidential
             computing layer. SilentSwap obfuscates the trace between sender and receiver in an entirely noncustodial,
-            trustless, and permisionless manner. It is fully compliant and allows users to trade or transfer in private,
+            trustless, and permissionless manner. It is fully compliant and allows users to trade or transfer in private,
             all abstracted in a seamless user experience.
           </p>
           <a

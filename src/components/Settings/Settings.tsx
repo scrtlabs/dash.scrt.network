@@ -95,7 +95,7 @@ function Settings() {
         }
       } catch (error: any) {
         console.error('error after submitting settings:', error)
-        NotificationService.notify(`An error occured while saving user settings`, 'error')
+        NotificationService.notify(`An error occurred while saving user settings`, 'error')
       }
     }
   })
