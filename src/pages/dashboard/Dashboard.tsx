@@ -168,7 +168,7 @@ function Dashboard() {
       // staking ratio missing
       const I = inflation // inflation
       const F = parseFloat(secretFoundationTax) // foundation tax
-      const C = 0.05 // validator commision rate; median is 5%
+      const C = 0.05 // validator commission rate; median is 5%
       const T = parseFloat(communityTax) // community tax
       const R = bondedToken / totalSupply // bonded rate
       const bondedRate = R * 100
