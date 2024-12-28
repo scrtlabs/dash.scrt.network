@@ -137,13 +137,13 @@ export default function StakingChart() {
 
       ctx.save()
 
-      ctx.font = 'bold 0.9rem Montserrat'
+      ctx.font = 'bold 0.9rem RundDisplay'
       ctx.fillStyle = theme === 'dark' ? '#fff' : '#000'
       ctx.textAlign = 'center'
       ctx.fillText(`SCRT Total Supply`, width / 2, height / 2.25 + top)
       ctx.restore()
 
-      ctx.font = '400 1.5rem Montserrat'
+      ctx.font = '400 1.5rem RundDisplay'
       ctx.fillStyle = theme === 'dark' ? '#fff' : '#000'
       ctx.textAlign = 'center'
       ctx.fillText(`${formatNumber(totalSupply, 2)}`, width / 2, height / 1.75 + top)
@@ -168,6 +168,7 @@ export default function StakingChart() {
         labels: {
           color: theme === 'dark' ? '#fff' : '#000',
           font: {
+            family: 'RundDisplay',
             size: 11
           },
           usePointStyle: true,

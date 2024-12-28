@@ -182,7 +182,7 @@ export default function WrapForm() {
     input: (styles: any) => ({
       ...styles,
       color: theme === 'light' ? 'black !important' : 'white !important',
-      fontFamily: 'Montserrat, sans-serif',
+      fontFamily: 'RundDisplay, sans-serif',
       fontWeight: 600,
       fontSize: '14px'
     }),

@@ -139,7 +139,7 @@ export default function BalanceChart() {
       ctx.save()
 
       if (priceMapping !== null && balanceMapping !== null) {
-        ctx.font = '300 1rem Montserrat'
+        ctx.font = '300 1rem RundDisplay'
         ctx.fillStyle = theme === 'dark' ? '#fff' : '#000'
         ctx.textAlign = 'center'
         ctx.fillText(`Your Portfolio`, width / 2, height / 2.25 + top)
@@ -147,7 +147,7 @@ export default function BalanceChart() {
       }
 
       if (priceMapping !== null) {
-        ctx.font = 'bold 1.25rem Montserrat'
+        ctx.font = 'bold 1.25rem RundDisplay'
         ctx.fillStyle = theme === 'dark' ? '#fff' : '#000'
         ctx.textAlign = 'center'
         ctx.fillText(

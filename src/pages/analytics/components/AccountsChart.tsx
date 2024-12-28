@@ -132,7 +132,12 @@ export default function AccountsChart() {
     },
     plugins: {
       legend: {
-        display: true
+        display: true,
+        labels: {
+          font: {
+            family: 'RundDisplay'
+          }
+        }
       },
       tooltip: {
         xAlign: 'center',

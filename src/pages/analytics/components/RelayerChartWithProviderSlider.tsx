@@ -256,10 +256,12 @@ export default function RelayerChartWithProviderSlider() {
                 backgroundColor: theme === 'dark' ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0, 0, 0, 0.2)' // Rail color
               },
               '& .MuiSlider-mark': {
-                backgroundColor: theme === 'dark' ? '#fff' : '#000' // Marks color
+                backgroundColor: theme === 'dark' ? '#fff' : '#000', // Marks color
+                fontFamily: 'RundDisplay'
               },
               '& .MuiSlider-markLabel': {
-                color: theme === 'dark' ? '#fff' : '#000'
+                color: theme === 'dark' ? '#fff' : '#000',
+                fontFamily: 'RundDisplay'
               }
             }}
           />

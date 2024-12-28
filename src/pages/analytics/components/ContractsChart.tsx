@@ -114,7 +114,12 @@ export default function ContractsChart() {
     },
     plugins: {
       legend: {
-        display: true
+        display: true,
+        labels: {
+          font: {
+            family: 'RundDisplay'
+          }
+        }
       },
       tooltip: {
         xAlign: 'center',

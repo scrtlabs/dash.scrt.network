@@ -325,7 +325,7 @@ export default {
     },
     fontFamily: {
       sans: [
-        '"Montserrat"',
+        '"RundDisplay"',
         'ui-sans-serif',
         'system-ui',
         '-apple-system',
