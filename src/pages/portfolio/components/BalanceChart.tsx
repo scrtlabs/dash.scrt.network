@@ -147,7 +147,7 @@ export default function BalanceChart() {
       }
 
       if (priceMapping !== null) {
-        ctx.font = 'bold 1.25rem RundDisplay'
+        ctx.font = '400 1.25rem RundDisplay'
         ctx.fillStyle = theme === 'dark' ? '#fff' : '#000'
         ctx.textAlign = 'center'
         ctx.fillText(
@@ -163,8 +163,16 @@ export default function BalanceChart() {
   const options = {
     responsive: true,
     maintainAspectRatio: false,
-    cutout: '92%',
+    cutout: '93%',
     borderWidth: 0,
+    layout: {
+      padding: {
+        top: 0,
+        bottom: 0,
+        left: 0,
+        right: 0
+      }
+    },
     animation: {
       animateRotate: true,
       responsiveAnimationDuration: true
@@ -180,6 +188,12 @@ export default function BalanceChart() {
             let label = ``
             return label
           }
+        },
+        titleFont: {
+          family: 'RundDisplay'
+        },
+        bodyFont: {
+          family: 'RundDisplay'
         }
       }
     }

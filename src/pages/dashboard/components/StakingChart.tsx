@@ -183,6 +183,12 @@ export default function StakingChart() {
             let label = ''
             return label
           }
+        },
+        titleFont: {
+          family: 'RundDisplay'
+        },
+        bodyFont: {
+          family: 'RundDisplay'
         }
       }
     }

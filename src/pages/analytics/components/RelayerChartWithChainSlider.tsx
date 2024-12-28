@@ -144,6 +144,9 @@ export default function RelayerChartWithChainSlider() {
               month: '2-digit',
               day: '2-digit'
             })
+          },
+          font: {
+            family: 'RundDisplay'
           }
         },
         grid: {
@@ -165,6 +168,9 @@ export default function RelayerChartWithChainSlider() {
           color: theme === 'dark' ? '#fff' : '#000',
           callback: function (value: any) {
             return formatNumber(value, 2)
+          },
+          font: {
+            family: 'RundDisplay'
           }
         },
         border: {
@@ -193,6 +199,12 @@ export default function RelayerChartWithChainSlider() {
             }
             return ''
           }
+        },
+        titleFont: {
+          family: 'RundDisplay'
+        },
+        bodyFont: {
+          family: 'RundDisplay'
         }
       }
     }

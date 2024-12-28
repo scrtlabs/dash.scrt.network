@@ -130,6 +130,12 @@ export default function PriceVolumeTVL(props: any) {
             }
             return label
           }
+        },
+        titleFont: {
+          family: 'RundDisplay'
+        },
+        bodyFont: {
+          family: 'RundDisplay'
         }
       }
     },
