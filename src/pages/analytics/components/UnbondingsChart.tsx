@@ -66,7 +66,10 @@ export default function UnbondingsChart() {
     scales: {
       x: {
         ticks: {
-          color: theme === 'dark' ? '#fff' : '#000'
+          color: theme === 'dark' ? '#fff' : '#000',
+          font: {
+            family: 'RundDisplay'
+          }
         },
         grid: {
           color: theme === 'dark' ? '#fff' : '#000',
@@ -86,6 +89,9 @@ export default function UnbondingsChart() {
           color: theme === 'dark' ? '#fff' : '#000',
           callback: function (value: any) {
             return formatNumber(value, 2)
+          },
+          font: {
+            family: 'RundDisplay'
           }
         },
         border: {
@@ -114,6 +120,12 @@ export default function UnbondingsChart() {
             }
             return ''
           }
+        },
+        titleFont: {
+          family: 'RundDisplay'
+        },
+        bodyFont: {
+          family: 'RundDisplay'
         }
       }
     }

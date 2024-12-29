@@ -144,6 +144,9 @@ export default function RelayerChartWithChainSlider() {
               month: '2-digit',
               day: '2-digit'
             })
+          },
+          font: {
+            family: 'RundDisplay'
           }
         },
         grid: {
@@ -165,6 +168,9 @@ export default function RelayerChartWithChainSlider() {
           color: theme === 'dark' ? '#fff' : '#000',
           callback: function (value: any) {
             return formatNumber(value, 2)
+          },
+          font: {
+            family: 'RundDisplay'
           }
         },
         border: {
@@ -193,6 +199,12 @@ export default function RelayerChartWithChainSlider() {
             }
             return ''
           }
+        },
+        titleFont: {
+          family: 'RundDisplay'
+        },
+        bodyFont: {
+          family: 'RundDisplay'
         }
       }
     }
@@ -252,10 +264,12 @@ export default function RelayerChartWithChainSlider() {
                 backgroundColor: theme === 'dark' ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0, 0, 0, 0.2)' // Rail color
               },
               '& .MuiSlider-mark': {
-                backgroundColor: theme === 'dark' ? '#fff' : '#000' // Marks color
+                backgroundColor: theme === 'dark' ? '#fff' : '#000', // Marks color
+                fontFamily: 'RundDisplay'
               },
               '& .MuiSlider-markLabel': {
-                color: theme === 'dark' ? '#fff' : '#000' // Mark labels color
+                color: theme === 'dark' ? '#fff' : '#000', // Mark labels color
+                fontFamily: 'RundDisplay'
               }
             }}
           />

@@ -142,7 +142,10 @@ export default function WeeklyContractsChart() {
           color: theme === 'dark' ? '#fff' : '#000',
           autoSkip: false,
           maxRotation: 90,
-          minRotation: 45
+          minRotation: 45,
+          font: {
+            family: 'RundDisplay'
+          }
         },
         grid: {
           display: false
@@ -153,7 +156,10 @@ export default function WeeklyContractsChart() {
         stacked: true,
         ticks: {
           color: theme === 'dark' ? '#fff' : '#000',
-          callback: (value: number) => formatNumber(value, 2)
+          callback: (value: number) => formatNumber(value, 2),
+          font: {
+            family: 'RundDisplay'
+          }
         },
         grid: {
           color: theme === 'dark' ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0, 0, 0, 0.2)',
@@ -170,7 +176,13 @@ export default function WeeklyContractsChart() {
         yAlign: 'bottom',
         backgroundColor: theme === 'dark' ? '#333' : '#fff',
         titleColor: theme === 'dark' ? '#fff' : '#000',
-        bodyColor: theme === 'dark' ? '#fff' : '#000'
+        bodyColor: theme === 'dark' ? '#fff' : '#000',
+        titleFont: {
+          family: 'RundDisplay'
+        },
+        bodyFont: {
+          family: 'RundDisplay'
+        }
       }
     }
   }

@@ -120,7 +120,7 @@ export default function Portfolio() {
             </div>
 
             <div className="col-span-12 lg:col-span-5 md:col-span-5">
-              <div className="flex flex-col h-full justify-center mx-auto rounded-xl bg-white border border-neutral-200 dark:border-neutral-700 dark:bg-neutral-800 px-3 py-5">
+              <div className="flex flex-col h-full justify-center mx-auto rounded-xl bg-white border border-neutral-200 dark:border-neutral-700 dark:bg-neutral-800 px-2 py-2">
                 <BalanceChart />
               </div>
             </div>

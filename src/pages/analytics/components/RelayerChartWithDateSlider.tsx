@@ -157,7 +157,10 @@ export default function RelayerChartWithDateSlider() {
       x: {
         stacked: true,
         ticks: {
-          color: theme === 'dark' ? '#fff' : '#000'
+          color: theme === 'dark' ? '#fff' : '#000',
+          font: {
+            family: 'RundDisplay'
+          }
         },
         grid: {
           color: theme === 'dark' ? '#fff' : '#000',
@@ -178,6 +181,9 @@ export default function RelayerChartWithDateSlider() {
           color: theme === 'dark' ? '#fff' : '#000',
           callback: function (value: any) {
             return formatNumber(value, 2)
+          },
+          font: {
+            family: 'RundDisplay'
           }
         },
         border: {
@@ -206,6 +212,12 @@ export default function RelayerChartWithDateSlider() {
             }
             return ''
           }
+        },
+        titleFont: {
+          family: 'RundDisplay'
+        },
+        bodyFont: {
+          family: 'RundDisplay'
         }
       }
     }
@@ -268,10 +280,12 @@ export default function RelayerChartWithDateSlider() {
                 backgroundColor: theme === 'dark' ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0, 0, 0, 0.2)' // Rail color (unfilled part of the slider)
               },
               '& .MuiSlider-mark': {
-                backgroundColor: theme === 'dark' ? '#fff' : '#000' // Marks color
+                backgroundColor: theme === 'dark' ? '#fff' : '#000', // Marks color
+                fontFamily: 'RundDisplay'
               },
               '& .MuiSlider-markLabel': {
-                color: theme === 'dark' ? '#fff' : '#000' // Mark labels color
+                color: theme === 'dark' ? '#fff' : '#000', // Mark labels color
+                fontFamily: 'RundDisplay'
               }
             }}
           />

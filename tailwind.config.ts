@@ -150,7 +150,7 @@ export default {
         '500': '#737373',
         '600': '#525252',
         '700': '#404040',
-        '750': '#333333', // for hover effect on bg-neutral-800 items
+        '750': '#333333',
         '800': '#262626',
         '900': '#171717',
         '950': '#0a0a0a'
@@ -325,7 +325,7 @@ export default {
     },
     fontFamily: {
       sans: [
-        '"Montserrat"',
+        '"RundDisplay"',
         'ui-sans-serif',
         'system-ui',
         '-apple-system',

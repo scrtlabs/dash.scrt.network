@@ -11,7 +11,7 @@ body {
 }
 
 body:not(.dark) {
-  @apply bg-slate-100;
+  @apply bg-[#feebda];
 }
 body.dark {
   @apply bg-neutral-900;

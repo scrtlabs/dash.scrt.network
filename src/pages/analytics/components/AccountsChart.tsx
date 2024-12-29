@@ -95,7 +95,10 @@ export default function AccountsChart() {
     scales: {
       x: {
         ticks: {
-          color: theme === 'dark' ? '#fff' : '#000'
+          color: theme === 'dark' ? '#fff' : '#000',
+          font: {
+            family: 'RundDisplay'
+          }
         },
         grid: {
           color: theme === 'dark' ? '#fff' : '#000',
@@ -116,6 +119,9 @@ export default function AccountsChart() {
           color: theme === 'dark' ? '#fff' : '#000',
           callback: function (value: any) {
             return formatNumber(value, 2)
+          },
+          font: {
+            family: 'RundDisplay'
           }
         },
         border: {
@@ -132,11 +138,22 @@ export default function AccountsChart() {
     },
     plugins: {
       legend: {
-        display: true
+        display: true,
+        labels: {
+          font: {
+            family: 'RundDisplay'
+          }
+        }
       },
       tooltip: {
         xAlign: 'center',
-        color: theme === 'dark' ? '#fff' : '#000'
+        color: theme === 'dark' ? '#fff' : '#000',
+        titleFont: {
+          family: 'RundDisplay'
+        },
+        bodyFont: {
+          family: 'RundDisplay'
+        }
       }
     }
   }

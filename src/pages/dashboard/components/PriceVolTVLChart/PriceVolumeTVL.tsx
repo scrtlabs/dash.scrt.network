@@ -37,7 +37,6 @@ export default function PriceVolumeTVL(props: any) {
 
   useEffect(() => {
     // Handle Price data
-
     let chartTypeTmp = chartType
 
     if (chartTypeTmp === 'Price') {
@@ -81,25 +80,22 @@ export default function PriceVolumeTVL(props: any) {
   }, [chartType, chartRange, coingeckoApiData_Day, coingeckoApiData_Month, coingeckoApiData_Year, defiLamaApiData_Year])
 
   const data = {
-    labels: chartData.map(
-      (x: any[]) =>
-        ({
-          x:
-            chartRange === 'Day'
-              ? `${new Date(x[0]).toLocaleTimeString(undefined, {
-                  hour: '2-digit',
-                  minute: '2-digit'
-                })} / ${new Date(x[0]).toLocaleDateString(undefined, {
-                  month: '2-digit',
-                  day: '2-digit'
-                })}`
-              : `${new Date(x[0]).toLocaleDateString(undefined, {
-                  year: '2-digit',
-                  month: '2-digit',
-                  day: '2-digit'
-                })}`
-        }).x
-    ),
+    labels: chartData.map((x: any[]) => {
+      const date = new Date(x[0])
+      return chartRange === 'Day'
+        ? `${date.toLocaleTimeString(undefined, {
+            hour: '2-digit',
+            minute: '2-digit'
+          })} / ${date.toLocaleDateString(undefined, {
+            month: '2-digit',
+            day: '2-digit'
+          })}`
+        : date.toLocaleDateString(undefined, {
+            year: '2-digit',
+            month: '2-digit',
+            day: '2-digit'
+          })
+    }),
     datasets: [
       {
         label: chartType,
@@ -126,7 +122,6 @@ export default function PriceVolumeTVL(props: any) {
         callbacks: {
           label: function (context: any) {
             let label = context.dataset.label || ''
-
             if (label) {
               label += ': '
             }
@@ -135,13 +130,22 @@ export default function PriceVolumeTVL(props: any) {
             }
             return label
           }
+        },
+        titleFont: {
+          family: 'RundDisplay'
+        },
+        bodyFont: {
+          family: 'RundDisplay'
         }
       }
     },
     scales: {
       x: {
         ticks: {
-          color: theme === 'dark' ? '#fff' : '#000'
+          color: theme === 'dark' ? '#fff' : '#000',
+          font: {
+            family: 'RundDisplay'
+          }
         },
         grid: {
           color: theme === 'dark' ? '#fff' : '#000',
@@ -158,7 +162,10 @@ export default function PriceVolumeTVL(props: any) {
       y: {
         ticks: {
           color: theme === 'dark' ? '#fff' : '#000',
-          callback: function (value: any, index: any, ticks: any) {
+          font: {
+            family: 'RundDisplay'
+          },
+          callback: function (value: any) {
             return toCurrencyString(value, currency)
           }
         },

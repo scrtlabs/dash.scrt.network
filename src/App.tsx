@@ -101,7 +101,7 @@ root.render(
 )
 
 export default function App() {
-  const { init, isConnected, walletAddress } = useSecretNetworkClientStore()
+  const { init } = useSecretNetworkClientStore()
 
   useEffect(() => {
     init()

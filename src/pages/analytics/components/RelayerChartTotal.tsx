@@ -92,6 +92,9 @@ export default function RelayerChartTotal() {
                 month: '2-digit',
                 day: '2-digit'
               })
+            },
+            font: {
+              family: 'RundDisplay'
             }
           },
           grid: {
@@ -113,6 +116,9 @@ export default function RelayerChartTotal() {
             color: theme === 'dark' ? '#fff' : '#000',
             callback: function (value: any) {
               return formatNumber(value, 2)
+            },
+            font: {
+              family: 'RundDisplay'
             }
           },
           border: {
@@ -141,6 +147,12 @@ export default function RelayerChartTotal() {
               }
               return ''
             }
+          },
+          titleFont: {
+            family: 'RundDisplay'
+          },
+          bodyFont: {
+            family: 'RundDisplay'
           }
         }
       }
