@@ -12,9 +12,7 @@ export default function Title(props: IProps) {
   function TitleContent() {
     return (
       <div className={[`group text-center mb-4 max-w-6xl mx-auto`, props.className ? props.className : ''].join(' ')}>
-        <h1 className="font-bold text-4xl inline text-transparent bg-clip-text bg-gradient-to-r from-cyan-500 to-purple-500">
-          {props.title}
-        </h1>
+        <h1 className="font-bold text-4xl inline text-transparent bg-clip-text bg-[#FF3912]">{props.title}</h1>
         {props.tooltip ? (
           <span className="ml-2 relative bottom-1.5 text-neutral-600 dark:text-neutral-400 group-hover:text-black dark:group-hover:text-white transition-colors cursor-pointer">
             <FontAwesomeIcon icon={faInfoCircle} />

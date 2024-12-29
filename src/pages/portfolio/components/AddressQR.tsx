@@ -21,7 +21,7 @@ export default function AddressQR() {
 
   return (
     <div className="group text-center md:text-left h-full">
-      <div className="h-full flex items-center bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 p-8 rounded-xl">
+      <div className="h-full flex items-center bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 px-4 py-0 rounded-xl">
         <div className="flex flex-row items-center gap-4 w-full">
           <div className="flex-1 flex flex-col gap-6 md:items-center overflow-hidden">
             {/* Address */}
