@@ -47,8 +47,6 @@ import {
   MsgUnjailParams,
   MsgVote,
   MsgVoteParams,
-  MsgVoteWeighted,
-  MsgVoteWeightedParams,
   MsgWithdrawDelegatorReward,
   MsgWithdrawDelegatorRewardParams,
   MsgWithdrawValidatorCommission,
@@ -84,7 +82,6 @@ export type SupportedMessage =
   | MsgUndelegate
   | MsgUnjail
   | MsgVote
-  | MsgVoteWeighted
   | MsgWithdrawDelegatorReward
   | MsgWithdrawValidatorCommission
   | MsgSetAutoRestake
@@ -679,61 +676,6 @@ export const MessageDefinitions: {
     },
     relevantInfo: undefined // TODO
   },
-  MsgVoteWeighted: {
-    module: 'gov',
-    example: (
-      secretjs: SecretNetworkClient,
-      old: MsgVoteWeightedParams,
-      prefix: string,
-      denom: string
-    ): MsgVoteWeightedParams => {
-      if (old) {
-        old.voter = secretjs.address
-        return old
-      } else {
-        return {
-          voter: secretjs.address,
-          proposal_id: '123',
-          options: [
-            {
-              //@ts-ignore
-              option: 'YES/NO/ABSTAIN/NO_WITH_VETO',
-              weight: 0.6
-            },
-            {
-              //@ts-ignore
-              option: 'YES/NO/ABSTAIN/NO_WITH_VETO',
-              weight: 0.4
-            }
-          ]
-        }
-      }
-    },
-    converter: (input: any): SupportedMessage => {
-      for (let i = 0; i < input.options.length; i++) {
-        input.options[i].option = (input.options[i].option as string).toUpperCase()
-        switch (input.options[i].option) {
-          case 'YES':
-            input.options[i].option = VoteOption.VOTE_OPTION_YES
-            break
-          case 'NO':
-            input.options[i].option = VoteOption.VOTE_OPTION_NO
-            break
-          case 'ABSTAIN':
-            input.options[i].option = VoteOption.VOTE_OPTION_ABSTAIN
-            break
-          case 'NO_WITH_VETO':
-            input.options[i].option = VoteOption.VOTE_OPTION_NO_WITH_VETO
-            break
-          default:
-            throw new Error(`unknown vote option ${input.options[i].option}`)
-        }
-      }
-
-      return new MsgVoteWeighted(input)
-    },
-    relevantInfo: undefined // TODO
-  },
   MsgWithdrawDelegatorReward: {
     module: 'distribution',
     example: (
@@ -831,11 +773,11 @@ async function bankRelevantInfo(
                   return `${balanceFormat(Number(c.amount) / Number(`1e${decimals}`))} ${humanDenom}`
                 })()}`
               : ibcDenomToBaseDenom[c.denom!]
-              ? (() => {
-                  const { humanDenom, decimals } = humanizeDenom(ibcDenomToBaseDenom[c.denom!])
-                  return `${balanceFormat(Number(c.amount) / Number(`1e${decimals}`))} ${humanDenom}`
-                })()
-              : ''}
+                ? (() => {
+                    const { humanDenom, decimals } = humanizeDenom(ibcDenomToBaseDenom[c.denom!])
+                    return `${balanceFormat(Number(c.amount) / Number(`1e${decimals}`))} ${humanDenom}`
+                  })()
+                : ''}
           </td>
         </tr>
       ))
