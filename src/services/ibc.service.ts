@@ -18,7 +18,6 @@ import { Chain, Deposit, Token, Withdraw, chains } from 'utils/config'
 import Long from 'long'
 import { TxRaw } from 'secretjs/dist/protobuf/cosmos/tx/v1beta1/tx'
 import mixpanel from 'mixpanel-browser'
-import { AccountData } from 'secretjs/dist/wallet_amino'
 import { NotificationService } from './notification.service'
 import { GetBalanceError } from 'types/GetBalanceError'
 import { GasPrice, MsgTransferEncodeObject, SigningStargateClient } from '@cosmjs/stargate'
@@ -413,7 +412,7 @@ async function performIbcDeposit(
       // Get account pubkey
       // Can't get it from the chain because an account without txs won't have its pubkey listed on-chain
       const evmosProtoSigner = await window.getOfflineSignerAuto!(selectedSource.chain_id)
-      const [{ pubkey }]: readonly AccountData[] = await evmosProtoSigner.getAccounts()
+      const [{ pubkey }]: readonly any[] = await evmosProtoSigner.getAccounts()
 
       const autoWrapJsonString = JSON.stringify({
         wasm: {

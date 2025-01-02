@@ -6,11 +6,11 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import BigNumber from 'bignumber.js'
 import { IbcMode } from 'types/IbcMode'
 import { IbcService } from 'services/ibc.service'
-import { Coin } from 'secretjs'
 import { useTokenPricesStore } from 'store/TokenPrices'
 import { APIContext } from 'context/APIContext'
 import { useUserPreferencesStore } from 'store/UserPreferences'
 import { toCurrencyString } from 'utils/commons'
+import { Coin } from 'secretjs/src/protobuf/cosmos/base/v1beta1/coin'
 
 interface IProps {
   chain: Chain
