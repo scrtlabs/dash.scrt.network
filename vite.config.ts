@@ -18,9 +18,15 @@ export default defineConfig({
     port: 3000
   },
   resolve: {
-    alias: {
-      // Redirect the broken import from @evmos/transactions
-      '@buf/evmos_evmos.bufbuild_es/evmos/vesting/v1/tx_pb.js': '@buf/evmos_evmos.bufbuild_es/evmos/vesting/v2/tx_pb.js'
-    }
+    alias: [
+      {
+        find: '@buf/evmos_evmos.bufbuild_es/evmos/vesting/v1/tx_pb.js',
+        replacement: '@buf/evmos_evmos.bufbuild_es/evmos/vesting/v2/tx_pb.js'
+      },
+      {
+        find: '@buf/evmos_evmos.bufbuild_es/evmos/revenue/v1/tx_pb.js',
+        replacement: '@evmos/proto/dist/proto/evmos/revenue/v1/tx.js'
+      }
+    ]
   }
 })

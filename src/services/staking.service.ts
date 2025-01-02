@@ -1,4 +1,4 @@
-import { MsgWithdrawDelegationReward, SecretNetworkClient } from 'secretjs'
+import { MsgWithdrawDelegatorReward, SecretNetworkClient } from 'secretjs'
 import { FeeGrantStatus } from 'types/FeeGrantStatus'
 import { faucetAddress, queryTxResult } from 'utils/commons'
 import { NotificationService } from './notification.service'
@@ -24,7 +24,7 @@ const performClaimStakingRewards = async (props: Props) => {
 
   try {
     const txs = props.delegatorDelegations.map((delegation: any) => {
-      return new MsgWithdrawDelegationReward({
+      return new MsgWithdrawDelegatorReward({
         delegator_address: props.secretNetworkClient.address,
         validator_address: delegation?.delegation?.validator_address
       })
