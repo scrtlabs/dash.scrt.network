@@ -708,14 +708,10 @@ async function performIbcWithdrawal(
         }
       })
 
-      // Get the current block height from Secret Network
-      const { block } = await props.secretNetworkClient.query.tendermint.getLatestBlock('')
-      const revisionHeight = (parseInt(block?.header?.height ?? '0', 10) + 100).toString()
-
       // Construct the IBC timeout height object
       const timeout_height = {
-        revision_number: '4',
-        revision_height: revisionHeight
+        revision_number: '100',
+        revision_height: '1000000000000000000'
       }
 
       const transferMsg = new MsgTransfer({
