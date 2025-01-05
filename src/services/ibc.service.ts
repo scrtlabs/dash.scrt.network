@@ -708,6 +708,12 @@ async function performIbcWithdrawal(
         }
       })
 
+      // Construct the IBC timeout height object
+      const timeout_height = {
+        revision_number: '100',
+        revision_height: '1000000000000000000'
+      }
+
       const transferMsg = new MsgTransfer({
         sender: props.secretNetworkClient?.address,
         receiver: receiver,
@@ -718,6 +724,7 @@ async function performIbcWithdrawal(
           denom: withdrawalChain.denom
         },
         memo: forwardingMemo,
+        timeout_height: timeout_height,
         timeout_timestamp: String(Math.floor(Date.now() / 1000) + 10 * 60) // 10 minute timeout
       })
       tx = await props.secretNetworkClient.tx.broadcast(
