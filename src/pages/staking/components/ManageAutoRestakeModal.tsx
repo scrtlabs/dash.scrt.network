@@ -1,8 +1,8 @@
 import { useContext } from 'react'
-import { MsgSetAutoRestake } from 'secretjs'
+import { BroadcastMode, MsgSetAutoRestake } from 'secretjs'
 import { StakingContext } from 'pages/staking/Staking'
 import RestakeValidatorItem from './RestakeValidatorItem'
-import { restakeThreshold } from 'utils/commons'
+import { queryTxResult, restakeThreshold } from 'utils/commons'
 import { useSecretNetworkClientStore } from 'store/secretNetworkClient'
 import Modal from 'components/UI/Modal/Modal'
 import Button from 'components/UI/Button/Button'
@@ -69,12 +69,15 @@ export default function ManageAutoRestakeModal(props: Props) {
         })
       })
 
-      await secretNetworkClient.tx
-        .broadcast(txs, {
-          gasLimit: 100_000 * txs.length,
-          gasPriceInFeeDenom: 0.25,
-          feeDenom: 'uscrt'
-        })
+      const broadcastResult = await secretNetworkClient.tx.broadcast(txs, {
+        gasLimit: 100_000 * txs.length,
+        gasPriceInFeeDenom: 0.25,
+        feeDenom: 'uscrt',
+        broadcastMode: BroadcastMode.Sync,
+        waitForCommit: false
+      })
+      // Poll the LCD for the transaction result every 10 seconds, 10 retries
+      await queryTxResult(secretNetworkClient, broadcastResult.transactionHash, 6000, 10)
         .catch((error: any) => {
           console.error(error)
           toast.dismiss(toastId)
@@ -87,16 +90,9 @@ export default function ManageAutoRestakeModal(props: Props) {
         .then((tx: any) => {
           if (tx) {
             if (tx.code === 0) {
-              NotificationService.notify(
-                `Set Auto Restaking successfully for validators ${validatorObjects
-                  .map((validator: Validator) => {
-                    return validator?.description?.moniker
-                  })
-                  .join(', ')}`,
-                'success'
-              )
+              NotificationService.notify(`Auto Restaking successfully changed`, 'success')
             } else {
-              NotificationService.notify(`Setting Auto Restaking failed: ${tx.rawLog}`, 'error')
+              NotificationService.notify(`Changing Auto Restaking failed: ${tx.rawLog}`, 'error')
             }
           }
         })
