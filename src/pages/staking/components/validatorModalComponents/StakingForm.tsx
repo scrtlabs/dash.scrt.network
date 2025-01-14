@@ -13,6 +13,7 @@ import Tooltip from '@mui/material/Tooltip'
 import ActionableStatus from 'components/FeeGrant/components/ActionableStatus'
 import { NotificationService } from 'services/notification.service'
 import { tokens } from 'utils/config'
+import { BroadcastMode } from 'secretjs'
 
 export default function StakingForm() {
   const { selectedValidator, setView } = useContext(StakingContext)
@@ -60,6 +61,7 @@ export default function StakingForm() {
             gasPriceInFeeDenom: 0.25,
             feeDenom: 'uscrt',
             feeGranter: feeGrantStatus === 'success' ? faucetAddress : '',
+            broadcastMode: BroadcastMode.Sync,
             waitForCommit: false
           }
         )

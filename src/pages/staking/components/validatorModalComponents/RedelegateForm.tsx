@@ -16,6 +16,7 @@ import { faInfoCircle } from '@fortawesome/free-solid-svg-icons'
 import Tooltip from '@mui/material/Tooltip'
 import ActionableStatus from 'components/FeeGrant/components/ActionableStatus'
 import { NotificationService } from 'services/notification.service'
+import { BroadcastMode } from 'secretjs'
 
 export default function RedelegateForm() {
   const { delegatorDelegations, validators, selectedValidator, setView, reload, setReload } = useContext(StakingContext)
@@ -65,7 +66,9 @@ export default function RedelegateForm() {
             gasLimit: 100_000,
             gasPriceInFeeDenom: 0.25,
             feeDenom: 'uscrt',
-            feeGranter: feeGrantStatus === 'success' ? faucetAddress : ''
+            feeGranter: feeGrantStatus === 'success' ? faucetAddress : '',
+            broadcastMode: BroadcastMode.Sync,
+            waitForCommit: false
           }
         )
 

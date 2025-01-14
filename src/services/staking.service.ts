@@ -1,4 +1,4 @@
-import { MsgWithdrawDelegatorReward, SecretNetworkClient } from 'secretjs'
+import { BroadcastMode, MsgWithdrawDelegatorReward, SecretNetworkClient } from 'secretjs'
 import { FeeGrantStatus } from 'types/FeeGrantStatus'
 import { faucetAddress, queryTxResult } from 'utils/commons'
 import { NotificationService } from './notification.service'
@@ -35,6 +35,7 @@ const performClaimStakingRewards = async (props: Props) => {
       gasPriceInFeeDenom: 0.25,
       feeDenom: 'uscrt',
       feeGranter: props.feeGrantStatus === 'success' ? faucetAddress : '',
+      broadcastMode: BroadcastMode.Sync,
       waitForCommit: false
     })
 
