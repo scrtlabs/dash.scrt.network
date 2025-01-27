@@ -93,7 +93,7 @@ export function Wrap() {
       />
 
       {/* Content */}
-      <div className="container w-full max-w-xl mx-auto px-4">
+      <div className="container w-full max-w-5xl mx-auto px-4">
         {/* Title: Secret Wrap / Secret Unwrap */}
         <Title className="mb-6" title={`Secret ${wrappingMode === 'wrap' ? 'Wrap' : 'Unwrap'}`} tooltip={infoMsg} />
         {Number(scrtBalance) === 0 && scrtBalance !== null ? <SCRTUnwrapWarning /> : null}
