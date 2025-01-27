@@ -15,13 +15,15 @@ interface IProps {
   chain?: Chain
   isSecretToken?: boolean
   showBalanceLabel?: boolean
+  onBalanceClick?: any
 }
 
 export default function BalanceUI({
   token,
   chain = chains['Secret Network'],
   isSecretToken = false,
-  showBalanceLabel = true
+  showBalanceLabel = true,
+  onBalanceClick
 }: IProps) {
   const {
     isConnected,
@@ -99,7 +101,22 @@ export default function BalanceUI({
         {balance !== null &&
           balance !== ('viewingKeyError' as GetBalanceError) &&
           balance !== ('GenericFetchError' as GetBalanceError) &&
-          token.name && (
+          token.name &&
+          (onBalanceClick ? (
+            <span
+              className="cursor-pointer hover:underline"
+              onClick={() => onBalanceClick(Number(BigNumber(balance).dividedBy(`1e${token.decimals}`)))} // ADD
+            >
+              <span className="font-medium font-mono">{` ${Number(
+                BigNumber(balance).dividedBy(`1e${token.decimals}`)
+              ).toLocaleString(undefined, {
+                maximumFractionDigits: token.decimals
+              })} 
+          ${token.name == 'SCRT' && isSecretToken ? 's' : ''}${token.name} ${
+            token.coingecko_id && currencyPriceString ? ` (${currencyPriceString})` : ''
+          }`}</span>
+            </span>
+          ) : (
             <>
               <span className="font-medium font-mono">{` ${Number(
                 BigNumber(balance).dividedBy(`1e${token.decimals}`)
@@ -110,7 +127,7 @@ export default function BalanceUI({
                 token.coingecko_id && currencyPriceString ? ` (${currencyPriceString})` : ''
               }`}</span>
             </>
-          )}
+          ))}
 
         {balance === ('viewingKeyError' as GetBalanceError) && (
           <button
