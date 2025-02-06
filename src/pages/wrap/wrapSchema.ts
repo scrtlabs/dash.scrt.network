@@ -1,6 +1,5 @@
 import * as yup from 'yup'
 import { isWrappingMode } from 'types/WrappingMode'
-import { tokens } from 'utils/config'
 
 export const wrapSchema = yup.object().shape({
   amount: yup

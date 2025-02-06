@@ -23,7 +23,7 @@ export default function BalanceUI({
   chain = chains['Secret Network'],
   isSecretToken = false,
   showBalanceLabel = true,
-  onBalanceClick
+  onBalanceClick = false
 }: IProps) {
   const {
     isConnected,
