@@ -16,6 +16,7 @@ interface IProps {
   isSecretToken?: boolean
   showBalanceLabel?: boolean
   onBalanceClick?: any
+  showCurrencyEquiv?: boolean
 }
 
 export default function BalanceUI({
@@ -23,7 +24,8 @@ export default function BalanceUI({
   chain = chains['Secret Network'],
   isSecretToken = false,
   showBalanceLabel = true,
-  onBalanceClick = false
+  onBalanceClick = false,
+  showCurrencyEquiv = true
 }: IProps) {
   const {
     isConnected,
@@ -113,7 +115,7 @@ export default function BalanceUI({
                 maximumFractionDigits: token.decimals
               })} 
           ${token.name == 'SCRT' && isSecretToken ? 's' : ''}${token.name} ${
-            token.coingecko_id && currencyPriceString ? ` (${currencyPriceString})` : ''
+            token.coingecko_id && currencyPriceString && showCurrencyEquiv ? ` (${currencyPriceString})` : ''
           }`}</span>
             </span>
           ) : (
@@ -124,7 +126,7 @@ export default function BalanceUI({
                 maximumFractionDigits: token.decimals
               })} 
               ${token.name == 'SCRT' && isSecretToken ? 's' : ''}${token.name} ${
-                token.coingecko_id && currencyPriceString ? ` (${currencyPriceString})` : ''
+                token.coingecko_id && currencyPriceString && showCurrencyEquiv ? ` (${currencyPriceString})` : ''
               }`}</span>
             </>
           ))}
