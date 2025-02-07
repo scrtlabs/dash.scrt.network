@@ -250,7 +250,7 @@ export default function WrapAllTokens() {
                     <td className="py-3">
                       <div className="flex items-center gap-2">
                         <div className="w-10 h-10 bg-gray-300 dark:bg-neutral-600 rounded-full animate-pulse"></div>
-                        <div className="font-bold bg-gray-300 dark:bg-neutral-600 rounded animate-pulse w-12 h-4"></div>
+                        <div className="font-semibold bg-gray-300 dark:bg-neutral-600 rounded animate-pulse w-12 h-4"></div>
                       </div>
                     </td>
                     <td>
@@ -288,7 +288,7 @@ export default function WrapAllTokens() {
                             alt={`${token.name} logo`}
                             className="w-10 h-10 rounded-full"
                           />
-                          <div className="font-bold">{token.name}</div>
+                          <div className="font-semibold justify-center">{token.name}</div>
                         </div>
                       </td>
 
@@ -357,8 +357,8 @@ export default function WrapAllTokens() {
                       </td>
 
                       {/* Wrapped Balance */}
-                      <td className="text-center mx-auto">
-                        <div className="text-center">
+                      <td className="text-center">
+                        <div className="flex flex-col items-start">
                           <BalanceUI
                             token={token}
                             isSecretToken={true}
