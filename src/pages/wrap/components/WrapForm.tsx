@@ -11,7 +11,8 @@ import { WrappingMode } from 'types/WrappingMode'
 import { GetBalanceError } from 'types/GetBalanceError'
 import './wrap.scss'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faArrowLeft, faArrowRight } from '@fortawesome/free-solid-svg-icons'
+import { faArrowLeft, faArrowRight, faQuestion } from '@fortawesome/free-solid-svg-icons'
+import { faCircle } from '@fortawesome/free-regular-svg-icons'
 
 export default function WrapAllTokens() {
   const { secretNetworkClient, feeGrantStatus, isConnected, getBalance, balanceMapping, ibcBalanceMapping } =
@@ -32,11 +33,9 @@ export default function WrapAllTokens() {
 
   function getBalanceSpecial(token: (typeof tokens)[number], isSecretToken: boolean) {
     const result = getBalance(token, isSecretToken)
-    // If the store returns a special error string, return it directly.
     if (result === 'viewingKeyError') return 'viewingKeyError' as GetBalanceError
     if (result === 'GenericFetchError') return 'GenericFetchError' as GetBalanceError
     if (result instanceof BigNumber) return result
-    // Otherwise null (still loading or no data).
     return null
   }
 
@@ -51,12 +50,8 @@ export default function WrapAllTokens() {
     return true
   }
 
-  /**
-   * Filter the tokens based on the toggles.
-   */
   const filteredTokens = useMemo(() => {
     return tokens.filter((token) => {
-      // If hideNoViewingKey is active, skip if we do NOT have a key.
       if (hideNoViewingKey && !hasViewingKey(token)) {
         return false
       }
@@ -65,7 +60,6 @@ export default function WrapAllTokens() {
         const unwrapped = getBalanceSpecial(token, false)
         const secret = token.address ? getBalanceSpecial(token, true) : null
 
-        // Convert to BigNumber(0) if not a real BigNumber.
         const unwrappedBN = unwrapped instanceof BigNumber ? unwrapped : new BigNumber(0)
         const secretBN = secret instanceof BigNumber ? secret : new BigNumber(0)
         const total = unwrappedBN.plus(secretBN)
@@ -89,8 +83,7 @@ export default function WrapAllTokens() {
     }))
   }
 
-  // This function handles clicks on the BalanceUI.
-  // When clicking on a balance it sets both the amount and the mode.
+  // When clicking a balance, set both the amount and the mode.
   const handleBalanceClick = (tokenName: string, balanceStr: string, mode: 'wrap' | 'unwrap') => {
     setBatchOperations((prev) => ({
       ...prev,
@@ -104,8 +97,14 @@ export default function WrapAllTokens() {
   // Toggle the operation direction between 'wrap' and 'unwrap'.
   const toggleDirection = (tokenName: string) => {
     setBatchOperations((prev) => {
-      const current = prev[tokenName]?.direction || 'wrap'
-      const newDirection = current === 'wrap' ? 'unwrap' : 'wrap'
+      const current = prev[tokenName]?.direction
+      let newDirection
+      if (!current) {
+        // If no direction is selected yet, set it to 'wrap'
+        newDirection = 'wrap'
+      } else {
+        newDirection = current === 'wrap' ? 'unwrap' : 'wrap'
+      }
       return {
         ...prev,
         [tokenName]: {
@@ -116,17 +115,12 @@ export default function WrapAllTokens() {
     })
   }
 
-  /**
-   * Build and broadcast a single transaction with multiple wrap/unwrap messages.
-   */
   const handlePerformBatch = async () => {
     if (!isConnected) return
 
-    // Build the items array.
     const items = []
     for (const token of filteredTokens) {
       const op = batchOperations[token.name]
-      // Only include tokens for which an amount was provided.
       if (op && op.amount && parseFloat(op.amount) > 0) {
         items.push({
           token,
@@ -149,8 +143,6 @@ export default function WrapAllTokens() {
         feeGrantStatus
       })
       NotificationService.notify('Batch transaction successful!', 'success', toastId)
-
-      // Clear the UI.
       setBatchOperations({})
     } catch (error) {
       console.error(error)
@@ -159,7 +151,6 @@ export default function WrapAllTokens() {
   }
 
   const handleWrapAll = () => {
-    // Create a new object to hold the updated batch operations.
     const newBatchOperations: {
       [tokenName: string]: {
         direction: 'wrap' | 'unwrap'
@@ -167,15 +158,12 @@ export default function WrapAllTokens() {
       }
     } = { ...batchOperations }
 
-    // Loop through all tokens in your filtered list.
     for (const token of filteredTokens) {
-      // Skip SCRT
       if (token.name === 'SCRT') continue
 
       const rawBalance = getBalanceSpecial(token, false)
       if (rawBalance instanceof BigNumber && rawBalance.gt(0)) {
         const amount = rawBalance.dividedBy(`1e${token.decimals}`).toString()
-        // Update the batch operations for this token:
         newBatchOperations[token.name] = {
           direction: 'wrap',
           amount
@@ -183,17 +171,14 @@ export default function WrapAllTokens() {
       }
     }
 
-    // Update the state so the UI input fields display the computed amounts.
     setBatchOperations(newBatchOperations)
   }
 
-  // Determine if we are still loading data.
   const isLoading = balanceMapping == null && ibcBalanceMapping == null
 
   return (
     <div className="max-w-5xl mx-auto px-4 py-4">
       <div className="flex flex-col sm:flex-row items-center justify-between mb-5">
-        {/* Removed the standalone Wrap All Tokens button in favor of an integrated option */}
         <div className="flex flex-row items-center gap-4">
           <button
             onClick={handlePerformBatch}
@@ -223,11 +208,10 @@ export default function WrapAllTokens() {
       <div className="overflow-x-auto bg-gray-200 dark:bg-neutral-700 p-4 rounded-xl">
         <table className="w-full text-sm">
           <thead>
-            <tr className="border-b border-gray-300 dark:border-neutral-600">
+            <tr className="border-b border-gray-300 dark:border-neutral-600 text-base">
               <th className="py-2 text-center">Token</th>
               <th className="py-2 text-center">Unwrapped Balance</th>
               <th className="py-2 text-center"></th>
-              {/* Added integrated wrap-all option in the Amount header */}
               <th className="py-2 text-center">
                 Amount{' '}
                 <span
@@ -244,8 +228,7 @@ export default function WrapAllTokens() {
           </thead>
           <tbody>
             {isLoading
-              ? // Show 6 animated skeleton rows while loading.
-                Array.from({ length: 6 }).map((_, idx) => (
+              ? Array.from({ length: 6 }).map((_, idx) => (
                   <tr key={idx} className="border-b border-gray-100 dark:border-neutral-600 last:border-0">
                     <td className="py-3">
                       <div className="flex items-center gap-2">
@@ -258,7 +241,7 @@ export default function WrapAllTokens() {
                     </td>
                     <td>
                       <button className="p-2 rounded border border-neutral-300 dark:border-neutral-600 bg-white dark:bg-neutral-800 hover:bg-gray-100 dark:hover:bg-neutral-700">
-                        <FontAwesomeIcon icon={faArrowRight} />
+                        <FontAwesomeIcon icon={faCircle} />
                       </button>
                     </td>
                     <td className="text-center">
@@ -266,7 +249,7 @@ export default function WrapAllTokens() {
                     </td>
                     <td>
                       <button className="p-2 rounded border border-neutral-300 dark:border-neutral-600 bg-white dark:bg-neutral-800 hover:bg-gray-100 dark:hover:bg-neutral-700">
-                        <FontAwesomeIcon icon={faArrowRight} />
+                        <FontAwesomeIcon icon={faCircle} />
                       </button>
                     </td>
                     <td>
@@ -274,10 +257,11 @@ export default function WrapAllTokens() {
                     </td>
                   </tr>
                 ))
-              : // Otherwise render the actual token rows.
-                filteredTokens.map((token) => {
-                  // Get current operation or default to wrap mode.
-                  const currentOp = batchOperations[token.name] || { direction: 'wrap', amount: '' }
+              : filteredTokens.map((token) => {
+                  // Retrieve the current operation (if any) for this token.
+                  const op = batchOperations[token.name]
+                  const direction = op?.direction // This could be 'wrap', 'unwrap', or undefined.
+
                   return (
                     <tr key={token.name} className="border-b border-gray-100 dark:border-neutral-600 last:border-0">
                       {/* Token Info */}
@@ -298,25 +282,28 @@ export default function WrapAllTokens() {
                           token={token}
                           isSecretToken={false}
                           showBalanceLabel={false}
-                          // When clicking the unwrapped balance, we want to wrap tokens.
                           onBalanceClick={(balanceStr: string) => handleBalanceClick(token.name, balanceStr, 'wrap')}
                           showCurrencyEquiv={false}
                         />
                       </td>
 
-                      {/* Operation Toggle */}
+                      {/* Operation Toggle (first instance) */}
                       <td className="text-center">
                         <button
                           onClick={() => toggleDirection(token.name)}
                           disabled={!isConnected || !token.address}
                           title={
-                            (batchOperations[token.name]?.direction || 'wrap') === 'wrap'
-                              ? 'Wrap (click to toggle to Unwrap)'
-                              : 'Unwrap (click to toggle to Wrap)'
+                            !direction
+                              ? 'No direction selected (click to set to Wrap)'
+                              : direction === 'wrap'
+                                ? 'Wrap (click to toggle to Unwrap)'
+                                : 'Unwrap (click to toggle to Wrap)'
                           }
                           className="p-2 rounded border border-neutral-300 dark:border-neutral-600 bg-white dark:bg-neutral-800 hover:bg-gray-100 dark:hover:bg-neutral-700"
                         >
-                          {(batchOperations[token.name]?.direction || 'wrap') === 'wrap' ? (
+                          {!direction ? (
+                            <FontAwesomeIcon icon={faCircle} />
+                          ) : direction === 'wrap' ? (
                             <FontAwesomeIcon icon={faArrowRight} />
                           ) : (
                             <FontAwesomeIcon icon={faArrowLeft} />
@@ -329,26 +316,30 @@ export default function WrapAllTokens() {
                         <input
                           type="number"
                           className="no-spinner text-center w-[90px] rounded px-2 py-1 bg-white dark:bg-neutral-800 border border-neutral-300 dark:border-neutral-600"
-                          value={currentOp.amount}
+                          value={op?.amount || ''}
                           onChange={(e) => updateAmount(token.name, e.target.value)}
                           placeholder=""
                           disabled={!isConnected || !token.address}
                         />
                       </td>
 
-                      {/* Operation Toggle */}
+                      {/* Operation Toggle (second instance) */}
                       <td className="text-center">
                         <button
                           onClick={() => toggleDirection(token.name)}
                           disabled={!isConnected || !token.address}
                           title={
-                            (batchOperations[token.name]?.direction || 'wrap') === 'wrap'
-                              ? 'Wrap (click to toggle to Unwrap)'
-                              : 'Unwrap (click to toggle to Wrap)'
+                            !direction
+                              ? 'No direction selected (click to set to Wrap)'
+                              : direction === 'wrap'
+                                ? 'Wrap (click to toggle to Unwrap)'
+                                : 'Unwrap (click to toggle to Wrap)'
                           }
                           className="text-center p-2 rounded border border-neutral-300 dark:border-neutral-600 bg-white dark:bg-neutral-800 hover:bg-gray-100 dark:hover:bg-neutral-700"
                         >
-                          {(batchOperations[token.name]?.direction || 'wrap') === 'wrap' ? (
+                          {!direction ? (
+                            <FontAwesomeIcon icon={faCircle} />
+                          ) : direction === 'wrap' ? (
                             <FontAwesomeIcon icon={faArrowRight} />
                           ) : (
                             <FontAwesomeIcon icon={faArrowLeft} />
@@ -377,7 +368,6 @@ export default function WrapAllTokens() {
         </table>
       </div>
 
-      {/* Debug Info (optional) */}
       {debugMode && (
         <div className="text-sky-500 text-xs p-2 bg-blue-500/20 rounded mt-4">
           <div className="mb-2 font-semibold">Debug Info (batchOperations):</div>
