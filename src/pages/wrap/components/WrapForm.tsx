@@ -7,7 +7,6 @@ import { useSecretNetworkClientStore } from 'store/secretNetworkClient'
 import { useUserPreferencesStore } from 'store/UserPreferences'
 import BalanceUI from 'components/BalanceUI'
 import FeeGrant from 'components/FeeGrant/FeeGrant'
-import { WrappingMode } from 'types/WrappingMode'
 import { GetBalanceError } from 'types/GetBalanceError'
 import './wrap.scss'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -96,7 +95,7 @@ export default function WrapAllTokens() {
 
   // Toggle the operation direction between 'wrap' and 'unwrap'.
   const toggleDirection = (tokenName: string) => {
-    setBatchOperations((prev) => {
+    setBatchOperations((prev: any) => {
       const current = prev[tokenName]?.direction
       let newDirection
       if (!current) {
