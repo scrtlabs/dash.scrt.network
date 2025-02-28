@@ -71,6 +71,9 @@
   "overrides": {
     "protobufjs": "^7.4.0"
   },
+  "resolutions": {
+    "elliptic": "6.6.1"
+  },
   "private": true,
   "lint-staged": {
     "**/*": "prettier --write --ignore-unknown"
