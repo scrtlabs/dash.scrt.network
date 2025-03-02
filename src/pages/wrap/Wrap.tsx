@@ -4,7 +4,6 @@ import { wrapPageTitle, wrapPageDescription, wrapJsonLdSchema } from 'utils/comm
 import { Helmet } from 'react-helmet-async'
 import FeeGrantInfoModal from './components/FeeGrantInfoModal'
 import mixpanel from 'mixpanel-browser'
-import { useSearchParams } from 'react-router-dom'
 import { WrappingMode, isWrappingMode } from 'types/WrappingMode'
 import { useSecretNetworkClientStore } from 'store/secretNetworkClient'
 import Title from 'components/Title'
@@ -12,10 +11,6 @@ import WrapForm from './components/WrapForm'
 import SCRTUnwrapWarning from './components/SCRTUnwrapWarning'
 
 export function Wrap() {
-  const secretToken: Token = tokens.find((token) => token.name === 'SCRT')
-  const [selectedToken, setSelectedToken] = useState<Token>(secretToken)
-  const [wrappingMode, setWrappingMode] = useState<WrappingMode>('wrap')
-
   const { getBalance } = useSecretNetworkClientStore()
   const scrtBalance = getBalance(
     tokens.find((token) => token.name === 'SCRT'),
@@ -32,31 +27,7 @@ export function Wrap() {
     }
   }, [])
 
-  // URL params
-  const [searchParams, setSearchParams] = useSearchParams()
-  const modeUrlParam = searchParams.get('mode')
-  const tokenUrlParam = searchParams.get('token')
-
-  const isValidTokenParam = () => {
-    return tokens.find((token: Token) => token.name.toLowerCase() === tokenUrlParam.toLowerCase()) ? true : false
-  }
-
-  useEffect(() => {
-    if (isWrappingMode(modeUrlParam?.toLowerCase())) {
-      setWrappingMode(modeUrlParam.toLowerCase() as WrappingMode)
-    }
-  }, [modeUrlParam])
-
-  useEffect(() => {
-    if (tokenUrlParam && isValidTokenParam()) {
-      setSelectedToken(tokens.find((token: Token) => token.name.toLowerCase() === tokenUrlParam.toLowerCase()))
-    }
-  }, [tokenUrlParam])
-
-  const infoMsg =
-    wrappingMode === 'wrap'
-      ? `Converting publicly visible ${selectedToken.name} into its privacy-preserving equivalent Secret ${selectedToken.name}. These tokens are not publicly visible and require a viewing key`
-      : `Converting privacy-preserving Secret ${selectedToken.name} into its publicly visible equivalent ${selectedToken.name}`
+  const infoMsg = `Converting publicly visible tokens into its privacy-preserving equivalent Secret Token and vice versa. These tokens are not publicly visible and require a viewing key.`
 
   const [isFeeGrantInfoModalOpen, setIsFeeGrantInfoModalOpen] = useState(false)
 
@@ -93,9 +64,9 @@ export function Wrap() {
       />
 
       {/* Content */}
-      <div className="container w-full max-w-xl mx-auto px-4">
+      <div className="container w-full max-w-5xl mx-auto px-4">
         {/* Title: Secret Wrap / Secret Unwrap */}
-        <Title className="mb-6" title={`Secret ${wrappingMode === 'wrap' ? 'Wrap' : 'Unwrap'}`} tooltip={infoMsg} />
+        <Title className="mb-6" title={`Secret Wrap`} tooltip={infoMsg} />
         {Number(scrtBalance) === 0 && scrtBalance !== null ? <SCRTUnwrapWarning /> : null}
         {/* Content */}
         <div className="rounded-3xl px-6 py-6 bg-white border border-neutral-200 dark:border-neutral-700 dark:bg-neutral-800">

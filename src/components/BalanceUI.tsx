@@ -15,13 +15,17 @@ interface IProps {
   chain?: Chain
   isSecretToken?: boolean
   showBalanceLabel?: boolean
+  onBalanceClick?: any
+  showCurrencyEquiv?: boolean
 }
 
 export default function BalanceUI({
   token,
   chain = chains['Secret Network'],
   isSecretToken = false,
-  showBalanceLabel = true
+  showBalanceLabel = true,
+  onBalanceClick = false,
+  showCurrencyEquiv = true
 }: IProps) {
   const {
     isConnected,
@@ -88,7 +92,7 @@ export default function BalanceUI({
 
   return (
     <>
-      <div className="flex items-center gap-1.5">
+      <div className="flex items-center justify-center gap-1.5">
         {showBalanceLabel && <span className="font-bold">{`Balance: `}</span>}
 
         {/* Skeleton Loader */}
@@ -99,7 +103,22 @@ export default function BalanceUI({
         {balance !== null &&
           balance !== ('viewingKeyError' as GetBalanceError) &&
           balance !== ('GenericFetchError' as GetBalanceError) &&
-          token.name && (
+          token.name &&
+          (onBalanceClick ? (
+            <span
+              className="cursor-pointer hover:underline"
+              onClick={() => onBalanceClick(Number(BigNumber(balance).dividedBy(`1e${token.decimals}`)))} // ADD
+            >
+              <span className="font-medium font-mono">{` ${Number(
+                BigNumber(balance).dividedBy(`1e${token.decimals}`)
+              ).toLocaleString(undefined, {
+                maximumFractionDigits: token.decimals
+              })} 
+          ${token.name == 'SCRT' && isSecretToken ? 's' : ''}${token.name} ${
+            token.coingecko_id && currencyPriceString && showCurrencyEquiv ? ` (${currencyPriceString})` : ''
+          }`}</span>
+            </span>
+          ) : (
             <>
               <span className="font-medium font-mono">{` ${Number(
                 BigNumber(balance).dividedBy(`1e${token.decimals}`)
@@ -107,10 +126,10 @@ export default function BalanceUI({
                 maximumFractionDigits: token.decimals
               })} 
               ${token.name == 'SCRT' && isSecretToken ? 's' : ''}${token.name} ${
-                token.coingecko_id && currencyPriceString ? ` (${currencyPriceString})` : ''
+                token.coingecko_id && currencyPriceString && showCurrencyEquiv ? ` (${currencyPriceString})` : ''
               }`}</span>
             </>
-          )}
+          ))}
 
         {balance === ('viewingKeyError' as GetBalanceError) && (
           <button
