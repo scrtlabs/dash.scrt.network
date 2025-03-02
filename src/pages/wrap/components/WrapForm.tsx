@@ -12,6 +12,7 @@ import './wrap.scss'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faArrowLeft, faArrowRight, faQuestion } from '@fortawesome/free-solid-svg-icons'
 import { faCircle } from '@fortawesome/free-regular-svg-icons'
+import { Tooltip } from '@mui/material'
 
 export default function WrapAllTokens() {
   const { secretNetworkClient, feeGrantStatus, isConnected, getBalance, balanceMapping, ibcBalanceMapping } =
@@ -77,8 +78,32 @@ export default function WrapAllTokens() {
     })
   }, [hideZeroBalance, hideNoViewingKey, balanceMapping, ibcBalanceMapping])
 
-  // Determine which tokens to display based on the expanded toggle.
-  const tokensToDisplay = expanded ? filteredTokens : filteredTokens.slice(0, 5)
+  const tokensToDisplay = useMemo(() => {
+    // Sort filtered tokens by unwrapped (public) balance descending.
+    const sortedTokens = [...filteredTokens].sort((a, b) => {
+      const balanceAResult = getBalanceSpecial(a, false)
+      const balanceBResult = getBalanceSpecial(b, false)
+      const balanceA = balanceAResult instanceof BigNumber ? balanceAResult : new BigNumber(0)
+      const balanceB = balanceBResult instanceof BigNumber ? balanceBResult : new BigNumber(0)
+      return balanceB.minus(balanceA).toNumber()
+    })
+
+    // If expanded, display all tokens.
+    if (expanded) return sortedTokens
+
+    // Otherwise, take the top 5 tokens.
+    const topTokens = sortedTokens.slice(0, 5)
+
+    // Also include any tokens that have been selected via batchOperations.
+    const selectedTokens = sortedTokens.filter((token) => batchOperations[token.name])
+    const unionTokens = [...topTokens]
+    selectedTokens.forEach((token) => {
+      if (!unionTokens.find((t) => t.name === token.name)) {
+        unionTokens.push(token)
+      }
+    })
+    return unionTokens
+  }, [expanded, filteredTokens, batchOperations])
 
   // Update the amount value for a given token.
   const updateAmount = (tokenName: string, amount: string) => {
@@ -164,6 +189,9 @@ export default function WrapAllTokens() {
     const newBatchOperations = { ...batchOperations }
 
     for (const token of filteredTokens) {
+      if (token.name === 'SCRT') {
+        continue
+      }
       const rawBalance = getBalanceSpecial(token, false)
       if (rawBalance instanceof BigNumber) {
         const amount = rawBalance.dividedBy(`1e${token.decimals}`).toString()
@@ -182,6 +210,9 @@ export default function WrapAllTokens() {
     const newBatchOperations = { ...batchOperations }
 
     for (const token of filteredTokens) {
+      if (token.name === 'SCRT') {
+        continue
+      }
       const wrappedBalance = getBalanceSpecial(token, true)
       if (wrappedBalance instanceof BigNumber) {
         const amount = wrappedBalance.dividedBy(`1e${token.decimals}`).toString()
@@ -222,37 +253,41 @@ export default function WrapAllTokens() {
   return (
     <div className="max-w-5xl mx-auto px-4 py-4">
       {/* Top Toggles & Global Actions */}
-      <div className="flex flex-wrap items-center gap-4 mb-4">
-        <div className="flex items-center gap-1">
-          <input type="checkbox" checked={hideZeroBalance} onChange={(e) => setHideZeroBalance(e.target.checked)} />
-          <span>Hide tokens with 0 balance</span>
+      <div className="flex flex-wrap items-center justify-between gap-4 mb-4">
+        {/* Left: Toggles */}
+        <div className="flex flex-wrap items-center gap-4">
+          <div className="flex items-center gap-1">
+            <input type="checkbox" checked={hideZeroBalance} onChange={(e) => setHideZeroBalance(e.target.checked)} />
+            <span>Hide tokens with 0 balance</span>
+          </div>
+          <div className="flex items-center gap-1">
+            <input type="checkbox" checked={hideNoViewingKey} onChange={(e) => setHideNoViewingKey(e.target.checked)} />
+            <span>Hide tokens without viewing key</span>
+          </div>
+          <div className="flex items-center gap-1">
+            <input type="checkbox" checked={showAmountInput} onChange={(e) => setShowAmountInput(e.target.checked)} />
+            <span>Set custom amount</span>
+          </div>
         </div>
-        <div className="flex items-center gap-1">
-          <input type="checkbox" checked={hideNoViewingKey} onChange={(e) => setHideNoViewingKey(e.target.checked)} />
-          <span>Hide tokens without viewing key</span>
+        {/* Right: Global Actions */}
+        <div className="flex items-center gap-4">
+          <button
+            onClick={handleWrapAll}
+            className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-1 px-3 rounded"
+            disabled={!isConnected}
+            title="Auto-fill all unwrapped balances for wrapping"
+          >
+            Wrap All
+          </button>
+          <button
+            onClick={handleUnwrapAll}
+            className="bg-red-500 hover:bg-red-600 text-white font-semibold py-1 px-3 rounded"
+            disabled={!isConnected}
+            title="Auto-fill all wrapped balances for unwrapping"
+          >
+            Unwrap All
+          </button>
         </div>
-        <div className="flex items-center gap-1">
-          <input type="checkbox" checked={showAmountInput} onChange={(e) => setShowAmountInput(e.target.checked)} />
-          <span>Set custom amount</span>
-        </div>
-
-        {/* "Wrap All" / "Unwrap All" Buttons */}
-        <button
-          onClick={handleWrapAll}
-          className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-1 px-3 rounded"
-          disabled={!isConnected}
-          title="Auto-fill all unwrapped balances for wrapping"
-        >
-          Wrap All
-        </button>
-        <button
-          onClick={handleUnwrapAll}
-          className="bg-red-500 hover:bg-red-600 text-white font-semibold py-1 px-3 rounded"
-          disabled={!isConnected}
-          title="Auto-fill all wrapped balances for unwrapping"
-        >
-          Unwrap All
-        </button>
       </div>
 
       {/* Main Table */}
@@ -264,11 +299,15 @@ export default function WrapAllTokens() {
               <th className="py-2 text-center">Unwrapped Balance</th>
               <th className="py-2 text-center">
                 Direction
-                <FontAwesomeIcon
-                  icon={faQuestion}
-                  className="ml-1 text-gray-400 cursor-pointer"
-                  title="Wrapping means converting a publicly visible token into a Secret version with privacy features. Unwrapping converts it back to the public chain."
-                />
+                <Tooltip
+                  title={
+                    'Wrapping (->) means converting a publicly visible token into a Secret version with confidential features. Unwrapping (<-) converts it back to the public version.'
+                  }
+                  placement="bottom"
+                  arrow
+                >
+                  <FontAwesomeIcon icon={faQuestion} className="ml-1 text-gray-400 cursor-pointer" />
+                </Tooltip>
               </th>
               {showAmountInput && <th className="py-2 text-center">Amount</th>}
               <th className="py-2 text-center">Wrapped Balance</th>
@@ -276,10 +315,11 @@ export default function WrapAllTokens() {
           </thead>
           <tbody>
             {isLoading
-              ? /* Skeleton Rows While Loading */ Array.from({ length: 6 }).map((_, idx) => (
+              ? /* Skeleton Rows While Loading */ Array.from({ length: 5 }).map((_, idx) => (
                   <tr key={idx} className="border-b border-gray-100 dark:border-neutral-600 last:border-0">
                     <td className="py-3">
                       <div className="flex items-center gap-2">
+                        <input type="checkbox" checked={false} />
                         <div className="w-12 h-12 bg-gray-300 dark:bg-neutral-600 rounded-full animate-pulse" />
                         <div className="font-semibold bg-gray-300 dark:bg-neutral-600 rounded animate-pulse w-12 h-4" />
                       </div>
@@ -308,9 +348,34 @@ export default function WrapAllTokens() {
 
                   return (
                     <tr key={token.name} className="border-b border-gray-100 dark:border-neutral-600 last:border-0">
-                      {/* Token Info */}
+                      {/* Token Info with Checkbox */}
                       <td className="py-3">
                         <div className="flex items-center gap-2">
+                          <input
+                            type="checkbox"
+                            className="form-checkbox"
+                            checked={!!batchOperations[token.name]?.direction}
+                            onChange={(e) => {
+                              if (e.target.checked) {
+                                // When checking, set a default direction ('wrap' in this example)
+                                setBatchOperations((prev) => ({
+                                  ...prev,
+                                  [token.name]: {
+                                    direction: 'wrap',
+                                    amount: prev[token.name]?.amount || ''
+                                  }
+                                }))
+                              } else {
+                                // When unchecking, remove the token's entry to reset to undefined
+                                setBatchOperations((prev) => {
+                                  const newOps = { ...prev }
+                                  delete newOps[token.name]
+                                  return newOps
+                                })
+                              }
+                            }}
+                            disabled={!isConnected || !token.address}
+                          />
                           <img
                             src={`/img/assets/${token.image}`}
                             alt={`${token.name} logo`}
@@ -331,23 +396,23 @@ export default function WrapAllTokens() {
                         />
                       </td>
 
-                      {/* Direction Toggle */}
+                      {/* Direction Toggle Button*/}
                       <td className="text-center">
                         <button
                           onClick={() => toggleDirection(token.name)}
                           disabled={!isConnected || !token.address}
                           className="p-2 rounded border border-neutral-300 dark:border-neutral-600 bg-white dark:bg-neutral-800 hover:bg-gray-100 dark:hover:bg-neutral-700"
                           title={
-                            !direction
+                            !batchOperations[token.name]?.direction
                               ? 'Click to toggle to Wrap'
-                              : direction === 'wrap'
+                              : batchOperations[token.name]?.direction === 'wrap'
                                 ? 'Currently set to Wrap (click to switch to Unwrap)'
                                 : 'Currently set to Unwrap (click to switch to Wrap)'
                           }
                         >
-                          {!direction ? (
+                          {!batchOperations[token.name]?.direction ? (
                             <FontAwesomeIcon icon={faCircle} size="xl" />
-                          ) : direction === 'wrap' ? (
+                          ) : batchOperations[token.name]?.direction === 'wrap' ? (
                             <FontAwesomeIcon icon={faArrowRight} size="xl" />
                           ) : (
                             <FontAwesomeIcon icon={faArrowLeft} size="xl" />
@@ -361,7 +426,7 @@ export default function WrapAllTokens() {
                           <input
                             type="number"
                             className="no-spinner text-center w-[90px] rounded px-2 py-1 bg-white dark:bg-neutral-800 border border-neutral-300 dark:border-neutral-600"
-                            value={op?.amount || ''}
+                            value={batchOperations[token.name]?.amount || ''}
                             onChange={(e) => updateAmount(token.name, e.target.value)}
                             placeholder=""
                             disabled={!isConnected || !token.address}
@@ -387,7 +452,7 @@ export default function WrapAllTokens() {
 
         {/* Toggle button to expand/collapse the full token list */}
         {!isLoading && filteredTokens.length > 5 && (
-          <div className="mt-2 text-center">
+          <div className="border-t border-gray-300 mt-2 pt-2 text-center">
             <button onClick={() => setExpanded(!expanded)} className="text-blue-500 hover:underline">
               {expanded ? 'Show less' : 'Show all tokens'}
             </button>
@@ -409,7 +474,7 @@ export default function WrapAllTokens() {
           <button
             onClick={handlePerformBatch}
             disabled={!isConnected}
-            className="enabled:bg-gradient-to-r enabled:from-cyan-600 enabled:to-purple-600 enabled:hover:from-cyan-500 enabled:hover:to-purple-500 text-white font-extrabold py-4 px-8 rounded-lg disabled:bg-neutral-500"
+            className="enabled:bg-gradient-to-r enabled:from-cyan-600 enabled:to-purple-600 enabled:hover:from-cyan-500 enabled:hover:to-purple-500 text-white font-extrabold py-4 px-9 rounded-lg disabled:bg-neutral-500"
           >
             Perform Batch Transaction
           </button>
