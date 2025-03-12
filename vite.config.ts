@@ -29,29 +29,20 @@ export default defineConfig({
     ]
   },
   build: {
-    target: 'esnext', // Align with your tsconfig target
-    minify: 'terser',
-    terserOptions: {
-      compress: {
-        drop_console: true,
-        drop_debugger: true
-      }
-    },
-    chunkSizeWarningLimit: 1000,
+    // The default minifier is esbuild, which is fast and effective.
+    // If you need additional options or prefer terser, you can change it.
+    minify: 'esbuild',
+    // Rollup options allow you to customize code splitting further.
     rollupOptions: {
-      treeshake: {
-        moduleSideEffects: 'no-external',
-        propertyReadSideEffects: false,
-        tryCatchDeoptimization: false,
-        annotations: true
+      output: {
+        // Example: Separate vendor code from your app code.
+        manualChunks(id) {
+          if (id.includes('node_modules')) {
+            // This creates separate chunks for each dependency folder.
+            return id.toString().split('node_modules/')[1].split('/')[0].toString()
+          }
+        }
       }
-    },
-    commonjsOptions: {
-      transformMixedEsModules: true
     }
-  },
-  // Ensure Vite knows to treat certain files as having side effects
-  optimizeDeps: {
-    include: [] // Add dependencies that need special handling
   }
 })
