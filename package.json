@@ -10,23 +10,23 @@
     "prepare": "husky install"
   },
   "dependencies": {
-    "@axelar-network/axelarjs-sdk": "^0.17.0",
-    "@babel/core": "^7.23.3",
+    "@axelar-network/axelarjs-sdk": "^0.17.2",
+    "@babel/core": "^7.26.10",
     "@buf/evmos_evmos.bufbuild_es": "^2.2.3-20240408103001-f65bdd0ffeff.1",
     "@bufbuild/protobuf": "^2.2.3",
-    "@cosmjs/stargate": "^0.32.4",
+    "@cosmjs/stargate": "^0.33.0",
     "@emotion/styled": "^11.14.0",
     "@evmos/proto": "^0.2.1",
     "@evmos/transactions": "^0.3.2",
-    "@floating-ui/react": "^0.26.27",
+    "@floating-ui/react": "^0.27.5",
     "@fortawesome/free-brands-svg-icons": "^6.7.2",
     "@fortawesome/free-solid-svg-icons": "^6.7.2",
     "@fortawesome/react-fontawesome": "^0.2.2",
     "@keplr-wallet/cosmos": "^0.12.169",
     "@mui/material": "5.16.7",
-    "@shadeprotocol/shadejs": "^1.6.2",
+    "@shadeprotocol/shadejs": "^1.7.0",
     "@skip-go/client": "^0.11.1",
-    "@swing.xyz/ui": "^0.63.0",
+    "@swing.xyz/ui": "^0.67.5",
     "@terra-money/terra.js": "^3.1.10",
     "@types/react-copy-to-clipboard": "5.0.7",
     "@types/react-modal": "^3.16.3",
@@ -37,7 +37,7 @@
     "chart.js": "^4.4.7",
     "formik": "^2.4.6",
     "long": "^5.2.3",
-    "mixpanel-browser": "^2.55.1",
+    "mixpanel-browser": "^2.61.1",
     "query-string": "^9.1.1",
     "react": "18.3.1",
     "react-chartjs-2": "^5.3.0",
@@ -53,26 +53,26 @@
     "tailwindcss": "^3.4.17",
     "vite": "^5.4.14",
     "vite-tsconfig-paths": "^4.3.2",
-    "ws": "^8.17.1",
+    "ws": "^8.18.1",
     "yup": "^1.4.0",
     "zustand": "^4.4.6"
   },
   "devDependencies": {
-    "@keplr-wallet/types": "^0.12.169",
-    "@types/mixpanel-browser": "^2.50.2",
+    "@keplr-wallet/types": "^0.12.196",
+    "@types/mixpanel-browser": "^2.51.0",
     "@types/react": "^18.3.18",
     "@types/react-dom": "^18.3.5",
     "husky": "^9.1.7",
     "lint-staged": "^15.3.0",
-    "prettier": "3.4.2",
+    "prettier": "3.5.3",
     "sass-embedded": "^1.83.1",
     "typescript": "^5.6.3"
   },
   "overrides": {
-    "protobufjs": "^7.4.0"
-  },
-  "resolutions": {
-    "elliptic": "6.6.1"
+    "protobufjs": "^7.4.0",
+    "elliptic": "6.6.1",
+    "axios": "1.8.2",
+    "esbuild": "0.25.0"
   },
   "private": true,
   "lint-staged": {
