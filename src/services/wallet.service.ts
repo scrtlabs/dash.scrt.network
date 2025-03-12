@@ -10,7 +10,6 @@ import {
   sleep
 } from 'utils/commons'
 import { Chain, SECRET_CHAIN_ID, SECRET_LCD, Token } from 'utils/config'
-import { isMobile } from 'react-device-detect'
 import { WalletAPIType } from 'types/WalletAPIType'
 import BigNumber from 'bignumber.js'
 import { QueryAllBalancesResponse } from 'secretjs/dist/grpc_gateway/cosmos/bank/v1beta1/query.pb'
@@ -56,35 +55,26 @@ const connectKeplr = async (lcd: string, chainID: string) => {
 }
 
 const connectLeap = async (lcd: string, chainID: string) => {
-  if (!window.leap && isMobile) {
-    // const urlSearchParams = new URLSearchParams();
-    // urlSearchParams.append("network", chainId);
-    // urlSearchParams.append("url", window.location.href);
-    // window.open(`fina://wllet/dapps?${urlSearchParams.toString()}`, "_blank");
-    // localStorage.setItem("preferedWalletApi", "Fina");
-    // window.dispatchEvent(new Event("storage"));
-  } else {
-    while (!window.leap || !window.leap.getEnigmaUtils || !window.leap.getOfflineSignerOnlyAmino) {
-      await sleep(50)
-    }
-
-    await window.leap.enable(chainID)
-
-    const wallet = window.leap.getOfflineSignerOnlyAmino(chainID)
-    const [{ address: walletAddress }] = await wallet.getAccounts()
-
-    const secretjs: SecretNetworkClient = new SecretNetworkClient({
-      url: lcd,
-      chainId: chainID,
-      wallet,
-      walletAddress,
-      encryptionUtils: window.leap.getEnigmaUtils(chainID)
-    })
-
-    window.wallet = window.leap
-
-    return { walletAddress, secretjs }
+  while (!window.leap || !window.leap.getEnigmaUtils || !window.leap.getOfflineSignerOnlyAmino) {
+    await sleep(50)
   }
+
+  await window.leap.enable(chainID)
+
+  const wallet = window.leap.getOfflineSignerOnlyAmino(chainID)
+  const [{ address: walletAddress }] = await wallet.getAccounts()
+
+  const secretjs: SecretNetworkClient = new SecretNetworkClient({
+    url: lcd,
+    chainId: chainID,
+    wallet,
+    walletAddress,
+    encryptionUtils: window.leap.getEnigmaUtils(chainID)
+  })
+
+  window.wallet = window.leap
+
+  return { walletAddress, secretjs }
 }
 
 const connectWallet = async (
