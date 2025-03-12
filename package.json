@@ -22,10 +22,10 @@
     "@fortawesome/free-brands-svg-icons": "^6.7.2",
     "@fortawesome/free-solid-svg-icons": "^6.7.2",
     "@fortawesome/react-fontawesome": "^0.2.2",
-    "@keplr-wallet/cosmos": "^0.12.169",
+    "@keplr-wallet/cosmos": "^0.12.196",
     "@mui/material": "5.16.7",
     "@shadeprotocol/shadejs": "^1.7.0",
-    "@skip-go/client": "^0.11.1",
+    "@skip-go/client": "^0.16.17",
     "@swing.xyz/ui": "^0.67.5",
     "@terra-money/terra.js": "^3.1.10",
     "@types/react-copy-to-clipboard": "5.0.7",
@@ -34,7 +34,7 @@
     "autoprefixer": "^10.4.20",
     "bignumber.js": "^9.1.2",
     "buffer": "^6.0.3",
-    "chart.js": "^4.4.7",
+    "chart.js": "^4.4.8",
     "formik": "^2.4.6",
     "long": "^5.2.3",
     "mixpanel-browser": "^2.61.1",
@@ -51,9 +51,8 @@
     "react-select": "^5.9.0",
     "secretjs": "^1.15.1",
     "tailwindcss": "^3.4.17",
-    "vite": "^5.4.14",
+    "vite": "5.4.14",
     "vite-tsconfig-paths": "^4.3.2",
-    "ws": "^8.18.1",
     "yup": "^1.4.0",
     "zustand": "^4.4.6"
   },
@@ -63,7 +62,7 @@
     "@types/react": "^18.3.18",
     "@types/react-dom": "^18.3.5",
     "husky": "^9.1.7",
-    "lint-staged": "^15.3.0",
+    "lint-staged": "^15.4.3",
     "prettier": "3.5.3",
     "sass-embedded": "^1.83.1",
     "typescript": "^5.6.3"
@@ -72,7 +71,10 @@
     "protobufjs": "^7.4.0",
     "elliptic": "6.6.1",
     "axios": "1.8.2",
-    "esbuild": "0.25.0"
+    "esbuild": "0.25.0",
+    "ws": "8.18.1",
+    "vite": "5.4.14",
+    "@babel/runtime": "7.26.10"
   },
   "private": true,
   "lint-staged": {
