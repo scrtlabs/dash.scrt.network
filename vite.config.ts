@@ -3,7 +3,6 @@ import react from '@vitejs/plugin-react'
 import tsconfigPaths from 'vite-tsconfig-paths'
 import { whip003 } from './vite-plugin-whip-003'
 
-// https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
     { ...react() },
@@ -28,5 +27,8 @@ export default defineConfig({
         replacement: '@evmos/proto/dist/proto/evmos/revenue/v1/tx.js'
       }
     ]
+  },
+  build: {
+    minify: 'esbuild'
   }
 })
