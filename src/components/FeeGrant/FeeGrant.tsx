@@ -5,7 +5,7 @@ import ActionableStatus from './components/ActionableStatus'
 
 export default function FeeGrant() {
   return (
-    <div className="bg-gray-200 dark:bg-neutral-700 text-black dark:text-white p-4 rounded-xl select-none flex items-center">
+    <div className="bg-gray-200 dark:bg-neutral-700 text-black dark:text-white p-4 rounded-xl select-none flex items-center gap-4">
       <div className="flex-1">
         <Tooltip
           title={`Request Fee Grant so that you don't have to pay gas fees (up to 0.1 SCRT)`}
