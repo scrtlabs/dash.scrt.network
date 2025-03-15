@@ -498,7 +498,7 @@ export default function WrapAllTokens() {
                             alt={`${token.name} logo`}
                             className="w-12 h-12 rounded-full"
                           />
-                          <div className="font-semibold justify-center text-lg">{token.name}</div>
+                          <div className="font-semibold justify-center text-base">{token.name}</div>
                         </div>
                       </td>
 
