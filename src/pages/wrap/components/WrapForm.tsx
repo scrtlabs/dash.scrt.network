@@ -465,7 +465,9 @@ export default function WrapAllTokens() {
                         disabled
                         className="p-2 rounded border border-neutral-300 dark:border-neutral-600 bg-white dark:bg-neutral-800"
                       >
-                        <FontAwesomeIcon icon={faCircle} size="xl" className="text-gray-600" />
+                        <div className="flex items-center justify-center w-6 h-6">
+                          <FontAwesomeIcon icon={faCircle} size="xl" className="text-gray-600" />
+                        </div>
                       </button>
                     </td>
                     {showAmountInput && (
@@ -526,11 +528,17 @@ export default function WrapAllTokens() {
                           }
                         >
                           {!batchOperations[token.name] ? (
-                            <FontAwesomeIcon icon={faCircle} size="xl" className="text-gray-600" />
+                            <div className="flex items-center justify-center w-6 h-6">
+                              <FontAwesomeIcon icon={faCircle} size="xl" className="text-gray-600" />
+                            </div>
                           ) : batchOperations[token.name]?.direction === 'wrap' ? (
-                            <FontAwesomeIcon icon={faArrowRight} size="xl" />
+                            <div className="flex items-center justify-center w-6 h-6">
+                              <FontAwesomeIcon icon={faArrowRight} size="xl" />
+                            </div>
                           ) : (
-                            <FontAwesomeIcon icon={faArrowLeft} size="xl" />
+                            <div className="flex items-center justify-center w-6 h-6">
+                              <FontAwesomeIcon icon={faArrowLeft} size="xl" />
+                            </div>
                           )}
                         </button>
                       </td>
@@ -562,12 +570,18 @@ export default function WrapAllTokens() {
                                     : 'Currently set to Unwrap (click to switch to Wrap)'
                               }
                             >
-                              {!batchOperations[token.name]?.direction ? (
-                                <FontAwesomeIcon icon={faCircle} size="xl" />
+                              {!batchOperations[token.name] ? (
+                                <div className="flex items-center justify-center w-6 h-6">
+                                  <FontAwesomeIcon icon={faCircle} size="xl" className="text-gray-600" />
+                                </div>
                               ) : batchOperations[token.name]?.direction === 'wrap' ? (
-                                <FontAwesomeIcon icon={faArrowRight} size="xl" />
+                                <div className="flex items-center justify-center w-6 h-6">
+                                  <FontAwesomeIcon icon={faArrowRight} size="xl" />
+                                </div>
                               ) : (
-                                <FontAwesomeIcon icon={faArrowLeft} size="xl" />
+                                <div className="flex items-center justify-center w-6 h-6">
+                                  <FontAwesomeIcon icon={faArrowLeft} size="xl" />
+                                </div>
                               )}
                             </button>
                           </td>
