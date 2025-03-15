@@ -60,7 +60,8 @@ export default function SendForm() {
     }
   }, [])
 
-  const { secretNetworkClient, feeGrantStatus, isConnected, getBalance } = useSecretNetworkClientStore()
+  const { secretNetworkClient, feeGrantStatus, isConnected, getBalance, setBalanceMapping } =
+    useSecretNetworkClientStore()
 
   interface IFormValues {
     amount: string
@@ -112,6 +113,8 @@ export default function SendForm() {
       } catch (error: any) {
         console.error(error)
         NotificationService.notify(`Sending unsuccessful: ${error}`, 'error', toastId)
+      } finally {
+        setBalanceMapping()
       }
     }
   })
