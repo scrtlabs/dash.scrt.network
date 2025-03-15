@@ -68,8 +68,15 @@ export default function IbcForm() {
 
   const { debugMode } = useUserPreferencesStore()
 
-  const { feeGrantStatus, secretNetworkClient, walletAddress, isConnected, getBalance, getIbcBalance } =
-    useSecretNetworkClientStore()
+  const {
+    feeGrantStatus,
+    secretNetworkClient,
+    walletAddress,
+    isConnected,
+    getBalance,
+    getIbcBalance,
+    setBalanceMapping
+  } = useSecretNetworkClientStore()
 
   const { theme } = useUserPreferencesStore()
 
@@ -95,6 +102,8 @@ export default function IbcForm() {
       } catch (error: any) {
         console.error(error)
         NotificationService.notify(`Transfer unsuccessful`, 'error')
+      } finally {
+        setBalanceMapping()
       }
     }
   })
