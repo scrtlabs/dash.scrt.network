@@ -15,8 +15,15 @@ import { faCircle } from '@fortawesome/free-regular-svg-icons'
 import { Tooltip } from '@mui/material'
 
 export default function WrapAllTokens() {
-  const { secretNetworkClient, feeGrantStatus, isConnected, getBalance, balanceMapping, ibcBalanceMapping } =
-    useSecretNetworkClientStore()
+  const {
+    secretNetworkClient,
+    feeGrantStatus,
+    isConnected,
+    getBalance,
+    balanceMapping,
+    ibcBalanceMapping,
+    setBalanceMapping
+  } = useSecretNetworkClientStore()
 
   const { debugMode } = useUserPreferencesStore()
 
@@ -64,11 +71,12 @@ export default function WrapAllTokens() {
       }
       if (hideZeroBalance) {
         const unwrapped = getBalanceSpecial(token, false)
-        const secret = token.address ? getBalanceSpecial(token, true) : null
+        const secret = getBalanceSpecial(token, true)
 
         const unwrappedBN = unwrapped instanceof BigNumber ? unwrapped : new BigNumber(0)
         const secretBN = secret instanceof BigNumber ? secret : new BigNumber(0)
         const total = unwrappedBN.plus(secretBN)
+        console.log(total.toNumber())
 
         if (total.isZero()) {
           return false
@@ -130,22 +138,100 @@ export default function WrapAllTokens() {
   // Toggle the operation direction between 'wrap' and 'unwrap'.
   const toggleDirection = (tokenName: string) => {
     setBatchOperations((prev: any) => {
-      const current = prev[tokenName]?.direction
-      let newDirection
-      if (!current) {
-        // If no direction is selected yet, set it to 'wrap'
-        newDirection = 'wrap'
-      } else {
-        newDirection = current === 'wrap' ? 'unwrap' : 'wrap'
+      const token = tokens.find((t) => t.name === tokenName)
+      if (!token) return prev
+
+      const unwrappedBalance = getBalanceSpecial(token, false)
+      const wrappedBalance = getBalanceSpecial(token, true)
+
+      // If token is not in batchOperations yet, add it with default wrap direction
+      if (!prev[tokenName]) {
+        // Default to wrap if there's unwrapped balance, otherwise unwrap
+        const defaultDirection = unwrappedBalance instanceof BigNumber && !unwrappedBalance.isZero() ? 'wrap' : 'unwrap'
+
+        // Get the appropriate balance amount based on the chosen direction
+        const balanceToUse = defaultDirection === 'wrap' ? unwrappedBalance : wrappedBalance
+
+        // Calculate the human-readable amount if we have a valid balance
+        let amountToUse = ''
+        if (balanceToUse instanceof BigNumber && !balanceToUse.isZero()) {
+          const decimals = token.decimals || 6
+          amountToUse = balanceToUse.dividedBy(new BigNumber(10).pow(decimals)).toString()
+        }
+
+        return {
+          ...prev,
+          [tokenName]: {
+            direction: defaultDirection,
+            amount: amountToUse
+          }
+        }
       }
+
+      // Toggle direction for existing entry
+      const newDirection = prev[tokenName].direction === 'wrap' ? 'unwrap' : 'wrap'
+
+      // Get the appropriate balance amount based on the chosen direction
+      let newAmount = newDirection === 'wrap' ? unwrappedBalance : wrappedBalance
+
+      let amountToUse = ''
+      if (newAmount instanceof BigNumber) {
+        const decimals = token.decimals || 6
+        amountToUse = newAmount.dividedBy(new BigNumber(10).pow(decimals)).toString()
+      }
+
       return {
         ...prev,
         [tokenName]: {
+          ...prev[tokenName],
           direction: newDirection,
-          amount: prev[tokenName]?.amount || ''
+          amount: amountToUse
         }
       }
     })
+  }
+
+  // Handle checkbox change for a token
+  const handleChange = (tokenName: string, checked: boolean) => {
+    if (checked) {
+      // When checking the box, add the token to batch operations with default direction
+      // and a meaningful amount based on available balance
+      const token = tokens.find((t) => t.name === tokenName)
+      if (!token) return
+      // Determine which balance to use based on the direction we'll choose
+      const unwrappedBalance = getBalanceSpecial(token, false)
+      const wrappedBalance = getBalanceSpecial(token, true)
+
+      console.log(unwrappedBalance)
+      console.log(wrappedBalance)
+      // Default to wrap if there's unwrapped balance, otherwise unwrap
+      const defaultDirection = unwrappedBalance instanceof BigNumber && !unwrappedBalance.isZero() ? 'wrap' : 'unwrap'
+
+      // Get the appropriate balance amount based on the chosen direction
+      const balanceToUse = defaultDirection === 'wrap' ? unwrappedBalance : wrappedBalance
+
+      // Calculate the human-readable amount if we have a valid balance
+      let amountToUse = ''
+      if (balanceToUse instanceof BigNumber && !balanceToUse.isZero()) {
+        const decimals = token.decimals || 6
+        amountToUse = balanceToUse.dividedBy(new BigNumber(10).pow(decimals)).toString()
+      }
+
+      setBatchOperations((prev) => ({
+        ...prev,
+        [tokenName]: {
+          direction: defaultDirection,
+          amount: amountToUse
+        }
+      }))
+    } else {
+      // When unchecking, remove the token from batch operations
+      setBatchOperations((prev) => {
+        const newOps = { ...prev }
+        delete newOps[tokenName]
+        return newOps
+      })
+    }
   }
 
   // Perform the entire batch transaction.
@@ -153,14 +239,19 @@ export default function WrapAllTokens() {
     if (!isConnected) return
 
     const items = []
-    for (const token of filteredTokens) {
-      const op = batchOperations[token.name]
+    for (const tokenName in batchOperations) {
+      const op = batchOperations[tokenName]
+      // Ensure a valid amount is specified.
       if (op && op.amount && parseFloat(op.amount) > 0) {
-        items.push({
-          token,
-          amount: op.amount,
-          wrappingMode: op.direction // 'wrap' or 'unwrap'
-        })
+        // Find the corresponding token from the full tokens array.
+        const token = tokens.find((t) => t.name === tokenName)
+        if (token) {
+          items.push({
+            token,
+            amount: op.amount,
+            wrappingMode: op.direction // 'wrap' or 'unwrap'
+          })
+        }
       }
     }
 
@@ -177,6 +268,7 @@ export default function WrapAllTokens() {
         feeGrantStatus
       })
       NotificationService.notify('Batch transaction successful!', 'success', toastId)
+      setBalanceMapping()
       setBatchOperations({})
     } catch (error) {
       console.error(error)
@@ -231,8 +323,7 @@ export default function WrapAllTokens() {
     let wrapCount = 0
     let unwrapCount = 0
 
-    for (const token of filteredTokens) {
-      const op = batchOperations[token.name]
+    Object.values(batchOperations).forEach((op) => {
       if (op && op.amount && parseFloat(op.amount) > 0) {
         if (op.direction === 'wrap') {
           wrapCount++
@@ -240,13 +331,13 @@ export default function WrapAllTokens() {
           unwrapCount++
         }
       }
-    }
+    })
 
     return {
       wrapCount,
       unwrapCount
     }
-  }, [filteredTokens, batchOperations])
+  }, [batchOperations])
 
   const isLoading = balanceMapping == null && ibcBalanceMapping == null
 
@@ -309,7 +400,23 @@ export default function WrapAllTokens() {
                   <FontAwesomeIcon icon={faQuestion} className="ml-1 text-gray-400 cursor-pointer" />
                 </Tooltip>
               </th>
-              {showAmountInput && <th className="py-2 text-center">Amount</th>}
+              {showAmountInput && (
+                <>
+                  <th className="py-2 text-center">Amount</th>
+                  <th className="py-2 text-center">
+                    Direction
+                    <Tooltip
+                      title={
+                        'Wrapping (->) means converting a publicly visible token into a Secret version with confidential features. Unwrapping (<-) converts it back to the public version.'
+                      }
+                      placement="bottom"
+                      arrow
+                    >
+                      <FontAwesomeIcon icon={faQuestion} className="ml-1 text-gray-400 cursor-pointer" />
+                    </Tooltip>
+                  </th>
+                </>
+              )}
               <th className="py-2 text-center">Wrapped Balance</th>
             </tr>
           </thead>
@@ -342,9 +449,8 @@ export default function WrapAllTokens() {
                     </td>
                   </tr>
                 ))
-              : /* Actual Rows When Data is Loaded */ tokensToDisplay.map((token) => {
+              : tokensToDisplay.map((token) => {
                   const op = batchOperations[token.name]
-                  const direction = op?.direction
 
                   return (
                     <tr key={token.name} className="border-b border-gray-100 dark:border-neutral-600 last:border-0">
@@ -354,26 +460,8 @@ export default function WrapAllTokens() {
                           <input
                             type="checkbox"
                             className="form-checkbox"
-                            checked={!!batchOperations[token.name]?.direction}
-                            onChange={(e) => {
-                              if (e.target.checked) {
-                                // When checking, set a default direction ('wrap' in this example)
-                                setBatchOperations((prev) => ({
-                                  ...prev,
-                                  [token.name]: {
-                                    direction: 'wrap',
-                                    amount: prev[token.name]?.amount || ''
-                                  }
-                                }))
-                              } else {
-                                // When unchecking, remove the token's entry to reset to undefined
-                                setBatchOperations((prev) => {
-                                  const newOps = { ...prev }
-                                  delete newOps[token.name]
-                                  return newOps
-                                })
-                              }
-                            }}
+                            checked={!!batchOperations[token.name]}
+                            onChange={(e) => handleChange(token.name, e.target.checked)}
                             disabled={!isConnected || !token.address}
                           />
                           <img
@@ -422,16 +510,41 @@ export default function WrapAllTokens() {
 
                       {/* Amount Input (optional) */}
                       {showAmountInput && (
-                        <td className="text-center">
-                          <input
-                            type="number"
-                            className="no-spinner text-center w-[90px] rounded px-2 py-1 bg-white dark:bg-neutral-800 border border-neutral-300 dark:border-neutral-600"
-                            value={batchOperations[token.name]?.amount || ''}
-                            onChange={(e) => updateAmount(token.name, e.target.value)}
-                            placeholder=""
-                            disabled={!isConnected || !token.address}
-                          />
-                        </td>
+                        <>
+                          <td className="text-center">
+                            <input
+                              type="number"
+                              className="no-spinner text-center w-[90px] rounded px-2 py-1 bg-white dark:bg-neutral-800 border border-neutral-300 dark:border-neutral-600"
+                              value={batchOperations[token.name]?.amount || ''}
+                              onChange={(e) => updateAmount(token.name, e.target.value)}
+                              placeholder=""
+                              disabled={!isConnected || !token.address}
+                            />
+                          </td>
+
+                          <td className="text-center">
+                            <button
+                              onClick={() => toggleDirection(token.name)}
+                              disabled={!isConnected || !token.address}
+                              className="p-2 rounded border border-neutral-300 dark:border-neutral-600 bg-white dark:bg-neutral-800 hover:bg-gray-100 dark:hover:bg-neutral-700"
+                              title={
+                                !batchOperations[token.name]?.direction
+                                  ? 'Click to toggle to Wrap'
+                                  : batchOperations[token.name]?.direction === 'wrap'
+                                    ? 'Currently set to Wrap (click to switch to Unwrap)'
+                                    : 'Currently set to Unwrap (click to switch to Wrap)'
+                              }
+                            >
+                              {!batchOperations[token.name]?.direction ? (
+                                <FontAwesomeIcon icon={faCircle} size="xl" />
+                              ) : batchOperations[token.name]?.direction === 'wrap' ? (
+                                <FontAwesomeIcon icon={faArrowRight} size="xl" />
+                              ) : (
+                                <FontAwesomeIcon icon={faArrowLeft} size="xl" />
+                              )}
+                            </button>
+                          </td>
+                        </>
                       )}
 
                       {/* Wrapped Balance (clickable) */}

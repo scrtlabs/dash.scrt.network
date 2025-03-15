@@ -184,7 +184,7 @@ export async function performBatchWrapping(props: IBatchProps): Promise<void> {
 
   // Broadcast all messages in a single transaction
   const broadcastResult = await props.secretNetworkClient.tx.broadcast(messages, {
-    gasLimit: 50_000 + 50_000 * messages.length,
+    gasLimit: 50_000 + 40_000 * messages.length,
     gasPriceInFeeDenom: 0.25,
     feeDenom: 'uscrt',
     feeGranter: props.feeGrantStatus === 'success' ? faucetAddress : '',
