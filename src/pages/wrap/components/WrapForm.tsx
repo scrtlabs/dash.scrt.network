@@ -76,7 +76,6 @@ export default function WrapAllTokens() {
         const unwrappedBN = unwrapped instanceof BigNumber ? unwrapped : new BigNumber(0)
         const secretBN = secret instanceof BigNumber ? secret : new BigNumber(0)
         const total = unwrappedBN.plus(secretBN)
-        console.log(total.toNumber())
 
         if (total.isZero()) {
           return false
@@ -135,7 +134,7 @@ export default function WrapAllTokens() {
     }))
   }
 
-  // Toggle the operation direction between 'wrap' and 'unwrap'.
+  // Toggle the operation direction between 'wrap', 'unwrap', and 'nothing'.
   const toggleDirection = (tokenName: string) => {
     setBatchOperations((prev: any) => {
       const token = tokens.find((t) => t.name === tokenName)
@@ -168,8 +167,18 @@ export default function WrapAllTokens() {
         }
       }
 
-      // Toggle direction for existing entry
-      const newDirection = prev[tokenName].direction === 'wrap' ? 'unwrap' : 'wrap'
+      // Define the next direction in the cycle: wrap -> unwrap -> nothing -> wrap
+      let newDirection
+      if (prev[tokenName].direction === 'wrap') {
+        newDirection = 'unwrap'
+      } else if (prev[tokenName].direction === 'unwrap') {
+        // When going to "nothing", remove the token from batch operations entirely
+        const newOps = { ...prev }
+        delete newOps[tokenName]
+        return newOps
+      } else {
+        newDirection = 'wrap'
+      }
 
       // Get the appropriate balance amount based on the chosen direction
       let newAmount = newDirection === 'wrap' ? unwrappedBalance : wrappedBalance
@@ -202,8 +211,6 @@ export default function WrapAllTokens() {
       const unwrappedBalance = getBalanceSpecial(token, false)
       const wrappedBalance = getBalanceSpecial(token, true)
 
-      console.log(unwrappedBalance)
-      console.log(wrappedBalance)
       // Default to wrap if there's unwrapped balance, otherwise unwrap
       const defaultDirection = unwrappedBalance instanceof BigNumber && !unwrappedBalance.isZero() ? 'wrap' : 'unwrap'
 
@@ -245,7 +252,26 @@ export default function WrapAllTokens() {
       if (op && op.amount && parseFloat(op.amount) > 0) {
         // Find the corresponding token from the full tokens array.
         const token = tokens.find((t) => t.name === tokenName)
-        if (token) {
+        if (token.name === 'SCRT' && op.direction === 'wrap') {
+          const rawBalance = getBalanceSpecial(token, false)
+          if (rawBalance instanceof BigNumber) {
+            const amount = parseFloat(rawBalance.dividedBy(`1e${token.decimals}`).toString())
+            const requestedAmount = parseFloat(op.amount)
+            const minReserve = 0.5
+
+            // Calculate available amount while maintaining minimum reserve
+            const safeAmount = Math.max(0, amount - minReserve)
+            const adjustedAmount = Math.min(requestedAmount, safeAmount)
+
+            if (adjustedAmount > 0) {
+              items.push({
+                token,
+                amount: adjustedAmount.toString(),
+                wrappingMode: op.direction
+              })
+            }
+          }
+        } else if (token) {
           items.push({
             token,
             amount: op.amount,
@@ -422,21 +448,24 @@ export default function WrapAllTokens() {
           </thead>
           <tbody>
             {isLoading
-              ? /* Skeleton Rows While Loading */ Array.from({ length: 5 }).map((_, idx) => (
+              ? Array.from({ length: 5 }).map((_, idx) => (
                   <tr key={idx} className="border-b border-gray-100 dark:border-neutral-600 last:border-0">
                     <td className="py-3">
                       <div className="flex items-center gap-2">
                         <input type="checkbox" checked={false} />
                         <div className="w-12 h-12 bg-gray-300 dark:bg-neutral-600 rounded-full animate-pulse" />
-                        <div className="font-semibold bg-gray-300 dark:bg-neutral-600 rounded animate-pulse w-12 h-4" />
+                        <div className="font-semibold bg-gray-300 dark:bg-neutral-600 rounded animate-pulse w-14 h-6" />
                       </div>
                     </td>
                     <td>
                       <div className="bg-gray-300 dark:bg-neutral-600 animate-pulse rounded w-20 h-6 mx-auto" />
                     </td>
                     <td className="text-center">
-                      <button className="p-2 rounded border border-neutral-300 dark:border-neutral-600 bg-white dark:bg-neutral-800">
-                        <FontAwesomeIcon icon={faCircle} size="xl" />
+                      <button
+                        disabled
+                        className="p-2 rounded border border-neutral-300 dark:border-neutral-600 bg-white dark:bg-neutral-800"
+                      >
+                        <FontAwesomeIcon icon={faCircle} size="xl" className="text-gray-600" />
                       </button>
                     </td>
                     {showAmountInput && (
@@ -450,8 +479,6 @@ export default function WrapAllTokens() {
                   </tr>
                 ))
               : tokensToDisplay.map((token) => {
-                  const op = batchOperations[token.name]
-
                   return (
                     <tr key={token.name} className="border-b border-gray-100 dark:border-neutral-600 last:border-0">
                       {/* Token Info with Checkbox */}
@@ -469,7 +496,7 @@ export default function WrapAllTokens() {
                             alt={`${token.name} logo`}
                             className="w-12 h-12 rounded-full"
                           />
-                          <div className="font-semibold justify-center">{token.name}</div>
+                          <div className="font-semibold justify-center text-lg">{token.name}</div>
                         </div>
                       </td>
 
@@ -491,15 +518,15 @@ export default function WrapAllTokens() {
                           disabled={!isConnected || !token.address}
                           className="p-2 rounded border border-neutral-300 dark:border-neutral-600 bg-white dark:bg-neutral-800 hover:bg-gray-100 dark:hover:bg-neutral-700"
                           title={
-                            !batchOperations[token.name]?.direction
-                              ? 'Click to toggle to Wrap'
+                            !batchOperations[token.name]
+                              ? 'No direction selected (click to set to Wrap)'
                               : batchOperations[token.name]?.direction === 'wrap'
                                 ? 'Currently set to Wrap (click to switch to Unwrap)'
-                                : 'Currently set to Unwrap (click to switch to Wrap)'
+                                : 'Currently set to Unwrap (click to remove from batch)'
                           }
                         >
-                          {!batchOperations[token.name]?.direction ? (
-                            <FontAwesomeIcon icon={faCircle} size="xl" />
+                          {!batchOperations[token.name] ? (
+                            <FontAwesomeIcon icon={faCircle} size="xl" className="text-gray-600" />
                           ) : batchOperations[token.name]?.direction === 'wrap' ? (
                             <FontAwesomeIcon icon={faArrowRight} size="xl" />
                           ) : (
