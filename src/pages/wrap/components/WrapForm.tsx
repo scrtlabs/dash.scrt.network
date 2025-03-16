@@ -10,7 +10,7 @@ import FeeGrant from 'components/FeeGrant/FeeGrant'
 import { GetBalanceError } from 'types/GetBalanceError'
 import './wrap.scss'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faArrowLeft, faArrowRight, faQuestion } from '@fortawesome/free-solid-svg-icons'
+import { faArrowLeft, faArrowRight, faInfoCircle } from '@fortawesome/free-solid-svg-icons'
 import { faCircle } from '@fortawesome/free-regular-svg-icons'
 import { Tooltip } from '@mui/material'
 
@@ -114,13 +114,28 @@ export default function WrapAllTokens() {
 
   // Update the amount value for a given token.
   const updateAmount = (tokenName: string, amount: string) => {
-    setBatchOperations((prev) => ({
-      ...prev,
-      [tokenName]: {
-        ...prev[tokenName],
-        amount
+    setBatchOperations((prev) => {
+      // If the token exists in the batch operations, just update the amount
+      if (prev[tokenName]) {
+        return {
+          ...prev,
+          [tokenName]: {
+            ...prev[tokenName],
+            amount
+          }
+        }
       }
-    }))
+      // If the token doesn't exist yet or has no direction set, create it with "wrap" as default
+      else {
+        return {
+          ...prev,
+          [tokenName]: {
+            direction: 'wrap',
+            amount
+          }
+        }
+      }
+    })
   }
 
   // When clicking a balance, set both the amount and the mode (wrap or unwrap).
@@ -414,33 +429,37 @@ export default function WrapAllTokens() {
             <tr className="border-b border-gray-300 dark:border-neutral-600 text-base">
               <th className="py-2 text-center">Token</th>
               <th className="py-2 text-center">Unwrapped Balance</th>
-              <th className="py-2 text-center">
-                Direction
-                <Tooltip
-                  title={
-                    'Wrapping (->) means converting a publicly visible token into a Secret version with confidential features. Unwrapping (<-) converts it back to the public version.'
-                  }
-                  placement="bottom"
-                  arrow
-                >
-                  <FontAwesomeIcon icon={faQuestion} className="ml-1 text-gray-400 cursor-pointer" />
-                </Tooltip>
-              </th>
+              <Tooltip
+                title={
+                  'Wrapping (->) means converting a publicly visible token into a Secret version with confidential features. Unwrapping (<-) converts it back to the public version.'
+                }
+                placement="bottom"
+                arrow
+              >
+                <th className="py-2 text-center cursor-pointer">
+                  Direction
+                  <span className="ml-1 text-neutral-600 dark:text-neutral-400 group-hover:text-black dark:group-hover:text-white transition-colors">
+                    <FontAwesomeIcon icon={faInfoCircle} />
+                  </span>
+                </th>
+              </Tooltip>
               {showAmountInput && (
                 <>
                   <th className="py-2 text-center">Amount</th>
-                  <th className="py-2 text-center">
-                    Direction
-                    <Tooltip
-                      title={
-                        'Wrapping (->) means converting a publicly visible token into a Secret version with confidential features. Unwrapping (<-) converts it back to the public version.'
-                      }
-                      placement="bottom"
-                      arrow
-                    >
-                      <FontAwesomeIcon icon={faQuestion} className="ml-1 text-gray-400 cursor-pointer" />
-                    </Tooltip>
-                  </th>
+                  <Tooltip
+                    title={
+                      'Wrapping (->) means converting a publicly visible token into a Secret version with confidential features. Unwrapping (<-) converts it back to the public version.'
+                    }
+                    placement="bottom"
+                    arrow
+                  >
+                    <th className="py-2 text-center cursor-pointer">
+                      Direction
+                      <span className="ml-1 text-neutral-600 dark:text-neutral-400 group-hover:text-black dark:group-hover:text-white transition-colors">
+                        <FontAwesomeIcon icon={faInfoCircle} />
+                      </span>
+                    </th>
+                  </Tooltip>
                 </>
               )}
               <th className="py-2 text-center">Wrapped Balance</th>
@@ -471,9 +490,21 @@ export default function WrapAllTokens() {
                       </button>
                     </td>
                     {showAmountInput && (
-                      <td className="text-center">
-                        <div className="bg-gray-300 dark:bg-neutral-600 animate-pulse rounded w-20 h-6 mx-auto" />
-                      </td>
+                      <>
+                        <td className="text-center">
+                          <div className="bg-gray-300 dark:bg-neutral-600 animate-pulse rounded w-20 h-6 mx-auto" />
+                        </td>
+                        <td className="text-center">
+                          <button
+                            disabled
+                            className="p-2 rounded border border-neutral-300 dark:border-neutral-600 bg-white dark:bg-neutral-800"
+                          >
+                            <div className="flex items-center justify-center w-6 h-6">
+                              <FontAwesomeIcon icon={faCircle} size="xl" className="text-gray-600" />
+                            </div>
+                          </button>
+                        </td>
+                      </>
                     )}
                     <td>
                       <div className="bg-gray-300 dark:bg-neutral-600 animate-pulse rounded w-20 h-6 mx-auto" />
