@@ -15,15 +15,8 @@ import { faCircle } from '@fortawesome/free-regular-svg-icons'
 import { Tooltip } from '@mui/material'
 
 export default function WrapAllTokens() {
-  const {
-    secretNetworkClient,
-    feeGrantStatus,
-    isConnected,
-    getBalance,
-    balanceMapping,
-    ibcBalanceMapping,
-    setBalanceMapping
-  } = useSecretNetworkClientStore()
+  const { secretNetworkClient, feeGrantStatus, isConnected, getBalance, balanceMapping, setBalanceMapping } =
+    useSecretNetworkClientStore()
 
   const { debugMode } = useUserPreferencesStore()
 
@@ -69,7 +62,7 @@ export default function WrapAllTokens() {
       if (hideNoViewingKey && !hasViewingKey(token)) {
         return false
       }
-      if (hideZeroBalance) {
+      if (hideZeroBalance && hasViewingKey(token)) {
         const unwrapped = getBalanceSpecial(token, false)
         const secret = getBalanceSpecial(token, true)
 
@@ -83,7 +76,7 @@ export default function WrapAllTokens() {
       }
       return true
     })
-  }, [hideZeroBalance, hideNoViewingKey, balanceMapping, ibcBalanceMapping])
+  }, [hideZeroBalance, hideNoViewingKey, balanceMapping])
 
   const tokensToDisplay = useMemo(() => {
     // Sort filtered tokens by unwrapped (public) balance descending.
@@ -380,7 +373,7 @@ export default function WrapAllTokens() {
     }
   }, [batchOperations])
 
-  const isLoading = balanceMapping == null && ibcBalanceMapping == null
+  const isLoading = balanceMapping == null
 
   return (
     <div className="max-w-5xl mx-auto px-4 py-4">
