@@ -3,6 +3,11 @@ import { Token } from 'utils/config'
 import { useSecretNetworkClientStore } from 'store/secretNetworkClient'
 import { useTokenPricesStore } from 'store/TokenPrices'
 import BalanceUI from 'components/BalanceUI'
+import CopyToClipboard from 'react-copy-to-clipboard'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faCopy } from '@fortawesome/free-solid-svg-icons'
+import { Tooltip } from '@mui/material'
+import { NotificationService } from 'services/notification.service'
 
 interface Props {
   token?: Token
@@ -32,7 +37,28 @@ const BalanceItem = (props: Props) => {
             className="w-10 h-10 mr-2 rounded-full"
           />
           <div>
-            <span className="font-semibold dark:text-white text-black">{tokenName}</span>
+            <div className="flex items-center">
+              <span className="font-semibold dark:text-white text-black">{tokenName}</span>
+              <div className="ml-2">
+                <CopyToClipboard
+                  text={props.token.address}
+                  onCopy={() => {
+                    NotificationService.notify('Contract address copied to clipboard', 'success')
+                  }}
+                >
+                  <Tooltip title="Copy to Clipboard" placement="top" arrow>
+                    <span>
+                      <button
+                        type="button"
+                        className="text-gray-500 dark:text-neutral-400 enabled:hover:text-black dark:enabled:hover:text-white enabled:active:text-neutral-500 transition-colors"
+                      >
+                        <FontAwesomeIcon icon={faCopy} size="xs" />
+                      </button>
+                    </span>
+                  </Tooltip>
+                </CopyToClipboard>
+              </div>
+            </div>
             <div className="text-xs text-neutral-500 dark:text-neutral-400">{tokenDescription}</div>
           </div>
         </div>

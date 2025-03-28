@@ -10,9 +10,10 @@ import FeeGrant from 'components/FeeGrant/FeeGrant'
 import { GetBalanceError } from 'types/GetBalanceError'
 import './wrap.scss'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faArrowLeft, faArrowRight, faInfoCircle } from '@fortawesome/free-solid-svg-icons'
+import { faArrowLeft, faArrowRight, faCopy, faInfoCircle } from '@fortawesome/free-solid-svg-icons'
 import { faCircle } from '@fortawesome/free-regular-svg-icons'
 import { Tooltip } from '@mui/material'
+import CopyToClipboard from 'react-copy-to-clipboard'
 
 export default function WrapAllTokens() {
   const { secretNetworkClient, feeGrantStatus, isConnected, getBalance, balanceMapping, setBalanceMapping } =
@@ -523,6 +524,27 @@ export default function WrapAllTokens() {
                             className="w-12 h-12 rounded-full"
                           />
                           <div className="font-semibold justify-center text-base">{token.name}</div>
+                          <div>
+                            <div className="ml">
+                              <CopyToClipboard
+                                text={token.address}
+                                onCopy={() => {
+                                  NotificationService.notify('Contract address copied to clipboard', 'success')
+                                }}
+                              >
+                                <Tooltip title="Copy to Clipboard" placement="top" arrow>
+                                  <span>
+                                    <button
+                                      type="button"
+                                      className="text-gray-500 dark:text-neutral-400 enabled:hover:text-black dark:enabled:hover:text-white enabled:active:text-neutral-500 transition-colors"
+                                    >
+                                      <FontAwesomeIcon icon={faCopy} size="xs" />
+                                    </button>
+                                  </span>
+                                </Tooltip>
+                              </CopyToClipboard>
+                            </div>
+                          </div>
                         </div>
                       </td>
 
