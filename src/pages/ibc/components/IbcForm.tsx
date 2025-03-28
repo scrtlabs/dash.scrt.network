@@ -462,13 +462,16 @@ export default function IbcForm() {
         </div>
 
         {/* Balance | [25%|50%|75%|Max] */}
-        <div className="flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 mt-3">
+        <div className="flex flex-col sm:flex-row items-center justify-between mt-2">
           <div className="flex-1 text-xs">
-            <BalanceUI
-              token={formik.values.token}
-              chain={formik.values.ibcMode === 'withdrawal' ? chains['Secret Network'] : formik.values.chain}
-              isSecretToken={formik.values.ibcMode === 'withdrawal' && formik.values.token.name !== 'SCRT'}
-            />
+            <div className="flex flex-row items-center">
+              <span className="font-bold mr-1">{'Balance:'}</span>
+              <BalanceUI
+                token={formik.values.token}
+                chain={formik.values.ibcMode === 'withdrawal' ? chains['Secret Network'] : formik.values.chain}
+                isSecretToken={formik.values.ibcMode === 'withdrawal' && formik.values.token.name !== 'SCRT'}
+              />
+            </div>
           </div>
           <div className="sm:flex-initial text-xs">
             <PercentagePicker setAmountByPercentage={setAmountByPercentage} disabled={!isConnected} />

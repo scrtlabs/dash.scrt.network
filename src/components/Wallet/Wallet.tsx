@@ -100,11 +100,11 @@ function Wallet() {
         <div className="flex flex-col gap-2 mb-2">
           <div className="flex items-center gap-2">
             <img src={'/img/assets' + scrtToken.image} alt={scrtToken.name + ' logo'} className="h-7" />
-            <BalanceUI token={scrtToken} isSecretToken={false} showBalanceLabel={false} />
+            <BalanceUI token={scrtToken} isSecretToken={false} />
           </div>
           <div className="flex items-center gap-2">
             <img src={'/img/assets' + scrtToken.image} alt={scrtToken.name + ' logo'} className="h-7" />
-            <BalanceUI token={scrtToken} isSecretToken={true} showBalanceLabel={false} />
+            <BalanceUI token={scrtToken} isSecretToken={true} />
           </div>
         </div>
         <Button className="w-full" size="small" color="secondary" onClick={handleManageViewingKeys}>

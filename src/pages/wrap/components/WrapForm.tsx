@@ -553,7 +553,6 @@ export default function WrapAllTokens() {
                         <BalanceUI
                           token={token}
                           isSecretToken={false}
-                          showBalanceLabel={false}
                           onBalanceClick={(balanceStr: string) => handleBalanceClick(token.name, balanceStr, 'wrap')}
                           showCurrencyEquiv={false}
                         />
@@ -639,7 +638,6 @@ export default function WrapAllTokens() {
                         <BalanceUI
                           token={token}
                           isSecretToken={true}
-                          showBalanceLabel={false}
                           onBalanceClick={(balanceStr: string) => handleBalanceClick(token.name, balanceStr, 'unwrap')}
                           showCurrencyEquiv={false}
                         />

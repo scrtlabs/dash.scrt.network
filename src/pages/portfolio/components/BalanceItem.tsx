@@ -83,7 +83,6 @@ const BalanceItem = (props: Props) => {
               <BalanceUI
                 token={allTokens.find((token: Token) => token.name === props.token?.name)}
                 isSecretToken={props.token?.address !== 'native'}
-                showBalanceLabel={false}
               />
             </div>
           </div>

@@ -14,7 +14,6 @@ interface IProps {
   token: Token
   chain?: Chain
   isSecretToken?: boolean
-  showBalanceLabel?: boolean
   onBalanceClick?: any
   showCurrencyEquiv?: boolean
 }
@@ -23,7 +22,6 @@ export default function BalanceUI({
   token,
   chain = chains['Secret Network'],
   isSecretToken = false,
-  showBalanceLabel = true,
   onBalanceClick = false,
   showCurrencyEquiv = true
 }: IProps) {
@@ -93,8 +91,6 @@ export default function BalanceUI({
   return (
     <>
       <div className="flex items-center justify-center gap-1.5">
-        {showBalanceLabel && <span className="font-bold">{`Balance: `}</span>}
-
         {/* Skeleton Loader */}
         {balance === null && (
           <span className="animate-pulse bg-neutral-300/40 dark:bg-neutral-600 rounded w-20 h-5 ml-2"></span>

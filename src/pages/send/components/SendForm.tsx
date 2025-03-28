@@ -13,7 +13,6 @@ import { SendService } from 'services/send.service'
 import FeeGrant from 'components/FeeGrant/FeeGrant'
 import { allTokens, debugModeOverride } from 'utils/commons'
 import BigNumber from 'bignumber.js'
-import toast from 'react-hot-toast'
 import { useSearchParams } from 'react-router-dom'
 import { Nullable } from 'types/Nullable'
 import { useUserPreferencesStore } from 'store/UserPreferences'
@@ -253,11 +252,14 @@ export default function SendForm() {
         {/* Balance | [25%|50%|75%|100%] */}
         <div className="flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 mt-2">
           <div className="flex-1 text-xs">
-            <BalanceUI
-              token={allTokens.find((token: Token) => token.name === formik.values.token.name)}
-              chain={chains['Secret Network']}
-              isSecretToken={formik.values.token.address !== 'native'}
-            />
+            <div className="flex flex-row items-center">
+              <span className="font-bold mr-1">{`Balance: `}</span>
+              <BalanceUI
+                token={allTokens.find((token: Token) => token.name === formik.values.token.name)}
+                chain={chains['Secret Network']}
+                isSecretToken={formik.values.token.address !== 'native'}
+              />
+            </div>
           </div>
           <div className="sm:flex-initial text-xs">
             <PercentagePicker setAmountByPercentage={setAmountByPercentage} disabled={!isConnected} />
