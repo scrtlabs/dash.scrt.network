@@ -37,6 +37,8 @@ function Powertools() {
   const [searchParams, setSearchParams] = useSearchParams()
   const initialMessages = parseSearchParams(searchParams)
 
+  const { isConnected } = useSecretNetworkClientStore()
+
   function parseSearchParams(params: any) {
     const messagesParam = params.get('messages')
     if (!messagesParam) {
@@ -250,14 +252,17 @@ function Powertools() {
             type="text"
             className="block w-full sm:w-72 p-2.5 text-sm rounded-lg text-neutral-800 dark:text-white bg-white dark:bg-neutral-800 placeholder-neutral-600 dark:placeholder-neutral-400 border border-neutral-300 dark:border-neutral-700 focus:outline-none focus:ring-2 focus:ring-cyan-500 dark:focus:ring-cyan-500"
             placeholder="API URL"
+            disabled={!isConnected}
           />
-          <ApiStatusIcon apiStatus={apiStatus} />
-          {apiStatus !== 'loading' && apiStatus !== 'offline' ? (
-            <div className="flex items-center gap-4">
-              <div>Chain-ID: {chainId}</div>
-              <div>Block Height: {blockHeight}</div>
-              <div>Gas Price: {gasPrice}</div>
-            </div>
+          {isConnected && apiStatus !== 'loading' && apiStatus !== 'offline' ? (
+            <>
+              <ApiStatusIcon apiStatus={apiStatus} />
+              <div className="flex items-center gap-4">
+                <div>Chain-ID: {chainId}</div>
+                <div>Block Height: {blockHeight}</div>
+                <div>Gas Price: {gasPrice}</div>
+              </div>
+            </>
           ) : null}
         </div>
 
@@ -275,13 +280,14 @@ function Powertools() {
                 prefix={prefix}
                 denom={denom}
                 onDelete={() => deleteMessage(i)}
+                disabled={!isConnected}
               />
             )
           })}
         </div>
 
         <div className="inline-flex justify-center w-full mb-8">
-          <Button type="button" color="secondary" onClick={handleAddMessage}>
+          <Button type="button" color="secondary" onClick={handleAddMessage} disabled={!isConnected}>
             <FontAwesomeIcon icon={faPlus} className="mr-2" />
             Add Message
           </Button>
@@ -293,6 +299,7 @@ function Powertools() {
             className="mb-4 mx-auto"
             color="secondary"
             onClick={() => setIsViewMessageModalOpen(true)}
+            disabled={!isConnected}
           >
             View full message
           </Button>
@@ -305,6 +312,7 @@ function Powertools() {
           }
           size="large"
           onClick={handleSendTx}
+          disabled={!isConnected}
         >
           Send Tx
         </Button>
