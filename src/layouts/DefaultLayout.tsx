@@ -91,12 +91,7 @@ export const DefaultLayout = ({ children }: any) => {
               {`Earn yield on your ETH assets while benefiting from private DeFi
               with Shade Protocol! `}
 
-              <a
-                href="https://scrt.network/evm-shade-metamask-defi"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="underline"
-              >
+              <a href="https://shadeprotocol.io/" target="_blank" rel="noopener noreferrer" className="underline">
                 Learn More ⚡️
               </a>
             </b>
