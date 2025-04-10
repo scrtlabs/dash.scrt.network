@@ -4563,65 +4563,6 @@ export const snips: Token[] = [
     ]
   },
   {
-    name: 'SIENNA',
-    description: 'Sienna Network Governance Token',
-    is_snip20: true,
-    address: 'secret1rgm2m5t530tdzyd99775n6vzumxa5luxcllml4',
-    code_hash: 'c1dc8261059fee1de9f1873cd1359ccd7a6bc5623772661fa3d55332eb652084',
-    image: '/sienna.jpg',
-    decimals: 18,
-    coingecko_id: 'sienna',
-    deposits: [
-      {
-        chain_name: 'Osmosis',
-        denom: ibcDenom(
-          [{ incomingChannelId: 'channel-476', incomingPortId: 'transfer' }],
-          'cw20:secret1rgm2m5t530tdzyd99775n6vzumxa5luxcllml4'
-        ),
-        channel_id: 'channel-476',
-        gas: 700_000
-      },
-      {
-        chain_name: 'Kujira',
-        denom: ibcDenom(
-          [{ incomingChannelId: 'channel-44', incomingPortId: 'transfer' }],
-          'cw20:secret1rgm2m5t530tdzyd99775n6vzumxa5luxcllml4'
-        ),
-        channel_id: 'channel-44',
-        gas: 300_000
-      },
-      {
-        chain_name: 'Juno',
-        denom: ibcDenom(
-          [{ incomingChannelId: 'channel-163', incomingPortId: 'transfer' }],
-          'cw20:secret1rgm2m5t530tdzyd99775n6vzumxa5luxcllml4'
-        ),
-        channel_id: 'channel-163',
-        gas: 300_000
-      }
-    ],
-    withdrawals: [
-      {
-        chain_name: 'Osmosis',
-        denom: 'secret1rgm2m5t530tdzyd99775n6vzumxa5luxcllml4',
-        channel_id: 'channel-44',
-        gas: 350_000
-      },
-      {
-        chain_name: 'Kujira',
-        denom: 'secret1rgm2m5t530tdzyd99775n6vzumxa5luxcllml4',
-        channel_id: 'channel-46',
-        gas: 350_000
-      },
-      {
-        chain_name: 'Juno',
-        denom: 'secret1rgm2m5t530tdzyd99775n6vzumxa5luxcllml4',
-        channel_id: 'channel-45',
-        gas: 350_000
-      }
-    ]
-  },
-  {
     name: 'SILK',
     description: 'Shade Protocol Privacy-Preserving Stablecoin',
     is_snip20: true,
@@ -4914,6 +4855,304 @@ export const snips: Token[] = [
       {
         chain_name: 'Persistence',
         denom: 'secret1k6u0cy4feepm6pehnz804zmwakuwdapm69tuc4',
+        channel_id: 'channel-132',
+        gas: 350_000
+      }
+    ]
+  },
+  {
+    name: 'xATOM',
+    description: 'Lent Secret ATOM from Shade',
+    is_snip20: true,
+    address: 'secret1ydpmlhqat9s2qxwc5ldyms8yp53nhqcvh6mz3c',
+    code_hash: 'f639f9203684ca31f11faf4cc0c3d0de2c84695ae0272d219ed9864861c8b617',
+    image: '/dshd.svg',
+    decimals: 6,
+    coingecko_id: 'shade-protocol',
+    deposits: [
+      {
+        chain_name: 'Archway',
+        denom: ibcDenom(
+          [{ incomingChannelId: 'channel-39', incomingPortId: 'transfer' }],
+          'cw20:secret1ydpmlhqat9s2qxwc5ldyms8yp53nhqcvh6mz3c'
+        ),
+        channel_id: 'channel-39',
+        gas: 300_000
+      },
+      {
+        chain_name: 'Composable',
+        denom: ibcDenom(
+          [{ incomingChannelId: 'channel-26', incomingPortId: 'transfer' }],
+          'cw20:secret1ydpmlhqat9s2qxwc5ldyms8yp53nhqcvh6mz3c'
+        ),
+        channel_id: 'channel-26',
+        gas: 300_000
+      },
+      {
+        chain_name: 'Juno',
+        denom: ibcDenom(
+          [{ incomingChannelId: 'channel-163', incomingPortId: 'transfer' }],
+          'cw20:secret1ydpmlhqat9s2qxwc5ldyms8yp53nhqcvh6mz3c'
+        ),
+        channel_id: 'channel-163',
+        gas: 300_000
+      },
+      {
+        chain_name: 'Kujira',
+        denom: ibcDenom(
+          [{ incomingChannelId: 'channel-44', incomingPortId: 'transfer' }],
+          'cw20:secret1ydpmlhqat9s2qxwc5ldyms8yp53nhqcvh6mz3c'
+        ),
+        channel_id: 'channel-44',
+        gas: 300_000
+      },
+      {
+        chain_name: 'Migaloo',
+        denom: ibcDenom(
+          [{ incomingChannelId: 'channel-103', incomingPortId: 'transfer' }],
+          'cw20:secret1ydpmlhqat9s2qxwc5ldyms8yp53nhqcvh6mz3c'
+        ),
+        channel_id: 'channel-103',
+        gas: 300_000
+      },
+      {
+        chain_name: 'Neutron',
+        denom: ibcDenom(
+          [{ incomingChannelId: 'channel-1950', incomingPortId: 'transfer' }],
+          'cw20:secret1ydpmlhqat9s2qxwc5ldyms8yp53nhqcvh6mz3c'
+        ),
+        channel_id: 'channel-1950',
+        gas: 300_000
+      },
+      {
+        chain_name: 'Oraichain',
+        denom: ibcDenom(
+          [{ incomingChannelId: 'channel-222', incomingPortId: 'transfer' }],
+          'cw20:secret1ydpmlhqat9s2qxwc5ldyms8yp53nhqcvh6mz3c'
+        ),
+        channel_id: 'channel-222',
+        gas: 300_000
+      },
+      {
+        chain_name: 'Osmosis',
+        denom: ibcDenom(
+          [{ incomingChannelId: 'channel-476', incomingPortId: 'transfer' }],
+          'cw20:secret1ydpmlhqat9s2qxwc5ldyms8yp53nhqcvh6mz3c'
+        ),
+        channel_id: 'channel-476',
+        gas: 300_000
+      },
+      {
+        chain_name: 'Persistence',
+        denom: ibcDenom(
+          [{ incomingChannelId: 'channel-159', incomingPortId: 'transfer' }],
+          'cw20:secret1ydpmlhqat9s2qxwc5ldyms8yp53nhqcvh6mz3c'
+        ),
+        channel_id: 'channel-159',
+        gas: 300_000
+      }
+    ],
+    withdrawals: [
+      {
+        chain_name: 'Archway',
+        denom: 'secret1ydpmlhqat9s2qxwc5ldyms8yp53nhqcvh6mz3c',
+        channel_id: 'channel-90',
+        gas: 350_000
+      },
+      {
+        chain_name: 'Composable',
+        denom: 'secret1ydpmlhqat9s2qxwc5ldyms8yp53nhqcvh6mz3c',
+        channel_id: 'channel-83',
+        gas: 350_000
+      },
+      {
+        chain_name: 'Osmosis',
+        denom: 'secret1ydpmlhqat9s2qxwc5ldyms8yp53nhqcvh6mz3c',
+        channel_id: 'channel-44',
+        gas: 350_000
+      },
+      {
+        chain_name: 'Kujira',
+        denom: 'secret1ydpmlhqat9s2qxwc5ldyms8yp53nhqcvh6mz3c',
+        channel_id: 'channel-46',
+        gas: 350_000
+      },
+      {
+        chain_name: 'Juno',
+        denom: 'secret1ydpmlhqat9s2qxwc5ldyms8yp53nhqcvh6mz3c',
+        channel_id: 'channel-45',
+        gas: 350_000
+      },
+      {
+        chain_name: 'Migaloo',
+        denom: 'secret1ydpmlhqat9s2qxwc5ldyms8yp53nhqcvh6mz3c',
+        channel_id: 'channel-129',
+        gas: 350_000
+      },
+      {
+        chain_name: 'Neutron',
+        denom: 'secret1ydpmlhqat9s2qxwc5ldyms8yp53nhqcvh6mz3c',
+        channel_id: 'channel-151',
+        gas: 350_000
+      },
+      {
+        chain_name: 'Oraichain',
+        denom: 'secret1ydpmlhqat9s2qxwc5ldyms8yp53nhqcvh6mz3c',
+        channel_id: 'channel-140',
+        gas: 350_000
+      },
+      {
+        chain_name: 'Persistence',
+        denom: 'secret1ydpmlhqat9s2qxwc5ldyms8yp53nhqcvh6mz3c',
+        channel_id: 'channel-132',
+        gas: 350_000
+      }
+    ]
+  },
+  {
+    name: 'stATOM/xstATOM LP',
+    description: 'stATOM/xstATOM LP from Shade Protocol',
+    is_snip20: true,
+    address: 'secret179m85kh3vq6cler57na6c6m5d3lwm3zj0m2v9u',
+    code_hash: 'b0c2048d28a0ca0b92274549b336703622ecb24a8c21f417e70c03aa620fcd7b',
+    image: '/dshd.svg',
+    decimals: 6,
+    coingecko_id: 'shade-protocol',
+    deposits: [
+      {
+        chain_name: 'Archway',
+        denom: ibcDenom(
+          [{ incomingChannelId: 'channel-39', incomingPortId: 'transfer' }],
+          'cw20:secret179m85kh3vq6cler57na6c6m5d3lwm3zj0m2v9u'
+        ),
+        channel_id: 'channel-39',
+        gas: 300_000
+      },
+      {
+        chain_name: 'Composable',
+        denom: ibcDenom(
+          [{ incomingChannelId: 'channel-26', incomingPortId: 'transfer' }],
+          'cw20:secret179m85kh3vq6cler57na6c6m5d3lwm3zj0m2v9u'
+        ),
+        channel_id: 'channel-26',
+        gas: 300_000
+      },
+      {
+        chain_name: 'Juno',
+        denom: ibcDenom(
+          [{ incomingChannelId: 'channel-163', incomingPortId: 'transfer' }],
+          'cw20:secret179m85kh3vq6cler57na6c6m5d3lwm3zj0m2v9u'
+        ),
+        channel_id: 'channel-163',
+        gas: 300_000
+      },
+      {
+        chain_name: 'Kujira',
+        denom: ibcDenom(
+          [{ incomingChannelId: 'channel-44', incomingPortId: 'transfer' }],
+          'cw20:secret179m85kh3vq6cler57na6c6m5d3lwm3zj0m2v9u'
+        ),
+        channel_id: 'channel-44',
+        gas: 300_000
+      },
+      {
+        chain_name: 'Migaloo',
+        denom: ibcDenom(
+          [{ incomingChannelId: 'channel-103', incomingPortId: 'transfer' }],
+          'cw20:secret179m85kh3vq6cler57na6c6m5d3lwm3zj0m2v9u'
+        ),
+        channel_id: 'channel-103',
+        gas: 300_000
+      },
+      {
+        chain_name: 'Neutron',
+        denom: ibcDenom(
+          [{ incomingChannelId: 'channel-1950', incomingPortId: 'transfer' }],
+          'cw20:secret179m85kh3vq6cler57na6c6m5d3lwm3zj0m2v9u'
+        ),
+        channel_id: 'channel-1950',
+        gas: 300_000
+      },
+      {
+        chain_name: 'Oraichain',
+        denom: ibcDenom(
+          [{ incomingChannelId: 'channel-222', incomingPortId: 'transfer' }],
+          'cw20:secret179m85kh3vq6cler57na6c6m5d3lwm3zj0m2v9u'
+        ),
+        channel_id: 'channel-222',
+        gas: 300_000
+      },
+      {
+        chain_name: 'Osmosis',
+        denom: ibcDenom(
+          [{ incomingChannelId: 'channel-476', incomingPortId: 'transfer' }],
+          'cw20:secret179m85kh3vq6cler57na6c6m5d3lwm3zj0m2v9u'
+        ),
+        channel_id: 'channel-476',
+        gas: 300_000
+      },
+      {
+        chain_name: 'Persistence',
+        denom: ibcDenom(
+          [{ incomingChannelId: 'channel-159', incomingPortId: 'transfer' }],
+          'cw20:secret179m85kh3vq6cler57na6c6m5d3lwm3zj0m2v9u'
+        ),
+        channel_id: 'channel-159',
+        gas: 300_000
+      }
+    ],
+    withdrawals: [
+      {
+        chain_name: 'Archway',
+        denom: 'secret179m85kh3vq6cler57na6c6m5d3lwm3zj0m2v9u',
+        channel_id: 'channel-90',
+        gas: 350_000
+      },
+      {
+        chain_name: 'Composable',
+        denom: 'secret179m85kh3vq6cler57na6c6m5d3lwm3zj0m2v9u',
+        channel_id: 'channel-83',
+        gas: 350_000
+      },
+      {
+        chain_name: 'Osmosis',
+        denom: 'secret179m85kh3vq6cler57na6c6m5d3lwm3zj0m2v9u',
+        channel_id: 'channel-44',
+        gas: 350_000
+      },
+      {
+        chain_name: 'Kujira',
+        denom: 'secret179m85kh3vq6cler57na6c6m5d3lwm3zj0m2v9u',
+        channel_id: 'channel-46',
+        gas: 350_000
+      },
+      {
+        chain_name: 'Juno',
+        denom: 'secret179m85kh3vq6cler57na6c6m5d3lwm3zj0m2v9u',
+        channel_id: 'channel-45',
+        gas: 350_000
+      },
+      {
+        chain_name: 'Migaloo',
+        denom: 'secret179m85kh3vq6cler57na6c6m5d3lwm3zj0m2v9u',
+        channel_id: 'channel-129',
+        gas: 350_000
+      },
+      {
+        chain_name: 'Neutron',
+        denom: 'secret179m85kh3vq6cler57na6c6m5d3lwm3zj0m2v9u',
+        channel_id: 'channel-151',
+        gas: 350_000
+      },
+      {
+        chain_name: 'Oraichain',
+        denom: 'secret179m85kh3vq6cler57na6c6m5d3lwm3zj0m2v9u',
+        channel_id: 'channel-140',
+        gas: 350_000
+      },
+      {
+        chain_name: 'Persistence',
+        denom: 'secret179m85kh3vq6cler57na6c6m5d3lwm3zj0m2v9u',
         channel_id: 'channel-132',
         gas: 350_000
       }
