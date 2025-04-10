@@ -6437,4 +6437,3 @@ export const ICSTokens: Token[] = [
 
 export const SECRET_CHAIN_ID = chains['Secret Network'].chain_id
 export const SECRET_LCD = chains['Secret Network'].lcd
-console.log(snips)
