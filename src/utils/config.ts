@@ -4866,9 +4866,9 @@ export const snips: Token[] = [
     is_snip20: true,
     address: 'secret1ydpmlhqat9s2qxwc5ldyms8yp53nhqcvh6mz3c',
     code_hash: 'f639f9203684ca31f11faf4cc0c3d0de2c84695ae0272d219ed9864861c8b617',
-    image: '/dshd.svg',
+    image: '/atom.svg',
     decimals: 6,
-    coingecko_id: 'shade-protocol',
+    coingecko_id: 'cosmos',
     deposits: [
       {
         chain_name: 'Archway',
@@ -5017,7 +5017,7 @@ export const snips: Token[] = [
     code_hash: 'b0c2048d28a0ca0b92274549b336703622ecb24a8c21f417e70c03aa620fcd7b',
     image: '/dshd.svg',
     decimals: 6,
-    coingecko_id: 'shade-protocol',
+    coingecko_id: '',
     deposits: [
       {
         chain_name: 'Archway',
@@ -6437,3 +6437,4 @@ export const ICSTokens: Token[] = [
 
 export const SECRET_CHAIN_ID = chains['Secret Network'].chain_id
 export const SECRET_LCD = chains['Secret Network'].lcd
+console.log(snips)
