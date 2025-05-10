@@ -199,6 +199,20 @@ export const chains: { [chain_name: string]: Chain } = {
     chain_image: '/composable.svg',
     explorer_account: 'https://explorer.nodestake.top/composable/account/'
   },
+  Coreum: {
+    chain_name: 'Coreum',
+    deposit_channel_id: 'channel-XX',
+    deposit_gas: 300_000,
+    deposit_gas_denom: 'ucore',
+    withdraw_channel_id: 'channel-XX',
+    withdraw_gas: 150_000,
+    chain_id: 'coreum-mainnet-1',
+    bech32_prefix: 'core',
+    lcd: 'https://rest-coreum.ecostake.com',
+    rpc: 'https://rpc-coreum.ecostake.com',
+    chain_image: '/coreum.svg',
+    explorer_account: 'https://www.mintscan.io/coreum/account/'
+  },
   'Cosmos Hub': {
     chain_name: 'Cosmos Hub',
     deposit_channel_id: 'channel-235',
