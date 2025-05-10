@@ -1668,6 +1668,35 @@ export const tokens: Token[] = [
     ]
   },
   {
+    name: 'Core',
+    description: 'Coreum Governance Token',
+    address: 'XX',
+    code_hash: 'XX',
+    image: '/coreum.svg',
+    decimals: 6,
+    coingecko_id: 'coreum',
+    deposits: [
+      {
+        chain_name: 'Coreum',
+        denom: ''
+      }
+    ],
+    withdrawals: [
+      {
+        chain_name: 'Coreum',
+        denom: ibcDenom(
+          [
+            {
+              incomingChannelId: chains['Coreum'].withdraw_channel_id,
+              incomingPortId: 'transfer'
+            }
+          ],
+          'factory/neutron1ug740qrkquxzrk2hh29qrlx3sktkfml3je7juusc2te7xmvsscns0n2wry/wstETH'
+        )
+      }
+    ]
+  },
+  {
     name: 'dATOM',
     description: 'Drop ATOM',
     address: 'secret1x3cxgrwymk7yyelf2782r8ay020xyl96zq3rhh',
@@ -3541,6 +3570,35 @@ export const tokens: Token[] = [
             }
           ],
           'uxprt'
+        )
+      }
+    ]
+  },
+  {
+    name: 'XRP',
+    description: 'Ripple XRP via Coreum',
+    address: 'XX',
+    code_hash: 'XX',
+    image: '/xrp.svg',
+    decimals: 6,
+    coingecko_id: 'ripple',
+    deposits: [
+      {
+        chain_name: 'Coreum',
+        denom: ''
+      }
+    ],
+    withdrawals: [
+      {
+        chain_name: 'Coreum',
+        denom: ibcDenom(
+          [
+            {
+              incomingChannelId: chains['Coreum'].withdraw_channel_id,
+              incomingPortId: 'transfer'
+            }
+          ],
+          'factory/neutron1ug740qrkquxzrk2hh29qrlx3sktkfml3je7juusc2te7xmvsscns0n2wry/wstETH'
         )
       }
     ]
