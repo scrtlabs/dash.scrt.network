@@ -201,10 +201,10 @@ export const chains: { [chain_name: string]: Chain } = {
   },
   Coreum: {
     chain_name: 'Coreum',
-    deposit_channel_id: 'channel-XX',
+    deposit_channel_id: 'channel-25',
     deposit_gas: 300_000,
     deposit_gas_denom: 'ucore',
-    withdraw_channel_id: 'channel-XX',
+    withdraw_channel_id: 'channel-101',
     withdraw_gas: 150_000,
     chain_id: 'coreum-mainnet-1',
     bech32_prefix: 'core',
@@ -1668,17 +1668,17 @@ export const tokens: Token[] = [
     ]
   },
   {
-    name: 'Core',
+    name: 'CORE',
     description: 'Coreum Governance Token',
-    address: 'XX',
-    code_hash: 'XX',
+    address: 'secret1e8p373krsxva4msh0gdh94lg3rhn7npgmd5g8v',
+    code_hash: 'de4843c9f6849da95312977aea375bbb37c2697a7666737ecc131de43ab9ee29',
     image: '/coreum.svg',
     decimals: 6,
     coingecko_id: 'coreum',
     deposits: [
       {
         chain_name: 'Coreum',
-        denom: ''
+        denom: 'ucore'
       }
     ],
     withdrawals: [
@@ -1691,7 +1691,7 @@ export const tokens: Token[] = [
               incomingPortId: 'transfer'
             }
           ],
-          'factory/neutron1ug740qrkquxzrk2hh29qrlx3sktkfml3je7juusc2te7xmvsscns0n2wry/wstETH'
+          'ucore'
         )
       }
     ]
@@ -3578,14 +3578,14 @@ export const tokens: Token[] = [
     name: 'XRP',
     description: 'Ripple XRP via Coreum',
     address: 'XX',
-    code_hash: 'XX',
+    code_hash: 'de4843c9f6849da95312977aea375bbb37c2697a7666737ecc131de43ab9ee29',
     image: '/xrp.svg',
     decimals: 6,
     coingecko_id: 'ripple',
     deposits: [
       {
         chain_name: 'Coreum',
-        denom: ''
+        denom: 'drop-core1zhs909jp9yktml6qqx9f0ptcq2xnhhj99cja03j3lfcsp2pgm86studdrz'
       }
     ],
     withdrawals: [
@@ -3598,7 +3598,7 @@ export const tokens: Token[] = [
               incomingPortId: 'transfer'
             }
           ],
-          'factory/neutron1ug740qrkquxzrk2hh29qrlx3sktkfml3je7juusc2te7xmvsscns0n2wry/wstETH'
+          'drop-core1zhs909jp9yktml6qqx9f0ptcq2xnhhj99cja03j3lfcsp2pgm86studdrz'
         )
       }
     ]
