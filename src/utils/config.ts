@@ -3577,7 +3577,7 @@ export const tokens: Token[] = [
   {
     name: 'XRP',
     description: 'Ripple XRP via Coreum',
-    address: 'XX',
+    address: 'secret1gqn3k7792h9vqpydvq6hnh3wr9lqg3s9j6hzy6',
     code_hash: 'de4843c9f6849da95312977aea375bbb37c2697a7666737ecc131de43ab9ee29',
     image: '/xrp.svg',
     decimals: 6,
