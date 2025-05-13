@@ -199,6 +199,20 @@ export const chains: { [chain_name: string]: Chain } = {
     chain_image: '/composable.svg',
     explorer_account: 'https://explorer.nodestake.top/composable/account/'
   },
+  Coreum: {
+    chain_name: 'Coreum',
+    deposit_channel_id: 'channel-25',
+    deposit_gas: 300_000,
+    deposit_gas_denom: 'ucore',
+    withdraw_channel_id: 'channel-101',
+    withdraw_gas: 150_000,
+    chain_id: 'coreum-mainnet-1',
+    bech32_prefix: 'core',
+    lcd: 'https://rest-coreum.ecostake.com',
+    rpc: 'https://rpc-coreum.ecostake.com',
+    chain_image: '/coreum.svg',
+    explorer_account: 'https://www.mintscan.io/coreum/account/'
+  },
   'Cosmos Hub': {
     chain_name: 'Cosmos Hub',
     deposit_channel_id: 'channel-235',
@@ -1649,6 +1663,35 @@ export const tokens: Token[] = [
             }
           ],
           'ucmst'
+        )
+      }
+    ]
+  },
+  {
+    name: 'CORE',
+    description: 'Coreum Governance Token',
+    address: 'secret1e8p373krsxva4msh0gdh94lg3rhn7npgmd5g8v',
+    code_hash: 'de4843c9f6849da95312977aea375bbb37c2697a7666737ecc131de43ab9ee29',
+    image: '/coreum.svg',
+    decimals: 6,
+    coingecko_id: 'coreum',
+    deposits: [
+      {
+        chain_name: 'Coreum',
+        denom: 'ucore'
+      }
+    ],
+    withdrawals: [
+      {
+        chain_name: 'Coreum',
+        denom: ibcDenom(
+          [
+            {
+              incomingChannelId: chains['Coreum'].withdraw_channel_id,
+              incomingPortId: 'transfer'
+            }
+          ],
+          'ucore'
         )
       }
     ]
@@ -3527,6 +3570,35 @@ export const tokens: Token[] = [
             }
           ],
           'uxprt'
+        )
+      }
+    ]
+  },
+  {
+    name: 'XRP',
+    description: 'Ripple XRP via Coreum',
+    address: 'secret1gqn3k7792h9vqpydvq6hnh3wr9lqg3s9j6hzy6',
+    code_hash: 'de4843c9f6849da95312977aea375bbb37c2697a7666737ecc131de43ab9ee29',
+    image: '/xrp.svg',
+    decimals: 6,
+    coingecko_id: 'ripple',
+    deposits: [
+      {
+        chain_name: 'Coreum',
+        denom: 'drop-core1zhs909jp9yktml6qqx9f0ptcq2xnhhj99cja03j3lfcsp2pgm86studdrz'
+      }
+    ],
+    withdrawals: [
+      {
+        chain_name: 'Coreum',
+        denom: ibcDenom(
+          [
+            {
+              incomingChannelId: chains['Coreum'].withdraw_channel_id,
+              incomingPortId: 'transfer'
+            }
+          ],
+          'drop-core1zhs909jp9yktml6qqx9f0ptcq2xnhhj99cja03j3lfcsp2pgm86studdrz'
         )
       }
     ]
