@@ -1,26 +1,26 @@
-import { useEffect, useState } from "react";
-import Header from "components/Header";
-import { ApiStatus } from "types/ApiStatus";
-import ApiStatusIcon from "./components/ApiStatusIcon";
-import Message from "./components/Message";
-import Button from "components/UI/Button/Button";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
-import { BroadcastMode, SecretNetworkClient } from "secretjs";
-import { MessageDefinitions, balanceFormat } from "./components/Messages";
-import { useSecretNetworkClientStore } from "store/secretNetworkClient";
-import { Nullable } from "types/Nullable";
-import { WalletService } from "services/wallet.service";
-import { SECRET_LCD } from "utils/config";
-import { useSearchParams } from "react-router-dom";
-import { NotificationService } from "services/notification.service";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Header from "components/Header";
+import Button from "components/UI/Button/Button";
 import Modal from "components/UI/Modal/Modal";
+import { useEffect, useState } from "react";
+import { useSearchParams } from "react-router-dom";
+import { BroadcastMode, SecretNetworkClient } from "secretjs";
+import { NotificationService } from "services/notification.service";
+import { WalletService } from "services/wallet.service";
+import { useSecretNetworkClientStore } from "stores/secretNetworkClient.store";
+import { ApiStatus } from "types/ApiStatus";
+import { Nullable } from "types/Nullable";
 import {
   powertoolsJsonLdSchema,
   powertoolsPageDescription,
   powertoolsPageTitle,
   queryTxResult,
 } from "utils/commons";
+import { SECRET_LCD } from "utils/config";
+import ApiStatusIcon from "./components/ApiStatusIcon";
+import Message from "./components/Message";
+import { balanceFormat, MessageDefinitions } from "./components/Messages";
 
 export type TMessage = {
   type: string;

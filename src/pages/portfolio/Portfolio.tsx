@@ -1,22 +1,22 @@
-import { useEffect, useState, useRef } from "react";
-import { Token } from "utils/config";
-import {
-  portfolioPageTitle,
-  portfolioPageDescription,
-  portfolioJsonLdSchema,
-  isMac,
-  allTokens,
-} from "utils/commons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
-import BalanceItem from "./components/BalanceItem";
-import Title from "components/Title";
-import AddressQR from "./components/AddressQR";
-import { SendService } from "services/send.service";
-import { useSecretNetworkClientStore } from "store/secretNetworkClient";
-import BalanceChart from "./components/BalanceChart";
-import { useTokenPricesStore } from "store/TokenPrices";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import BigNumber from "bignumber.js";
+import Title from "components/Title";
+import { useEffect, useRef, useState } from "react";
+import { SendService } from "services/send.service";
+import { useSecretNetworkClientStore } from "stores/secretNetworkClient.store";
+import { useTokenPricesStore } from "stores/TokenPrices.store";
+import {
+  allTokens,
+  isMac,
+  portfolioJsonLdSchema,
+  portfolioPageDescription,
+  portfolioPageTitle,
+} from "utils/commons";
+import { Token } from "utils/config";
+import AddressQR from "./components/AddressQR";
+import BalanceChart from "./components/BalanceChart";
+import BalanceItem from "./components/BalanceItem";
 
 export default function Portfolio() {
   //Search Query

@@ -1,22 +1,23 @@
-import { useEffect, useState, useContext } from "react";
+import { APIContext } from "context/APIContext";
+import { useContext, useEffect, useState } from "react";
 import { SecretNetworkClient } from "secretjs";
+import { useUserPreferencesStore } from "stores/UserPreferences.store";
+import {
+  currencySymbols,
+  dashboardJsonLdSchema,
+  dashboardPageDescription,
+  dashboardPageTitle,
+  formatNumber,
+  trackMixPanelEvent,
+} from "utils/commons";
+import { SECRET_CHAIN_ID, SECRET_LCD } from "utils/config";
 import CurrentPrice from "./components/CurrentPrice";
+import HexTile from "./components/HexTile";
 import MiniTile from "./components/MiniTile";
 import PriceVolumeTVL from "./components/PriceVolTVLChart/PriceVolumeTVL";
-import HexTile from "./components/HexTile";
 import QuadTile from "./components/QuadTile";
 import SocialMedia from "./components/SocialMedia";
-import { SECRET_LCD, SECRET_CHAIN_ID } from "utils/config";
 import StakingChart from "./components/StakingChart";
-import { currencySymbols, formatNumber } from "utils/commons";
-import { APIContext } from "context/APIContext";
-import {
-  trackMixPanelEvent,
-  dashboardPageTitle,
-  dashboardPageDescription,
-  dashboardJsonLdSchema,
-} from "utils/commons";
-import { useUserPreferencesStore } from "store/UserPreferences";
 
 function Dashboard() {
   const {

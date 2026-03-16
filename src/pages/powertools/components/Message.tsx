@@ -1,17 +1,17 @@
-import { useEffect, useState } from "react";
-import Select, { components } from "react-select";
-import { Nullable } from "types/Nullable";
-import { MessageDefinitions } from "./Messages";
-import { SecretNetworkClient } from "secretjs";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faInfoCircle,
   faSearch,
   faTrash,
 } from "@fortawesome/free-solid-svg-icons";
-import Tooltip from "@mui/material/Tooltip";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { CircularProgress } from "@mui/material";
-import { useUserPreferencesStore } from "store/UserPreferences";
+import Tooltip from "@mui/material/Tooltip";
+import { useEffect, useState } from "react";
+import Select, { components } from "react-select";
+import { SecretNetworkClient } from "secretjs";
+import { useUserPreferencesStore } from "stores/UserPreferences.store";
+import { Nullable } from "types/Nullable";
+import { MessageDefinitions } from "./Messages";
 
 interface Props {
   number: number;

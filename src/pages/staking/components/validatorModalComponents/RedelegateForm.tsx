@@ -1,27 +1,26 @@
+import { faInfoCircle, faSearch } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Tooltip from "@mui/material/Tooltip";
 import BigNumber from "bignumber.js";
-import { useContext, useEffect, useState } from "react";
+import ActionableStatus from "components/FeeGrant/components/ActionableStatus";
+import Button from "components/UI/Button/Button";
 import { APIContext } from "context/APIContext";
-import { faSearch } from "@fortawesome/free-solid-svg-icons";
+import { StakingContext } from "pages/staking/Staking";
+import { useContext, useEffect, useState } from "react";
+import toast from "react-hot-toast";
+import Select, { components } from "react-select";
+import { BroadcastMode } from "secretjs";
+import { NotificationService } from "services/notification.service";
+import { useSecretNetworkClientStore } from "stores/secretNetworkClient.store";
+import { useUserPreferencesStore } from "stores/UserPreferences.store";
+import { Validator } from "types/Validator";
 import {
   faucetAddress,
   queryTxResult,
   shuffleArray,
   toCurrencyString,
 } from "utils/commons";
-import { StakingContext } from "pages/staking/Staking";
-import Select, { components } from "react-select";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useSecretNetworkClientStore } from "store/secretNetworkClient";
 import { scrtToken } from "utils/tokens";
-import Button from "components/UI/Button/Button";
-import toast from "react-hot-toast";
-import { Validator } from "types/Validator";
-import { useUserPreferencesStore } from "store/UserPreferences";
-import { faInfoCircle } from "@fortawesome/free-solid-svg-icons";
-import Tooltip from "@mui/material/Tooltip";
-import ActionableStatus from "components/FeeGrant/components/ActionableStatus";
-import { NotificationService } from "services/notification.service";
-import { BroadcastMode } from "secretjs";
 
 export default function RedelegateForm() {
   const {

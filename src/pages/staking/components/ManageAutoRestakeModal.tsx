@@ -1,15 +1,15 @@
-import { useContext } from "react";
-import { BroadcastMode, MsgSetAutoRestake } from "secretjs";
-import { StakingContext } from "pages/staking/Staking";
-import RestakeValidatorItem from "./RestakeValidatorItem";
-import { queryTxResult, restakeThreshold } from "utils/commons";
-import { useSecretNetworkClientStore } from "store/secretNetworkClient";
-import Modal from "components/UI/Modal/Modal";
 import Button from "components/UI/Button/Button";
+import Modal from "components/UI/Modal/Modal";
+import { StakingContext } from "pages/staking/Staking";
+import { useContext } from "react";
 import toast from "react-hot-toast";
+import { BroadcastMode, MsgSetAutoRestake } from "secretjs";
+import { NotificationService } from "services/notification.service";
+import { useSecretNetworkClientStore } from "stores/secretNetworkClient.store";
 import { Validator } from "types/Validator";
 import { ValidatorRestakeStatus } from "types/ValidatorRestakeStatus";
-import { NotificationService } from "services/notification.service";
+import { queryTxResult, restakeThreshold } from "utils/commons";
+import RestakeValidatorItem from "./RestakeValidatorItem";
 
 interface Props {
   open: boolean;

@@ -1,9 +1,9 @@
 import BigNumber from "bignumber.js";
 import { APIContext } from "context/APIContext";
 import { useContext, useEffect, useState } from "react";
-import { useTokenPricesStore } from "store/TokenPrices";
-import { useUserPreferencesStore } from "store/UserPreferences";
-import { useSecretNetworkClientStore } from "store/secretNetworkClient";
+import { useSecretNetworkClientStore } from "stores/secretNetworkClient.store";
+import { useTokenPricesStore } from "stores/TokenPrices.store";
+import { useUserPreferencesStore } from "stores/UserPreferences.store";
 import { toCurrencyString } from "utils/commons";
 import { tokens } from "utils/config";
 import { scrtToken } from "utils/tokens";

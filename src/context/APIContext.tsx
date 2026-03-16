@@ -1,7 +1,7 @@
 import BigNumber from "bignumber.js";
 import { createContext, useEffect, useState } from "react";
 import { SecretNetworkClient } from "secretjs";
-import { useUserPreferencesStore } from "store/UserPreferences";
+import { useUserPreferencesStore } from "stores/UserPreferences.store";
 import { Currency } from "types/Currency";
 import { Nullable } from "types/Nullable";
 import {
@@ -10,7 +10,7 @@ import {
   coinGeckoCurrencyMap,
   sortDAppsArray,
 } from "utils/commons";
-import { SECRET_LCD, SECRET_CHAIN_ID } from "utils/config";
+import { SECRET_CHAIN_ID, SECRET_LCD } from "utils/config";
 
 const APIContext = createContext(null);
 

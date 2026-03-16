@@ -1,16 +1,16 @@
-import { useContext, useEffect, useState } from "react";
-import { Chain, ICSTokens, Token } from "utils/config";
-import Tooltip from "@mui/material/Tooltip";
 import { faInfoCircle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Tooltip from "@mui/material/Tooltip";
 import BigNumber from "bignumber.js";
-import { IbcMode } from "types/IbcMode";
-import { IbcService } from "services/ibc.service";
-import { useTokenPricesStore } from "store/TokenPrices";
 import { APIContext } from "context/APIContext";
-import { useUserPreferencesStore } from "store/UserPreferences";
-import { toCurrencyString } from "utils/commons";
+import { useContext, useEffect, useState } from "react";
 import { Coin } from "secretjs/src/protobuf/cosmos/base/v1beta1/coin";
+import { IbcService } from "services/ibc.service";
+import { useTokenPricesStore } from "stores/TokenPrices.store";
+import { useUserPreferencesStore } from "stores/UserPreferences.store";
+import { IbcMode } from "types/IbcMode";
+import { toCurrencyString } from "utils/commons";
+import { Chain, ICSTokens, Token } from "utils/config";
 
 interface IProps {
   chain: Chain;

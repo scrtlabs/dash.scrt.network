@@ -1,14 +1,14 @@
-import BigNumber from "bignumber.js";
-import { useContext, useEffect, useState } from "react";
-import { Chain, Token, chains, tokens } from "utils/config";
-import { useTokenPricesStore } from "store/TokenPrices";
-import { useSecretNetworkClientStore } from "store/secretNetworkClient";
 import { faKey } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { toCurrencyString } from "utils/commons";
+import BigNumber from "bignumber.js";
 import { APIContext } from "context/APIContext";
-import { useUserPreferencesStore } from "store/UserPreferences";
+import { useContext, useEffect, useState } from "react";
+import { useSecretNetworkClientStore } from "stores/secretNetworkClient.store";
+import { useTokenPricesStore } from "stores/TokenPrices.store";
+import { useUserPreferencesStore } from "stores/UserPreferences.store";
 import { GetBalanceError } from "types/GetBalanceError";
+import { toCurrencyString } from "utils/commons";
+import { Chain, chains, Token, tokens } from "utils/config";
 
 interface IProps {
   token: Token;

@@ -1,6 +1,13 @@
+import { BatchQueryParsedResponse, batchQuery } from "@shadeprotocol/shadejs";
+import BigNumber from "bignumber.js";
 import { SecretNetworkClient, toBase64, toUtf8 } from "secretjs";
+import { QueryAllBalancesResponse } from "secretjs/dist/grpc_gateway/cosmos/bank/v1beta1/query.pb";
+import { useUserPreferencesStore } from "stores/UserPreferences.store";
 import { FeeGrantStatus } from "types/FeeGrantStatus";
+import { GetBalanceError } from "types/GetBalanceError";
 import { Nullable } from "types/Nullable";
+import { TokenBalances } from "types/TokenBalances";
+import { WalletAPIType } from "types/WalletAPIType";
 import {
   allTokens,
   batchQueryCodeHash,
@@ -10,14 +17,7 @@ import {
   sleep,
 } from "utils/commons";
 import { Chain, SECRET_CHAIN_ID, SECRET_LCD, Token } from "utils/config";
-import { WalletAPIType } from "types/WalletAPIType";
-import BigNumber from "bignumber.js";
-import { QueryAllBalancesResponse } from "secretjs/dist/grpc_gateway/cosmos/bank/v1beta1/query.pb";
 import { IbcService } from "./ibc.service";
-import { BatchQueryParsedResponse, batchQuery } from "@shadeprotocol/shadejs";
-import { useUserPreferencesStore } from "store/UserPreferences";
-import { GetBalanceError } from "types/GetBalanceError";
-import { TokenBalances } from "types/TokenBalances";
 import { NotificationService } from "./notification.service";
 
 const connectKeplr = async (lcd: string, chainID: string) => {

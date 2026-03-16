@@ -1,5 +1,15 @@
-import { useEffect, useState } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  autoUpdate,
+  flip,
+  offset,
+  safePolygon,
+  shift,
+  useDismiss,
+  useFloating,
+  useHover,
+  useInteractions,
+  useRole,
+} from "@floating-ui/react";
 import {
   faArrowRightFromBracket,
   faCopy,
@@ -7,28 +17,18 @@ import {
   faMobileScreen,
   faWallet,
 } from "@fortawesome/free-solid-svg-icons";
-import { trackMixPanelEvent } from "utils/commons";
-import { useSecretNetworkClientStore } from "store/secretNetworkClient";
-import { scrtToken } from "utils/tokens";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import BalanceUI from "components/BalanceUI";
+import Badge from "components/UI/Badge/Badge";
 import { ConnectWalletModal } from "context/ConnectWalletModal";
+import { useEffect, useState } from "react";
+import { NotificationService } from "services/notification.service";
+import { useSecretNetworkClientStore } from "stores/secretNetworkClient.store";
+import { trackMixPanelEvent } from "utils/commons";
+import { scrtToken } from "utils/tokens";
+import Button from "../UI/Button/Button";
 import Modal from "../UI/Modal/Modal";
 import { ManageBalances } from "./ManageBalances/ManageBalances";
-import Button from "../UI/Button/Button";
-import BalanceUI from "components/BalanceUI";
-import { NotificationService } from "services/notification.service";
-import {
-  autoUpdate,
-  useDismiss,
-  useFloating,
-  useInteractions,
-  useRole,
-  offset,
-  flip,
-  shift,
-  useHover,
-  safePolygon,
-} from "@floating-ui/react";
-import Badge from "components/UI/Badge/Badge";
 import StatusDot from "./StatusDot";
 
 function Wallet() {

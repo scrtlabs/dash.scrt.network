@@ -3,14 +3,14 @@ import {
   faShuffle,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { pageTitle } from "utils/commons";
-import { useState, useEffect } from "react";
-import queryString from "query-string";
-import Select from "react-select";
-import mixpanel from "mixpanel-browser";
-import { Nullable } from "types/Nullable";
-import { useSecretNetworkClientStore } from "store/secretNetworkClient";
 import Title from "components/Title";
+import mixpanel from "mixpanel-browser";
+import queryString from "query-string";
+import { useEffect, useState } from "react";
+import Select from "react-select";
+import { useSecretNetworkClientStore } from "stores/secretNetworkClient.store";
+import { Nullable } from "types/Nullable";
+import { pageTitle } from "utils/commons";
 
 function GetSCRT() {
   const { secretNetworkClient } = useSecretNetworkClientStore();

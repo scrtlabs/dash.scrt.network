@@ -6,7 +6,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect } from "react";
-import { useSecretNetworkClientStore } from "store/secretNetworkClient";
+import { useSecretNetworkClientStore } from "stores/secretNetworkClient.store";
 
 interface IConnectWalletModalProps {
   open: boolean;

@@ -1,8 +1,8 @@
 import { faArrowUpRightFromSquare } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { toCurrencyString, trackMixPanelEvent } from "utils/commons";
 import { Link } from "react-router-dom";
-import { useUserPreferencesStore } from "store/UserPreferences";
+import { useUserPreferencesStore } from "stores/UserPreferences.store";
+import { toCurrencyString, trackMixPanelEvent } from "utils/commons";
 
 interface Props {
   price?: number;

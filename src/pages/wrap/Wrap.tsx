@@ -1,16 +1,16 @@
-import { useEffect, useState, useContext, createContext } from "react";
-import { tokens } from "utils/config";
-import {
-  wrapPageTitle,
-  wrapPageDescription,
-  wrapJsonLdSchema,
-} from "utils/commons";
-import FeeGrantInfoModal from "./components/FeeGrantInfoModal";
-import mixpanel from "mixpanel-browser";
-import { useSecretNetworkClientStore } from "store/secretNetworkClient";
 import Title from "components/Title";
-import WrapForm from "./components/WrapForm";
+import mixpanel from "mixpanel-browser";
+import { createContext, useContext, useEffect, useState } from "react";
+import { useSecretNetworkClientStore } from "stores/secretNetworkClient.store";
+import {
+  wrapJsonLdSchema,
+  wrapPageDescription,
+  wrapPageTitle,
+} from "utils/commons";
+import { tokens } from "utils/config";
+import FeeGrantInfoModal from "./components/FeeGrantInfoModal";
 import SCRTUnwrapWarning from "./components/SCRTUnwrapWarning";
+import WrapForm from "./components/WrapForm";
 
 export function Wrap() {
   const { getBalance } = useSecretNetworkClientStore();

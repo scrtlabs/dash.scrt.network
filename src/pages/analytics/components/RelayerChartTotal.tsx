@@ -1,20 +1,20 @@
-import { useContext, useMemo } from "react";
-import { formatNumber } from "utils/commons";
+import { faInfoCircle } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Tooltip from "@mui/material/Tooltip";
 import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
+  BarController,
   BarElement,
+  CategoryScale,
+  Chart as ChartJS,
   Tooltip as ChartTooltip,
   Legend,
-  BarController,
+  LinearScale,
 } from "chart.js";
-import { Bar } from "react-chartjs-2";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faInfoCircle } from "@fortawesome/free-solid-svg-icons";
-import { useUserPreferencesStore } from "store/UserPreferences";
 import { APIContext } from "context/APIContext";
+import { useContext, useMemo } from "react";
+import { Bar } from "react-chartjs-2";
+import { useUserPreferencesStore } from "stores/UserPreferences.store";
+import { formatNumber } from "utils/commons";
 
 ChartJS.register(
   CategoryScale,

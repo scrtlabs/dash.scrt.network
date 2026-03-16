@@ -1,26 +1,25 @@
-import { useContext, useEffect, useRef, useState } from "react";
-import { getBackgroundColors, toCurrencyString } from "utils/commons";
-
+import BigNumber from "bignumber.js";
 import {
-  Chart as ChartJS,
+  ArcElement,
   CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Title,
+  Chart as ChartJS,
   Tooltip as ChartTooltip,
   Legend,
-  ArcElement,
+  LinearScale,
+  LineElement,
   Plugin,
+  PointElement,
+  Title,
 } from "chart.js";
-import { Doughnut } from "react-chartjs-2";
-import { useUserPreferencesStore } from "store/UserPreferences";
-import { useSecretNetworkClientStore } from "store/secretNetworkClient";
-import BigNumber from "bignumber.js";
-import { useTokenPricesStore } from "store/TokenPrices";
-import { Token } from "utils/config";
 import { APIContext } from "context/APIContext";
+import { useContext, useEffect, useRef, useState } from "react";
+import { Doughnut } from "react-chartjs-2";
+import { useSecretNetworkClientStore } from "stores/secretNetworkClient.store";
+import { useTokenPricesStore } from "stores/TokenPrices.store";
+import { useUserPreferencesStore } from "stores/UserPreferences.store";
 import { TokenBalances } from "types/TokenBalances";
+import { getBackgroundColors, toCurrencyString } from "utils/commons";
+import { Token } from "utils/config";
 
 ChartJS.register(
   CategoryScale,

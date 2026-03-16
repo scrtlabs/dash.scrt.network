@@ -3,17 +3,17 @@ import {
   faShuffle,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Title from "components/Title";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { useUserPreferencesStore } from "stores/UserPreferences.store";
 import {
   bridgeJsonLdSchema,
   bridgePageDescription,
   bridgePageTitle,
+  trackMixPanelEvent,
 } from "utils/commons";
-import { useEffect, useState } from "react";
-import { trackMixPanelEvent } from "utils/commons";
 import SquidModal from "./SquidModal";
-import Title from "components/Title";
-import { useUserPreferencesStore } from "store/UserPreferences";
 import SwingModal from "./SwingModal";
 
 function Bridge() {

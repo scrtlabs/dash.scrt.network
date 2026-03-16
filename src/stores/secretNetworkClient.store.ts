@@ -1,15 +1,15 @@
-import { SecretNetworkClient } from "secretjs";
-import { FeeGrantStatus } from "types/FeeGrantStatus";
-import { Nullable } from "types/Nullable";
-import { allTokens, sleep } from "utils/commons";
-import { Chain, Token } from "utils/config";
-import { create } from "zustand";
-import { WalletAPIType } from "types/WalletAPIType";
-import BigNumber from "bignumber.js";
-import { WalletService } from "services/wallet.service";
+import type BigNumber from "bignumber.js";
+import type { SecretNetworkClient } from "secretjs";
 import { IbcService } from "services/ibc.service";
-import { GetBalanceError } from "types/GetBalanceError";
-import { TokenBalances } from "types/TokenBalances";
+import { WalletService } from "services/wallet.service";
+import type { FeeGrantStatus } from "types/FeeGrantStatus";
+import type { GetBalanceError } from "types/GetBalanceError";
+import type { Nullable } from "types/Nullable";
+import type { TokenBalances } from "types/TokenBalances";
+import type { WalletAPIType } from "types/WalletAPIType";
+import { allTokens, sleep } from "utils/commons";
+import type { Chain, Token } from "utils/config";
+import { create } from "zustand";
 
 export interface SecretNetworkClientState {
   isInitialized: boolean;
@@ -18,7 +18,7 @@ export interface SecretNetworkClientState {
   walletAddress: Nullable<string>;
   setWalletAddress: (walletAddress: string) => void;
   secretNetworkClient: Nullable<SecretNetworkClient>;
-  setSecretNetworkClient: (secretjs: Object) => void;
+  setSecretNetworkClient: (secretjs: any) => void;
   walletAPIType: Nullable<WalletAPIType>;
   setWalletAPIType: (walletAPIType: WalletAPIType) => void;
   connectWallet: (walletAPIType?: WalletAPIType) => void;
@@ -31,9 +31,9 @@ export interface SecretNetworkClientState {
     token: Token,
     secretToken?: boolean,
   ) => Nullable<BigNumber | GetBalanceError>;
-  balanceMapping: Map<Token, TokenBalances>;
+  balanceMapping: Map<Token, TokenBalances> | null;
   setBalanceMapping: () => void;
-  ibcBalanceMapping: Map<Chain, Map<Token, TokenBalances>>;
+  ibcBalanceMapping: Map<Chain, Map<Token, TokenBalances>> | null;
   setIbcBalanceMapping: (chain: Chain) => void;
   getIbcBalance: (
     chain: Chain,
@@ -203,10 +203,10 @@ export const useSecretNetworkClientStore = create<SecretNetworkClientState>()(
       }
     },
     isGetWalletModalOpen: false,
-    setIsGetWalletModalOpen: (isGetWalletModalOpen: any) =>
+    setIsGetWalletModalOpen: (isGetWalletModalOpen) =>
       set({ isGetWalletModalOpen: isGetWalletModalOpen }),
     isConnectWalletModalOpen: false,
-    setIsConnectWalletModalOpen: (isConnectWalletModalOpen: any) =>
+    setIsConnectWalletModalOpen: (isConnectWalletModalOpen) =>
       set({ isConnectWalletModalOpen: isConnectWalletModalOpen }),
   }),
 );

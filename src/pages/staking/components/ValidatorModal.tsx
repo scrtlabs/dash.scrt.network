@@ -1,28 +1,26 @@
-import { faGlobe } from "@fortawesome/free-solid-svg-icons";
+import { faCopy, faGlobe } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useContext, useEffect, useState } from "react";
-import { APIContext } from "context/APIContext";
-import { formatNumber, toCurrencyString } from "utils/commons";
-import BigNumber from "bignumber.js";
-import { SECRET_LCD, SECRET_CHAIN_ID, tokens } from "utils/config";
-import { faCopy } from "@fortawesome/free-solid-svg-icons";
 import Tooltip from "@mui/material/Tooltip";
-import { chains } from "utils/config";
+import BigNumber from "bignumber.js";
+import Button from "components/UI/Button/Button";
+import Modal from "components/UI/Modal/Modal";
+import { APIContext } from "context/APIContext";
+import { StakingContext } from "pages/staking/Staking";
+import { useContext, useEffect, useState } from "react";
 import {
   SecretNetworkClient,
   validatorAddressToSelfDelegatorAddress,
 } from "secretjs";
+import { NotificationService } from "services/notification.service";
+import { useSecretNetworkClientStore } from "stores/secretNetworkClient.store";
+import { useUserPreferencesStore } from "stores/UserPreferences.store";
 import { Nullable } from "types/Nullable";
-import { StakingContext } from "pages/staking/Staking";
+import { formatNumber, toCurrencyString } from "utils/commons";
+import { chains, SECRET_CHAIN_ID, SECRET_LCD, tokens } from "utils/config";
+import { scrtToken } from "utils/tokens";
+import RedelegateForm from "./validatorModalComponents/RedelegateForm";
 import StakingForm from "./validatorModalComponents/StakingForm";
 import UndelegateForm from "./validatorModalComponents/UndelegateForm";
-import RedelegateForm from "./validatorModalComponents/RedelegateForm";
-import { useSecretNetworkClientStore } from "store/secretNetworkClient";
-import { scrtToken } from "utils/tokens";
-import Button from "components/UI/Button/Button";
-import Modal from "components/UI/Modal/Modal";
-import { NotificationService } from "services/notification.service";
-import { useUserPreferencesStore } from "store/UserPreferences";
 
 interface Props {
   open: boolean;

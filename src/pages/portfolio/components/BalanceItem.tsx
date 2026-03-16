@@ -1,12 +1,12 @@
+import { faCopy } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Tooltip } from "@mui/material";
+import BalanceUI from "components/BalanceUI";
+import { NotificationService } from "services/notification.service";
+import { useSecretNetworkClientStore } from "stores/secretNetworkClient.store";
+import { useTokenPricesStore } from "stores/TokenPrices.store";
 import { allTokens } from "utils/commons";
 import { Token } from "utils/config";
-import { useSecretNetworkClientStore } from "store/secretNetworkClient";
-import { useTokenPricesStore } from "store/TokenPrices";
-import BalanceUI from "components/BalanceUI";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCopy } from "@fortawesome/free-solid-svg-icons";
-import { Tooltip } from "@mui/material";
-import { NotificationService } from "services/notification.service";
 
 interface Props {
   token?: Token;

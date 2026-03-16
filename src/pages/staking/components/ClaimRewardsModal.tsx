@@ -1,11 +1,11 @@
-import { useContext, useState } from "react";
-import { StakingContext } from "pages/staking/Staking";
-import FeeGrant from "../../../components/FeeGrant/FeeGrant";
-import { useSecretNetworkClientStore } from "store/secretNetworkClient";
-import Modal from "components/UI/Modal/Modal";
-import { StakingService } from "services/staking.service";
 import Button from "components/UI/Button/Button";
+import Modal from "components/UI/Modal/Modal";
+import { StakingContext } from "pages/staking/Staking";
+import { useContext, useState } from "react";
+import { StakingService } from "services/staking.service";
+import { useSecretNetworkClientStore } from "stores/secretNetworkClient.store";
 import { tokens } from "utils/config";
+import FeeGrant from "../../../components/FeeGrant/FeeGrant";
 
 interface Props {
   open: boolean;

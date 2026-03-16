@@ -1,22 +1,20 @@
-import { useContext, useEffect, useRef, useState } from "react";
-import { formatNumber } from "utils/commons";
-import { APIContext } from "context/APIContext";
-
 import {
-  Chart as ChartJS,
+  ArcElement,
   CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Title,
+  Chart as ChartJS,
   Tooltip as ChartTooltip,
   Legend,
-  ArcElement,
+  LinearScale,
+  LineElement,
+  PointElement,
+  Title,
 } from "chart.js";
+import { APIContext } from "context/APIContext";
+import { useContext, useEffect, useRef, useState } from "react";
 import { Doughnut } from "react-chartjs-2";
-import { trackMixPanelEvent } from "utils/commons";
 import { Link } from "react-router-dom";
-import { useUserPreferencesStore } from "store/UserPreferences";
+import { useUserPreferencesStore } from "stores/UserPreferences.store";
+import { formatNumber, trackMixPanelEvent } from "utils/commons";
 
 ChartJS.register(
   CategoryScale,

@@ -1,4 +1,3 @@
-import { useState } from "react";
 import {
   faBug,
   faChevronDown,
@@ -8,10 +7,11 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Button from "components/UI/Button/Button";
 import Modal from "components/UI/Modal/Modal";
 import { useFormik } from "formik";
+import { useState } from "react";
 import { NotificationService } from "services/notification.service";
-import { Theme } from "types/Theme";
+import { useUserPreferencesStore } from "stores/UserPreferences.store";
 import { Currency } from "types/Currency";
-import { useUserPreferencesStore } from "store/UserPreferences";
+import { Theme } from "types/Theme";
 import { debugModeOverride } from "utils/commons";
 
 function Settings() {

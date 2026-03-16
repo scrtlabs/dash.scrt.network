@@ -1,23 +1,23 @@
-import { useFormik } from "formik";
-import { useEffect } from "react";
-import { sendSchema } from "pages/send/sendSchema";
-import { useSecretNetworkClientStore } from "store/secretNetworkClient";
-import Select, { components } from "react-select";
-import { Token, chains } from "utils/config";
-import BalanceUI from "components/BalanceUI";
-import PercentagePicker from "components/PercentagePicker";
-import Tooltip from "@mui/material/Tooltip";
 import { faInfoCircle, faSearch } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { SendService } from "services/send.service";
-import FeeGrant from "components/FeeGrant/FeeGrant";
-import { allTokens, debugModeOverride } from "utils/commons";
+import Tooltip from "@mui/material/Tooltip";
 import BigNumber from "bignumber.js";
+import BalanceUI from "components/BalanceUI";
+import FeeGrant from "components/FeeGrant/FeeGrant";
+import PercentagePicker from "components/PercentagePicker";
+import { useFormik } from "formik";
+import { sendSchema } from "pages/send/sendSchema";
+import { useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
-import { Nullable } from "types/Nullable";
-import { useUserPreferencesStore } from "store/UserPreferences";
-import { GetBalanceError } from "types/GetBalanceError";
+import Select, { components } from "react-select";
 import { NotificationService } from "services/notification.service";
+import { SendService } from "services/send.service";
+import { useSecretNetworkClientStore } from "stores/secretNetworkClient.store";
+import { useUserPreferencesStore } from "stores/UserPreferences.store";
+import { GetBalanceError } from "types/GetBalanceError";
+import { Nullable } from "types/Nullable";
+import { allTokens, debugModeOverride } from "utils/commons";
+import { chains, Token } from "utils/config";
 
 export default function SendForm() {
   const { debugMode } = useUserPreferencesStore();

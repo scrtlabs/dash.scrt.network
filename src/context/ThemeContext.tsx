@@ -1,5 +1,5 @@
 import { createContext, useEffect, useState } from "react";
-import { useUserPreferencesStore } from "store/UserPreferences";
+import { useUserPreferencesStore } from "stores/UserPreferences.store";
 import { Theme } from "types/Theme";
 
 const ThemeContext = createContext(null);

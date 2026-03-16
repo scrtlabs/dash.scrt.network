@@ -22,8 +22,8 @@ import Staking from "pages/staking/Staking";
 import { Wrap } from "pages/wrap/Wrap";
 import ReactDOM from "react-dom/client";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import { useSecretNetworkClientStore } from "store/secretNetworkClient";
-import { useUserPreferencesStore } from "store/UserPreferences";
+import { useSecretNetworkClientStore } from "stores/secretNetworkClient.store";
+import { useUserPreferencesStore } from "stores/UserPreferences.store";
 import { debugModeOverride } from "utils/commons";
 
 const { debugMode } = useUserPreferencesStore.getState();

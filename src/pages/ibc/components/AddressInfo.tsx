@@ -1,9 +1,9 @@
-import { Chain } from "utils/config";
-import { useSecretNetworkClientStore } from "store/secretNetworkClient";
-import Tooltip from "@mui/material/Tooltip";
 import { faCopy } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Tooltip from "@mui/material/Tooltip";
 import { NotificationService } from "services/notification.service";
+import { useSecretNetworkClientStore } from "stores/secretNetworkClient.store";
+import { Chain } from "utils/config";
 
 interface IProps {
   srcChain?: Chain;

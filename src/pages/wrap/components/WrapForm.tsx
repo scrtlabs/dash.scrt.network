@@ -1,22 +1,22 @@
-import { useState, useMemo } from "react";
 import BigNumber from "bignumber.js";
-import { tokens } from "utils/config";
-import { WrapService } from "services/wrap.service";
-import { NotificationService } from "services/notification.service";
-import { useSecretNetworkClientStore } from "store/secretNetworkClient";
-import { useUserPreferencesStore } from "store/UserPreferences";
 import BalanceUI from "components/BalanceUI";
 import FeeGrant from "components/FeeGrant/FeeGrant";
+import { useMemo, useState } from "react";
+import { NotificationService } from "services/notification.service";
+import { WrapService } from "services/wrap.service";
+import { useSecretNetworkClientStore } from "stores/secretNetworkClient.store";
+import { useUserPreferencesStore } from "stores/UserPreferences.store";
 import { GetBalanceError } from "types/GetBalanceError";
+import { tokens } from "utils/config";
 import "./wrap.css";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCircle } from "@fortawesome/free-regular-svg-icons";
 import {
   faArrowLeft,
   faArrowRight,
   faCopy,
   faInfoCircle,
 } from "@fortawesome/free-solid-svg-icons";
-import { faCircle } from "@fortawesome/free-regular-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Tooltip } from "@mui/material";
 
 export default function WrapAllTokens() {

@@ -6,7 +6,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Button from "components/UI/Button/Button";
 import { useState } from "react";
 import { NotificationService } from "services/notification.service";
-import { useSecretNetworkClientStore } from "store/secretNetworkClient";
+import { useSecretNetworkClientStore } from "stores/secretNetworkClient.store";
 
 export default function ActionableStatus() {
   const { feeGrantStatus, requestFeeGrant, isConnected } =

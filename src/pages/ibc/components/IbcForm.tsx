@@ -1,26 +1,26 @@
-import { useFormik } from "formik";
-import { ibcSchema } from "./ibcSchema";
-import { useSecretNetworkClientStore } from "store/secretNetworkClient";
-import { useEffect, useState } from "react";
-import { IbcMode } from "types/IbcMode";
-import Select, { components } from "react-select";
-import { Chain, Token, chains } from "utils/config";
-import IbcSelect from "./IbcSelect";
-import Tooltip from "@mui/material/Tooltip";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faRightLeft, faSearch } from "@fortawesome/free-solid-svg-icons";
-import AddressInfo from "./AddressInfo";
-import PercentagePicker from "components/PercentagePicker";
-import { IbcService } from "services/ibc.service";
-import FeeGrant from "components/FeeGrant/FeeGrant";
-import BalanceUI from "components/BalanceUI";
-import BridgingFees from "./BridgingFees";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Tooltip from "@mui/material/Tooltip";
 import BigNumber from "bignumber.js";
+import BalanceUI from "components/BalanceUI";
+import FeeGrant from "components/FeeGrant/FeeGrant";
+import PercentagePicker from "components/PercentagePicker";
+import { useFormik } from "formik";
+import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
+import Select, { components } from "react-select";
+import { IbcService } from "services/ibc.service";
 import { NotificationService } from "services/notification.service";
-import { useUserPreferencesStore } from "store/UserPreferences";
-import { debugModeOverride } from "utils/commons";
+import { useSecretNetworkClientStore } from "stores/secretNetworkClient.store";
+import { useUserPreferencesStore } from "stores/UserPreferences.store";
 import { GetBalanceError } from "types/GetBalanceError";
+import { IbcMode } from "types/IbcMode";
+import { debugModeOverride } from "utils/commons";
+import { Chain, chains, Token } from "utils/config";
+import AddressInfo from "./AddressInfo";
+import BridgingFees from "./BridgingFees";
+import IbcSelect from "./IbcSelect";
+import { ibcSchema } from "./ibcSchema";
 
 export default function IbcForm() {
   // URL params

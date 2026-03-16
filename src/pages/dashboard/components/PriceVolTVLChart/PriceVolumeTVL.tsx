@@ -1,21 +1,20 @@
-import { createContext, useContext, useEffect, useState } from "react";
-import { formatNumber, toCurrencyString } from "utils/commons";
-import { APIContext } from "context/APIContext";
-
 import {
-  Chart as ChartJS,
   CategoryScale,
+  Chart as ChartJS,
+  Legend,
   LinearScale,
-  PointElement,
   LineElement,
+  PointElement,
   Title,
   Tooltip,
-  Legend,
 } from "chart.js";
+import { APIContext } from "context/APIContext";
+import { createContext, useContext, useEffect, useState } from "react";
 import { Line } from "react-chartjs-2";
-import TypeSwitch from "./components/TypeSwitch";
+import { useUserPreferencesStore } from "stores/UserPreferences.store";
+import { formatNumber, toCurrencyString } from "utils/commons";
 import RangeSwitch from "./components/RangeSwitch";
-import { useUserPreferencesStore } from "store/UserPreferences";
+import TypeSwitch from "./components/TypeSwitch";
 
 ChartJS.register(
   CategoryScale,

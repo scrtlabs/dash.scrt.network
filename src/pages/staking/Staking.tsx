@@ -3,34 +3,34 @@ import {
   faMagnifyingGlass,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { createContext, useEffect, useRef, useState } from "react";
-import MyValidatorsItem from "./components/MyValidatorsItem";
-import {
-  shuffleArray,
-  stakingPageTitle,
-  stakingPageDescription,
-  stakingJsonLdSchema,
-  isMac,
-} from "utils/commons";
 import Tooltip from "@mui/material/Tooltip";
-import NoScrtWarning from "./components/NoScrtWarning";
-import ValidatorModal from "./components/ValidatorModal";
-import { SECRET_LCD, SECRET_CHAIN_ID, tokens } from "utils/config";
-import { SecretNetworkClient } from "secretjs";
-import Title from "../../components/Title";
-import { useSearchParams } from "react-router-dom";
-import { Nullable } from "types/Nullable";
 import BigNumber from "bignumber.js";
-import { StakingView, isStakingView } from "types/StakingView";
+import Button from "components/UI/Button/Button";
+import { createContext, useEffect, useRef, useState } from "react";
+import { useSearchParams } from "react-router-dom";
+import { SecretNetworkClient } from "secretjs";
+import { useSecretNetworkClientStore } from "stores/secretNetworkClient.store";
+import { Nullable } from "types/Nullable";
+import { isStakingView, StakingView } from "types/StakingView";
+import { Validator } from "types/Validator";
+import { ValidatorRestakeStatus } from "types/ValidatorRestakeStatus";
+import {
+  isMac,
+  shuffleArray,
+  stakingJsonLdSchema,
+  stakingPageDescription,
+  stakingPageTitle,
+} from "utils/commons";
+import { SECRET_CHAIN_ID, SECRET_LCD, tokens } from "utils/config";
+import { scrtToken } from "utils/tokens";
+import Title from "../../components/Title";
 import ClaimRewardsModal from "./components/ClaimRewardsModal";
 import ManageAutoRestakeModal from "./components/ManageAutoRestakeModal";
-import { scrtToken } from "utils/tokens";
-import { useSecretNetworkClientStore } from "store/secretNetworkClient";
-import ValidatorItem from "./components/ValidatorItem";
-import { Validator } from "types/Validator";
-import Button from "components/UI/Button/Button";
+import MyValidatorsItem from "./components/MyValidatorsItem";
+import NoScrtWarning from "./components/NoScrtWarning";
 import StakingStats from "./components/StakingStats/StakingStats";
-import { ValidatorRestakeStatus } from "types/ValidatorRestakeStatus";
+import ValidatorItem from "./components/ValidatorItem";
+import ValidatorModal from "./components/ValidatorModal";
 
 export const StakingContext = createContext(null);
 

@@ -1,15 +1,15 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { trackMixPanelEvent } from "utils/commons";
-import Tooltip from "@mui/material/Tooltip";
-import { QRCode } from "react-qrcode-logo";
-import { Token, chains, tokens } from "utils/config";
-import { Link } from "react-router-dom";
-import { useSecretNetworkClientStore } from "store/secretNetworkClient";
 import { faCopy } from "@fortawesome/free-solid-svg-icons";
-import { Nullable } from "types/Nullable";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Tooltip from "@mui/material/Tooltip";
 import Button from "components/UI/Button/Button";
+import { QRCode } from "react-qrcode-logo";
+import { Link } from "react-router-dom";
 import { NotificationService } from "services/notification.service";
-import { useUserPreferencesStore } from "store/UserPreferences";
+import { useSecretNetworkClientStore } from "stores/secretNetworkClient.store";
+import { useUserPreferencesStore } from "stores/UserPreferences.store";
+import { Nullable } from "types/Nullable";
+import { trackMixPanelEvent } from "utils/commons";
+import { chains, Token, tokens } from "utils/config";
 
 export default function AddressQR() {
   const { theme } = useUserPreferencesStore();

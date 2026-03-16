@@ -1,19 +1,19 @@
-import BigNumber from "bignumber.js";
-import { useContext, useEffect, useState } from "react";
-import { APIContext } from "context/APIContext";
-import { faucetAddress, queryTxResult, toCurrencyString } from "utils/commons";
-import { StakingContext } from "pages/staking/Staking";
-import { useSecretNetworkClientStore } from "store/secretNetworkClient";
-import { scrtToken } from "utils/tokens";
-import Button from "components/UI/Button/Button";
-import toast from "react-hot-toast";
 import { faInfoCircle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Tooltip from "@mui/material/Tooltip";
+import BigNumber from "bignumber.js";
 import ActionableStatus from "components/FeeGrant/components/ActionableStatus";
-import { NotificationService } from "services/notification.service";
-import { tokens } from "utils/config";
+import Button from "components/UI/Button/Button";
+import { APIContext } from "context/APIContext";
+import { StakingContext } from "pages/staking/Staking";
+import { useContext, useEffect, useState } from "react";
+import toast from "react-hot-toast";
 import { BroadcastMode } from "secretjs";
+import { NotificationService } from "services/notification.service";
+import { useSecretNetworkClientStore } from "stores/secretNetworkClient.store";
+import { faucetAddress, queryTxResult, toCurrencyString } from "utils/commons";
+import { tokens } from "utils/config";
+import { scrtToken } from "utils/tokens";
 
 export default function StakingForm() {
   const { selectedValidator, setView } = useContext(StakingContext);

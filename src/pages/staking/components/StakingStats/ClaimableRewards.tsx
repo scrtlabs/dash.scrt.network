@@ -3,8 +3,8 @@ import Button from "components/UI/Button/Button";
 import { APIContext } from "context/APIContext";
 import { StakingContext } from "pages/staking/Staking";
 import { useContext, useEffect, useState } from "react";
-import { useTokenPricesStore } from "store/TokenPrices";
-import { useUserPreferencesStore } from "store/UserPreferences";
+import { useTokenPricesStore } from "stores/TokenPrices.store";
+import { useUserPreferencesStore } from "stores/UserPreferences.store";
 import { toCurrencyString } from "utils/commons";
 import { scrtToken } from "utils/tokens";
 
