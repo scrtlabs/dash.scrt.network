@@ -7,7 +7,7 @@ import {
   Legend,
   LinearScale,
   LineElement,
-  Plugin,
+  type Plugin,
   PointElement,
   Title,
 } from "chart.js";
@@ -17,9 +17,9 @@ import { Doughnut } from "react-chartjs-2";
 import { useSecretNetworkClientStore } from "stores/secretNetworkClient.store";
 import { useTokenPricesStore } from "stores/TokenPrices.store";
 import { useUserPreferencesStore } from "stores/UserPreferences.store";
-import { TokenBalances } from "types/TokenBalances";
+import type { TokenBalances } from "types/TokenBalances";
 import { getBackgroundColors, toCurrencyString } from "utils/commons";
-import { Token } from "utils/config";
+import type { Token } from "utils/config";
 
 ChartJS.register(
   CategoryScale,
@@ -54,8 +54,10 @@ export default function BalanceChart() {
   const [data, setData] = useState(defaultData);
 
   const [totalValue, setTotalValue] = useState<any>();
-  const prevBalanceMappingRef = useRef<Map<Token, TokenBalances> | undefined>();
-  const prevPriceMappingRef = useRef<Map<Token, number> | undefined>();
+  const prevBalanceMappingRef = useRef<Map<Token, TokenBalances> | undefined>(
+    undefined,
+  );
+  const prevPriceMappingRef = useRef<Map<Token, number> | undefined>(undefined);
 
   useEffect(() => {
     if (

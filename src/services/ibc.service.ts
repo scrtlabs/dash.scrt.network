@@ -4,39 +4,45 @@ import {
   CHAINS,
   Environment,
 } from "@axelar-network/axelarjs-sdk";
+import {
+  GasPrice,
+  type MsgTransferEncodeObject,
+  SigningStargateClient,
+} from "@cosmjs/stargate";
 import { createTxIBCMsgTransfer } from "@evmos/transactions";
+import { type Operation, SKIP_API_URL, SkipClient } from "@skip-go/client";
 import BigNumber from "bignumber.js";
-import { SkipClient, SKIP_API_URL, Operation } from "@skip-go/client";
+import Long from "long";
+import mixpanel from "mixpanel-browser";
 import {
   BroadcastMode,
+  fromBase64,
   MsgExecuteContract,
   MsgTransfer,
   SecretNetworkClient,
-  fromBase64,
   toBase64,
   toUtf8,
 } from "secretjs";
-import { FeeGrantStatus } from "types/FeeGrantStatus";
-import { IbcMode } from "types/IbcMode";
-import {
-  sleep,
-  faucetAddress,
-  randomPadding,
-  allTokens,
-  suggestChainToWallet,
-  queryTxResult,
-} from "utils/commons";
-import { Chain, Deposit, Token, Withdraw, chains } from "utils/config";
-import Long from "long";
 import { TxRaw } from "secretjs/dist/protobuf/cosmos/tx/v1beta1/tx";
-import mixpanel from "mixpanel-browser";
-import { NotificationService } from "./notification.service";
-import { GetBalanceError } from "types/GetBalanceError";
+import type { FeeGrantStatus } from "types/FeeGrantStatus";
+import type { GetBalanceError } from "types/GetBalanceError";
+import type { IbcMode } from "types/IbcMode";
 import {
-  GasPrice,
-  MsgTransferEncodeObject,
-  SigningStargateClient,
-} from "@cosmjs/stargate";
+  allTokens,
+  faucetAddress,
+  queryTxResult,
+  randomPadding,
+  sleep,
+  suggestChainToWallet,
+} from "utils/commons";
+import {
+  type Chain,
+  chains,
+  type Deposit,
+  type Token,
+  type Withdraw,
+} from "utils/config";
+import { NotificationService } from "./notification.service";
 
 const sdk: AxelarAssetTransfer = new AxelarAssetTransfer({
   environment: Environment.MAINNET,
@@ -215,7 +221,7 @@ async function performIbcDeposit(
         };
         //@ts-ignore
         txBody.auth_info.signer_infos[0] =
-          Terra.SignerInfo.fromData(signerInfo);
+          terra.SignerInfo.fromData(signerInfo);
 
         // Sign the tx
         const sig = await window.wallet?.signDirect(
