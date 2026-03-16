@@ -39,7 +39,7 @@ export default function AddressInfo(props: IProps) {
             <>
               {!props.srcChain && !props.srcAddress ? (
                 <div className="animate-pulse">
-                  <div className="h-5 bg-white dark:bg-neutral-700 rounded"></div>
+                  <div className="h-5 bg-white dark:bg-neutral-700 rounded-sm"></div>
                 </div>
               ) : (
                 <Tooltip title={'View in Explorer'} placement="top" arrow>
@@ -77,7 +77,7 @@ export default function AddressInfo(props: IProps) {
             <>
               {!props.destChain && !props.destAddress ? (
                 <div className="animate-pulse">
-                  <div className="h-5 bg-white dark:bg-neutral-700 rounded"></div>
+                  <div className="h-5 bg-white dark:bg-neutral-700 rounded-sm"></div>
                 </div>
               ) : (
                 <Tooltip title={'View in Explorer'} placement="bottom" arrow>

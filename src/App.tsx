@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import { Window as KeplrWindow } from '@keplr-wallet/types'
-import 'assets/scss/index.scss'
+import 'assets/styles/index.css'
 import { Buffer } from 'buffer'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import ReactDOM from 'react-dom/client'

@@ -307,7 +307,7 @@ export default function IbcForm() {
             {formik.values.ibcMode === 'withdrawal' && (
               <div
                 style={{ paddingTop: '.76rem', paddingBottom: '.76rem' }}
-                className="flex items-center w-full text-sm font-semibold select-none bg-white dark:bg-neutral-800 rounded text-neutral-800 dark:text-neutral-200 focus:bg-neutral-300 dark:focus:bg-neutral-700 disabled:hover:bg-neutral-200 dark:disabled:hover:bg-neutral-800 border border-neutral-300 dark:border-neutral-600"
+                className="flex items-center w-full text-sm font-semibold select-none bg-white dark:bg-neutral-800 rounded-sm text-neutral-800 dark:text-neutral-200 focus:bg-neutral-300 dark:focus:bg-neutral-700 disabled:hover:bg-neutral-200 dark:disabled:hover:bg-neutral-800 border border-neutral-300 dark:border-neutral-600"
               >
                 <div className="flex-1 px-3 text-center">
                   <span>Secret Network</span>
@@ -325,7 +325,7 @@ export default function IbcForm() {
                     type="button"
                     onClick={toggleIbcMode}
                     className={
-                      'focus:outline-none focus-visible:ring-2 ring-sky-500/40 inline-block bg-gray-200 dark:bg-neutral-700 px-3 py-2 text-cyan-500 dark:text-cyan-500 transition-colors rounded-xl disabled:text-neutral-500 dark:disabled:text-neutral-500' +
+                      'focus:outline-hidden focus-visible:ring-2 ring-sky-500/40 inline-block bg-gray-200 dark:bg-neutral-700 px-3 py-2 text-cyan-500 dark:text-cyan-500 transition-colors rounded-xl disabled:text-neutral-500 dark:disabled:text-neutral-500' +
                       (secretNetworkClient?.address ? 'hover:text-cyan-700 dark:hover:text-cyan-300' : '')
                     }
                     disabled={!isConnected}
@@ -397,7 +397,7 @@ export default function IbcForm() {
             {formik.values.ibcMode === 'deposit' && (
               <div
                 style={{ paddingTop: '.76rem', paddingBottom: '.76rem' }}
-                className="flex items-center w-full text-sm font-semibold select-none bg-white dark:bg-neutral-800 rounded text-neutral-800 dark:text-neutral-200 focus:bg-neutral-300 dark:focus:bg-neutral-700 disabled:hover:bg-neutral-200 dark:disabled:hover:bg-neutral-800 border border-neutral-300 dark:border-neutral-600"
+                className="flex items-center w-full text-sm font-semibold select-none bg-white dark:bg-neutral-800 rounded-sm text-neutral-800 dark:text-neutral-200 focus:bg-neutral-300 dark:focus:bg-neutral-700 disabled:hover:bg-neutral-200 dark:disabled:hover:bg-neutral-800 border border-neutral-300 dark:border-neutral-600"
               >
                 <div className="flex-1 px-3 text-center">
                   <span>Secret Network</span>
@@ -494,7 +494,7 @@ export default function IbcForm() {
       {/* Submit Button */}
       <button
         className={
-          'enabled:bg-gradient-to-r enabled:from-cyan-600 enabled:to-purple-600 enabled:hover:from-cyan-500 enabled:hover:to-purple-500 transition-colors text-white font-extrabold py-3 w-full rounded-lg disabled:bg-neutral-500 focus:outline-none focus-visible:ring-4 ring-sky-500/40'
+          'enabled:bg-gradient-to-r enabled:from-cyan-600 enabled:to-purple-600 enabled:hover:from-cyan-500 enabled:hover:to-purple-500 transition-colors text-white font-extrabold py-3 w-full rounded-lg disabled:bg-neutral-500 focus:outline-hidden focus-visible:ring-4 ring-sky-500/40'
         }
         disabled={!isConnected}
         type="submit"

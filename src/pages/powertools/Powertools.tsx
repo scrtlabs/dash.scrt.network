@@ -225,7 +225,7 @@ function Powertools() {
           document.body.classList.remove('overflow-hidden')
         }}
       >
-        <div className="my-4 dark:bg-neutral-800 bg-neutral-200 p-2 rounded text-sm text-black dark:text-white">
+        <div className="my-4 dark:bg-neutral-800 bg-neutral-200 p-2 rounded-sm text-sm text-black dark:text-white">
           {JSON.stringify(messages)}
         </div>
         <div className="flex gap-4 items-center justify-end">
@@ -251,7 +251,7 @@ function Powertools() {
             value={apiUrl}
             onChange={(e) => setApiUrl(e.target.value)}
             type="text"
-            className="block w-full sm:w-72 p-2.5 text-sm rounded-lg text-neutral-800 dark:text-white bg-white dark:bg-neutral-800 placeholder-neutral-600 dark:placeholder-neutral-400 border border-neutral-300 dark:border-neutral-700 focus:outline-none focus:ring-2 focus:ring-cyan-500 dark:focus:ring-cyan-500"
+            className="block w-full sm:w-72 p-2.5 text-sm rounded-lg text-neutral-800 dark:text-white bg-white dark:bg-neutral-800 placeholder-neutral-600 dark:placeholder-neutral-400 border border-neutral-300 dark:border-neutral-700 focus:outline-hidden focus:ring-2 focus:ring-cyan-500 dark:focus:ring-cyan-500"
             placeholder="API URL"
             disabled={!isConnected}
           />
@@ -309,7 +309,7 @@ function Powertools() {
         <Button
           type="submit"
           className={
-            'enabled:bg-gradient-to-r enabled:from-cyan-600 enabled:to-purple-600 enabled:hover:from-cyan-500 enabled:hover:to-purple-500 transition-colors text-white font-extrabold py-3 w-full rounded-lg disabled:bg-neutral-500 focus:outline-none focus-visible:ring-4 ring-sky-500/40'
+            'enabled:bg-gradient-to-r enabled:from-cyan-600 enabled:to-purple-600 enabled:hover:from-cyan-500 enabled:hover:to-purple-500 transition-colors text-white font-extrabold py-3 w-full rounded-lg disabled:bg-neutral-500 focus:outline-hidden focus-visible:ring-4 ring-sky-500/40'
           }
           size="large"
           onClick={handleSendTx}

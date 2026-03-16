@@ -26,7 +26,7 @@ export default function QuadTile(props: Props) {
                   {props.item1?.value ? (
                     <>{props.item1.value}</>
                   ) : (
-                    <div className="animate-pulse bg-neutral-300/40 dark:bg-neutral-700/40 rounded col-span-2 w-16 h-7 mx-auto"></div>
+                    <div className="animate-pulse bg-neutral-300/40 dark:bg-neutral-700/40 rounded-sm col-span-2 w-16 h-7 mx-auto"></div>
                   )}
                 </div>
               </div>
@@ -41,7 +41,7 @@ export default function QuadTile(props: Props) {
                   {props.item2?.value ? (
                     <>{props.item2?.value}</>
                   ) : (
-                    <div className="animate-pulse bg-neutral-300/40 dark:bg-neutral-700/40 rounded col-span-2 w-16 h-7 mx-auto"></div>
+                    <div className="animate-pulse bg-neutral-300/40 dark:bg-neutral-700/40 rounded-sm col-span-2 w-16 h-7 mx-auto"></div>
                   )}
                 </div>
               </div>
@@ -58,7 +58,7 @@ export default function QuadTile(props: Props) {
                   {props.item3?.value ? (
                     <>{props.item3.value}</>
                   ) : (
-                    <div className="animate-pulse bg-neutral-300/40 dark:bg-neutral-700/40 rounded col-span-2 w-16 h-7 mx-auto"></div>
+                    <div className="animate-pulse bg-neutral-300/40 dark:bg-neutral-700/40 rounded-sm col-span-2 w-16 h-7 mx-auto"></div>
                   )}
                 </div>
               </div>
@@ -73,7 +73,7 @@ export default function QuadTile(props: Props) {
                   {props.item4?.value ? (
                     <>{props.item4.value}</>
                   ) : (
-                    <div className="animate-pulse bg-neutral-300/40 dark:bg-neutral-700/40 rounded col-span-2 w-16 h-7 mx-auto"></div>
+                    <div className="animate-pulse bg-neutral-300/40 dark:bg-neutral-700/40 rounded-sm col-span-2 w-16 h-7 mx-auto"></div>
                   )}
                 </div>
               </div>

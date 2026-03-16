@@ -82,7 +82,7 @@ function Bridge() {
         <div className="py-4">
           <p>
             <span className="select-none">
-              <span className="inline-block bg-emerald-500 dark:bg-emerald-800 text-white text-xs py-0.5 px-1.5 rounded uppercase font-semibold">
+              <span className="inline-block bg-emerald-500 dark:bg-emerald-800 text-white text-xs py-0.5 px-1.5 rounded-sm uppercase font-semibold">
                 Protip
               </span>{' '}
               –{' '}

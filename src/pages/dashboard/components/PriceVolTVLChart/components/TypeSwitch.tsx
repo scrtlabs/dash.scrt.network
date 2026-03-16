@@ -6,7 +6,7 @@ function TypeSwitch() {
 
   return (
     <>
-      <div className="flex-initial inline-flex rounded-md shadow-sm" role="group">
+      <div className="flex-initial inline-flex rounded-md shadow-xs" role="group">
         <button
           onClick={() => setChartType('Price')}
           type="button"

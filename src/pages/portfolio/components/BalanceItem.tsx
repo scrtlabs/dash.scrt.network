@@ -73,7 +73,7 @@ const BalanceItem = (props: Props) => {
             {assetPrice ? (
               <div className="text-sm font-medium font-mono">{assetPrice}</div>
             ) : (
-              <span className="animate-pulse bg-neutral-300/40 dark:bg-neutral-600 rounded w-20 h-5"></span>
+              <span className="animate-pulse bg-neutral-300/40 dark:bg-neutral-600 rounded-sm w-20 h-5"></span>
             )}
           </div>
         )}
@@ -96,14 +96,14 @@ const BalanceItem = (props: Props) => {
           {/* Send */}
           <a
             href={assetPrice ? `/send?token=` + props.token?.name.toLowerCase() : null}
-            className="bg-gray-500 dark:bg-gray-600 hover:bg-gray-600 dark:hover:bg-gray-700 text-white py-1.5 px-3 text-xs font-bold rounded transition-colors mr-2"
+            className="bg-gray-500 dark:bg-gray-600 hover:bg-gray-600 dark:hover:bg-gray-700 text-white py-1.5 px-3 text-xs font-bold rounded-sm transition-colors mr-2"
           >
             Send
           </a>
           {/* IBC */}
           <a
             href={assetPrice ? `/ibc?token=` + props.token?.name.toLowerCase() : null}
-            className="bg-gray-500 dark:bg-gray-600 hover:bg-gray-600 dark:hover:bg-gray-700 text-white py-1.5 px-3 text-xs font-bold rounded transition-colors"
+            className="bg-gray-500 dark:bg-gray-600 hover:bg-gray-600 dark:hover:bg-gray-700 text-white py-1.5 px-3 text-xs font-bold rounded-sm transition-colors"
           >
             IBC
           </a>

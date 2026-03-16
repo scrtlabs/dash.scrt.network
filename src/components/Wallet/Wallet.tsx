@@ -100,7 +100,7 @@ function Wallet() {
 
   function ContextMenu() {
     return (
-      <div className="shadow backdrop-blur-md bg-white/40 dark:bg-neutral-800/40 border text-xs border-neutral-200 dark:border-neutral-700 px-4 py-6 w-auto rounded-2xl flex-row space-y-4">
+      <div className="shadow-sm backdrop-blur-md bg-white/40 dark:bg-neutral-800/40 border text-xs border-neutral-200 dark:border-neutral-700 px-4 py-6 w-auto rounded-2xl flex-row space-y-4">
         {/* Copyable Wallet Address */}
         <Button
           type="button"
@@ -201,7 +201,7 @@ function Wallet() {
                 Recommended
               </Badge>
             </span>
-            <span className="text-white dark:text-white bg-blue-500 dark:bg-blue-500 group-hover:bg-blue-600 dark:group-hover:bg-blue-400 transition-colors px-3 py-1.5 rounded text-xs font-semibold">
+            <span className="text-white dark:text-white bg-blue-500 dark:bg-blue-500 group-hover:bg-blue-600 dark:group-hover:bg-blue-400 transition-colors px-3 py-1.5 rounded-sm text-xs font-semibold">
               <FontAwesomeIcon icon={faDesktop} className="mr-1" />
               Desktop / <FontAwesomeIcon icon={faMobileScreen} className="mr-1" />
               Mobile
@@ -217,7 +217,7 @@ function Wallet() {
           >
             <img src="/img/assets/leap.svg" className="flex-initial w-7 h-7" />
             <span className="flex-1 font-medium">Leap</span>
-            <span className="text-white dark:text-white bg-blue-500 dark:bg-blue-500 group-hover:bg-blue-600 dark:group-hover:bg-blue-400 transition-colors px-3 py-1.5 rounded text-xs font-semibold">
+            <span className="text-white dark:text-white bg-blue-500 dark:bg-blue-500 group-hover:bg-blue-600 dark:group-hover:bg-blue-400 transition-colors px-3 py-1.5 rounded-sm text-xs font-semibold">
               <FontAwesomeIcon icon={faDesktop} className="mr-1" />
               Desktop / <FontAwesomeIcon icon={faMobileScreen} className="mr-1" />
               Mobile
@@ -233,7 +233,7 @@ function Wallet() {
           >
             <img src="/img/assets/fina.webp" className="flex-initial w-7 h-7" />
             <span className="flex-1 font-medium">Fina</span>
-            <span className="text-white dark:text-white bg-blue-500 dark:bg-blue-500 group-hover:bg-blue-600 dark:group-hover:bg-blue-400 transition-colors px-3 py-1.5 rounded text-xs font-semibold">
+            <span className="text-white dark:text-white bg-blue-500 dark:bg-blue-500 group-hover:bg-blue-600 dark:group-hover:bg-blue-400 transition-colors px-3 py-1.5 rounded-sm text-xs font-semibold">
               <FontAwesomeIcon icon={faMobileScreen} className="mr-1" />
               Mobile
             </span>
@@ -248,7 +248,7 @@ function Wallet() {
           >
             <img src="/img/assets/keplr.svg" className="flex-initial w-7 h-7" />
             <span className="flex-1 font-medium">Keplr</span>
-            <span className="text-white dark:text-white bg-blue-500 dark:bg-blue-500 group-hover:bg-blue-600 dark:group-hover:bg-blue-400 transition-colors px-3 py-1.5 rounded text-xs font-semibold">
+            <span className="text-white dark:text-white bg-blue-500 dark:bg-blue-500 group-hover:bg-blue-600 dark:group-hover:bg-blue-400 transition-colors px-3 py-1.5 rounded-sm text-xs font-semibold">
               <FontAwesomeIcon icon={faDesktop} className="mr-1" />
               Desktop
             </span>

@@ -13,7 +13,7 @@ export default function MiniTile(props: Props) {
             {props.value ? (
               <>{props.value}</>
             ) : (
-              <div className="animate-pulse bg-neutral-300/40 dark:bg-neutral-700/40 rounded col-span-2 w-20 h-7 mx-auto"></div>
+              <div className="animate-pulse bg-neutral-300/40 dark:bg-neutral-700/40 rounded-sm col-span-2 w-20 h-7 mx-auto"></div>
             )}
           </div>
         </div>

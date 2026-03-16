@@ -407,7 +407,7 @@ export default function WrapAllTokens() {
         <div className="flex items-center gap-4">
           <button
             onClick={handleWrapAll}
-            className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-1 px-3 rounded"
+            className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-1 px-3 rounded-sm"
             disabled={!isConnected}
             title="Auto-fill all unwrapped balances for wrapping"
           >
@@ -415,7 +415,7 @@ export default function WrapAllTokens() {
           </button>
           <button
             onClick={handleUnwrapAll}
-            className="bg-red-500 hover:bg-red-600 text-white font-semibold py-1 px-3 rounded"
+            className="bg-red-500 hover:bg-red-600 text-white font-semibold py-1 px-3 rounded-sm"
             disabled={!isConnected}
             title="Auto-fill all wrapped balances for unwrapping"
           >
@@ -475,16 +475,16 @@ export default function WrapAllTokens() {
                       <div className="flex items-center gap-2">
                         <input type="checkbox" checked={false} />
                         <div className="w-12 h-12 bg-gray-300 dark:bg-neutral-600 rounded-full animate-pulse" />
-                        <div className="font-semibold bg-gray-300 dark:bg-neutral-600 rounded animate-pulse w-14 h-6" />
+                        <div className="font-semibold bg-gray-300 dark:bg-neutral-600 rounded-sm animate-pulse w-14 h-6" />
                       </div>
                     </td>
                     <td>
-                      <div className="bg-gray-300 dark:bg-neutral-600 animate-pulse rounded w-20 h-6 mx-auto" />
+                      <div className="bg-gray-300 dark:bg-neutral-600 animate-pulse rounded-sm w-20 h-6 mx-auto" />
                     </td>
                     <td className="text-center">
                       <button
                         disabled
-                        className="p-2 rounded border border-neutral-300 dark:border-neutral-600 bg-white dark:bg-neutral-800"
+                        className="p-2 rounded-sm border border-neutral-300 dark:border-neutral-600 bg-white dark:bg-neutral-800"
                       >
                         <div className="flex items-center justify-center w-6 h-6">
                           <FontAwesomeIcon icon={faCircle} size="xl" className="text-gray-600" />
@@ -494,12 +494,12 @@ export default function WrapAllTokens() {
                     {showAmountInput && (
                       <>
                         <td className="text-center">
-                          <div className="bg-gray-300 dark:bg-neutral-600 animate-pulse rounded w-20 h-6 mx-auto" />
+                          <div className="bg-gray-300 dark:bg-neutral-600 animate-pulse rounded-sm w-20 h-6 mx-auto" />
                         </td>
                         <td className="text-center">
                           <button
                             disabled
-                            className="p-2 rounded border border-neutral-300 dark:border-neutral-600 bg-white dark:bg-neutral-800"
+                            className="p-2 rounded-sm border border-neutral-300 dark:border-neutral-600 bg-white dark:bg-neutral-800"
                           >
                             <div className="flex items-center justify-center w-6 h-6">
                               <FontAwesomeIcon icon={faCircle} size="xl" className="text-gray-600" />
@@ -509,7 +509,7 @@ export default function WrapAllTokens() {
                       </>
                     )}
                     <td>
-                      <div className="bg-gray-300 dark:bg-neutral-600 animate-pulse rounded w-20 h-6 mx-auto" />
+                      <div className="bg-gray-300 dark:bg-neutral-600 animate-pulse rounded-sm w-20 h-6 mx-auto" />
                     </td>
                   </tr>
                 ))
@@ -566,7 +566,7 @@ export default function WrapAllTokens() {
                         <button
                           onClick={() => toggleDirection(token.name)}
                           disabled={!isConnected || !token.address}
-                          className="p-2 rounded border border-neutral-300 dark:border-neutral-600 bg-white dark:bg-neutral-800 hover:bg-gray-100 dark:hover:bg-neutral-700"
+                          className="p-2 rounded-sm border border-neutral-300 dark:border-neutral-600 bg-white dark:bg-neutral-800 hover:bg-gray-100 dark:hover:bg-neutral-700"
                           title={
                             !batchOperations[token.name]
                               ? 'No direction selected (click to set to Wrap)'
@@ -597,7 +597,7 @@ export default function WrapAllTokens() {
                           <td className="text-center">
                             <input
                               type="number"
-                              className="no-spinner text-center w-[90px] rounded px-2 py-1 bg-white dark:bg-neutral-800 border border-neutral-300 dark:border-neutral-600"
+                              className="no-spinner text-center w-[90px] rounded-sm px-2 py-1 bg-white dark:bg-neutral-800 border border-neutral-300 dark:border-neutral-600"
                               value={batchOperations[token.name]?.amount || ''}
                               onChange={(e) => updateAmount(token.name, e.target.value)}
                               placeholder=""
@@ -609,7 +609,7 @@ export default function WrapAllTokens() {
                             <button
                               onClick={() => toggleDirection(token.name)}
                               disabled={!isConnected || !token.address}
-                              className="p-2 rounded border border-neutral-300 dark:border-neutral-600 bg-white dark:bg-neutral-800 hover:bg-gray-100 dark:hover:bg-neutral-700"
+                              className="p-2 rounded-sm border border-neutral-300 dark:border-neutral-600 bg-white dark:bg-neutral-800 hover:bg-gray-100 dark:hover:bg-neutral-700"
                               title={
                                 !batchOperations[token.name]?.direction
                                   ? 'Click to toggle to Wrap'
@@ -663,7 +663,7 @@ export default function WrapAllTokens() {
 
       {/* Summary Row (Optional) */}
       {!isLoading && (
-        <div className="mt-4 p-3 bg-gray-100 dark:bg-neutral-800 rounded">
+        <div className="mt-4 p-3 bg-gray-100 dark:bg-neutral-800 rounded-sm">
           <p className="font-semibold mb-2">Transaction Summary</p>
           <p>{`Selected ${summary.wrapCount} token(s) to wrap and ${summary.unwrapCount} token(s) to unwrap.`}</p>
         </div>
@@ -687,7 +687,7 @@ export default function WrapAllTokens() {
 
       {/* Debug Info (optional) */}
       {debugMode && (
-        <div className="text-sky-500 text-xs p-2 bg-blue-500/20 rounded mt-4">
+        <div className="text-sky-500 text-xs p-2 bg-blue-500/20 rounded-sm mt-4">
           <div className="mb-2 font-semibold">Debug Info (batchOperations):</div>
           <pre>{JSON.stringify(batchOperations, null, 2)}</pre>
         </div>

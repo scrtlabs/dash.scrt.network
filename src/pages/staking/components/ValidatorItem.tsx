@@ -161,7 +161,7 @@ const ValidatorItem = (props: Props) => {
               <span className="text-neutral-500 dark:text-neutral-400 text-xs"> SCRT</span>
             </div>
           ) : (
-            <div className="animate-pulse bg-neutral-300/40 dark:bg-neutral-700/40 rounded col-span-2 w-16 h-7 mx-auto"></div>
+            <div className="animate-pulse bg-neutral-300/40 dark:bg-neutral-700/40 rounded-sm col-span-2 w-16 h-7 mx-auto"></div>
           )}
         </div>
         <div className="flex flex-col items-center">
@@ -170,7 +170,7 @@ const ValidatorItem = (props: Props) => {
             <div className="commission font-medium font-mono">{formatNumber(props.commissionPercentage * 100, 2)}%</div>
           )}
           {!props.commissionPercentage && (
-            <div className="animate-pulse bg-neutral-300/40 dark:bg-neutral-700/40 rounded col-span-2 w-16 h-7 mx-auto"></div>
+            <div className="animate-pulse bg-neutral-300/40 dark:bg-neutral-700/40 rounded-sm col-span-2 w-16 h-7 mx-auto"></div>
           )}
         </div>
         <div className="flex flex-col items-center">
@@ -178,7 +178,7 @@ const ValidatorItem = (props: Props) => {
           {stakingAPR || stakingAPR === 0 ? (
             <div className="font-medium font-mono">{`${formatNumber(stakingAPR, 2)}%`}</div>
           ) : (
-            <div className="animate-pulse bg-neutral-300/40 dark:bg-neutral-700/40 rounded col-span-2 w-16 h-7 mx-auto"></div>
+            <div className="animate-pulse bg-neutral-300/40 dark:bg-neutral-700/40 rounded-sm col-span-2 w-16 h-7 mx-auto"></div>
           )}
         </div>
       </button>

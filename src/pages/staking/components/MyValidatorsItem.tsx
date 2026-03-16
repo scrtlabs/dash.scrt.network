@@ -147,7 +147,7 @@ const MyValidatorsItem = (props: Props) => {
           ) : null}
         </div>
         {props.validator.status === 'BOND_STATUS_UNBONDED' && (
-          <div className="border border-red-500 bg-transparent text-red-500 text-sm rounded px-4 py-2 cursor-not-allowed flex items-center justify-start">
+          <div className="border border-red-500 bg-transparent text-red-500 text-sm rounded-sm px-4 py-2 cursor-not-allowed flex items-center justify-start">
             Inactive
           </div>
         )}

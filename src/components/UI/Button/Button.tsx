@@ -37,7 +37,7 @@ export default function Button(props: Props) {
   return (
     <button
       disabled={props.disabled || false}
-      className={`focus:outline-none focus-visible:ring-4 text-center font-bold rounded transition-colors
+      className={`focus:outline-hidden focus-visible:ring-4 text-center font-bold rounded-sm transition-colors
       ${colorClasses[props.color || 'primary']}
       ${sizeClasses[props.size || 'default']}
       ${props.className || ''}

@@ -19,7 +19,7 @@ export default function CurrentPrice(props: Props) {
             {props.price ? (
               <>{toCurrencyString(props.price, currency)}</>
             ) : (
-              <div className="animate-pulse bg-neutral-300/40 dark:bg-neutral-700/40 rounded col-span-2 w-20 h-8 mx-auto"></div>
+              <div className="animate-pulse bg-neutral-300/40 dark:bg-neutral-700/40 rounded-sm col-span-2 w-20 h-8 mx-auto"></div>
             )}
           </div>
         </div>

@@ -139,7 +139,7 @@ const ValidatorModal = (props: Props) => {
           {imgUrl ? (
             <img src={imgUrl} alt={`validator logo`} className="rounded-full w-10" />
           ) : (
-            <div className="relative bg-blue-500 dark:bg-blue-500 rounded-full w-10 h-10">
+            <div className="relative bg-blue-500 dark:bg-blue-500 rounded-full size-10">
               <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 font-semibold">
                 {/* .charAt(0) or .slice(0,1) won't work here with emojis! */}
                 {[...selectedValidator?.description?.moniker][0].toUpperCase()}
@@ -162,7 +162,7 @@ const ValidatorModal = (props: Props) => {
           </div>
           <div className="flex gap-4 items-center">
             {selectedValidator?.status === 'BOND_STATUS_UNBONDED' && (
-              <div className="border border-red-500 bg-transparent text-red-500 text-sm rounded px-4 py-2 flex items-center justify-start">
+              <div className="border border-red-500 bg-transparent text-red-500 text-sm rounded-sm px-4 py-2 flex items-center justify-start">
                 Inactive
               </div>
             )}
@@ -268,7 +268,7 @@ const ValidatorModal = (props: Props) => {
                       {' '}
                       {validatorSelfDelegation && `${formatNumber(validatorSelfDelegation / 1e6, 2)} SCRT`}{' '}
                       {!validatorSelfDelegation && (
-                        <div className="animate-pulse bg-neutral-700/40 rounded col-span-2 w-16 h-8"></div>
+                        <div className="animate-pulse bg-neutral-700/40 rounded-sm col-span-2 w-16 h-8"></div>
                       )}
                     </div>
                   </div>
@@ -344,7 +344,7 @@ const ValidatorModal = (props: Props) => {
                 <div className="font-bold mb-2">Available to Stake</div>
                 <div className="mb-1">
                   {scrtBalance === null ? (
-                    <div className="animate-pulse bg-neutral-300/40 dark:bg-neutral-700/40 rounded w-20 h-5"></div>
+                    <div className="animate-pulse bg-neutral-300/40 dark:bg-neutral-700/40 rounded-sm w-20 h-5"></div>
                   ) : (
                     <>
                       <span className="text-base font-medium font-mono">
@@ -355,7 +355,7 @@ const ValidatorModal = (props: Props) => {
                   )}
                 </div>
                 {scrtBalance === null ? (
-                  <div className="animate-pulse bg-neutral-300/40 dark:bg-neutral-700/40 rounded w-20 h-5"></div>
+                  <div className="animate-pulse bg-neutral-300/40 dark:bg-neutral-700/40 rounded-sm w-20 h-5"></div>
                 ) : (
                   <div className="text-xs text-neutral-500 dark:text-neutral-400 font-medium font-mono">
                     {toCurrencyString(

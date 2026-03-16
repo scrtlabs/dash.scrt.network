@@ -65,7 +65,7 @@ export const ConnectWalletModal = (props: IConnectWalletModalProps) => {
                 <span className="flex-1 font-medium group-disabled:text-neutral-400 group-disabled:dark:text-neutral-500">
                   Starshell Wallet
                 </span>
-                <span className="text-white dark:text-white group-enabled:bg-blue-500 group-enabled:dark:bg-blue-500 group-enabled:group-hover:bg-blue-600 group-enabled:dark:group-hover:bg-blue-400 transition-colors px-3 py-1.5 rounded text-xs font-semibold group-disabled:bg-neutral-400 group-disabled:dark:bg-neutral-700">
+                <span className="text-white dark:text-white group-enabled:bg-blue-500 group-enabled:dark:bg-blue-500 group-enabled:group-hover:bg-blue-600 group-enabled:dark:group-hover:bg-blue-400 transition-colors px-3 py-1.5 rounded-sm text-xs font-semibold group-disabled:bg-neutral-400 group-disabled:dark:bg-neutral-700">
                   <FontAwesomeIcon icon={faDesktop} className="mr-1" />
                   Desktop / <FontAwesomeIcon icon={faMobileScreen} className="mr-1" />
                   Mobile
@@ -84,7 +84,7 @@ export const ConnectWalletModal = (props: IConnectWalletModalProps) => {
                 <span className="flex-1 font-medium group-disabled:text-neutral-400 group-disabled:dark:text-neutral-500">
                   Leap Wallet
                 </span>
-                <span className="text-white dark:text-white group-enabled:bg-blue-500 group-enabled:dark:bg-blue-500 group-enabled:group-hover:bg-blue-600 group-enabled:dark:group-hover:bg-blue-400 transition-colors px-3 py-1.5 rounded text-xs font-semibold group-disabled:bg-neutral-400 group-disabled:dark:bg-neutral-700">
+                <span className="text-white dark:text-white group-enabled:bg-blue-500 group-enabled:dark:bg-blue-500 group-enabled:group-hover:bg-blue-600 group-enabled:dark:group-hover:bg-blue-400 transition-colors px-3 py-1.5 rounded-sm text-xs font-semibold group-disabled:bg-neutral-400 group-disabled:dark:bg-neutral-700">
                   <FontAwesomeIcon icon={faDesktop} className="mr-1" />
                   Desktop / <FontAwesomeIcon icon={faMobileScreen} className="mr-1" />
                   Mobile
@@ -103,7 +103,7 @@ export const ConnectWalletModal = (props: IConnectWalletModalProps) => {
                 <span className="flex-1 font-medium group-disabled:text-neutral-400 group-disabled:dark:text-neutral-500">
                   Fina Wallet
                 </span>
-                <span className="text-white dark:text-white group-enabled:bg-blue-500 group-enabled:dark:bg-blue-500 group-enabled:group-hover:bg-blue-600 group-enabled:dark:group-hover:bg-blue-400 transition-colors px-3 py-1.5 rounded text-xs font-semibold group-disabled:bg-neutral-400 group-disabled:dark:bg-neutral-700">
+                <span className="text-white dark:text-white group-enabled:bg-blue-500 group-enabled:dark:bg-blue-500 group-enabled:group-hover:bg-blue-600 group-enabled:dark:group-hover:bg-blue-400 transition-colors px-3 py-1.5 rounded-sm text-xs font-semibold group-disabled:bg-neutral-400 group-disabled:dark:bg-neutral-700">
                   <FontAwesomeIcon icon={faMobileScreen} className="mr-1" />
                   Mobile
                 </span>
@@ -121,7 +121,7 @@ export const ConnectWalletModal = (props: IConnectWalletModalProps) => {
                 <span className="flex-1 font-medium group-disabled:text-neutral-400 group-disabled:dark:text-neutral-500">
                   Keplr Wallet
                 </span>
-                <span className="text-white dark:text-white group-enabled:bg-blue-500 group-enabled:dark:bg-blue-500 group-enabled:group-hover:bg-blue-600 group-enabled:dark:group-hover:bg-blue-400 transition-colors px-3 py-1.5 rounded text-xs font-semibold group-disabled:bg-neutral-400 group-disabled:dark:bg-neutral-700">
+                <span className="text-white dark:text-white group-enabled:bg-blue-500 group-enabled:dark:bg-blue-500 group-enabled:group-hover:bg-blue-600 group-enabled:dark:group-hover:bg-blue-400 transition-colors px-3 py-1.5 rounded-sm text-xs font-semibold group-disabled:bg-neutral-400 group-disabled:dark:bg-neutral-700">
                   <FontAwesomeIcon icon={faDesktop} className="mr-1" />
                   Desktop
                 </span>

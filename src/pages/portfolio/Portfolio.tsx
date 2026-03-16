@@ -132,7 +132,7 @@ export default function Portfolio() {
             <div className="w-full xs:w-auto">
               <div className="relative sm:w-72">
                 <div className="absolute right-0 pr-3 inset-y-0 pointer-events-none text-sm flex items-center">
-                  <div className="bg-gray-100 dark:bg-neutral-700 px-1 rounded flex items-center gap-0.5">
+                  <div className="bg-gray-100 dark:bg-neutral-700 px-1 rounded-sm flex items-center gap-0.5">
                     <kbd>{isMac ? '⌘' : 'CTRL+'}</kbd>
                     <kbd>K</kbd>
                   </div>
@@ -146,7 +146,7 @@ export default function Portfolio() {
                   onChange={(e) => setSearchQuery(e.target.value)}
                   type="text"
                   id="search"
-                  className="block w-full p-2.5 pl-10 text-sm rounded-lg text-neutral-800 dark:text-white bg-white dark:bg-neutral-800 placeholder-neutral-600 dark:placeholder-neutral-400 border border-neutral-300 dark:border-neutral-700 focus:outline-none focus:ring-2 focus:ring-cyan-500 dark:focus:ring-cyan-500"
+                  className="block w-full p-2.5 pl-10 text-sm rounded-lg text-neutral-800 dark:text-white bg-white dark:bg-neutral-800 placeholder-neutral-600 dark:placeholder-neutral-400 border border-neutral-300 dark:border-neutral-700 focus:outline-hidden focus:ring-2 focus:ring-cyan-500 dark:focus:ring-cyan-500"
                   placeholder="Search"
                 />
               </div>

@@ -124,7 +124,7 @@ function Settings() {
                   value={formik.values.theme}
                   onBlur={formik.handleBlur}
                   onChange={formik.handleChange}
-                  className="w-full appearance-none dark:bg-neutral-800 border dark:border-neutral-700 py-2 px-4 rounded-lg focus:outline-none focus-visible:ring-4 enabled:ring-sky-500/40 dark:enabled:ring-sky-600/40"
+                  className="w-full appearance-none dark:bg-neutral-800 border dark:border-neutral-700 py-2 px-4 rounded-lg focus:outline-hidden focus-visible:ring-4 enabled:ring-sky-500/40 dark:enabled:ring-sky-600/40"
                 >
                   {themeOptions.map((theme: any, index: number) => {
                     return (
@@ -148,7 +148,7 @@ function Settings() {
                 </span>
                 <select
                   id="currency"
-                  className="w-full appearance-none dark:bg-neutral-800 border dark:border-neutral-700 py-2 px-4 rounded-lg focus:outline-none focus-visible:ring-4 enabled:ring-sky-500/40 dark:enabled:ring-sky-600/40"
+                  className="w-full appearance-none dark:bg-neutral-800 border dark:border-neutral-700 py-2 px-4 rounded-lg focus:outline-hidden focus-visible:ring-4 enabled:ring-sky-500/40 dark:enabled:ring-sky-600/40"
                   value={formik.values.currency}
                   onBlur={formik.handleBlur}
                   onChange={formik.handleChange}
@@ -174,7 +174,7 @@ function Settings() {
                 type="checkbox"
                 className="sr-only peer"
               />
-              <div className="relative w-11 h-6 bg-neutral-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-purple-300 dark:peer-focus:ring-purple-800 rounded-full peer dark:bg-neutral-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-neutral-300 after:border after:rounded-full after:w-5 after:h-5 after:transition-all dark:border-neutral-600 peer-checked:bg-purple-600"></div>
+              <div className="relative w-11 h-6 bg-neutral-200 peer-focus:outline-hidden peer-focus:ring-4 peer-focus:ring-purple-300 dark:peer-focus:ring-purple-800 rounded-full peer dark:bg-neutral-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-neutral-300 after:border after:rounded-full after:w-5 after:h-5 after:transition-all dark:border-neutral-600 peer-checked:bg-purple-600"></div>
               <span className="ms-3 text-sm font-medium text-neutral-900 dark:text-neutral-300">
                 <FontAwesomeIcon icon={faBug} className="mr-2 text-green-700 dark:text-green-600" />
                 Debug Mode
@@ -193,7 +193,7 @@ function Settings() {
             {/* Debug Info */}
             {debugMode ||
               (debugModeOverride && (
-                <div className="text-sky-500 text-xs p-2 bg-blue-500/20 rounded">
+                <div className="text-sky-500 text-xs p-2 bg-blue-500/20 rounded-sm">
                   <div className="mb-4 font-semibold">Debug Info</div>
                   <div className="flex flex-col gap-2">
                     <span> formik.values: {JSON.stringify(formik.values)}</span>

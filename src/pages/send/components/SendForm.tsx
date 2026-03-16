@@ -354,7 +354,7 @@ export default function SendForm() {
       {/* Submit Button */}
       <button
         className={
-          'enabled:bg-gradient-to-r enabled:from-cyan-600 enabled:to-purple-600 enabled:hover:from-cyan-500 enabled:hover:to-purple-500 transition-colors text-white font-extrabold py-3 w-full rounded-lg disabled:bg-neutral-500 focus:outline-none focus-visible:ring-4 ring-sky-500/40'
+          'enabled:bg-linear-to-r enabled:from-cyan-600 enabled:to-purple-600 enabled:hover:from-cyan-500 enabled:hover:to-purple-500 transition-colors text-white font-extrabold py-3 w-full rounded-lg disabled:bg-neutral-500 focus:outline-hidden focus-visible:ring-4 ring-sky-500/40'
         }
         disabled={!isConnected}
         type="submit"
@@ -365,7 +365,7 @@ export default function SendForm() {
       {/* Debug Info */}
       {debugMode ||
         (debugModeOverride && (
-          <div className="text-sky-500 text-xs p-2 bg-blue-500/20 rounded">
+          <div className="text-sky-500 text-xs p-2 bg-blue-500/20 rounded-sm">
             <div className="mb-4 font-semibold">Debug Info</div>
             formik.errors: {JSON.stringify(formik.errors)}
           </div>

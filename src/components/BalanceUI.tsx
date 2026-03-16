@@ -93,7 +93,7 @@ export default function BalanceUI({
       <div className="flex items-center justify-center gap-1.5">
         {/* Skeleton Loader */}
         {balance === null && (
-          <span className="animate-pulse bg-neutral-300/40 dark:bg-neutral-600 rounded w-20 h-5 ml-2"></span>
+          <span className="animate-pulse bg-neutral-300/40 dark:bg-neutral-600 rounded-sm w-20 h-5 ml-2"></span>
         )}
 
         {balance !== null &&

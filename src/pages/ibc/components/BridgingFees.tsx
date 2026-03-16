@@ -86,7 +86,7 @@ export default function BridgingFees(props: IProps) {
           ${props.token.coingecko_id && priceString ? ` (${priceString})` : ''}`}
           </div>
         ) : (
-          <span className="animate-pulse bg-neutral-300/40 dark:bg-neutral-600/40 rounded w-20 h-5"></span>
+          <span className="animate-pulse bg-neutral-300/40 dark:bg-neutral-600/40 rounded-sm w-20 h-5"></span>
         )}
       </div>
     </div>

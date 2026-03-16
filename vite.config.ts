@@ -2,10 +2,12 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import tsconfigPaths from 'vite-tsconfig-paths'
 import { whip003 } from './vite-plugin-whip-003'
+import tailwindcss from '@tailwindcss/vite'
 
 export default defineConfig({
   plugins: [
     { ...react() },
+    tailwindcss(),
     { ...tsconfigPaths() },
     {
       ...whip003(),
