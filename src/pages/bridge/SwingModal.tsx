@@ -1,26 +1,26 @@
-import { faXmark } from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { Theme } from 'types/Theme'
-import { Swap } from '@swing.xyz/ui'
-import { useEffect } from 'react'
+import { faXmark } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Theme } from "types/Theme";
+import { Swap } from "@swing.xyz/ui";
+import { useEffect } from "react";
 
 interface Props {
-  open: boolean
-  onClose: any
-  theme: Theme
-  secretAddress: string
+  open: boolean;
+  onClose: any;
+  theme: Theme;
+  secretAddress: string;
 }
 
 const SwingModal = (props: Props) => {
-  if (!props.open) return null
+  if (!props.open) return null;
 
   useEffect(() => {
-    if (props.theme === 'light') {
-      import('./SwingModal_Light.scss')
+    if (props.theme === "light") {
+      import("./SwingModal_Light.scss");
     } else {
-      import('./SwingModal_Dark.scss')
+      import("./SwingModal_Dark.scss");
     }
-  }, [props.theme])
+  }, [props.theme]);
   return (
     <>
       {/* Outer */}
@@ -30,11 +30,11 @@ const SwingModal = (props: Props) => {
       >
         {/* Inner */}
         <div className="relative onEnter_fadeInDown h-full overflow-scroll scrollbar-hide flex items-center justify-center">
-          <div className="mx-auto px-4" style={{ minWidth: '500px' }}>
+          <div className="mx-auto px-4" style={{ minWidth: "500px" }}>
             <div
               className="bg-white dark:bg-neutral-900 rounded-2xl p-6 relative w-full"
               onClick={(e) => {
-                e.stopPropagation()
+                e.stopPropagation();
               }}
             >
               {/* Close Button */}
@@ -44,13 +44,17 @@ const SwingModal = (props: Props) => {
               >
                 <FontAwesomeIcon icon={faXmark} className="fa-fw" />
               </button>
-              <Swap projectId="secret-network" environment="production" title="" />
+              <Swap
+                projectId="secret-network"
+                environment="production"
+                title=""
+              />
             </div>
           </div>
         </div>
       </div>
     </>
-  )
-}
+  );
+};
 
-export default SwingModal
+export default SwingModal;

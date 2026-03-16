@@ -1,13 +1,13 @@
-import { useContext } from 'react'
-import StakingAmount from './StakingAmount'
-import AvailableBalance from './AvailableBalance'
-import ClaimableRewards from './ClaimableRewards'
-import { StakingContext } from 'pages/staking/Staking'
+import { useContext } from "react";
+import StakingAmount from "./StakingAmount";
+import AvailableBalance from "./AvailableBalance";
+import ClaimableRewards from "./ClaimableRewards";
+import { StakingContext } from "pages/staking/Staking";
 
 function StakingStats() {
-  const { getTotalAmountStaked } = useContext(StakingContext)
+  const { getTotalAmountStaked } = useContext(StakingContext);
 
-  const stakedAmount = getTotalAmountStaked() || null
+  const stakedAmount = getTotalAmountStaked() || null;
 
   return (
     <div className="max-w-6xl mx-auto px-4">
@@ -28,7 +28,7 @@ function StakingStats() {
         </div>
       </div>
     </div>
-  )
+  );
 }
 
-export default StakingStats
+export default StakingStats;

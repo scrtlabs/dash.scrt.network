@@ -1,32 +1,35 @@
-import { faInfoCircle, faXmark } from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { useEffect } from 'react'
+import { faInfoCircle, faXmark } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useEffect } from "react";
 
 interface Props {
-  open?: boolean
-  onClose?: any
+  open?: boolean;
+  onClose?: any;
 }
 
 const FeeGrantInfoModal = (props: Props) => {
   // disable body scroll on open
   useEffect(() => {
     if (props.open) {
-      document.body.classList.add('overflow-hidden')
+      document.body.classList.add("overflow-hidden");
     } else {
-      document.body.classList.remove('overflow-hidden')
+      document.body.classList.remove("overflow-hidden");
     }
-  }, [props.open])
+  }, [props.open]);
 
-  if (!props.open) return null
+  if (!props.open) return null;
 
   return (
-    <div className="fixed top-0 left-0 right-0 bottom-0 bg-black/80 z-50" onClick={props.onClose}>
+    <div
+      className="fixed top-0 left-0 right-0 bottom-0 bg-black/80 z-50"
+      onClick={props.onClose}
+    >
       <div className="absolute top-[15%] w-full onEnter_fadeInDown">
         <div className="mx-auto max-w-xl px-4">
           <div
             className="bg-neutral-900 p-8 rounded-2xl"
             onClick={(e) => {
-              e.stopPropagation()
+              e.stopPropagation();
             }}
           >
             {/* Header */}
@@ -42,13 +45,17 @@ const FeeGrantInfoModal = (props: Props) => {
             {/* Header */}
             <div className="mb-4 text-center">
               <h2 className="text-2xl font-medium mb-4">
-                <FontAwesomeIcon icon={faInfoCircle} className="mr-2 text-neutral-500" />
+                <FontAwesomeIcon
+                  icon={faInfoCircle}
+                  className="mr-2 text-neutral-500"
+                />
                 Fee Grant Feature
               </h2>
               <p className="text-neutral-400 max-w-sm mx-auto mb-6">
-                Lorem, ipsum dolor sit amet consectetur adipisicing elit. Corrupti, ducimus? Modi inventore, deleniti
-                culpa quasi quis reiciendis sint, consectetur voluptate eaque ea aliquam rerum natus vel nostrum, quod
-                praesentium quidem!
+                Lorem, ipsum dolor sit amet consectetur adipisicing elit.
+                Corrupti, ducimus? Modi inventore, deleniti culpa quasi quis
+                reiciendis sint, consectetur voluptate eaque ea aliquam rerum
+                natus vel nostrum, quod praesentium quidem!
               </p>
               <button
                 onClick={props.onClose}
@@ -64,7 +71,7 @@ const FeeGrantInfoModal = (props: Props) => {
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default FeeGrantInfoModal
+export default FeeGrantInfoModal;

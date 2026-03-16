@@ -1,199 +1,243 @@
-import { useEffect, useState } from 'react'
-import Header from 'components/Header'
-import { ApiStatus } from 'types/ApiStatus'
-import ApiStatusIcon from './components/ApiStatusIcon'
-import Message from './components/Message'
-import Button from 'components/UI/Button/Button'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faPlus } from '@fortawesome/free-solid-svg-icons'
-import { BroadcastMode, SecretNetworkClient } from 'secretjs'
-import { MessageDefinitions, balanceFormat } from './components/Messages'
-import { useSecretNetworkClientStore } from 'store/secretNetworkClient'
-import { Nullable } from 'types/Nullable'
-import { WalletService } from 'services/wallet.service'
-import { SECRET_LCD } from 'utils/config'
-import { useSearchParams } from 'react-router-dom'
-import { NotificationService } from 'services/notification.service'
-import Modal from 'components/UI/Modal/Modal'
-import { powertoolsJsonLdSchema, powertoolsPageDescription, powertoolsPageTitle, queryTxResult } from 'utils/commons'
+import { useEffect, useState } from "react";
+import Header from "components/Header";
+import { ApiStatus } from "types/ApiStatus";
+import ApiStatusIcon from "./components/ApiStatusIcon";
+import Message from "./components/Message";
+import Button from "components/UI/Button/Button";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPlus } from "@fortawesome/free-solid-svg-icons";
+import { BroadcastMode, SecretNetworkClient } from "secretjs";
+import { MessageDefinitions, balanceFormat } from "./components/Messages";
+import { useSecretNetworkClientStore } from "store/secretNetworkClient";
+import { Nullable } from "types/Nullable";
+import { WalletService } from "services/wallet.service";
+import { SECRET_LCD } from "utils/config";
+import { useSearchParams } from "react-router-dom";
+import { NotificationService } from "services/notification.service";
+import Modal from "components/UI/Modal/Modal";
+import {
+  powertoolsJsonLdSchema,
+  powertoolsPageDescription,
+  powertoolsPageTitle,
+  queryTxResult,
+} from "utils/commons";
 
 export type TMessage = {
-  type: string
-  content: string
-}
+  type: string;
+  content: string;
+};
 
 function Powertools() {
-  const [secretjs, setSecretjs] = useState<Nullable<SecretNetworkClient>>(null)
-  const [apiUrl, setApiUrl] = useState<string>(SECRET_LCD)
-  const [apiStatus, setApiStatus] = useState<ApiStatus>('loading')
-  const [denom, setDenom] = useState<string>('uscrt')
-  const [chainId, setChainId] = useState<string>('')
-  const [blockHeight, setBlockHeight] = useState<string>('')
-  const [gasPrice, setGasPrice] = useState<string>('')
-  const [prefix, setPrefix] = useState<string>('secret')
+  const [secretjs, setSecretjs] = useState<Nullable<SecretNetworkClient>>(null);
+  const [apiUrl, setApiUrl] = useState<string>(SECRET_LCD);
+  const [apiStatus, setApiStatus] = useState<ApiStatus>("loading");
+  const [denom, setDenom] = useState<string>("uscrt");
+  const [chainId, setChainId] = useState<string>("");
+  const [blockHeight, setBlockHeight] = useState<string>("");
+  const [gasPrice, setGasPrice] = useState<string>("");
+  const [prefix, setPrefix] = useState<string>("secret");
 
-  const [searchParams, setSearchParams] = useSearchParams()
-  const initialMessages = parseSearchParams(searchParams)
+  const [searchParams, setSearchParams] = useSearchParams();
+  const initialMessages = parseSearchParams(searchParams);
 
-  const { isConnected } = useSecretNetworkClientStore()
+  const { isConnected } = useSecretNetworkClientStore();
 
   function parseSearchParams(params: any) {
-    const messagesParam = params.get('messages')
+    const messagesParam = params.get("messages");
     if (!messagesParam) {
-      return [{ type: '', content: '' }]
+      return [{ type: "", content: "" }];
     }
     try {
-      return JSON.parse(decodeURIComponent(messagesParam))
+      return JSON.parse(decodeURIComponent(messagesParam));
     } catch (e) {
-      console.error('Error parsing messages from URL:', e)
-      return [{ type: '', content: '' }]
+      console.error("Error parsing messages from URL:", e);
+      return [{ type: "", content: "" }];
     }
   }
 
-  const [messages, setMessages] = useState<Nullable<TMessage>[]>(initialMessages)
+  const [messages, setMessages] =
+    useState<Nullable<TMessage>[]>(initialMessages);
 
   async function handleSendTx() {
-    const toastId = NotificationService.notify('Sending transaction...', 'loading')
+    const toastId = NotificationService.notify(
+      "Sending transaction...",
+      "loading",
+    );
     try {
       const hasEmptyTypeAndContent = messages.some(
-        (message) => message && message.type === '' && message.content === ''
-      )
+        (message) => message && message.type === "" && message.content === "",
+      );
       if (hasEmptyTypeAndContent) {
-        throw Error('Messages must not be empty')
+        throw Error("Messages must not be empty");
       }
       if (!secretjs) {
-        throw Error('Secretjs is not initialized')
+        throw Error("Secretjs is not initialized");
       }
       const txMessages = messages.map((message) => {
-        return MessageDefinitions[message.type].converter(JSON.parse(message.content), prefix, denom)
-      })
+        return MessageDefinitions[message.type].converter(
+          JSON.parse(message.content),
+          prefix,
+          denom,
+        );
+      });
       let tx = await secretjs.tx.broadcast(txMessages, {
         gasLimit: 300_000,
         broadcastCheckIntervalMs: 10000,
         gasPriceInFeeDenom: 0.25,
-        feeDenom: 'uscrt',
+        feeDenom: "uscrt",
         broadcastMode: BroadcastMode.Sync,
-        waitForCommit: false
-      })
+        waitForCommit: false,
+      });
 
-      tx = await queryTxResult(secretjs, tx.transactionHash, 5000, 10)
+      tx = await queryTxResult(secretjs, tx.transactionHash, 5000, 10);
 
       if (tx.code === 0) {
-        NotificationService.notify('Transaction sent successfully', 'success', toastId)
+        NotificationService.notify(
+          "Transaction sent successfully",
+          "success",
+          toastId,
+        );
       } else {
-        NotificationService.notify(`Transaction failed to send with error: ${tx.rawLog}`, 'error', toastId)
-        console.error(`Transaction failed to send with error: ${tx.rawLog}`, 'error', toastId)
+        NotificationService.notify(
+          `Transaction failed to send with error: ${tx.rawLog}`,
+          "error",
+          toastId,
+        );
+        console.error(
+          `Transaction failed to send with error: ${tx.rawLog}`,
+          "error",
+          toastId,
+        );
       }
     } catch (error: any) {
-      NotificationService.notify(`An error occurred: ${error.message}`, 'error', toastId)
-      console.error(error)
+      NotificationService.notify(
+        `An error occurred: ${error.message}`,
+        "error",
+        toastId,
+      );
+      console.error(error);
     } finally {
     }
   }
 
   const updateMessageType = (index: number, newType: string) => {
     setMessages((currentMessages) =>
-      currentMessages.map((message, i) => (i === index ? { ...message, type: newType } : message))
-    )
-  }
+      currentMessages.map((message, i) =>
+        i === index ? { ...message, type: newType } : message,
+      ),
+    );
+  };
 
   const updateMessageContent = (index: number, newContent: string) => {
     setMessages((currentMessages) =>
-      currentMessages.map((message, i) => (i === index ? { ...message, content: newContent } : message))
-    )
-  }
+      currentMessages.map((message, i) =>
+        i === index ? { ...message, content: newContent } : message,
+      ),
+    );
+  };
 
   // Serialize and update the URL when messages state changes
   useEffect(() => {
-    const serializedMessages = encodeURIComponent(JSON.stringify(messages))
-    setSearchParams({ messages: serializedMessages })
-  }, [messages, setSearchParams])
+    const serializedMessages = encodeURIComponent(JSON.stringify(messages));
+    setSearchParams({ messages: serializedMessages });
+  }, [messages, setSearchParams]);
 
   function deleteMessage(index: number): void {
     if (messages.length > 1 && index >= 0 && index < messages.length) {
       // Create a new array without the message at the specified index
-      const updatedMessages = [...messages.slice(0, index), ...messages.slice(index + 1)]
+      const updatedMessages = [
+        ...messages.slice(0, index),
+        ...messages.slice(index + 1),
+      ];
 
       // Update the state with the new array
-      setMessages(updatedMessages)
+      setMessages(updatedMessages);
     } else {
-      setMessages([{ type: '', content: '' }])
+      setMessages([{ type: "", content: "" }]);
     }
   }
   function handleAddMessage() {
-    const emptyMessage: TMessage = { type: '', content: '' }
-    setMessages((prevMessages) => [...prevMessages, emptyMessage])
+    const emptyMessage: TMessage = { type: "", content: "" };
+    setMessages((prevMessages) => [...prevMessages, emptyMessage]);
   }
 
-  const { walletAPIType } = useSecretNetworkClientStore()
+  const { walletAPIType } = useSecretNetworkClientStore();
 
   const refreshNodeStatus = async (showLoading: boolean = true) => {
     try {
       if (showLoading) {
-        setApiStatus('loading')
+        setApiStatus("loading");
       }
 
       const secretjsquery = new SecretNetworkClient({
         url: apiUrl,
-        chainId: ''
-      })
-      const { block } = await secretjsquery.query.tendermint.getLatestBlock({})
-      let minimum_gas_price: string | undefined
+        chainId: "",
+      });
+      const { block } = await secretjsquery.query.tendermint.getLatestBlock({});
+      let minimum_gas_price: string | undefined;
       try {
-        ;({ minimum_gas_price } = await secretjsquery.query.node.config({}))
+        ({ minimum_gas_price } = await secretjsquery.query.node.config({}));
       } catch (error) {
         // Bug on must chains - this endpoint isn't connected
       }
-      const { params } = await secretjsquery.query.staking.params({})
+      const { params } = await secretjsquery.query.staking.params({});
 
-      setDenom(params!.bond_denom!)
+      setDenom(params!.bond_denom!);
 
-      const newChainId = block?.header?.chain_id!
+      const newChainId = block?.header?.chain_id!;
 
-      const newBlockHeight = balanceFormat(Number(block?.header?.height))
+      const newBlockHeight = balanceFormat(Number(block?.header?.height));
 
-      let newGasPrice: string | undefined
+      let newGasPrice: string | undefined;
       if (minimum_gas_price) {
-        newGasPrice = minimum_gas_price.replace(/0*([a-z]+)$/, '$1')
+        newGasPrice = minimum_gas_price.replace(/0*([a-z]+)$/, "$1");
       }
 
-      const { secretjs: importedSecretjs } = await WalletService.connectWallet(walletAPIType, apiUrl, newChainId)
+      const { secretjs: importedSecretjs } = await WalletService.connectWallet(
+        walletAPIType,
+        apiUrl,
+        newChainId,
+      );
 
-      setPrefix(importedSecretjs.address.replace(/^([a-z]+)1.*$/, '$1'))
-      setSecretjs(importedSecretjs)
-      setChainId(newChainId)
-      setApiStatus('online')
-      setBlockHeight(newBlockHeight)
-      setGasPrice(newGasPrice)
+      setPrefix(importedSecretjs.address.replace(/^([a-z]+)1.*$/, "$1"));
+      setSecretjs(importedSecretjs);
+      setChainId(newChainId);
+      setApiStatus("online");
+      setBlockHeight(newBlockHeight);
+      setGasPrice(newGasPrice);
     } catch (error) {
-      let errorMessage: string
+      let errorMessage: string;
       if (error instanceof Error) {
-        errorMessage = error.message
+        errorMessage = error.message;
       } else {
-        errorMessage = JSON.stringify(error)
+        errorMessage = JSON.stringify(error);
       }
 
-      setApiStatus('offline')
-      setChainId('')
-      setBlockHeight('')
-      setGasPrice('')
+      setApiStatus("offline");
+      setChainId("");
+      setBlockHeight("");
+      setGasPrice("");
     }
-  }
+  };
 
   useEffect(() => {
-    refreshNodeStatus(true)
-  }, [apiUrl])
+    refreshNodeStatus(true);
+  }, [apiUrl]);
 
-  const [isViewMessageModalOpen, setIsViewMessageModalOpen] = useState<boolean>(false)
+  const [isViewMessageModalOpen, setIsViewMessageModalOpen] =
+    useState<boolean>(false);
 
   const copyMessageToClipboard = async () => {
     try {
-      await navigator.clipboard.writeText(JSON.stringify(messages))
-      NotificationService.notify('Message copied to clipboard', 'success')
+      await navigator.clipboard.writeText(JSON.stringify(messages));
+      NotificationService.notify("Message copied to clipboard", "success");
     } catch (e) {
-      NotificationService.notify('Could not copy message to clipboard', 'error')
+      NotificationService.notify(
+        "Could not copy message to clipboard",
+        "error",
+      );
     }
-  }
+  };
 
   return (
     <>
@@ -215,14 +259,16 @@ function Powertools() {
       <meta name="twitter:description" content={powertoolsPageDescription} />
       {/* <meta name='twitter:image' content='Image URL Here'/> */}
 
-      <script type="application/ld+json">{JSON.stringify(powertoolsJsonLdSchema)}</script>
+      <script type="application/ld+json">
+        {JSON.stringify(powertoolsJsonLdSchema)}
+      </script>
 
       <Modal
-        title={'Power Tools – Full Message'}
+        title={"Power Tools – Full Message"}
         isOpen={isViewMessageModalOpen}
         onClose={() => {
-          setIsViewMessageModalOpen(false)
-          document.body.classList.remove('overflow-hidden')
+          setIsViewMessageModalOpen(false);
+          document.body.classList.remove("overflow-hidden");
         }}
       >
         <div className="my-4 dark:bg-neutral-800 bg-neutral-200 p-2 rounded-sm text-sm text-black dark:text-white">
@@ -236,8 +282,8 @@ function Powertools() {
             type="button"
             color="secondary"
             onClick={() => {
-              setIsViewMessageModalOpen(false)
-              document.body.classList.remove('overflow-hidden')
+              setIsViewMessageModalOpen(false);
+              document.body.classList.remove("overflow-hidden");
             }}
           >
             Close
@@ -245,7 +291,10 @@ function Powertools() {
         </div>
       </Modal>
       <div className="container max-w-6xl mx-auto px-4">
-        <Header title={'Power Tools'} description="Send complex transactions." />
+        <Header
+          title={"Power Tools"}
+          description="Send complex transactions."
+        />
         <div className="flex items-center gap-4">
           <input
             value={apiUrl}
@@ -255,7 +304,7 @@ function Powertools() {
             placeholder="API URL"
             disabled={!isConnected}
           />
-          {isConnected && apiStatus !== 'loading' && apiStatus !== 'offline' ? (
+          {isConnected && apiStatus !== "loading" && apiStatus !== "offline" ? (
             <>
               <ApiStatusIcon apiStatus={apiStatus} />
               <div className="flex items-center gap-4">
@@ -275,7 +324,9 @@ function Powertools() {
                 type={messages[i].type}
                 content={messages[i].content}
                 updateType={(type: string) => updateMessageType(i, type)}
-                updateContent={(content: string) => updateMessageContent(i, content)}
+                updateContent={(content: string) =>
+                  updateMessageContent(i, content)
+                }
                 number={i + 1}
                 secretjs={secretjs}
                 prefix={prefix}
@@ -283,12 +334,17 @@ function Powertools() {
                 onDelete={() => deleteMessage(i)}
                 disabled={!isConnected}
               />
-            )
+            );
           })}
         </div>
 
         <div className="inline-flex justify-center w-full mb-8">
-          <Button type="button" color="secondary" onClick={handleAddMessage} disabled={!isConnected}>
+          <Button
+            type="button"
+            color="secondary"
+            onClick={handleAddMessage}
+            disabled={!isConnected}
+          >
             <FontAwesomeIcon icon={faPlus} className="mr-2" />
             Add Message
           </Button>
@@ -309,7 +365,7 @@ function Powertools() {
         <Button
           type="submit"
           className={
-            'enabled:bg-gradient-to-r enabled:from-cyan-600 enabled:to-purple-600 enabled:hover:from-cyan-500 enabled:hover:to-purple-500 transition-colors text-white font-extrabold py-3 w-full rounded-lg disabled:bg-neutral-500 focus:outline-hidden focus-visible:ring-4 ring-sky-500/40'
+            "enabled:bg-gradient-to-r enabled:from-cyan-600 enabled:to-purple-600 enabled:hover:from-cyan-500 enabled:hover:to-purple-500 transition-colors text-white font-extrabold py-3 w-full rounded-lg disabled:bg-neutral-500 focus:outline-hidden focus-visible:ring-4 ring-sky-500/40"
           }
           size="large"
           onClick={handleSendTx}
@@ -319,7 +375,7 @@ function Powertools() {
         </Button>
       </div>
     </>
-  )
+  );
 }
 
-export default Powertools
+export default Powertools;

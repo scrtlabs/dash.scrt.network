@@ -54,9 +54,9 @@ import {
   SecretNetworkClient,
   selfDelegatorAddressToValidatorAddress,
   toBase64,
-  VoteOption
-} from 'secretjs'
-import { allTokens } from 'utils/commons'
+  VoteOption,
+} from "secretjs";
+import { allTokens } from "utils/commons";
 
 export type SupportedMessage =
   | MsgBeginRedelegate
@@ -87,370 +87,391 @@ export type SupportedMessage =
   | MsgSetAutoRestake
   | MsgStoreCode
   | MsgGrantAllowance
-  | MsgRevokeAllowance
+  | MsgRevokeAllowance;
 
 export const MessageDefinitions: {
   [name: string]: {
-    module: string
-    example: (secretjs: SecretNetworkClient, old: any, prefix: string, denom: string) => any
-    converter: (input: any, prefix: string, denom: string) => SupportedMessage
-    relevantInfo?: (secretjs: SecretNetworkClient, prefix: string, denom: string, msgInput: string) => Promise<any>
-  }
+    module: string;
+    example: (
+      secretjs: SecretNetworkClient,
+      old: any,
+      prefix: string,
+      denom: string,
+    ) => any;
+    converter: (input: any, prefix: string, denom: string) => SupportedMessage;
+    relevantInfo?: (
+      secretjs: SecretNetworkClient,
+      prefix: string,
+      denom: string,
+      msgInput: string,
+    ) => Promise<any>;
+  };
 } = {
   MsgSend: {
-    module: 'bank',
-    example: (secretjs: SecretNetworkClient, old: MsgSendParams, prefix: string, denom: string): MsgSendParams => {
-      if (old) {
-        old.from_address = secretjs.address
-        return old
-      } else {
-        return {
-          from_address: secretjs.address,
-          to_address: `${prefix}1example`,
-          //@ts-ignore
-          amount: `1${denom}`
-        }
-      }
-    },
-    converter: (input: any): SupportedMessage => {
-      input.amount = coinsFromString(input.amount)
-      return new MsgSend(input)
-    },
-    relevantInfo: bankRelevantInfo
-  },
-  MsgDelegate: {
-    module: 'staking',
+    module: "bank",
     example: (
       secretjs: SecretNetworkClient,
-      old: MsgDelegateParams,
+      old: MsgSendParams,
       prefix: string,
-      denom: string
-    ): MsgDelegateParams => {
+      denom: string,
+    ): MsgSendParams => {
       if (old) {
-        old.delegator_address = secretjs.address
-        return old
-      } else {
-        return {
-          delegator_address: secretjs.address,
-          validator_address: `${prefix}valoper1example`,
-          //@ts-ignore
-          amount: `1${denom}`
-        }
-      }
-    },
-    converter: (input: any): SupportedMessage => {
-      input.amount = coinFromString(input.amount)
-      return new MsgDelegate(input)
-    },
-    relevantInfo: stakingRelevantInfo
-  },
-  MsgSetAutoRestake: {
-    module: 'distribution',
-    example: (
-      secretjs: SecretNetworkClient,
-      old: MsgSetAutoRestakeParams,
-      prefix: string,
-      denom: string
-    ): MsgSetAutoRestakeParams => {
-      if (old) {
-        old.delegator_address = secretjs.address
-        return old
-      } else {
-        return {
-          delegator_address: secretjs.address,
-          validator_address: `${prefix}valoper1example`,
-          enabled: true
-        }
-      }
-    },
-    converter: (input: any): SupportedMessage => {
-      return new MsgSetAutoRestake(input)
-    },
-    relevantInfo: stakingRelevantInfo
-  },
-  MsgBeginRedelegate: {
-    module: 'staking',
-    example: (
-      secretjs: SecretNetworkClient,
-      old: MsgBeginRedelegateParams,
-      prefix: string,
-      denom: string
-    ): MsgBeginRedelegateParams => {
-      if (old) {
-        old.delegator_address = secretjs.address
-        return old
-      } else {
-        return {
-          delegator_address: secretjs.address,
-          validator_src_address: `${prefix}valoper1example`,
-          validator_dst_address: `${prefix}valoper1example`,
-          //@ts-ignore
-          amount: `1${denom}`
-        }
-      }
-    },
-    converter: (input: any): SupportedMessage => {
-      input.amount = coinFromString(input.amount)
-      return new MsgBeginRedelegate(input)
-    },
-    relevantInfo: stakingRelevantInfo
-  },
-  MsgCreateValidator: {
-    module: 'staking',
-    example: (
-      secretjs: SecretNetworkClient,
-      old: MsgCreateValidatorParams,
-      prefix: string,
-      denom: string
-    ): MsgCreateValidatorParams => {
-      if (old) {
-        old.delegator_address = secretjs.address
-        return old
-      } else {
-        return {
-          delegator_address: secretjs.address,
-          commission: {
-            max_change_rate: 0.01, // can change +-1% every 24h
-            max_rate: 0.1, // 10%
-            rate: 0.05 // 5%
-          },
-          description: {
-            moniker: "My validator's display name",
-            identity: 'ID on keybase.io, to have a logo on explorer and stuff',
-            website: 'example.com',
-            security_contact: 'security@example.com',
-            details: 'We are good'
-          },
-          pubkey: toBase64(new Uint8Array(32).fill(1)), // validator tendermit pubkey
-          min_self_delegation: '1', // ${denom}
-          //@ts-ignore
-          initial_delegation: `1${denom}`
-        }
-      }
-    },
-    converter: (input: any) => {
-      input.initial_delegation = coinFromString(input.initial_delegation)
-      return new MsgCreateValidator(input)
-    }
-  },
-  MsgCreateVestingAccount: {
-    module: 'vesting',
-    example: (
-      secretjs: SecretNetworkClient,
-      old: MsgCreateVestingAccountParams,
-      prefix: string,
-      denom: string
-    ): MsgCreateVestingAccountParams => {
-      if (old) {
-        old.from_address = secretjs.address
-        return old
+        old.from_address = secretjs.address;
+        return old;
       } else {
         return {
           from_address: secretjs.address,
           to_address: `${prefix}1example`,
           //@ts-ignore
           amount: `1${denom}`,
-          end_time: '2020-09-15T14:00:00Z',
-          delayed: false
-        }
+        };
       }
     },
     converter: (input: any): SupportedMessage => {
-      input.amount = coinsFromString(input.amount)
-      return new MsgCreateVestingAccount(input)
-    }
+      input.amount = coinsFromString(input.amount);
+      return new MsgSend(input);
+    },
+    relevantInfo: bankRelevantInfo,
+  },
+  MsgDelegate: {
+    module: "staking",
+    example: (
+      secretjs: SecretNetworkClient,
+      old: MsgDelegateParams,
+      prefix: string,
+      denom: string,
+    ): MsgDelegateParams => {
+      if (old) {
+        old.delegator_address = secretjs.address;
+        return old;
+      } else {
+        return {
+          delegator_address: secretjs.address,
+          validator_address: `${prefix}valoper1example`,
+          //@ts-ignore
+          amount: `1${denom}`,
+        };
+      }
+    },
+    converter: (input: any): SupportedMessage => {
+      input.amount = coinFromString(input.amount);
+      return new MsgDelegate(input);
+    },
+    relevantInfo: stakingRelevantInfo,
+  },
+  MsgSetAutoRestake: {
+    module: "distribution",
+    example: (
+      secretjs: SecretNetworkClient,
+      old: MsgSetAutoRestakeParams,
+      prefix: string,
+      denom: string,
+    ): MsgSetAutoRestakeParams => {
+      if (old) {
+        old.delegator_address = secretjs.address;
+        return old;
+      } else {
+        return {
+          delegator_address: secretjs.address,
+          validator_address: `${prefix}valoper1example`,
+          enabled: true,
+        };
+      }
+    },
+    converter: (input: any): SupportedMessage => {
+      return new MsgSetAutoRestake(input);
+    },
+    relevantInfo: stakingRelevantInfo,
+  },
+  MsgBeginRedelegate: {
+    module: "staking",
+    example: (
+      secretjs: SecretNetworkClient,
+      old: MsgBeginRedelegateParams,
+      prefix: string,
+      denom: string,
+    ): MsgBeginRedelegateParams => {
+      if (old) {
+        old.delegator_address = secretjs.address;
+        return old;
+      } else {
+        return {
+          delegator_address: secretjs.address,
+          validator_src_address: `${prefix}valoper1example`,
+          validator_dst_address: `${prefix}valoper1example`,
+          //@ts-ignore
+          amount: `1${denom}`,
+        };
+      }
+    },
+    converter: (input: any): SupportedMessage => {
+      input.amount = coinFromString(input.amount);
+      return new MsgBeginRedelegate(input);
+    },
+    relevantInfo: stakingRelevantInfo,
+  },
+  MsgCreateValidator: {
+    module: "staking",
+    example: (
+      secretjs: SecretNetworkClient,
+      old: MsgCreateValidatorParams,
+      prefix: string,
+      denom: string,
+    ): MsgCreateValidatorParams => {
+      if (old) {
+        old.delegator_address = secretjs.address;
+        return old;
+      } else {
+        return {
+          delegator_address: secretjs.address,
+          commission: {
+            max_change_rate: 0.01, // can change +-1% every 24h
+            max_rate: 0.1, // 10%
+            rate: 0.05, // 5%
+          },
+          description: {
+            moniker: "My validator's display name",
+            identity: "ID on keybase.io, to have a logo on explorer and stuff",
+            website: "example.com",
+            security_contact: "security@example.com",
+            details: "We are good",
+          },
+          pubkey: toBase64(new Uint8Array(32).fill(1)), // validator tendermit pubkey
+          min_self_delegation: "1", // ${denom}
+          //@ts-ignore
+          initial_delegation: `1${denom}`,
+        };
+      }
+    },
+    converter: (input: any) => {
+      input.initial_delegation = coinFromString(input.initial_delegation);
+      return new MsgCreateValidator(input);
+    },
+  },
+  MsgCreateVestingAccount: {
+    module: "vesting",
+    example: (
+      secretjs: SecretNetworkClient,
+      old: MsgCreateVestingAccountParams,
+      prefix: string,
+      denom: string,
+    ): MsgCreateVestingAccountParams => {
+      if (old) {
+        old.from_address = secretjs.address;
+        return old;
+      } else {
+        return {
+          from_address: secretjs.address,
+          to_address: `${prefix}1example`,
+          //@ts-ignore
+          amount: `1${denom}`,
+          end_time: "2020-09-15T14:00:00Z",
+          delayed: false,
+        };
+      }
+    },
+    converter: (input: any): SupportedMessage => {
+      input.amount = coinsFromString(input.amount);
+      return new MsgCreateVestingAccount(input);
+    },
   },
   MsgDeposit: {
-    module: 'gov',
+    module: "gov",
     example: (
       secretjs: SecretNetworkClient,
       old: MsgDepositParams,
       prefix: string,
-      denom: string
+      denom: string,
     ): MsgDepositParams => {
       if (old) {
-        old.depositor = secretjs.address
-        return old
+        old.depositor = secretjs.address;
+        return old;
       } else {
         return {
           depositor: secretjs.address,
-          proposal_id: '1',
+          proposal_id: "1",
           //@ts-ignore
-          amount: `1${denom}`
-        }
+          amount: `1${denom}`,
+        };
       }
     },
     converter: (input: any): SupportedMessage => {
-      input.amount = coinsFromString(input.amount)
-      return new MsgDeposit(input)
-    }
+      input.amount = coinsFromString(input.amount);
+      return new MsgDeposit(input);
+    },
   },
   MsgEditValidator: {
-    module: 'staking',
+    module: "staking",
     example: (
       secretjs: SecretNetworkClient,
       old: MsgEditValidatorParams,
       prefix: string,
-      denom: string
+      denom: string,
     ): MsgEditValidatorParams => {
       if (old) {
-        old.validator_address = selfDelegatorAddressToValidatorAddress(secretjs.address, prefix)
-        return old
+        old.validator_address = selfDelegatorAddressToValidatorAddress(
+          secretjs.address,
+          prefix,
+        );
+        return old;
       } else {
         return {
-          validator_address: selfDelegatorAddressToValidatorAddress(secretjs.address, prefix),
+          validator_address: selfDelegatorAddressToValidatorAddress(
+            secretjs.address,
+            prefix,
+          ),
           // optional: if description is provided it updates all values
           description: {
             moniker: "My new validator's display name",
-            identity: 'ID on keybase.io, to have a logo on explorer and stuff',
-            website: 'edited-example.com',
-            security_contact: 'security@edited-example.com',
-            details: 'We are good probably'
+            identity: "ID on keybase.io, to have a logo on explorer and stuff",
+            website: "edited-example.com",
+            security_contact: "security@edited-example.com",
+            details: "We are good probably",
           },
           commission_rate: 0.04, // optional: 4% commission cannot be changed more than once in 24h
-          min_self_delegation: '3' // optional: 3${denom}
-        }
+          min_self_delegation: "3", // optional: 3${denom}
+        };
       }
     },
-    converter: (input: any): SupportedMessage => new MsgEditValidator(input)
+    converter: (input: any): SupportedMessage => new MsgEditValidator(input),
   },
   MsgExecuteContract: {
-    module: 'compute',
+    module: "compute",
     example: (
       secretjs: SecretNetworkClient,
       old: MsgExecuteContractParams<any>,
       prefix: string,
-      denom: string
+      denom: string,
     ): MsgExecuteContractParams<any> => {
       if (old) {
-        old.sender = secretjs.address
-        return old
+        old.sender = secretjs.address;
+        return old;
       } else {
         return {
           sender: secretjs.address,
           contract_address: `${prefix}1example`,
           msg: {
             set_viewing_key: {
-              key: 'banana 🍌'
-            }
+              key: "banana 🍌",
+            },
           },
-          code_hash: 'abcdefg', // optional
+          code_hash: "abcdefg", // optional
           //@ts-ignore
-          sent_funds: `1${denom}` // optional
-        }
+          sent_funds: `1${denom}`, // optional
+        };
       }
     },
     converter: (input: any): SupportedMessage => {
       if (input.sent_funds) {
-        input.sent_funds = coinsFromString(input.sent_funds)
+        input.sent_funds = coinsFromString(input.sent_funds);
       }
-      return new MsgExecuteContract(input)
-    }
+      return new MsgExecuteContract(input);
+    },
   },
   MsgFundCommunityPool: {
-    module: 'distribution',
+    module: "distribution",
     example: (
       secretjs: SecretNetworkClient,
       old: MsgFundCommunityPoolParams,
       prefix: string,
-      denom: string
+      denom: string,
     ): MsgFundCommunityPoolParams => {
       if (old) {
-        old.depositor = secretjs.address
-        return old
+        old.depositor = secretjs.address;
+        return old;
       } else {
         return {
           depositor: secretjs.address,
           //@ts-ignore
-          amount: `1${denom}`
-        }
+          amount: `1${denom}`,
+        };
       }
     },
     converter: (input: any): SupportedMessage => {
-      input.amount = coinsFromString(input.amount)
-      return new MsgFundCommunityPool(input)
+      input.amount = coinsFromString(input.amount);
+      return new MsgFundCommunityPool(input);
     },
-    relevantInfo: bankRelevantInfo
+    relevantInfo: bankRelevantInfo,
   },
   MsgInstantiateContract: {
-    module: 'compute',
+    module: "compute",
     example: (
       secretjs: SecretNetworkClient,
       old: MsgInstantiateContractParams,
       prefix: string,
-      denom: string
+      denom: string,
     ): MsgInstantiateContractParams => {
       if (old) {
-        old.sender = secretjs.address
-        return old
+        old.sender = secretjs.address;
+        return old;
       } else {
         return {
           sender: secretjs.address,
           code_id: 1,
           init_msg: {
             gm: {
-              hello: 'world'
-            }
+              hello: "world",
+            },
           },
-          label: 'gm',
+          label: "gm",
           //@ts-ignore
           init_funds: `1${denom}`, // optional
-          code_hash: 'abcdefg' // optional
-        }
+          code_hash: "abcdefg", // optional
+        };
       }
     },
     converter: (input: any): SupportedMessage => {
       if (input.init_funds) {
-        input.init_funds = coinsFromString(input.init_funds)
+        input.init_funds = coinsFromString(input.init_funds);
       }
-      return new MsgInstantiateContract(input)
-    }
+      return new MsgInstantiateContract(input);
+    },
   },
   MsgMultiSend: {
-    module: 'bank',
+    module: "bank",
     example: (
       secretjs: SecretNetworkClient,
       old: MsgMultiSendParams,
       prefix: string,
-      denom: string
+      denom: string,
     ): MsgMultiSendParams => {
       if (old) {
-        old.inputs[0].address = secretjs.address
-        return old
+        old.inputs[0].address = secretjs.address;
+        return old;
       } else {
         return {
           inputs: [
             {
               address: secretjs.address,
               //@ts-ignore
-              coins: `2${denom}`
-            }
+              coins: `2${denom}`,
+            },
           ],
           outputs: [
             {
               address: `${prefix}1example`,
               //@ts-ignore
-              coins: `1${denom}`
+              coins: `1${denom}`,
             },
             {
               address: `${prefix}1example`,
               //@ts-ignore
-              coins: `1${denom}`
-            }
-          ]
-        }
+              coins: `1${denom}`,
+            },
+          ],
+        };
       }
     },
     converter: (input: any): SupportedMessage => {
       for (let i = 0; i < input.inputs.length; i++) {
-        input.inputs[i].coins = coinsFromString(input.inputs[i].coins)
+        input.inputs[i].coins = coinsFromString(input.inputs[i].coins);
       }
       for (let i = 0; i < input.outputs.length; i++) {
-        input.outputs[i].coins = coinsFromString(input.outputs[i].coins)
+        input.outputs[i].coins = coinsFromString(input.outputs[i].coins);
       }
-      return new MsgMultiSend(input)
+      return new MsgMultiSend(input);
     },
-    relevantInfo: bankRelevantInfo
+    relevantInfo: bankRelevantInfo,
   },
   // MsgGrant: {
   //   module: "authz",
@@ -468,12 +489,12 @@ export const MessageDefinitions: {
   //   converter: (input: any): SupportedMessage => {},
   // },
   MsgGrantAllowance: {
-    module: 'feegrant',
+    module: "feegrant",
     example: (
       secretjs: SecretNetworkClient,
       old: MsgTransferParams,
       prefix: string,
-      denom: string
+      denom: string,
     ): MsgGrantAllowanceParams => {
       return {
         granter: secretjs.address,
@@ -481,70 +502,73 @@ export const MessageDefinitions: {
         allowance: {
           //@ts-ignore
           spend_limit: `1${denom}`,
-          expiration: null
-        }
-      }
+          expiration: null,
+        },
+      };
     },
     converter: (input: any): SupportedMessage => {
-      input.allowance.spend_limit = coinsFromString(input.allowance.spend_limit)
-      return new MsgGrantAllowance(input)
-    }
+      input.allowance.spend_limit = coinsFromString(
+        input.allowance.spend_limit,
+      );
+      return new MsgGrantAllowance(input);
+    },
   },
   MsgRevokeAllowance: {
-    module: 'feegrant',
+    module: "feegrant",
     example: (
       secretjs: SecretNetworkClient,
       old: MsgRevokeAllowanceParams,
       prefix: string,
-      denom: string
+      denom: string,
     ): MsgRevokeAllowanceParams => {
       return {
         granter: secretjs.address,
-        grantee: `${prefix}1example`
-      }
+        grantee: `${prefix}1example`,
+      };
     },
-    converter: (input: any): SupportedMessage => new MsgRevokeAllowance(input)
+    converter: (input: any): SupportedMessage => new MsgRevokeAllowance(input),
   },
   MsgSetWithdrawAddress: {
-    module: 'distribution',
+    module: "distribution",
     example: (
       secretjs: SecretNetworkClient,
       old: MsgSetWithdrawAddressParams,
       prefix: string,
-      denom: string
+      denom: string,
     ): MsgSetWithdrawAddressParams => {
       if (old) {
-        old.delegator_address = secretjs.address
-        return old
+        old.delegator_address = secretjs.address;
+        return old;
       } else {
         return {
           delegator_address: secretjs.address,
-          withdraw_address: `${prefix}1example`
-        }
+          withdraw_address: `${prefix}1example`,
+        };
       }
     },
-    converter: (input: any): SupportedMessage => new MsgSetWithdrawAddress(input)
+    converter: (input: any): SupportedMessage =>
+      new MsgSetWithdrawAddress(input),
   },
   MsgStoreCode: {
-    module: 'compute',
+    module: "compute",
     example: (
       secretjs: SecretNetworkClient,
       old: MsgTransferParams,
       prefix: string,
-      denom: string
+      denom: string,
     ): MsgStoreCodeParams => {
       return {
         sender: secretjs.address,
         //@ts-ignore
-        wasm_byte_code: '',
-        source: '',
-        builder: ''
-      }
+        wasm_byte_code: "",
+        source: "",
+        builder: "",
+      };
     },
     converter: (input: any): SupportedMessage => {
-      input.wasm_byte_code = Buffer.from(input.wasm_byte_code, 'base64')
-      return new MsgStoreCode(input)
-    }
+      input.wasm_byte_code = Buffer.from(input.wasm_byte_code, "base64");
+      return new MsgStoreCode(input);
+    },
   },
   // MsgSubmitProposal: {
   //   module: "gov",
@@ -568,200 +592,225 @@ export const MessageDefinitions: {
   //   }
   // },
   MsgTransfer: {
-    module: 'ibc-transfer',
+    module: "ibc-transfer",
     example: (
       secretjs: SecretNetworkClient,
       old: MsgTransferParams,
       prefix: string,
-      denom: string
+      denom: string,
     ): MsgTransferParams => {
       if (old) {
-        old.sender = secretjs.address
-        return old
+        old.sender = secretjs.address;
+        return old;
       } else {
         return {
           sender: secretjs.address,
-          receiver: 'osmo1example',
+          receiver: "osmo1example",
           //@ts-ignore
           token: `1${denom}`,
-          source_channel: 'channel-1',
-          source_port: 'transfer',
-          timeout_timestamp: '600',
-          memo: ''
-        }
+          source_channel: "channel-1",
+          source_port: "transfer",
+          timeout_timestamp: "600",
+          memo: "",
+        };
       }
     },
     converter: (input: any): SupportedMessage => {
-      input.token = coinFromString(input.token)
-      input.timeout_timestamp = String(Math.floor(Date.now() / 1000) + Number(input.timeout_timestamp))
-      return new MsgTransfer(input)
+      input.token = coinFromString(input.token);
+      input.timeout_timestamp = String(
+        Math.floor(Date.now() / 1000) + Number(input.timeout_timestamp),
+      );
+      return new MsgTransfer(input);
     },
-    relevantInfo: bankRelevantInfo
+    relevantInfo: bankRelevantInfo,
   },
   MsgUndelegate: {
-    module: 'staking',
+    module: "staking",
     example: (
       secretjs: SecretNetworkClient,
       old: MsgUndelegateParams,
       prefix: string,
-      denom: string
+      denom: string,
     ): MsgUndelegateParams => {
       if (old) {
-        old.delegator_address = secretjs.address
-        return old
+        old.delegator_address = secretjs.address;
+        return old;
       } else {
         return {
           delegator_address: secretjs.address,
           validator_address: `${prefix}valoper1example`,
           //@ts-ignore
-          amount: `1${denom}`
-        }
+          amount: `1${denom}`,
+        };
       }
     },
     converter: (input: any): SupportedMessage => {
-      input.amount = coinFromString(input.amount)
-      return new MsgUndelegate(input)
+      input.amount = coinFromString(input.amount);
+      return new MsgUndelegate(input);
     },
-    relevantInfo: stakingRelevantInfo
+    relevantInfo: stakingRelevantInfo,
   },
   MsgUnjail: {
-    module: 'slashing',
-    example: (secretjs: SecretNetworkClient, old: MsgUnjailParams, prefix: string, denom: string): MsgUnjailParams => {
+    module: "slashing",
+    example: (
+      secretjs: SecretNetworkClient,
+      old: MsgUnjailParams,
+      prefix: string,
+      denom: string,
+    ): MsgUnjailParams => {
       if (old) {
-        old.validator_addr = selfDelegatorAddressToValidatorAddress(secretjs.address, prefix)
-        return old
+        old.validator_addr = selfDelegatorAddressToValidatorAddress(
+          secretjs.address,
+          prefix,
+        );
+        return old;
       } else {
         return {
-          validator_addr: selfDelegatorAddressToValidatorAddress(secretjs.address, prefix)
-        }
+          validator_addr: selfDelegatorAddressToValidatorAddress(
+            secretjs.address,
+            prefix,
+          ),
+        };
       }
     },
-    converter: (input: any): SupportedMessage => new MsgUnjail(input)
+    converter: (input: any): SupportedMessage => new MsgUnjail(input),
   },
   MsgVote: {
-    module: 'gov',
-    example: (secretjs: SecretNetworkClient, old: MsgVoteParams): MsgVoteParams => {
+    module: "gov",
+    example: (
+      secretjs: SecretNetworkClient,
+      old: MsgVoteParams,
+    ): MsgVoteParams => {
       if (old) {
-        old.voter = secretjs.address
-        return old
+        old.voter = secretjs.address;
+        return old;
       } else {
         return {
           voter: secretjs.address,
-          proposal_id: '123',
+          proposal_id: "123",
           //@ts-ignore
-          option: 'YES/NO/ABSTAIN/NO_WITH_VETO'
-        }
+          option: "YES/NO/ABSTAIN/NO_WITH_VETO",
+        };
       }
     },
     converter: (input: any): SupportedMessage => {
-      input.option = (input.option as string).toUpperCase()
+      input.option = (input.option as string).toUpperCase();
       switch (input.option) {
-        case 'YES':
-          input.option = VoteOption.VOTE_OPTION_YES
-          break
-        case 'NO':
-          input.option = VoteOption.VOTE_OPTION_NO
-          break
-        case 'ABSTAIN':
-          input.option = VoteOption.VOTE_OPTION_ABSTAIN
-          break
-        case 'NO_WITH_VETO':
-          input.option = VoteOption.VOTE_OPTION_NO_WITH_VETO
-          break
+        case "YES":
+          input.option = VoteOption.VOTE_OPTION_YES;
+          break;
+        case "NO":
+          input.option = VoteOption.VOTE_OPTION_NO;
+          break;
+        case "ABSTAIN":
+          input.option = VoteOption.VOTE_OPTION_ABSTAIN;
+          break;
+        case "NO_WITH_VETO":
+          input.option = VoteOption.VOTE_OPTION_NO_WITH_VETO;
+          break;
         default:
-          throw new Error(`unknown vote option ${input.option}`)
+          throw new Error(`unknown vote option ${input.option}`);
       }
 
-      return new MsgVote(input)
+      return new MsgVote(input);
     },
-    relevantInfo: undefined // TODO
+    relevantInfo: undefined, // TODO
   },
   MsgWithdrawDelegatorReward: {
-    module: 'distribution',
+    module: "distribution",
     example: (
       secretjs: SecretNetworkClient,
       old: MsgWithdrawDelegatorRewardParams,
       prefix: string,
-      denom: string
+      denom: string,
     ): MsgWithdrawDelegatorRewardParams => {
       if (old) {
-        return Object.assign({}, old, { delegator_address: secretjs.address })
+        return Object.assign({}, old, { delegator_address: secretjs.address });
       } else {
         return {
           delegator_address: secretjs.address,
-          validator_address: `${prefix}1example`
-        }
+          validator_address: `${prefix}1example`,
+        };
       }
     },
-    converter: (input: any): SupportedMessage => new MsgWithdrawDelegatorReward(input),
-    relevantInfo: stakingRelevantInfo
+    converter: (input: any): SupportedMessage =>
+      new MsgWithdrawDelegatorReward(input),
+    relevantInfo: stakingRelevantInfo,
   },
   MsgWithdrawValidatorCommission: {
-    module: 'distribution',
+    module: "distribution",
     example: (
       secretjs: SecretNetworkClient,
       old: MsgWithdrawValidatorCommissionParams,
       prefix: string,
-      denom: string
+      denom: string,
     ): MsgWithdrawValidatorCommissionParams => {
       if (old) {
-        old.validator_address = selfDelegatorAddressToValidatorAddress(secretjs.address, prefix)
-        return old
+        old.validator_address = selfDelegatorAddressToValidatorAddress(
+          secretjs.address,
+          prefix,
+        );
+        return old;
       } else {
         return {
-          validator_address: selfDelegatorAddressToValidatorAddress(secretjs.address, prefix)
-        }
+          validator_address: selfDelegatorAddressToValidatorAddress(
+            secretjs.address,
+            prefix,
+          ),
+        };
       }
     },
-    converter: (input: any): MsgWithdrawValidatorCommission => new MsgWithdrawValidatorCommission(input)
-  }
-}
+    converter: (input: any): MsgWithdrawValidatorCommission =>
+      new MsgWithdrawValidatorCommission(input),
+  },
+};
 
-export const balanceFormat = new Intl.NumberFormat('en-US', {
+export const balanceFormat = new Intl.NumberFormat("en-US", {
   minimumFractionDigits: 0,
-  maximumFractionDigits: 6
-}).format
+  maximumFractionDigits: 6,
+}).format;
 
 async function bankRelevantInfo(
   secretjs: SecretNetworkClient,
   prefix: string,
   denom: string,
-  msgInput: string
+  msgInput: string,
 ): Promise<any> {
   try {
     const { balances } = await secretjs.query.bank.allBalances({
-      address: secretjs.address
-    })
+      address: secretjs.address,
+    });
 
     const { denom_traces } = await secretjs.query.ibc_transfer.denomTraces({
       pagination: {
-        limit: '10000'
-      }
-    })
+        limit: "10000",
+      },
+    });
 
     const ibcDenomToBaseDenom: { [ibcDenom: string]: string } = Object.assign(
       {},
       ...denom_traces!.map(({ path, base_denom }) => {
-        const split = path!.split('/')
+        const split = path!.split("/");
         const paths: {
-          incomingPortId: string
-          incomingChannelId: string
-        }[] = []
+          incomingPortId: string;
+          incomingChannelId: string;
+        }[] = [];
         for (let i = 0; i < split.length; i += 2) {
           paths.push({
             incomingPortId: split[i],
-            incomingChannelId: split[i + 1]
-          })
+            incomingChannelId: split[i + 1],
+          });
         }
 
         return {
-          [ibcDenom(paths, base_denom!)]: `${base_denom!}${paths.length > 1 ? ' (non-direct)' : ''}`
-        }
-      })
-    )
+          [ibcDenom(paths, base_denom!)]:
+            `${base_denom!}${paths.length > 1 ? " (non-direct)" : ""}`,
+        };
+      }),
+    );
 
     let result = balances
-      ?.sort((a, b) => (a.denom?.startsWith('ibc/') ? 1 : -1))
+      ?.sort((a, b) => (a.denom?.startsWith("ibc/") ? 1 : -1))
       .map((c) => (
         <tr key={`${c.amount}${c.denom}`}>
           <td>{c.amount}</td>
@@ -769,22 +818,24 @@ async function bankRelevantInfo(
           <td>
             {c.denom === denom
               ? `${(() => {
-                  const { humanDenom, decimals } = humanizeDenom(denom)
-                  return `${balanceFormat(Number(c.amount) / Number(`1e${decimals}`))} ${humanDenom}`
+                  const { humanDenom, decimals } = humanizeDenom(denom);
+                  return `${balanceFormat(Number(c.amount) / Number(`1e${decimals}`))} ${humanDenom}`;
                 })()}`
               : ibcDenomToBaseDenom[c.denom!]
                 ? (() => {
-                    const { humanDenom, decimals } = humanizeDenom(ibcDenomToBaseDenom[c.denom!])
-                    return `${balanceFormat(Number(c.amount) / Number(`1e${decimals}`))} ${humanDenom}`
+                    const { humanDenom, decimals } = humanizeDenom(
+                      ibcDenomToBaseDenom[c.denom!],
+                    );
+                    return `${balanceFormat(Number(c.amount) / Number(`1e${decimals}`))} ${humanDenom}`;
                   })()
-                : ''}
+                : ""}
           </td>
         </tr>
-      ))
+      ));
 
     if (result) {
       if (balances?.length === 0) {
-        return 'No balance'
+        return "No balance";
       } else {
         return (
           <table className="">
@@ -797,16 +848,16 @@ async function bankRelevantInfo(
             </thead>
             <tbody>{result}</tbody>
           </table>
-        )
+        );
       }
     } else {
-      return 'No balance'
+      return "No balance";
     }
   } catch (error) {
     if (error instanceof Error) {
-      return error.message
+      return error.message;
     } else {
-      return JSON.stringify(error)
+      return JSON.stringify(error);
     }
   }
 }
@@ -815,60 +866,66 @@ async function stakingRelevantInfo(
   secretjs: SecretNetworkClient,
   prefix: string,
   denom: string,
-  msgInput: string
+  msgInput: string,
 ): Promise<any> {
   try {
     const { balance } = await secretjs.query.bank.balance({
       address: secretjs.address,
-      denom
-    })
+      denom,
+    });
 
-    const { delegation_responses } = await secretjs.query.staking.delegatorDelegations({
-      delegator_addr: secretjs.address
-    })
+    const { delegation_responses } =
+      await secretjs.query.staking.delegatorDelegations({
+        delegator_addr: secretjs.address,
+      });
 
-    const pendingRewards: { [validator: string]: string } = {}
+    const pendingRewards: { [validator: string]: string } = {};
     for (const d of delegation_responses || []) {
-      const validator = d.delegation?.validator_address!
+      const validator = d.delegation?.validator_address!;
       const { rewards } = await secretjs.query.distribution.delegationRewards({
         delegator_address: secretjs.address,
-        validator_address: validator
-      })
+        validator_address: validator,
+      });
 
       pendingRewards[validator] =
         rewards
           ?.map(
             (r) =>
               `${Math.floor(Number(r.amount))}${r.denom} (${(() => {
-                const { humanDenom, decimals } = humanizeDenom(denom)
-                return `${balanceFormat(Math.floor(Number(r.amount)) / Number(`1e${decimals}`))} ${humanDenom}`
-              })()})`
+                const { humanDenom, decimals } = humanizeDenom(denom);
+                return `${balanceFormat(Math.floor(Number(r.amount)) / Number(`1e${decimals}`))} ${humanDenom}`;
+              })()})`,
           )
-          .join(',') || ''
+          .join(",") || "";
     }
 
-    const validators: { [validator: string]: string } = {}
+    const validators: { [validator: string]: string } = {};
     for (const validator_addr of Object.keys(pendingRewards)) {
       const { validator } = await secretjs.query.staking.validator({
-        validator_addr
-      })
+        validator_addr,
+      });
 
-      validators[validator_addr] = validator!.description!.moniker!
+      validators[validator_addr] = validator!.description!.moniker!;
     }
 
     const delegations = delegation_responses?.map((d) => {
       return (
         <tr key={`${d.delegation?.validator_address}`}>
-          <td style={{ overflowWrap: 'break-word' }}>{`${d.balance?.amount} ${d.balance?.denom}`}</td>
-          <td style={{ display: 'flex', placeItems: 'center', gap: '0.4em' }}>
-            <span style={{ overflowWrap: 'anywhere' }}>
-              {d.delegation?.validator_address} ({validators[d.delegation?.validator_address!]})
+          <td
+            style={{ overflowWrap: "break-word" }}
+          >{`${d.balance?.amount} ${d.balance?.denom}`}</td>
+          <td style={{ display: "flex", placeItems: "center", gap: "0.4em" }}>
+            <span style={{ overflowWrap: "anywhere" }}>
+              {d.delegation?.validator_address} (
+              {validators[d.delegation?.validator_address!]})
             </span>
           </td>
-          <td style={{ overflowWrap: 'break-word' }}>{pendingRewards[d.delegation?.validator_address!]}</td>
+          <td style={{ overflowWrap: "break-word" }}>
+            {pendingRewards[d.delegation?.validator_address!]}
+          </td>
         </tr>
-      )
-    })
+      );
+    });
 
     return (
       <table>
@@ -877,8 +934,8 @@ async function stakingRelevantInfo(
             <th>Balance:</th>
             <th>
               {`${balance?.amount || 0}${balance?.denom || prefix} (${(() => {
-                const { humanDenom, decimals } = humanizeDenom(denom)
-                return `${balanceFormat(Number(balance?.amount) / Number(`1e${decimals}`))} ${humanDenom}`
+                const { humanDenom, decimals } = humanizeDenom(denom);
+                return `${balanceFormat(Number(balance?.amount) / Number(`1e${decimals}`))} ${humanDenom}`;
               })()})`}
             </th>
           </tr>
@@ -896,36 +953,38 @@ async function stakingRelevantInfo(
         </thead>
         <tbody>{delegations}</tbody>
       </table>
-    )
+    );
   } catch (error) {
     if (error instanceof Error) {
-      return error.message
+      return error.message;
     } else {
-      return JSON.stringify(error)
+      return JSON.stringify(error);
     }
   }
 }
 
 function humanizeDenom(baseDenom: string): {
-  humanDenom: string
-  decimals: number
+  humanDenom: string;
+  decimals: number;
 } {
-  const nonDirect = baseDenom.toLocaleLowerCase().includes('non-direct')
-  const strippedBaseDenom = baseDenom.replace(/ \(non-direct\)/i, '')
+  const nonDirect = baseDenom.toLocaleLowerCase().includes("non-direct");
+  const strippedBaseDenom = baseDenom.replace(/ \(non-direct\)/i, "");
 
-  let humanDenom: string | undefined
-  let decimals = 6
+  let humanDenom: string | undefined;
+  let decimals = 6;
 
-  let token = allTokens.find((token) => token.deposits[0].denom == strippedBaseDenom)
+  let token = allTokens.find(
+    (token) => token.deposits[0].denom == strippedBaseDenom,
+  );
 
   if (token) {
-    humanDenom = token.name
-    decimals = token.decimals
+    humanDenom = token.name;
+    decimals = token.decimals;
   }
 
   if (!humanDenom) {
-    humanDenom = baseDenom.toUpperCase()
+    humanDenom = baseDenom.toUpperCase();
   }
 
-  return { humanDenom, decimals }
+  return { humanDenom, decimals };
 }

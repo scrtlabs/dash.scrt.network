@@ -1,6 +1,10 @@
-import { faDiscord, faTelegram, faTwitter } from '@fortawesome/free-brands-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { trackMixPanelEvent } from 'utils/commons'
+import {
+  faDiscord,
+  faTelegram,
+  faTwitter,
+} from "@fortawesome/free-brands-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { trackMixPanelEvent } from "utils/commons";
 
 export default function SocialMedia() {
   return (
@@ -12,10 +16,14 @@ export default function SocialMedia() {
             target="_blank"
             className="group text-neutral-700 dark:text-neutral-300 hover:text-black dark:hover:text-white transition-colors"
             onClick={() => {
-              trackMixPanelEvent('Clicked Twitter on dashboard')
+              trackMixPanelEvent("Clicked Twitter on dashboard");
             }}
           >
-            <FontAwesomeIcon icon={faTwitter} size="xl" className="fa-fw sm:mb-1" />
+            <FontAwesomeIcon
+              icon={faTwitter}
+              size="xl"
+              className="fa-fw sm:mb-1"
+            />
             <br />
             <span className="group-hover:text-black dark:group-hover:text-white transition-colors text-sm font-semibold text-neutral-500 dark:text-neutral-500 hidden sm:inline-block">
               Twitter
@@ -29,10 +37,14 @@ export default function SocialMedia() {
             target="_blank"
             className="group text-neutral-700 dark:text-neutral-300 hover:text-black dark:hover:text-white transition-colors"
             onClick={() => {
-              trackMixPanelEvent('Clicked Discord on dashboard')
+              trackMixPanelEvent("Clicked Discord on dashboard");
             }}
           >
-            <FontAwesomeIcon icon={faDiscord} size="xl" className="fa-fw sm:mb-1" />
+            <FontAwesomeIcon
+              icon={faDiscord}
+              size="xl"
+              className="fa-fw sm:mb-1"
+            />
             <br />
             <span className="group-hover:text-black dark:group-hover:text-white transition-colors text-sm font-semibold text-neutral-500 dark:text-neutral-500 hidden sm:inline-block">
               Discord
@@ -46,10 +58,14 @@ export default function SocialMedia() {
             target="_blank"
             className="group text-center text-neutral-700 dark:text-neutral-300 hover:text-black dark:hover:text-white transition-colors"
             onClick={() => {
-              trackMixPanelEvent('Clicked Telegram on dashboard')
+              trackMixPanelEvent("Clicked Telegram on dashboard");
             }}
           >
-            <FontAwesomeIcon icon={faTelegram} size="xl" className="fa-fw sm:mb-1" />
+            <FontAwesomeIcon
+              icon={faTelegram}
+              size="xl"
+              className="fa-fw sm:mb-1"
+            />
             <br />
             <span className="group-hover:text-black dark:group-hover:text-white transition-colors text-sm font-semibold text-neutral-500 dark:text-neutral-500 hidden sm:inline-block">
               Telegram
@@ -58,5 +74,5 @@ export default function SocialMedia() {
         </div>
       </div>
     </>
-  )
+  );
 }

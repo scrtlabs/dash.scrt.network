@@ -1,8 +1,8 @@
-import Title from './Title'
+import Title from "./Title";
 
 interface Props {
-  title: string
-  description?: string
+  title: string;
+  description?: string;
 }
 
 const Header = (props: Props) => {
@@ -17,7 +17,7 @@ const Header = (props: Props) => {
         </p>
       )}
     </>
-  )
-}
+  );
+};
 
-export default Header
+export default Header;

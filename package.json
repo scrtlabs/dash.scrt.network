@@ -9,8 +9,8 @@
     "build": "tsc && vite build",
     "preview": "vite preview",
     "prepare": "husky install",
-    "lint": "biome check",
-    "format": "biome format --write"
+    "lint": "npx @biomejs/biome check",
+    "format": "npx @biomejs/biome format --write"
   },
   "dependencies": {
     "@axelar-network/axelarjs-sdk": "^0.17.2",
@@ -30,7 +30,6 @@
     "@swing.xyz/ui": "^0.67.5",
     "autoprefixer": "^10.4.21",
     "bignumber.js": "^9.1.2",
-    "biome": "^0.3.3",
     "chart.js": "^4.4.8",
     "clsx": "^2.1.1",
     "formik": "^2.4.6",

@@ -1,38 +1,48 @@
-import { allTokens } from 'utils/commons'
-import { Token } from 'utils/config'
-import { useSecretNetworkClientStore } from 'store/secretNetworkClient'
-import { useTokenPricesStore } from 'store/TokenPrices'
-import BalanceUI from 'components/BalanceUI'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCopy } from '@fortawesome/free-solid-svg-icons'
-import { Tooltip } from '@mui/material'
-import { NotificationService } from 'services/notification.service'
+import { allTokens } from "utils/commons";
+import { Token } from "utils/config";
+import { useSecretNetworkClientStore } from "store/secretNetworkClient";
+import { useTokenPricesStore } from "store/TokenPrices";
+import BalanceUI from "components/BalanceUI";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCopy } from "@fortawesome/free-solid-svg-icons";
+import { Tooltip } from "@mui/material";
+import { NotificationService } from "services/notification.service";
 
 interface Props {
-  token?: Token
+  token?: Token;
 }
 
 const BalanceItem = (props: Props) => {
-  const { secretNetworkClient } = useSecretNetworkClientStore()
-  const { getPrice } = useTokenPricesStore()
+  const { secretNetworkClient } = useSecretNetworkClientStore();
+  const { getPrice } = useTokenPricesStore();
 
-  const assetPrice = getPrice(allTokens.find((token: Token) => token?.name === props.token?.name))
+  const assetPrice = getPrice(
+    allTokens.find((token: Token) => token?.name === props.token?.name),
+  );
 
-  const tokenName = (props.token?.address !== 'native' && props.token?.name === 'SCRT' ? 's' : '') + props.token?.name
+  const tokenName =
+    (props.token?.address !== "native" && props.token?.name === "SCRT"
+      ? "s"
+      : "") + props.token?.name;
 
   const tokenDescription =
-    (props.token?.address !== 'native' || props.token?.is_axelar_asset || props.token?.is_snip20
-      ? 'Private '
-      : 'Public ') + props.token?.description
+    (props.token?.address !== "native" ||
+    props.token?.is_axelar_asset ||
+    props.token?.is_snip20
+      ? "Private "
+      : "Public ") + props.token?.description;
 
   const handleCopyAddressToClipboard = async () => {
     try {
-      await navigator.clipboard.writeText(props.token.address)
-      NotificationService.notify('Address copied to clipboard', 'success')
+      await navigator.clipboard.writeText(props.token.address);
+      NotificationService.notify("Address copied to clipboard", "success");
     } catch (e) {
-      NotificationService.notify('Could not copy address to clipboard', 'error')
+      NotificationService.notify(
+        "Could not copy address to clipboard",
+        "error",
+      );
     }
-  }
+  };
 
   return (
     <>
@@ -46,7 +56,9 @@ const BalanceItem = (props: Props) => {
           />
           <div>
             <div className="flex items-center">
-              <span className="font-semibold dark:text-white text-black">{tokenName}</span>
+              <span className="font-semibold dark:text-white text-black">
+                {tokenName}
+              </span>
               <div className="ml-2">
                 <button type="button" onClick={handleCopyAddressToClipboard}>
                   <Tooltip title="Copy to Clipboard" placement="top" arrow>
@@ -62,14 +74,18 @@ const BalanceItem = (props: Props) => {
                 </button>
               </div>
             </div>
-            <div className="text-xs text-neutral-500 dark:text-neutral-400">{tokenDescription}</div>
+            <div className="text-xs text-neutral-500 dark:text-neutral-400">
+              {tokenDescription}
+            </div>
           </div>
         </div>
 
         {/* Price */}
-        {props.token?.coingecko_id !== '' && (
+        {props.token?.coingecko_id !== "" && (
           <div className="flex flex-col items-start w-1/6">
-            <div className="text-xs text-neutral-500 dark:text-neutral-400 mb-1">Price</div>
+            <div className="text-xs text-neutral-500 dark:text-neutral-400 mb-1">
+              Price
+            </div>
             {assetPrice ? (
               <div className="text-sm font-medium font-mono">{assetPrice}</div>
             ) : (
@@ -81,11 +97,15 @@ const BalanceItem = (props: Props) => {
         {/* Balance */}
         {secretNetworkClient?.address && (
           <div className="flex flex-col items-start">
-            <div className="text-xs text-neutral-500 dark:text-neutral-400 mb-1">Balance</div>
+            <div className="text-xs text-neutral-500 dark:text-neutral-400 mb-1">
+              Balance
+            </div>
             <div className="text-sm font-medium">
               <BalanceUI
-                token={allTokens.find((token: Token) => token.name === props.token?.name)}
-                isSecretToken={props.token?.address !== 'native'}
+                token={allTokens.find(
+                  (token: Token) => token.name === props.token?.name,
+                )}
+                isSecretToken={props.token?.address !== "native"}
               />
             </div>
           </div>
@@ -95,14 +115,22 @@ const BalanceItem = (props: Props) => {
         <div className="flex items-center ml-auto">
           {/* Send */}
           <a
-            href={assetPrice ? `/send?token=` + props.token?.name.toLowerCase() : null}
+            href={
+              assetPrice
+                ? `/send?token=` + props.token?.name.toLowerCase()
+                : null
+            }
             className="bg-gray-500 dark:bg-gray-600 hover:bg-gray-600 dark:hover:bg-gray-700 text-white py-1.5 px-3 text-xs font-bold rounded-sm transition-colors mr-2"
           >
             Send
           </a>
           {/* IBC */}
           <a
-            href={assetPrice ? `/ibc?token=` + props.token?.name.toLowerCase() : null}
+            href={
+              assetPrice
+                ? `/ibc?token=` + props.token?.name.toLowerCase()
+                : null
+            }
             className="bg-gray-500 dark:bg-gray-600 hover:bg-gray-600 dark:hover:bg-gray-700 text-white py-1.5 px-3 text-xs font-bold rounded-sm transition-colors"
           >
             IBC
@@ -110,7 +138,7 @@ const BalanceItem = (props: Props) => {
         </div>
       </div>
     </>
-  )
-}
+  );
+};
 
-export default BalanceItem
+export default BalanceItem;

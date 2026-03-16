@@ -1,7 +1,7 @@
-import SkeletonLoader from './SkeletonLoader'
+import SkeletonLoader from "./SkeletonLoader";
 
 interface Props {
-  amount?: number
+  amount?: number;
 }
 
 /**
@@ -24,5 +24,5 @@ export default function SkeletonLoaders({ amount = 20 }: Props) {
         <SkeletonLoader key={index} />
       ))}
     </>
-  )
+  );
 }

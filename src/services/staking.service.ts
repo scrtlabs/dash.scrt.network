@@ -1,12 +1,16 @@
-import { BroadcastMode, MsgWithdrawDelegatorReward, SecretNetworkClient } from 'secretjs'
-import { FeeGrantStatus } from 'types/FeeGrantStatus'
-import { faucetAddress, queryTxResult } from 'utils/commons'
-import { NotificationService } from './notification.service'
+import {
+  BroadcastMode,
+  MsgWithdrawDelegatorReward,
+  SecretNetworkClient,
+} from "secretjs";
+import { FeeGrantStatus } from "types/FeeGrantStatus";
+import { faucetAddress, queryTxResult } from "utils/commons";
+import { NotificationService } from "./notification.service";
 
 interface Props {
-  delegatorDelegations: any
-  secretNetworkClient: SecretNetworkClient
-  feeGrantStatus: FeeGrantStatus
+  delegatorDelegations: any;
+  secretNetworkClient: SecretNetworkClient;
+  feeGrantStatus: FeeGrantStatus;
 }
 
 /**
@@ -20,49 +24,73 @@ interface Props {
  */
 
 const performClaimStakingRewards = async (props: Props) => {
-  const toastId = NotificationService.notify(`Claiming Staking Rewards`, 'loading')
+  const toastId = NotificationService.notify(
+    `Claiming Staking Rewards`,
+    "loading",
+  );
 
   try {
     const txs = props.delegatorDelegations.map((delegation: any) => {
       return new MsgWithdrawDelegatorReward({
         delegator_address: props.secretNetworkClient.address,
-        validator_address: delegation?.delegation?.validator_address
-      })
-    })
+        validator_address: delegation?.delegation?.validator_address,
+      });
+    });
 
     const broadcastResult = await props.secretNetworkClient.tx.broadcast(txs, {
       gasLimit: 100_000 * txs.length,
       gasPriceInFeeDenom: 0.25,
-      feeDenom: 'uscrt',
-      feeGranter: props.feeGrantStatus === 'success' ? faucetAddress : '',
+      feeDenom: "uscrt",
+      feeGranter: props.feeGrantStatus === "success" ? faucetAddress : "",
       broadcastMode: BroadcastMode.Sync,
-      waitForCommit: false
-    })
+      waitForCommit: false,
+    });
 
     // Poll the LCD for the transaction result every 10 seconds, 10 retries
-    await queryTxResult(props.secretNetworkClient, broadcastResult.transactionHash, 6000, 10)
+    await queryTxResult(
+      props.secretNetworkClient,
+      broadcastResult.transactionHash,
+      6000,
+      10,
+    )
       .catch((error: any) => {
-        console.error(error)
+        console.error(error);
         if (error?.tx?.rawLog) {
-          NotificationService.notify(`Claiming staking rewards failed: ${error.tx.rawLog}`, 'error', toastId)
+          NotificationService.notify(
+            `Claiming staking rewards failed: ${error.tx.rawLog}`,
+            "error",
+            toastId,
+          );
         } else {
-          NotificationService.notify(`Claiming staking rewards failed: ${error.message}`, 'error', toastId)
+          NotificationService.notify(
+            `Claiming staking rewards failed: ${error.message}`,
+            "error",
+            toastId,
+          );
         }
       })
       .then((tx: any) => {
         if (tx) {
           if (tx.code === 0) {
-            NotificationService.notify(`Claimed staking rewards successfully`, 'success', toastId)
+            NotificationService.notify(
+              `Claimed staking rewards successfully`,
+              "success",
+              toastId,
+            );
           } else {
-            NotificationService.notify(`Claiming staking rewards failed: ${tx.rawLog}`, 'error', toastId)
+            NotificationService.notify(
+              `Claiming staking rewards failed: ${tx.rawLog}`,
+              "error",
+              toastId,
+            );
           }
         }
-      })
+      });
   } catch (e: any) {
-    console.error(e)
+    console.error(e);
   }
-}
+};
 
 export const StakingService = {
-  performClaimStakingRewards
-}
+  performClaimStakingRewards,
+};

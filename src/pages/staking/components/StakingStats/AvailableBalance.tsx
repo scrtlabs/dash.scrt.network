@@ -1,39 +1,42 @@
-import BigNumber from 'bignumber.js'
-import { APIContext } from 'context/APIContext'
-import { useContext, useEffect, useState } from 'react'
-import { useTokenPricesStore } from 'store/TokenPrices'
-import { useUserPreferencesStore } from 'store/UserPreferences'
-import { useSecretNetworkClientStore } from 'store/secretNetworkClient'
-import { toCurrencyString } from 'utils/commons'
-import { tokens } from 'utils/config'
-import { scrtToken } from 'utils/tokens'
+import BigNumber from "bignumber.js";
+import { APIContext } from "context/APIContext";
+import { useContext, useEffect, useState } from "react";
+import { useTokenPricesStore } from "store/TokenPrices";
+import { useUserPreferencesStore } from "store/UserPreferences";
+import { useSecretNetworkClientStore } from "store/secretNetworkClient";
+import { toCurrencyString } from "utils/commons";
+import { tokens } from "utils/config";
+import { scrtToken } from "utils/tokens";
 
 function AvailableBalance() {
-  const { getBalance } = useSecretNetworkClientStore()
+  const { getBalance } = useSecretNetworkClientStore();
 
   const scrtBalance = getBalance(
-    tokens.find((token) => token.name === 'SCRT'),
-    false
-  )
+    tokens.find((token) => token.name === "SCRT"),
+    false,
+  );
 
-  const { currency } = useUserPreferencesStore()
-  const { convertCurrency } = useContext(APIContext)
+  const { currency } = useUserPreferencesStore();
+  const { convertCurrency } = useContext(APIContext);
 
-  const { getValuePrice, priceMapping } = useTokenPricesStore()
+  const { getValuePrice, priceMapping } = useTokenPricesStore();
 
-  const [availableBalanceInCurrency, setAvailableBalanceInCurrency] = useState<string>('')
+  const [availableBalanceInCurrency, setAvailableBalanceInCurrency] =
+    useState<string>("");
 
   useEffect(() => {
     if (priceMapping !== null && scrtBalance !== null) {
-      const valuePrice = getValuePrice(scrtToken, BigNumber(scrtBalance))
+      const valuePrice = getValuePrice(scrtToken, BigNumber(scrtBalance));
       if (valuePrice) {
-        const priceInCurrency = convertCurrency('USD', valuePrice, currency)
+        const priceInCurrency = convertCurrency("USD", valuePrice, currency);
         if (priceInCurrency !== null) {
-          setAvailableBalanceInCurrency(toCurrencyString(priceInCurrency, currency))
+          setAvailableBalanceInCurrency(
+            toCurrencyString(priceInCurrency, currency),
+          );
         }
       }
     }
-  }, [priceMapping, scrtBalance])
+  }, [priceMapping, scrtBalance]);
 
   return (
     <div className="flex-1">
@@ -41,7 +44,11 @@ function AvailableBalance() {
       <div className="mb-1">
         <span className="font-medium font-mono">
           {scrtBalance !== null ? (
-            <>{new BigNumber(scrtBalance).dividedBy(`1e${scrtToken.decimals}`).toNumber()}</>
+            <>
+              {new BigNumber(scrtBalance)
+                .dividedBy(`1e${scrtToken.decimals}`)
+                .toNumber()}
+            </>
           ) : (
             <div className="animate-pulse inline-block">
               <div className="h-5 w-24 bg-white dark:bg-neutral-700 rounded-xl"></div>
@@ -60,7 +67,7 @@ function AvailableBalance() {
         )}
       </div>
     </div>
-  )
+  );
 }
 
-export default AvailableBalance
+export default AvailableBalance;

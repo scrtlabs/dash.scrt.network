@@ -1,21 +1,21 @@
-import { useState } from 'react'
-import { Token } from 'utils/config'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons'
-import { SendService } from 'services/send.service'
-import BalanceItem from 'pages/portfolio/components/BalanceItem'
+import { useState } from "react";
+import { Token } from "utils/config";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
+import { SendService } from "services/send.service";
+import BalanceItem from "pages/portfolio/components/BalanceItem";
 
 export const ManageBalances = () => {
-  const [searchQuery, setSearchQuery] = useState<string>('')
+  const [searchQuery, setSearchQuery] = useState<string>("");
 
-  const tokens = SendService.getSupportedTokens()
+  const tokens = SendService.getSupportedTokens();
 
   const displayedAssets = tokens.filter(
     (token: Token) =>
       token.name?.toLowerCase().includes(searchQuery?.toLowerCase()) ||
-      ('s' + token.name)?.toLowerCase().includes(searchQuery?.toLowerCase()) ||
-      token.description?.toLowerCase().includes(searchQuery?.toLowerCase())
-  )
+      ("s" + token.name)?.toLowerCase().includes(searchQuery?.toLowerCase()) ||
+      token.description?.toLowerCase().includes(searchQuery?.toLowerCase()),
+  );
 
   return (
     <>
@@ -41,9 +41,11 @@ export const ManageBalances = () => {
 
       <div className="balance-item flex flex-col">
         {tokens
-          ? displayedAssets.map((token: Token, i: number) => <BalanceItem token={token} key={i} />)
+          ? displayedAssets.map((token: Token, i: number) => (
+              <BalanceItem token={token} key={i} />
+            ))
           : [...Array(10)].map((_, index) => <BalanceItem key={index} />)}
       </div>
     </>
-  )
-}
+  );
+};

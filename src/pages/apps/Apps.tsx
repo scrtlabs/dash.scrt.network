@@ -1,73 +1,84 @@
-import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { useContext, useEffect, useRef, useState } from 'react'
-import Header from '../../components/Header'
-import AppTile from './components/tile/AppTile'
-import { appsPageTitle, appsPageDescription, appsJsonLdSchema, isMac } from 'utils/commons'
-import { APIContext } from 'context/APIContext'
-import { trackMixPanelEvent as trackEvent } from 'utils/commons'
-import FilterTag from './components/FilterTag'
-import SkeletonLoaders from './components/SkeletonLoaders/SkeletonLoaders'
+import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useContext, useEffect, useRef, useState } from "react";
+import Header from "../../components/Header";
+import AppTile from "./components/tile/AppTile";
+import {
+  appsPageTitle,
+  appsPageDescription,
+  appsJsonLdSchema,
+  isMac,
+} from "utils/commons";
+import { APIContext } from "context/APIContext";
+import { trackMixPanelEvent as trackEvent } from "utils/commons";
+import FilterTag from "./components/FilterTag";
+import SkeletonLoaders from "./components/SkeletonLoaders/SkeletonLoaders";
 
 function Apps() {
-  const { dappsData, dappsDataSorted, tags } = useContext(APIContext)
+  const { dappsData, dappsDataSorted, tags } = useContext(APIContext);
 
   // Mixpanel
   useEffect(() => {
-    trackEvent('Open Apps Tab')
-  }, [])
+    trackEvent("Open Apps Tab");
+  }, []);
 
   // Filter + Search
-  const [tagsToBeFilteredBy, setTagsToBeFilteredBy] = useState<string[]>([])
+  const [tagsToBeFilteredBy, setTagsToBeFilteredBy] = useState<string[]>([]);
   function isTagInFilterList(tag: string) {
-    return tagsToBeFilteredBy.find((e) => e === tag)
+    return tagsToBeFilteredBy.find((e) => e === tag);
   }
 
   function toggleTagFilter(tagName: string) {
     if (tagsToBeFilteredBy.includes(tagName)) {
-      setTagsToBeFilteredBy(tagsToBeFilteredBy.filter((tag) => tag !== tagName))
+      setTagsToBeFilteredBy(
+        tagsToBeFilteredBy.filter((tag) => tag !== tagName),
+      );
     } else {
-      setTagsToBeFilteredBy(tagsToBeFilteredBy.concat(tagName))
+      setTagsToBeFilteredBy(tagsToBeFilteredBy.concat(tagName));
     }
   }
 
   // Search
-  const [searchQuery, setSearchQuery] = useState<string>('')
-  const searchInput = useRef<HTMLInputElement>(null)
+  const [searchQuery, setSearchQuery] = useState<string>("");
+  const searchInput = useRef<HTMLInputElement>(null);
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
-      if ((event.metaKey || event.ctrlKey) && event.key === 'k') {
-        event.preventDefault()
-        searchInput.current?.focus()
+      if ((event.metaKey || event.ctrlKey) && event.key === "k") {
+        event.preventDefault();
+        searchInput.current?.focus();
       }
 
       // Check for ESC key to blur the search input
-      if (event.key === 'Escape') {
-        event.preventDefault()
+      if (event.key === "Escape") {
+        event.preventDefault();
         if (document.activeElement === searchInput.current) {
-          searchInput.current?.blur()
+          searchInput.current?.blur();
         }
       }
-    }
+    };
 
-    document.addEventListener('keydown', handleKeyDown)
+    document.addEventListener("keydown", handleKeyDown);
 
     return () => {
-      document.removeEventListener('keydown', handleKeyDown)
-    }
-  }, [])
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, []);
 
   // results apps that match on the search input and chosen tags
   function filteredDappsData() {
-    let items = dappsDataSorted
-    if (searchQuery !== '') {
-      items = items.filter((app: any) => app.name.toLowerCase().includes(searchQuery.toLowerCase()))
+    let items = dappsDataSorted;
+    if (searchQuery !== "") {
+      items = items.filter((app: any) =>
+        app.name.toLowerCase().includes(searchQuery.toLowerCase()),
+      );
     }
 
     if (tagsToBeFilteredBy?.length > 0) {
-      items = items.filter((item: any) => item.tags.find((tag: any) => tagsToBeFilteredBy.includes(tag)))
+      items = items.filter((item: any) =>
+        item.tags.find((tag: any) => tagsToBeFilteredBy.includes(tag)),
+      );
     }
-    return items
+    return items;
   }
 
   return (
@@ -90,16 +101,21 @@ function Apps() {
       <meta name="twitter:description" content={appsPageDescription} />
       {/* <meta name="twitter:image" content="Image URL Here"/> */}
 
-      <script type="application/ld+json">{JSON.stringify(appsJsonLdSchema)}</script>
+      <script type="application/ld+json">
+        {JSON.stringify(appsJsonLdSchema)}
+      </script>
 
       <div className="max-w-screen-2xl mx-auto px-6 pt-6 sm:pt-0">
-        <Header title="Apps" description="A curation of applications running on Secret Network Mainnet" />
+        <Header
+          title="Apps"
+          description="A curation of applications running on Secret Network Mainnet"
+        />
 
         {/* Search */}
         <div className="relative w-full sm:w-96 mx-auto mb-4">
           <div className="absolute right-0 pr-3 inset-y-0 pointer-events-none text-sm flex items-center">
             <div className="bg-gray-100 dark:bg-neutral-700 px-1 rounded-sm flex items-center gap-0.5">
-              <kbd>{isMac ? '⌘' : 'CTRL+'}</kbd>
+              <kbd>{isMac ? "⌘" : "CTRL+"}</kbd>
               <kbd>K</kbd>
             </div>
           </div>
@@ -153,7 +169,7 @@ function Apps() {
         </div>
       </div>
     </>
-  )
+  );
 }
 
-export default Apps
+export default Apps;

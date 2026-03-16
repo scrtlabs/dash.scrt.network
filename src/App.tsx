@@ -1,89 +1,91 @@
-import React, { useEffect } from 'react'
-import { Window as KeplrWindow } from '@keplr-wallet/types'
-import 'assets/styles/index.css'
-import { Buffer } from 'buffer'
-import { BrowserRouter, Route, Routes } from 'react-router-dom'
-import ReactDOM from 'react-dom/client'
-
-// Pages
-import { Ibc } from 'pages/ibc/Ibc'
-import { Wrap } from 'pages/wrap/Wrap'
-import Apps from 'pages/apps/Apps'
-import { Send } from 'pages/send/Send'
-import Portfolio from 'pages/portfolio/Portfolio'
-
+import type { Window as KeplrWindow } from "@keplr-wallet/types";
+import React, { useEffect } from "react";
+import "assets/styles/index.css";
+import { Buffer } from "buffer";
+import { APIContextProvider } from "context/APIContext";
 // Contexts
-import { ThemeContextProvider } from 'context/ThemeContext'
-import { APIContextProvider } from 'context/APIContext'
-
+import { ThemeContextProvider } from "context/ThemeContext";
+import DefaultLayout from "layouts/DefaultLayout";
 // mixpanel
-import mixpanel from 'mixpanel-browser'
-import Bridge from 'pages/bridge/Bridge'
-import GetSCRT from 'pages/get-scrt/GetScrt'
-import Dashboard from 'pages/dashboard/Dashboard'
-import DefaultLayout from 'layouts/DefaultLayout'
-import Powertools from 'pages/powertools/Powertools'
-import { useSecretNetworkClientStore } from 'store/secretNetworkClient'
-import { useUserPreferencesStore } from 'store/UserPreferences'
-import { debugModeOverride } from 'utils/commons'
-import Staking from 'pages/staking/Staking'
-import Analytics from 'pages/analytics/Analytics'
+import mixpanel from "mixpanel-browser";
+import Analytics from "pages/analytics/Analytics";
+import Apps from "pages/apps/Apps";
+import Bridge from "pages/bridge/Bridge";
+import Dashboard from "pages/dashboard/Dashboard";
+import GetSCRT from "pages/get-scrt/GetScrt";
+// Pages
+import { Ibc } from "pages/ibc/Ibc";
+import Portfolio from "pages/portfolio/Portfolio";
+import Powertools from "pages/powertools/Powertools";
+import { Send } from "pages/send/Send";
+import Staking from "pages/staking/Staking";
+import { Wrap } from "pages/wrap/Wrap";
+import ReactDOM from "react-dom/client";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { useSecretNetworkClientStore } from "store/secretNetworkClient";
+import { useUserPreferencesStore } from "store/UserPreferences";
+import { debugModeOverride } from "utils/commons";
 
-const { debugMode } = useUserPreferencesStore.getState()
+const { debugMode } = useUserPreferencesStore.getState();
 
-if (import.meta.env.VITE_MIXPANEL_ENABLED === 'true') {
-  mixpanel.init(import.meta.env.VITE_MIXPANEL_PROJECT_TOKEN, { debug: true })
-  mixpanel.identify('Dashboard-App')
+if (import.meta.env.VITE_MIXPANEL_ENABLED === "true") {
+  mixpanel.init(import.meta.env.VITE_MIXPANEL_PROJECT_TOKEN, { debug: true });
+  mixpanel.identify("Dashboard-App");
 
-  mixpanel.track('Dashboard has been opened', {})
+  mixpanel.track("Dashboard has been opened", {});
 
   if (debugMode || debugModeOverride) {
-    console.debug('[Mixpanel] Enabled')
+    console.debug("[Mixpanel] Enabled");
   }
 } else {
   if (debugMode || debugModeOverride) {
-    console.debug('[Mixpanel] Disabled')
+    console.debug("[Mixpanel] Disabled");
   }
 }
 
-export const websiteName = 'Secret Dashboard'
+export const websiteName = "Secret Dashboard";
 
-globalThis.Buffer = Buffer
+globalThis.Buffer = Buffer;
 declare global {
   interface Window extends KeplrWindow {}
 }
-window.addEventListener('keplr_keystorechange', () => {
-  location.reload()
-})
+window.addEventListener("keplr_keystorechange", () => {
+  location.reload();
+});
 
-class ErrorBoundary extends React.Component<{ children: any }, { hasError: boolean }> {
+class ErrorBoundary extends React.Component<
+  { children: any },
+  { hasError: boolean }
+> {
   constructor(props: any) {
-    super(props)
-    this.state = { hasError: false }
+    super(props);
+    this.state = { hasError: false };
   }
 
   static getDerivedStateFromError(error: any) {
-    console.error(error)
+    console.error(error);
     // Update state so the next render will show the fallback UI.
-    return { hasError: true }
+    return { hasError: true };
   }
 
   componentDidCatch(error: any, errorInfo: any) {
     // You can also log the error to an error reporting service
-    console.error(error, errorInfo)
+    console.error(error, errorInfo);
   }
 
   render() {
     if (this.state.hasError) {
       // You can render any custom fallback UI
-      return <h1>Something went wrong.</h1>
+      return <h1>Something went wrong.</h1>;
     }
 
-    return this.props.children
+    return this.props.children;
   }
 }
 
-const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement)
+const root = ReactDOM.createRoot(
+  document.getElementById("root") as HTMLElement,
+);
 
 root.render(
   <BrowserRouter>
@@ -94,31 +96,29 @@ root.render(
         </DefaultLayout>
       </APIContextProvider>
     </ThemeContextProvider>
-  </BrowserRouter>
-)
+  </BrowserRouter>,
+);
 
 export default function App() {
-  const { init } = useSecretNetworkClientStore()
+  const { init } = useSecretNetworkClientStore();
 
   useEffect(() => {
-    init()
-  }, [])
+    init();
+  }, []);
 
   return (
-    <>
-      <Routes>
-        <Route path="/" element={<Dashboard />} />
-        <Route path="/analytics" element={<Analytics />} />
-        <Route path="/ibc" element={<Ibc />} />
-        <Route path="/wrap" element={<Wrap />} />
-        <Route path="/bridge" element={<Bridge />} />
-        <Route path="/get-scrt" element={<GetSCRT />} />
-        <Route path="/staking" element={<Staking />} />
-        <Route path="/portfolio" element={<Portfolio />} />
-        <Route path="/send" element={<Send />} />
-        <Route path="/apps" element={<Apps />} />
-        <Route path="/powertools" element={<Powertools />} />
-      </Routes>
-    </>
-  )
+    <Routes>
+      <Route path="/" element={<Dashboard />} />
+      <Route path="/analytics" element={<Analytics />} />
+      <Route path="/ibc" element={<Ibc />} />
+      <Route path="/wrap" element={<Wrap />} />
+      <Route path="/bridge" element={<Bridge />} />
+      <Route path="/get-scrt" element={<GetSCRT />} />
+      <Route path="/staking" element={<Staking />} />
+      <Route path="/portfolio" element={<Portfolio />} />
+      <Route path="/send" element={<Send />} />
+      <Route path="/apps" element={<Apps />} />
+      <Route path="/powertools" element={<Powertools />} />
+    </Routes>
+  );
 }

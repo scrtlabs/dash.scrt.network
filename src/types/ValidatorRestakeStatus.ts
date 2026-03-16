@@ -1,5 +1,5 @@
 export type ValidatorRestakeStatus = {
-  validatorAddress: string
-  autoRestake: boolean
-  stakedAmount: string
-}
+  validatorAddress: string;
+  autoRestake: boolean;
+  stakedAmount: string;
+};

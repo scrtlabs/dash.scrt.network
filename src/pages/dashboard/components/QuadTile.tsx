@@ -1,13 +1,13 @@
 interface Item {
-  key: string
-  value: string
+  key: string;
+  value: string;
 }
 
 interface Props {
-  item1?: Item
-  item2?: Item
-  item3?: Item
-  item4?: Item
+  item1?: Item;
+  item2?: Item;
+  item3?: Item;
+  item4?: Item;
 }
 
 export default function QuadTile(props: Props) {
@@ -82,5 +82,5 @@ export default function QuadTile(props: Props) {
         </div>
       </div>
     </>
-  )
+  );
 }

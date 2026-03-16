@@ -1,15 +1,15 @@
 interface Item {
-  key: string
-  value: string
+  key: string;
+  value: string;
 }
 
 interface Props {
-  item1?: Item
-  item2?: Item
-  item3?: Item
-  item4?: Item
-  item5?: Item
-  item6?: Item
+  item1?: Item;
+  item2?: Item;
+  item3?: Item;
+  item4?: Item;
+  item5?: Item;
+  item6?: Item;
 }
 
 export default function HexTile(props: Props) {
@@ -114,5 +114,5 @@ export default function HexTile(props: Props) {
         </div>
       </div>
     </>
-  )
+  );
 }

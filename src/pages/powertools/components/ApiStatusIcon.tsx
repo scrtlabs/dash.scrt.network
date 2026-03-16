@@ -1,31 +1,31 @@
-import Tooltip from '@mui/material/Tooltip'
-import React from 'react'
-import { ApiStatus } from 'types/ApiStatus'
+import Tooltip from "@mui/material/Tooltip";
+import React from "react";
+import { ApiStatus } from "types/ApiStatus";
 
 type Props = {
-  apiStatus?: ApiStatus
-}
+  apiStatus?: ApiStatus;
+};
 
-function ApiStatusIcon({ apiStatus = 'loading', ...props }: Props) {
+function ApiStatusIcon({ apiStatus = "loading", ...props }: Props) {
   const colorClass: Record<ApiStatus, string> = {
-    online: 'bg-emerald-500',
-    offline: 'bg-rose-500',
-    loading: '',
-    unknown: 'bg-neutral-500'
-  }
+    online: "bg-emerald-500",
+    offline: "bg-rose-500",
+    loading: "",
+    unknown: "bg-neutral-500",
+  };
 
   const tooltipText: Record<ApiStatus, string> = {
-    online: 'Online',
-    offline: 'Offline',
-    loading: 'Loading',
-    unknown: 'Unknown'
-  }
+    online: "Online",
+    offline: "Offline",
+    loading: "Loading",
+    unknown: "Unknown",
+  };
 
   return (
     <>
       <Tooltip title={tooltipText[apiStatus]} placement="bottom" arrow>
         <span>
-          {apiStatus === 'loading' ? (
+          {apiStatus === "loading" ? (
             <span>
               <svg
                 className="animate-spin h-5 w-5 text-white"
@@ -33,7 +33,14 @@ function ApiStatusIcon({ apiStatus = 'loading', ...props }: Props) {
                 fill="none"
                 viewBox="0 0 24 24"
               >
-                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                <circle
+                  className="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  strokeWidth="4"
+                ></circle>
                 <path
                   className="opacity-75"
                   fill="currentColor"
@@ -42,12 +49,14 @@ function ApiStatusIcon({ apiStatus = 'loading', ...props }: Props) {
               </svg>
             </span>
           ) : (
-            <span className={`flex w-3 h-3 rounded-full ${colorClass[apiStatus]}`}></span>
+            <span
+              className={`flex w-3 h-3 rounded-full ${colorClass[apiStatus]}`}
+            ></span>
           )}
         </span>
       </Tooltip>
     </>
-  )
+  );
 }
 
-export default ApiStatusIcon
+export default ApiStatusIcon;

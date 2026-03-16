@@ -1,24 +1,35 @@
-import { useEffect, useContext } from 'react'
-import { APIContext } from 'context/APIContext'
-import { trackMixPanelEvent, analyticsPageTitle, analyticsPageDescription, analyticsJsonLdSchema } from 'utils/commons'
-import UnbondingsChart from './components/UnbondingsChart'
-import AccountsChart from './components/AccountsChart'
-import ValidatorsChart from './components/ValidatorsChart'
-import ContractsChart from './components/ContractsChart'
-import TransactionsChart from './components/TransactionsChart'
-import RelayerChartWithDateSlider from './components/RelayerChartWithDateSlider'
-import RelayerChartWithChainSlider from './components/RelayerChartWithChainSlider'
-import RelayerChartWithProviderSlider from './components/RelayerChartWithProviderSlider'
-import RelayerChartTotal from './components/RelayerChartTotal'
-import WeeklyContractsChart from './components/WeeklyContractsChart'
+import { useEffect, useContext } from "react";
+import { APIContext } from "context/APIContext";
+import {
+  trackMixPanelEvent,
+  analyticsPageTitle,
+  analyticsPageDescription,
+  analyticsJsonLdSchema,
+} from "utils/commons";
+import UnbondingsChart from "./components/UnbondingsChart";
+import AccountsChart from "./components/AccountsChart";
+import ValidatorsChart from "./components/ValidatorsChart";
+import ContractsChart from "./components/ContractsChart";
+import TransactionsChart from "./components/TransactionsChart";
+import RelayerChartWithDateSlider from "./components/RelayerChartWithDateSlider";
+import RelayerChartWithChainSlider from "./components/RelayerChartWithChainSlider";
+import RelayerChartWithProviderSlider from "./components/RelayerChartWithProviderSlider";
+import RelayerChartTotal from "./components/RelayerChartTotal";
+import WeeklyContractsChart from "./components/WeeklyContractsChart";
 
 function Analytics() {
-  const { L5AnalyticsApiData, analyticsData1, analyticsData2, analyticsData3, analyticsData4, analyticsData5 } =
-    useContext(APIContext)
+  const {
+    L5AnalyticsApiData,
+    analyticsData1,
+    analyticsData2,
+    analyticsData3,
+    analyticsData4,
+    analyticsData5,
+  } = useContext(APIContext);
 
   useEffect(() => {
-    trackMixPanelEvent('Open Analytics Tab')
-  }, [])
+    trackMixPanelEvent("Open Analytics Tab");
+  }, []);
 
   return (
     <>
@@ -40,7 +51,9 @@ function Analytics() {
       <meta name="twitter:description" content={analyticsPageDescription} />
       {/* <meta name='twitter:image' content='Image URL Here'/> */}
 
-      <script type="application/ld+json">{JSON.stringify(analyticsJsonLdSchema)}</script>
+      <script type="application/ld+json">
+        {JSON.stringify(analyticsJsonLdSchema)}
+      </script>
 
       <div className="px-4 mx-auto space-y-4 w-full">
         <div className="grid grid-cols-12 gap-4">
@@ -101,6 +114,6 @@ function Analytics() {
         </div>
       </div>
     </>
-  )
+  );
 }
-export default Analytics
+export default Analytics;

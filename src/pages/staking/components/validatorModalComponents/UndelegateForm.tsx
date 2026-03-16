@@ -1,107 +1,131 @@
-import BigNumber from 'bignumber.js'
-import { useContext, useEffect, useState } from 'react'
-import { APIContext } from 'context/APIContext'
-import { faucetAddress, queryTxResult, toCurrencyString } from 'utils/commons'
-import { StakingContext } from 'pages/staking/Staking'
-import { useSecretNetworkClientStore } from 'store/secretNetworkClient'
-import { scrtToken } from 'utils/tokens'
-import Button from 'components/UI/Button/Button'
-import toast from 'react-hot-toast'
-import { faInfoCircle } from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import Tooltip from '@mui/material/Tooltip'
-import ActionableStatus from 'components/FeeGrant/components/ActionableStatus'
-import { NotificationService } from 'services/notification.service'
-import { BroadcastMode } from 'secretjs'
+import BigNumber from "bignumber.js";
+import { useContext, useEffect, useState } from "react";
+import { APIContext } from "context/APIContext";
+import { faucetAddress, queryTxResult, toCurrencyString } from "utils/commons";
+import { StakingContext } from "pages/staking/Staking";
+import { useSecretNetworkClientStore } from "store/secretNetworkClient";
+import { scrtToken } from "utils/tokens";
+import Button from "components/UI/Button/Button";
+import toast from "react-hot-toast";
+import { faInfoCircle } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Tooltip from "@mui/material/Tooltip";
+import ActionableStatus from "components/FeeGrant/components/ActionableStatus";
+import { NotificationService } from "services/notification.service";
+import { BroadcastMode } from "secretjs";
 
 export default function UndelegateForm() {
-  const { delegatorDelegations, selectedValidator, setView } = useContext(StakingContext)
-  const { secretNetworkClient, walletAddress, feeGrantStatus, isConnected } = useSecretNetworkClientStore()
-  const { currentPrice } = useContext(APIContext)
+  const { delegatorDelegations, selectedValidator, setView } =
+    useContext(StakingContext);
+  const { secretNetworkClient, walletAddress, feeGrantStatus, isConnected } =
+    useSecretNetworkClientStore();
+  const { currentPrice } = useContext(APIContext);
 
-  const [amountString, setAmountString] = useState<string>('0')
-  const [amountInDollarString, setAmountInCurrencyString] = useState<string>('')
+  const [amountString, setAmountString] = useState<string>("0");
+  const [amountInDollarString, setAmountInCurrencyString] =
+    useState<string>("");
 
   const handleInputChange = (e: any) => {
-    setAmountString(e.target.value)
-  }
+    setAmountString(e.target.value);
+  };
 
   useEffect(() => {
     const scrtBalanceCurrencyString = toCurrencyString(
-      new BigNumber(amountString!).multipliedBy(Number(currentPrice)).toNumber()
-    )
-    setAmountInCurrencyString(scrtBalanceCurrencyString)
-  }, [amountString])
+      new BigNumber(amountString!)
+        .multipliedBy(Number(currentPrice))
+        .toNumber(),
+    );
+    setAmountInCurrencyString(scrtBalanceCurrencyString);
+  }, [amountString]);
 
   const handleSubmit = () => {
     async function submit() {
-      if (!isConnected) return
+      if (!isConnected) return;
 
       try {
         const toastId = NotificationService.notify(
           `Unstaking ${amountString} SCRT from validator: ${selectedValidator?.description?.moniker}`,
-          'loading'
-        )
+          "loading",
+        );
         const broadcastResult = await secretNetworkClient.tx.staking.undelegate(
           {
             delegator_address: walletAddress,
             validator_address: selectedValidator?.operator_address,
             amount: {
-              amount: BigNumber(amountString).multipliedBy(`1e${scrtToken.decimals}`).toFixed(0, BigNumber.ROUND_DOWN),
-              denom: 'uscrt'
-            }
+              amount: BigNumber(amountString)
+                .multipliedBy(`1e${scrtToken.decimals}`)
+                .toFixed(0, BigNumber.ROUND_DOWN),
+              denom: "uscrt",
+            },
           },
           {
             gasLimit: 100_000,
             gasPriceInFeeDenom: 0.25,
-            feeDenom: 'uscrt',
-            feeGranter: feeGrantStatus === 'success' ? faucetAddress : '',
+            feeDenom: "uscrt",
+            feeGranter: feeGrantStatus === "success" ? faucetAddress : "",
             broadcastMode: BroadcastMode.Sync,
-            waitForCommit: false
-          }
+            waitForCommit: false,
+          },
+        );
+        await queryTxResult(
+          secretNetworkClient,
+          broadcastResult.transactionHash,
+          6000,
+          10,
         )
-        await queryTxResult(secretNetworkClient, broadcastResult.transactionHash, 6000, 10)
           .catch((e: any) => {
-            console.error(e)
+            console.error(e);
             if (e?.tx?.rawLog) {
-              NotificationService.notify(`Undelegation failed: ${e.tx.rawLog}`, 'error')
+              NotificationService.notify(
+                `Undelegation failed: ${e.tx.rawLog}`,
+                "error",
+              );
             } else {
-              NotificationService.notify(`Undelegation failed: ${e.message}`, 'error')
+              NotificationService.notify(
+                `Undelegation failed: ${e.message}`,
+                "error",
+              );
             }
           })
           .then((tx: any) => {
-            toast.dismiss(toastId)
+            toast.dismiss(toastId);
             if (tx) {
               if (tx.code === 0) {
                 NotificationService.notify(
                   `Undelegated ${amountString} SCRT successfully from validator: ${selectedValidator?.description?.moniker}`,
-                  'success'
-                )
+                  "success",
+                );
               } else {
-                NotificationService.notify(`Undelegation failed: ${tx.rawLog}`, 'error')
+                NotificationService.notify(
+                  `Undelegation failed: ${tx.rawLog}`,
+                  "error",
+                );
               }
             }
-          })
+          });
       } catch (e: any) {
-        console.error(e)
-        NotificationService.notify('An unexpected error occurred', 'error')
+        console.error(e);
+        NotificationService.notify("An unexpected error occurred", "error");
       }
     }
-    submit()
-  }
+    submit();
+  };
   function setAmountByPercentage(percentage: number) {
     const maxValue = delegatorDelegations?.find(
       (delegatorDelegation: any) =>
-        selectedValidator?.operator_address == delegatorDelegation.delegation.validator_address
-    )?.balance?.amount
+        selectedValidator?.operator_address ==
+        delegatorDelegation.delegation.validator_address,
+    )?.balance?.amount;
 
     if (maxValue) {
-      let availableAmount = new BigNumber(maxValue).dividedBy(`1e${scrtToken.decimals}`)
-      let potentialInput = availableAmount.toNumber() * (percentage * 0.01)
+      let availableAmount = new BigNumber(maxValue).dividedBy(
+        `1e${scrtToken.decimals}`,
+      );
+      let potentialInput = availableAmount.toNumber() * (percentage * 0.01);
       if (Number(potentialInput) < 0) {
-        setAmountString('')
+        setAmountString("");
       } else {
-        setAmountString(potentialInput.toFixed(scrtToken.decimals))
+        setAmountString(potentialInput.toFixed(scrtToken.decimals));
       }
     }
   }
@@ -109,7 +133,9 @@ export default function UndelegateForm() {
   return (
     <div className="grid grid-cols-12 gap-4">
       <div className="col-span-12 p-4 rounded-xl bg-gray-100 dark:bg-neutral-800 text-black dark:text-white">
-        <div className="font-semibold mb-2 text-center sm:text-left">Amount to Undelegate</div>
+        <div className="font-semibold mb-2 text-center sm:text-left">
+          Amount to Undelegate
+        </div>
         <input
           value={amountString}
           onChange={handleInputChange}
@@ -117,7 +143,7 @@ export default function UndelegateForm() {
           min="0"
           step="0.000001"
           className={
-            'remove-arrows block flex-1 min-w-0 w-full bg-white dark:bg-neutral-900 text-black dark:text-white px-4 py-4 rounded-lg disabled:placeholder-neutral-300 dark:disabled:placeholder-neutral-700 transition-colors font-medium focus:outline-0 focus:ring-2 ring-sky-500/40'
+            "remove-arrows block flex-1 min-w-0 w-full bg-white dark:bg-neutral-900 text-black dark:text-white px-4 py-4 rounded-lg disabled:placeholder-neutral-300 dark:disabled:placeholder-neutral-700 transition-colors font-medium focus:outline-0 focus:ring-2 ring-sky-500/40"
           }
           name="toValue"
           id="toValue"
@@ -126,7 +152,7 @@ export default function UndelegateForm() {
         />
         <div className="mt-2 flex flex-col sm:flex-row gap-2">
           <div className="flex-1 text-center sm:text-left font-mono text-sm text-neutral-500 dark:text-neutral-400">
-            {amountInDollarString !== '$NaN' ? amountInDollarString : '$ -'}
+            {amountInDollarString !== "$NaN" ? amountInDollarString : "$ -"}
           </div>
           <div className="text-center sm:text-left flex-initial">
             <div className="inline-flex rounded-full text-xs font-extrabold">
@@ -201,5 +227,5 @@ export default function UndelegateForm() {
         </Button>
       </div>
     </div>
-  )
+  );
 }

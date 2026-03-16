@@ -1,135 +1,157 @@
-import { faInfoCircle, faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { createContext, useEffect, useRef, useState } from 'react'
-import MyValidatorsItem from './components/MyValidatorsItem'
-import { shuffleArray, stakingPageTitle, stakingPageDescription, stakingJsonLdSchema, isMac } from 'utils/commons'
-import Tooltip from '@mui/material/Tooltip'
-import NoScrtWarning from './components/NoScrtWarning'
-import ValidatorModal from './components/ValidatorModal'
-import { SECRET_LCD, SECRET_CHAIN_ID, tokens } from 'utils/config'
-import { SecretNetworkClient } from 'secretjs'
-import Title from '../../components/Title'
-import { useSearchParams } from 'react-router-dom'
-import { Nullable } from 'types/Nullable'
-import BigNumber from 'bignumber.js'
-import { StakingView, isStakingView } from 'types/StakingView'
-import ClaimRewardsModal from './components/ClaimRewardsModal'
-import ManageAutoRestakeModal from './components/ManageAutoRestakeModal'
-import { scrtToken } from 'utils/tokens'
-import { useSecretNetworkClientStore } from 'store/secretNetworkClient'
-import ValidatorItem from './components/ValidatorItem'
-import { Validator } from 'types/Validator'
-import Button from 'components/UI/Button/Button'
-import StakingStats from './components/StakingStats/StakingStats'
-import { ValidatorRestakeStatus } from 'types/ValidatorRestakeStatus'
+import {
+  faInfoCircle,
+  faMagnifyingGlass,
+} from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { createContext, useEffect, useRef, useState } from "react";
+import MyValidatorsItem from "./components/MyValidatorsItem";
+import {
+  shuffleArray,
+  stakingPageTitle,
+  stakingPageDescription,
+  stakingJsonLdSchema,
+  isMac,
+} from "utils/commons";
+import Tooltip from "@mui/material/Tooltip";
+import NoScrtWarning from "./components/NoScrtWarning";
+import ValidatorModal from "./components/ValidatorModal";
+import { SECRET_LCD, SECRET_CHAIN_ID, tokens } from "utils/config";
+import { SecretNetworkClient } from "secretjs";
+import Title from "../../components/Title";
+import { useSearchParams } from "react-router-dom";
+import { Nullable } from "types/Nullable";
+import BigNumber from "bignumber.js";
+import { StakingView, isStakingView } from "types/StakingView";
+import ClaimRewardsModal from "./components/ClaimRewardsModal";
+import ManageAutoRestakeModal from "./components/ManageAutoRestakeModal";
+import { scrtToken } from "utils/tokens";
+import { useSecretNetworkClientStore } from "store/secretNetworkClient";
+import ValidatorItem from "./components/ValidatorItem";
+import { Validator } from "types/Validator";
+import Button from "components/UI/Button/Button";
+import StakingStats from "./components/StakingStats/StakingStats";
+import { ValidatorRestakeStatus } from "types/ValidatorRestakeStatus";
 
-export const StakingContext = createContext(null)
+export const StakingContext = createContext(null);
 
 function Staking() {
   // URL params
-  const [searchParams, setSearchParams] = useSearchParams()
-  const validatorUrlParam = searchParams.get('validator') // selected validator
-  const viewUrlParam: Nullable<string> = searchParams.get('view') // "undelegate" | "redelegate" | "delegate"
+  const [searchParams, setSearchParams] = useSearchParams();
+  const validatorUrlParam = searchParams.get("validator"); // selected validator
+  const viewUrlParam: Nullable<string> = searchParams.get("view"); // "undelegate" | "redelegate" | "delegate"
 
-  const [view, setView] = useState<Nullable<StakingView>>(null)
+  const [view, setView] = useState<Nullable<StakingView>>(null);
 
-  const [reload, setReload] = useState(false)
+  const [reload, setReload] = useState(false);
 
   const handleStakingModalClose = () => {
-    setIsValidatorModalOpen(false)
+    setIsValidatorModalOpen(false);
 
-    searchParams.get('validator') ? searchParams.delete('validator') : null
-    searchParams.get('view') ? searchParams.delete('view') : null
-    setSearchParams(searchParams)
+    searchParams.get("validator") ? searchParams.delete("validator") : null;
+    searchParams.get("view") ? searchParams.delete("view") : null;
+    setSearchParams(searchParams);
 
-    setSelectedValidator(null)
-    setView(null)
+    setSelectedValidator(null);
+    setView(null);
 
-    document.body.classList.remove('overflow-hidden')
-  }
+    document.body.classList.remove("overflow-hidden");
+  };
 
   const handleClaimRewardsModal = () => {
-    setIsClaimRewardsModalOpen(false)
+    setIsClaimRewardsModalOpen(false);
 
-    document.body.classList.remove('overflow-hidden')
-  }
+    document.body.classList.remove("overflow-hidden");
+  };
 
-  const { secretNetworkClient, getBalance } = useSecretNetworkClientStore()
+  const { secretNetworkClient, getBalance } = useSecretNetworkClientStore();
 
   const scrtBalance = getBalance(
-    tokens.find((token) => token.name === 'SCRT'),
-    false
-  )
+    tokens.find((token) => token.name === "SCRT"),
+    false,
+  );
 
-  const [validators, setValidators] = useState<Nullable<Validator[]>>(null)
-  const [activeValidators, setActiveValidators] = useState<Nullable<Validator[]>>(null)
-  const [inactiveValidators, setInactiveValidators] = useState<Validator[]>(null)
+  const [validators, setValidators] = useState<Nullable<Validator[]>>(null);
+  const [activeValidators, setActiveValidators] =
+    useState<Nullable<Validator[]>>(null);
+  const [inactiveValidators, setInactiveValidators] =
+    useState<Validator[]>(null);
 
   //Delegations that a Delegetor has
-  const [delegatorDelegations, setDelegatorDelegations] = useState<any>()
+  const [delegatorDelegations, setDelegatorDelegations] = useState<any>();
 
   //Rewards for each delegator
-  const [delegationTotalRewards, setDelegationTotalRewards] = useState<any>()
+  const [delegationTotalRewards, setDelegationTotalRewards] = useState<any>();
 
   const totalPendingRewards = delegationTotalRewards?.total[0]?.amount
     ? BigNumber(delegationTotalRewards?.total[0]?.amount)
         .dividedBy(`1e${scrtToken.decimals}`)
         .toFormat(scrtToken.decimals)
-    : null
+    : null;
 
   const getTotalAmountStaked = () => {
     return delegatorDelegations
       ?.reduce((sum: any, delegation: any) => {
-        const amount = new BigNumber(delegation?.balance?.amount || 0)
-        return sum.plus(amount)
+        const amount = new BigNumber(delegation?.balance?.amount || 0);
+        return sum.plus(amount);
       }, new BigNumber(0))
       .dividedBy(`1e${scrtToken.decimals}`)
-      .toFormat(scrtToken.decimals)
-  }
+      .toFormat(scrtToken.decimals);
+  };
 
-  const [selectedValidator, setSelectedValidator] = useState<Nullable<Validator>>(null)
+  const [selectedValidator, setSelectedValidator] =
+    useState<Nullable<Validator>>(null);
 
-  const [shuffledActiveValidators, setShuffledActiveValidators] = useState<Nullable<Validator[]>>(null)
-  const [validatorsBySearch, setValidatorsBySearch] = useState<Nullable<Validator>>(null)
+  const [shuffledActiveValidators, setShuffledActiveValidators] =
+    useState<Nullable<Validator[]>>(null);
+  const [validatorsBySearch, setValidatorsBySearch] =
+    useState<Nullable<Validator>>(null);
 
-  type ValidatorDisplayStatus = 'active' | 'inactive'
-  const [validatorDisplayStatus, setValidatorDisplayStatus] = useState<ValidatorDisplayStatus>('active')
+  type ValidatorDisplayStatus = "active" | "inactive";
+  const [validatorDisplayStatus, setValidatorDisplayStatus] =
+    useState<ValidatorDisplayStatus>("active");
 
   //Auto Restake
-  const [restakeChoices, setRestakeChoices] = useState<ValidatorRestakeStatus[]>([])
-  const [restakeEntries, setRestakeEntries] = useState<ValidatorRestakeStatus[]>([])
+  const [restakeChoices, setRestakeChoices] = useState<
+    ValidatorRestakeStatus[]
+  >([]);
+  const [restakeEntries, setRestakeEntries] = useState<
+    ValidatorRestakeStatus[]
+  >([]);
 
   //Search Query
-  const [searchQuery, setSearchQuery] = useState<string>('')
-  const searchInput = useRef<HTMLInputElement>(null)
+  const [searchQuery, setSearchQuery] = useState<string>("");
+  const searchInput = useRef<HTMLInputElement>(null);
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
-      if ((event.metaKey || event.ctrlKey) && event.key === 'k') {
-        event.preventDefault()
-        searchInput.current?.focus()
+      if ((event.metaKey || event.ctrlKey) && event.key === "k") {
+        event.preventDefault();
+        searchInput.current?.focus();
       }
 
       // Check for ESC key to blur the search input
-      if (event.key === 'Escape') {
-        event.preventDefault()
+      if (event.key === "Escape") {
+        event.preventDefault();
         if (document.activeElement === searchInput.current) {
-          searchInput.current?.blur()
+          searchInput.current?.blur();
         }
       }
-    }
+    };
 
-    document.addEventListener('keydown', handleKeyDown)
+    document.addEventListener("keydown", handleKeyDown);
 
     return () => {
-      document.removeEventListener('keydown', handleKeyDown)
-    }
-  }, [])
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, []);
 
-  const [isValidatorModalOpen, setIsValidatorModalOpen] = useState<boolean>(false)
+  const [isValidatorModalOpen, setIsValidatorModalOpen] =
+    useState<boolean>(false);
 
-  const [isClaimRewardsModalOpen, setIsClaimRewardsModalOpen] = useState<boolean>(false)
+  const [isClaimRewardsModalOpen, setIsClaimRewardsModalOpen] =
+    useState<boolean>(false);
 
-  const [isManageAutoRestakeModalOpen, setIsManageAutoRestakeModalOpen] = useState<boolean>(false)
+  const [isManageAutoRestakeModalOpen, setIsManageAutoRestakeModalOpen] =
+    useState<boolean>(false);
 
   const getValByAddressStringSnippet = (addressSnippet: String) => {
     return (
@@ -137,152 +159,170 @@ function Staking() {
         return (
           val.operator_address.toLowerCase().includes(addressSnippet) ||
           val.description.moniker.toLowerCase().includes(addressSnippet)
-        )
+        );
       }) || null
-    )
-  }
+    );
+  };
 
   useEffect(() => {
     if (validatorUrlParam && validators) {
       if (getValByAddressStringSnippet(validatorUrlParam.toLowerCase())) {
-        setSelectedValidator(getValByAddressStringSnippet(validatorUrlParam.toLowerCase()))
+        setSelectedValidator(
+          getValByAddressStringSnippet(validatorUrlParam.toLowerCase()),
+        );
       } else {
-        searchParams.delete('validator')
-        searchParams.delete('view')
-        setSearchParams(searchParams)
+        searchParams.delete("validator");
+        searchParams.delete("view");
+        setSearchParams(searchParams);
       }
     }
-  }, [validatorUrlParam, validators])
+  }, [validatorUrlParam, validators]);
 
   useEffect(() => {
     if (viewUrlParam && !validatorUrlParam) {
     }
-  }, [validatorUrlParam, viewUrlParam])
+  }, [validatorUrlParam, viewUrlParam]);
 
   // sets view by url param
   useEffect(() => {
     if (viewUrlParam && validators) {
       if (isStakingView(viewUrlParam)) {
-        setView(viewUrlParam as StakingView)
+        setView(viewUrlParam as StakingView);
       } else {
-        setView(null)
-        searchParams.delete('view')
-        setSearchParams(searchParams)
+        setView(null);
+        searchParams.delete("view");
+        setSearchParams(searchParams);
       }
     }
-  }, [viewUrlParam, validators])
+  }, [viewUrlParam, validators]);
 
   // sets url param by view
   useEffect(() => {
-    var params = {}
+    var params = {};
     if (selectedValidator || view) {
       if (selectedValidator) {
-        params = { ...params, validator: selectedValidator.operator_address }
+        params = { ...params, validator: selectedValidator.operator_address };
       }
       if (view) {
-        params = { ...params, view: view }
+        params = { ...params, view: view };
       }
-      setSearchParams(params)
+      setSearchParams(params);
     }
-  }, [selectedValidator, view])
+  }, [selectedValidator, view]);
 
   function getViewByString(input: string): Nullable<StakingView> {
-    return isStakingView(input.toLowerCase()) ? (input.toLowerCase() as StakingView) : null
+    return isStakingView(input.toLowerCase())
+      ? (input.toLowerCase() as StakingView)
+      : null;
   }
 
   useEffect(() => {
     if (viewUrlParam && validators && validators.length > 0) {
-      const viewByUrlParam: Nullable<StakingView> = getViewByString(viewUrlParam)
+      const viewByUrlParam: Nullable<StakingView> =
+        getViewByString(viewUrlParam);
       if (viewByUrlParam !== null) {
-        setView(viewByUrlParam)
+        setView(viewByUrlParam);
       }
     }
-  }, [validators])
+  }, [validators]);
 
   useEffect(() => {
     const fetchDelegatorValidators = async () => {
       if (secretNetworkClient?.address) {
-        const { delegation_responses } = await secretNetworkClient.query.staking.delegatorDelegations({
-          delegator_addr: secretNetworkClient?.address,
-          pagination: { limit: '1000' }
-        })
-        const { validators } = await secretNetworkClient.query.distribution.restakingEntries({
-          delegator: secretNetworkClient?.address
-        })
+        const { delegation_responses } =
+          await secretNetworkClient.query.staking.delegatorDelegations({
+            delegator_addr: secretNetworkClient?.address,
+            pagination: { limit: "1000" },
+          });
+        const { validators } =
+          await secretNetworkClient.query.distribution.restakingEntries({
+            delegator: secretNetworkClient?.address,
+          });
         //Restake Entries are the restake entries from the chain, these stay and will not be changed.
         setRestakeEntries(
           delegation_responses.map((validator: any) => ({
             validatorAddress: validator?.delegation?.validator_address,
             autoRestake: validators.some((item: any) => {
-              return item === validator?.delegation?.validator_address
+              return item === validator?.delegation?.validator_address;
             }),
-            stakedAmount: validator?.balance?.amount
-          }))
-        )
+            stakedAmount: validator?.balance?.amount,
+          })),
+        );
         //Restake Entries INITALLY are the restake entries from the chain, user changes these.
         setRestakeChoices(
           delegation_responses.map((validator: any) => ({
             validatorAddress: validator?.delegation?.validator_address,
             autoRestake: validators.some((item: any) => {
-              return item === validator?.delegation?.validator_address
+              return item === validator?.delegation?.validator_address;
             }),
-            stakedAmount: validator?.balance?.amount
-          }))
-        )
-        setDelegatorDelegations(delegation_responses)
-        const result = await secretNetworkClient.query.distribution.delegationTotalRewards({
-          delegator_address: secretNetworkClient?.address
-        })
-        setDelegationTotalRewards(result)
+            stakedAmount: validator?.balance?.amount,
+          })),
+        );
+        setDelegatorDelegations(delegation_responses);
+        const result =
+          await secretNetworkClient.query.distribution.delegationTotalRewards({
+            delegator_address: secretNetworkClient?.address,
+          });
+        setDelegationTotalRewards(result);
       }
-    }
-    fetchDelegatorValidators()
-  }, [secretNetworkClient?.address, reload])
+    };
+    fetchDelegatorValidators();
+  }, [secretNetworkClient?.address, reload]);
 
   useEffect(() => {
     const fetchValidators = async () => {
       const secretjsquery = new SecretNetworkClient({
         url: SECRET_LCD,
-        chainId: SECRET_CHAIN_ID
-      })
+        chainId: SECRET_CHAIN_ID,
+      });
       const { validators } = await secretjsquery.query.staking.validators({
-        status: '',
+        status: "",
         pagination: {
-          limit: '1000'
-        }
-      })
-      setValidators(validators)
-      const activeValidators = validators.filter((validator: Validator) => validator.status === 'BOND_STATUS_BONDED')
-      setActiveValidators(activeValidators)
-      setShuffledActiveValidators(shuffleArray(activeValidators))
-      setInactiveValidators(validators.filter((validator: Validator) => validator.status === 'BOND_STATUS_UNBONDED'))
-    }
-    fetchValidators()
-  }, [])
+          limit: "1000",
+        },
+      });
+      setValidators(validators);
+      const activeValidators = validators.filter(
+        (validator: Validator) => validator.status === "BOND_STATUS_BONDED",
+      );
+      setActiveValidators(activeValidators);
+      setShuffledActiveValidators(shuffleArray(activeValidators));
+      setInactiveValidators(
+        validators.filter(
+          (validator: Validator) => validator.status === "BOND_STATUS_UNBONDED",
+        ),
+      );
+    };
+    fetchValidators();
+  }, []);
 
   useEffect(() => {
     if (!searchQuery) {
-      setValidatorsBySearch(null)
-      return
+      setValidatorsBySearch(null);
+      return;
     }
-    if (shuffledActiveValidators && validatorDisplayStatus == 'active') {
+    if (shuffledActiveValidators && validatorDisplayStatus == "active") {
       setValidatorsBySearch(
         shuffledActiveValidators.filter((validator: Validator) =>
-          validator?.description?.moniker.toLowerCase().includes(searchQuery?.toLowerCase())
-        )
-      )
+          validator?.description?.moniker
+            .toLowerCase()
+            .includes(searchQuery?.toLowerCase()),
+        ),
+      );
     }
-    if (inactiveValidators && validatorDisplayStatus == 'inactive') {
+    if (inactiveValidators && validatorDisplayStatus == "inactive") {
       setValidatorsBySearch(
         inactiveValidators.filter((validator: any) =>
-          validator?.description?.moniker.toLowerCase().includes(searchQuery?.toLowerCase())
-        )
-      )
+          validator?.description?.moniker
+            .toLowerCase()
+            .includes(searchQuery?.toLowerCase()),
+        ),
+      );
     }
-  }, [searchQuery, validatorDisplayStatus])
+  }, [searchQuery, validatorDisplayStatus]);
 
   function handleManageAutoRestakeModal() {
-    setIsManageAutoRestakeModalOpen(false)
+    setIsManageAutoRestakeModalOpen(false);
   }
 
   const providerValue = {
@@ -304,8 +344,8 @@ function Staking() {
     setRestakeEntries,
     totalPendingRewards,
     getTotalAmountStaked,
-    setIsClaimRewardsModalOpen
-  }
+    setIsClaimRewardsModalOpen,
+  };
 
   return (
     <StakingContext.Provider value={providerValue}>
@@ -322,16 +362,30 @@ function Staking() {
 
         <meta property="og:title" content={stakingPageTitle} />
         <meta property="og:description" content={stakingPageDescription} />
-        <meta property="og:image" content={`/img/secret_dashboard_preview.png`} />
+        <meta
+          property="og:image"
+          content={`/img/secret_dashboard_preview.png`}
+        />
 
         <meta name="twitter:title" content={stakingPageTitle} />
         <meta name="twitter:description" content={stakingPageDescription} />
-        <meta property="twitter:image" content={`/img/secret_dashboard_preview.png`} />
+        <meta
+          property="twitter:image"
+          content={`/img/secret_dashboard_preview.png`}
+        />
 
-        <script type="application/ld+json">{JSON.stringify(stakingJsonLdSchema)}</script>
+        <script type="application/ld+json">
+          {JSON.stringify(stakingJsonLdSchema)}
+        </script>
 
-        <ManageAutoRestakeModal open={isManageAutoRestakeModalOpen} onClose={handleManageAutoRestakeModal} />
-        <ClaimRewardsModal open={isClaimRewardsModalOpen} onClose={handleClaimRewardsModal} />
+        <ManageAutoRestakeModal
+          open={isManageAutoRestakeModalOpen}
+          onClose={handleManageAutoRestakeModal}
+        />
+        <ClaimRewardsModal
+          open={isClaimRewardsModalOpen}
+          onClose={handleClaimRewardsModal}
+        />
         <ValidatorModal
           open={!!selectedValidator}
           restakeEntries={restakeEntries}
@@ -339,64 +393,84 @@ function Staking() {
           onAutoRestake={() => setIsManageAutoRestakeModalOpen(true)}
         />
         {/* Title */}
-        <Title title={'Staking'} className="pb-12" />
-        {secretNetworkClient?.address && Number(scrtBalance) === 0 && scrtBalance !== null && <NoScrtWarning />}
+        <Title title={"Staking"} className="pb-12" />
+        {secretNetworkClient?.address &&
+          Number(scrtBalance) === 0 &&
+          scrtBalance !== null && <NoScrtWarning />}
 
         {/* My Validators */}
-        {secretNetworkClient?.address && delegatorDelegations && delegatorDelegations?.length != 0 && validators && (
-          <>
-            <StakingStats />
+        {secretNetworkClient?.address &&
+          delegatorDelegations &&
+          delegatorDelegations?.length != 0 &&
+          validators && (
+            <>
+              <StakingStats />
 
-            <hr className="h-px my-8 bg-neutral-200 border-0 dark:bg-neutral-700" />
+              <hr className="h-px my-8 bg-neutral-200 border-0 dark:bg-neutral-700" />
 
-            <div className="max-w-6xl mx-auto">
-              <div className="font-semibold text-xl mb-4 px-4">My Validators</div>
-            </div>
-            <div className="max-w-6xl mx-auto">
-              <div className="flex flex-col px-4">
-                {delegatorDelegations?.map((delegation: any, i: number) => {
-                  const validator = validators.find(
-                    (validator: Validator) => validator.operator_address == delegation.delegation.validator_address
-                  )
-                  return (
-                    <MyValidatorsItem
-                      key={i}
-                      name={validator?.description?.moniker}
-                      commissionPercentage={validator?.commission.commission_rates?.rate}
-                      validator={validator}
-                      identity={validator?.description?.identity}
-                      restakeEntries={restakeEntries}
-                      stakedAmount={delegation?.balance?.amount}
-                      setSelectedValidator={setSelectedValidator}
-                      openModal={setIsValidatorModalOpen}
-                    />
-                  )
-                })}
-              </div>
-
-              {/* Total Staked | Auto Restake */}
-              <div className="px-4 mt-4 flex flex-col sm:flex-row gap-2 sm:gap-4 text-center sm:text-left">
-                <div className="flex-initial">
-                  <Button onClick={() => setIsManageAutoRestakeModalOpen(true)}>Manage Auto Restake</Button>
+              <div className="max-w-6xl mx-auto">
+                <div className="font-semibold text-xl mb-4 px-4">
+                  My Validators
                 </div>
               </div>
-            </div>
+              <div className="max-w-6xl mx-auto">
+                <div className="flex flex-col px-4">
+                  {delegatorDelegations?.map((delegation: any, i: number) => {
+                    const validator = validators.find(
+                      (validator: Validator) =>
+                        validator.operator_address ==
+                        delegation.delegation.validator_address,
+                    );
+                    return (
+                      <MyValidatorsItem
+                        key={i}
+                        name={validator?.description?.moniker}
+                        commissionPercentage={
+                          validator?.commission.commission_rates?.rate
+                        }
+                        validator={validator}
+                        identity={validator?.description?.identity}
+                        restakeEntries={restakeEntries}
+                        stakedAmount={delegation?.balance?.amount}
+                        setSelectedValidator={setSelectedValidator}
+                        openModal={setIsValidatorModalOpen}
+                      />
+                    );
+                  })}
+                </div>
 
-            <hr className="h-px my-8 bg-neutral-200 border-0 dark:bg-neutral-700" />
-          </>
-        )}
+                {/* Total Staked | Auto Restake */}
+                <div className="px-4 mt-4 flex flex-col sm:flex-row gap-2 sm:gap-4 text-center sm:text-left">
+                  <div className="flex-initial">
+                    <Button
+                      onClick={() => setIsManageAutoRestakeModalOpen(true)}
+                    >
+                      Manage Auto Restake
+                    </Button>
+                  </div>
+                </div>
+              </div>
+
+              <hr className="h-px my-8 bg-neutral-200 border-0 dark:bg-neutral-700" />
+            </>
+          )}
 
         {/* All Validators */}
         <div className="max-w-6xl mx-auto mt-8">
           <div className="font-semibold text-xl mb-4 px-4">
             <Tooltip
-              title={'To promote decentralization, all validators are ordered randomly.'}
+              title={
+                "To promote decentralization, all validators are ordered randomly."
+              }
               placement="right"
               arrow
             >
               <span className="inline-flex items-center gap-2">
                 All Validators
-                <FontAwesomeIcon icon={faInfoCircle} className="text-sm text-neutral-400 cursor-pointer" />
+                <FontAwesomeIcon
+                  icon={faInfoCircle}
+                  className="text-sm text-neutral-400 cursor-pointer"
+                />
               </span>
             </Tooltip>
           </div>
@@ -407,7 +481,7 @@ function Staking() {
                 <div className="relative sm:w-72">
                   <div className="absolute right-0 pr-3 inset-y-0 pointer-events-none text-sm flex items-center">
                     <div className="bg-gray-100 dark:bg-neutral-700 px-1 rounded-sm flex items-center gap-0.5">
-                      <kbd>{isMac ? '⌘' : 'CTRL+'}</kbd>
+                      <kbd>{isMac ? "⌘" : "CTRL+"}</kbd>
                       <kbd>K</kbd>
                     </div>
                   </div>
@@ -428,29 +502,31 @@ function Staking() {
             </div>
             <div className="flex-initial items-center rounded-md" role="group">
               <button
-                disabled={validatorDisplayStatus === 'active'}
-                onClick={() => setValidatorDisplayStatus('active')}
+                disabled={validatorDisplayStatus === "active"}
+                onClick={() => setValidatorDisplayStatus("active")}
                 type="button"
                 className="disabled:text-white px-3 text-xs font-semibold rounded-l-lg py-2 enabled:bg-gray-300 disabled:bg-emerald-500 dark:disabled:bg-emerald-600 dark:enabled:bg-neutral-700 enabled:hover:bg-gray-400 dark:enabled:hover:bg-neutral-750 transition"
               >
-                {`Active Set${activeValidators ? ` (${activeValidators?.length})` : ''}`}
+                {`Active Set${activeValidators ? ` (${activeValidators?.length})` : ""}`}
               </button>
               <button
-                onClick={() => setValidatorDisplayStatus('inactive')}
-                disabled={validatorDisplayStatus === 'inactive'}
+                onClick={() => setValidatorDisplayStatus("inactive")}
+                disabled={validatorDisplayStatus === "inactive"}
                 type="button"
                 className="px-3 text-xs font-semibold rounded-r-lg py-2 disabled:bg-red-600 disabled:text-white enabled:bg-gray-300 dark:enabled:bg-neutral-700 enabled:hover:bg-gray-400 dark:enabled:hover:bg-neutral-750 transition"
               >
-                {`Inactive Set${inactiveValidators ? ` (${inactiveValidators?.length})` : ''}`}
+                {`Inactive Set${inactiveValidators ? ` (${inactiveValidators?.length})` : ""}`}
               </button>
             </div>
           </div>
 
           <div className="flex flex-col px-4 ">
-            {validatorsBySearch || shuffledActiveValidators || inactiveValidators ? (
+            {validatorsBySearch ||
+            shuffledActiveValidators ||
+            inactiveValidators ? (
               (validatorsBySearch
                 ? validatorsBySearch
-                : validatorDisplayStatus == 'active'
+                : validatorDisplayStatus == "active"
                   ? shuffledActiveValidators
                   : inactiveValidators
               )?.map((validator: Validator, i: number) => (
@@ -459,7 +535,9 @@ function Staking() {
                   position={i}
                   validator={validator}
                   name={validator?.description?.moniker}
-                  commissionPercentage={validator?.commission.commission_rates?.rate}
+                  commissionPercentage={
+                    validator?.commission.commission_rates?.rate
+                  }
                   votingPower={validator?.tokens}
                   identity={validator?.description?.identity}
                   website={validator?.description?.website}
@@ -472,7 +550,7 @@ function Staking() {
                 <ValidatorItem
                   position={0}
                   validator={undefined}
-                  name={''}
+                  name={""}
                   commissionPercentage={undefined}
                   votingPower={undefined}
                   identity={undefined}
@@ -492,7 +570,7 @@ function Staking() {
         </div>
       </>
     </StakingContext.Provider>
-  )
+  );
 }
 
-export default Staking
+export default Staking;

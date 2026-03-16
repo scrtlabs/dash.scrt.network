@@ -1,5 +1,5 @@
-export type WalletAPIType = 'keplr' | 'leap'
+export type WalletAPIType = "keplr" | "leap";
 
 export function isWalletAPIType(x: String): boolean {
-  return x === 'keplr' || x === 'leap'
+  return x === "keplr" || x === "leap";
 }

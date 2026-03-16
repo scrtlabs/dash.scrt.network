@@ -1,79 +1,101 @@
-import BigNumber from 'bignumber.js'
-import { useContext, useEffect, useState } from 'react'
-import { APIContext } from 'context/APIContext'
-import { faucetAddress, queryTxResult, toCurrencyString } from 'utils/commons'
-import { StakingContext } from 'pages/staking/Staking'
-import { useSecretNetworkClientStore } from 'store/secretNetworkClient'
-import { scrtToken } from 'utils/tokens'
-import Button from 'components/UI/Button/Button'
-import toast from 'react-hot-toast'
-import { faInfoCircle } from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import Tooltip from '@mui/material/Tooltip'
-import ActionableStatus from 'components/FeeGrant/components/ActionableStatus'
-import { NotificationService } from 'services/notification.service'
-import { tokens } from 'utils/config'
-import { BroadcastMode } from 'secretjs'
+import BigNumber from "bignumber.js";
+import { useContext, useEffect, useState } from "react";
+import { APIContext } from "context/APIContext";
+import { faucetAddress, queryTxResult, toCurrencyString } from "utils/commons";
+import { StakingContext } from "pages/staking/Staking";
+import { useSecretNetworkClientStore } from "store/secretNetworkClient";
+import { scrtToken } from "utils/tokens";
+import Button from "components/UI/Button/Button";
+import toast from "react-hot-toast";
+import { faInfoCircle } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Tooltip from "@mui/material/Tooltip";
+import ActionableStatus from "components/FeeGrant/components/ActionableStatus";
+import { NotificationService } from "services/notification.service";
+import { tokens } from "utils/config";
+import { BroadcastMode } from "secretjs";
 
 export default function StakingForm() {
-  const { selectedValidator, setView } = useContext(StakingContext)
-  const { secretNetworkClient, walletAddress, feeGrantStatus, isConnected, getBalance } = useSecretNetworkClientStore()
+  const { selectedValidator, setView } = useContext(StakingContext);
+  const {
+    secretNetworkClient,
+    walletAddress,
+    feeGrantStatus,
+    isConnected,
+    getBalance,
+  } = useSecretNetworkClientStore();
   const scrtBalance = getBalance(
-    tokens.find((token) => token.name === 'SCRT'),
-    false
-  )
-  const { currentPrice } = useContext(APIContext)
+    tokens.find((token) => token.name === "SCRT"),
+    false,
+  );
+  const { currentPrice } = useContext(APIContext);
 
-  const [amountString, setAmountString] = useState<string>('0')
-  const [amountInDollarString, setAmountInCurrencyString] = useState<string>('')
+  const [amountString, setAmountString] = useState<string>("0");
+  const [amountInDollarString, setAmountInCurrencyString] =
+    useState<string>("");
 
   const handleInputChange = (e: any) => {
-    setAmountString(e.target.value)
-  }
+    setAmountString(e.target.value);
+  };
 
   useEffect(() => {
     const scrtBalanceCurrencyString = toCurrencyString(
-      new BigNumber(amountString!).multipliedBy(Number(currentPrice)).toNumber()
-    )
-    setAmountInCurrencyString(scrtBalanceCurrencyString)
-  }, [amountString])
+      new BigNumber(amountString!)
+        .multipliedBy(Number(currentPrice))
+        .toNumber(),
+    );
+    setAmountInCurrencyString(scrtBalanceCurrencyString);
+  }, [amountString]);
 
   const handleSubmit = () => {
     async function submit() {
-      if (!isConnected) return
+      if (!isConnected) return;
 
       try {
         const toastId = NotificationService.notify(
           `Staking ${amountString} SCRT with validator: ${selectedValidator?.description?.moniker}`,
-          'loading'
-        )
+          "loading",
+        );
         const broadcastResult = await secretNetworkClient.tx.staking.delegate(
           {
             delegator_address: walletAddress,
             validator_address: selectedValidator?.operator_address,
             amount: {
-              amount: BigNumber(amountString).multipliedBy(`1e${scrtToken.decimals}`).toFixed(0, BigNumber.ROUND_DOWN),
-              denom: 'uscrt'
-            }
+              amount: BigNumber(amountString)
+                .multipliedBy(`1e${scrtToken.decimals}`)
+                .toFixed(0, BigNumber.ROUND_DOWN),
+              denom: "uscrt",
+            },
           },
           {
             gasLimit: 100_000,
             gasPriceInFeeDenom: 0.25,
-            feeDenom: 'uscrt',
-            feeGranter: feeGrantStatus === 'success' ? faucetAddress : '',
+            feeDenom: "uscrt",
+            feeGranter: feeGrantStatus === "success" ? faucetAddress : "",
             broadcastMode: BroadcastMode.Sync,
-            waitForCommit: false
-          }
-        )
+            waitForCommit: false,
+          },
+        );
 
-        await queryTxResult(secretNetworkClient, broadcastResult.transactionHash, 6000, 10)
+        await queryTxResult(
+          secretNetworkClient,
+          broadcastResult.transactionHash,
+          6000,
+          10,
+        )
           .catch((error: any) => {
-            console.error(error)
-            toast.dismiss(toastId)
+            console.error(error);
+            toast.dismiss(toastId);
             if (error?.tx?.rawLog) {
-              NotificationService.notify(`Staking failed: ${error.tx.rawLog}`, 'error')
+              NotificationService.notify(
+                `Staking failed: ${error.tx.rawLog}`,
+                "error",
+              );
             } else {
-              NotificationService.notify(`Staking failed: ${error.message}`, 'error')
+              NotificationService.notify(
+                `Staking failed: ${error.message}`,
+                "error",
+              );
             }
           })
           .then((tx: any) => {
@@ -81,29 +103,34 @@ export default function StakingForm() {
               if (tx.code === 0) {
                 NotificationService.notify(
                   `Staking ${amountString} SCRT successfully with validator: ${selectedValidator?.description?.moniker}`,
-                  'success'
-                )
+                  "success",
+                );
               } else {
-                NotificationService.notify(`Staking failed: ${tx.rawLog}`, 'error')
+                NotificationService.notify(
+                  `Staking failed: ${tx.rawLog}`,
+                  "error",
+                );
               }
             }
-          })
+          });
       } catch (e: any) {
-        console.error(e)
+        console.error(e);
       }
     }
-    submit()
-  }
+    submit();
+  };
 
   function setAmountByPercentage(percentage: number) {
     if (scrtBalance) {
-      let availableAmount = new BigNumber(scrtBalance).dividedBy(`1e${scrtToken.decimals}`)
-      let potentialInput = availableAmount.toNumber() * (percentage * 0.01)
-      potentialInput = potentialInput - 0.05
+      let availableAmount = new BigNumber(scrtBalance).dividedBy(
+        `1e${scrtToken.decimals}`,
+      );
+      let potentialInput = availableAmount.toNumber() * (percentage * 0.01);
+      potentialInput = potentialInput - 0.05;
       if (Number(potentialInput) < 0) {
-        setAmountString('')
+        setAmountString("");
       } else {
-        setAmountString(potentialInput.toFixed(scrtToken.decimals))
+        setAmountString(potentialInput.toFixed(scrtToken.decimals));
       }
     }
   }
@@ -111,7 +138,9 @@ export default function StakingForm() {
   return (
     <div className="grid grid-cols-12 gap-4">
       <div className="col-span-12 p-4 rounded-xl bg-gray-100 dark:bg-neutral-800 text-black dark:text-white">
-        <div className="font-semibold mb-2 text-center sm:text-left">Amount to Stake</div>
+        <div className="font-semibold mb-2 text-center sm:text-left">
+          Amount to Stake
+        </div>
 
         <input
           value={amountString}
@@ -120,7 +149,7 @@ export default function StakingForm() {
           min="0"
           step="0.000001"
           className={
-            'block flex-1 min-w-0 w-full bg-white dark:bg-neutral-900 text-black dark:text-white px-4 py-4 rounded-lg disabled:placeholder-neutral-300 dark:disabled:placeholder-neutral-700 transition-colors font-medium focus:outline-0 focus:ring-2 ring-sky-500/40'
+            "block flex-1 min-w-0 w-full bg-white dark:bg-neutral-900 text-black dark:text-white px-4 py-4 rounded-lg disabled:placeholder-neutral-300 dark:disabled:placeholder-neutral-700 transition-colors font-medium focus:outline-0 focus:ring-2 ring-sky-500/40"
           }
           name="toValue"
           id="toValue"
@@ -129,7 +158,7 @@ export default function StakingForm() {
         />
         <div className="mt-2 flex flex-col sm:flex-row gap-2">
           <div className="flex-1 text-center sm:text-left font-mono text-sm text-neutral-400">
-            {amountInDollarString !== '$NaN' ? amountInDollarString : '$ -'}
+            {amountInDollarString !== "$NaN" ? amountInDollarString : "$ -"}
           </div>
           <div className="text-center sm:text-left flex-initial">
             <div className="inline-flex rounded-full text-xs font-extrabold">
@@ -209,5 +238,5 @@ export default function StakingForm() {
         </Button>
       </div>
     </div>
-  )
+  );
 }

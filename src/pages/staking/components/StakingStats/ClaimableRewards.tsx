@@ -1,39 +1,43 @@
-import BigNumber from 'bignumber.js'
-import Button from 'components/UI/Button/Button'
-import { APIContext } from 'context/APIContext'
-import { StakingContext } from 'pages/staking/Staking'
-import { useContext, useEffect, useState } from 'react'
-import { useTokenPricesStore } from 'store/TokenPrices'
-import { useUserPreferencesStore } from 'store/UserPreferences'
-import { toCurrencyString } from 'utils/commons'
-import { scrtToken } from 'utils/tokens'
+import BigNumber from "bignumber.js";
+import Button from "components/UI/Button/Button";
+import { APIContext } from "context/APIContext";
+import { StakingContext } from "pages/staking/Staking";
+import { useContext, useEffect, useState } from "react";
+import { useTokenPricesStore } from "store/TokenPrices";
+import { useUserPreferencesStore } from "store/UserPreferences";
+import { toCurrencyString } from "utils/commons";
+import { scrtToken } from "utils/tokens";
 
 function ClaimableRewards() {
-  const { setIsClaimRewardsModalOpen, totalPendingRewards } = useContext(StakingContext)
-  const { convertCurrency } = useContext(APIContext)
-  const { getValuePrice, priceMapping } = useTokenPricesStore()
-  const { currency } = useUserPreferencesStore()
+  const { setIsClaimRewardsModalOpen, totalPendingRewards } =
+    useContext(StakingContext);
+  const { convertCurrency } = useContext(APIContext);
+  const { getValuePrice, priceMapping } = useTokenPricesStore();
+  const { currency } = useUserPreferencesStore();
 
-  const [claimableRewardsInCurrency, setClaimableRewardsInCurrency] = useState<string>('')
+  const [claimableRewardsInCurrency, setClaimableRewardsInCurrency] =
+    useState<string>("");
 
   useEffect(() => {
     if (priceMapping !== null && totalPendingRewards !== null) {
       const valuePrice = getValuePrice(
         scrtToken,
-        BigNumber(totalPendingRewards).multipliedBy(`1e${scrtToken.decimals}`)
-      )
+        BigNumber(totalPendingRewards).multipliedBy(`1e${scrtToken.decimals}`),
+      );
       if (valuePrice) {
-        const priceInCurrency = convertCurrency('USD', valuePrice, currency)
+        const priceInCurrency = convertCurrency("USD", valuePrice, currency);
         if (priceInCurrency !== null) {
-          setClaimableRewardsInCurrency(toCurrencyString(priceInCurrency, currency))
+          setClaimableRewardsInCurrency(
+            toCurrencyString(priceInCurrency, currency),
+          );
         }
-        setClaimableRewardsInCurrency(toCurrencyString(valuePrice, currency))
+        setClaimableRewardsInCurrency(toCurrencyString(valuePrice, currency));
       }
     }
-  }, [priceMapping, totalPendingRewards])
+  }, [priceMapping, totalPendingRewards]);
 
   function openClaimRewardsModal() {
-    setIsClaimRewardsModalOpen(true)
+    setIsClaimRewardsModalOpen(true);
   }
 
   return (
@@ -43,8 +47,13 @@ function ClaimableRewards() {
         <div className="mb-1">
           {totalPendingRewards !== null ? (
             <>
-              <span className="font-medium font-mono">{totalPendingRewards}</span>
-              <span className="text-xs font-semibold text-neutral-400"> SCRT</span>
+              <span className="font-medium font-mono">
+                {totalPendingRewards}
+              </span>
+              <span className="text-xs font-semibold text-neutral-400">
+                {" "}
+                SCRT
+              </span>
             </>
           ) : (
             <div className="animate-pulse inline-block">
@@ -68,7 +77,7 @@ function ClaimableRewards() {
         </Button>
       </div>
     </div>
-  )
+  );
 }
 
-export default ClaimableRewards
+export default ClaimableRewards;

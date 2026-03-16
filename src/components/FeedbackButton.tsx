@@ -1,7 +1,7 @@
-import './FloatingCTAButton.css'
+import "./FloatingCTAButton.css";
 
 interface Props {
-  url: string
+  url: string;
 }
 
 function FeedbackButton(props: Props) {
@@ -15,7 +15,7 @@ function FeedbackButton(props: Props) {
         Feedback
       </a>
     </div>
-  )
+  );
 }
 
-export default FeedbackButton
+export default FeedbackButton;

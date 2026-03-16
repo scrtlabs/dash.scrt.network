@@ -1,27 +1,27 @@
-import BigNumber from 'bignumber.js'
-import { Nullable } from 'types/Nullable'
-import { allTokens, toCurrencyString } from 'utils/commons'
-import { Token, tokens } from 'utils/config'
-import { create } from 'zustand'
+import BigNumber from "bignumber.js";
+import { Nullable } from "types/Nullable";
+import { allTokens, toCurrencyString } from "utils/commons";
+import { Token, tokens } from "utils/config";
+import { create } from "zustand";
 
 export interface CoinPrice {
-  coingecko_id: string
-  priceUsd: number
+  coingecko_id: string;
+  priceUsd: number;
 }
 
 interface TokenPricesState {
-  priceMapping: Map<Token, number>
-  init: () => void
-  isInitialized: boolean
-  getPrice: (token: Token) => Nullable<string>
-  getValuePrice: (token: Token, amount: BigNumber) => Nullable<number>
+  priceMapping: Map<Token, number>;
+  init: () => void;
+  isInitialized: boolean;
+  getPrice: (token: Token) => Nullable<string>;
+  getValuePrice: (token: Token, amount: BigNumber) => Nullable<number>;
 }
 
 export const useTokenPricesStore = create<TokenPricesState>()((set, get) => ({
   priceMapping: null,
   isInitialized: false,
   init: () => {
-    let prices: CoinPrice[]
+    let prices: CoinPrice[];
 
     /*let coinGeckoIdsString: string = allTokens.map((token) => token.coingecko_id).join(',')
     console.log(coinGeckoIdsString)*/
@@ -30,54 +30,66 @@ export const useTokenPricesStore = create<TokenPricesState>()((set, get) => ({
     fetch(`https://priceapibuffer.secretsaturn.net/getPrices`)
       .then((resp) => resp.json())
       .then((result: { [coingecko_id: string]: { usd: number } }) => {
-        const formattedPrices = Object.entries(result).map(([coingecko_id, { usd }]) => ({
-          coingecko_id,
-          priceUsd: usd
-        }))
-        prices = formattedPrices
-        const priceMapping = new Map<Token, number>()
+        const formattedPrices = Object.entries(result).map(
+          ([coingecko_id, { usd }]) => ({
+            coingecko_id,
+            priceUsd: usd,
+          }),
+        );
+        prices = formattedPrices;
+        const priceMapping = new Map<Token, number>();
         allTokens.forEach((token: Token) => {
-          priceMapping.set(token, prices.find((price: any) => price.coingecko_id === token.coingecko_id)?.priceUsd)
-        })
+          priceMapping.set(
+            token,
+            prices.find(
+              (price: any) => price.coingecko_id === token.coingecko_id,
+            )?.priceUsd,
+          );
+        });
 
         set({
-          priceMapping: priceMapping
-        })
+          priceMapping: priceMapping,
+        });
       })
       .catch((error) => {
-        console.error(error)
-        const priceMapping = new Map<Token, number>()
+        console.error(error);
+        const priceMapping = new Map<Token, number>();
         tokens.forEach((token: Token) => {
-          priceMapping.set(token, undefined)
-        })
+          priceMapping.set(token, undefined);
+        });
         set({
-          priceMapping: priceMapping
-        })
-      })
+          priceMapping: priceMapping,
+        });
+      });
     set({
       priceMapping: new Map<Token, number>(),
-      isInitialized: true
-    })
+      isInitialized: true,
+    });
   },
   getPrice: (token: Token) => {
     if (!get().isInitialized) {
-      get().init()
+      get().init();
     }
-    const tokenPrice = get().priceMapping.get(token)
+    const tokenPrice = get().priceMapping.get(token);
     if (tokenPrice !== undefined) {
-      return toCurrencyString(tokenPrice)
+      return toCurrencyString(tokenPrice);
     }
-    return null
+    return null;
   },
-  getValuePrice: (token: Token, amount: BigNumber = new BigNumber(1)): Nullable<number> => {
+  getValuePrice: (
+    token: Token,
+    amount: BigNumber = new BigNumber(1),
+  ): Nullable<number> => {
     if (!get().isInitialized) {
-      get().init()
+      get().init();
     }
-    const tokenPrice = get().priceMapping.get(token)
+    const tokenPrice = get().priceMapping.get(token);
     if (tokenPrice !== undefined) {
-      const result = new BigNumber(tokenPrice).multipliedBy(amount).dividedBy(`1e${token.decimals}`)
-      return Number(result)
+      const result = new BigNumber(tokenPrice)
+        .multipliedBy(amount)
+        .dividedBy(`1e${token.decimals}`);
+      return Number(result);
     }
-    return null
-  }
-}))
+    return null;
+  },
+}));

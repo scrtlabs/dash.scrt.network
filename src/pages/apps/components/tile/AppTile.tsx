@@ -1,31 +1,31 @@
-import Tag from './Tag'
-import mixpanel from 'mixpanel-browser'
+import Tag from "./Tag";
+import mixpanel from "mixpanel-browser";
 
 interface Props {
-  name: string
-  description: string
-  image?: string
-  tags?: string[]
-  url?: string
+  name: string;
+  description: string;
+  image?: string;
+  tags?: string[];
+  url?: string;
 }
 
 const AppTile = (props: Props) => {
   const handleClick = () => {
-    if (import.meta.env.VITE_MIXPANEL_ENABLED === 'true') {
+    if (import.meta.env.VITE_MIXPANEL_ENABLED === "true") {
       mixpanel.init(import.meta.env.VITE_MIXPANEL_PROJECT_TOKEN, {
-        debug: false
-      })
-      mixpanel.identify('Dashboard-App')
-      mixpanel.track('dApp opened', {
-        'dApp name': props.name
-      })
+        debug: false,
+      });
+      mixpanel.identify("Dashboard-App");
+      mixpanel.track("dApp opened", {
+        "dApp name": props.name,
+      });
     }
-  }
+  };
 
   return (
     <a
-      href={props.url || '#'}
-      target={props.url ? '_blank' : '_self'}
+      href={props.url || "#"}
+      target={props.url ? "_blank" : "_self"}
       onClick={handleClick}
       className="group col-span-12 sm:col-span-6 lg:col-span-6 xl:col-span-4 2xl:col-span-3"
     >
@@ -41,7 +41,9 @@ const AppTile = (props: Props) => {
           </div>
         )}
         {/* Name */}
-        <div className="text-xl font-semibold flex-initial mb-1">{props.name}</div>
+        <div className="text-xl font-semibold flex-initial mb-1">
+          {props.name}
+        </div>
 
         {/* Description */}
         <div className="text-neutral-400 flex-1">{props.description}</div>
@@ -49,12 +51,14 @@ const AppTile = (props: Props) => {
         {/* Tags */}
         {props.tags?.length! > 0 && (
           <div className="flex flex-wrap gap-2 mt-4 flex-initial">
-            {props.tags?.map((tag) => <Tag key={tag} name={tag} />)}
+            {props.tags?.map((tag) => (
+              <Tag key={tag} name={tag} />
+            ))}
           </div>
         )}
       </div>
     </a>
-  )
-}
+  );
+};
 
-export default AppTile
+export default AppTile;
