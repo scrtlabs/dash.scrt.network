@@ -19,7 +19,6 @@ export default defineConfig({
     port: 3000
   },
   resolve: {
-    tsconfigPaths: true,
     alias: [
       {
         find: '@buf/evmos_evmos.bufbuild_es/evmos/vesting/v1/tx_pb.js',
