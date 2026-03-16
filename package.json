@@ -42,7 +42,7 @@
     "react-select": "^5.9.0",
     "secretjs": "1.21.2",
     "tailwindcss": "^4.2.1",
-    "vite": "^8.0.0",
+    "vite": "^7.3.1",
     "yup": "^1.4.0",
     "zustand": "^4.4.6"
   },
@@ -52,12 +52,13 @@
     "@types/mixpanel-browser": "^2.51.0",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
-    "@vitejs/plugin-react": "^6.0.1",
+    "@vitejs/plugin-react": "^5.2.0",
     "husky": "^9.1.7",
     "lint-staged": "^15.4.3",
     "prettier": "3.5.3",
     "sass": "^1.98.0",
-    "typescript": "^5.6.3"
+    "typescript": "^5.6.3",
+    "vite-tsconfig-paths": "^6.1.1"
   },
   "overrides": {
     "protobufjs": "^7.4.0",
