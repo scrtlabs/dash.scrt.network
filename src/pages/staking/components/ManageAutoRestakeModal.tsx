@@ -6,8 +6,8 @@ import toast from "react-hot-toast";
 import { BroadcastMode, MsgSetAutoRestake } from "secretjs";
 import { NotificationService } from "services/notification.service";
 import { useSecretNetworkClientStore } from "stores/secretNetworkClient.store";
-import { Validator } from "types/Validator";
-import { ValidatorRestakeStatus } from "types/ValidatorRestakeStatus";
+import type { Validator } from "types/Validator";
+import type { ValidatorRestakeStatus } from "types/ValidatorRestakeStatus";
 import { queryTxResult, restakeThreshold } from "utils/commons";
 import RestakeValidatorItem from "./RestakeValidatorItem";
 

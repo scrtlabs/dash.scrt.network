@@ -7,9 +7,9 @@ import { Link } from "react-router-dom";
 import { NotificationService } from "services/notification.service";
 import { useSecretNetworkClientStore } from "stores/secretNetworkClient.store";
 import { useUserPreferencesStore } from "stores/UserPreferences.store";
-import { Nullable } from "types/Nullable";
+import type { Nullable } from "types/Nullable";
 import { trackMixPanelEvent } from "utils/commons";
-import { chains, Token, tokens } from "utils/config";
+import { chains, type Token, tokens } from "utils/config";
 
 export default function AddressQR() {
   const { theme } = useUserPreferencesStore();

@@ -1,11 +1,11 @@
-import { useEffect } from "react";
-import {
-  sendPageTitle,
-  sendPageDescription,
-  sendJsonLdSchema,
-} from "utils/commons";
 import Title from "components/Title";
 import mixpanel from "mixpanel-browser";
+import { useEffect } from "react";
+import {
+  sendJsonLdSchema,
+  sendPageDescription,
+  sendPageTitle,
+} from "utils/commons";
 import SendForm from "./components/SendForm";
 
 export function Send() {

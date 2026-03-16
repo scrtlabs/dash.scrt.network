@@ -14,10 +14,10 @@ import { NotificationService } from "services/notification.service";
 import { SendService } from "services/send.service";
 import { useSecretNetworkClientStore } from "stores/secretNetworkClient.store";
 import { useUserPreferencesStore } from "stores/UserPreferences.store";
-import { GetBalanceError } from "types/GetBalanceError";
-import { Nullable } from "types/Nullable";
+import type { GetBalanceError } from "types/GetBalanceError";
+import type { Nullable } from "types/Nullable";
 import { allTokens, debugModeOverride } from "utils/commons";
-import { chains, Token } from "utils/config";
+import { chains, type Token } from "utils/config";
 
 export default function SendForm() {
   const { debugMode } = useUserPreferencesStore();

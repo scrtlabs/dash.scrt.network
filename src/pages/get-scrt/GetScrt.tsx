@@ -1,7 +1,4 @@
-import {
-  faArrowUpRightFromSquare,
-  faShuffle,
-} from "@fortawesome/free-solid-svg-icons";
+import { faArrowUpRightFromSquare } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Title from "components/Title";
 import mixpanel from "mixpanel-browser";
@@ -9,7 +6,7 @@ import queryString from "query-string";
 import { useEffect, useState } from "react";
 import Select from "react-select";
 import { useSecretNetworkClientStore } from "stores/secretNetworkClient.store";
-import { Nullable } from "types/Nullable";
+import type { Nullable } from "types/Nullable";
 import { pageTitle } from "utils/commons";
 
 function GetSCRT() {
@@ -92,6 +89,7 @@ function GetSCRT() {
             href="https://scrt.network/ecosystem/exchanges"
             target="_blank"
             className="pb-0.5 border-b border-neutral-400 dark:border-neutral-600 hover:text-black dark:hover:text-white hover:border-black dark:hover:border-white transition-colors"
+            rel="noopener"
           >
             DEX or CEX
           </a>
