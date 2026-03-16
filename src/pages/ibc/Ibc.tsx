@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react'
-import { Helmet } from 'react-helmet-async'
 import { Chain, Deposit, Token, chains, tokens } from 'utils/config'
 import { IbcMode } from 'types/IbcMode'
 import { useSearchParams } from 'react-router-dom'
@@ -77,27 +76,26 @@ export function Ibc() {
 
   return (
     <>
-      <Helmet>
-        <title>{ibcPageTitle}</title>
+      <title>{ibcPageTitle}</title>
 
-        <meta charSet="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <meta charSet="UTF-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-        <meta name="title" content={ibcPageTitle} />
-        <meta name="application-name" content={ibcPageTitle} />
-        <meta name="description" content={ibcPageDescription} />
-        <meta name="robots" content="index,follow" />
+      <meta name="title" content={ibcPageTitle} />
+      <meta name="application-name" content={ibcPageTitle} />
+      <meta name="description" content={ibcPageDescription} />
+      <meta name="robots" content="index,follow" />
 
-        <meta property="og:title" content={ibcPageTitle} />
-        <meta property="og:description" content={ibcPageDescription} />
-        <meta property="og:image" content={`/img/secret_dashboard_preview.png`} />
+      <meta property="og:title" content={ibcPageTitle} />
+      <meta property="og:description" content={ibcPageDescription} />
+      <meta property="og:image" content={`/img/secret_dashboard_preview.png`} />
 
-        <meta name="twitter:title" content={ibcPageTitle} />
-        <meta name="twitter:description" content={ibcPageDescription} />
-        <meta property="twitter:image" content={`/img/secret_dashboard_preview.png`} />
+      <meta name="twitter:title" content={ibcPageTitle} />
+      <meta name="twitter:description" content={ibcPageDescription} />
+      <meta property="twitter:image" content={`/img/secret_dashboard_preview.png`} />
 
-        <script type="application/ld+json">{JSON.stringify(ibcJsonLdSchema)}</script>
-      </Helmet>
+      <script type="application/ld+json">{JSON.stringify(ibcJsonLdSchema)}</script>
+
       {/* Content */}
       <div className="container w-full max-w-xl mx-auto px-4">
         {/* Title */}

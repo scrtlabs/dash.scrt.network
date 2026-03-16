@@ -3,7 +3,6 @@ import { Token } from 'utils/config'
 import { useSecretNetworkClientStore } from 'store/secretNetworkClient'
 import { useTokenPricesStore } from 'store/TokenPrices'
 import BalanceUI from 'components/BalanceUI'
-import CopyToClipboard from 'react-copy-to-clipboard'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCopy } from '@fortawesome/free-solid-svg-icons'
 import { Tooltip } from '@mui/material'
@@ -26,6 +25,15 @@ const BalanceItem = (props: Props) => {
       ? 'Private '
       : 'Public ') + props.token?.description
 
+  const handleCopyAddressToClipboard = async () => {
+    try {
+      await navigator.clipboard.writeText(props.token.address)
+      NotificationService.notify('Address copied to clipboard', 'success')
+    } catch (e) {
+      NotificationService.notify('Could not copy address to clipboard', 'error')
+    }
+  }
+
   return (
     <>
       <div className="first-of-type:rounded-t-lg last-of-type:rounded-b-lg group flex flex-row items-center text-left even:bg-gray-100 odd:bg-white dark:even:bg-neutral-900 dark:odd:bg-neutral-800 even:border-x odd:border-x dark:even:border-neutral-800 dark:odd:border-neutral-800 last-of-type:even:border-b-2 last-of-type:odd:border-b-2 last-of-type:even:border-t-2 last-of-type:odd:border-t-2 even:border-white odd:border-white py-8 sm:py-4 gap-4 pl-4 pr-8 w-full">
@@ -40,12 +48,7 @@ const BalanceItem = (props: Props) => {
             <div className="flex items-center">
               <span className="font-semibold dark:text-white text-black">{tokenName}</span>
               <div className="ml-2">
-                <CopyToClipboard
-                  text={props.token.address}
-                  onCopy={() => {
-                    NotificationService.notify('Contract address copied to clipboard', 'success')
-                  }}
-                >
+                <button type="button" onClick={handleCopyAddressToClipboard}>
                   <Tooltip title="Copy to Clipboard" placement="top" arrow>
                     <span>
                       <button
@@ -56,7 +59,7 @@ const BalanceItem = (props: Props) => {
                       </button>
                     </span>
                   </Tooltip>
-                </CopyToClipboard>
+                </button>
               </div>
             </div>
             <div className="text-xs text-neutral-500 dark:text-neutral-400">{tokenDescription}</div>

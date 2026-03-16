@@ -1,7 +1,6 @@
 import { faArrowUpRightFromSquare, faShuffle } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { Helmet } from 'react-helmet-async'
-import { pageTitle, trackMixPanelEvent } from 'utils/commons'
+import { pageTitle } from 'utils/commons'
 import { useState, useEffect } from 'react'
 import queryString from 'query-string'
 import Select from 'react-select'
@@ -77,9 +76,7 @@ function GetSCRT() {
 
   return (
     <>
-      <Helmet>
-        <title>{pageTitle} | Get SCRT</title>
-      </Helmet>
+      <title>{pageTitle} | Get SCRT</title>
 
       <div className="max-w-2xl mx-auto px-6">
         {/* Title */}

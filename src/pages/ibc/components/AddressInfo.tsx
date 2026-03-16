@@ -1,9 +1,9 @@
-import CopyToClipboard from 'react-copy-to-clipboard'
 import { Chain } from 'utils/config'
 import { useSecretNetworkClientStore } from 'store/secretNetworkClient'
 import Tooltip from '@mui/material/Tooltip'
 import { faCopy } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { NotificationService } from 'services/notification.service'
 
 interface IProps {
   srcChain?: Chain
@@ -20,6 +20,15 @@ export default function AddressInfo(props: IProps) {
   // e.g. https://www.mintscan.io/secret/account/[address]
   const srcChainExplorerUrl: string = `${props.srcChain?.explorer_account}${props.srcAddress}`
   const destChainExplorerUrl: string = `${props.destChain?.explorer_account}${props.destAddress}`
+
+  const handleCopyAddressToClipboard = async (address: string) => {
+    try {
+      await navigator.clipboard.writeText(address as string)
+      NotificationService.notify('Address copied to clipboard', 'success')
+    } catch (e) {
+      NotificationService.notify('Could not copy address to clipboard', 'error')
+    }
+  }
 
   return (
     <div className="bg-gray-200 dark:bg-neutral-700 p-4 rounded-xl space-y-6">
@@ -45,7 +54,7 @@ export default function AddressInfo(props: IProps) {
           )}
         </div>
         <div className="flex-initial ml-4">
-          <CopyToClipboard text={props.srcAddress}>
+          <button type="button" onClick={() => handleCopyAddressToClipboard(props.srcAddress)}>
             <Tooltip title="Copy to Clipboard" placement="top" disableHoverListener={!isConnected || dataMissing} arrow>
               <span>
                 <button
@@ -57,7 +66,7 @@ export default function AddressInfo(props: IProps) {
                 </button>
               </span>
             </Tooltip>
-          </CopyToClipboard>
+          </button>
         </div>
       </div>
 
@@ -83,7 +92,7 @@ export default function AddressInfo(props: IProps) {
           )}
         </div>
         <div className="flex-initial ml-4">
-          <CopyToClipboard text={props.destAddress}>
+          <button type="button" onClick={() => handleCopyAddressToClipboard(props.destAddress)}>
             <Tooltip
               title="Copy to Clipboard"
               placement="bottom"
@@ -100,7 +109,7 @@ export default function AddressInfo(props: IProps) {
                 </button>
               </span>
             </Tooltip>
-          </CopyToClipboard>
+          </button>
         </div>
       </div>
     </div>

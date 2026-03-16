@@ -1,4 +1,4 @@
-import './FloatingCTAButton.scss'
+import './FloatingCTAButton.css'
 
 interface Props {
   url: string

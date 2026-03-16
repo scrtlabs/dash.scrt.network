@@ -15,8 +15,6 @@ import { SECRET_LCD } from 'utils/config'
 import { useSearchParams } from 'react-router-dom'
 import { NotificationService } from 'services/notification.service'
 import Modal from 'components/UI/Modal/Modal'
-import CopyToClipboard from 'react-copy-to-clipboard'
-import { Helmet } from 'react-helmet-async'
 import { powertoolsJsonLdSchema, powertoolsPageDescription, powertoolsPageTitle, queryTxResult } from 'utils/commons'
 
 export type TMessage = {
@@ -188,29 +186,37 @@ function Powertools() {
 
   const [isViewMessageModalOpen, setIsViewMessageModalOpen] = useState<boolean>(false)
 
+  const copyMessageToClipboard = async () => {
+    try {
+      await navigator.clipboard.writeText(JSON.stringify(messages))
+      NotificationService.notify('Message copied to clipboard', 'success')
+    } catch (e) {
+      NotificationService.notify('Could not copy message to clipboard', 'error')
+    }
+  }
+
   return (
     <>
-      <Helmet>
-        <title>{powertoolsPageTitle}</title>
+      <title>{powertoolsPageTitle}</title>
 
-        <meta charSet="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <meta charSet="UTF-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-        <meta name="title" content={powertoolsPageTitle} />
-        <meta name="application-name" content={powertoolsPageTitle} />
-        <meta name="description" content={powertoolsPageDescription} />
-        <meta name="robots" content="index,follow" />
+      <meta name="title" content={powertoolsPageTitle} />
+      <meta name="application-name" content={powertoolsPageTitle} />
+      <meta name="description" content={powertoolsPageDescription} />
+      <meta name="robots" content="index,follow" />
 
-        <meta property="og:title" content={powertoolsPageTitle} />
-        <meta property="og:description" content={powertoolsPageDescription} />
-        {/* <meta property='og:image' content='Image URL Here'/> */}
+      <meta property="og:title" content={powertoolsPageTitle} />
+      <meta property="og:description" content={powertoolsPageDescription} />
+      {/* <meta property='og:image' content='Image URL Here'/> */}
 
-        <meta name="twitter:title" content={powertoolsPageTitle} />
-        <meta name="twitter:description" content={powertoolsPageDescription} />
-        {/* <meta name='twitter:image' content='Image URL Here'/> */}
+      <meta name="twitter:title" content={powertoolsPageTitle} />
+      <meta name="twitter:description" content={powertoolsPageDescription} />
+      {/* <meta name='twitter:image' content='Image URL Here'/> */}
 
-        <script type="application/ld+json">{JSON.stringify(powertoolsJsonLdSchema)}</script>
-      </Helmet>
+      <script type="application/ld+json">{JSON.stringify(powertoolsJsonLdSchema)}</script>
+
       <Modal
         title={'Power Tools – Full Message'}
         isOpen={isViewMessageModalOpen}
@@ -223,14 +229,9 @@ function Powertools() {
           {JSON.stringify(messages)}
         </div>
         <div className="flex gap-4 items-center justify-end">
-          <CopyToClipboard
-            text={JSON.stringify(messages)}
-            onCopy={() => {
-              NotificationService.notify('Message copied to clipboard', 'success')
-            }}
-          >
-            <Button type="button">Copy to Clipboard</Button>
-          </CopyToClipboard>
+          <Button type="button" onClick={copyMessageToClipboard}>
+            Copy to Clipboard
+          </Button>
           <Button
             type="button"
             color="secondary"

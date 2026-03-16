@@ -1,6 +1,5 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { trackMixPanelEvent } from 'utils/commons'
-import CopyToClipboard from 'react-copy-to-clipboard'
 import Tooltip from '@mui/material/Tooltip'
 import { QRCode } from 'react-qrcode-logo'
 import { Token, chains, tokens } from 'utils/config'
@@ -18,6 +17,15 @@ export default function AddressQR() {
   const { secretNetworkClient, walletAddress } = useSecretNetworkClientStore()
 
   const secretToken: Nullable<Token> = tokens.find((token) => token.name === 'SCRT')
+
+  const handleCopyWalletAddressToClipboard = async () => {
+    try {
+      await navigator.clipboard.writeText(walletAddress)
+      NotificationService.notify('Address copied to clipboard', 'success')
+    } catch (e) {
+      NotificationService.notify('Could not copy address to clipboard', 'error')
+    }
+  }
 
   return (
     <div className="group text-center md:text-left h-full">
@@ -45,12 +53,7 @@ export default function AddressQR() {
                     </a>
                   </Tooltip>
                 )}
-                <CopyToClipboard
-                  text={walletAddress}
-                  onCopy={() => {
-                    NotificationService.notify('Address copied to clipboard', 'success')
-                  }}
-                >
+                <button type="button" onClick={handleCopyWalletAddressToClipboard}>
                   <Tooltip
                     title={'Copy to clipboard'}
                     placement="bottom"
@@ -69,7 +72,7 @@ export default function AddressQR() {
                       </Button>
                     </span>
                   </Tooltip>
-                </CopyToClipboard>
+                </button>
               </div>
             </div>
 

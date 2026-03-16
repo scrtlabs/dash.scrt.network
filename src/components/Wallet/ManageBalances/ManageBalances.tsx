@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { Token } from 'utils/config'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons'
-import './Balances.scss'
+import './Balances.css'
 import { SendService } from 'services/send.service'
 import BalanceItem from 'pages/portfolio/components/BalanceItem'
 

@@ -1,7 +1,6 @@
 import { faInfoCircle, faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { createContext, useEffect, useRef, useState } from 'react'
-import { Helmet } from 'react-helmet-async'
 import MyValidatorsItem from './components/MyValidatorsItem'
 import { shuffleArray, stakingPageTitle, stakingPageDescription, stakingJsonLdSchema, isMac } from 'utils/commons'
 import Tooltip from '@mui/material/Tooltip'
@@ -268,15 +267,15 @@ function Staking() {
     }
     if (shuffledActiveValidators && validatorDisplayStatus == 'active') {
       setValidatorsBySearch(
-        shuffledActiveValidators.filter(
-          (validator: Validator) => validator?.description?.moniker.toLowerCase().includes(searchQuery?.toLowerCase())
+        shuffledActiveValidators.filter((validator: Validator) =>
+          validator?.description?.moniker.toLowerCase().includes(searchQuery?.toLowerCase())
         )
       )
     }
     if (inactiveValidators && validatorDisplayStatus == 'inactive') {
       setValidatorsBySearch(
-        inactiveValidators.filter(
-          (validator: any) => validator?.description?.moniker.toLowerCase().includes(searchQuery?.toLowerCase())
+        inactiveValidators.filter((validator: any) =>
+          validator?.description?.moniker.toLowerCase().includes(searchQuery?.toLowerCase())
         )
       )
     }
@@ -311,27 +310,26 @@ function Staking() {
   return (
     <StakingContext.Provider value={providerValue}>
       <>
-        <Helmet>
-          <title>{stakingPageTitle}</title>
+        <title>{stakingPageTitle}</title>
 
-          <meta charSet="UTF-8" />
-          <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta charSet="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-          <meta name="title" content={stakingPageTitle} />
-          <meta name="application-name" content={stakingPageTitle} />
-          <meta name="description" content={stakingPageDescription} />
-          <meta name="robots" content="index,follow" />
+        <meta name="title" content={stakingPageTitle} />
+        <meta name="application-name" content={stakingPageTitle} />
+        <meta name="description" content={stakingPageDescription} />
+        <meta name="robots" content="index,follow" />
 
-          <meta property="og:title" content={stakingPageTitle} />
-          <meta property="og:description" content={stakingPageDescription} />
-          <meta property="og:image" content={`/img/secret_dashboard_preview.png`} />
+        <meta property="og:title" content={stakingPageTitle} />
+        <meta property="og:description" content={stakingPageDescription} />
+        <meta property="og:image" content={`/img/secret_dashboard_preview.png`} />
 
-          <meta name="twitter:title" content={stakingPageTitle} />
-          <meta name="twitter:description" content={stakingPageDescription} />
-          <meta property="twitter:image" content={`/img/secret_dashboard_preview.png`} />
+        <meta name="twitter:title" content={stakingPageTitle} />
+        <meta name="twitter:description" content={stakingPageDescription} />
+        <meta property="twitter:image" content={`/img/secret_dashboard_preview.png`} />
 
-          <script type="application/ld+json">{JSON.stringify(stakingJsonLdSchema)}</script>
-        </Helmet>
+        <script type="application/ld+json">{JSON.stringify(stakingJsonLdSchema)}</script>
+
         <ManageAutoRestakeModal open={isManageAutoRestakeModalOpen} onClose={handleManageAutoRestakeModal} />
         <ClaimRewardsModal open={isClaimRewardsModalOpen} onClose={handleClaimRewardsModal} />
         <ValidatorModal
@@ -453,8 +451,8 @@ function Staking() {
               (validatorsBySearch
                 ? validatorsBySearch
                 : validatorDisplayStatus == 'active'
-                ? shuffledActiveValidators
-                : inactiveValidators
+                  ? shuffledActiveValidators
+                  : inactiveValidators
               )?.map((validator: Validator, i: number) => (
                 <ValidatorItem
                   key={i}

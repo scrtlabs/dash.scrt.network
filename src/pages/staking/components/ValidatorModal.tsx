@@ -5,7 +5,6 @@ import { APIContext } from 'context/APIContext'
 import { formatNumber, toCurrencyString } from 'utils/commons'
 import BigNumber from 'bignumber.js'
 import { SECRET_LCD, SECRET_CHAIN_ID, tokens } from 'utils/config'
-import CopyToClipboard from 'react-copy-to-clipboard'
 import { faCopy } from '@fortawesome/free-solid-svg-icons'
 import Tooltip from '@mui/material/Tooltip'
 import { chains } from 'utils/config'
@@ -122,6 +121,15 @@ const ValidatorModal = (props: Props) => {
     }
   }, [props])
 
+  const handleCopyToClipboard = async (text: string, successMessage: string, errorMessage: string) => {
+    try {
+      await navigator.clipboard.writeText(text)
+      NotificationService.notify(successMessage, 'success')
+    } catch (e) {
+      NotificationService.notify(errorMessage, 'error')
+    }
+  }
+
   if (!props.open) return null
 
   function customTitle() {
@@ -200,19 +208,21 @@ const ValidatorModal = (props: Props) => {
                       <div className="text-sm font-medium font-mono text-neutral-500 dark:text-neutral-400">
                         {`${selectedValidator?.description?.identity}  `}
 
-                        <CopyToClipboard
-                          text={selectedValidator?.description?.identity}
-                          onCopy={() => NotificationService.notify('Identity copied to Clipboard', 'success')}
-                        >
-                          <Tooltip title={'Copy to clipboard'} placement="bottom" arrow>
-                            <button
-                              type="button"
-                              className="text-neutral-500 hover:text-neutral-800 dark:text-neutral-400 dark:hover:text-neutral-300 transition-colors"
-                            >
-                              <FontAwesomeIcon icon={faCopy} />
-                            </button>
-                          </Tooltip>
-                        </CopyToClipboard>
+                        <Tooltip title={'Copy to clipboard'} placement="bottom" arrow>
+                          <button
+                            type="button"
+                            onClick={() =>
+                              handleCopyToClipboard(
+                                selectedValidator?.description?.identity,
+                                'Identity copied to clipboard',
+                                'Could not copy identity to clipboard'
+                              )
+                            }
+                            className="text-neutral-500 hover:text-neutral-800 dark:text-neutral-400 dark:hover:text-neutral-300 transition-colors"
+                          >
+                            <FontAwesomeIcon icon={faCopy} />
+                          </button>
+                        </Tooltip>
                       </div>
                     </div>
                   )}
@@ -224,22 +234,21 @@ const ValidatorModal = (props: Props) => {
                       <div className="text-sm font-medium font-mono text-neutral-500 dark:text-neutral-400">
                         {`${selectedValidator?.description?.security_contact}  `}
 
-                        <CopyToClipboard
-                          text={selectedValidator?.description?.security_contact}
-                          onCopy={() => {
-                            NotificationService.notify('Validator security contact copied to clipboard', 'success')
-                          }}
-                        >
-                          <Tooltip title={'Copy to clipboard'} placement="bottom" arrow>
-                            <button
-                              type="button"
-                              onClick={() => NotificationService.notify('Copied to Clipboard', 'success')}
-                              className="text-neutral-500 hover:text-neutral-800 dark:text-neutral-400 dark:hover:text-neutral-300 transition-colors"
-                            >
-                              <FontAwesomeIcon icon={faCopy} />
-                            </button>
-                          </Tooltip>
-                        </CopyToClipboard>
+                        <Tooltip title={'Copy to clipboard'} placement="bottom" arrow>
+                          <button
+                            type="button"
+                            onClick={() =>
+                              handleCopyToClipboard(
+                                selectedValidator?.description?.security_contact,
+                                'Validator security contact copied to clipboard',
+                                'Could not copy validator security contact to clipboard'
+                              )
+                            }
+                            className="text-neutral-500 hover:text-neutral-800 dark:text-neutral-400 dark:hover:text-neutral-300 transition-colors"
+                          >
+                            <FontAwesomeIcon icon={faCopy} />
+                          </button>
+                        </Tooltip>
                       </div>
                     </div>
                   )}
@@ -272,16 +281,21 @@ const ValidatorModal = (props: Props) => {
                         '...' +
                         selectedValidator?.operator_address.slice(-15)
                       } `}
-                      <CopyToClipboard
-                        text={selectedValidator?.operator_address}
-                        onCopy={() => NotificationService.notify('Operator Address copied to Clipboard', 'success')}
-                      >
-                        <Tooltip title={'Copy to clipboard'} placement="bottom" arrow>
-                          <button className="text-neutral-500 dark:text-neutral-400 hover:text-neutral-800 dark:hover:text-neutral-300 transition-colors">
-                            <FontAwesomeIcon icon={faCopy} />
-                          </button>
-                        </Tooltip>
-                      </CopyToClipboard>
+                      <Tooltip title={'Copy to clipboard'} placement="bottom" arrow>
+                        <button
+                          type="button"
+                          onClick={() =>
+                            handleCopyToClipboard(
+                              selectedValidator?.operator_address,
+                              'Operator address copied to clipboard',
+                              'Could not copy operator address to clipboard'
+                            )
+                          }
+                          className="text-neutral-500 dark:text-neutral-400 hover:text-neutral-800 dark:hover:text-neutral-300 transition-colors"
+                        >
+                          <FontAwesomeIcon icon={faCopy} />
+                        </button>
+                      </Tooltip>
                     </div>
                   </div>
                   {/* Sixth Item */}
@@ -301,19 +315,21 @@ const ValidatorModal = (props: Props) => {
                           validatorAddressToSelfDelegatorAddress(selectedValidator?.operator_address).slice(-15)
                         } `}
                       </a>
-                      <CopyToClipboard
-                        text={validatorAddressToSelfDelegatorAddress(selectedValidator?.operator_address)}
-                        onCopy={() => NotificationService.notify('Validator Address copied to Clipboard', 'success')}
-                      >
-                        <Tooltip title={'Copy to clipboard'} placement="bottom" arrow>
-                          <button
-                            type="button"
-                            className="text-neutral-500 hover:text-neutral-800 dark:text-neutral-400 dark:hover:text-neutral-300 transition-colors"
-                          >
-                            <FontAwesomeIcon icon={faCopy} />
-                          </button>
-                        </Tooltip>
-                      </CopyToClipboard>
+                      <Tooltip title={'Copy to clipboard'} placement="bottom" arrow>
+                        <button
+                          type="button"
+                          onClick={() =>
+                            handleCopyToClipboard(
+                              validatorAddressToSelfDelegatorAddress(selectedValidator?.operator_address),
+                              'Validator Address copied to clipboard',
+                              'Could not copy validator address to clipboard'
+                            )
+                          }
+                          className="text-neutral-500 hover:text-neutral-800 dark:text-neutral-400 dark:hover:text-neutral-300 transition-colors"
+                        >
+                          <FontAwesomeIcon icon={faCopy} />
+                        </button>
+                      </Tooltip>
                     </div>
                   </div>
                 </div>

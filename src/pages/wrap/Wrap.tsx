@@ -1,10 +1,8 @@
 import { useEffect, useState, useContext, createContext } from 'react'
-import { Token, tokens } from 'utils/config'
+import { tokens } from 'utils/config'
 import { wrapPageTitle, wrapPageDescription, wrapJsonLdSchema } from 'utils/commons'
-import { Helmet } from 'react-helmet-async'
 import FeeGrantInfoModal from './components/FeeGrantInfoModal'
 import mixpanel from 'mixpanel-browser'
-import { WrappingMode, isWrappingMode } from 'types/WrappingMode'
 import { useSecretNetworkClientStore } from 'store/secretNetworkClient'
 import Title from 'components/Title'
 import WrapForm from './components/WrapForm'
@@ -33,27 +31,25 @@ export function Wrap() {
 
   return (
     <>
-      <Helmet>
-        <title>{wrapPageTitle}</title>
+      <title>{wrapPageTitle}</title>
 
-        <meta charSet="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <meta charSet="UTF-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-        <meta name="title" content={wrapPageTitle} />
-        <meta name="application-name" content={wrapPageTitle} />
-        <meta name="description" content={wrapPageDescription} />
-        <meta name="robots" content="index,follow" />
+      <meta name="title" content={wrapPageTitle} />
+      <meta name="application-name" content={wrapPageTitle} />
+      <meta name="description" content={wrapPageDescription} />
+      <meta name="robots" content="index,follow" />
 
-        <meta property="og:title" content={wrapPageTitle} />
-        <meta property="og:description" content={wrapPageDescription} />
-        {/* <meta property="og:image" content="Image URL Here"/> */}
+      <meta property="og:title" content={wrapPageTitle} />
+      <meta property="og:description" content={wrapPageDescription} />
+      {/* <meta property="og:image" content="Image URL Here"/> */}
 
-        <meta name="twitter:title" content={wrapPageTitle} />
-        <meta name="twitter:description" content={wrapPageDescription} />
-        {/* <meta name="twitter:image" content="Image URL Here"/> */}
+      <meta name="twitter:title" content={wrapPageTitle} />
+      <meta name="twitter:description" content={wrapPageDescription} />
+      {/* <meta name="twitter:image" content="Image URL Here"/> */}
 
-        <script type="application/ld+json">{JSON.stringify(wrapJsonLdSchema)}</script>
-      </Helmet>
+      <script type="application/ld+json">{JSON.stringify(wrapJsonLdSchema)}</script>
 
       <FeeGrantInfoModal
         open={isFeeGrantInfoModalOpen}

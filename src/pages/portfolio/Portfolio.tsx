@@ -1,9 +1,8 @@
-import { useEffect, useState, useRef, useContext } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import { Token } from 'utils/config'
 import { portfolioPageTitle, portfolioPageDescription, portfolioJsonLdSchema, isMac, allTokens } from 'utils/commons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons'
-import { Helmet } from 'react-helmet-async'
 import BalanceItem from './components/BalanceItem'
 import Title from 'components/Title'
 import AddressQR from './components/AddressQR'
@@ -88,27 +87,25 @@ export default function Portfolio() {
 
   return (
     <>
-      <Helmet>
-        <title>{portfolioPageTitle}</title>
+      <title>{portfolioPageTitle}</title>
 
-        <meta charSet="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <meta charSet="UTF-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-        <meta name="title" content={portfolioPageTitle} />
-        <meta name="application-name" content={portfolioPageTitle} />
-        <meta name="description" content={portfolioPageDescription} />
-        <meta name="robots" content="index,follow" />
+      <meta name="title" content={portfolioPageTitle} />
+      <meta name="application-name" content={portfolioPageTitle} />
+      <meta name="description" content={portfolioPageDescription} />
+      <meta name="robots" content="index,follow" />
 
-        <meta property="og:title" content={portfolioPageTitle} />
-        <meta property="og:description" content={portfolioPageDescription} />
-        {/* <meta property="og:image" content="Image URL Here"/> */}
+      <meta property="og:title" content={portfolioPageTitle} />
+      <meta property="og:description" content={portfolioPageDescription} />
+      {/* <meta property="og:image" content="Image URL Here"/> */}
 
-        <meta name="twitter:title" content={portfolioPageTitle} />
-        <meta name="twitter:description" content={portfolioPageDescription} />
-        {/* <meta name="twitter:image" content="Image URL Here"/> */}
+      <meta name="twitter:title" content={portfolioPageTitle} />
+      <meta name="twitter:description" content={portfolioPageDescription} />
+      {/* <meta name="twitter:image" content="Image URL Here"/> */}
 
-        <script type="application/ld+json">{JSON.stringify(portfolioJsonLdSchema)}</script>
-      </Helmet>
+      <script type="application/ld+json">{JSON.stringify(portfolioJsonLdSchema)}</script>
 
       <Title title={'Portfolio'} />
       {/* All Balances */}

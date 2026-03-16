@@ -1,7 +1,6 @@
 import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useContext, useEffect, useRef, useState } from 'react'
-import { Helmet } from 'react-helmet-async'
 import Header from '../../components/Header'
 import AppTile from './components/tile/AppTile'
 import { appsPageTitle, appsPageDescription, appsJsonLdSchema, isMac } from 'utils/commons'
@@ -73,27 +72,26 @@ function Apps() {
 
   return (
     <>
-      <Helmet>
-        <title>{appsPageTitle}</title>
+      <title>{appsPageTitle}</title>
 
-        <meta charSet="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <meta charSet="UTF-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-        <meta name="title" content={appsPageTitle} />
-        <meta name="application-name" content={appsPageTitle} />
-        <meta name="description" content={appsPageDescription} />
-        <meta name="robots" content="index,follow" />
+      <meta name="title" content={appsPageTitle} />
+      <meta name="application-name" content={appsPageTitle} />
+      <meta name="description" content={appsPageDescription} />
+      <meta name="robots" content="index,follow" />
 
-        <meta property="og:title" content={appsPageTitle} />
-        <meta property="og:description" content={appsPageDescription} />
-        {/* <meta property="og:image" content="Image URL Here"/> */}
+      <meta property="og:title" content={appsPageTitle} />
+      <meta property="og:description" content={appsPageDescription} />
+      {/* <meta property="og:image" content="Image URL Here"/> */}
 
-        <meta name="twitter:title" content={appsPageTitle} />
-        <meta name="twitter:description" content={appsPageDescription} />
-        {/* <meta name="twitter:image" content="Image URL Here"/> */}
+      <meta name="twitter:title" content={appsPageTitle} />
+      <meta name="twitter:description" content={appsPageDescription} />
+      {/* <meta name="twitter:image" content="Image URL Here"/> */}
 
-        <script type="application/ld+json">{JSON.stringify(appsJsonLdSchema)}</script>
-      </Helmet>
+      <script type="application/ld+json">{JSON.stringify(appsJsonLdSchema)}</script>
+
       <div className="max-w-screen-2xl mx-auto px-6 pt-6 sm:pt-0">
         <Header title="Apps" description="A curation of applications running on Secret Network Mainnet" />
 

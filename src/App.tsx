@@ -4,7 +4,6 @@ import 'assets/scss/index.scss'
 import { Buffer } from 'buffer'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import ReactDOM from 'react-dom/client'
-import { HelmetProvider } from 'react-helmet-async'
 
 // Pages
 import { Ibc } from 'pages/ibc/Ibc'
@@ -87,17 +86,15 @@ class ErrorBoundary extends React.Component<{ children: any }, { hasError: boole
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement)
 
 root.render(
-  <HelmetProvider>
-    <BrowserRouter>
-      <ThemeContextProvider>
-        <APIContextProvider>
-          <DefaultLayout>
-            <App />
-          </DefaultLayout>
-        </APIContextProvider>
-      </ThemeContextProvider>
-    </BrowserRouter>
-  </HelmetProvider>
+  <BrowserRouter>
+    <ThemeContextProvider>
+      <APIContextProvider>
+        <DefaultLayout>
+          <App />
+        </DefaultLayout>
+      </APIContextProvider>
+    </ThemeContextProvider>
+  </BrowserRouter>
 )
 
 export default function App() {

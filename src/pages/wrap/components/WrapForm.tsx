@@ -8,12 +8,11 @@ import { useUserPreferencesStore } from 'store/UserPreferences'
 import BalanceUI from 'components/BalanceUI'
 import FeeGrant from 'components/FeeGrant/FeeGrant'
 import { GetBalanceError } from 'types/GetBalanceError'
-import './wrap.scss'
+import './wrap.css'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faArrowLeft, faArrowRight, faCopy, faInfoCircle } from '@fortawesome/free-solid-svg-icons'
 import { faCircle } from '@fortawesome/free-regular-svg-icons'
 import { Tooltip } from '@mui/material'
-import CopyToClipboard from 'react-copy-to-clipboard'
 
 export default function WrapAllTokens() {
   const { secretNetworkClient, feeGrantStatus, isConnected, getBalance, balanceMapping, setBalanceMapping } =
@@ -376,6 +375,15 @@ export default function WrapAllTokens() {
 
   const isLoading = balanceMapping == null
 
+  const handleCopyAddressToClipboard = async (address: string) => {
+    try {
+      await navigator.clipboard.writeText(address)
+      NotificationService.notify('Address copied to clipboard', 'success')
+    } catch (e) {
+      NotificationService.notify('Could not copy address to clipboard', 'error')
+    }
+  }
+
   return (
     <div className="max-w-5xl mx-auto px-4 py-4">
       {/* Top Toggles & Global Actions */}
@@ -461,8 +469,8 @@ export default function WrapAllTokens() {
           </thead>
           <tbody>
             {isLoading
-              ? Array.from({ length: 5 }).map((_, idx) => (
-                  <tr key={idx} className="border-b border-gray-100 dark:border-neutral-600 last:border-0">
+              ? Array.from({ length: 5 }).map((_, i) => (
+                  <tr key={i} className="border-b border-gray-100 dark:border-neutral-600 last:border-0">
                     <td className="py-3">
                       <div className="flex items-center gap-2">
                         <input type="checkbox" checked={false} />
@@ -526,12 +534,7 @@ export default function WrapAllTokens() {
                           <div className="font-semibold justify-center text-base">{token.name}</div>
                           <div>
                             <div className="ml">
-                              <CopyToClipboard
-                                text={token.address}
-                                onCopy={() => {
-                                  NotificationService.notify('Contract address copied to clipboard', 'success')
-                                }}
-                              >
+                              <button type="button" onClick={() => handleCopyAddressToClipboard(token.address)}>
                                 <Tooltip title="Copy to Clipboard" placement="top" arrow>
                                   <span>
                                     <button
@@ -542,7 +545,7 @@ export default function WrapAllTokens() {
                                     </button>
                                   </span>
                                 </Tooltip>
-                              </CopyToClipboard>
+                              </button>
                             </div>
                           </div>
                         </div>

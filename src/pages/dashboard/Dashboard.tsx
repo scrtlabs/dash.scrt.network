@@ -10,7 +10,6 @@ import { SECRET_LCD, SECRET_CHAIN_ID } from 'utils/config'
 import StakingChart from './components/StakingChart'
 import { currencySymbols, formatNumber } from 'utils/commons'
 import { APIContext } from 'context/APIContext'
-import { Helmet } from 'react-helmet-async'
 import { trackMixPanelEvent, dashboardPageTitle, dashboardPageDescription, dashboardJsonLdSchema } from 'utils/commons'
 import { useUserPreferencesStore } from 'store/UserPreferences'
 
@@ -194,27 +193,26 @@ function Dashboard() {
 
   return (
     <>
-      <Helmet>
-        <title>{dashboardPageTitle}</title>
+      <title>{dashboardPageTitle}</title>
 
-        <meta charSet="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <meta charSet="UTF-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-        <meta name="title" content={dashboardPageTitle} />
-        <meta name="application-name" content={dashboardPageTitle} />
-        <meta name="description" content={dashboardPageDescription} />
-        <meta name="robots" content="index,follow" />
+      <meta name="title" content={dashboardPageTitle} />
+      <meta name="application-name" content={dashboardPageTitle} />
+      <meta name="description" content={dashboardPageDescription} />
+      <meta name="robots" content="index,follow" />
 
-        <meta property="og:title" content={dashboardPageTitle} />
-        <meta property="og:description" content={dashboardPageDescription} />
-        {/* <meta property='og:image' content='Image URL Here'/> */}
+      <meta property="og:title" content={dashboardPageTitle} />
+      <meta property="og:description" content={dashboardPageDescription} />
+      {/* <meta property='og:image' content='Image URL Here'/> */}
 
-        <meta name="twitter:title" content={dashboardPageTitle} />
-        <meta name="twitter:description" content={dashboardPageDescription} />
-        {/* <meta name='twitter:image' content='Image URL Here'/> */}
+      <meta name="twitter:title" content={dashboardPageTitle} />
+      <meta name="twitter:description" content={dashboardPageDescription} />
+      {/* <meta name='twitter:image' content='Image URL Here'/> */}
 
-        <script type="application/ld+json">{JSON.stringify(dashboardJsonLdSchema)}</script>
-      </Helmet>
+      <script type="application/ld+json">{JSON.stringify(dashboardJsonLdSchema)}</script>
+
       <div className="px-4 mx-auto space-y-4 w-full">
         <div className="grid grid-cols-12 gap-4">
           {/* Price */}

@@ -1,15 +1,6 @@
 import { useEffect, useState } from 'react'
-import CopyToClipboard from 'react-copy-to-clipboard'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import {
-  faArrowRightFromBracket,
-  faCopy,
-  faDesktop,
-  faGear,
-  faMobileScreen,
-  faWallet,
-  faXmark
-} from '@fortawesome/free-solid-svg-icons'
+import { faArrowRightFromBracket, faCopy, faDesktop, faMobileScreen, faWallet } from '@fortawesome/free-solid-svg-icons'
 import { trackMixPanelEvent } from 'utils/commons'
 import { useSecretNetworkClientStore } from 'store/secretNetworkClient'
 import { scrtToken } from 'utils/tokens'
@@ -77,20 +68,13 @@ function Wallet() {
     }
   }, [])
 
-  function CopyableAddress() {
-    return (
-      <CopyToClipboard
-        text={walletAddress as string}
-        onCopy={() => {
-          NotificationService.notify('Address copied to clipboard', 'success')
-        }}
-      >
-        <Button size="small" color="secondary" className="flex gap-2 items-center group">
-          {walletAddress.slice(0, 14) + '...' + walletAddress.slice(-14)}
-          <FontAwesomeIcon icon={faCopy} />
-        </Button>
-      </CopyToClipboard>
-    )
+  const handleCopyWalletAddressToClipboard = async () => {
+    try {
+      await navigator.clipboard.writeText(walletAddress as string)
+      NotificationService.notify('Address copied to clipboard', 'success')
+    } catch (e) {
+      NotificationService.notify('Could not copy address to clipboard', 'error')
+    }
   }
 
   function Balances() {
@@ -118,7 +102,16 @@ function Wallet() {
     return (
       <div className="shadow backdrop-blur-md bg-white/40 dark:bg-neutral-800/40 border text-xs border-neutral-200 dark:border-neutral-700 px-4 py-6 w-auto rounded-2xl flex-row space-y-4">
         {/* Copyable Wallet Address */}
-        <CopyableAddress />
+        <Button
+          type="button"
+          onClick={handleCopyWalletAddressToClipboard}
+          size="small"
+          color="secondary"
+          className="flex gap-2 items-center group"
+        >
+          {walletAddress.slice(0, 14) + '...' + walletAddress.slice(-14)}
+          <FontAwesomeIcon icon={faCopy} />
+        </Button>
 
         {/* Balances */}
         <Balances />

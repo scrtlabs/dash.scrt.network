@@ -1,7 +1,6 @@
 import { faArrowUpRightFromSquare, faShuffle } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Link } from 'react-router-dom'
-import { Helmet } from 'react-helmet-async'
 import { bridgeJsonLdSchema, bridgePageDescription, bridgePageTitle } from 'utils/commons'
 import { useEffect, useState } from 'react'
 import { trackMixPanelEvent } from 'utils/commons'
@@ -18,31 +17,29 @@ function Bridge() {
   const { theme } = useUserPreferencesStore()
   const [isSquidModalOpen, setIsSquidModalOpen] = useState(false)
   const [isSwingModalOpen, setIsSwingModalOpen] = useState(false)
-  const [isSilentModalOpen, setIsSilentModalOpen] = useState(false)
 
   return (
     <>
-      <Helmet>
-        <title>{bridgePageTitle}</title>
+      <title>{bridgePageTitle}</title>
 
-        <meta charSet="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <meta charSet="UTF-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-        <meta name="title" content={bridgePageTitle} />
-        <meta name="application-name" content={bridgePageTitle} />
-        <meta name="description" content={bridgePageDescription} />
-        <meta name="robots" content="index,follow" />
+      <meta name="title" content={bridgePageTitle} />
+      <meta name="application-name" content={bridgePageTitle} />
+      <meta name="description" content={bridgePageDescription} />
+      <meta name="robots" content="index,follow" />
 
-        <meta property="og:title" content={bridgePageTitle} />
-        <meta property="og:description" content={bridgePageDescription} />
-        {/* <meta property="og:image" content="Image URL Here"/> */}
+      <meta property="og:title" content={bridgePageTitle} />
+      <meta property="og:description" content={bridgePageDescription} />
+      {/* <meta property="og:image" content="Image URL Here"/> */}
 
-        <meta name="twitter:title" content={bridgePageTitle} />
-        <meta name="twitter:description" content={bridgePageDescription} />
-        {/* <meta name="twitter:image" content="Image URL Here"/> */}
+      <meta name="twitter:title" content={bridgePageTitle} />
+      <meta name="twitter:description" content={bridgePageDescription} />
+      {/* <meta name="twitter:image" content="Image URL Here"/> */}
 
-        <script type="application/ld+json">{JSON.stringify(bridgeJsonLdSchema)}</script>
-      </Helmet>
+      <script type="application/ld+json">{JSON.stringify(bridgeJsonLdSchema)}</script>
+
       {/* Title */}
       <div className="py-4">
         <Title title={'Bridge'} />
@@ -141,8 +138,8 @@ function Bridge() {
             SilentSwap is the official privacy cross-chain aggregator for Secret Network. It offers a fast, cheap, and
             convenient way to privately and securely swap your assets by leveraging Secret Network's confidential
             computing layer. SilentSwap obfuscates the trace between sender and receiver in an entirely noncustodial,
-            trustless, and permissionless manner. It is fully compliant and allows users to trade or transfer in private,
-            all abstracted in a seamless user experience.
+            trustless, and permissionless manner. It is fully compliant and allows users to trade or transfer in
+            private, all abstracted in a seamless user experience.
           </p>
           <a
             href="https://app.silentswap.com"
