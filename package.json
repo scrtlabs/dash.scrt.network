@@ -19,14 +19,13 @@
     "@evmos/transactions": "^0.3.2",
     "@floating-ui/react": "^0.27.5",
     "@fortawesome/fontawesome-svg-core": "^7.2.0",
-    "@fortawesome/free-brands-svg-icons": "^6.7.2",
-    "@fortawesome/free-solid-svg-icons": "^6.7.2",
-    "@fortawesome/react-fontawesome": "^0.2.2",
-    "@mui/material": "5.16.7",
+    "@fortawesome/free-brands-svg-icons": "^7.2.0",
+    "@fortawesome/free-solid-svg-icons": "^7.2.0",
+    "@fortawesome/react-fontawesome": "^3.2.0",
+    "@mui/material": "^7.3.9",
     "@shadeprotocol/shadejs": "^1.7.0",
     "@skip-go/client": "^0.16.17",
     "@swing.xyz/ui": "^0.67.5",
-    "@vitejs/plugin-react": "^4.3.4",
     "autoprefixer": "^10.4.21",
     "bignumber.js": "^9.1.2",
     "chart.js": "^4.4.8",
@@ -43,8 +42,7 @@
     "react-select": "^5.9.0",
     "secretjs": "1.21.2",
     "tailwindcss": "^4.2.1",
-    "vite": "5.4.19",
-    "vite-tsconfig-paths": "^4.3.2",
+    "vite": "^8.0.0",
     "yup": "^1.4.0",
     "zustand": "^4.4.6"
   },
@@ -54,6 +52,7 @@
     "@types/mixpanel-browser": "^2.51.0",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^6.0.1",
     "husky": "^9.1.7",
     "lint-staged": "^15.4.3",
     "prettier": "3.5.3",
@@ -67,11 +66,13 @@
     "esbuild": "0.25.1",
     "ws": "8.18.1",
     "secretjs": "1.21.2",
-    "@babel/runtime": "7.26.10",
-    "vite": "5.4.19"
+    "@babel/runtime": "7.26.10"
   },
   "private": true,
   "lint-staged": {
     "**/*": "prettier --write --ignore-unknown"
+  },
+  "volta": {
+    "node": "24.14.0"
   }
 }

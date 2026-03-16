@@ -1,14 +1,12 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
-import tsconfigPaths from 'vite-tsconfig-paths'
 import { whip003 } from './vite-plugin-whip-003'
 import tailwindcss from '@tailwindcss/vite'
 
 export default defineConfig({
   plugins: [
-    { ...react() },
+    react(),
     tailwindcss(),
-    { ...tsconfigPaths() },
     {
       ...whip003(),
       apply: 'build'
@@ -19,6 +17,7 @@ export default defineConfig({
     port: 3000
   },
   resolve: {
+    tsconfigPaths: true,
     alias: [
       {
         find: '@buf/evmos_evmos.bufbuild_es/evmos/vesting/v1/tx_pb.js',
@@ -29,8 +28,5 @@ export default defineConfig({
         replacement: '@evmos/proto/dist/proto/evmos/revenue/v1/tx.js'
       }
     ]
-  },
-  build: {
-    minify: 'esbuild'
   }
 })
