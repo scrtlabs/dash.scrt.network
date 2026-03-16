@@ -1,3 +1,5 @@
+import { cn } from "utils/tw-utils"
+
 type Color = 'primary' | 'dark' | 'red' | 'green' | 'yellow' | 'indigo' | 'purple' | 'pink'
 
 type Size = 'default' | 'large'
@@ -40,13 +42,13 @@ const sizeClasses: Record<Size, string> = {
 function Badge(props: Props) {
   return (
     <span
-      className={[
+      className={cn(
         colorClasses[props.color || 'primary'],
         sizeClasses[props.size || 'default'],
         props.bordered && borderClasses[props.color || 'primary'],
         props.pill ? 'rounded-full' : 'rounded-sn',
         'inline-block font-medium px-2.5 py-0.5 rounded-sm dark:bg-blue-900 dark:text-blue-300'
-      ].join(' ')}
+      )}
     >
       {props.children}
     </span>

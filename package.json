@@ -8,7 +8,9 @@
     "dev": "vite --host",
     "build": "tsc && vite build",
     "preview": "vite preview",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "lint": "biome check",
+    "format": "biome format --write"
   },
   "dependencies": {
     "@axelar-network/axelarjs-sdk": "^0.17.2",
@@ -28,7 +30,9 @@
     "@swing.xyz/ui": "^0.67.5",
     "autoprefixer": "^10.4.21",
     "bignumber.js": "^9.1.2",
+    "biome": "^0.3.3",
     "chart.js": "^4.4.8",
+    "clsx": "^2.1.1",
     "formik": "^2.4.6",
     "long": "^5.3.1",
     "mixpanel-browser": "^2.61.1",
@@ -41,12 +45,14 @@
     "react-router-dom": "^6.28.1",
     "react-select": "^5.9.0",
     "secretjs": "1.21.2",
+    "tailwind-merge": "^3.5.0",
     "tailwindcss": "^4.2.1",
     "vite": "^7.3.1",
     "yup": "^1.4.0",
     "zustand": "^4.4.6"
   },
   "devDependencies": {
+    "@biomejs/biome": "2.4.7",
     "@keplr-wallet/types": "^0.12.196",
     "@tailwindcss/vite": "^4.2.1",
     "@types/mixpanel-browser": "^2.51.0",
@@ -55,7 +61,6 @@
     "@vitejs/plugin-react": "^5.2.0",
     "husky": "^9.1.7",
     "lint-staged": "^15.4.3",
-    "prettier": "3.5.3",
     "sass": "^1.98.0",
     "typescript": "^5.6.3",
     "vite-tsconfig-paths": "^6.1.1"
@@ -71,7 +76,7 @@
   },
   "private": true,
   "lint-staged": {
-    "**/*": "prettier --write --ignore-unknown"
+    "**/*": "biome format --write"
   },
   "volta": {
     "node": "24.14.0"
