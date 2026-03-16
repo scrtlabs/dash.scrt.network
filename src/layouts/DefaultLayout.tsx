@@ -1,50 +1,50 @@
-import { faBars, faXmark } from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import Footer from 'components/Footer'
-import { Navigation } from 'components/Navigation'
-import { useState, createContext, useEffect } from 'react'
-import { useLocation } from 'react-router-dom'
-import FloatingCTAButton from 'components/FloatingCTAButton'
-import { Nullable } from 'types/Nullable'
-import Wallet from 'components/Wallet/Wallet'
-import toast, { ToastBar, Toaster, ToasterProps } from 'react-hot-toast'
-import FeedbackButton from 'components/FeedbackButton'
-import Settings from 'components/Settings/Settings'
+import { faBars, faXmark } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Footer from "components/Footer";
+import { Navigation } from "components/Navigation";
+import { useState, createContext, useEffect } from "react";
+import { useLocation } from "react-router-dom";
+import FloatingCTAButton from "components/FloatingCTAButton";
+import { Nullable } from "types/Nullable";
+import Wallet from "components/Wallet/Wallet";
+import toast, { ToastBar, Toaster, ToasterProps } from "react-hot-toast";
+import FeedbackButton from "components/FeedbackButton";
+import Settings from "components/Settings/Settings";
 
-export const NavigationContext = createContext<Nullable<boolean>>(null)
+export const NavigationContext = createContext<Nullable<boolean>>(null);
 
 export const DefaultLayout = ({ children }: any) => {
   /**
    * Mobile Menu Handler
    */
-  const [showMobileMenu, setShowMobileMenu] = useState<boolean>(false)
+  const [showMobileMenu, setShowMobileMenu] = useState<boolean>(false);
 
   // auto close menu
-  const location = useLocation()
+  const location = useLocation();
   useEffect(() => {
     if (showMobileMenu) {
-      setShowMobileMenu(false)
+      setShowMobileMenu(false);
     }
-  }, [location])
+  }, [location]);
 
   useEffect(() => {
     function handleResize() {
       if (window.innerWidth >= 1024 && setShowMobileMenu) {
-        setShowMobileMenu(false)
+        setShowMobileMenu(false);
       }
     }
-    window.addEventListener('resize', handleResize)
-  }, [])
+    window.addEventListener("resize", handleResize);
+  }, []);
 
   const toasterProps: ToasterProps = {
-    position: 'bottom-left',
+    position: "bottom-left",
     reverseOrder: true,
     gutter: 8,
     toastOptions: {
       duration: Infinity,
-      className: 'bg-white text-black dark:bg-neutral-800 dark:text-white'
-    }
-  }
+      className: "bg-white text-black dark:bg-neutral-800 dark:text-white",
+    },
+  };
 
   return (
     <>
@@ -55,7 +55,7 @@ export const DefaultLayout = ({ children }: any) => {
               <>
                 {icon}
                 {message}
-                {t.type !== 'loading' && (
+                {t.type !== "loading" && (
                   <button onClick={() => toast.dismiss(t.id)}>
                     <FontAwesomeIcon icon={faXmark} />
                   </button>
@@ -66,22 +66,30 @@ export const DefaultLayout = ({ children }: any) => {
         )}
       </Toaster>
       {/* Feedback Button */}
-      <FeedbackButton url={'https://github.com/scrtlabs/dash.scrt.network/issues/new'} />
+      <FeedbackButton
+        url={"https://github.com/scrtlabs/dash.scrt.network/issues/new"}
+      />
       {/* Help Button */}
-      <FloatingCTAButton url="https://linktr.ee/SCRTSupport" text="Need Help?" />
+      <FloatingCTAButton
+        url="https://linktr.ee/SCRTSupport"
+        text="Need Help?"
+      />
       <div className="flex">
         {/* Menu */}
         <aside
           className={
             (showMobileMenu
-              ? 'z-50 left-0 right-0 w-full lg:w-auto min-h-screen bg-white dark:bg-neutral-900'
-              : 'hidden lg:block') +
-            ' ' +
-            'lg:w-[17rem] fixed left-0 top-0 h-screen px-4 py-6 overflow-x-hidden'
+              ? "z-50 left-0 right-0 w-full lg:w-auto min-h-screen bg-white dark:bg-neutral-900"
+              : "hidden lg:block") +
+            " " +
+            "lg:w-[17rem] fixed left-0 top-0 h-screen px-4 py-6 overflow-x-hidden"
           }
         >
           <NavigationContext.Provider value={showMobileMenu}>
-            <Navigation showMobileMenu={showMobileMenu} setShowMobileMenu={setShowMobileMenu} />
+            <Navigation
+              showMobileMenu={showMobileMenu}
+              setShowMobileMenu={setShowMobileMenu}
+            />
           </NavigationContext.Provider>
         </aside>
         <main className="flex flex-col min-h-screen flex-1 lg:ml-[17rem]">
@@ -91,7 +99,12 @@ export const DefaultLayout = ({ children }: any) => {
               {`Earn yield on your ETH assets while benefiting from private DeFi
               with Shade Protocol! `}
 
-              <a href="https://shadeprotocol.io/" target="_blank" rel="noopener noreferrer" className="underline">
+              <a
+                href="https://shadeprotocol.io/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="underline"
+              >
                 Learn More ⚡️
               </a>
             </b>
@@ -130,7 +143,7 @@ export const DefaultLayout = ({ children }: any) => {
         </main>
       </div>
     </>
-  )
-}
+  );
+};
 
-export default DefaultLayout
+export default DefaultLayout;

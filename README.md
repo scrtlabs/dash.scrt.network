@@ -6,7 +6,7 @@ Secret Dashboard is an entry point for new users into Secret Network. Features i
 
 ## System Requirements
 
-- [Node.js 20 LTS](https://nodejs.org/)
+- [Node.js 24 LTS](https://nodejs.org/)
 
 ## Setup
 
@@ -42,6 +42,6 @@ The App runs on port 3000. For further information check the `Dockerfile` and th
 
 ## License
 
-Developed by [Secret Saturn](https://x.com/Secret_Saturn_) and [Secret Jupiter](https://x.com/secretjupiter_)
+Developed by [Secret Saturn](https://x.com/Secret_Saturn_) and [Secret Jupiter](https://github.com/secretjupiter)
 
 Licensed under the [MIT license](https://github.com/scrtlabs/dash.scrt.network/blob/master/LICENSE.md)

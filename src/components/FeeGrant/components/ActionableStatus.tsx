@@ -1,35 +1,53 @@
-import { useState } from 'react'
-import { faCheckCircle, faXmarkCircle } from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import Button from 'components/UI/Button/Button'
-import { useSecretNetworkClientStore } from 'store/secretNetworkClient'
-import toast from 'react-hot-toast'
-import { NotificationService } from 'services/notification.service'
+import {
+  faCheckCircle,
+  faXmarkCircle,
+} from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Button from "components/UI/Button/Button";
+import { useState } from "react";
+import { NotificationService } from "services/notification.service";
+import { useSecretNetworkClientStore } from "stores/secretNetworkClient.store";
 
 export default function ActionableStatus() {
-  const { feeGrantStatus, requestFeeGrant, isConnected } = useSecretNetworkClientStore()
+  const { feeGrantStatus, requestFeeGrant, isConnected } =
+    useSecretNetworkClientStore();
 
-  const [isLoading, setIsLoading] = useState<boolean>(false)
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   async function handleRequestFeeGrant() {
-    setIsLoading(true)
-    const toastId = NotificationService.notify(`Requesting Fee Grant...`, 'loading')
+    setIsLoading(true);
+    const toastId = NotificationService.notify(
+      `Requesting Fee Grant...`,
+      "loading",
+    );
 
     try {
-      const res = requestFeeGrant()
+      const res = requestFeeGrant();
 
       res
         .then(() => {
-          NotificationService.notify(`Request for Fee Grant successful`, 'success', toastId)
+          NotificationService.notify(
+            `Request for Fee Grant successful`,
+            "success",
+            toastId,
+          );
         })
         .catch((error) => {
-          NotificationService.notify(`Request for Fee Grant failed: ${error}`, 'error', toastId)
-        })
-    } catch (error: any) {
-      console.error(error)
-      NotificationService.notify(`Request for Fee Grant failed: ${error}`, 'error', toastId)
+          NotificationService.notify(
+            `Request for Fee Grant failed: ${error}`,
+            "error",
+            toastId,
+          );
+        });
+    } catch (error) {
+      console.error(error);
+      NotificationService.notify(
+        `Request for Fee Grant failed: ${error}`,
+        "error",
+        toastId,
+      );
     }
-    setIsLoading(false)
+    setIsLoading(false);
   }
 
   if (isLoading) {
@@ -41,7 +59,14 @@ export default function ActionableStatus() {
           fill="none"
           viewBox="0 0 24 24"
         >
-          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+          <circle
+            className="opacity-25"
+            cx="12"
+            cy="12"
+            r="10"
+            stroke="currentColor"
+            strokeWidth="4"
+          ></circle>
           <path
             className="opacity-75"
             fill="currentColor"
@@ -50,11 +75,11 @@ export default function ActionableStatus() {
         </svg>
         <span>Requesting...</span>
       </div>
-    )
+    );
   }
 
   // Untouched
-  if (feeGrantStatus === 'untouched') {
+  if (feeGrantStatus === "untouched") {
     return (
       <Button
         type="button"
@@ -65,26 +90,29 @@ export default function ActionableStatus() {
       >
         Request Fee Grant
       </Button>
-    )
+    );
   }
 
   // Success
-  if (feeGrantStatus === 'success') {
+  if (feeGrantStatus === "success") {
     return (
       <div className="font-semibold text-sm flex items-center h-[1.6rem]">
-        <FontAwesomeIcon icon={faCheckCircle} className="text-emerald-500 mr-1.5" />
+        <FontAwesomeIcon
+          icon={faCheckCircle}
+          className="text-emerald-500 mr-1.5"
+        />
         Fee Granted
       </div>
-    )
+    );
   }
 
   // Fail
-  if (feeGrantStatus === 'fail') {
+  if (feeGrantStatus === "fail") {
     return (
       <div className="font-semibold text-sm h-[1.6rem]">
         <FontAwesomeIcon icon={faXmarkCircle} className="text-red-500 mr-1.5" />
         Request failed
       </div>
-    )
+    );
   }
 }

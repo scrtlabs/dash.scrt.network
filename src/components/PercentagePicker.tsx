@@ -1,6 +1,6 @@
 interface Props {
-  setAmountByPercentage: (percentage: number) => void
-  disabled?: boolean
+  setAmountByPercentage: (percentage: number) => void;
+  disabled?: boolean;
 }
 
 export default function PercentagePicker(props: Props) {
@@ -39,5 +39,5 @@ export default function PercentagePicker(props: Props) {
         100%
       </button>
     </div>
-  )
+  );
 }

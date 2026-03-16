@@ -1,153 +1,166 @@
-import { useContext, useEffect, useState } from 'react'
-import { formatNumber } from 'utils/commons'
-import Tooltip from '@mui/material/Tooltip'
-import Slider from '@mui/material/Slider'
+import { faInfoCircle } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Slider from "@mui/material/Slider";
+import Tooltip from "@mui/material/Tooltip";
 import {
+  BarController,
+  BarElement,
+  CategoryScale,
   Chart as ChartJS,
+  Tooltip as ChartTooltip,
+  Legend,
+  LinearScale,
+} from "chart.js";
+import { APIContext } from "context/APIContext";
+import { useContext, useEffect, useState } from "react";
+import { Bar } from "react-chartjs-2";
+import { useUserPreferencesStore } from "stores/UserPreferences.store";
+import { formatNumber } from "utils/commons";
+
+ChartJS.register(
   CategoryScale,
   LinearScale,
   BarElement,
-  Tooltip as ChartTooltip,
+  ChartTooltip,
   Legend,
-  BarController
-} from 'chart.js'
-import { Bar } from 'react-chartjs-2'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faInfoCircle } from '@fortawesome/free-solid-svg-icons'
-import { useUserPreferencesStore } from 'store/UserPreferences'
-import { APIContext } from 'context/APIContext'
-
-ChartJS.register(CategoryScale, LinearScale, BarElement, ChartTooltip, Legend, BarController)
+  BarController,
+);
 
 type Entry = {
-  Date: string
-  IBC_Counterpart: string
-  Relayer: string
-  Transactions: number
-}
+  Date: string;
+  IBC_Counterpart: string;
+  Relayer: string;
+  Transactions: number;
+};
 
 export default function RelayerChartWithDateSlider() {
-  const { theme } = useUserPreferencesStore()
-  const { analyticsData4 } = useContext(APIContext)
-  const [chartData, setChartData] = useState<any>(null)
-  const [dates, setDates] = useState<string[]>([])
-  const [selectedDateIndex, setSelectedDateIndex] = useState<number>(0)
+  const { theme } = useUserPreferencesStore();
+  const { analyticsData4 } = useContext(APIContext);
+  const [chartData, setChartData] = useState<any>(null);
+  const [dates, setDates] = useState<string[]>([]);
+  const [selectedDateIndex, setSelectedDateIndex] = useState<number>(0);
 
   useEffect(() => {
     // Process data grouped by date
-    const dateMap: Record<string, Entry[]> = {}
+    const dateMap: Record<string, Entry[]> = {};
 
     analyticsData4.forEach((entry: Entry) => {
-      const date = new Date(entry.Date).toISOString().split('T')[0]
-      dateMap[date] ||= []
-      dateMap[date].push(entry)
-    })
+      const date = new Date(entry.Date).toISOString().split("T")[0];
+      dateMap[date] ||= [];
+      dateMap[date].push(entry);
+    });
 
-    const sortedDates = Object.keys(dateMap).sort((a, b) => new Date(a).getTime() - new Date(b).getTime())
-    setDates(sortedDates)
+    const sortedDates = Object.keys(dateMap).sort(
+      (a, b) => new Date(a).getTime() - new Date(b).getTime(),
+    );
+    setDates(sortedDates);
 
     if (sortedDates.length > 0) {
-      const latestIndex = sortedDates.length - 1
-      const latestDate = sortedDates[latestIndex]
-      setSelectedDateIndex(latestIndex) // Set to the latest date index
-      updateChartDataForDate(latestDate, dateMap[latestDate])
+      const latestIndex = sortedDates.length - 1;
+      const latestDate = sortedDates[latestIndex];
+      setSelectedDateIndex(latestIndex); // Set to the latest date index
+      updateChartDataForDate(latestDate, dateMap[latestDate]);
     }
-  }, [analyticsData4])
+  }, [analyticsData4]);
 
   const updateChartDataForDate = (date: string, entries: Entry[]) => {
     // Initialize data structures
-    const dataMatrix: Map<string, Map<string, number>> = new Map()
-    const chainsSet: Set<string> = new Set()
-    const relayersSet: Set<string> = new Set()
+    const dataMatrix: Map<string, Map<string, number>> = new Map();
+    const chainsSet: Set<string> = new Set();
+    const relayersSet: Set<string> = new Set();
 
     // Build dataMatrix and collect unique chains and relayers
     for (const entry of entries) {
-      const chainBech32Prefix = entry.IBC_Counterpart
-      const relayer = entry.Relayer || 'Other'
+      const chainBech32Prefix = entry.IBC_Counterpart;
+      const relayer = entry.Relayer || "Other";
 
-      chainsSet.add(chainBech32Prefix)
-      relayersSet.add(relayer)
+      chainsSet.add(chainBech32Prefix);
+      relayersSet.add(relayer);
 
       if (!dataMatrix.has(relayer)) {
-        dataMatrix.set(relayer, new Map())
+        dataMatrix.set(relayer, new Map());
       }
-      const chainMap = dataMatrix.get(relayer)!
-      chainMap.set(chainBech32Prefix, (chainMap.get(chainBech32Prefix) || 0) + entry.Transactions)
+      const chainMap = dataMatrix.get(relayer)!;
+      chainMap.set(
+        chainBech32Prefix,
+        (chainMap.get(chainBech32Prefix) || 0) + entry.Transactions,
+      );
     }
 
     // Sort the prefixes alphabetically and use them as labels
-    const labels = Array.from(chainsSet).sort()
+    const labels = Array.from(chainsSet).sort();
 
     // Create datasets for each relayer
     const datasets = Array.from(relayersSet).map((relayer) => {
-      const chainMap = dataMatrix.get(relayer)!
-      const data = labels.map((prefix) => chainMap.get(prefix) || 0)
+      const chainMap = dataMatrix.get(relayer)!;
+      const data = labels.map((prefix) => chainMap.get(prefix) || 0);
       return {
         label: relayer,
         data,
-        backgroundColor: getColorFromRelayer(relayer)
-      }
-    })
+        backgroundColor: getColorFromRelayer(relayer),
+      };
+    });
 
     // Set chart data with prepared labels and datasets
     setChartData({
       labels,
-      datasets
-    })
-  }
+      datasets,
+    });
+  };
 
   const handleSliderChange = (event: Event, newValue: number | number[]) => {
-    const index = newValue as number
-    setSelectedDateIndex(index)
+    const index = newValue as number;
+    setSelectedDateIndex(index);
 
-    const selectedDate = dates[index]
+    const selectedDate = dates[index];
     const dateEntries = analyticsData4.filter(
-      (entry: Entry) => new Date(entry.Date).toISOString().split('T')[0] === selectedDate
-    )
+      (entry: Entry) =>
+        new Date(entry.Date).toISOString().split("T")[0] === selectedDate,
+    );
 
-    updateChartDataForDate(selectedDate, dateEntries)
-  }
+    updateChartDataForDate(selectedDate, dateEntries);
+  };
 
   const getSliderMarks = () => {
-    if (dates.length === 0) return []
+    if (dates.length === 0) return [];
 
-    const numMarks = Math.min(10, dates.length) // Limit to 10 marks max
-    const marks = []
+    const numMarks = Math.min(10, dates.length); // Limit to 10 marks max
+    const marks = [];
 
     const formatDate = (date: string) =>
       new Date(date).toLocaleDateString(undefined, {
-        year: '2-digit',
-        month: '2-digit',
-        day: '2-digit'
-      })
+        year: "2-digit",
+        month: "2-digit",
+        day: "2-digit",
+      });
 
     // Always include the first date
     marks.push({
       value: 0,
-      label: formatDate(dates[0])
-    })
+      label: formatDate(dates[0]),
+    });
 
     if (dates.length > 1) {
-      const interval = (dates.length - 1) / (numMarks - 1)
+      const interval = (dates.length - 1) / (numMarks - 1);
 
       // Add intermediate marks only if necessary
       for (let i = 1; i < numMarks - 1; i++) {
-        const index = Math.round(i * interval)
+        const index = Math.round(i * interval);
         marks.push({
           value: index,
-          label: formatDate(dates[index])
-        })
+          label: formatDate(dates[index]),
+        });
       }
 
       // Always include the last date
       marks.push({
         value: dates.length - 1,
-        label: formatDate(dates[dates.length - 1])
-      })
+        label: formatDate(dates[dates.length - 1]),
+      });
     }
 
-    return marks
-  }
+    return marks;
+  };
 
   const options = {
     responsive: true,
@@ -157,80 +170,83 @@ export default function RelayerChartWithDateSlider() {
       x: {
         stacked: true,
         ticks: {
-          color: theme === 'dark' ? '#fff' : '#000',
+          color: theme === "dark" ? "#fff" : "#000",
           font: {
-            family: 'RundDisplay'
-          }
+            family: "RundDisplay",
+          },
         },
         grid: {
-          color: theme === 'dark' ? '#fff' : '#000',
+          color: theme === "dark" ? "#fff" : "#000",
           alpha: 0.5,
           display: false,
           drawOnChartArea: true,
           drawTicks: true,
-          tickLength: 0
+          tickLength: 0,
         },
         border: {
-          color: theme === 'dark' ? '#fff' : '#000'
-        }
+          color: theme === "dark" ? "#fff" : "#000",
+        },
       },
       y: {
         beginAtZero: true,
         stacked: true,
         ticks: {
-          color: theme === 'dark' ? '#fff' : '#000',
+          color: theme === "dark" ? "#fff" : "#000",
           callback: function (value: any) {
-            return formatNumber(value, 2)
+            return formatNumber(value, 2);
           },
           font: {
-            family: 'RundDisplay'
-          }
+            family: "RundDisplay",
+          },
         },
         border: {
-          color: theme === 'dark' ? '#fff' : '#000'
+          color: theme === "dark" ? "#fff" : "#000",
         },
         grid: {
-          color: theme === 'dark' ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0, 0, 0, 0.2)',
+          color:
+            theme === "dark"
+              ? "rgba(255, 255, 255, 0.2)"
+              : "rgba(0, 0, 0, 0.2)",
           display: true,
           drawOnChartArea: true,
           drawTicks: true,
-          tickLength: 0
-        }
-      }
+          tickLength: 0,
+        },
+      },
     },
     plugins: {
       legend: {
-        display: false
+        display: false,
       },
       tooltip: {
-        xAlign: 'center',
-        color: theme === 'dark' ? '#fff' : '#000',
+        xAlign: "center",
+        color: theme === "dark" ? "#fff" : "#000",
         callbacks: {
           label: function (context: any) {
             if (context.parsed.y !== null) {
-              return `${context.dataset.label}: ${formatNumber(context.parsed.y)} Transactions`
+              return `${context.dataset.label}: ${formatNumber(context.parsed.y)} Transactions`;
             }
-            return ''
-          }
+            return "";
+          },
         },
         titleFont: {
-          family: 'RundDisplay'
+          family: "RundDisplay",
         },
         bodyFont: {
-          family: 'RundDisplay'
-        }
-      }
-    }
-  }
+          family: "RundDisplay",
+        },
+      },
+    },
+  };
 
   function getColorFromRelayer(relayer: string) {
     // Generate a unique color based on the relayer name
-    let hash = 0
+    let hash = 0;
     for (let i = 0; i < relayer.length; i++) {
-      hash = relayer.charCodeAt(i) + ((hash << 5) - hash)
+      hash = relayer.charCodeAt(i) + ((hash << 5) - hash);
     }
-    const color = `#${('000000' + (hash & 0xffffff).toString(16)).slice(-6)}`
-    return color
+    const color = `#${("000000" + (hash & 0xffffff).toString(16)).slice(-6)}`;
+    return color;
   }
 
   return (
@@ -263,34 +279,37 @@ export default function RelayerChartWithDateSlider() {
             valueLabelDisplay="auto"
             valueLabelFormat={(value) =>
               new Date(dates[value]).toLocaleDateString(undefined, {
-                year: '2-digit',
-                month: '2-digit',
-                day: '2-digit'
+                year: "2-digit",
+                month: "2-digit",
+                day: "2-digit",
               })
             }
             sx={{
-              color: theme === 'dark' ? '#fff' : '#000', // Set the slider color based on the theme
-              '& .MuiSlider-thumb': {
-                backgroundColor: theme === 'dark' ? '#fff' : '#000' // Thumb color
+              color: theme === "dark" ? "#fff" : "#000", // Set the slider color based on the theme
+              "& .MuiSlider-thumb": {
+                backgroundColor: theme === "dark" ? "#fff" : "#000", // Thumb color
               },
-              '& .MuiSlider-track': {
-                backgroundColor: theme === 'dark' ? '#fff' : '#000' // Track color
+              "& .MuiSlider-track": {
+                backgroundColor: theme === "dark" ? "#fff" : "#000", // Track color
               },
-              '& .MuiSlider-rail': {
-                backgroundColor: theme === 'dark' ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0, 0, 0, 0.2)' // Rail color (unfilled part of the slider)
+              "& .MuiSlider-rail": {
+                backgroundColor:
+                  theme === "dark"
+                    ? "rgba(255, 255, 255, 0.2)"
+                    : "rgba(0, 0, 0, 0.2)", // Rail color (unfilled part of the slider)
               },
-              '& .MuiSlider-mark': {
-                backgroundColor: theme === 'dark' ? '#fff' : '#000', // Marks color
-                fontFamily: 'RundDisplay'
+              "& .MuiSlider-mark": {
+                backgroundColor: theme === "dark" ? "#fff" : "#000", // Marks color
+                fontFamily: "RundDisplay",
               },
-              '& .MuiSlider-markLabel': {
-                color: theme === 'dark' ? '#fff' : '#000', // Mark labels color
-                fontFamily: 'RundDisplay'
-              }
+              "& .MuiSlider-markLabel": {
+                color: theme === "dark" ? "#fff" : "#000", // Mark labels color
+                fontFamily: "RundDisplay",
+              },
             }}
           />
         </div>
       </div>
     </>
-  )
+  );
 }

@@ -1,7 +1,7 @@
-import './FloatingCTAButton.scss'
+import "./FloatingCTAButton.css";
 
 interface Props {
-  url: string
+  url: string;
 }
 
 function FeedbackButton(props: Props) {
@@ -10,12 +10,12 @@ function FeedbackButton(props: Props) {
       <a
         href={props.url}
         target="_blank"
-        className="bg-purple-100 text-purple-800 text-sm font-medium me-2 dark:bg-purple-900 dark:text-purple-300 transition-colors px-1.5 py-1.5 rounded-t"
+        className="bg-purple-100 text-purple-800 text-sm font-medium me-2 dark:bg-purple-900 dark:text-purple-300 transition-colors px-1.5 py-1.5 rounded-t-sm"
       >
         Feedback
       </a>
     </div>
-  )
+  );
 }
 
-export default FeedbackButton
+export default FeedbackButton;

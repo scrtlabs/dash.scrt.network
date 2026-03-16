@@ -1,3 +1,10 @@
+@import url('fonts.css');
+@import 'tailwindcss';
+
+/*
+ * Balances
+ */
+
 .balance-item div {
   &:first-of-type {
     @apply rounded-t-lg;

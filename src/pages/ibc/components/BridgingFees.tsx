@@ -1,29 +1,29 @@
-import { useContext, useEffect, useState } from 'react'
-import { Chain, ICSTokens, Token } from 'utils/config'
-import Tooltip from '@mui/material/Tooltip'
-import { faInfoCircle } from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import BigNumber from 'bignumber.js'
-import { IbcMode } from 'types/IbcMode'
-import { IbcService } from 'services/ibc.service'
-import { useTokenPricesStore } from 'store/TokenPrices'
-import { APIContext } from 'context/APIContext'
-import { useUserPreferencesStore } from 'store/UserPreferences'
-import { toCurrencyString } from 'utils/commons'
-import { Coin } from 'secretjs/src/protobuf/cosmos/base/v1beta1/coin'
+import { faInfoCircle } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Tooltip from "@mui/material/Tooltip";
+import BigNumber from "bignumber.js";
+import { APIContext } from "context/APIContext";
+import { useContext, useEffect, useState } from "react";
+import { Coin } from "secretjs/src/protobuf/cosmos/base/v1beta1/coin";
+import { IbcService } from "services/ibc.service";
+import { useTokenPricesStore } from "stores/TokenPrices.store";
+import { useUserPreferencesStore } from "stores/UserPreferences.store";
+import { IbcMode } from "types/IbcMode";
+import { toCurrencyString } from "utils/commons";
+import { Chain, ICSTokens, Token } from "utils/config";
 
 interface IProps {
-  chain: Chain
-  ibcMode: IbcMode
-  token: Token
-  amount: string
+  chain: Chain;
+  ibcMode: IbcMode;
+  token: Token;
+  amount: string;
 }
 
 export default function BridgingFees(props: IProps) {
-  const [axelarTransferFee, setAxelarTransferFee] = useState<Coin>(undefined)
-  const [priceString, setPriceString] = useState<string>(null)
+  const [axelarTransferFee, setAxelarTransferFee] = useState<Coin>(undefined);
+  const [priceString, setPriceString] = useState<string>(null);
 
-  const { getValuePrice, priceMapping } = useTokenPricesStore()
+  const { getValuePrice, priceMapping } = useTokenPricesStore();
 
   useEffect(() => {
     if ((props.ibcMode, props.token, props.chain, props.amount)) {
@@ -31,34 +31,39 @@ export default function BridgingFees(props: IProps) {
         const { fee } = await IbcService.getAxelarTransferFee(
           props.token,
           props.chain,
-          BigNumber(props.amount).dividedBy(`1e${props.token.decimals}`).toNumber(),
-          props.ibcMode
-        )
-        setAxelarTransferFee(fee)
+          BigNumber(props.amount)
+            .dividedBy(`1e${props.token.decimals}`)
+            .toNumber(),
+          props.ibcMode,
+        );
+        setAxelarTransferFee(fee);
       }
-      setAxelarTransferFee(undefined)
-      fetchAxelarTransferFee()
+      setAxelarTransferFee(undefined);
+      fetchAxelarTransferFee();
     }
-  }, [props.ibcMode, props.token, props.chain, props.amount])
+  }, [props.ibcMode, props.token, props.chain, props.amount]);
 
-  const { convertCurrency } = useContext(APIContext)
-  const { currency } = useUserPreferencesStore()
+  const { convertCurrency } = useContext(APIContext);
+  const { currency } = useUserPreferencesStore();
 
   useEffect(() => {
     if (priceMapping !== null && axelarTransferFee !== undefined) {
-      const valuePrice = getValuePrice(props.token, BigNumber(axelarTransferFee.amount))
+      const valuePrice = getValuePrice(
+        props.token,
+        BigNumber(axelarTransferFee.amount),
+      );
       if (valuePrice !== null) {
-        const priceInCurrency = convertCurrency('USD', valuePrice, currency)
+        const priceInCurrency = convertCurrency("USD", valuePrice, currency);
         if (priceInCurrency !== null) {
-          setPriceString(toCurrencyString(priceInCurrency, currency))
+          setPriceString(toCurrencyString(priceInCurrency, currency));
         }
       } else {
-        setPriceString('')
+        setPriceString("");
       }
     } else {
-      setPriceString('')
+      setPriceString("");
     }
-  }, [priceMapping, props.token, axelarTransferFee])
+  }, [priceMapping, props.token, axelarTransferFee]);
 
   return (
     <div className="bg-neutral-200 dark:bg-neutral-700 p-4 rounded-xl space-y-6">
@@ -77,18 +82,19 @@ export default function BridgingFees(props: IProps) {
         </div>
         {props.token.is_axelar_asset && axelarTransferFee !== undefined ? (
           <div>
-            {` ${Number(BigNumber(axelarTransferFee.amount).dividedBy(`1e${props.token.decimals}`)).toLocaleString(
-              undefined,
-              {
-                maximumFractionDigits: props.token.decimals
-              }
-            )} ${ICSTokens.filter((icstoken: Token) => icstoken.axelar_denom === axelarTransferFee.denom)[0].name}
-          ${props.token.coingecko_id && priceString ? ` (${priceString})` : ''}`}
+            {` ${Number(
+              BigNumber(axelarTransferFee.amount).dividedBy(
+                `1e${props.token.decimals}`,
+              ),
+            ).toLocaleString(undefined, {
+              maximumFractionDigits: props.token.decimals,
+            })} ${ICSTokens.filter((icstoken: Token) => icstoken.axelar_denom === axelarTransferFee.denom)[0].name}
+          ${props.token.coingecko_id && priceString ? ` (${priceString})` : ""}`}
           </div>
         ) : (
-          <span className="animate-pulse bg-neutral-300/40 dark:bg-neutral-600/40 rounded w-20 h-5"></span>
+          <span className="animate-pulse bg-neutral-300/40 dark:bg-neutral-600/40 rounded-sm w-20 h-5"></span>
         )}
       </div>
     </div>
-  )
+  );
 }

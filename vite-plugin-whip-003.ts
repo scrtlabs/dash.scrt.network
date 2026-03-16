@@ -3,7 +3,7 @@ import { Plugin } from 'vite'
 export function whip003(): Plugin {
   return {
     name: 'build-tokens',
-    async buildStart(options) {
+    async buildStart(_) {
       const { chains, tokens, snips } = await import('./src/utils/config')
 
       const whip003 = {

@@ -1,25 +1,41 @@
-import CopyToClipboard from 'react-copy-to-clipboard'
-import { Chain } from 'utils/config'
-import { useSecretNetworkClientStore } from 'store/secretNetworkClient'
-import Tooltip from '@mui/material/Tooltip'
-import { faCopy } from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faCopy } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Tooltip from "@mui/material/Tooltip";
+import { NotificationService } from "services/notification.service";
+import { useSecretNetworkClientStore } from "stores/secretNetworkClient.store";
+import { Chain } from "utils/config";
 
 interface IProps {
-  srcChain?: Chain
-  srcAddress?: string
-  destChain?: Chain
-  destAddress?: string
+  srcChain?: Chain;
+  srcAddress?: string;
+  destChain?: Chain;
+  destAddress?: string;
 }
 
 export default function AddressInfo(props: IProps) {
-  const { isConnected } = useSecretNetworkClientStore()
+  const { isConnected } = useSecretNetworkClientStore();
 
-  const dataMissing = !props.srcChain || !props.srcAddress || !props.destChain || !props.destChain
+  const dataMissing =
+    !props.srcChain ||
+    !props.srcAddress ||
+    !props.destChain ||
+    !props.destChain;
 
   // e.g. https://www.mintscan.io/secret/account/[address]
-  const srcChainExplorerUrl: string = `${props.srcChain?.explorer_account}${props.srcAddress}`
-  const destChainExplorerUrl: string = `${props.destChain?.explorer_account}${props.destAddress}`
+  const srcChainExplorerUrl: string = `${props.srcChain?.explorer_account}${props.srcAddress}`;
+  const destChainExplorerUrl: string = `${props.destChain?.explorer_account}${props.destAddress}`;
+
+  const handleCopyAddressToClipboard = async (address: string) => {
+    try {
+      await navigator.clipboard.writeText(address as string);
+      NotificationService.notify("Address copied to clipboard", "success");
+    } catch (e) {
+      NotificationService.notify(
+        "Could not copy address to clipboard",
+        "error",
+      );
+    }
+  };
 
   return (
     <div className="bg-gray-200 dark:bg-neutral-700 p-4 rounded-xl space-y-6">
@@ -30,13 +46,15 @@ export default function AddressInfo(props: IProps) {
             <>
               {!props.srcChain && !props.srcAddress ? (
                 <div className="animate-pulse">
-                  <div className="h-5 bg-white dark:bg-neutral-700 rounded"></div>
+                  <div className="h-5 bg-white dark:bg-neutral-700 rounded-sm"></div>
                 </div>
               ) : (
-                <Tooltip title={'View in Explorer'} placement="top" arrow>
+                <Tooltip title={"View in Explorer"} placement="top" arrow>
                   <a href={srcChainExplorerUrl} target="_blank">
                     <div className="truncate">
-                      {props.srcAddress.slice(0, 21) + '...' + props.srcAddress.slice(-21)}
+                      {props.srcAddress.slice(0, 21) +
+                        "..." +
+                        props.srcAddress.slice(-21)}
                     </div>
                   </a>
                 </Tooltip>
@@ -45,8 +63,16 @@ export default function AddressInfo(props: IProps) {
           )}
         </div>
         <div className="flex-initial ml-4">
-          <CopyToClipboard text={props.srcAddress}>
-            <Tooltip title="Copy to Clipboard" placement="top" disableHoverListener={!isConnected || dataMissing} arrow>
+          <button
+            type="button"
+            onClick={() => handleCopyAddressToClipboard(props.srcAddress)}
+          >
+            <Tooltip
+              title="Copy to Clipboard"
+              placement="top"
+              disableHoverListener={!isConnected || dataMissing}
+              arrow
+            >
               <span>
                 <button
                   type="button"
@@ -57,7 +83,7 @@ export default function AddressInfo(props: IProps) {
                 </button>
               </span>
             </Tooltip>
-          </CopyToClipboard>
+          </button>
         </div>
       </div>
 
@@ -68,13 +94,15 @@ export default function AddressInfo(props: IProps) {
             <>
               {!props.destChain && !props.destAddress ? (
                 <div className="animate-pulse">
-                  <div className="h-5 bg-white dark:bg-neutral-700 rounded"></div>
+                  <div className="h-5 bg-white dark:bg-neutral-700 rounded-sm"></div>
                 </div>
               ) : (
-                <Tooltip title={'View in Explorer'} placement="bottom" arrow>
+                <Tooltip title={"View in Explorer"} placement="bottom" arrow>
                   <a href={destChainExplorerUrl} target="_blank">
                     <div className="truncate">
-                      {props.destAddress.slice(0, 21) + '...' + props.destAddress.slice(-21)}
+                      {props.destAddress.slice(0, 21) +
+                        "..." +
+                        props.destAddress.slice(-21)}
                     </div>
                   </a>
                 </Tooltip>
@@ -83,7 +111,10 @@ export default function AddressInfo(props: IProps) {
           )}
         </div>
         <div className="flex-initial ml-4">
-          <CopyToClipboard text={props.destAddress}>
+          <button
+            type="button"
+            onClick={() => handleCopyAddressToClipboard(props.destAddress)}
+          >
             <Tooltip
               title="Copy to Clipboard"
               placement="bottom"
@@ -100,9 +131,9 @@ export default function AddressInfo(props: IProps) {
                 </button>
               </span>
             </Tooltip>
-          </CopyToClipboard>
+          </button>
         </div>
       </div>
     </div>
-  )
+  );
 }

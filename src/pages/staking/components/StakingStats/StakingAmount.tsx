@@ -1,34 +1,40 @@
-import BigNumber from 'bignumber.js'
-import { APIContext } from 'context/APIContext'
-import { StakingContext } from 'pages/staking/Staking'
-import { useContext, useEffect, useState } from 'react'
-import { useTokenPricesStore } from 'store/TokenPrices'
-import { useUserPreferencesStore } from 'store/UserPreferences'
-import { Nullable } from 'types/Nullable'
-import { toCurrencyString } from 'utils/commons'
-import { scrtToken } from 'utils/tokens'
+import BigNumber from "bignumber.js";
+import { APIContext } from "context/APIContext";
+import { StakingContext } from "pages/staking/Staking";
+import { useContext, useEffect, useState } from "react";
+import { useTokenPricesStore } from "stores/TokenPrices.store";
+import { useUserPreferencesStore } from "stores/UserPreferences.store";
+import { Nullable } from "types/Nullable";
+import { toCurrencyString } from "utils/commons";
+import { scrtToken } from "utils/tokens";
 
 type Props = {
-  stakedAmount?: Nullable<number>
-}
+  stakedAmount?: Nullable<number>;
+};
 
 function StakingAmount(props: Props) {
-  const { convertCurrency } = useContext(APIContext)
-  const { getValuePrice, priceMapping } = useTokenPricesStore()
-  const { currency } = useUserPreferencesStore()
-  const [stakedAmountInCurrency, setStakedAmountInCurrency] = useState<string>('')
+  const { convertCurrency } = useContext(APIContext);
+  const { getValuePrice, priceMapping } = useTokenPricesStore();
+  const { currency } = useUserPreferencesStore();
+  const [stakedAmountInCurrency, setStakedAmountInCurrency] =
+    useState<string>("");
 
   useEffect(() => {
     if (priceMapping !== null && props.stakedAmount !== null) {
-      const valuePrice = getValuePrice(scrtToken, BigNumber(props.stakedAmount).multipliedBy(`1e${scrtToken.decimals}`))
+      const valuePrice = getValuePrice(
+        scrtToken,
+        BigNumber(props.stakedAmount).multipliedBy(`1e${scrtToken.decimals}`),
+      );
       if (valuePrice) {
-        const priceInCurrency = convertCurrency('USD', valuePrice, currency)
+        const priceInCurrency = convertCurrency("USD", valuePrice, currency);
         if (priceInCurrency !== null) {
-          setStakedAmountInCurrency(toCurrencyString(priceInCurrency, currency))
+          setStakedAmountInCurrency(
+            toCurrencyString(priceInCurrency, currency),
+          );
         }
       }
     }
-  }, [priceMapping, props.stakedAmount])
+  }, [priceMapping, props.stakedAmount]);
 
   return (
     <div className="flex-1">
@@ -37,7 +43,10 @@ function StakingAmount(props: Props) {
         {props.stakedAmount !== null ? (
           <>
             <span className="font-medium font-mono">{props.stakedAmount}</span>
-            <span className="text-xs font-semibold text-neutral-400"> SCRT</span>
+            <span className="text-xs font-semibold text-neutral-400">
+              {" "}
+              SCRT
+            </span>
           </>
         ) : (
           <div className="animate-pulse inline-block">
@@ -55,7 +64,7 @@ function StakingAmount(props: Props) {
         )}
       </div>
     </div>
-  )
+  );
 }
 
-export default StakingAmount
+export default StakingAmount;

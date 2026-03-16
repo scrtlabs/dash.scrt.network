@@ -1,5 +1,5 @@
 interface Window {
-  leap?: any
-  keplr?: any
-  wallet?: any
+  leap?: any;
+  keplr?: any;
+  wallet?: any;
 }

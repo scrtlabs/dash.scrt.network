@@ -1,7 +1,7 @@
-import { faInfoCircle } from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import Tooltip from '@mui/material/Tooltip'
-import ActionableStatus from './components/ActionableStatus'
+import { faInfoCircle } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Tooltip from "@mui/material/Tooltip";
+import ActionableStatus from "./components/ActionableStatus";
 
 export default function FeeGrant() {
   return (
@@ -24,5 +24,5 @@ export default function FeeGrant() {
         <ActionableStatus />
       </div>
     </div>
-  )
+  );
 }

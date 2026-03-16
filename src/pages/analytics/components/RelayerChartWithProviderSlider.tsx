@@ -1,138 +1,156 @@
-import { useContext, useEffect, useState } from 'react'
-import { formatNumber } from 'utils/commons'
-import Tooltip from '@mui/material/Tooltip'
-import Slider from '@mui/material/Slider'
+import { faInfoCircle } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Slider from "@mui/material/Slider";
+import Tooltip from "@mui/material/Tooltip";
 import {
+  BarController,
+  BarElement,
+  CategoryScale,
   Chart as ChartJS,
+  Tooltip as ChartTooltip,
+  Legend,
+  LinearScale,
+} from "chart.js";
+import { APIContext } from "context/APIContext";
+import { useContext, useEffect, useState } from "react";
+import { Bar } from "react-chartjs-2";
+import { useUserPreferencesStore } from "stores/UserPreferences.store";
+import { formatNumber } from "utils/commons";
+
+ChartJS.register(
   CategoryScale,
   LinearScale,
   BarElement,
-  Tooltip as ChartTooltip,
+  ChartTooltip,
   Legend,
-  BarController
-} from 'chart.js'
-import { Bar } from 'react-chartjs-2'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faInfoCircle } from '@fortawesome/free-solid-svg-icons'
-import { useUserPreferencesStore } from 'store/UserPreferences'
-import { APIContext } from 'context/APIContext'
-
-ChartJS.register(CategoryScale, LinearScale, BarElement, ChartTooltip, Legend, BarController)
+  BarController,
+);
 
 type Entry = {
-  Date: string
-  IBC_Counterpart: string
-  Relayer: string
-  Transactions: number
-}
+  Date: string;
+  IBC_Counterpart: string;
+  Relayer: string;
+  Transactions: number;
+};
 
 export default function RelayerChartWithProviderSlider() {
-  const { theme } = useUserPreferencesStore()
-  const { analyticsData4 } = useContext(APIContext)
-  const [chartData, setChartData] = useState<any>(null)
-  const [relayers, setRelayers] = useState<string[]>([])
-  const [selectedRelayerIndex, setSelectedRelayerIndex] = useState<number>(0)
-  const [marks, setMarks] = useState<{ value: number; label: string }[]>([])
+  const { theme } = useUserPreferencesStore();
+  const { analyticsData4 } = useContext(APIContext);
+  const [chartData, setChartData] = useState<any>(null);
+  const [relayers, setRelayers] = useState<string[]>([]);
+  const [selectedRelayerIndex, setSelectedRelayerIndex] = useState<number>(0);
+  const [marks, setMarks] = useState<{ value: number; label: string }[]>([]);
 
   useEffect(() => {
     // Process data grouped by relayer
-    const relayerMap: Record<string, Entry[]> = {}
+    const relayerMap: Record<string, Entry[]> = {};
 
     analyticsData4.forEach((entry: Entry) => {
-      const relayer = entry.Relayer || 'Other'
-      relayerMap[relayer] ||= []
-      relayerMap[relayer].push(entry)
-    })
+      const relayer = entry.Relayer || "Other";
+      relayerMap[relayer] ||= [];
+      relayerMap[relayer].push(entry);
+    });
 
-    const sortedRelayers = Object.keys(relayerMap).sort()
-    setRelayers(sortedRelayers)
+    const sortedRelayers = Object.keys(relayerMap).sort();
+    setRelayers(sortedRelayers);
 
     // Calculate total transactions per relayer
-    const relayerTotals: Record<string, number> = {}
+    const relayerTotals: Record<string, number> = {};
     Object.entries(relayerMap).forEach(([relayer, entries]) => {
-      relayerTotals[relayer] = entries.reduce((sum, entry) => sum + entry.Transactions, 0)
-    })
+      relayerTotals[relayer] = entries.reduce(
+        (sum, entry) => sum + entry.Transactions,
+        0,
+      );
+    });
 
     // Find the relayer with the highest total transactions
-    const maxTotal = Math.max(...Object.values(relayerTotals))
-    const topRelayers = Object.keys(relayerTotals).filter((relayer) => relayerTotals[relayer] === maxTotal)
+    const maxTotal = Math.max(...Object.values(relayerTotals));
+    const topRelayers = Object.keys(relayerTotals).filter(
+      (relayer) => relayerTotals[relayer] === maxTotal,
+    );
     // If multiple relayers have the same max total, choose the first one alphabetically
-    const defaultRelayer = topRelayers.sort()[0]
+    const defaultRelayer = topRelayers.sort()[0];
 
     // Find the index of the default relayer
-    const defaultIndex = sortedRelayers.indexOf(defaultRelayer)
-    setSelectedRelayerIndex(defaultIndex >= 0 ? defaultIndex : 0)
+    const defaultIndex = sortedRelayers.indexOf(defaultRelayer);
+    setSelectedRelayerIndex(defaultIndex >= 0 ? defaultIndex : 0);
 
     // Generate marks for the slider
-    const marks: { value: number; label: string }[] = []
-    const lettersSeen = new Set<string>()
+    const marks: { value: number; label: string }[] = [];
+    const lettersSeen = new Set<string>();
     sortedRelayers.forEach((relayerName, index) => {
-      const letter = relayerName.charAt(0).toUpperCase()
+      const letter = relayerName.charAt(0).toUpperCase();
       if (!lettersSeen.has(letter)) {
-        marks.push({ value: index, label: letter })
-        lettersSeen.add(letter)
+        marks.push({ value: index, label: letter });
+        lettersSeen.add(letter);
       }
-    })
-    setMarks(marks)
+    });
+    setMarks(marks);
 
     // Initialize chart data with the default relayer's data
     if (defaultRelayer) {
-      updateChartDataForRelayer(defaultRelayer, relayerMap[defaultRelayer])
+      updateChartDataForRelayer(defaultRelayer, relayerMap[defaultRelayer]);
     }
-  }, [analyticsData4])
+  }, [analyticsData4]);
 
   const updateChartDataForRelayer = (relayer: string, entries: Entry[]) => {
     // Initialize data structures
-    const dataMatrix: Map<string, Map<string, number>> = new Map()
-    const datesSet: Set<string> = new Set()
-    const chainsSet: Set<string> = new Set()
+    const dataMatrix: Map<string, Map<string, number>> = new Map();
+    const datesSet: Set<string> = new Set();
+    const chainsSet: Set<string> = new Set();
 
     // Build dataMatrix and collect unique dates and chains
     for (const entry of entries) {
-      const date = new Date(entry.Date).toISOString().split('T')[0]
-      const chainBech32Prefix = entry.IBC_Counterpart
+      const date = new Date(entry.Date).toISOString().split("T")[0];
+      const chainBech32Prefix = entry.IBC_Counterpart;
 
-      datesSet.add(date)
-      chainsSet.add(chainBech32Prefix)
+      datesSet.add(date);
+      chainsSet.add(chainBech32Prefix);
 
       if (!dataMatrix.has(chainBech32Prefix)) {
-        dataMatrix.set(chainBech32Prefix, new Map())
+        dataMatrix.set(chainBech32Prefix, new Map());
       }
-      const dateMap = dataMatrix.get(chainBech32Prefix)!
-      dateMap.set(date, (dateMap.get(date) || 0) + entry.Transactions)
+      const dateMap = dataMatrix.get(chainBech32Prefix)!;
+      dateMap.set(date, (dateMap.get(date) || 0) + entry.Transactions);
     }
 
     // Sort dates and chains
-    const sortedDates = Array.from(datesSet).sort((a, b) => new Date(a).getTime() - new Date(b).getTime())
-    const sortedChains = Array.from(chainsSet).sort((a, b) => a.localeCompare(b))
+    const sortedDates = Array.from(datesSet).sort(
+      (a, b) => new Date(a).getTime() - new Date(b).getTime(),
+    );
+    const sortedChains = Array.from(chainsSet).sort((a, b) =>
+      a.localeCompare(b),
+    );
 
     // Create datasets for each chain
     const datasets = sortedChains.map((chainPrefix) => {
-      const dateMap = dataMatrix.get(chainPrefix)!
-      const data = sortedDates.map((date) => dateMap.get(date) || 0)
+      const dateMap = dataMatrix.get(chainPrefix)!;
+      const data = sortedDates.map((date) => dateMap.get(date) || 0);
       return {
         label: chainPrefix,
         data,
-        backgroundColor: getColorFromChain(chainPrefix)
-      }
-    })
+        backgroundColor: getColorFromChain(chainPrefix),
+      };
+    });
 
     // Set chart data with prepared labels and datasets
     setChartData({
       labels: sortedDates,
-      datasets
-    })
-  }
+      datasets,
+    });
+  };
 
   const handleSliderChange = (event: Event, newValue: number | number[]) => {
-    const index = newValue as number
-    setSelectedRelayerIndex(index)
+    const index = newValue as number;
+    setSelectedRelayerIndex(index);
 
-    const selectedRelayer = relayers[index]
-    const relayerEntries = analyticsData4.filter((entry: Entry) => (entry.Relayer || 'Other') === selectedRelayer)
+    const selectedRelayer = relayers[index];
+    const relayerEntries = analyticsData4.filter(
+      (entry: Entry) => (entry.Relayer || "Other") === selectedRelayer,
+    );
 
-    updateChartDataForRelayer(selectedRelayer, relayerEntries)
-  }
+    updateChartDataForRelayer(selectedRelayer, relayerEntries);
+  };
 
   const options = {
     responsive: true,
@@ -142,87 +160,93 @@ export default function RelayerChartWithProviderSlider() {
       x: {
         stacked: true,
         ticks: {
-          color: theme === 'dark' ? '#fff' : '#000',
+          color: theme === "dark" ? "#fff" : "#000",
           callback: function (value: any, index: number) {
-            return new Date(chartData.labels[index]).toLocaleDateString(undefined, {
-              year: '2-digit',
-              month: '2-digit',
-              day: '2-digit'
-            })
+            return new Date(chartData.labels[index]).toLocaleDateString(
+              undefined,
+              {
+                year: "2-digit",
+                month: "2-digit",
+                day: "2-digit",
+              },
+            );
           },
           font: {
-            family: 'RundDisplay'
-          }
+            family: "RundDisplay",
+          },
         },
         grid: {
-          color: theme === 'dark' ? '#fff' : '#000',
+          color: theme === "dark" ? "#fff" : "#000",
           alpha: 0.5,
           display: false,
           drawOnChartArea: true,
           drawTicks: true,
-          tickLength: 0
+          tickLength: 0,
         },
         border: {
-          color: theme === 'dark' ? '#fff' : '#000'
-        }
+          color: theme === "dark" ? "#fff" : "#000",
+        },
       },
       y: {
         beginAtZero: true,
         stacked: true,
         ticks: {
-          color: theme === 'dark' ? '#fff' : '#000',
+          color: theme === "dark" ? "#fff" : "#000",
           callback: function (value: any) {
-            return formatNumber(value, 2)
+            return formatNumber(value, 2);
           },
           font: {
-            family: 'RundDisplay'
-          }
+            family: "RundDisplay",
+          },
         },
         border: {
-          color: theme === 'dark' ? '#fff' : '#000'
+          color: theme === "dark" ? "#fff" : "#000",
         },
         grid: {
-          color: theme === 'dark' ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0, 0, 0, 0.2)',
+          color:
+            theme === "dark"
+              ? "rgba(255, 255, 255, 0.2)"
+              : "rgba(0, 0, 0, 0.2)",
           display: true,
           drawOnChartArea: true,
           drawTicks: true,
-          tickLength: 0
-        }
-      }
+          tickLength: 0,
+        },
+      },
     },
     plugins: {
       legend: {
-        display: false
+        display: false,
       },
       tooltip: {
-        xAlign: 'center',
-        color: theme === 'dark' ? '#fff' : '#000',
+        xAlign: "center",
+        color: theme === "dark" ? "#fff" : "#000",
         callbacks: {
           label: function (context: any) {
             if (context.parsed.y !== null) {
-              return `${context.dataset.label}: ${formatNumber(context.parsed.y)} Transactions`
+              return `${context.dataset.label}: ${formatNumber(context.parsed.y)} Transactions`;
             }
-            return ''
-          }
+            return "";
+          },
         },
         titleFont: {
-          family: 'RundDisplay'
+          family: "RundDisplay",
         },
         bodyFont: {
-          family: 'RundDisplay'
-        }
-      }
-    }
-  }
+          family: "RundDisplay",
+        },
+      },
+    },
+  };
 
   function getColorFromChain(chain: string) {
     // Generate a unique color based on the chain name
-    let hash = 0
+    let hash = 0;
     for (let i = 0; i < chain.length; i++) {
-      hash = chain.charCodeAt(i) + ((hash << 5) - hash)
+      hash = chain.charCodeAt(i) + ((hash << 5) - hash);
     }
-    const color = `#${('000000' + (hash & 0xffffff).toString(16)).slice(-6)}`
-    return color
+    const color = `#${("000000" + (hash & 0xffffff).toString(16)).slice(-6)}`;
+    return color;
   }
 
   return (
@@ -246,7 +270,9 @@ export default function RelayerChartWithProviderSlider() {
       </div>
       <div className="mt-0">
         <div className="mx-auto flex items-center space-x-4">
-          <span className="text-sm text-neutral-600 dark:text-neutral-400">Relayer:</span>
+          <span className="text-sm text-neutral-600 dark:text-neutral-400">
+            Relayer:
+          </span>
           <Slider
             value={selectedRelayerIndex}
             min={0}
@@ -257,28 +283,31 @@ export default function RelayerChartWithProviderSlider() {
             valueLabelDisplay="auto"
             valueLabelFormat={(value) => relayers[value]}
             sx={{
-              color: theme === 'dark' ? '#fff' : '#000', // Set the slider color based on the theme
-              '& .MuiSlider-thumb': {
-                backgroundColor: theme === 'dark' ? '#fff' : '#000' // Thumb color
+              color: theme === "dark" ? "#fff" : "#000", // Set the slider color based on the theme
+              "& .MuiSlider-thumb": {
+                backgroundColor: theme === "dark" ? "#fff" : "#000", // Thumb color
               },
-              '& .MuiSlider-track': {
-                backgroundColor: theme === 'dark' ? '#fff' : '#000' // Track color
+              "& .MuiSlider-track": {
+                backgroundColor: theme === "dark" ? "#fff" : "#000", // Track color
               },
-              '& .MuiSlider-rail': {
-                backgroundColor: theme === 'dark' ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0, 0, 0, 0.2)' // Rail color
+              "& .MuiSlider-rail": {
+                backgroundColor:
+                  theme === "dark"
+                    ? "rgba(255, 255, 255, 0.2)"
+                    : "rgba(0, 0, 0, 0.2)", // Rail color
               },
-              '& .MuiSlider-mark': {
-                backgroundColor: theme === 'dark' ? '#fff' : '#000', // Marks color
-                fontFamily: 'RundDisplay'
+              "& .MuiSlider-mark": {
+                backgroundColor: theme === "dark" ? "#fff" : "#000", // Marks color
+                fontFamily: "RundDisplay",
               },
-              '& .MuiSlider-markLabel': {
-                color: theme === 'dark' ? '#fff' : '#000',
-                fontFamily: 'RundDisplay'
-              }
+              "& .MuiSlider-markLabel": {
+                color: theme === "dark" ? "#fff" : "#000",
+                fontFamily: "RundDisplay",
+              },
             }}
           />
         </div>
       </div>
     </>
-  )
+  );
 }

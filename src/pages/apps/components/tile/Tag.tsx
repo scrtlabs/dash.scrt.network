@@ -1,14 +1,14 @@
-import Badge from 'components/UI/Badge/Badge'
+import Badge from "components/UI/Badge/Badge";
 
 interface Props {
-  name: string
+  name: string;
 }
 const Tag = (props: Props) => {
   return (
     <>
       <Badge color="dark">{props.name}</Badge>
     </>
-  )
-}
+  );
+};
 
-export default Tag
+export default Tag;

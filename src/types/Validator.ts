@@ -4,5 +4,5 @@
  */
 
 export type Validator = {
-  [prop: string]: any
-}
+  [prop: string]: any;
+};

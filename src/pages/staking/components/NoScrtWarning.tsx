@@ -1,5 +1,8 @@
-import { faArrowUpRightFromSquare, faInfoCircle } from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import {
+  faArrowUpRightFromSquare,
+  faInfoCircle,
+} from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 function NoScrtWarning() {
   return (
@@ -16,7 +19,11 @@ function NoScrtWarning() {
                 <li>
                   <a href="/get-scrt" className="hover:underline">
                     Get SCRT
-                    <FontAwesomeIcon icon={faArrowUpRightFromSquare} className="text-xs ml-2" size={'xs'} />
+                    <FontAwesomeIcon
+                      icon={faArrowUpRightFromSquare}
+                      className="text-xs ml-2"
+                      size={"xs"}
+                    />
                   </a>
                 </li>
                 <li>
@@ -27,7 +34,11 @@ function NoScrtWarning() {
                     rel="noopener noreferrer"
                   >
                     Learn more about Staking
-                    <FontAwesomeIcon icon={faArrowUpRightFromSquare} className="text-xs ml-2" size={'xs'} />
+                    <FontAwesomeIcon
+                      icon={faArrowUpRightFromSquare}
+                      className="text-xs ml-2"
+                      size={"xs"}
+                    />
                   </a>
                 </li>
               </ul>
@@ -36,7 +47,7 @@ function NoScrtWarning() {
         </div>
       </div>
     </>
-  )
+  );
 }
 
-export default NoScrtWarning
+export default NoScrtWarning;

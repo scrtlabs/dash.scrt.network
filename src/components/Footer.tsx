@@ -1,14 +1,21 @@
-import { faDiscord, faGithub, faInstagram, faTelegram, faTwitter, faYoutube } from '@fortawesome/free-brands-svg-icons'
-import { faComments } from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { trackMixPanelEvent } from 'utils/commons'
+import {
+  faDiscord,
+  faGithub,
+  faInstagram,
+  faTelegram,
+  faTwitter,
+  faYoutube,
+} from "@fortawesome/free-brands-svg-icons";
+import { faComments } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { trackMixPanelEvent } from "utils/commons";
 
 const Footer = () => {
   return (
     <>
       <div className="grid grid-cols-12 items-center px-6 py-8 mt-12 text-center gap-4">
         <div className="col-span-12 text-sm text-neutral-600 dark:text-neutral-400 font-medium">
-          {'⚡️ Powered by '}
+          {"⚡️ Powered by "}
           <a
             href="https://scrt.network/"
             target="_blank"
@@ -18,7 +25,7 @@ const Footer = () => {
           </a>
         </div>
         <div className="col-span-12 text-xs font-medium text-neutral-600 dark:text-neutral-400">
-          {'Developed by '}
+          {"Developed by "}
           <a
             href="https://x.com/Secret_Saturn_"
             target="_blank"
@@ -26,7 +33,7 @@ const Footer = () => {
           >
             Secret Saturn
           </a>
-          {', '}
+          {", "}
           <a
             href="https://x.com/secretjupiter_"
             target="_blank"
@@ -41,7 +48,7 @@ const Footer = () => {
             href="https://forum.scrt.network/"
             target="_blank"
             onClick={() => {
-              trackMixPanelEvent('Clicked Forum link on Footer')
+              trackMixPanelEvent("Clicked Forum link on Footer");
             }}
           >
             <FontAwesomeIcon icon={faComments} />
@@ -51,7 +58,7 @@ const Footer = () => {
             href="https://github.com/SecretFoundation"
             target="_blank"
             onClick={() => {
-              trackMixPanelEvent('Clicked Github link on Footer')
+              trackMixPanelEvent("Clicked Github link on Footer");
             }}
           >
             <FontAwesomeIcon icon={faGithub} />
@@ -61,7 +68,7 @@ const Footer = () => {
             href="https://discord.com/invite/SJK32GY"
             target="_blank"
             onClick={() => {
-              trackMixPanelEvent('Clicked Discord link on Footer')
+              trackMixPanelEvent("Clicked Discord link on Footer");
             }}
           >
             <FontAwesomeIcon icon={faDiscord} />
@@ -71,7 +78,7 @@ const Footer = () => {
             href="https://t.me/SCRTcommunity"
             target="_blank"
             onClick={() => {
-              trackMixPanelEvent('Clicked Telegram link on Footer')
+              trackMixPanelEvent("Clicked Telegram link on Footer");
             }}
           >
             <FontAwesomeIcon icon={faTelegram} />
@@ -81,7 +88,7 @@ const Footer = () => {
             href="https://twitter.com/SecretNetwork"
             target="_blank"
             onClick={() => {
-              trackMixPanelEvent('Clicked Twitter link on Footer')
+              trackMixPanelEvent("Clicked Twitter link on Footer");
             }}
           >
             <FontAwesomeIcon icon={faTwitter} />
@@ -91,7 +98,7 @@ const Footer = () => {
             href="https://www.instagram.com/scrtnetwork/"
             target="_blank"
             onClick={() => {
-              trackMixPanelEvent('Clicked Instagram link on Footer')
+              trackMixPanelEvent("Clicked Instagram link on Footer");
             }}
           >
             <FontAwesomeIcon icon={faInstagram} />
@@ -101,7 +108,7 @@ const Footer = () => {
             href="https://www.youtube.com/channel/UCZPqj7h7mzjwuSfw_UWxQPw"
             target="_blank"
             onClick={() => {
-              trackMixPanelEvent('Clicked Youtube link on Footer')
+              trackMixPanelEvent("Clicked Youtube link on Footer");
             }}
           >
             <FontAwesomeIcon icon={faYoutube} />
@@ -109,7 +116,7 @@ const Footer = () => {
         </div>
       </div>
     </>
-  )
-}
+  );
+};
 
-export default Footer
+export default Footer;

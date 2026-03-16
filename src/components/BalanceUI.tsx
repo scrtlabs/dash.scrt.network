@@ -1,29 +1,29 @@
-import BigNumber from 'bignumber.js'
-import { useContext, useEffect, useState } from 'react'
-import { Chain, Token, chains, tokens } from 'utils/config'
-import { useTokenPricesStore } from 'store/TokenPrices'
-import { useSecretNetworkClientStore } from 'store/secretNetworkClient'
-import { faKey } from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { toCurrencyString } from 'utils/commons'
-import { APIContext } from 'context/APIContext'
-import { useUserPreferencesStore } from 'store/UserPreferences'
-import { GetBalanceError } from 'types/GetBalanceError'
+import { faKey } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import BigNumber from "bignumber.js";
+import { APIContext } from "context/APIContext";
+import { useContext, useEffect, useState } from "react";
+import { useSecretNetworkClientStore } from "stores/secretNetworkClient.store";
+import { useTokenPricesStore } from "stores/TokenPrices.store";
+import { useUserPreferencesStore } from "stores/UserPreferences.store";
+import { GetBalanceError } from "types/GetBalanceError";
+import { toCurrencyString } from "utils/commons";
+import { Chain, chains, Token, tokens } from "utils/config";
 
 interface IProps {
-  token: Token
-  chain?: Chain
-  isSecretToken?: boolean
-  onBalanceClick?: any
-  showCurrencyEquiv?: boolean
+  token: Token;
+  chain?: Chain;
+  isSecretToken?: boolean;
+  onBalanceClick?: any;
+  showCurrencyEquiv?: boolean;
 }
 
 export default function BalanceUI({
   token,
-  chain = chains['Secret Network'],
+  chain = chains["Secret Network"],
   isSecretToken = false,
   onBalanceClick = false,
-  showCurrencyEquiv = true
+  showCurrencyEquiv = true,
 }: IProps) {
   const {
     isConnected,
@@ -32,102 +32,110 @@ export default function BalanceUI({
     ibcBalanceMapping,
     setViewingKey,
     getIbcBalance,
-    setIbcBalanceMapping
-  } = useSecretNetworkClientStore()
+    setIbcBalanceMapping,
+  } = useSecretNetworkClientStore();
 
-  const { getValuePrice, priceMapping } = useTokenPricesStore()
+  const { getValuePrice, priceMapping } = useTokenPricesStore();
 
-  const [balance, setBalance] = useState<number | string>(null)
-  const [currencyPriceString, setCurrencyPriceString] = useState<string>(null)
+  const [balance, setBalance] = useState<number | string>(null);
+  const [currencyPriceString, setCurrencyPriceString] = useState<string>(null);
 
   useEffect(() => {
-    if (chain === chains['Secret Network']) {
-      setBalance(null)
-      const newBalance = getBalance(token, isSecretToken)
+    if (chain === chains["Secret Network"]) {
+      setBalance(null);
+      const newBalance = getBalance(token, isSecretToken);
       if (newBalance !== null && newBalance instanceof BigNumber) {
-        setBalance(newBalance.toNumber())
-      } else if (newBalance === ('viewingKeyError' as GetBalanceError)) {
-        setBalance('viewingKeyError' as GetBalanceError)
-      } else if (newBalance === ('GenericFetchError' as GetBalanceError)) {
-        setBalance('GenericFetchError' as GetBalanceError)
+        setBalance(newBalance.toNumber());
+      } else if (newBalance === ("viewingKeyError" as GetBalanceError)) {
+        setBalance("viewingKeyError" as GetBalanceError);
+      } else if (newBalance === ("GenericFetchError" as GetBalanceError)) {
+        setBalance("GenericFetchError" as GetBalanceError);
       } else {
-        setBalance(null)
+        setBalance(null);
       }
     }
 
-    if (chain !== chains['Secret Network']) {
-      setBalance(null)
-      const IbcBalance = getIbcBalance(chain, token)
+    if (chain !== chains["Secret Network"]) {
+      setBalance(null);
+      const IbcBalance = getIbcBalance(chain, token);
       if (IbcBalance !== null && IbcBalance instanceof BigNumber) {
-        setBalance(IbcBalance.toNumber())
+        setBalance(IbcBalance.toNumber());
       } else {
-        setBalance(null)
-        setIbcBalanceMapping(chain)
+        setBalance(null);
+        setIbcBalanceMapping(chain);
       }
     }
-  }, [balanceMapping, ibcBalanceMapping, token, isSecretToken, chain])
+  }, [balanceMapping, ibcBalanceMapping, token, isSecretToken, chain]);
 
-  const { convertCurrency } = useContext(APIContext)
-  const { currency } = useUserPreferencesStore()
+  const { convertCurrency } = useContext(APIContext);
+  const { currency } = useUserPreferencesStore();
 
   useEffect(() => {
-    const valuePrice = getValuePrice(token, BigNumber(balance))
+    const valuePrice = getValuePrice(token, BigNumber(balance));
     if (valuePrice !== null && balance !== null) {
       if (valuePrice) {
-        const priceInCurrency = convertCurrency('USD', valuePrice, currency)
+        const priceInCurrency = convertCurrency("USD", valuePrice, currency);
         if (priceInCurrency !== null) {
-          setCurrencyPriceString(toCurrencyString(priceInCurrency, currency))
+          setCurrencyPriceString(toCurrencyString(priceInCurrency, currency));
         }
       } else {
-        setCurrencyPriceString(toCurrencyString(0, currency))
+        setCurrencyPriceString(toCurrencyString(0, currency));
       }
     } else {
-      setCurrencyPriceString(toCurrencyString(0, currency))
+      setCurrencyPriceString(toCurrencyString(0, currency));
     }
-  }, [priceMapping, token, balance])
+  }, [priceMapping, token, balance]);
 
-  if (!isConnected) return null
+  if (!isConnected) return null;
 
   return (
     <>
       <div className="flex items-center justify-center gap-1.5">
         {/* Skeleton Loader */}
         {balance === null && (
-          <span className="animate-pulse bg-neutral-300/40 dark:bg-neutral-600 rounded w-20 h-5 ml-2"></span>
+          <span className="animate-pulse bg-neutral-300/40 dark:bg-neutral-600 rounded-sm w-20 h-5 ml-2"></span>
         )}
 
         {balance !== null &&
-          balance !== ('viewingKeyError' as GetBalanceError) &&
-          balance !== ('GenericFetchError' as GetBalanceError) &&
+          balance !== ("viewingKeyError" as GetBalanceError) &&
+          balance !== ("GenericFetchError" as GetBalanceError) &&
           token.name &&
           (onBalanceClick ? (
             <span
               className="cursor-pointer hover:underline"
-              onClick={() => onBalanceClick(Number(BigNumber(balance).dividedBy(`1e${token.decimals}`)))} // ADD
+              onClick={() =>
+                onBalanceClick(
+                  Number(BigNumber(balance).dividedBy(`1e${token.decimals}`)),
+                )
+              } // ADD
             >
               <span className="font-medium font-mono">{` ${Number(
-                BigNumber(balance).dividedBy(`1e${token.decimals}`)
+                BigNumber(balance).dividedBy(`1e${token.decimals}`),
               ).toLocaleString(undefined, {
-                maximumFractionDigits: token.decimals
+                maximumFractionDigits: token.decimals,
               })} 
-          ${token.name == 'SCRT' && isSecretToken ? 's' : ''}${token.name} ${
-            token.coingecko_id && currencyPriceString && showCurrencyEquiv ? ` (${currencyPriceString})` : ''
+          ${token.name == "SCRT" && isSecretToken ? "s" : ""}${token.name} ${
+            token.coingecko_id && currencyPriceString && showCurrencyEquiv
+              ? ` (${currencyPriceString})`
+              : ""
           }`}</span>
             </span>
           ) : (
             <>
               <span className="font-medium font-mono">{` ${Number(
-                BigNumber(balance).dividedBy(`1e${token.decimals}`)
+                BigNumber(balance).dividedBy(`1e${token.decimals}`),
               ).toLocaleString(undefined, {
-                maximumFractionDigits: token.decimals
+                maximumFractionDigits: token.decimals,
               })} 
-              ${token.name == 'SCRT' && isSecretToken ? 's' : ''}${token.name} ${
-                token.coingecko_id && currencyPriceString && showCurrencyEquiv ? ` (${currencyPriceString})` : ''
+              ${token.name == "SCRT" && isSecretToken ? "s" : ""}${token.name} ${
+                token.coingecko_id && currencyPriceString && showCurrencyEquiv
+                  ? ` (${currencyPriceString})`
+                  : ""
               }`}</span>
             </>
           ))}
 
-        {balance === ('viewingKeyError' as GetBalanceError) && (
+        {balance === ("viewingKeyError" as GetBalanceError) && (
           <button
             type="button"
             onClick={() => setViewingKey(token)}
@@ -139,5 +147,5 @@ export default function BalanceUI({
         )}
       </div>
     </>
-  )
+  );
 }

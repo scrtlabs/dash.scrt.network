@@ -1,4 +1,4 @@
-import { faReact } from '@fortawesome/free-brands-svg-icons'
+import { faReact } from "@fortawesome/free-brands-svg-icons";
 import {
   faArrowUpRightFromSquare,
   faBook,
@@ -15,30 +15,34 @@ import {
   faPieChart,
   faSeedling,
   faArrowTrendUp,
-  faHouse
-} from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import React, { useState } from 'react'
-import { NavLink } from 'react-router-dom'
-import { trackMixPanelEvent } from 'utils/commons'
+  faHouse,
+} from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import React, { useState } from "react";
+import { NavLink } from "react-router-dom";
+import { trackMixPanelEvent } from "utils/commons";
 
 export function Navigation({
   showMobileMenu,
-  setShowMobileMenu
+  setShowMobileMenu,
 }: {
-  showMobileMenu: boolean
-  setShowMobileMenu: React.Dispatch<React.SetStateAction<boolean>>
+  showMobileMenu: boolean;
+  setShowMobileMenu: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
-  const [isExtendedMenuOpen, setIsExtendedMenuOpen] = useState<boolean>(false)
+  const [isExtendedMenuOpen, setIsExtendedMenuOpen] = useState<boolean>(false);
 
   function toggleIsExtendedMenuOpen() {
-    setIsExtendedMenuOpen(!isExtendedMenuOpen)
+    setIsExtendedMenuOpen(!isExtendedMenuOpen);
   }
 
   return (
     <div>
       <NavLink to="/" className="block ml-4 mb-10 max-w-[10rem]">
-        <svg viewBox="0 0 1252 394" className="w-full inline-block" xmlns="http://www.w3.org/2000/svg">
+        <svg
+          viewBox="0 0 1252 394"
+          className="w-full inline-block"
+          xmlns="http://www.w3.org/2000/svg"
+        >
           <g clip-path="url(#clip0_14564_34633)">
             <path
               d="M360.247 209.61L360.578 208.952C371.772 208.621 389.556 200.718 397.13 192.486H397.788C401.742 221.465 423.146 239.249 451.138 239.249C476.165 239.249 490.655 223.77 490.655 204.671C490.655 185.899 477.153 177.338 454.103 171.739L434.343 167.129C393.837 157.908 370.784 136.832 370.784 102.583C370.784 65.041 403.388 36.062 446.199 36.062C487.363 36.062 517.99 58.785 525.892 95.009L525.565 95.667C515.025 94.68 497.573 100.608 489.668 108.182L489.01 107.853C484.401 83.482 466.618 70.969 445.211 70.969C423.804 70.969 410.306 83.153 410.306 99.619C410.306 116.085 426.439 125.305 446.858 130.245L465.961 134.526C505.806 143.747 530.175 163.176 530.175 203.353C530.175 243.53 498.232 276.131 449.825 276.131C405.696 276.131 368.813 252.422 360.25 209.61H360.247Z"
@@ -90,8 +94,8 @@ export function Navigation({
             to="/"
             className={({ isActive }) =>
               isActive
-                ? 'isActiveNavLink dark:bg-neutral-800 text-black dark:text-white block w-full px-5 py-3 rounded-lg transition-colors font-semibold cursor-default'
-                : 'isInactiveNavLink text-black dark:text-white dark:hover:bg-neutral-800 block w-full px-5 py-3 rounded-lg transition-colors font-normal'
+                ? "isActiveNavLink dark:bg-neutral-800 text-black dark:text-white block w-full px-5 py-3 rounded-lg transition-colors font-semibold cursor-default"
+                : "isInactiveNavLink text-black dark:text-white dark:hover:bg-neutral-800 block w-full px-5 py-3 rounded-lg transition-colors font-normal"
             }
           >
             <FontAwesomeIcon icon={faHouse} className="mr-2" />
@@ -103,8 +107,8 @@ export function Navigation({
             to="/analytics"
             className={({ isActive }) =>
               isActive
-                ? 'isActiveNavLink dark:bg-neutral-800 text-black dark:text-white block w-full px-5 py-3 rounded-lg transition-colors font-semibold cursor-default'
-                : 'isInactiveNavLink text-black dark:text-white dark:hover:bg-neutral-800 block w-full px-5 py-3 rounded-lg transition-colors font-normal'
+                ? "isActiveNavLink dark:bg-neutral-800 text-black dark:text-white block w-full px-5 py-3 rounded-lg transition-colors font-semibold cursor-default"
+                : "isInactiveNavLink text-black dark:text-white dark:hover:bg-neutral-800 block w-full px-5 py-3 rounded-lg transition-colors font-normal"
             }
           >
             <FontAwesomeIcon icon={faChartLine} className="mr-2" />
@@ -116,8 +120,8 @@ export function Navigation({
             to="/ibc"
             className={({ isActive }) =>
               isActive
-                ? 'isActiveNavLink dark:bg-neutral-800 text-black dark:text-white block w-full px-5 py-3 rounded-lg transition-colors font-semibold cursor-default'
-                : 'isInactiveNavLink text-black dark:text-white dark:hover:bg-neutral-800 block w-full px-5 py-3 rounded-lg transition-colors font-normal'
+                ? "isActiveNavLink dark:bg-neutral-800 text-black dark:text-white block w-full px-5 py-3 rounded-lg transition-colors font-semibold cursor-default"
+                : "isInactiveNavLink text-black dark:text-white dark:hover:bg-neutral-800 block w-full px-5 py-3 rounded-lg transition-colors font-normal"
             }
           >
             <FontAwesomeIcon icon={faCircleNodes} className="mr-2" />
@@ -129,8 +133,8 @@ export function Navigation({
             to="/wrap"
             className={({ isActive }) =>
               isActive
-                ? 'isActiveNavLink dark:bg-neutral-800 text-black dark:text-white block w-full px-5 py-3 rounded-lg transition-colors font-semibold cursor-default'
-                : 'isInactiveNavLink text-black dark:text-white dark:hover:bg-neutral-800 block w-full px-5 py-3 rounded-lg transition-colors font-normal'
+                ? "isActiveNavLink dark:bg-neutral-800 text-black dark:text-white block w-full px-5 py-3 rounded-lg transition-colors font-semibold cursor-default"
+                : "isInactiveNavLink text-black dark:text-white dark:hover:bg-neutral-800 block w-full px-5 py-3 rounded-lg transition-colors font-normal"
             }
           >
             <FontAwesomeIcon icon={faShuffle} className="mr-2" />
@@ -142,8 +146,8 @@ export function Navigation({
             to="/bridge"
             className={({ isActive }) =>
               isActive
-                ? 'isActiveNavLink dark:bg-neutral-800 text-black dark:text-white block w-full px-5 py-3 rounded-lg transition-colors font-semibold cursor-default'
-                : 'isInactiveNavLink text-black dark:text-white dark:hover:bg-neutral-800 block w-full px-5 py-3 rounded-lg transition-colors font-normal'
+                ? "isActiveNavLink dark:bg-neutral-800 text-black dark:text-white block w-full px-5 py-3 rounded-lg transition-colors font-semibold cursor-default"
+                : "isInactiveNavLink text-black dark:text-white dark:hover:bg-neutral-800 block w-full px-5 py-3 rounded-lg transition-colors font-normal"
             }
           >
             <svg
@@ -164,8 +168,8 @@ export function Navigation({
             to="/get-scrt"
             className={({ isActive }) =>
               isActive
-                ? 'isActiveNavLink dark:bg-neutral-800 text-black dark:text-white block w-full px-5 py-3 rounded-lg transition-colors font-semibold cursor-default'
-                : 'isInactiveNavLink text-black dark:text-white dark:hover:bg-neutral-800 block w-full px-5 py-3 rounded-lg transition-colors font-normal'
+                ? "isActiveNavLink dark:bg-neutral-800 text-black dark:text-white block w-full px-5 py-3 rounded-lg transition-colors font-semibold cursor-default"
+                : "isInactiveNavLink text-black dark:text-white dark:hover:bg-neutral-800 block w-full px-5 py-3 rounded-lg transition-colors font-normal"
             }
           >
             <FontAwesomeIcon icon={faCreditCard} className="mr-2" />
@@ -177,8 +181,8 @@ export function Navigation({
             to="/staking"
             className={({ isActive }) =>
               isActive
-                ? 'isActiveNavLink dark:bg-neutral-800 text-black dark:text-white block w-full px-5 py-3 rounded-lg transition-colors font-semibold cursor-default'
-                : 'isInactiveNavLink text-black dark:text-white dark:hover:bg-neutral-800 block w-full px-5 py-3 rounded-lg transition-colors font-normal'
+                ? "isActiveNavLink dark:bg-neutral-800 text-black dark:text-white block w-full px-5 py-3 rounded-lg transition-colors font-semibold cursor-default"
+                : "isInactiveNavLink text-black dark:text-white dark:hover:bg-neutral-800 block w-full px-5 py-3 rounded-lg transition-colors font-normal"
             }
           >
             <FontAwesomeIcon icon={faCoins} className="mr-2" />
@@ -190,8 +194,8 @@ export function Navigation({
             to="/portfolio"
             className={({ isActive }) =>
               isActive
-                ? 'isActiveNavLink dark:bg-neutral-800 text-black dark:text-white block w-full px-5 py-3 rounded-lg transition-colors font-semibold cursor-default'
-                : 'isInactiveNavLink text-black dark:text-white dark:hover:bg-neutral-800 block w-full px-5 py-3 rounded-lg transition-colors font-normal'
+                ? "isActiveNavLink dark:bg-neutral-800 text-black dark:text-white block w-full px-5 py-3 rounded-lg transition-colors font-semibold cursor-default"
+                : "isInactiveNavLink text-black dark:text-white dark:hover:bg-neutral-800 block w-full px-5 py-3 rounded-lg transition-colors font-normal"
             }
           >
             <FontAwesomeIcon icon={faPieChart} className="mr-2" />
@@ -203,8 +207,8 @@ export function Navigation({
             to="/powertools"
             className={({ isActive }) =>
               isActive
-                ? 'isActiveNavLink dark:bg-neutral-800 text-black dark:text-white block w-full px-5 py-3 rounded-lg transition-colors font-semibold cursor-default'
-                : 'isInactiveNavLink text-black dark:text-white dark:hover:bg-neutral-800 block w-full px-5 py-3 rounded-lg transition-colors font-normal'
+                ? "isActiveNavLink dark:bg-neutral-800 text-black dark:text-white block w-full px-5 py-3 rounded-lg transition-colors font-semibold cursor-default"
+                : "isInactiveNavLink text-black dark:text-white dark:hover:bg-neutral-800 block w-full px-5 py-3 rounded-lg transition-colors font-normal"
             }
           >
             <FontAwesomeIcon icon={faReact} className="mr-2" />
@@ -216,8 +220,8 @@ export function Navigation({
             to="/send"
             className={({ isActive }) =>
               isActive
-                ? 'isActiveNavLink dark:bg-neutral-800 text-black dark:text-white block w-full px-5 py-3 rounded-lg transition-colors font-semibold cursor-default'
-                : 'isInactiveNavLink text-black dark:text-white dark:hover:bg-neutral-800 block w-full px-5 py-3 rounded-lg transition-colors font-normal'
+                ? "isActiveNavLink dark:bg-neutral-800 text-black dark:text-white block w-full px-5 py-3 rounded-lg transition-colors font-semibold cursor-default"
+                : "isInactiveNavLink text-black dark:text-white dark:hover:bg-neutral-800 block w-full px-5 py-3 rounded-lg transition-colors font-normal"
             }
           >
             <FontAwesomeIcon icon={faPaperPlane} className="mr-2" />
@@ -229,8 +233,8 @@ export function Navigation({
             to="/apps"
             className={({ isActive }) =>
               isActive
-                ? 'isActiveNavLink dark:bg-neutral-800 text-black dark:text-white block w-full px-5 py-3 rounded-lg transition-colors font-semibold cursor-default'
-                : 'isInactiveNavLink text-black dark:text-white dark:hover:bg-neutral-800 block w-full px-5 py-3 rounded-lg transition-colors font-normal'
+                ? "isActiveNavLink dark:bg-neutral-800 text-black dark:text-white block w-full px-5 py-3 rounded-lg transition-colors font-semibold cursor-default"
+                : "isInactiveNavLink text-black dark:text-white dark:hover:bg-neutral-800 block w-full px-5 py-3 rounded-lg transition-colors font-normal"
             }
           >
             <svg
@@ -259,12 +263,17 @@ export function Navigation({
             <span>More</span>
             <FontAwesomeIcon
               icon={faChevronDown}
-              className={'flex-initial ml-4' + (isExtendedMenuOpen ? ' fa-rotate-180' : '')}
+              className={
+                "flex-initial ml-4" +
+                (isExtendedMenuOpen ? " fa-rotate-180" : "")
+              }
             />
           </div>
         </button>
 
-        <div className={`text-sm font-semibold ${isExtendedMenuOpen ? 'block' : 'hidden'}`}>
+        <div
+          className={`text-sm font-semibold ${isExtendedMenuOpen ? "block" : "hidden"}`}
+        >
           <ul className="space-y-4 font-medium">
             <li>
               <a
@@ -272,7 +281,7 @@ export function Navigation({
                 target="_blank"
                 className="cursor-pointer dark:hover:text-white w-full lg:mx-8 rounded-xl transition-colors text-neutral-600 dark:text-neutral-300 hover:text-black block lg:flex lg:items-center"
                 onClick={() => {
-                  trackMixPanelEvent('Clicked external Governance')
+                  trackMixPanelEvent("Clicked external Governance");
                 }}
               >
                 <svg
@@ -298,7 +307,11 @@ export function Navigation({
 
                 {/* <FontAwesomeIcon icon={faCheckToSlot} className="mr-2" /> */}
                 <span>Governance</span>
-                <FontAwesomeIcon icon={faArrowUpRightFromSquare} className="text-xs ml-2" size={'xs'} />
+                <FontAwesomeIcon
+                  icon={faArrowUpRightFromSquare}
+                  className="text-xs ml-2"
+                  size={"xs"}
+                />
               </a>
             </li>
             <li>
@@ -307,15 +320,19 @@ export function Navigation({
                 target="_blank"
                 className="cursor-pointer dark:hover:text-white w-full lg:mx-8 rounded-xl transition-colors text-neutral-600 dark:text-neutral-300 hover:text-black block lg:flex lg:items-center"
                 onClick={() => {
-                  trackMixPanelEvent('Clicked external Token Garden')
+                  trackMixPanelEvent("Clicked external Token Garden");
                 }}
               >
                 <FontAwesomeIcon icon={faSeedling} className="mr-2" />
                 <span>Token Garden</span>
-                {/*span className="ml-2 bg-purple-100 text-purple-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-purple-900 dark:text-purple-300">
+                {/*span className="ml-2 bg-purple-100 text-purple-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-sm dark:bg-purple-900 dark:text-purple-300">
                   New
                 </span>*/}
-                <FontAwesomeIcon icon={faArrowUpRightFromSquare} className="text-xs ml-2" size={'xs'} />
+                <FontAwesomeIcon
+                  icon={faArrowUpRightFromSquare}
+                  className="text-xs ml-2"
+                  size={"xs"}
+                />
               </a>
             </li>
             <li>
@@ -324,12 +341,16 @@ export function Navigation({
                 target="_blank"
                 className="cursor-pointer dark:hover:text-white w-full lg:mx-8 rounded-xl transition-colors text-neutral-600 dark:text-neutral-300 hover:text-black block lg:flex lg:items-center"
                 onClick={() => {
-                  trackMixPanelEvent('Clicked external Block Explorer')
+                  trackMixPanelEvent("Clicked external Block Explorer");
                 }}
               >
                 <FontAwesomeIcon icon={faCube} className="mr-2" />
                 <span>Block Explorer</span>
-                <FontAwesomeIcon icon={faArrowUpRightFromSquare} className="text-xs ml-2" size={'xs'} />
+                <FontAwesomeIcon
+                  icon={faArrowUpRightFromSquare}
+                  className="text-xs ml-2"
+                  size={"xs"}
+                />
               </a>
             </li>
             <li>
@@ -338,12 +359,16 @@ export function Navigation({
                 target="_blank"
                 className="cursor-pointer dark:hover:text-white w-full lg:mx-8 rounded-xl transition-colors text-neutral-600 dark:text-neutral-300 hover:text-black block lg:flex lg:items-center"
                 onClick={() => {
-                  trackMixPanelEvent('Clicked external docs')
+                  trackMixPanelEvent("Clicked external docs");
                 }}
               >
                 <FontAwesomeIcon icon={faBook} className="mr-2" />
                 <span>Documentation</span>
-                <FontAwesomeIcon icon={faArrowUpRightFromSquare} className="text-xs ml-2" size={'xs'} />
+                <FontAwesomeIcon
+                  icon={faArrowUpRightFromSquare}
+                  className="text-xs ml-2"
+                  size={"xs"}
+                />
               </a>
             </li>
             <li>
@@ -352,17 +377,21 @@ export function Navigation({
                 target="_blank"
                 className="cursor-pointer dark:hover:text-white w-full lg:mx-8 rounded-xl transition-colors text-neutral-600 dark:text-neutral-300 hover:text-black block lg:flex lg:items-center"
                 onClick={() => {
-                  trackMixPanelEvent('Clicked external Cryptoclerk')
+                  trackMixPanelEvent("Clicked external Cryptoclerk");
                 }}
               >
                 <FontAwesomeIcon icon={faBriefcase} className="mr-2" />
                 Crypto Clerk
-                <FontAwesomeIcon icon={faArrowUpRightFromSquare} className="text-xs ml-2" size={'xs'} />
+                <FontAwesomeIcon
+                  icon={faArrowUpRightFromSquare}
+                  className="text-xs ml-2"
+                  size={"xs"}
+                />
               </a>
             </li>
           </ul>
         </div>
       </div>
     </div>
-  )
+  );
 }

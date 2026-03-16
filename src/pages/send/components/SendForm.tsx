@@ -1,80 +1,90 @@
-import { useFormik } from 'formik'
-import { useEffect } from 'react'
-import { sendSchema } from 'pages/send/sendSchema'
-import { useSecretNetworkClientStore } from 'store/secretNetworkClient'
-import Select, { components } from 'react-select'
-import { Token, chains } from 'utils/config'
-import BalanceUI from 'components/BalanceUI'
-import PercentagePicker from 'components/PercentagePicker'
-import Tooltip from '@mui/material/Tooltip'
-import { faInfoCircle, faSearch } from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { SendService } from 'services/send.service'
-import FeeGrant from 'components/FeeGrant/FeeGrant'
-import { allTokens, debugModeOverride } from 'utils/commons'
-import BigNumber from 'bignumber.js'
-import { useSearchParams } from 'react-router-dom'
-import { Nullable } from 'types/Nullable'
-import { useUserPreferencesStore } from 'store/UserPreferences'
-import { GetBalanceError } from 'types/GetBalanceError'
-import { NotificationService } from 'services/notification.service'
+import { faInfoCircle, faSearch } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Tooltip from "@mui/material/Tooltip";
+import BigNumber from "bignumber.js";
+import BalanceUI from "components/BalanceUI";
+import FeeGrant from "components/FeeGrant/FeeGrant";
+import PercentagePicker from "components/PercentagePicker";
+import { useFormik } from "formik";
+import { sendSchema } from "pages/send/sendSchema";
+import { useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
+import Select, { components } from "react-select";
+import { NotificationService } from "services/notification.service";
+import { SendService } from "services/send.service";
+import { useSecretNetworkClientStore } from "stores/secretNetworkClient.store";
+import { useUserPreferencesStore } from "stores/UserPreferences.store";
+import type { GetBalanceError } from "types/GetBalanceError";
+import type { Nullable } from "types/Nullable";
+import { allTokens, debugModeOverride } from "utils/commons";
+import { chains, type Token } from "utils/config";
 
 export default function SendForm() {
-  const { debugMode } = useUserPreferencesStore()
+  const { debugMode } = useUserPreferencesStore();
   // URL params
-  const [searchParams, setSearchParams] = useSearchParams()
-  const tokenUrlParam = searchParams.get('token')
-  const recipientUrlParam = searchParams.get('recipient')
-  const memoUrlParam = searchParams.get('memo')
+  const [searchParams, setSearchParams] = useSearchParams();
+  const tokenUrlParam = searchParams.get("token");
+  const recipientUrlParam = searchParams.get("recipient");
+  const memoUrlParam = searchParams.get("memo");
 
-  const tokenSelectOptions = SendService.getSupportedTokens()
+  const tokenSelectOptions = SendService.getSupportedTokens();
 
-  const { theme } = useUserPreferencesStore()
+  const { theme } = useUserPreferencesStore();
 
   const isValidTokenParam = () => {
-    return !!tokenSelectOptions.find((token: Token) => token.name.toLowerCase() === tokenUrlParam.toLowerCase())
-  }
+    return !!tokenSelectOptions.find(
+      (token: Token) =>
+        token.name.toLowerCase() === tokenUrlParam.toLowerCase(),
+    );
+  };
 
   useEffect(() => {
     // sets token by searchParam
-    let foundToken: Nullable<Token> = null
+    let foundToken: Nullable<Token> = null;
     if (tokenUrlParam) {
-      foundToken = tokenSelectOptions.find((token: Token) => token.name.toLowerCase() === tokenUrlParam)
+      foundToken = tokenSelectOptions.find(
+        (token: Token) => token.name.toLowerCase() === tokenUrlParam,
+      );
     }
     if (foundToken) {
-      formik.setFieldValue('token', foundToken)
-      formik.setFieldTouched('token')
+      formik.setFieldValue("token", foundToken);
+      formik.setFieldTouched("token");
     }
 
     // sets recipient by searchParam
     if (recipientUrlParam) {
-      formik.setFieldValue('recipient', recipientUrlParam)
-      formik.setFieldTouched('recipient')
+      formik.setFieldValue("recipient", recipientUrlParam);
+      formik.setFieldTouched("recipient");
     }
 
     // sets memo by SearchParam
     if (memoUrlParam) {
-      formik.setFieldValue('memo', memoUrlParam)
-      formik.setFieldTouched('memo')
+      formik.setFieldValue("memo", memoUrlParam);
+      formik.setFieldTouched("memo");
     }
-  }, [])
+  }, []);
 
-  const { secretNetworkClient, feeGrantStatus, isConnected, getBalance, setBalanceMapping } =
-    useSecretNetworkClientStore()
+  const {
+    secretNetworkClient,
+    feeGrantStatus,
+    isConnected,
+    getBalance,
+    setBalanceMapping,
+  } = useSecretNetworkClientStore();
 
   interface IFormValues {
-    amount: string
-    token: Token
-    recipient: string
-    memo: string
+    amount: string;
+    token: Token;
+    recipient: string;
+    memo: string;
   }
 
   const formik = useFormik<IFormValues>({
     initialValues: {
-      amount: '',
+      amount: "",
       token: tokenSelectOptions[1],
-      recipient: '',
-      memo: ''
+      recipient: "",
+      memo: "",
     },
     validationSchema: sendSchema,
     validateOnBlur: false,
@@ -82,125 +92,142 @@ export default function SendForm() {
     onSubmit: async (values) => {
       const toastId = NotificationService.notify(
         `Waiting to send ${formik.values.amount} ${
-          formik.values.token.name == 'SCRT' && formik.values.token.address !== 'native' ? 's' : ''
+          formik.values.token.name == "SCRT" &&
+          formik.values.token.address !== "native"
+            ? "s"
+            : ""
         }${formik.values.token.name}...`,
-        'loading'
-      )
+        "loading",
+      );
 
       try {
         const res = SendService.performSending({
           ...values,
           secretNetworkClient,
-          feeGrantStatus
-        })
+          feeGrantStatus,
+        });
 
         res
           .then(() => {
             NotificationService.notify(
               `Sending of ${formik.values.amount} ${formik.values.token.name} successful`,
-              'success',
-              toastId
-            )
+              "success",
+              toastId,
+            );
           })
           .catch((error) => {
             NotificationService.notify(
               `Sending of ${formik.values.amount} ${formik.values.token.name} unsuccessful: ${error}`,
-              'error',
-              toastId
-            )
-          })
+              "error",
+              toastId,
+            );
+          });
       } catch (error: any) {
-        console.error(error)
-        NotificationService.notify(`Sending unsuccessful: ${error}`, 'error', toastId)
+        console.error(error);
+        NotificationService.notify(
+          `Sending unsuccessful: ${error}`,
+          "error",
+          toastId,
+        );
       } finally {
-        setBalanceMapping()
+        setBalanceMapping();
       }
-    }
-  })
+    },
+  });
 
   // handles [25% | 50% | 75% | Max] Button-Group
   function setAmountByPercentage(percentage: number) {
     const balance = getBalance(
       allTokens.find((token: Token) => token.name === formik.values.token.name),
-      formik.values.token.address !== 'native'
-    )
+      formik.values.token.address !== "native",
+    );
     if (
-      (balance !== ('viewingKeyError' as GetBalanceError) || balance !== ('GenericFetchError' as GetBalanceError)) &&
+      (balance !== ("viewingKeyError" as GetBalanceError) ||
+        balance !== ("GenericFetchError" as GetBalanceError)) &&
       balance !== null
     ) {
       const scaledAmount = (balance as BigNumber)
         .times(percentage / 100)
         .minus((balance as BigNumber).times(percentage / 100).gt(1) ? 1 : 0)
         .dividedBy(`1e${formik.values.token.decimals}`)
-        .decimalPlaces(formik.values.token.decimals, BigNumber.ROUND_DOWN)
+        .decimalPlaces(formik.values.token.decimals, BigNumber.ROUND_DOWN);
 
-      formik.setFieldValue('amount', scaledAmount.toFixed(formik.values.token.decimals))
+      formik.setFieldValue(
+        "amount",
+        scaledAmount.toFixed(formik.values.token.decimals),
+      );
     }
-    formik.setFieldTouched('amount', true)
+    formik.setFieldTouched("amount", true);
   }
 
   function handleTokenSelect(token: Token) {
-    formik.setFieldValue('token', token)
-    formik.setFieldTouched('token', true)
-    formik.setFieldValue('amount', '')
-    formik.setFieldTouched('amount', false)
+    formik.setFieldValue("token", token);
+    formik.setFieldTouched("token", true);
+    formik.setFieldValue("amount", "");
+    formik.setFieldTouched("amount", false);
   }
 
   function TokenSelectFormatOptionLabel({ token }: { token: Token }) {
     return (
       <div className="flex items-center">
-        <img src={`/img/assets/${token.image}`} alt={`${token.name} logo`} className="w-6 h-6 mr-2 rounded-full" />
+        <img
+          src={`/img/assets/${token.image}`}
+          alt={`${token.name} logo`}
+          className="w-6 h-6 mr-2 rounded-full"
+        />
         <span className="font-semibold text-sm">
-          {token.name == 'SCRT' && token.address !== 'native' ? 's' : null}
+          {token.name == "SCRT" && token.address !== "native" ? "s" : null}
           {token.name}
         </span>
       </div>
-    )
+    );
   }
 
   useEffect(() => {
     const params = {
       token: formik.values.token.name.toLowerCase(),
       recipient: formik.values.recipient.toLowerCase(),
-      memo: formik.values.memo
-    }
-    setSearchParams(params)
-  }, [formik.values])
+      memo: formik.values.memo,
+    };
+    setSearchParams(params);
+  }, [formik.values]);
 
   const customTokenFilterOption = (option: any, inputValue: string) => {
-    const tokenName = option.data.name.toLowerCase()
+    const tokenName = option.data.name.toLowerCase();
     return (
       tokenName?.toLowerCase().includes(inputValue?.toLowerCase()) ||
-      ('s' + tokenName)?.toLowerCase().includes(inputValue?.toLowerCase())
-    )
-  }
+      ("s" + tokenName)?.toLowerCase().includes(inputValue?.toLowerCase())
+    );
+  };
 
   const customTokenSelectStyle = {
     input: (styles: any) => ({
       ...styles,
-      color: theme === 'light' ? 'black !important' : 'white !important',
-      fontFamily: 'RundDisplay, sans-serif',
+      color: theme === "light" ? "black !important" : "white !important",
+      fontFamily: "RundDisplay, sans-serif",
       fontWeight: 600,
-      fontSize: '14px'
+      fontSize: "14px",
     }),
     container: (container: any) => ({
       ...container,
-      width: 'auto',
-      minWidth: '30%'
-    })
-  }
+      width: "auto",
+      minWidth: "30%",
+    }),
+  };
 
   const CustomControl = ({ children, ...props }: any) => {
-    const menuIsOpen = props.selectProps.menuIsOpen
+    const menuIsOpen = props.selectProps.menuIsOpen;
     return (
       <components.Control {...props}>
         <div className="flex items-center justify-end w-full">
-          {menuIsOpen && <FontAwesomeIcon icon={faSearch} className="w-5 h-5 ml-2" />}
+          {menuIsOpen && (
+            <FontAwesomeIcon icon={faSearch} className="w-5 h-5 ml-2" />
+          )}
           {children}
         </div>
       </components.Control>
-    )
-  }
+    );
+  };
 
   return (
     <form onSubmit={formik.handleSubmit} className="w-full flex flex-col gap-4">
@@ -211,7 +238,9 @@ export default function SendForm() {
           <span className="font-extrabold">Amount</span>
           {/* Validation Error Message */}
           {formik.touched.amount && formik.errors.amount && (
-            <span className="text-red-500 dark:text-red-500 text-xs font-normal">{formik.errors.amount}</span>
+            <span className="text-red-500 dark:text-red-500 text-xs font-normal">
+              {formik.errors.amount}
+            </span>
           )}
         </div>
         {/* Input Fields */}
@@ -228,7 +257,9 @@ export default function SendForm() {
             components={{ Control: CustomControl }}
             filterOption={customTokenFilterOption}
             styles={customTokenSelectStyle}
-            formatOptionLabel={(token: Token) => <TokenSelectFormatOptionLabel token={token} />}
+            formatOptionLabel={(token: Token) => (
+              <TokenSelectFormatOptionLabel token={token} />
+            )}
             className="react-select-wrap-container"
             classNamePrefix="react-select-wrap"
           />
@@ -241,8 +272,10 @@ export default function SendForm() {
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
             className={
-              '[-moz-appearance:_textfield] [&::-webkit-inner-spin-button]:m-0 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:m-0 [&::-webkit-outer-spin-button]:appearance-none dark:placeholder-neutral-600 text-right focus:z-10 block flex-1 min-w-0 w-full bg-white dark:bg-neutral-800 text-black dark:text-white px-4 rounded-r-lg disabled:placeholder-neutral-300 dark:disabled:placeholder-neutral-700 transition-colors font-medium focus:outline-0 focus:ring-2 ring-sky-500/40' +
-              (formik.touched.amount && formik.errors.amount ? '  border border-red-500 dark:border-red-500' : '')
+              "[-moz-appearance:_textfield] [&::-webkit-inner-spin-button]:m-0 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:m-0 [&::-webkit-outer-spin-button]:appearance-none dark:placeholder-neutral-600 text-right focus:z-10 block flex-1 min-w-0 w-full bg-white dark:bg-neutral-800 text-black dark:text-white px-4 rounded-r-lg disabled:placeholder-neutral-300 dark:disabled:placeholder-neutral-700 transition-colors font-medium focus:outline-0 focus:ring-2 ring-sky-500/40" +
+              (formik.touched.amount && formik.errors.amount
+                ? "  border border-red-500 dark:border-red-500"
+                : "")
             }
             placeholder="0"
             disabled={!isConnected}
@@ -255,14 +288,19 @@ export default function SendForm() {
             <div className="flex flex-row items-center">
               <span className="font-bold mr-1">{`Balance: `}</span>
               <BalanceUI
-                token={allTokens.find((token: Token) => token.name === formik.values.token.name)}
-                chain={chains['Secret Network']}
-                isSecretToken={formik.values.token.address !== 'native'}
+                token={allTokens.find(
+                  (token: Token) => token.name === formik.values.token.name,
+                )}
+                chain={chains["Secret Network"]}
+                isSecretToken={formik.values.token.address !== "native"}
               />
             </div>
           </div>
           <div className="sm:flex-initial text-xs">
-            <PercentagePicker setAmountByPercentage={setAmountByPercentage} disabled={!isConnected} />
+            <PercentagePicker
+              setAmountByPercentage={setAmountByPercentage}
+              disabled={!isConnected}
+            />
           </div>
         </div>
       </div>
@@ -272,7 +310,11 @@ export default function SendForm() {
         {/* Title Bar */}
         <div className="flex justify-between items-center mb-2">
           <span className="flex-1 font-semibold mb-2 text-center sm:text-left">
-            <Tooltip title={`The wallet address you want to transfer your assets to.`} placement="right" arrow>
+            <Tooltip
+              title={`The wallet address you want to transfer your assets to.`}
+              placement="right"
+              arrow
+            >
               <span className="group">
                 Recipient
                 <span className="ml-2 mt-1 text-neutral-600 dark:text-neutral-400 group-hover:text-black dark:group-hover:text-white transition-colors cursor-pointer">
@@ -284,7 +326,9 @@ export default function SendForm() {
 
           {/* Validation Error Message */}
           {formik.touched.recipient && formik.errors.recipient && (
-            <span className="text-red-500 dark:text-red-500 text-xs font-normal">{formik.errors.recipient}</span>
+            <span className="text-red-500 dark:text-red-500 text-xs font-normal">
+              {formik.errors.recipient}
+            </span>
           )}
         </div>
 
@@ -298,10 +342,10 @@ export default function SendForm() {
             onBlur={formik.handleBlur}
             type="text"
             className={
-              'dark:placeholder-neutral-600 py-2 text-left focus:z-10 block flex-1 min-w-0 w-full bg-white dark:bg-neutral-800 text-black dark:text-white px-4 rounded-md disabled:placeholder-neutral-300 dark:disabled:placeholder-neutral-700 transition-colors font-medium focus:outline-0 focus:ring-2 ring-sky-500/40' +
+              "dark:placeholder-neutral-600 py-2 text-left focus:z-10 block flex-1 min-w-0 w-full bg-white dark:bg-neutral-800 text-black dark:text-white px-4 rounded-md disabled:placeholder-neutral-300 dark:disabled:placeholder-neutral-700 transition-colors font-medium focus:outline-0 focus:ring-2 ring-sky-500/40" +
               (formik.touched.recipient && formik.errors.recipient
-                ? ' ring-1 ring-red-500 dark:ring-red-500 text-red-500 dark:text-red-500'
-                : '')
+                ? " ring-1 ring-red-500 dark:ring-red-500 text-red-500 dark:text-red-500"
+                : "")
             }
             placeholder="secret1..."
             disabled={!isConnected}
@@ -314,7 +358,11 @@ export default function SendForm() {
         {/* Title Bar */}
         <div className="flex justify-between items-center mb-2">
           <span className="flex-1 font-semibold mb-2 text-center sm:text-left">
-            <Tooltip title={`Add a message to your transaction. Beware: Messages are public`} placement="right" arrow>
+            <Tooltip
+              title={`Add a message to your transaction. Beware: Messages are public`}
+              placement="right"
+              arrow
+            >
               <span className="group">
                 Memo (optional)
                 <span className="ml-2 mt-1 text-neutral-600 dark:text-neutral-400 group-hover:text-black dark:group-hover:text-white transition-colors cursor-pointer">
@@ -326,7 +374,9 @@ export default function SendForm() {
 
           {/* Validation Error Message */}
           {formik.touched.memo && formik.errors.memo && (
-            <span className="text-red-500 dark:text-red-500 text-xs font-normal">{formik.errors.memo}</span>
+            <span className="text-red-500 dark:text-red-500 text-xs font-normal">
+              {formik.errors.memo}
+            </span>
           )}
         </div>
 
@@ -340,8 +390,10 @@ export default function SendForm() {
             onBlur={formik.handleBlur}
             type="text"
             className={
-              'dark:placeholder-neutral-600 py-2 text-left focus:z-10 block flex-1 min-w-0 w-full bg-white dark:bg-neutral-800 text-black dark:text-white px-4 rounded-md disabled:placeholder-neutral-300 dark:disabled:placeholder-neutral-700 transition-colors font-medium focus:outline-0 focus:ring-2 ring-sky-500/40' +
-              (formik.touched.memo && formik.errors.memo ? '  border border-red-500 dark:border-red-500' : '')
+              "dark:placeholder-neutral-600 py-2 text-left focus:z-10 block flex-1 min-w-0 w-full bg-white dark:bg-neutral-800 text-black dark:text-white px-4 rounded-md disabled:placeholder-neutral-300 dark:disabled:placeholder-neutral-700 transition-colors font-medium focus:outline-0 focus:ring-2 ring-sky-500/40" +
+              (formik.touched.memo && formik.errors.memo
+                ? "  border border-red-500 dark:border-red-500"
+                : "")
             }
             disabled={!isConnected}
           />
@@ -354,7 +406,7 @@ export default function SendForm() {
       {/* Submit Button */}
       <button
         className={
-          'enabled:bg-gradient-to-r enabled:from-cyan-600 enabled:to-purple-600 enabled:hover:from-cyan-500 enabled:hover:to-purple-500 transition-colors text-white font-extrabold py-3 w-full rounded-lg disabled:bg-neutral-500 focus:outline-none focus-visible:ring-4 ring-sky-500/40'
+          "enabled:bg-linear-to-r enabled:from-cyan-600 enabled:to-purple-600 enabled:hover:from-cyan-500 enabled:hover:to-purple-500 transition-colors text-white font-extrabold py-3 w-full rounded-lg disabled:bg-neutral-500 focus:outline-hidden focus-visible:ring-4 ring-sky-500/40"
         }
         disabled={!isConnected}
         type="submit"
@@ -365,11 +417,11 @@ export default function SendForm() {
       {/* Debug Info */}
       {debugMode ||
         (debugModeOverride && (
-          <div className="text-sky-500 text-xs p-2 bg-blue-500/20 rounded">
+          <div className="text-sky-500 text-xs p-2 bg-blue-500/20 rounded-sm">
             <div className="mb-4 font-semibold">Debug Info</div>
             formik.errors: {JSON.stringify(formik.errors)}
           </div>
         ))}
     </form>
-  )
+  );
 }

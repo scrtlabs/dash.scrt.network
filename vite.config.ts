@@ -1,12 +1,14 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
-import tsconfigPaths from 'vite-tsconfig-paths'
 import { whip003 } from './vite-plugin-whip-003'
+import tailwindcss from '@tailwindcss/vite'
+import tsconfigPaths from 'vite-tsconfig-paths'
 
 export default defineConfig({
   plugins: [
-    { ...react() },
-    { ...tsconfigPaths() },
+    react(),
+    tailwindcss(),
+    tsconfigPaths(),
     {
       ...whip003(),
       apply: 'build'
@@ -27,8 +29,5 @@ export default defineConfig({
         replacement: '@evmos/proto/dist/proto/evmos/revenue/v1/tx.js'
       }
     ]
-  },
-  build: {
-    minify: 'esbuild'
   }
 })
